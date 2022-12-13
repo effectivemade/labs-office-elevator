@@ -1,16 +1,15 @@
 package band.effective.office.elevator.android
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import band.effective.office.elevator.android.theme.setupThemedNavigation
-import band.effective.office.elevator.common.compose.NavigationTree
-import band.effective.office.elevator.common.compose.navigation.navigationGraph
+import band.effective.office.elevator.common.compose.RootView
+import moe.tlaster.precompose.lifecycle.PreComposeActivity
+import moe.tlaster.precompose.lifecycle.setContent
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : PreComposeActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setupThemedNavigation(NavigationTree.Actions.name) { navigationGraph() }
+        setContent { RootView() }
     }
 }

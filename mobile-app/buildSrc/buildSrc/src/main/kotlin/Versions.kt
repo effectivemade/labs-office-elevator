@@ -1,7 +1,7 @@
 object Versions {
 
     object Project {
-        const val kotlin_version = "1.7.20"
+        const val kotlin_version = "1.5.1"
         const val Android_Gradle_Plugin_version = "7.2.1"
     }
 
@@ -29,5 +29,5 @@ object Versions {
     const val mokoVersion = "0.20.1"
     const val cryptohash = "0.10.1"
 
-    const val Odyssey = "1.0.1"
+    const val precompose = "1.3.9"
 }

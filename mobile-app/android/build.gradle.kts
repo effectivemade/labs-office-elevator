@@ -2,7 +2,6 @@ plugins {
     id("com.android.application")
     kotlin("android")
     id("kotlin-parcelize")
-    id("org.jetbrains.compose")
 }
 
 android {
@@ -21,6 +20,9 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = ConfigData.Android.kotlinCompilerExtensionVersion
     }
+    buildFeatures {
+        compose = true
+    }
 
     lintOptions {
         isCheckReleaseBuilds = false
@@ -32,12 +34,14 @@ android {
 }
 
 dependencies {
-    implementation(project(Modules.CommonUI))
-    implementation(project(Modules.OdysseyCompose))
-    implementation(project(Modules.OdysseyCore))
-    implementation(compose.material)
+    implementation(project(":shared"))
 
     implementation(Dependencies.AndroidX.AppCompat.appCompat)
-    implementation(Dependencies.AndroidX.Activity.activityCompose)
-    implementation(Dependencies.Images.kamel)
+    implementation(Dependencies.Android.material)
+
+    implementation(Dependencies.JetBrains.Compose.runtime)
+    implementation(Dependencies.JetBrains.Compose.ui)
+    implementation(Dependencies.JetBrains.Compose.foundationLayout)
+    implementation(Dependencies.JetBrains.Compose.material)
+    //implementation(Dependencies.AndroidX.Activity.activityCompose)
 }

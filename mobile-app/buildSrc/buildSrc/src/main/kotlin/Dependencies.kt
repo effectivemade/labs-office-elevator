@@ -36,17 +36,24 @@ object Dependencies {
 
         object Compose {
             // __LATEST_COMPOSE_RELEASE_VERSION__
-            private const val VERSION = "1.2.0"
+            const val VERSION = "1.2.1"
             const val gradlePlugin = "org.jetbrains.compose:compose-gradle-plugin:$VERSION"
+            const val runtime = "androidx.compose.runtime:runtime:$VERSION"
+            const val ui = "androidx.compose.ui:ui:$VERSION"
+            const val foundationLayout =
+                "androidx.compose.foundation:foundation-layout:$VERSION"
+            const val material = "androidx.compose.material:material:$VERSION"
         }
     }
 
     object Android {
         object Tools {
             object Build {
-                const val gradlePlugin = "com.android.tools.build:gradle:4.1.0"
+                const val gradlePlugin = "com.android.tools.build:gradle:7.3.1"
             }
         }
+
+        const val material = "com.google.android.material:material:1.4.0"
     }
 
     object Utils {
@@ -55,7 +62,7 @@ object Dependencies {
 
     object AndroidX {
         object AppCompat {
-            const val appCompat = "androidx.appcompat:appcompat:1.3.0-beta01"
+            const val appCompat = "androidx.appcompat:appcompat:1.4.0"
             const val fragmentKtx = "androidx.fragment:fragment-ktx:1.2.1"
         }
 
@@ -114,5 +121,5 @@ object Dependencies {
         const val logger = "io.github.aakira:napier:${Versions.napier}"
     }
 
-    const val Cryptohash = "com.appmattus.crypto:cryptohash:${Versions.cryptohash}"
+    const val precompose = "moe.tlaster:precompose:${Versions.precompose}"
 }

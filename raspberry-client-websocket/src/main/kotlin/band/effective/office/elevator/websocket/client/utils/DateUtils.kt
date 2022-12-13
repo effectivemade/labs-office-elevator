@@ -4,7 +4,6 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 object DateUtils {
-
     fun isCorrectTime(time: LocalDateTime?): Boolean {
         return if (time != null) {
             val today = LocalDateTime.now()

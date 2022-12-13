@@ -7,6 +7,7 @@ allprojects {
         google()
         mavenCentral()
         mavenLocal()
+        jcenter()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
         maven("https://jitpack.io")
     }
@@ -14,13 +15,10 @@ allprojects {
 
 buildscript {
     repositories {
+        gradlePluginPortal()
         mavenLocal()
         mavenCentral()
         google()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    }
-    dependencies {
-        classpath(Plugins.kotlinGradlePlugin)
-        classpath(Plugins.BuildKonfigPlugin)
     }
 }

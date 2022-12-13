@@ -1,11 +1,14 @@
 include(
-    ":common:ui",
-
-    ":odyssey:odyssey-core",
-    ":odyssey:odyssey-compose",
-
+    ":shared",
     ":android",
-    ":uikit"
 )
+
+pluginManagement {
+    repositories {
+        google()
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
 
 rootProject.name = "OfficeElevator"

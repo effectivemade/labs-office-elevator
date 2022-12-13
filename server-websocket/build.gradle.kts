@@ -25,4 +25,6 @@ dependencies {
     testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     implementation("com.soywiz.korlibs.krypto:krypto:2.7.0")
+    implementation("io.ktor:ktor-client-core:$ktor_version")
+    implementation("io.ktor:ktor-client-cio:$ktor_version")
 }
