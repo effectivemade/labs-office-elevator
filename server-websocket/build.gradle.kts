@@ -12,6 +12,7 @@ application {
 }
 
 repositories {
+    google()
     mavenCentral()
     maven { url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap") }
 }
@@ -27,4 +28,5 @@ dependencies {
     implementation("com.soywiz.korlibs.krypto:krypto:2.7.0")
     implementation("io.ktor:ktor-client-core:$ktor_version")
     implementation("io.ktor:ktor-client-cio:$ktor_version")
+    implementation("com.google.api-client:google-api-client:2.1.1")
 }

@@ -1,20 +1,22 @@
 package band.effective.office.elevator.websocket.client.utils
 
-import java.time.LocalDateTime
-import java.time.ZoneOffset
+import io.ktor.http.*
+import io.ktor.util.date.*
+import kotlin.math.abs
 
 object DateUtils {
-    fun isCorrectTime(time: LocalDateTime?): Boolean {
+    fun isCorrectTime(time: GMTDate?): Boolean {
         return if (time != null) {
-            val today = LocalDateTime.now()
-            val milliseconds: Long =
-                today.toInstant(ZoneOffset.UTC).toEpochMilli() - time.toInstant(ZoneOffset.UTC)
-                    .toEpochMilli()
-            return (milliseconds / 1000) < 60
+            val today = GMTDate()
+            val milliseconds: Long = today.timestamp - time.timestamp
+            Logger.debug {
+                "\ntoday: $today \n providedTime: $time \n milliseconds: $milliseconds"
+            }
+            (abs(milliseconds) / 1000) < 60
         } else false
     }
 }
 
-fun String.parseStringToISO8061Date(): LocalDateTime? {
-    return LocalDateTime.parse(this)
+fun String.toGMTDate(): GMTDate {
+    return this.fromHttpToGmtDate()
 }

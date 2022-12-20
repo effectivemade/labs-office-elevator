@@ -6,5 +6,8 @@ import androidx.compose.ui.graphics.Color
 internal val defaultPalette = lightColors(
     primary = Color(255, 255, 255, 255),
     secondary = Color(149, 99, 255, 255),
-    background = Color.White
+    background = Color.White,
+    onPrimary = Color.Black,
+    onSecondary = Color.Black,
+    onBackground = Color.Black
 )

@@ -34,5 +34,5 @@ dependencies {
     implementation("io.ktor:ktor-client-cio:$ktor_version")
     implementation("io.ktor:ktor-client-logging:$ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
-    implementation ("io.github.microutils:kotlin-logging:3.0.4")
+    implementation("io.github.microutils:kotlin-logging:3.0.4")
 }

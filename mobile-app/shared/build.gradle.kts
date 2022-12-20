@@ -51,6 +51,8 @@ kotlin {
             dependencies {
                 //implementation("androidx.appcompat:appcompat:1.4.0-alpha03")
                 //implementation("androidx.core:core-ktx:1.6.0")
+                implementation(Dependencies.Google.SignIn)
+                implementation(Dependencies.AndroidX.Activity.activityCompose)
             }
         }
         //val uikitX64Main by getting
@@ -75,29 +77,3 @@ kotlin {
         }
     }
 }
-
-
-/*buildkonfig {
-    packageName = "band.effective.office.elevator.common.compose"
-
-    defaultConfigs {
-        buildConfigField(STRING, "baseUrl", "0.0.0.0")
-    }
-}*/
-
-/*compose.experimental {
-    uikit.application {
-        bundleIdPrefix = "band.effective.office.elevator."
-        projectName = "OfficeElevator"
-        deployConfigurations {
-            // Usage ./gradlew uikit:iosDeployIPhone13Debug
-            simulator("IPhone13") {
-                device = IOSDevices.IPHONE_13_PRO
-            }
-            // Usage ./gradlew uikit:iosDeployIPhone13ProMaxDebug
-            simulator("IPhone13ProMax") {
-                device = IOSDevices.IPHONE_13_PRO_MAX
-            }
-        }
-    }
-}/*

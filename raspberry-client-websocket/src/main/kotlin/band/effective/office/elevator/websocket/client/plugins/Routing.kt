@@ -1,6 +1,8 @@
 package band.effective.office.elevator.websocket.client.plugins
 
-import band.effective.office.elevator.websocket.client.utils.*
+import band.effective.office.elevator.websocket.client.utils.DateUtils
+import band.effective.office.elevator.websocket.client.utils.ElevatorController
+import band.effective.office.elevator.websocket.client.utils.toGMTDate
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
@@ -15,20 +17,11 @@ fun Application.configureRouting() {
 
         post("/office-elevator") {
             val time = call.request.queryParameters["time"]
-            Logger.debug("time: $time") // TODO hide logs for PROD
-            val key = call.request.queryParameters["key"]
-
-            Logger.debug("retrieved hash: $key")
-
             when {
                 call.request.queryParameters["command"] != "go" -> call.respond(HttpStatusCode.NotFound)
-                !DateUtils.isCorrectTime(time?.parseStringToISO8061Date()) -> call.respond(HttpStatusCode.Forbidden) // TODO привести к гринвичу
-                !key.equals(
-                    HashUtil.sha256(
-                        time
-                    ).apply { Logger.debug("server-side hash code: $this") }
-                ) -> call.respond(HttpStatusCode.Forbidden, "Incorrect hash code")
-
+                !DateUtils.isCorrectTime(time?.toGMTDate()) -> call.respond(
+                    HttpStatusCode.Forbidden, "Incorrect request time",
+                )
                 else -> {
                     call.respond(HttpStatusCode.OK, "Elevator called")
                     ElevatorController.call()

@@ -122,4 +122,10 @@ object Dependencies {
     }
 
     const val precompose = "moe.tlaster:precompose:${Versions.precompose}"
+
+
+    object Google {
+        private const val VERSION = "20.4.0"
+        const val SignIn = "com.google.android.gms:play-services-auth:$VERSION"
+    }
 }
