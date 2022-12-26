@@ -1,9 +1,9 @@
 # Table of Contents
 - [Introduction](#Introduction)
 - [Projects](#Projects)
-- [Mobile App](#Mobile App)
-- [Client for Server](#Client for Server)
-- [Client for Raspberry Pi](#Client for Raspberry Pi)
+- [Mobile App](#Mobile-App)
+- [Client for Server](#Client-for-Server)
+- [Client for Raspberry Pi](#Client-for-Raspberry-Pi)
 - [Installation](#Installation)
 - [Documentation](#Documentation)
 
