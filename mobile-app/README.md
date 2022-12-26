@@ -1,11 +1,15 @@
 # Office Elevator Mobile App
 
+## Features
+- Authorization via Google account
+- Screen with elevator button
+
 ## Running
 
 ### Android:
 
-1. Open the `OfficeElevator` Gradle project in Android Studio
-2. Run the app in the android module
+1. Open `mobile-app` folder in **Android Studio Dolphin | 2021.3.1 Patch 1** 
+2. Launch `android` app via `Run button` on any android emulator with Google services
 
 ### IOS:
 
@@ -16,14 +20,6 @@ See [CocoaPods Overview and Setup](https://kotlinlang.org/docs/native-cocoapods.
 and [Check your environment](https://kotlinlang.org/docs/multiplatform-mobile-setup.html#check-your-environment)
 for more details.
 
-##### From Android Studio
 
-1. Install
-   the [Kotlin Multiplatform Mobile plugin](https://plugins.jetbrains.com/plugin/14936-kotlin-multiplatform-mobile)
-2. Open the `OfficeElevator` Gradle project in Android Studio
-3. Run following command:
-
-```bash
-./gradlew uikit:iosDeployIPhone13Debug // or
-./gradlew uikit:iosDeployIPhone13ProMaxDebu
-```
+1. Open `iosApp` folder in **Xcode Version 13.4.1 (13F100)**
+2. Press `Start the active scheme` button on any iOS emulator with **iOS 11.0** or higher 

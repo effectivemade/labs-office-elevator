@@ -1,7 +1,7 @@
 object Versions {
 
     object Project {
-        const val kotlin_version = "1.5.1"
+        const val kotlin_version = "1.7.10"
         const val Android_Gradle_Plugin_version = "7.2.1"
     }
 
