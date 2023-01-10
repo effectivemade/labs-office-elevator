@@ -12,8 +12,12 @@ import androidx.compose.ui.unit.LayoutDirection
 import band.effective.office.elevator.common.compose.navigation.Routes
 import band.effective.office.elevator.common.compose.screens.about.AboutScreen
 import band.effective.office.elevator.common.compose.screens.home.HomeScreen
+import band.effective.office.elevator.common.compose.screens.home.HomeScreenViewModel
 import band.effective.office.elevator.common.compose.screens.login.GoogleAuthorization
 import band.effective.office.elevator.common.compose.screens.login.LoginScreen
+import band.effective.office.elevator.common.compose.screens.login.LoginViewModel
+import io.github.aakira.napier.DebugAntilog
+import io.github.aakira.napier.Napier
 import moe.tlaster.precompose.navigation.NavHost
 import moe.tlaster.precompose.navigation.NavOptions
 import moe.tlaster.precompose.navigation.PopUpTo
@@ -21,6 +25,7 @@ import moe.tlaster.precompose.navigation.rememberNavigator
 
 @Composable
 internal fun App() {
+    Napier.base(DebugAntilog())
     val navigator = rememberNavigator()
     Box(
         modifier = Modifier.background(MaterialTheme.colors.background).padding(
@@ -48,7 +53,8 @@ internal fun App() {
                                         popUpTo = PopUpTo.First(true)
                                     ),
                                 )
-                            }
+                            },
+                            HomeScreenViewModel()
                         )
                         Routes.Login -> LoginScreen(onSignInSuccess = {
                             navigator.navigate(
@@ -58,7 +64,7 @@ internal fun App() {
                                     popUpTo = PopUpTo.First(true)
                                 ),
                             )
-                        })
+                        }, LoginViewModel())
                         Routes.About -> AboutScreen()
                     }
                 }

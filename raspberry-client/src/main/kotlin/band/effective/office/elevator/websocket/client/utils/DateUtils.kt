@@ -9,9 +9,6 @@ object DateUtils {
         return if (time != null) {
             val today = GMTDate()
             val milliseconds: Long = today.timestamp - time.timestamp
-            Logger.debug {
-                "\ntoday: $today \n providedTime: $time \n milliseconds: $milliseconds"
-            }
             (abs(milliseconds) / 1000) < 60
         } else false
     }

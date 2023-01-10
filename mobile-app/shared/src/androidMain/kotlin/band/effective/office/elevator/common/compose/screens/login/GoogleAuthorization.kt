@@ -1,13 +1,17 @@
 package band.effective.office.elevator.common.compose.screens.login
 
 import android.content.Intent
-import android.util.Log
+import android.os.Bundle
 import band.effective.office.elevator.common.compose.Android
+import band.effective.office.elevator.common.compose.helpers.Context
+import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.tasks.Task
+import io.github.aakira.napier.Napier
 
 
 actual object GoogleAuthorization {
@@ -22,7 +26,19 @@ actual object GoogleAuthorization {
         .requestEmail()
         .build()
 
-    private val isSigned: Boolean
+    private val apiClient = GoogleApiClient.Builder(Context)
+        .addConnectionCallbacks(object : GoogleApiClient.ConnectionCallbacks {
+            override fun onConnected(p0: Bundle?) {
+                Napier.i(tag = "GoogleApiClient", message = "onConnected")
+            }
+
+            override fun onConnectionSuspended(p0: Int) {
+                Napier.i(tag = "GoogleApiClient", message = "onConnectionSuspended")
+            }
+        })
+        .addApi(Auth.GOOGLE_SIGN_IN_API)
+        .build()
+
 
     private lateinit var onSignInFailure: (e: Exception) -> Unit
     private lateinit var onSignInSuccess: () -> Unit
@@ -37,7 +53,6 @@ actual object GoogleAuthorization {
         // Check for existing Google Sign In account, if the user is already signed in
         // the GoogleSignInAccount will be non-null.
         val account = GoogleSignIn.getLastSignedInAccount(Android.context.applicationContext)
-        isSigned = account != null
         if (account != null) {
             printAccountInfo(account)
             token = account.idToken
@@ -89,20 +104,46 @@ actual object GoogleAuthorization {
         } catch (e: ApiException) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            Log.w(TAG, "signInResult:failed code=" + e.statusCode)
+            Napier.e(tag = TAG, message = "signInResult:failed code=" + e.statusCode, throwable = e)
             onSignInFailure(e)
         } catch (e: Exception) {
-            Log.e(TAG, "Failed handle sign in result", e)
+            Napier.e(tag = TAG, throwable = e, message = "Failed handle sign in result")
             onSignInFailure(e)
         }
     }
 
     private fun printAccountInfo(account: GoogleSignInAccount) {
-        Log.d(
-            TAG, "\nSigned profile:\n displayName = ${account.displayName}\n" +
+        Napier.d(
+            TAG, null, "\nSigned profile:\n displayName = ${account.displayName}\n" +
                     "email = ${account.email}\n" +
                     "photo = ${account.photoUrl}\n" +
                     "token = ${account.idToken}"
         )
+    }
+
+    actual suspend fun performWithFreshToken(
+        action: (token: String) -> Unit,
+        failure: (message: String) -> Unit
+    ) {
+        val client = GoogleSignIn.getClient(Context, gso)
+        val task = client.silentSignIn()
+        if (task.isSuccessful) {
+            val signInAccount = task.result
+            signInAccount.idToken?.let { action(it) }
+                ?: failure("Something went wrong. Please try again")
+        } else {
+            task.addOnCompleteListener { completedTask ->
+                try {
+                    val signInAccount = completedTask.getResult(
+                        ApiException::class.java
+                    )
+                    signInAccount.idToken?.let { action(it) }
+                        ?: failure("Something went wrong. Please try again")
+                } catch (apiException: ApiException) {
+                    Napier.e(message = "ApiException", tag = TAG, throwable = apiException)
+                    apiException.message?.let { failure(it) }
+                }
+            }
+        }
     }
 }

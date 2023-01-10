@@ -1,9 +1,14 @@
 package band.effective.office.elevator.common.compose.screens.login
 
+import io.github.aakira.napier.Napier
+
 actual object GoogleAuthorization {
+
+    private const val TAG = "GoogleAuthorization"
 
     private lateinit var signInCallback: () -> Unit
     private lateinit var signOutCallback: () -> Unit
+    private lateinit var getLastSignedAccountCallback: () -> Unit
 
     lateinit var onSignInSuccess: () -> Unit
     lateinit var onSignInFailure: (e: Exception) -> Unit
@@ -19,15 +24,28 @@ actual object GoogleAuthorization {
     ) {
         this.onSignInSuccess = onSignInSuccess
         this.onSignInFailure = onSignInFailure
-        try {
-            signInCallback()
-        } catch (e: Exception) {
-            onSignInFailure(e)
-        }
+        signInCallback()
     }
 
     actual fun signOut() {
         this.signOutCallback()
+    }
+
+    actual suspend fun performWithFreshToken(
+        action: (token: String) -> Unit,
+        failure: (message: String) -> Unit
+    ) {
+        try {
+            getLastSignedAccountCallback()
+            token?.let { action(it) } ?: failure("Something went wrong. Please try again")
+        } catch (e: Exception) {
+            Napier.d(
+                tag = TAG,
+                message = "PerformWithFreshToken cause error",
+                throwable = e
+            )
+            e.message?.let { failure(it) }
+        }
     }
 
     fun setSignIn(callback: () -> Unit) {
@@ -36,5 +54,9 @@ actual object GoogleAuthorization {
 
     fun signOut(callback: () -> Unit) {
         this.signOutCallback = callback
+    }
+
+    fun setLastSignedAccount(callback: () -> Unit) {
+        this.getLastSignedAccountCallback = callback
     }
 }

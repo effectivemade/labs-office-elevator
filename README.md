@@ -1,10 +1,9 @@
 # Table of Contents
 - [Introduction](#Introduction)
 - [Projects](#Projects)
-- [Mobile App](#Mobile App)
-- [Client for Server](#Client for Server)
-- [Client for Raspberry Pi](#Client for Raspberry Pi)
-- [Installation](#Installation)
+- [Mobile App](#Mobile-App)
+- [Client for Server](#Client-for-Server)
+- [Client for Raspberry Pi](#Client-for-Raspberry-Pi)
 - [Documentation](#Documentation)
 
 # Introduction
@@ -24,10 +23,6 @@ This client makes call directly to the elevator via GPIO_01 pin
 
 ### Interaction diagram:<br/>
 <img src="images/interaction_diagram.png" width="500"/>
-
-# Installation
-
-
 
 # Documentation
 

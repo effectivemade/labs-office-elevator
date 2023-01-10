@@ -32,6 +32,16 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         GoogleAuthorization.shared.signOut {
             GIDSignIn.sharedInstance.signOut()
         }
+        
+        GoogleAuthorization.shared.setLastSignedAccount {
+            GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
+                if error != nil || user == nil {
+                    GoogleAuthorization.shared.token = nil
+                } else {
+                    GoogleAuthorization.shared.token = user?.idToken?.tokenString
+                }
+            }
+        }
 
         
         let controller = AvoidDispose(rootViewController)

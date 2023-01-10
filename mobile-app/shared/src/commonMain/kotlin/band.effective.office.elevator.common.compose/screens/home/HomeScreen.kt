@@ -10,69 +10,38 @@ import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExitToApp
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.common.compose.components.ElevatorButton
-import band.effective.office.elevator.common.compose.screens.login.GoogleAuthorization
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
-import io.ktor.client.call.*
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
-internal fun HomeScreen(onSignOut: () -> Unit) {
-    var isActive by remember { mutableStateOf(false) }
-    val scope = rememberCoroutineScope()
-    var requestInfo by remember { mutableStateOf("") }
-
-    Napier.base(DebugAntilog())
+internal fun HomeScreen(
+    onSignOut: () -> Unit,
+    viewModel: HomeScreenViewModel = HomeScreenViewModel()
+) {
+    val message by viewModel.messageState.collectAsState()
+    val buttonIsActive by viewModel.buttonState.collectAsState()
 
     Box(
         modifier = Modifier.fillMaxSize().padding(16.dp)
     ) {
-
-        Text(
-            requestInfo, modifier = Modifier.padding(50.dp).align(Alignment.TopCenter)
-        )
+        Text(message, modifier = Modifier.padding(50.dp).align(Alignment.TopCenter))
         ElevatorButton(
-            modifier = Modifier.align(Alignment.Center), isActive = isActive, isEnabled = !isActive
+            modifier = Modifier.align(Alignment.Center),
+            isActive = buttonIsActive,
+            isEnabled = !buttonIsActive
         ) {
-            if (!isActive) {
-                scope.launch {
-                    ElevatorController.callElevator().onSuccess { response ->
-                        Napier.e(response.body(), null, null)
-                        when (response.status.value) {
-                            in 200..299 -> {
-                                requestInfo = "Success"
-                                delay(5000)
-                                requestInfo = ""
-                            }
-                            404 -> {
-                                requestInfo = "Not found"
-                            }
-                            403 -> {
-                                requestInfo = "Access denied"
-                            }
-                            500 -> {
-                                requestInfo = "Internal server error"
-                            }
-                        }
-                        isActive = false
-                    }.onFailure {
-                        requestInfo = "Something went wrong"
-                        Napier.e(throwable = it, tag = null) { "Error" }
-                        isActive = false
-                    }
-                }
-                isActive = !isActive
-            }
+            viewModel.sendEvent(HomeScreenViewModel.Event.CallElevator)
         }
         IconButton(
             onClick = {
-                GoogleAuthorization.signOut()
+                viewModel.sendEvent(HomeScreenViewModel.Event.SignOut)
                 onSignOut()
             }, modifier = Modifier.align(Alignment.TopEnd)
         ) {

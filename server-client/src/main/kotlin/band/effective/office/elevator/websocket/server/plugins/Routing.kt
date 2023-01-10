@@ -1,8 +1,10 @@
 package band.effective.office.elevator.websocket.server.plugins
 
 import band.effective.office.elevator.websocket.server.client.ktorClient
+import band.effective.office.elevator.websocket.server.utils.HashUtil
 import band.effective.office.elevator.websocket.server.utils.TokenVerifier
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
@@ -30,6 +32,7 @@ fun Application.configureRouting() {
                         parameters.append(
                             "time", currentTime.toHttpDate()
                         )
+                        parameters.append("token", HashUtil.sha256(currentTime.toHttpDate()))
                     }
                 }
                 when (request.status.value) {
@@ -42,7 +45,7 @@ fun Application.configureRouting() {
                     }
 
                     403 -> {
-                        call.respond(HttpStatusCode.Forbidden, "Access denied")
+                        call.respond(HttpStatusCode.Forbidden, request.status.description)
                     }
 
                     500 -> {
