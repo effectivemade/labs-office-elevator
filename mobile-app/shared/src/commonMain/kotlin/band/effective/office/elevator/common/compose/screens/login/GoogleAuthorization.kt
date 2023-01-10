@@ -6,5 +6,10 @@ expect object GoogleAuthorization {
         onSignInSuccess: () -> Unit,
         onSignInFailure: (e: Exception) -> Unit
     )
+
     fun signOut()
+    suspend fun performWithFreshToken(
+        action: (token: String) -> Unit,
+        failure: (message: String) -> Unit
+    )
 }

@@ -434,6 +434,10 @@ typedef NS_ENUM(NSInteger, GTMSessionFetcherError) {
   GTMSessionFetcherErrorBackgroundFetchFailed = -4,
   GTMSessionFetcherErrorInsecureRequest = -5,
   GTMSessionFetcherErrorTaskCreationFailed = -6,
+
+  // This error is only used if `stopFetchingTriggersCompletionHandler` is
+  // enabled and `-stopFetching` is called on that fetcher.
+  GTMSessionFetcherErrorUserCancelled = -7,
 };
 
 typedef NS_ENUM(NSInteger, GTMSessionFetcherStatus) {
@@ -637,7 +641,7 @@ __deprecated_msg("implement GTMSessionFetcherAuthorizer instead")
 
 // This method is being phased out. While implementing it is necessary to satisfy
 // the protocol's @required restrictions, conforming implementations that implement
-// authorizeRequest:completionHandler: will have that called instead. 
+// authorizeRequest:completionHandler: will have that called instead.
 // be removed in a future version when GTMFetcherAuthorizationProtocol is
 // also removed.
 - (void)authorizeRequest:(nullable NSMutableURLRequest *)request
@@ -1084,8 +1088,15 @@ __deprecated_msg("implement GTMSessionFetcherAuthorizer instead")
 @property(atomic, readonly, getter=isFetching) BOOL fetching;
 
 // Cancel the fetch of the request that's currently in progress.  The completion handler
-// will not be called.
+// will be called with `GTMSessionFetcherErrorUserCancelled` if the property
+// `stopFetchingTriggersCompletionHandler` is `YES`.
 - (void)stopFetching;
+
+// Call callbacks with `GTMSessionFetcherErrorUserCancelled` after a `stopFetching`.
+// It cannot be changed once the fetcher starts. This should be set to `YES` from
+// Swift clients before `beginFetch` with `async/await` since the Swift runtime
+// requires the completion handler to be called.
+@property(atomic, assign) BOOL stopFetchingTriggersCompletionHandler;
 
 // A block to be called when the fetch completes.
 @property(atomic, copy, nullable) GTMSessionFetcherCompletionHandler completionHandler;

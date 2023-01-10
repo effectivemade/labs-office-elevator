@@ -1,4 +1,4 @@
-# Office Elevator WebSocket server
+# Office Elevator server
 
 ## Running
 

@@ -7,21 +7,20 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.common.compose.expects.showToast
 import band.effective.office.elevator.common.compose.imageResource
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @Composable
-internal fun LoginScreen(onSignInSuccess: () -> Unit) {
-    val viewModel = LoginViewModel()
-
-    LaunchedEffect(key1 = Unit) {
-        viewModel.effectState.collectLatest { effect ->
+internal fun LoginScreen(onSignInSuccess: () -> Unit, viewModel: LoginViewModel) {
+    val scope = rememberCoroutineScope()
+    scope.launch {
+        viewModel.effectState.collect { effect ->
             when (effect) {
                 is LoginViewModel.Effect.SignInFailure -> showToast(effect.message)
                 LoginViewModel.Effect.SignInSuccess -> {

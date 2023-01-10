@@ -41,7 +41,7 @@ kotlin {
 
                 implementation(Dependencies.JetBrains.Kotlin.dateTime)
 
-                implementation(Dependencies.Napier.logger)
+                api(Dependencies.Napier.logger)
 
                 api(Dependencies.precompose)
             }
