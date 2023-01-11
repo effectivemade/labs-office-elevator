@@ -12,7 +12,6 @@ import androidx.compose.ui.unit.LayoutDirection
 import band.effective.office.elevator.common.compose.navigation.Routes
 import band.effective.office.elevator.common.compose.screens.about.AboutScreen
 import band.effective.office.elevator.common.compose.screens.home.HomeScreen
-import band.effective.office.elevator.common.compose.screens.home.HomeScreenViewModel
 import band.effective.office.elevator.common.compose.screens.login.GoogleAuthorization
 import band.effective.office.elevator.common.compose.screens.login.LoginScreen
 import band.effective.office.elevator.common.compose.screens.login.LoginViewModel
@@ -53,8 +52,7 @@ internal fun App() {
                                         popUpTo = PopUpTo.First(true)
                                     ),
                                 )
-                            },
-                            HomeScreenViewModel()
+                            }
                         )
                         Routes.Login -> LoginScreen(onSignInSuccess = {
                             navigator.navigate(

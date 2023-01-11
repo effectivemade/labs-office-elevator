@@ -2,7 +2,6 @@ package band.effective.office.elevator.common.compose.screens.home
 
 import band.effective.office.elevator.common.compose.network.ktorClient
 import band.effective.office.elevator.common.compose.screens.login.GoogleAuthorization
-import io.github.aakira.napier.Napier
 import io.ktor.client.request.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -12,7 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class HomeScreenViewModel {
+object HomeScreenViewModel {
 
     sealed class Event {
         object SignOut : Event()
@@ -25,22 +24,24 @@ class HomeScreenViewModel {
     private val mutableButtonStateFlow = MutableStateFlow(false)
     val buttonState = mutableButtonStateFlow.asStateFlow()
 
-    private val scope = CoroutineScope(Dispatchers.Default)
+    private val scope = CoroutineScope(Dispatchers.Main)
 
-    fun sendEvent(event: Event) {
+    fun sendEvent(event: Event) = scope.launch {
         when (event) {
             Event.CallElevator -> handleElevatorRequest()
             Event.SignOut -> GoogleAuthorization.signOut()
         }
     }
 
-    private fun handleElevatorRequest() = scope.launch {
+    private suspend fun handleElevatorRequest() {
         mutableMessageStateFlow.update { "Attempt to call elevator" }
         mutableButtonStateFlow.update { true }
-        //delay(1000)
+        delay(1000)
         GoogleAuthorization.performWithFreshToken(
             action = { token ->
-                doNetworkElevatorCall(token)
+                scope.launch {
+                    doNetworkElevatorCall(token)
+                }
             },
             failure = { message ->
                 mutableMessageStateFlow.update { message }
@@ -49,7 +50,7 @@ class HomeScreenViewModel {
         )
     }
 
-    private fun doNetworkElevatorCall(token: String) = scope.launch {
+    private suspend fun doNetworkElevatorCall(token: String) {
         val response = ktorClient.get("elevate") {
             parameter("key", token)
         }

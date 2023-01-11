@@ -10,23 +10,21 @@ import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExitToApp
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.common.compose.components.ElevatorButton
-import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun HomeScreen(
-    onSignOut: () -> Unit,
-    viewModel: HomeScreenViewModel = HomeScreenViewModel()
+    onSignOut: () -> Unit
 ) {
-    val message by viewModel.messageState.collectAsState()
-    val buttonIsActive by viewModel.buttonState.collectAsState()
+    val message by HomeScreenViewModel.messageState.collectAsState()
+    val buttonIsActive by HomeScreenViewModel.buttonState.collectAsState()
 
     Box(
         modifier = Modifier.fillMaxSize().padding(16.dp)
@@ -37,11 +35,11 @@ internal fun HomeScreen(
             isActive = buttonIsActive,
             isEnabled = !buttonIsActive
         ) {
-            viewModel.sendEvent(HomeScreenViewModel.Event.CallElevator)
+            HomeScreenViewModel.sendEvent(HomeScreenViewModel.Event.CallElevator)
         }
         IconButton(
             onClick = {
-                viewModel.sendEvent(HomeScreenViewModel.Event.SignOut)
+                HomeScreenViewModel.sendEvent(HomeScreenViewModel.Event.SignOut)
                 onSignOut()
             }, modifier = Modifier.align(Alignment.TopEnd)
         ) {
