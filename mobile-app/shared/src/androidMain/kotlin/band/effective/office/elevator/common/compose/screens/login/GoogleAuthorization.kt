@@ -3,7 +3,7 @@ package band.effective.office.elevator.common.compose.screens.login
 import android.content.Intent
 import android.os.Bundle
 import band.effective.office.elevator.common.compose.Android
-import band.effective.office.elevator.common.compose.helpers.Context
+import band.effective.office.elevator.common.compose.expects.showToast
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -12,6 +12,10 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.tasks.Task
 import io.github.aakira.napier.Napier
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 
 actual object GoogleAuthorization {
@@ -26,7 +30,7 @@ actual object GoogleAuthorization {
         .requestEmail()
         .build()
 
-    private val apiClient = GoogleApiClient.Builder(Context)
+    private val apiClient = GoogleApiClient.Builder(Android.applicationContext)
         .addConnectionCallbacks(object : GoogleApiClient.ConnectionCallbacks {
             override fun onConnected(p0: Bundle?) {
                 Napier.i(tag = "GoogleApiClient", message = "onConnected")
@@ -52,7 +56,8 @@ actual object GoogleAuthorization {
 
         // Check for existing Google Sign In account, if the user is already signed in
         // the GoogleSignInAccount will be non-null.
-        val account = GoogleSignIn.getLastSignedInAccount(Android.context.applicationContext)
+        val account =
+            GoogleSignIn.getLastSignedInAccount(Android.applicationContext.applicationContext)
         if (account != null) {
             printAccountInfo(account)
             token = account.idToken
@@ -69,7 +74,7 @@ actual object GoogleAuthorization {
     }
 
     actual fun signOut() {
-        val client = GoogleSignIn.getClient(Android.context.applicationContext, gso)
+        val client = GoogleSignIn.getClient(Android.applicationContext.applicationContext, gso)
         client.signOut()
     }
 
@@ -84,10 +89,12 @@ actual object GoogleAuthorization {
     }
 
     private fun startAuthorizationIntent() {
-        with(Android.activity) {
-            val client = GoogleSignIn.getClient(this.applicationContext, gso)
-            val signInIntent: Intent = client.signInIntent
-            startActivityForResult(signInIntent, RC_SIGN_IN)
+        val client = GoogleSignIn.getClient(Android.applicationContext, gso)
+        val signInIntent: Intent = client.signInIntent
+
+        CoroutineScope(Dispatchers.Main).launch {
+            Android.activity.first()?.startActivityForResult(signInIntent, RC_SIGN_IN)
+                ?: showToast("Something went wrong. Please try again")
         }
     }
 
@@ -125,7 +132,7 @@ actual object GoogleAuthorization {
         action: (token: String) -> Unit,
         failure: (message: String) -> Unit
     ) {
-        val client = GoogleSignIn.getClient(Context, gso)
+        val client = GoogleSignIn.getClient(Android.applicationContext, gso)
         val task = client.silentSignIn()
         if (task.isSuccessful) {
             val signInAccount = task.result

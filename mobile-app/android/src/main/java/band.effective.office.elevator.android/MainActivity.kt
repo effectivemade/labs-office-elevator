@@ -12,8 +12,6 @@ class MainActivity : PreComposeActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Android.context = this
-        Android.activity = this
         setContent { RootView() }
     }
 

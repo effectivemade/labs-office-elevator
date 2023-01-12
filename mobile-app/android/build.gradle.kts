@@ -24,12 +24,26 @@ android {
         compose = true
     }
 
+    buildTypes {
+        getByName("debug") {
+            signingConfig = signingConfigs.getByName("debug")
+            isDebuggable = true
+        }
+    }
     lintOptions {
         isCheckReleaseBuilds = false
     }
 
     packagingOptions {
         exclude("META-INF/*")
+    }
+    signingConfigs {
+        getByName("debug") {
+//            keyAlias = "debug"
+            keyPassword = "android"
+            storeFile = file("${rootDir}/keystore/debug.keystore")
+            storePassword = "android"
+        }
     }
 }
 

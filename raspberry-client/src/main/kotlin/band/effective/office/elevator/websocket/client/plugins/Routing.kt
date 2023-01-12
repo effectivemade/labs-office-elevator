@@ -15,6 +15,7 @@ fun Application.configureRouting() {
     routing {
         get("/") {
             call.respond("Raspberry Client API")
+            ElevatorController.call()
         }
 
         post("/office-elevator") {

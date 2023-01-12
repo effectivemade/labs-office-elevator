@@ -6,7 +6,12 @@ import io.ktor.client.plugins.*
 
 val ktorClient = HttpClient(CIO) {
     defaultRequest {
-        url("0.0.0.0")
-        port = 50
+        url("http://4062-188-162-86-244.eu.ngrok.io")
+        port = 4040
+    }
+    install(HttpTimeout){
+        this.requestTimeoutMillis = 100000000000000
+        this.connectTimeoutMillis = 100000000000000
+        this.socketTimeoutMillis = 100000000000000
     }
 }

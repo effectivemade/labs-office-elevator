@@ -6,7 +6,6 @@ allprojects {
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions {
             jvmTarget = JavaVersion.VERSION_11.toString()
-            // allWarningsAsErrors = true
             freeCompilerArgs = listOf(
                 "-opt-in=kotlin.RequiresOptIn",
             )

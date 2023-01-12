@@ -1,7 +1,6 @@
 plugins {
     kotlin("multiplatform")
     kotlin("native.cocoapods")
-    //id("com.android.library")
     id("android-setup")
     id("org.jetbrains.compose") version Dependencies.JetBrains.Compose.VERSION
 }

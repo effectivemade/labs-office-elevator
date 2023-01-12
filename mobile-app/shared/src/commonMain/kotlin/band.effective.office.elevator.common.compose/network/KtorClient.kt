@@ -18,4 +18,9 @@ val ktorClient: HttpClient = HttpClient() {
             }
         }
     }
+    install(HttpTimeout){
+        this.requestTimeoutMillis = 100000000000000
+        this.connectTimeoutMillis = 100000000000000
+        this.socketTimeoutMillis = 100000000000000
+    }
 }
