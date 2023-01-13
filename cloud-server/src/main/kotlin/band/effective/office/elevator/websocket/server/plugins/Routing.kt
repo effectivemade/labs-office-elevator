@@ -21,7 +21,6 @@ fun Application.configureRouting() {
         get("/elevate") {
             val key = call.request.queryParameters["key"]
             if (TokenVerifier.isCorrectToken(key)) {
-                // FIXME: return interconnection with RPI Server, as soon as it's fixed
                 val request = ktorClient.post {
                     url {
                         path("office-elevator")
