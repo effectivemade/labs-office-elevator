@@ -10,6 +10,8 @@ I deeply love Kotlin and KMM. So my challenge is to make the entire project on K
 
 For debug/dev purpose, I’m using RPI with led indicator to test and develop the system without connection to real elevator controller.
 
+<a href="https://youtu.be/L9RUq4YG8sM"><img src="images/demo_thumbnail.png" /><a/>
+
 If you’re not familiar with KMM, please understand that Compose Multiplatform and Kotlin Native is in active development, so you can have some random issues trying to build the project. In case of any issues, feel free to contact me via telegram: @StanislavRadchenko.
 
 ### Architecture diagram
