@@ -26,13 +26,7 @@ tasks.named<JavaExec>("run") {
 }
 
 dependencies {
-    implementation("com.pi4j:pi4j-core:1.2")
-    implementation("com.github.mhashim6:Pi4K:0.1")
-
     implementation("io.ktor:ktor-client-core-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
-    //implementation("io.ktor:ktor-client-cio:$ktor_version")
-    //implementation("io.ktor:ktor-client-logging:$ktor_version")
-    //implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("io.github.microutils:kotlin-logging:3.0.4")
 }
