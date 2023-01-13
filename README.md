@@ -42,9 +42,11 @@ The below is a guide to build all parts of the app one by one.
 
 **Build Android app**
 
-> $ cd mobile-app
+```bash
+$ cd mobile-app
 $ ./gradlew :android:assembleDebug
->
+```
+
 
 The build process can take about 5 minutes. The output APK will be placed to `mobile-app/android/build/outputs/apk/debug` folder. You can install and run it on the device using adb.
 
@@ -53,9 +55,12 @@ I’m using Nothing Phone for development. Minimal supported API is 21 (Android 
 Also, you can use Android Studio or Intellij IDEA to build the project using its wizards. I’m using Intellij IDEA CE to development.
 
 **Build iOS app**
-> $ cd mobile-app/iosApp
-> $ pod install
-> $ open iosApp.xcworkspace
+
+```bash
+$ cd mobile-app/iosApp
+$ pod install
+$ open iosApp.xcworkspace
+```
 
 Next you will need to build the app using XCode wizard. I’m not iOS developer, so iOS signing process is the most hard for me. The build process is working find on my machine. But I’m not sure how it will work for others, and it wasn’t tested enough atm. If you have any issues with iOS build, please report it to github issues.
 
@@ -63,9 +68,10 @@ Next you will need to build the app using XCode wizard. I’m not iOS developer,
 
 Server is based on ktor. Netty is used as a server engine.
 
-> $ cd mobile-app/cloud-server
+```bash
+$ cd mobile-app/cloud-server
 $ ./gradlew build
->
+```
 
 The server jar will be places to `cloud-server/build/libs/cloud-server-all.jar`
 
@@ -75,9 +81,10 @@ RPI part is currently implemented with Ktor (JVM). Right now, I’m exploring th
 
 In order to build rpi part use
 
-> $ cd rpi-server
+```bash
+$ cd rpi-server
 $ ./gradlew build
->
+```
 
 ### Major Dependencies
 
