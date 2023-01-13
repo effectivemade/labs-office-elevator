@@ -1,4 +1,4 @@
-package band.effective.office.elevator.websocket.client.utils
+package band.effective.office.elevator.utils
 
 import io.ktor.http.*
 import io.ktor.util.date.*
@@ -14,6 +14,4 @@ object DateUtils {
     }
 }
 
-fun String.toGMTDate(): GMTDate {
-    return this.fromHttpToGmtDate()
-}
+fun String.toGMTDate() = fromHttpToGmtDate()
