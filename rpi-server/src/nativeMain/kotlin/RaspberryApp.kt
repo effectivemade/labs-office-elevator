@@ -1,6 +1,6 @@
 import band.effective.office.elevator.plugins.configureRouting
-import io.ktor.server.cio.CIO
-import io.ktor.server.engine.embeddedServer
+import io.ktor.server.cio.*
+import io.ktor.server.engine.*
 
 fun main() {
     println("Started!!!")
