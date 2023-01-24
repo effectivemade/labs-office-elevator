@@ -3,7 +3,6 @@ import io.ktor.server.cio.*
 import io.ktor.server.engine.*
 
 fun main() {
-    println("Started!!!")
     embeddedServer(CIO, port = 50, host = "0.0.0.0") {
         configureRouting()
     }.start(wait = true)

@@ -148,7 +148,7 @@ actual object GoogleAuthorization {
                         ?: failure("Something went wrong. Please try again")
                 } catch (apiException: ApiException) {
                     Napier.e(message = "ApiException", tag = TAG, throwable = apiException)
-                    apiException.message?.let { failure(it) }
+                    apiException.message?.let { failure("Something went wrong. Please try again") }
                 }
             }
         }

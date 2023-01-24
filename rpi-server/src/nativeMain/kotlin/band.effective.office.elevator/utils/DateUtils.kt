@@ -12,6 +12,14 @@ object DateUtils {
             (abs(milliseconds) / 1000) < 60
         } else false
     }
+
+    fun now(): String {
+        return GMTDate().toHttpDate()
+    }
 }
 
 fun String.toGMTDate() = fromHttpToGmtDate()
+
+fun GMTDate.toVerifiableDate(): String {
+    return "${this.dayOfMonth}.${this.month}.${this.year} ${this.hours}:${this.minutes}"
+}

@@ -1,9 +1,6 @@
 package band.effective.office.elevator.plugins
 
-import band.effective.office.elevator.utils.DateUtils
-import band.effective.office.elevator.utils.ElevatorController
-import band.effective.office.elevator.utils.HashUtil
-import band.effective.office.elevator.utils.toGMTDate
+import band.effective.office.elevator.utils.*
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
@@ -15,7 +12,6 @@ fun Application.configureRouting() {
     routing {
         get("/") {
             call.respond("Raspberry Client API")
-            ElevatorController.call()
         }
 
 
@@ -24,23 +20,30 @@ fun Application.configureRouting() {
             val token = call.request.queryParameters["token"]
 
             when {
-                call.request.queryParameters["command"] != "go" -> call.respond(HttpStatusCode.NotFound)
+                call.request.queryParameters["command"] != "go" -> call.respond(HttpStatusCode.NotFound).apply {
+                    println("""[NotFound]: queryParameters["command"] != "go" """)
+                }
+
                 !DateUtils.isCorrectTime(time) -> {
                     call.respond(
                         HttpStatusCode.Forbidden, "Incorrect request time",
-                    )
+                    ).apply {
+                        println("[Forbidden]: Incorrect request time")
+                    }
                 }
 
-                token != HashUtil.sha256(GMTDate().toHttpDate()) -> {
+                token != HashUtil.sha256(GMTDate().toVerifiableDate()) -> {
                     call.respond(
                         HttpStatusCode.Forbidden,
                         "Verification token is incorrect"
-                    )
+                    ).apply {
+                        println("[Forbidden]: Verification token is incorrect")
+                    }
                 }
 
                 else -> {
-                    call.respond(HttpStatusCode.OK, "Elevator called")
                     ElevatorController.call()
+                    call.respond(HttpStatusCode.OK, "Elevator called")
                 }
             }
         }

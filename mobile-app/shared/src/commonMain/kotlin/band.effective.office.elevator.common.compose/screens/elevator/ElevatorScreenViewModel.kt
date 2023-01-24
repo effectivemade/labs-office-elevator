@@ -1,4 +1,4 @@
-package band.effective.office.elevator.common.compose.screens.home
+package band.effective.office.elevator.common.compose.screens.elevator
 
 import band.effective.office.elevator.common.compose.network.ktorClient
 import band.effective.office.elevator.common.compose.screens.login.GoogleAuthorization
@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-object HomeScreenViewModel {
+object ElevatorScreenViewModel {
 
     sealed class Event {
         object SignOut : Event()
@@ -36,7 +36,6 @@ object HomeScreenViewModel {
     private suspend fun handleElevatorRequest() {
         mutableMessageStateFlow.update { "Attempt to call elevator" }
         mutableButtonStateFlow.update { true }
-        delay(1000)
         GoogleAuthorization.performWithFreshToken(
             action = { token ->
                 scope.launch {
@@ -51,21 +50,31 @@ object HomeScreenViewModel {
     }
 
     private suspend fun doNetworkElevatorCall(token: String) {
-        val response = ktorClient.get("elevate") {
-            parameter("key", token)
-        }
-        when (response.status.value) {
-            in 200..299 -> {
-                mutableMessageStateFlow.update { "Success" }
-                delay(2000)
-                mutableMessageStateFlow.update { "" }
-                mutableButtonStateFlow.update { false }
+        try {
+            val response = ktorClient.get("elevate") {
+                parameter("key", token)
             }
-            else -> {
-                mutableMessageStateFlow.update { response.status.description }
-                mutableButtonStateFlow.update { false }
+            when (response.status.value) {
+                in 200..299 -> {
+                    mutableMessageStateFlow.update { "Success" }
+                    delay(3000)
+                    mutableMessageStateFlow.update { "" }
+                    mutableButtonStateFlow.update { false }
+                }
+                403 -> {
+                    mutableMessageStateFlow.update { "Could not verify you Google account. Please try again or re-authenticate in app" }
+                    mutableButtonStateFlow.update { false }
+                }
+                else -> {
+                    mutableMessageStateFlow.update { "Oops, something went wrong. Please try again" }
+                    mutableButtonStateFlow.update { false }
+                }
             }
+        } catch (cause: Throwable) {
+            mutableMessageStateFlow.update {
+                cause.message?.substringBefore("[") ?: "Something went wrong"
+            }
+            mutableButtonStateFlow.update { false }
         }
-
     }
 }
