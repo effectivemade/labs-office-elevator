@@ -2,8 +2,6 @@ package band.effective.office.elevator.common.compose
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Application
-import band.effective.office.elevator.common.compose.screens.home.HomeScreen
 import moe.tlaster.precompose.PreComposeApplication
 import org.jetbrains.skiko.SystemTheme
 import org.jetbrains.skiko.currentSystemTheme
