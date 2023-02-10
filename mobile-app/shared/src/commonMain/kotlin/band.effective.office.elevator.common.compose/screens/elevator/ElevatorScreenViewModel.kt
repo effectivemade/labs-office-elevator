@@ -3,14 +3,10 @@ package band.effective.office.elevator.common.compose.screens.elevator
 import band.effective.office.elevator.common.compose.network.ktorClient
 import band.effective.office.elevator.common.compose.screens.login.GoogleAuthorization
 import io.ktor.client.request.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 
+@OptIn(FlowPreview::class)
 object ElevatorScreenViewModel {
 
     sealed class Event {
@@ -26,6 +22,26 @@ object ElevatorScreenViewModel {
 
     private val scope = CoroutineScope(Dispatchers.Main)
 
+    init {
+        scope.launch {
+            mutableButtonStateFlow.collectLatest { state ->
+                if (state){
+                    GoogleAuthorization.performWithFreshToken(
+                        action = { token ->
+                            scope.launch {
+                                doNetworkElevatorCall(token)
+                            }
+                        },
+                        failure = { message ->
+                            mutableMessageStateFlow.update { message }
+                            mutableButtonStateFlow.update { false }
+                        }
+                    )
+                }
+            }
+        }
+    }
+
     fun sendEvent(event: Event) = scope.launch {
         when (event) {
             Event.CallElevator -> handleElevatorRequest()
@@ -36,17 +52,6 @@ object ElevatorScreenViewModel {
     private suspend fun handleElevatorRequest() {
         mutableMessageStateFlow.update { "Attempt to call elevator" }
         mutableButtonStateFlow.update { true }
-        GoogleAuthorization.performWithFreshToken(
-            action = { token ->
-                scope.launch {
-                    doNetworkElevatorCall(token)
-                }
-            },
-            failure = { message ->
-                mutableMessageStateFlow.update { message }
-                mutableButtonStateFlow.update { false }
-            }
-        )
     }
 
     private suspend fun doNetworkElevatorCall(token: String) {
@@ -57,7 +62,7 @@ object ElevatorScreenViewModel {
             when (response.status.value) {
                 in 200..299 -> {
                     mutableMessageStateFlow.update { "Success" }
-                    delay(3000)
+                    delay(1500)
                     mutableMessageStateFlow.update { "" }
                     mutableButtonStateFlow.update { false }
                 }

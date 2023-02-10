@@ -1,18 +1,15 @@
-package band.effective.office.elevator.websocket.server.plugins
+package band.effective.office.elevator.cloud.server.plugins
 
-import band.effective.office.elevator.websocket.server.client.ktorClient
-import band.effective.office.elevator.websocket.server.utils.HashUtil
-import band.effective.office.elevator.websocket.server.utils.TokenVerifier
-import band.effective.office.elevator.websocket.server.utils.toVerifiableDate
+import band.effective.office.elevator.cloud.server.client.ktorClient
+import band.effective.office.elevator.cloud.server.utils.HashUtil
+import band.effective.office.elevator.cloud.server.utils.TokenVerifier
+import band.effective.office.elevator.cloud.server.utils.toVerifiableDate
 import io.ktor.client.request.*
-import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.util.*
 import io.ktor.util.date.*
-import io.ktor.util.reflect.*
 
 fun Application.configureRouting() {
     routing {

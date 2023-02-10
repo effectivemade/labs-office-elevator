@@ -1,4 +1,4 @@
-package band.effective.office.elevator.websocket.server.utils
+package band.effective.office.elevator.cloud.server.utils
 
 import java.security.MessageDigest
 

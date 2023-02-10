@@ -14,7 +14,6 @@ fun Application.configureRouting() {
             call.respond("Raspberry Client API")
         }
 
-
         post("/office-elevator") {
             val time = call.request.queryParameters["time"]?.toGMTDate()
             val token = call.request.queryParameters["token"]

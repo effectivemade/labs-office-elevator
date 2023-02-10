@@ -1,11 +1,9 @@
-package band.effective.office.elevator.websocket.server.utils
+package band.effective.office.elevator.cloud.server.utils
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
-import com.google.api.client.util.DateTime
-import java.time.LocalDateTime
 
 object TokenVerifier {
 
