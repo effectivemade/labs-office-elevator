@@ -10,7 +10,6 @@ version = "0.0.1"
 kotlin {
     android()
     ios()
-    //iosSimulatorArm64()
 
     cocoapods {
         summary = "Multiplatform Compose Shared Module"
@@ -54,13 +53,10 @@ kotlin {
                 implementation(Dependencies.AndroidX.Activity.activityCompose)
             }
         }
-        //val uikitX64Main by getting
-        //val uikitArm64Main by getting
-        //val iosSimulatorArm64Main by getting
+        //val iosX64Main by getting
         val iosMain by getting {
-            //dependsOn(commonMain)
-            //uikitX64Main.dependsOn(this)
-            //uikitArm64Main.dependsOn(this)
+            dependsOn(commonMain)
+            // iosX64Main.dependsOn(this)
             //iosSimulatorArm64Main.dependsOn(this)
             dependencies {
                 implementation(Dependencies.Ktor.Client.ios)
