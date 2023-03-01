@@ -1,5 +1,6 @@
 package band.effective.office.elevator.common.compose.screens.login
 
+import band.effective.office.elevator.BuildKonfig
 import io.github.aakira.napier.Napier
 
 actual object GoogleAuthorization {
@@ -58,5 +59,12 @@ actual object GoogleAuthorization {
 
     fun setLastSignedAccount(callback: () -> Unit) {
         this.getLastSignedAccountCallback = callback
+    }
+
+    fun getClientId(): String {
+        return BuildKonfig.iosClient
+    }
+    fun getServerClientId(): String {
+        return BuildKonfig.webClient
     }
 }

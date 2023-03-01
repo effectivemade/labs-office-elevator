@@ -1,8 +1,13 @@
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+import java.util.*
+import java.io.*
+
 plugins {
     kotlin("multiplatform")
     kotlin("native.cocoapods")
     id("android-setup")
     id("org.jetbrains.compose") version Dependencies.JetBrains.Compose.VERSION
+    id("com.codingfeline.buildkonfig")
 }
 
 version = "0.0.1"
@@ -71,4 +76,28 @@ kotlin {
             freeCompilerArgs += "-Xdisable-phases=VerifyBitcode"
         }
     }
+}
+
+buildkonfig {
+    packageName = "band.effective.office.elevator"
+
+    defaultConfigs {
+        buildConfigField(STRING, "webClient", getLocalProperty("webClient"))
+        buildConfigField(STRING, "iosClient", getLocalProperty("iosClient"))
+        buildConfigField(STRING, "androidClient", getLocalProperty("androidClient"))
+    }
+}
+
+fun Project.getLocalProperty(key: String): String? {
+    val file = "${rootProject.rootDir.path.substringBefore("mobile-app")}keystore/elevator.properties"
+    val properties = Properties()
+    val localProperties = File(file)
+    if (localProperties.isFile) {
+        InputStreamReader(FileInputStream(localProperties), Charsets.UTF_8)
+            .use { reader ->
+            properties.load(reader)
+        }
+    } else error("File from not found")
+
+    return properties.getProperty(key).toString()
 }

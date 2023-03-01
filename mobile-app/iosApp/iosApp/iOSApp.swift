@@ -10,6 +10,13 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         let rootViewController = RootViewControllersKt.RootViewController()
         //GIDSignIn.sharedInstance.presentingViewController = rootViewController
         
+        let iosClient = GoogleAuthorization.shared.getClientId()
+        let serverIdClient = GoogleAuthorization.shared.getServerClientId()
+        print("iosClient: " + iosClient + "\n" + "serverClient: " + serverIdClient)
+        let config = GIDConfiguration.init(clientID: iosClient, serverClientID: serverIdClient)
+        
+        GIDSignIn.sharedInstance.configuration = config
+        
         GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
             if error != nil || user == nil {
                 GoogleAuthorization.shared.token = nil
@@ -45,10 +52,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
         
         let controller = AvoidDispose(rootViewController)
-        
-        //GIDSignIn.sharedInstance.clientID = "627570596451-pmtas2pcm6hpkeddpd19uasql1upknun.apps.googleusercontent.com"
-            //GIDSignIn.sharedInstance.dele = self
-        
 
         controller.view.backgroundColor = .white
         let window = UIWindow(frame: UIScreen.main.bounds)

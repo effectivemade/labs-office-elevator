@@ -5,7 +5,7 @@ object ElevatorController {
         println("-----------------[${DateUtils.now()}]-----------------")
         println("- Requesting GPIO_17...")
         try {
-            executeCommand("sudo /home/effective/Desktop/gpio.kexe")  // TODO(radchenko): add command here
+            executeCommand("sudo /home/ubuntu/elevator/gpio.kexe")
             println("-- Successfully")
         } catch (e: Exception) {
             e.printStackTrace()

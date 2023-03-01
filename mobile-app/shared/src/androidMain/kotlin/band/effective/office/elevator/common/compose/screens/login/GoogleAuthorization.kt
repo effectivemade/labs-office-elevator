@@ -2,6 +2,7 @@ package band.effective.office.elevator.common.compose.screens.login
 
 import android.content.Intent
 import android.os.Bundle
+import band.effective.office.elevator.BuildKonfig
 import band.effective.office.elevator.common.compose.Android
 import band.effective.office.elevator.common.compose.expects.showToast
 import com.google.android.gms.auth.api.Auth
@@ -26,7 +27,7 @@ actual object GoogleAuthorization {
     // Configure sign-in to request the user's ID, email address, and basic
     // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
     private val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        .requestIdToken("627570596451-iaj3hh94lbqognrkgk7vfmtj10c9v69b.apps.googleusercontent.com")
+        .requestIdToken(BuildKonfig.webClient)
         .requestEmail()
         .build()
 

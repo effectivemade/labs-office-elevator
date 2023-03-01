@@ -10,7 +10,7 @@ val ktorClient = HttpClient(CIO) {
         host = "92.124.138.130"
 //        host = "0.0.0.0"
         port = 2023
-//        port = 50
+//        port = 80
     }
     install(Logging) {
         logger = Logger.DEFAULT
