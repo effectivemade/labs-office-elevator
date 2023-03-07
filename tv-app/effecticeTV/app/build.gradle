@@ -64,4 +64,8 @@ dependencies {
     //for tv
     implementation "androidx.tv:tv-foundation:1.0.0-alpha04"
     implementation "androidx.tv:tv-material:1.0.0-alpha04"
+
+    //Retrofit and Gson
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
 }
