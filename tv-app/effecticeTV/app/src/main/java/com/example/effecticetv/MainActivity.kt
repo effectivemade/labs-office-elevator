@@ -19,26 +19,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.tv.foundation.lazy.list.TvLazyRow
 import com.example.effecticetv.ui.theme.EffecticeTVTheme
+import com.example.effecticetv.view.ListView
+import com.example.effecticetv.view.ListViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val listViewModel = ListViewModel()
         setContent {
             EffecticeTVTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Column {
-                        Greeting("Android")
-                        Button(
-                            modifier = Modifier
-                                .align(Alignment.CenterHorizontally)
-                                .size(100.dp),
-                            onClick = { /*TODO*/ }) {
-                            Text(text = "1234")
-                        }
-                    }
+                    ListView(viewModel = listViewModel)
                 }
             }
         }
