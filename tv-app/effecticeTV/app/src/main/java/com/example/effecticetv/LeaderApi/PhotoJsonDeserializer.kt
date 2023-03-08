@@ -2,45 +2,35 @@ package LeaderApi
 
 import LeaderApi.JsonElements.Photo
 import LeaderApi.JsonElements.Thumb
-import com.google.gson.JsonDeserializationContext
-import com.google.gson.JsonDeserializer
-import com.google.gson.JsonElement
+import com.google.gson.*
 import java.lang.reflect.Type
 
 class PhotoJsonDeserializer: JsonDeserializer<Photo?> {
-    companion object{
-        var i = 0
-    }
-    fun getPhoto( json: JsonElement): Photo=Photo(//360 520
-        full = json.asJsonObject.get("full").asString,
-        thumb = Thumb(
-            if (json.asJsonObject.toString().contains("\"180\""))
-                if (json.asJsonObject.toString().contains("thumb")) json.asJsonObject.get("thumb").asJsonObject.get("180").asString
-                else json.asJsonObject.asJsonObject.get("180").asString
-            else "",
-            if (json.asJsonObject.toString().contains("\"360\""))
-                if (json.asJsonObject.toString().contains("thumb")) json.asJsonObject.get("thumb").asJsonObject.get("360").asString
-                else json.asJsonObject.asJsonObject.get("360").asString
-            else "",
-            if (json.asJsonObject.toString().contains("\"520\""))
-                if (json.asJsonObject.toString().contains("thumb")) json.asJsonObject.get("thumb").asJsonObject.get("520").asString
-                else json.asJsonObject.asJsonObject.get("520").asString
-            else ""
-        )
+    fun getPhoto( json: JsonObject): Photo=Photo(
+        full = json.get("full").asString,
+        thumb =
+        if (json.has("thumb"))
+            Thumb(
+                json.get("thumb").asJsonObject.get("180")?.asString ?: "",
+                json.get("thumb").asJsonObject.get("360")?.asString ?: "",
+                json.get("thumb").asJsonObject.get("520")?.asString ?: "")
+        else
+            Thumb(
+                json.asJsonObject.get("180")?.asString ?: "",
+                json.asJsonObject.get("360")?.asString ?: "",
+                json.get("520")?.asString ?: ""
+            )
     )
 
     override fun deserialize(
         json: JsonElement?,
         typeOfT: Type?,
         context: JsonDeserializationContext?
-    ): Photo? {
-        ++i
-         return if (json!!.isJsonNull) null
+    ): Photo? =
+        if (json!!.isJsonNull) null
         else if(json!!.isJsonArray)
             if (json!!.asJsonArray.size() == 0) null
-            else getPhoto(json.asJsonArray.get(0))
-        else if (!json.toString().contains("\"_")) getPhoto(json) else null/*getPhoto(json.asJsonObject.get("_679945"))*/
-    }
-
-
+            else getPhoto(json.asJsonArray.get(0).asJsonObject)
+        else if (!json.toString().contains("\"_")) getPhoto(json.asJsonObject)
+        else getPhoto(json.asJsonObject.entrySet().toList()[0].value.asJsonObject)
 }
