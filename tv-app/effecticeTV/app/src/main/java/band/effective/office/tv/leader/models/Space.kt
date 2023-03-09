@@ -3,16 +3,16 @@ package LeaderApi.JsonElements
 data class Space(
     val id: Int,
     val phone: String,
-    val phoneExtension: String?, // всегда null
+    val phoneExtension: String?, // allways null
     val addressId: Int,
     val active: Boolean,
-    val kworkingState: String?, // всегда null
+    val kworkingState: String?, // allways null
     val agenda: List<String>,
     val square:Double,
     val email: String,
     val name: String,
     val description: String,
-    val rating: String?, // всегда null
+    val rating: String?, // allways null
     val type:String,
     val minimalPeriod: Int,
     val photos: List<Photo>,

@@ -12,7 +12,7 @@ fun ListView(viewModel: ListViewModel){
     if (response!=null){
         LazyColumn(){
             items(7){i ->
-                val item = response!!.data._items[i]
+                val item = response!!.data.items[i]
                 Text(item.full_name)
                 Text(item.format)
             }

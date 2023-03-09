@@ -8,7 +8,7 @@ data class Event(
     val stat: Stat,
     val themes: List<Theme>,
     val type: Type,
-    val info: String?, // всегда null
+    val info: String?, // allways null
     val status: String?,
     val moderation: String,
     val full_info: String,
@@ -17,13 +17,13 @@ data class Event(
     val date_end: String,
     val format: String,
     val space: Space,
-    val plase: String?, // всегда null
+    val plase: String?, // allways null
     val schedules: List<Schedul>,
     val networking: Networking?,
     val participation_format: String,
     val team_size_min: Int,
     val team_size_max: Int,
-    val team_type: String?, // всегда null
+    val team_type: String?, // allways null
     val finished: Boolean,
     val afterQuizId: String?,
     val needFeedback: Boolean,

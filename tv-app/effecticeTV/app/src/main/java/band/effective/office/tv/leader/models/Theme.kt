@@ -13,7 +13,7 @@ data class Theme(
     val old_type: String?,
     val gid: Int,
     val code: String?,
-    val parentId: Int?, // всегда null
+    val parentId: Int?, // allways null
     val childCount: Int,
     val moderatedBy: Int?,
     val moderatedAt: String?,

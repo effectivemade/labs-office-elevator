@@ -1,0 +1,10 @@
+package LeaderApi.JsonElements
+
+import com.google.gson.annotations.SerializedName
+
+data class Data(
+    @SerializedName("_items")
+    val items: List<Event>,
+    @SerializedName("_meta")
+    val meta: Meta
+)
