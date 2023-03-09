@@ -1,16 +1,13 @@
 package band.effective.office.elevator.common.compose.screens.login
 
 import android.content.Intent
-import android.os.Bundle
 import band.effective.office.elevator.BuildKonfig
 import band.effective.office.elevator.common.compose.Android
 import band.effective.office.elevator.common.compose.expects.showToast
-import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.tasks.Task
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
@@ -30,20 +27,6 @@ actual object GoogleAuthorization {
         .requestIdToken(BuildKonfig.webClient)
         .requestEmail()
         .build()
-
-    private val apiClient = GoogleApiClient.Builder(Android.applicationContext)
-        .addConnectionCallbacks(object : GoogleApiClient.ConnectionCallbacks {
-            override fun onConnected(p0: Bundle?) {
-                Napier.i(tag = "GoogleApiClient", message = "onConnected")
-            }
-
-            override fun onConnectionSuspended(p0: Int) {
-                Napier.i(tag = "GoogleApiClient", message = "onConnectionSuspended")
-            }
-        })
-        .addApi(Auth.GOOGLE_SIGN_IN_API)
-        .build()
-
 
     private lateinit var onSignInFailure: (e: Exception) -> Unit
     private lateinit var onSignInSuccess: () -> Unit

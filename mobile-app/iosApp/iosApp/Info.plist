@@ -51,7 +51,7 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.627570596451-pmtas2pcm6hpkeddpd19uasql1upknun</string>
+				<string>$(GOOGLE_SIGN_IN_SCHEME)</string>
 			</array>
 		</dict>
 	</array>
