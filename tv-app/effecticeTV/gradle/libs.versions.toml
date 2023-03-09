@@ -1,0 +1,7 @@
+[versions]
+retrofit-ver = "2.9.0"
+converter-gson-ver = "2.5.0"
+
+[libraries]
+retrofit = {module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit-ver"}
+gson = {module = "com.squareup.retrofit2:converter-gson", version.ref = "converter-gson-ver"}

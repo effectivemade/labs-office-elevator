@@ -1,4 +1,4 @@
-package LeaderApi.JsonElements
+package band.effective.office.tv.leader.models
 
 data class Photo(
     val full: String,

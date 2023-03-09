@@ -1,4 +1,4 @@
-package LeaderApi
+package band.effective.office.tv.leader
 
 import retrofit2.Call
 import retrofit2.http.GET

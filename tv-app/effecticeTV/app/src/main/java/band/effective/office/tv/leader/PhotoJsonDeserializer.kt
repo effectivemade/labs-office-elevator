@@ -1,12 +1,12 @@
-package LeaderApi
+package band.effective.office.tv.leader
 
-import LeaderApi.JsonElements.Photo
-import LeaderApi.JsonElements.Thumb
+import band.effective.office.tv.leader.models.Photo
+import band.effective.office.tv.leader.models.Thumb
 import com.google.gson.*
 import java.lang.reflect.Type
 
 class PhotoJsonDeserializer: JsonDeserializer<Photo?> {
-    fun getPhoto( json: JsonObject): Photo=Photo(
+    fun getPhoto( json: JsonObject): Photo = Photo(
         full = json.get("full").asString,
         thumb =
         if (json.has("thumb"))

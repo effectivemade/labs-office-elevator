@@ -1,4 +1,6 @@
-package LeaderApi.JsonElements
+package band.effective.office.tv.leader.models
+
+import band.effective.office.tv.leader.models.Hall
 
 data class Schedul(
     val hallId: Int?,

@@ -1,6 +1,6 @@
-package LeaderApi
+package band.effective.office.tv.leader
 
-import LeaderApi.JsonElements.Data
+import band.effective.office.tv.leader.models.Data
 
 data class SearchResponse(
     val data: Data

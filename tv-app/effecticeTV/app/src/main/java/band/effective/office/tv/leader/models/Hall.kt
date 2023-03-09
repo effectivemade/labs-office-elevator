@@ -1,4 +1,4 @@
-package LeaderApi.JsonElements
+package band.effective.office.tv.leader.models
 
 data class Hall(
     val id: Int,
@@ -8,7 +8,7 @@ data class Hall(
     val square:Int,
     val tags:List<String>,
     val preparePeriod: Int,
-    val photos:Photo?,
+    val photos: Photo?,
     val space_id: Int,
     val active: Boolean,
     val deleted_at: String?,

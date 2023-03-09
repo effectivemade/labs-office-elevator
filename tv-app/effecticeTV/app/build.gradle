@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.effecticetv'
+    namespace 'band.effective.office.tv'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.effecticetv"
+        applicationId "band.effective.office.tv"
         minSdk 24
         targetSdk 33
         versionCode 1
@@ -66,6 +66,6 @@ dependencies {
     implementation "androidx.tv:tv-material:1.0.0-alpha04"
 
     //Retrofit and Gson
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
+    implementation libs.retrofit
+    implementation libs.gson
 }

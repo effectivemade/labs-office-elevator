@@ -1,4 +1,4 @@
-package com.example.effecticetv.view
+package band.effective.office.tv.view
 
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable

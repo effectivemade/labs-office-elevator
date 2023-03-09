@@ -1,4 +1,7 @@
-package LeaderApi.JsonElements
+package band.effective.office.tv.leader.models
+
+import band.effective.office.tv.leader.models.Photo
+import band.effective.office.tv.leader.models.PhotoUrl
 
 data class Theme(
     val id: Int,

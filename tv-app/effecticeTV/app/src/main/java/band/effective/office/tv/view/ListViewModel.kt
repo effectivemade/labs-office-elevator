@@ -1,9 +1,9 @@
-package com.example.effecticetv.view
+package band.effective.office.tv.view
 
-import LeaderApi.JsonElements.Photo
-import LeaderApi.LeaderApi
-import LeaderApi.PhotoJsonDeserializer
-import LeaderApi.SearchResponse
+import band.effective.office.tv.leader.models.Photo
+import band.effective.office.tv.leader.LeaderApi
+import band.effective.office.tv.leader.PhotoJsonDeserializer
+import band.effective.office.tv.leader.SearchResponse
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.GsonBuilder
