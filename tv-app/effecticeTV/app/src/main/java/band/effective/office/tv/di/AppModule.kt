@@ -3,6 +3,8 @@ package band.effective.office.tv.di
 import band.effective.office.tv.BuildConfig
 import band.effective.office.tv.network.LeaderIdRetrofitClient
 import band.effective.office.tv.network.SynologyRetrofitClient
+import band.effective.office.tv.network.leader.LeaderApi
+import band.effective.office.tv.view.ListViewModel
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
@@ -43,7 +45,7 @@ class AppModule {
                 ).asLenient()
             )
             .client(client)
-            .baseUrl(BuildConfig.apiLeaderUrl) //change base url
+            .baseUrl(BuildConfig.apiLeaderUrl)
             .build()
 
     @Singleton
@@ -60,9 +62,13 @@ class AppModule {
             .baseUrl(BuildConfig.apiLeaderUrl)
             .build()
 
-// do how this
-//    @Singleton
-//    @Provides
-//    fun provideApiLeader(@SynologyRetrofitClient retrofit: Retrofit) =
-//        retrofit.create()
+    @Singleton
+    @Provides
+    fun provideLeaderApi(@LeaderIdRetrofitClient retrofit: Retrofit): LeaderApi =
+        retrofit.create(LeaderApi::class.java)
+
+    @Singleton
+    @Provides
+    fun moshiListViewModel(leaderApi: LeaderApi): ListViewModel =
+        ListViewModel(leaderApi)
 }

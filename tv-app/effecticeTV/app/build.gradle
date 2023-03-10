@@ -86,6 +86,7 @@ dependencies {
 
     //hilt di
     implementation libs.hilt
+    implementation libs.hilt.nav
     kapt libs.hitl.compiller
 }
 kapt {

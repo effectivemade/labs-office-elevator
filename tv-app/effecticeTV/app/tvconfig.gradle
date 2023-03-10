@@ -1,1 +1,1 @@
-buildConfigField "String", "apiLeaderUrl", "\"url\"" // change url
+buildConfigField "String", "apiLeaderUrl", "\"https://leader-id.ru/\""
