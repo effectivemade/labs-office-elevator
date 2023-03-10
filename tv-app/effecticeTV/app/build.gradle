@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.effecticetv'
+    namespace 'band.effective.office.tv'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.effecticetv"
+        applicationId "band.effective.office.tv"
         minSdk 24
         targetSdk 33
         versionCode 1
@@ -68,6 +68,10 @@ dependencies {
     kapt("com.google.dagger:hilt-android-compiler:$dagger_version")
 
     //for tv
-    implementation "androidx.tv:tv-foundation:1.0.0-alpha04"
-    implementation "androidx.tv:tv-material:1.0.0-alpha04"
+    implementation libs.tv
+    implementation libs.tvMaterial
+
+    //Retrofit and Gson
+    implementation libs.retrofit
+    implementation libs.gson
 }

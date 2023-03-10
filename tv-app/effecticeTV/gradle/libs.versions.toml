@@ -1,0 +1,10 @@
+[versions]
+retrofit-ver = "2.9.0"
+converter-gson-ver = "2.5.0"
+tv-ver="1.0.0-alpha04"
+
+[libraries]
+retrofit = {module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit-ver"}
+gson = {module = "com.squareup.retrofit2:converter-gson", version.ref = "converter-gson-ver"}
+tv = {module = "androidx.tv:tv-foundation", version.ref = "tv-ver"}
+tvMaterial = {module = "androidx.tv:tv-material", version.ref = "tv-ver"}
