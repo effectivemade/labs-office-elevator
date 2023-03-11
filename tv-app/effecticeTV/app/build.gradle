@@ -88,6 +88,9 @@ dependencies {
     implementation libs.hilt
     implementation libs.hilt.nav
     kapt libs.hitl.compiller
+
+    //coil
+    implementation libs.coil
 }
 kapt {
     correctErrorTypes true
