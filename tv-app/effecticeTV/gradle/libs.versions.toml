@@ -6,6 +6,7 @@ hilt-var = "2.44"
 kotlin = "1.8.0"
 okhttp3-var = "4.10.0"
 retrofit-moshi = "2.9.0"
+coil-ver = "2.2.2"
 
 [libraries]
 retrofit = {module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit-ver"}
@@ -19,6 +20,7 @@ okhttp3 = {module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp3-var"}
 okhttp3-loggong = {module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp3-var"}
 retrofit-moshi = {module = "com.squareup.retrofit2:converter-moshi", version.ref = "retrofit-moshi"}
 moshi-gen = {module = "com.squareup.moshi:moshi-kotlin-codegen", version.ref = "moshi-ver"}
+coil = {module = "io.coil-kt:coil-compose", version.ref = "coil-ver"}
 
 
 [plugins]
