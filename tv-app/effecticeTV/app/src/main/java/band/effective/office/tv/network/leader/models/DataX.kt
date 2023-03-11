@@ -1,10 +1,12 @@
 package band.effective.office.tv.network.leader.models
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class DataX(
-    @Json(name = "items")
+    @Json(name = "_items")
     val items: List<Item>,
-    @Json(name = "meta")
-    val meta: MetaX
+    @Json(name = "_meta")
+    val meta: MetaX?
 )

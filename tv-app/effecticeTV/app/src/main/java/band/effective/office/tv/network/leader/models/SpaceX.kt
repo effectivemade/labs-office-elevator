@@ -1,5 +1,8 @@
 package band.effective.office.tv.network.leader.models
 
+import com.squareup.moshi.JsonClass
+
+@JsonClass(generateAdapter = true)
 data class SpaceX(
     val active: Boolean,
     val address: AddressX,
@@ -9,13 +12,13 @@ data class SpaceX(
     val description: String,
     val email: String,
     val id: Int,
-    val kworkingState: Any,
+    val kworkingState: Any?,
     val minimalPeriod: Int,
     val name: String,
     val phone: String,
-    val phoneExtension: Any,
+    val phoneExtension: Any?,
     val photos: List<PhotoXX>,
-    val rating: Any,
+    val rating: Any?,
     val restrictEventOwnerOfflineConfirm: Boolean,
     val scheduleOnRequest: Boolean,
     val socialNetworks: List<SocialNetworkX>,

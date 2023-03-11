@@ -1,9 +1,11 @@
 package band.effective.office.tv.network.leader.models
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class Item(
-    val afterQuizId: Any,
+    val afterQuizId: Any?,
     val city: String,
     @Json(name = "city_id")
     val cityId: Int,
@@ -24,17 +26,17 @@ data class Item(
     val hashTags: List<Any>,
     val id: Int,
     val indexedAt: Int,
-    val info: Any,
+    val info: Any?,
     val isFavorite: Boolean,
-    val live: Any,
+    val live: Any?,
     @Json(name = "live_public")
     val livePublic: Boolean,
     val moderation: String,
     val needFeedback: Boolean,
     val needStartNotification: Boolean,
     @Json(name = "network_parent_id")
-    val networkParentId: Any,
-    val networking: Any,
+    val networkParentId: Any?,
+    val networking: Any?,
     @Json(name = "participation_format")
     val participationFormat: String,
     val photo: String,
@@ -44,18 +46,18 @@ data class Item(
     val photo360: String,
     @Json(name = "photo_520")
     val photo520: String,
-    val place: Any,
+    val place: Any?,
     val schedules: List<Any>,
     val space: SpaceX,
     val stat: StatXX,
     val status: String,
     @Json(name = "team_size_max")
-    val teamSizeMax: Any,
+    val teamSizeMax: Any?,
     @Json(name = "team_size_min")
-    val teamSizeMin: Any,
+    val teamSizeMin: Any?,
     @Json(name = "team_type")
-    val teamType: Any,
+    val teamType: Any?,
     val themes: List<ThemeX>,
-    val timezone: TimezoneX,
+    val timezone: TimezoneX?,
     val type: TypeX
 )
