@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    alias libs.plugins.kotlin.kapt
+    alias libs.plugins.hilt.plug
 }
 
 android {
@@ -44,6 +46,12 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+    flavorDimensions 'effectivetv'
+    productFlavors {
+        effectivetv { effectivetv ->
+            apply from: 'tvconfig.gradle', to: effectivetv
+        }
+    }
 }
 
 dependencies {
@@ -65,7 +73,21 @@ dependencies {
     implementation libs.tv
     implementation libs.tvMaterial
 
-    //Retrofit and Gson
+    //Retrofit
     implementation libs.retrofit
-    implementation libs.gson
+    implementation libs.okhttp3
+    implementation libs.okhttp3.loggong
+    implementation libs.retrofit.moshi
+
+    // moshi
+    implementation libs.moshi
+    implementation libs.moshi.adapter
+    kapt libs.moshi.gen
+
+    //hilt di
+    implementation libs.hilt
+    kapt libs.hitl.compiller
+}
+kapt {
+    correctErrorTypes true
 }
