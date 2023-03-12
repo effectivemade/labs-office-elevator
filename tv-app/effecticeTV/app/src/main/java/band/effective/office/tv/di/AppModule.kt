@@ -3,6 +3,7 @@ package band.effective.office.tv.di
 import band.effective.office.tv.BuildConfig
 import band.effective.office.tv.network.LeaderIdRetrofitClient
 import band.effective.office.tv.network.SynologyRetrofitClient
+import band.effective.office.tv.network.synology.SynologyApi
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
@@ -60,9 +61,8 @@ class AppModule {
             .baseUrl(BuildConfig.apiLeaderUrl)
             .build()
 
-// do how this
-//    @Singleton
-//    @Provides
-//    fun provideApiLeader(@SynologyRetrofitClient retrofit: Retrofit) =
-//        retrofit.create()
+    @Singleton
+    @Provides
+    fun provideApiSynology(@SynologyRetrofitClient retrofit: Retrofit) =
+        retrofit.create(SynologyApi::class.java)
 }

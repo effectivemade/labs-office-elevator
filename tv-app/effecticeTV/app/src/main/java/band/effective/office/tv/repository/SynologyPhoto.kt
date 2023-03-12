@@ -1,6 +1,6 @@
-package com.example.effecticetv.repository
+package band.effective.office.tv.repository
 
-import com.example.effecticetv.network.synology.model.Photo
+import band.effective.office.tv.model.Photo
 
 interface SynologyPhoto {
     fun getPhotos(): List<Photo>
