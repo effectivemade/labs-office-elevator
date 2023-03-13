@@ -18,7 +18,7 @@ class ListViewModel @Inject constructor (val api: LeaderApi): ViewModel() {
     val apiResponse = mutableApiResponse.asStateFlow()
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            mutableApiResponse.update { api.searchEvents(10, 3942).execute().body() }
+            mutableApiResponse.update { api.searchEvents(10,893,3942).execute().body() }
         }
     }
 }
