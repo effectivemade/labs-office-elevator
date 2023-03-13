@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting(name = "Android")
+                    TemporaryScreen()
                 }
             }
         }
@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String) {
+fun TemporaryScreen() {
     TvLazyRow (
         contentPadding = PaddingValues(16.dp),
         userScrollEnabled = true
