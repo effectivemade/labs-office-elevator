@@ -59,7 +59,7 @@ class AppModule {
         Retrofit.Builder()
             .addConverterFactory(moshiConverterFactory)
             .client(client)
-            .baseUrl(BuildConfig.apiLeaderUrl)
+            .baseUrl(BuildConfig.apiSynologyUrl)
             .build()
 
     @Singleton
