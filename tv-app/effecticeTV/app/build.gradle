@@ -1,14 +1,18 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    alias libs.plugins.kotlin.kapt
+    alias libs.plugins.hilt.plug
 }
+def localProperties = new Properties()
+localProperties.load(new FileInputStream(rootProject.file("local.properties")))
 
 android {
-    namespace 'com.example.effecticetv'
+    namespace 'band.effective.office.tv'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.effecticetv"
+        applicationId "band.effective.office.tv"
         minSdk 24
         targetSdk 33
         versionCode 1
@@ -18,6 +22,8 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+
+        buildConfigField ("String", "apiLeaderUrl", localProperties['apiLeaderUrl'])
     }
 
     buildTypes {
@@ -26,6 +32,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -62,6 +69,28 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
 
     //for tv
-    implementation "androidx.tv:tv-foundation:1.0.0-alpha04"
-    implementation "androidx.tv:tv-material:1.0.0-alpha04"
+    implementation libs.tv
+    implementation libs.tvMaterial
+
+    //Retrofit
+    implementation libs.retrofit
+    implementation libs.okhttp3
+    implementation libs.okhttp3.logging
+    implementation libs.retrofit.moshi
+
+    // moshi
+    implementation libs.moshi
+    implementation libs.moshi.adapter
+    kapt libs.moshi.gen
+
+    //hilt di
+    implementation libs.hilt
+    implementation libs.hilt.nav
+    kapt libs.hitl.compiller
+
+    //coil
+    implementation libs.coil
+}
+kapt {
+    correctErrorTypes true
 }
