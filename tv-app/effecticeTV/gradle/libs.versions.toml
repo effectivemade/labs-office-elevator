@@ -6,6 +6,8 @@ hilt-var = "2.44"
 kotlin = "1.8.0"
 okhttp3-var = "4.10.0"
 retrofit-moshi = "2.9.0"
+coil-ver = "2.2.2"
+hilt-nav-var = "1.0.0"
 
 [libraries]
 retrofit = {module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit-ver"}

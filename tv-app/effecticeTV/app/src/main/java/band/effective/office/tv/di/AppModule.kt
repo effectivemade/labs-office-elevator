@@ -3,6 +3,7 @@ package band.effective.office.tv.di
 import band.effective.office.tv.BuildConfig
 import band.effective.office.tv.network.LeaderIdRetrofitClient
 import band.effective.office.tv.network.SynologyRetrofitClient
+import band.effective.office.tv.network.synology.SynologyApi
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
@@ -22,6 +23,7 @@ class AppModule {
     fun provideMoshi(): Moshi = Moshi.Builder()
         .build()
 
+    @Provides
     fun loggerInterceptor(): HttpLoggingInterceptor =
         HttpLoggingInterceptor().apply {
             level =
