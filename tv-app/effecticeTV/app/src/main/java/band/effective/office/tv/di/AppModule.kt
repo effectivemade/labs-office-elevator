@@ -22,14 +22,16 @@ class AppModule {
     fun provideMoshi(): Moshi = Moshi.Builder()
         .build()
 
+    fun loggerInterceptor(): HttpLoggingInterceptor =
+        HttpLoggingInterceptor().apply {
+            level =
+                HttpLoggingInterceptor.Level.BODY
+        }
+
     @Provides
-    fun provideOkHttpClient() =
+    fun provideOkHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor) =
         OkHttpClient.Builder()
-            .addInterceptor(
-                HttpLoggingInterceptor().apply {
-                    level =
-                        HttpLoggingInterceptor.Level.BODY
-                })
+            .addInterceptor(httpLoggingInterceptor)
             .build()
 
     @Provides
