@@ -22,6 +22,7 @@ class AppModule {
     fun provideMoshi(): Moshi = Moshi.Builder()
         .build()
 
+    @Provides
     fun loggerInterceptor(): HttpLoggingInterceptor =
         HttpLoggingInterceptor().apply {
             level =
