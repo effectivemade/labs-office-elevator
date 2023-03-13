@@ -32,37 +32,29 @@ class AppModule {
                 })
             .build()
 
+    @Provides
+    fun provideMoshiConverterFactory(moshi: Moshi): MoshiConverterFactory =
+        MoshiConverterFactory.create(
+            moshi
+        ).asLenient()
+
     @Singleton
     @Provides
     @LeaderIdRetrofitClient
-    fun provideLeaderIdRetrofit(moshi: Moshi, client: OkHttpClient): Retrofit =
+    fun provideLeaderIdRetrofit(moshiConverterFactory: MoshiConverterFactory, client: OkHttpClient): Retrofit =
         Retrofit.Builder()
-            .addConverterFactory(
-                MoshiConverterFactory.create(
-                    moshi
-                ).asLenient()
-            )
+            .addConverterFactory(moshiConverterFactory)
             .client(client)
-            .baseUrl(BuildConfig.apiLeaderUrl) //change base url
+            .baseUrl(BuildConfig.apiLeaderUrl)
             .build()
 
     @Singleton
     @Provides
     @SynologyRetrofitClient
-    fun provideSynologyRetrofit(moshi: Moshi, client: OkHttpClient): Retrofit =
+    fun provideSynologyRetrofit(moshiConverterFactory: MoshiConverterFactory, client: OkHttpClient): Retrofit =
         Retrofit.Builder()
-            .addConverterFactory(
-                MoshiConverterFactory.create(
-                    moshi
-                ).asLenient()
-            )
+            .addConverterFactory(moshiConverterFactory)
             .client(client)
             .baseUrl(BuildConfig.apiLeaderUrl)
             .build()
-
-// do how this
-//    @Singleton
-//    @Provides
-//    fun provideApiLeader(@SynologyRetrofitClient retrofit: Retrofit) =
-//        retrofit.create()
 }
