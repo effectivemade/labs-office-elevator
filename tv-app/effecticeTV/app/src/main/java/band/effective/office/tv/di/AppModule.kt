@@ -3,6 +3,8 @@ package band.effective.office.tv.di
 import band.effective.office.tv.BuildConfig
 import band.effective.office.tv.network.LeaderIdRetrofitClient
 import band.effective.office.tv.network.SynologyRetrofitClient
+import band.effective.office.tv.network.leader.LeaderApi
+import band.effective.office.tv.view.ListViewModel
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
@@ -23,30 +25,25 @@ class AppModule {
         .build()
 
     @Provides
-    fun loggerInterceptor(): HttpLoggingInterceptor =
-        HttpLoggingInterceptor().apply {
-            level =
-                HttpLoggingInterceptor.Level.BODY
-        }
-
-    @Provides
-    fun provideOkHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor) =
+    fun provideOkHttpClient() =
         OkHttpClient.Builder()
-            .addInterceptor(httpLoggingInterceptor)
+            .addInterceptor(
+                HttpLoggingInterceptor().apply {
+                    level =
+                        HttpLoggingInterceptor.Level.BODY
+                })
             .build()
-
-    @Provides
-    fun provideMoshiConverterFactory(moshi: Moshi): MoshiConverterFactory =
-        MoshiConverterFactory.create(
-            moshi
-        ).asLenient()
 
     @Singleton
     @Provides
     @LeaderIdRetrofitClient
-    fun provideLeaderIdRetrofit(moshiConverterFactory: MoshiConverterFactory, client: OkHttpClient): Retrofit =
+    fun provideLeaderIdRetrofit(moshi: Moshi, client: OkHttpClient): Retrofit =
         Retrofit.Builder()
-            .addConverterFactory(moshiConverterFactory)
+            .addConverterFactory(
+                MoshiConverterFactory.create(
+                    moshi
+                ).asLenient()
+            )
             .client(client)
             .baseUrl(BuildConfig.apiLeaderUrl)
             .build()
@@ -54,10 +51,24 @@ class AppModule {
     @Singleton
     @Provides
     @SynologyRetrofitClient
-    fun provideSynologyRetrofit(moshiConverterFactory: MoshiConverterFactory, client: OkHttpClient): Retrofit =
+    fun provideSynologyRetrofit(moshi: Moshi, client: OkHttpClient): Retrofit =
         Retrofit.Builder()
-            .addConverterFactory(moshiConverterFactory)
+            .addConverterFactory(
+                MoshiConverterFactory.create(
+                    moshi
+                ).asLenient()
+            )
             .client(client)
             .baseUrl(BuildConfig.apiLeaderUrl)
             .build()
+
+    @Singleton
+    @Provides
+    fun provideLeaderApi(@LeaderIdRetrofitClient retrofit: Retrofit): LeaderApi =
+        retrofit.create(LeaderApi::class.java)
+
+    @Singleton
+    @Provides
+    fun moshiListViewModel(leaderApi: LeaderApi): ListViewModel =
+        ListViewModel(leaderApi)
 }
