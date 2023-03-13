@@ -3,7 +3,6 @@ package band.effective.office.tv.di
 import band.effective.office.tv.BuildConfig
 import band.effective.office.tv.network.LeaderIdRetrofitClient
 import band.effective.office.tv.network.SynologyRetrofitClient
-import band.effective.office.tv.network.synology.SynologyApi
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
@@ -23,40 +22,40 @@ class AppModule {
     fun provideMoshi(): Moshi = Moshi.Builder()
         .build()
 
+    fun loggerInterceptor(): HttpLoggingInterceptor =
+        HttpLoggingInterceptor().apply {
+            level =
+                HttpLoggingInterceptor.Level.BODY
+        }
+
     @Provides
-    fun provideOkHttpClient() =
+    fun provideOkHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor) =
         OkHttpClient.Builder()
-            .addInterceptor(
-                HttpLoggingInterceptor().apply {
-                    level =
-                        HttpLoggingInterceptor.Level.BODY
-                })
+            .addInterceptor(httpLoggingInterceptor)
             .build()
+
+    @Provides
+    fun provideMoshiConverterFactory(moshi: Moshi): MoshiConverterFactory =
+        MoshiConverterFactory.create(
+            moshi
+        ).asLenient()
 
     @Singleton
     @Provides
     @LeaderIdRetrofitClient
-    fun provideLeaderIdRetrofit(moshi: Moshi, client: OkHttpClient): Retrofit =
+    fun provideLeaderIdRetrofit(moshiConverterFactory: MoshiConverterFactory, client: OkHttpClient): Retrofit =
         Retrofit.Builder()
-            .addConverterFactory(
-                MoshiConverterFactory.create(
-                    moshi
-                ).asLenient()
-            )
+            .addConverterFactory(moshiConverterFactory)
             .client(client)
-            .baseUrl(BuildConfig.apiLeaderUrl) //change base url
+            .baseUrl(BuildConfig.apiLeaderUrl)
             .build()
 
     @Singleton
     @Provides
     @SynologyRetrofitClient
-    fun provideSynologyRetrofit(moshi: Moshi, client: OkHttpClient): Retrofit =
+    fun provideSynologyRetrofit(moshiConverterFactory: MoshiConverterFactory, client: OkHttpClient): Retrofit =
         Retrofit.Builder()
-            .addConverterFactory(
-                MoshiConverterFactory.create(
-                    moshi
-                ).asLenient()
-            )
+            .addConverterFactory(moshiConverterFactory)
             .client(client)
             .baseUrl(BuildConfig.apiLeaderUrl)
             .build()
