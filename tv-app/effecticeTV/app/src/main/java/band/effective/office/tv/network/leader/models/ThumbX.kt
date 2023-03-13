@@ -5,8 +5,8 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class ThumbX(
-    //@Json(name = "360")
-    val `360`: String,
-    //@Json(name = "520")
-    val `520`: String
+    @Json(name = "360")
+    val size360: String,
+    @Json(name = "520")
+    val size520: String
 )

@@ -3,7 +3,7 @@ package band.effective.office.tv.view
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.network.leader.LeaderApi
-import band.effective.office.tv.network.leader.models.Response
+import band.effective.office.tv.network.leader.models.SearchEventsResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ListViewModel @Inject constructor (val api: LeaderApi): ViewModel() {
-    private var mutableApiResponse = MutableStateFlow<Response?>((null))
+    private var mutableApiResponse = MutableStateFlow<SearchEventsResponse?>((null))
     val apiResponse = mutableApiResponse.asStateFlow()
     init {
         viewModelScope.launch(Dispatchers.IO) {
