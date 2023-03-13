@@ -76,7 +76,7 @@ dependencies {
     //Retrofit
     implementation libs.retrofit
     implementation libs.okhttp3
-    implementation libs.okhttp3.loggong
+    implementation libs.okhttp3.logging
     implementation libs.retrofit.moshi
 
     // moshi
@@ -86,6 +86,7 @@ dependencies {
 
     //hilt di
     implementation libs.hilt
+    implementation libs.hilt.nav
     kapt libs.hitl.compiller
 
     //coil
