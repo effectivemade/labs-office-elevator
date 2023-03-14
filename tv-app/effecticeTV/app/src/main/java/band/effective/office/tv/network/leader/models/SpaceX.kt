@@ -1,11 +1,13 @@
-package band.effective.office.tv.network.leader.models.EventInfo
+package band.effective.office.tv.network.leader.models
 
+import band.effective.office.tv.network.leader.models.SearchEvent.PhotoXX
+import band.effective.office.tv.network.leader.models.SearchEvent.SocialNetworkX
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class Space(
+data class SpaceX(
     val active: Boolean,
-    val address: Address,
+    val address: AddressX,
     val addressId: Int,
     val agenda: List<String>,
     val createdAt: String,
@@ -17,13 +19,13 @@ data class Space(
     val name: String,
     val phone: String,
     val phoneExtension: Any?,
-    val photos: List<PhotoX>,
+    val photos: List<PhotoXX>,
     val rating: Any?,
     val restrictEventOwnerOfflineConfirm: Boolean,
     val scheduleOnRequest: Boolean,
-    val socialNetworks: List<SocialNetwork>,
+    val socialNetworks: List<SocialNetworkX>,
     val square: String,
-    val stat: Stat,
+    val stat: StatX,
     val tags: List<String>,
     val type: String,
     val updatedAt: String

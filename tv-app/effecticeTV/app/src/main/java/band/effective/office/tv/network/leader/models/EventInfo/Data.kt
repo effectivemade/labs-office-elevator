@@ -1,11 +1,12 @@
 package band.effective.office.tv.network.leader.models.EventInfo
 
+import band.effective.office.tv.network.leader.models.*
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class Data(
     val access: String,
-    val address: Address,
+    val address: AddressX,
     val afterQuizId: Any?,
     val certificate: Boolean,
     val certificate_text: Any?,
@@ -21,7 +22,7 @@ data class Data(
     val format: String,
     val full_info: String,
     val full_name: String,
-    val halls: List<Hall>,
+    val halls: List<HallX>,
     val hash_tags: List<Any?>,
     val hosts: List<Any?>,
     val id: Int,
@@ -49,14 +50,14 @@ data class Data(
     val registration_date_start: String,
     val schedules: List<Any?>,
     val similar: List<Similar>,
-    val space: Space,
+    val space: SpaceX,
     val speakers: List<Speaker>,
     val stat: StatX,
     val status: String,
     val team_size_max: Any?,
     val team_size_min: Any?,
     val team_type: Any?,
-    val themes: List<Theme>,
-    val timezone: Timezone,
-    val type: Type
+    val themes: List<ThemeX>,
+    val timezone: TimezoneX,
+    val type: TypeX
 )
