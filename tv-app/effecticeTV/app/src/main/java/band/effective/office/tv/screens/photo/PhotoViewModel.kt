@@ -22,7 +22,7 @@ class PhotoViewModel @Inject constructor(
     }
     fun test() {
         viewModelScope.launch(Dispatchers.IO) {
-            when(val res = repository.getPhotoPath("%22%2FBAND%2FPhotos%2FAlbums%2FPhoto_March%22")) {
+            when(val res = repository.getPhotoPath("\"/BAND/Photos/Albums/Photo_March\"")) {
                 is Resource.Error -> Log.e("TAG", res.error)
                 is Resource.Data -> Log.d("OK", res.data.toString())
                 is Resource.Loading -> Log.d("LOAD", "load")

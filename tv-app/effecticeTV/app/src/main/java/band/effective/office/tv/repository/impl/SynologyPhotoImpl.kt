@@ -19,6 +19,7 @@ class SynologyPhotoImpl @Inject constructor(
 ) : SynologyPhoto, BaseRepository() {
     private var dirPath: String = ""
     private var isAuth: Boolean = false
+    private var sid: String = ""
     override suspend fun getPhotos(): Resource<List<Photo>> {
         TODO("Not yet implemented")
     }
@@ -31,10 +32,11 @@ class SynologyPhotoImpl @Inject constructor(
         var authResponse: Resource<Boolean>? = null
         if (!isAuth) authResponse = auth()
 
-        if (authResponse is Resource.Data) {
+        if (isAuth) {
             val res: Resource<SynologyListResponse> = safeApiCall {
                 synologyApi.getFiles(
-                    version = 3,
+                    sid = sid,
+                    version = 1,
                     method = "list",
                     folderPath = folderPath
                 )
@@ -65,6 +67,7 @@ class SynologyPhotoImpl @Inject constructor(
         return when (res) {
             is Resource.Data -> {
                 isAuth = true
+                sid = res.data.data?.sid?:""
                 Resource.Data(true)
             }
             is Resource.Error -> {
