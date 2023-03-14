@@ -1,9 +1,9 @@
-package band.effective.office.tv.network.leader.models
+package band.effective.office.tv.network.leader.models.EventInfo
 
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class TypeX(
+data class Type(
     val id: Int,
     val name: String
 )

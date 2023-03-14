@@ -1,4 +1,4 @@
-package band.effective.office.tv.network.leader.models
+package band.effective.office.tv.network.leader.models.SearchEvent
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
