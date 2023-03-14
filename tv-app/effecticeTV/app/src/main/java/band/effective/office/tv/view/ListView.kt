@@ -11,8 +11,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 
 @Composable
-fun ListView(){
-    val viewModel: ListViewModel = hiltViewModel()
+fun ListView(viewModel: ListViewModel = hiltViewModel()){
     val response by viewModel.apiResponse.collectAsState()
     if (response!=null){
         LazyColumn(){

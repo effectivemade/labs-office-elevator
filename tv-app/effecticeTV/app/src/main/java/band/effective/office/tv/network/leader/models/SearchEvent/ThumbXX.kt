@@ -1,10 +1,12 @@
-package band.effective.office.tv.network.leader.models
+package band.effective.office.tv.network.leader.models.SearchEvent
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class ThumbX(
+data class ThumbXX(
+    @Json(name = "180")
+    val size180: String,
     @Json(name = "360")
     val size360: String,
     @Json(name = "520")

@@ -1,5 +1,6 @@
 package band.effective.office.tv.network.leader.models
 
+import band.effective.office.tv.network.leader.models.SearchEvent.PhotoX
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
