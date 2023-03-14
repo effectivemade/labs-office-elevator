@@ -1,0 +1,1 @@
+buildConfigField "String", "apiLeaderUrl", "\"https://leader-id.ru/\""

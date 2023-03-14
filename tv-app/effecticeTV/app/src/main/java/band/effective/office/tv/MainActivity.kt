@@ -13,21 +13,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.tv.foundation.lazy.list.TvLazyRow
-import com.example.effecticetv.ui.theme.EffecticeTVTheme
 import band.effective.office.tv.view.ListView
 import band.effective.office.tv.view.ListViewModel
+import com.example.effecticetv.ui.theme.EffecticeTVTheme
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val listViewModel = ListViewModel()
         setContent {
             EffecticeTVTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    ListView(viewModel = listViewModel)
+                    ListView()
                 }
             }
         }
