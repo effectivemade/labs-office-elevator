@@ -15,7 +15,7 @@ interface SynologyApi {
         @Query("passwd") password: String
         ): Response<SynologyAuthResponse>
 
-    @GET("/webapi/auth.cgi?api=SYNO.API.Auth&session=FileStation")
+    @GET("/webapi/auth.cgi?api=SYNO.FileStation.List")
     suspend fun getFiles(
         @Query("version") version: Int,
         @Query("method") method: String,
