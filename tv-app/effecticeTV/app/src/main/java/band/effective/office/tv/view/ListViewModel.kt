@@ -20,7 +20,7 @@ class ListViewModel @Inject constructor (val api: LeaderApi): ViewModel() {
     init {
         viewModelScope.launch(Dispatchers.IO) {
             val tst = api.eventInfo(407500).execute().body()
-            Log.i("my test", tst!!.data.full_name);
+            Log.i("my test", tst!!.data.fullName);
             mutableApiResponse.update { api.searchEvents(10,893,3942).execute().body() }
         }
     }

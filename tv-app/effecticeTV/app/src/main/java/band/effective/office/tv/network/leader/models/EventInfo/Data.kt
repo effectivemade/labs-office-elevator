@@ -1,6 +1,7 @@
 package band.effective.office.tv.network.leader.models.EventInfo
 
 import band.effective.office.tv.network.leader.models.*
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
@@ -11,52 +12,70 @@ data class Data(
     val certificate: Boolean,
     val certificate_text: Any?,
     val city: String,
-    val city_id: Int,
+    @Json(name = "city_id")
+    val cityId: Int,
     val createdBy: Int,
-    val date_end: String,
-    val date_start: String,
+    @Json(name = "date_end")
+    val dateEnd: String,
+    @Json(name = "date_start")
+    val dateStart: String,
     val documents: List<Any?>,
     val ecpRequired: Boolean,
     val expectedParticipantCount: Any?,
     val finished: Boolean,
     val format: String,
-    val full_info: String,
-    val full_name: String,
+    @Json(name = "full_info")
+    val fullInfo: String,
+    @Json(name = "full_name")
+    val fullName: String,
     val halls: List<HallX>,
-    val hash_tags: List<Any?>,
+    @Json(name = "hash_tags")
+    val hashTags: List<Any?>,
     val hosts: List<Any?>,
     val id: Int,
     val info: Any?,
-    val is_competition: Boolean,
+    @Json(name = "is_competition")
+    val isCompetition: Boolean,
     val live: Any?,
-    val live_public: Boolean,
+    @Json(name = "live_public")
+    val livePublic: Boolean,
     val media: Any?,
     val moderation: String,
     val needFeedback: Boolean,
     val needStartNotification: Boolean,
     val networkProposals: List<Any?>,
-    val network_parent_id: Any?,
+    @Json(name = "network_parent_id")
+    val networkParentId: Any?,
     val networking: Any?,
     val organizers: List<Organizer>,
-    val participation_format: String,
+    @Json(name = "participation_format")
+    val participationFormat: String,
     val partners: List<Any?>,
     val photo: String,
-    val photo_180: String,
-    val photo_360: String,
-    val photo_520: String,
+    @Json(name = "photo_180")
+    val photo180: String,
+    @Json(name = "photo_360")
+    val photo360: String,
+    @Json(name = "photo_520")
+    val photo520: String,
     val place: Any?,
     val quizId: Any?,
-    val registration_date_end: String,
-    val registration_date_start: String,
+    @Json(name = "registration_date_end")
+    val registrationDateEnd: String,
+    @Json(name = "registration_date_start")
+    val registrationDateStart: String,
     val schedules: List<Any?>,
     val similar: List<Similar>,
     val space: SpaceX,
     val speakers: List<Speaker>,
     val stat: StatX,
     val status: String,
-    val team_size_max: Any?,
-    val team_size_min: Any?,
-    val team_type: Any?,
+    @Json(name = "team_size_max")
+    val teamSizeMax: Any?,
+    @Json(name = "team_size_min")
+    val teamSizeMin: Any?,
+    @Json(name = "team_type")
+    val teamType: Any?,
     val themes: List<ThemeX>,
     val timezone: TimezoneX,
     val type: TypeX
