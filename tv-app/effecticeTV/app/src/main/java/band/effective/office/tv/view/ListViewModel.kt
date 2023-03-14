@@ -1,6 +1,5 @@
 package band.effective.office.tv.view
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.network.leader.LeaderApi
@@ -15,12 +14,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ListViewModel @Inject constructor (val api: LeaderApi): ViewModel() {
-    private var mutableApiResponse = MutableStateFlow<SearchEventsResponse?>((null))
+    private var mutableApiResponse = MutableStateFlow<SearchEventsResponse?>(null)
     val apiResponse = mutableApiResponse.asStateFlow()
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            val tst = api.eventInfo(407500).execute().body()
-            Log.i("my test", tst!!.data.fullName);
             mutableApiResponse.update { api.searchEvents(10,893,3942).execute().body() }
         }
     }
