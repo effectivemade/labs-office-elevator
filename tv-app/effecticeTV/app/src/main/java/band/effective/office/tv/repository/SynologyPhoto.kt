@@ -8,7 +8,7 @@ interface SynologyPhoto {
 
    suspend fun changeDir(dir: String): Resource<Boolean>
 
-    suspend fun getFiles(): Resource<Boolean>
+    suspend fun getPhotoPath(folderPath: String): Resource<List<String>>
 
     suspend fun auth(): Resource<Boolean>
 }

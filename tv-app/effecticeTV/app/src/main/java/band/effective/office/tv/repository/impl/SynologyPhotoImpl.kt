@@ -7,14 +7,18 @@ import band.effective.office.tv.core.network.Resource
 import band.effective.office.tv.model.Photo
 import band.effective.office.tv.network.synology.SynologyApi
 import band.effective.office.tv.network.synology.response.SynologyAuthResponse
+import band.effective.office.tv.network.synology.response.SynologyListResponse
 import band.effective.office.tv.repository.SynologyPhoto
 import com.squareup.moshi.Moshi
+import okhttp3.Response
 import okhttp3.ResponseBody
 import javax.inject.Inject
 
 class SynologyPhotoImpl @Inject constructor(
     private val synologyApi: SynologyApi,
 ) : SynologyPhoto, BaseRepository() {
+    private var dirPath: String = ""
+    private var isAuth: Boolean = false
     override suspend fun getPhotos(): Resource<List<Photo>> {
         TODO("Not yet implemented")
     }
@@ -23,8 +27,30 @@ class SynologyPhotoImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getFiles(): Resource<Boolean> {
-        TODO("Not yet implemented")
+    override suspend fun getPhotoPath(folderPath: String): Resource<List<String>> {
+        var authResponse: Resource<Boolean>? = null
+        if (!isAuth) authResponse = auth()
+
+        if (authResponse is Resource.Data) {
+            val res: Resource<SynologyListResponse> = safeApiCall {
+                synologyApi.getFiles(
+                    version = 3,
+                    method = "list",
+                    folderPath = folderPath
+                )
+            }
+            return when (res) {
+                is Resource.Data -> Resource.Data(res.data.data.files.map { it.path })
+                is Resource.Error -> Resource.Error(res.error)
+                else -> Resource.Loading()
+            }
+        }
+
+        return if (authResponse is Resource.Error) {
+            val message = authResponse.error
+            Resource.Error(message)
+        } else Resource.Loading()
+
     }
 
     override suspend fun auth(): Resource<Boolean> {
@@ -34,13 +60,22 @@ class SynologyPhotoImpl @Inject constructor(
                 method = "login",
                 login = BuildConfig.synologyLogin,
                 password = BuildConfig.synologyPassword,
-                )
+            )
         }
-        return when(res) {
-            is Resource.Data -> Resource.Data(true)
-            is Resource.Error -> Resource.Error(res.error)
-            else -> Resource.Loading()
+        return when (res) {
+            is Resource.Data -> {
+                isAuth = true
+                Resource.Data(true)
+            }
+            is Resource.Error -> {
+                isAuth = false
+                Resource.Error(res.error)
+            }
+            else -> {
+                Resource.Loading()
+            }
         }
+
     }
 
     override fun convertErrorBody(errorBody: ResponseBody?): BaseError? {
