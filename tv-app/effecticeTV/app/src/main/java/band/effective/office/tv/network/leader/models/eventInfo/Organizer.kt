@@ -12,13 +12,13 @@ data class Organizer(
     val internationalPhone: Boolean,
     val name: String,
     val phone: String,
-    val photo: String,
+    val photo: String?,
     @Json(name = "photo_180")
-    val photo180: String,
+    val photo180: String?,
     @Json(name = "photo_360")
-    val photo360: String,
+    val photo360: String?,
     @Json(name = "photo_520")
-    val photo520: String,
+    val photo520: String?,
     val photos: Any?,
     val position: String,
     val telegram: Any?,

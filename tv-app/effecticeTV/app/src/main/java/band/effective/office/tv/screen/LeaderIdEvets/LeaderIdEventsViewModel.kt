@@ -1,10 +1,8 @@
-package band.effective.office.tv.view
+package band.effective.office.tv.screen.LeaderIdEvets
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import band.effective.office.tv.model.LeaderIdEventInfo
 import band.effective.office.tv.network.leader.LeaderApi
-import band.effective.office.tv.network.leader.models.searchEvent.SearchEventsResponse
 import band.effective.office.tv.repository.leaderIdRepository.impl.LeaderIdEventsInfoRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -15,12 +13,14 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ListViewModel @Inject constructor (val api: LeaderApi): ViewModel() {
-    private var mutableApiResponse = MutableStateFlow<List<LeaderIdEventInfo>>(listOf())
+class LeaderIdEventsViewModel @Inject constructor (val api: LeaderApi): ViewModel() {
+    private var mutableApiResponse = MutableStateFlow<LeaderIdEventsUiState>(LeaderIdEventsUiState.Loading())
     val apiResponse = mutableApiResponse.asStateFlow()
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            mutableApiResponse.update { LeaderIdEventsInfoRepositoryImpl(api).getEventsInfo() }
+            mutableApiResponse.update {
+                LeaderIdEventsUiState.Load(LeaderIdEventsInfoRepositoryImpl(api).getEventsInfo())
+            }
         }
     }
 }

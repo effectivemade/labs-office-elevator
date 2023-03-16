@@ -7,10 +7,10 @@ import com.squareup.moshi.JsonClass
 data class AddressX(
     val apartment: Any?,
     val building: Any?,
-    val city: String?,
+    val city: Any?,
     @Json(name = "city_id")
     val cityId: Int?,
-    val country: String?,
+    val country: Any?,
     @Json(name = "country_id")
     val countryId: Int?,
     @Json(name = "geo_point")
@@ -22,7 +22,7 @@ data class AddressX(
     val letter: Any?,
     val place: Any?,
     val postCode: Any?,
-    val region: String?,
+    val region: Any?,
     @Json(name = "region_id")
     val regionId: Int?,
     val street: String?,

@@ -13,11 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.tv.foundation.lazy.list.TvLazyRow
-import band.effective.office.tv.view.ListView
-import band.effective.office.tv.view.ListViewModel
+import band.effective.office.tv.screen.LeaderIdEvets.LeaderIdEventsScreen
 import com.example.effecticetv.ui.theme.EffecticeTVTheme
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -29,7 +27,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    ListView()
+                    LeaderIdEventsScreen()
                 }
             }
         }

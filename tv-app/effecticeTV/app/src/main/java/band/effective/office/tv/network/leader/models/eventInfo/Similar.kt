@@ -13,5 +13,5 @@ data class Similar(
     @Json(name = "full_name")
     val full_name: String,
     val id: Int,
-    val photo: String
+    val photo: String?
 )

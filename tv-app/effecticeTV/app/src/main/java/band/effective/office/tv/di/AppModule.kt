@@ -5,7 +5,7 @@ import band.effective.office.tv.network.LeaderIdRetrofitClient
 import band.effective.office.tv.network.SynologyRetrofitClient
 import band.effective.office.tv.network.core.EitherAdapterFactory
 import band.effective.office.tv.network.leader.LeaderApi
-import band.effective.office.tv.view.ListViewModel
+import band.effective.office.tv.screen.LeaderIdEvets.LeaderIdEventsViewModel
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
@@ -63,6 +63,6 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun moshiListViewModel(leaderApi: LeaderApi): ListViewModel =
-        ListViewModel(leaderApi)
+    fun provideLeaderIdEventsViewModel(leaderApi: LeaderApi): LeaderIdEventsViewModel =
+        LeaderIdEventsViewModel(leaderApi)
 }
