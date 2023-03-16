@@ -2,8 +2,7 @@ package band.effective.office.tv.screen.LeaderIdEvets
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import band.effective.office.tv.network.leader.LeaderApi
-import band.effective.office.tv.repository.leaderIdRepository.impl.LeaderIdEventsInfoRepositoryImpl
+import band.effective.office.tv.repository.leaderIdRepository.LeaderIdEventsInfoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,13 +12,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LeaderIdEventsViewModel @Inject constructor (val api: LeaderApi): ViewModel() {
+class LeaderIdEventsViewModel @Inject constructor (val leaderIdEventsInfoRepository: LeaderIdEventsInfoRepository): ViewModel() {
     private var mutableApiResponse = MutableStateFlow<LeaderIdEventsUiState>(LeaderIdEventsUiState.Loading())
     val apiResponse = mutableApiResponse.asStateFlow()
     init {
         viewModelScope.launch(Dispatchers.IO) {
             mutableApiResponse.update {
-                LeaderIdEventsUiState.Load(LeaderIdEventsInfoRepositoryImpl(api).getEventsInfo())
+                LeaderIdEventsUiState.Load(leaderIdEventsInfoRepository.getEventsInfo())
             }
         }
     }
