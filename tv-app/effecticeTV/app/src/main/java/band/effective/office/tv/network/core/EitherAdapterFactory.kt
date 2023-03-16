@@ -1,6 +1,6 @@
 package band.effective.office.tv.network.core
 
-import band.effective.office.tv.network.leader.models.ErrorNetwork.ErrorNetworkResponse
+import band.effective.office.tv.network.leader.models.errorNetwork.ErrorNetworkResponse
 import okhttp3.Request
 import okhttp3.ResponseBody
 import okio.Timeout

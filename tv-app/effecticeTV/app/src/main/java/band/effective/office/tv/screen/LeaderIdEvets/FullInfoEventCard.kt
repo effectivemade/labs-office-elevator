@@ -8,7 +8,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 
 @Composable
-fun FullInfoEventCard(eventInfo: LeaderIdEventInfo.FullInfo){
+fun FullInfoEventCard(eventInfo: LeaderIdEventInfo){
     Text(eventInfo.name)
     Text(eventInfo.isOnline.toString())
     AsyncImage(

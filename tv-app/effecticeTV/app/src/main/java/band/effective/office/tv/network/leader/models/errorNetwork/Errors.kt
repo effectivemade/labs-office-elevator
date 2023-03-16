@@ -1,4 +1,4 @@
-package band.effective.office.tv.network.leader.models.ErrorNetwork
+package band.effective.office.tv.network.leader.models.errorNetwork
 
 import com.squareup.moshi.JsonClass
 

@@ -6,24 +6,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
-import band.effective.office.tv.model.LeaderIdEventInfo
 
 @Composable
 fun LeaderIdEventsScreen(viewModel: LeaderIdEventsViewModel = hiltViewModel()){
-    val state by viewModel.uiState.collectAsState()
-    when(val castState = state){
-        is LeaderIdEventsUiState.Loading -> Text("Loading")
-        is LeaderIdEventsUiState.Load ->{
-            LazyColumn{
-                items(castState.EventsList.size){
-                    when(val event = castState.EventsList[it]){
-                        is LeaderIdEventInfo.FullInfo -> FullInfoEventCard(eventInfo = event)
-                        is LeaderIdEventInfo.PartInfo -> PartInfoEventCard(eventInfo = event)
-                        is LeaderIdEventInfo.NullInfo -> NullInfoCard(eventInfo = event)
-                    }
-                }
+    val state by viewModel.state.collectAsState()
+    if (state.isLoad){
+        LazyColumn {
+            items(state.eventsInfo.size) {
+                FullInfoEventCard(state.eventsInfo[it])
             }
         }
     }
+    else Text("loading")
 
 }
