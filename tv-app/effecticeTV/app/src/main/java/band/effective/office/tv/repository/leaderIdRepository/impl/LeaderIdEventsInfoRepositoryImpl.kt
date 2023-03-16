@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class LeaderIdEventsInfoRepositoryImpl @Inject constructor(val leaderApi: LeaderApi): LeaderIdEventsInfoRepository {
     override suspend fun getEventsInfo(): List<LeaderIdEventInfo> {
-        val eventList:kotlin.collections.List<LeaderIdEventInfo> =
+        val eventList:List<LeaderIdEventInfo> =
             when (val either = leaderApi.searchEvents(10,893,3942)){
             is Either.Success -> serachEventResponseToListOfLeaderIdPartInfo(either.data)
             is Either.Failure -> listOf(LeaderIdEventInfo.NullInfo(either.error.message))

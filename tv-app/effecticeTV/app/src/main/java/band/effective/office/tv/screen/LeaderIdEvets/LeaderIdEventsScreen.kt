@@ -10,7 +10,7 @@ import band.effective.office.tv.model.LeaderIdEventInfo
 
 @Composable
 fun LeaderIdEventsScreen(viewModel: LeaderIdEventsViewModel = hiltViewModel()){
-    val state by viewModel.apiResponse.collectAsState()
+    val state by viewModel.uiState.collectAsState()
     when(val castState = state){
         is LeaderIdEventsUiState.Loading -> Text("Loading")
         is LeaderIdEventsUiState.Load ->{

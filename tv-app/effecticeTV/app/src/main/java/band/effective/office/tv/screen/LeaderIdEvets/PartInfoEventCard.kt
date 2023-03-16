@@ -1,6 +1,5 @@
 package band.effective.office.tv.screen.LeaderIdEvets
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.tv.material3.Text

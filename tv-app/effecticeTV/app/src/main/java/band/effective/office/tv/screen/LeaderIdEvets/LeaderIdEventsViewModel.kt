@@ -13,11 +13,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LeaderIdEventsViewModel @Inject constructor (val leaderIdEventsInfoRepository: LeaderIdEventsInfoRepository): ViewModel() {
-    private var mutableApiResponse = MutableStateFlow<LeaderIdEventsUiState>(LeaderIdEventsUiState.Loading())
-    val apiResponse = mutableApiResponse.asStateFlow()
+    private var mutableUiState = MutableStateFlow<LeaderIdEventsUiState>(LeaderIdEventsUiState.Loading())
+    val uiState = mutableUiState.asStateFlow()
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            mutableApiResponse.update {
+            mutableUiState.update {
                 LeaderIdEventsUiState.Load(leaderIdEventsInfoRepository.getEventsInfo())
             }
         }
