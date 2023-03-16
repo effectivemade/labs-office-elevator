@@ -1,10 +1,13 @@
 package band.effective.office.tv.di
 
 import band.effective.office.tv.BuildConfig
+import band.effective.office.tv.core.network.EitherSynologyAdapterFactory
 import band.effective.office.tv.network.LeaderIdRetrofitClient
 import band.effective.office.tv.network.SynologyRetrofitClient
 import band.effective.office.tv.network.synology.SynologyApi
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
+import com.squareup.moshi.addAdapter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,8 +22,10 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class AppModule {
 
+    @OptIn(ExperimentalStdlibApi::class)
     @Provides
     fun provideMoshi(): Moshi = Moshi.Builder()
+        .addAdapter(Rfc3339DateJsonAdapter().nullSafe())
         .build()
 
     @Provides
@@ -40,7 +45,7 @@ class AppModule {
     fun provideMoshiConverterFactory(moshi: Moshi): MoshiConverterFactory =
         MoshiConverterFactory.create(
             moshi
-        ).asLenient()
+        )
 
     @Singleton
     @Provides
@@ -58,6 +63,7 @@ class AppModule {
     fun provideSynologyRetrofit(moshiConverterFactory: MoshiConverterFactory, client: OkHttpClient): Retrofit =
         Retrofit.Builder()
             .addConverterFactory(moshiConverterFactory)
+            .addCallAdapterFactory(EitherSynologyAdapterFactory())
             .client(client)
             .baseUrl(BuildConfig.apiSynologyUrl)
             .build()
