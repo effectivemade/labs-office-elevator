@@ -1,4 +1,4 @@
-package band.effective.office.tv.network.leader.models.EventInfo
+package band.effective.office.tv.network.leader.models.eventInfo
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

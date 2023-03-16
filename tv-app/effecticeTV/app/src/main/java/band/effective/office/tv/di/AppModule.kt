@@ -3,6 +3,7 @@ package band.effective.office.tv.di
 import band.effective.office.tv.BuildConfig
 import band.effective.office.tv.network.LeaderIdRetrofitClient
 import band.effective.office.tv.network.SynologyRetrofitClient
+import band.effective.office.tv.network.core.EitherAdapterFactory
 import band.effective.office.tv.network.leader.LeaderApi
 import band.effective.office.tv.view.ListViewModel
 import com.squareup.moshi.Moshi
@@ -39,11 +40,8 @@ class AppModule {
     @LeaderIdRetrofitClient
     fun provideLeaderIdRetrofit(moshi: Moshi, client: OkHttpClient): Retrofit =
         Retrofit.Builder()
-            .addConverterFactory(
-                MoshiConverterFactory.create(
-                    moshi
-                ).asLenient()
-            )
+            .addConverterFactory(MoshiConverterFactory.create(moshi).asLenient())
+            .addCallAdapterFactory(EitherAdapterFactory())
             .client(client)
             .baseUrl(BuildConfig.apiLeaderUrl)
             .build()
@@ -53,11 +51,7 @@ class AppModule {
     @SynologyRetrofitClient
     fun provideSynologyRetrofit(moshi: Moshi, client: OkHttpClient): Retrofit =
         Retrofit.Builder()
-            .addConverterFactory(
-                MoshiConverterFactory.create(
-                    moshi
-                ).asLenient()
-            )
+            .addConverterFactory(MoshiConverterFactory.create(moshi).asLenient())
             .client(client)
             .baseUrl(BuildConfig.apiLeaderUrl)
             .build()

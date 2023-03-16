@@ -1,15 +1,18 @@
 package band.effective.office.tv.network.leader
 
-import band.effective.office.tv.network.leader.models.EventInfo.EventInfoResponse
-import band.effective.office.tv.network.leader.models.SearchEvent.SearchEventsResponse
-import retrofit2.Call
+import band.effective.office.tv.network.core.Either
+import band.effective.office.tv.network.leader.models.ErrorNetwork.ErrorNetworkResponse
+import band.effective.office.tv.network.leader.models.eventInfo.EventInfoResponse
+import band.effective.office.tv.network.leader.models.searchEvent.SearchEventsResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface LeaderApi {
     @GET("api/v4/events/search")
-    fun searchEvents(@Query("paginationSize") count: Int, @Query("cityId") cityId: Int, @Query("placeIds[]") placeId: Int): Call<SearchEventsResponse>
+    suspend fun searchEvents(@Query("paginationSize") count: Int,
+                     @Query("cityId") cityId: Int,
+                     @Query("placeIds[]") placeId: Int): Either<ErrorNetworkResponse, SearchEventsResponse>
     @GET("api/v4/events/{eventId}")
-    fun eventInfo(@Path("eventId") eventId: Int): Call<EventInfoResponse>
+    suspend fun eventInfo(@Path("eventId") eventId: Int): Either<ErrorNetworkResponse, EventInfoResponse>
 }
