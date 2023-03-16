@@ -1,6 +1,7 @@
 package band.effective.office.tv.network.leader
 
 import band.effective.office.tv.network.core.Either
+import band.effective.office.tv.network.core.ErrorReason
 import band.effective.office.tv.network.leader.models.ErrorNetwork.ErrorNetworkResponse
 import band.effective.office.tv.network.leader.models.eventInfo.EventInfoResponse
 import band.effective.office.tv.network.leader.models.searchEvent.SearchEventsResponse
@@ -12,7 +13,7 @@ interface LeaderApi {
     @GET("api/v4/events/search")
     suspend fun searchEvents(@Query("paginationSize") count: Int,
                      @Query("cityId") cityId: Int,
-                     @Query("placeIds[]") placeId: Int): Either<ErrorNetworkResponse, SearchEventsResponse>
+                     @Query("placeIds[]") placeId: Int): Either<ErrorReason, SearchEventsResponse>
     @GET("api/v4/events/{eventId}")
-    suspend fun eventInfo(@Path("eventId") eventId: Int): Either<ErrorNetworkResponse, EventInfoResponse>
+    suspend fun eventInfo(@Path("eventId") eventId: Int): Either<ErrorReason, EventInfoResponse>
 }
