@@ -1,8 +1,9 @@
 package band.effective.office.tv.network.synology
 
-import band.effective.office.tv.network.synology.response.SynologyAuthResponse
-import band.effective.office.tv.network.synology.response.SynologyListResponse
-import retrofit2.Response
+import band.effective.office.tv.core.network.entity.Either
+import band.effective.office.tv.core.network.entity.ErrorReason
+import band.effective.office.tv.network.synology.models.response.SynologyAuthResponse
+import band.effective.office.tv.network.synology.models.response.SynologyListResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -13,7 +14,7 @@ interface SynologyApi {
         @Query("method") method: String,
         @Query("account") login: String,
         @Query("passwd") password: String
-        ): Response<SynologyAuthResponse>
+        ): Either<ErrorReason, SynologyAuthResponse>
 
     @GET("/webapi/entry.cgi?api=SYNO.FileStation.List")
     suspend fun getFiles(
@@ -21,5 +22,6 @@ interface SynologyApi {
         @Query("version") version: Int,
         @Query("method") method: String,
         @Query("folder_path") folderPath: String
-    ): Response<SynologyListResponse>
+    ): Either<ErrorReason, SynologyListResponse>
+
 }

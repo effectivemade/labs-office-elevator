@@ -1,95 +1,77 @@
 package band.effective.office.tv.repository.impl
 
 import band.effective.office.tv.BuildConfig
-import band.effective.office.tv.core.network.BaseError
-import band.effective.office.tv.core.network.BaseRepository
-import band.effective.office.tv.core.network.Resource
-import band.effective.office.tv.model.Photo
+import band.effective.office.tv.model.domain.Resource
+import band.effective.office.tv.core.network.entity.Either
+import band.effective.office.tv.core.network.entity.ErrorReason
+import band.effective.office.tv.core.network.entity.unpack
 import band.effective.office.tv.network.synology.SynologyApi
-import band.effective.office.tv.network.synology.response.SynologyAuthResponse
-import band.effective.office.tv.network.synology.response.SynologyListResponse
+import band.effective.office.tv.network.synology.models.response.SynologyAuthResponse
+import band.effective.office.tv.network.synology.models.response.SynologyListResponse
 import band.effective.office.tv.repository.SynologyPhoto
-import com.squareup.moshi.Moshi
-import okhttp3.Response
-import okhttp3.ResponseBody
+import java.net.URLEncoder
 import javax.inject.Inject
 
 class SynologyPhotoImpl @Inject constructor(
     private val synologyApi: SynologyApi,
-) : SynologyPhoto, BaseRepository() {
+) : SynologyPhoto {
     private var dirPath: String = ""
     private var isAuth: Boolean = false
     private var sid: String = ""
-    override suspend fun getPhotos(): Resource<List<Photo>> {
-        TODO("Not yet implemented")
-    }
 
-    override suspend fun changeDir(dir: String): Resource<Boolean> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getPhotoPath(folderPath: String): Resource<List<String>> {
+    override suspend fun getPhotosUrl(folderPath: String): Resource<List<String>> {
         var authResponse: Resource<Boolean>? = null
         if (!isAuth) authResponse = auth()
 
         if (isAuth) {
-            val res: Resource<SynologyListResponse> = safeApiCall {
+            val res: Either<ErrorReason, SynologyListResponse> =
                 synologyApi.getFiles(
                     sid = sid,
                     version = 1,
                     method = "list",
                     folderPath = folderPath
                 )
-            }
-            return when (res) {
-                is Resource.Data -> Resource.Data(res.data.data.files.map { it.path })
-                is Resource.Error -> Resource.Error(res.error)
-                else -> Resource.Loading()
-            }
+
+            return res.unpack(
+                success = { response ->
+                    val paths = response.data.files.map { formThumbPhoto(it.path) }
+                    Resource.Data(paths)
+                },
+                error = { error ->
+                    Resource.Error(error.message ?: "")
+                }
+            )
         }
-
-        return if (authResponse is Resource.Error) {
-            val message = authResponse.error
-            Resource.Error(message)
-        } else Resource.Loading()
-
+        val message = (authResponse as Resource.Error).error
+        return Resource.Error(message)
     }
 
     override suspend fun auth(): Resource<Boolean> {
-        val res: Resource<SynologyAuthResponse> = safeApiCall {
+        val res: Either<ErrorReason, SynologyAuthResponse> =
             synologyApi.auth(
                 version = 3,
                 method = "login",
                 login = BuildConfig.synologyLogin,
                 password = BuildConfig.synologyPassword,
             )
-        }
-        return when (res) {
-            is Resource.Data -> {
-                isAuth = true
-                sid = res.data.data?.sid?:""
-                Resource.Data(true)
-            }
-            is Resource.Error -> {
+
+        return res.unpack(
+            success = { response ->
+                sid = response.data?.sid ?: ""
+                val isSuccess = response.isSuccess
+                isAuth = isSuccess
+                Resource.Data(isSuccess)
+            },
+            error = { error ->
                 isAuth = false
-                Resource.Error(res.error)
+                Resource.Error(error.message ?: "")
             }
-            else -> {
-                Resource.Loading()
-            }
-        }
 
+        )
     }
 
-    override fun convertErrorBody(errorBody: ResponseBody?): BaseError? {
-        return try {
-            errorBody?.source()?.let {
-                val moshiAdapter = Moshi.Builder().build().adapter(BaseError::class.java)
-                moshiAdapter.fromJson(it)
-            }
-        } catch (exception: Exception) {
-            throw exception
-        }
+    private fun formThumbPhoto(photoPath: String): String {
+        val encodePhotoPath = URLEncoder.encode(photoPath, "utf-8")
+        return "${BuildConfig.apiSynologyUrl}/webapi/entry.cgi?api=SYNO.FileStation.Thumb&version=2&_sid=${sid}&method=get&path=${encodePhotoPath}"
     }
-
 }

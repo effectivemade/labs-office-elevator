@@ -4,6 +4,7 @@ import band.effective.office.tv.BuildConfig
 import band.effective.office.tv.network.synology.SynologyApi
 import band.effective.office.tv.repository.SynologyPhoto
 import band.effective.office.tv.repository.impl.SynologyPhotoImpl
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,9 +13,9 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class PhotoViewModelModule {
+abstract class PhotoViewModelModule {
 
     @Singleton
-    @Provides
-    fun provideSynologyRepository(api: SynologyApi): SynologyPhoto = SynologyPhotoImpl(api)
+    @Binds
+    abstract fun bindsSynologyRepository(repository: SynologyPhotoImpl): SynologyPhoto
 }

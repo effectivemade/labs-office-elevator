@@ -1,4 +1,4 @@
-package band.effective.office.tv.network.synology.response
+package band.effective.office.tv.network.synology.models.response
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
