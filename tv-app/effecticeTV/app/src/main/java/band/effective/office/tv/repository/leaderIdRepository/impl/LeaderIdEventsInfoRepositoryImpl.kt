@@ -12,9 +12,9 @@ import javax.inject.Inject
 
 class LeaderIdEventsInfoRepositoryImpl @Inject constructor(val leaderApi: LeaderApi) :
     LeaderIdEventsInfoRepository {
-    override suspend fun getEventsInfo(): Flow<LeaderIdEventInfo> =
+    override suspend fun getEventsInfo(count: Int, cityId: Int, placeId: Int): Flow<LeaderIdEventInfo> =
         flow{
-            when (val either = leaderApi.searchEvents(count = 10, cityId = 893, placeId = 3942)) {
+            when (val either = leaderApi.searchEvents(count, cityId, placeId)) {
                 is Either.Success -> {
                     val ids = either.data.data.items.map { it.id }
                     ids.forEach {
