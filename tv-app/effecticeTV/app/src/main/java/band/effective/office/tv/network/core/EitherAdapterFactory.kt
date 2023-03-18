@@ -16,27 +16,6 @@ import java.net.UnknownHostException
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 
-
-sealed class ErrorReason {
-    abstract val message: String
-
-    class NotFound(
-        override val message: String
-    ) : ErrorReason()
-
-    class ServerError(
-        override val message: String
-    ) : ErrorReason()
-
-    data class NetworkError(val throwable: Throwable) : ErrorReason() {
-        override val message: String = throwable.localizedMessage.orEmpty()
-    }
-
-    data class UnexpectedError(val throwable: Throwable) : ErrorReason() {
-        override val message: String = throwable.localizedMessage.orEmpty()
-    }
-}
-
 class EitherAdapterFactory @Inject constructor() : CallAdapter.Factory() {
     override fun get(
         returnType: Type,
@@ -159,8 +138,10 @@ class EitherAdapterFactory @Inject constructor() : CallAdapter.Factory() {
             response: Response<T>,
             errorResponse: ErrorNetworkResponse
         ) = when (response.code()) {
-            404 -> ErrorReason.NotFound(errorResponse.message?:"")
-            else -> ErrorReason.ServerError(errorResponse.message?: errorResponse.error?.message ?: "")
+            404 -> ErrorReason.NotFound(errorResponse.message ?: "")
+            else -> ErrorReason.ServerError(
+                errorResponse.message ?: errorResponse.error?.message ?: ""
+            )
         }
     }
 }
