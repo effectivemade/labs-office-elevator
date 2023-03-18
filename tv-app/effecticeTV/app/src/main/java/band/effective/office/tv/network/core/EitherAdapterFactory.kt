@@ -37,7 +37,7 @@ sealed class ErrorReason {
     }
 }
 
-internal class EitherAdapterFactory @Inject constructor() : CallAdapter.Factory() {
+class EitherAdapterFactory @Inject constructor() : CallAdapter.Factory() {
     override fun get(
         returnType: Type,
         annotations: Array<out Annotation>,
