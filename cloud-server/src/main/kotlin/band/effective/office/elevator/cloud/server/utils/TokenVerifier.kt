@@ -7,9 +7,9 @@ import com.google.api.client.json.gson.GsonFactory
 
 object TokenVerifier {
 
-    private val androidClient = readFromProperties("androidClient")
-    private val iosClient = readFromProperties("iosClient")
-    private val verifyDomain = readFromProperties("verifyDomain")
+    private val androidClient = PropertiesUtil.read("androidClient")
+    private val iosClient = PropertiesUtil.read("iosClient")
+    private val verifyDomain = PropertiesUtil.read("verifyDomain")
 
     private var verifier: GoogleIdTokenVerifier =
         GoogleIdTokenVerifier.Builder(NetHttpTransport(), GsonFactory())

@@ -1,12 +1,12 @@
-package band.effective.office.elevator.cloud.server.utils
+package band.effective.office.elevator.utils
 
 import java.io.File
 import java.io.FileInputStream
-import java.util.Properties
+import java.util.*
 
 object PropertiesUtil {
     fun read(key: String): String? {
-        val file = File("root/keystore/elevator.properties")
+        val file = File("/home/ubuntu/elevator/keystore/elevator.properties")
         val prop = Properties()
         FileInputStream(file).use { prop.load(it) }
         return prop.getProperty(key)

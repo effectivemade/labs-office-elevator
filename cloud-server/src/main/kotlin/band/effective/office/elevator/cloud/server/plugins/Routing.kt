@@ -1,15 +1,20 @@
 package band.effective.office.elevator.cloud.server.plugins
 
+import band.effective.office.common.utils.HashUtil
+import band.effective.office.common.utils.toVerifiableDate
 import band.effective.office.elevator.cloud.server.client.ktorClient
-import band.effective.office.elevator.cloud.server.utils.HashUtil
+import band.effective.office.elevator.cloud.server.utils.PropertiesUtil
 import band.effective.office.elevator.cloud.server.utils.TokenVerifier
-import band.effective.office.elevator.cloud.server.utils.toVerifiableDate
-import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
-import io.ktor.util.date.*
+import io.ktor.client.request.post
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.path
+import io.ktor.http.toHttpDate
+import io.ktor.server.application.Application
+import io.ktor.server.application.call
+import io.ktor.server.response.respond
+import io.ktor.server.routing.get
+import io.ktor.server.routing.routing
+import io.ktor.util.date.GMTDate
 
 fun Application.configureRouting() {
     routing {
@@ -32,7 +37,13 @@ fun Application.configureRouting() {
                         parameters.append(
                             "time", currentTime.toHttpDate()
                         )
-                        parameters.append("token", HashUtil.sha256(currentTime.toVerifiableDate()))
+                        parameters.append(
+                            "token",
+                            HashUtil.sha256(
+                                value = currentTime.toVerifiableDate(),
+                                password = PropertiesUtil.read("password")
+                            )
+                        )
                     }
                 }
                 when (request.status.value) {
