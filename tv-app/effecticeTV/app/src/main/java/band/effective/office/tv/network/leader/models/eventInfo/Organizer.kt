@@ -20,7 +20,7 @@ data class Organizer(
     @Json(name = "photo_520")
     val photo520: String?,
     val photos: Any?,
-    val position: String,
+    val position: String?,
     val telegram: Any?,
     val url: Any?,
     val userId: Int

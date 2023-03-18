@@ -10,4 +10,12 @@ data class LeaderIdEventInfo(
     val photoUrl: String,
     val organizer: String? = null,
     val speakers: List<String>? = null
-)
+){
+    constructor(errorMessege: String): this(
+        id = -1,
+        name = errorMessege,
+        dateTime = GregorianCalendar(),
+        isOnline = false,
+        photoUrl = ""
+    )
+}

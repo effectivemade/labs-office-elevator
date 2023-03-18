@@ -43,7 +43,7 @@ data class Data(
     val moderation: String,
     val needFeedback: Boolean,
     val needStartNotification: Boolean,
-    val networkProposals: List<Any?>,
+    val networkProposals: Any?,
     @Json(name = "network_parent_id")
     val networkParentId: Any?,
     val networking: Any?,

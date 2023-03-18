@@ -4,9 +4,10 @@ import band.effective.office.tv.model.LeaderIdEventInfo
 
 data class LeaderIdEventsUiState(
     val isLoad: Boolean,
+    val isError: Boolean,
     val eventsInfo: List<LeaderIdEventInfo>
-){
-    companion object{
-        val empty = LeaderIdEventsUiState(false, listOf())
+) {
+    companion object {
+        val empty = LeaderIdEventsUiState(isLoad = false, isError = false, eventsInfo = listOf())
     }
 }

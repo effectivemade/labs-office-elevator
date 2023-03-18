@@ -9,7 +9,7 @@ data class User(
     val employment: Any?,
     val employments: List<Any?>,
     @Json(name = "father_name")
-    val fatherName: String,
+    val fatherName: String?,
     @Json(name = "first_name")
     val firstName: String,
     val id: Int,
