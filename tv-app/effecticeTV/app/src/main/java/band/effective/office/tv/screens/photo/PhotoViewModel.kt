@@ -3,9 +3,9 @@ package band.effective.office.tv.screens.photo
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import band.effective.office.tv.screens.photo.model.Photo
 import band.effective.office.tv.model.domain.Resource
-import band.effective.office.tv.repository.SynologyPhoto
+import band.effective.office.tv.repository.PhotoSynologyRepository
+import band.effective.office.tv.screens.photo.model.toUIModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PhotoViewModel @Inject constructor(
-    private val repository: SynologyPhoto
+    private val repository: PhotoSynologyRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(BestPhotoState.Empty)
@@ -29,19 +29,21 @@ class PhotoViewModel @Inject constructor(
     }
 
     private suspend fun updatePhoto() {
-        when (val res = repository.getPhotosUrl("\"/BAND/Photos/Albums/Photo_March\"")) {
-            is Resource.Error -> {
-                _state.update { state ->
-                    state.copy(isSuccess = false, error = res.error)
-                }
-                Log.e("TAG", res.error)
-            }
-            is Resource.Data -> {
-                Log.d("href", res.data.toString())
-                _state.update { state ->
-                    state.copy(photos = res.data.map { Photo(it) }, isSuccess = true)
-                }
-            }
+       repository.getPhotosUrl("\"/BAND/Photos/Albums/Photo_March\"").collect { result->
+           when(result) {
+               is Resource.Error -> {
+                   _state.update { state ->
+                       state.copy(isSuccess = false, error = result.error)
+                   }
+                   Log.e("TAG", result.error)
+               }
+               is Resource.Data -> {
+                   Log.d("href", result.data.toString())
+                   _state.update { state ->
+                       state.copy(photos = result.toUIModel(), isSuccess = true)
+                   }
+               }
+           }
         }
     }
 }

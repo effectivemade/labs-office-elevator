@@ -8,7 +8,7 @@ import coil.compose.SubcomposeAsyncImage
 @Composable
 fun PhotoUIItem(image: Photo) {
     SubcomposeAsyncImage(
-        model = image.url,
+        model = image.photoThumb,
         loading = { CircularProgressIndicator() },
         contentDescription = null
     )
