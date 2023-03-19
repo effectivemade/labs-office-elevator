@@ -9,7 +9,7 @@ data class Organizer(
     val companyId: Any?,
     val email: String,
     val id: Int,
-    val internationalPhone: Boolean,
+    val internationalPhone: Boolean?,
     val name: String,
     val phone: String,
     val photo: String?,

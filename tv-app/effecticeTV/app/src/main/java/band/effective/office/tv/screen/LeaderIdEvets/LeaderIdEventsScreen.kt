@@ -20,6 +20,9 @@ fun LeaderIdEventsScreen(viewModel: LeaderIdEventsViewModel = hiltViewModel()) {
                 Text("error")
             }
         }
+        if (!state.isLoad) item {
+            Text("loading")
+        }
         items(state.eventsInfo.size) {
             EventCard(state.eventsInfo[it])
         }

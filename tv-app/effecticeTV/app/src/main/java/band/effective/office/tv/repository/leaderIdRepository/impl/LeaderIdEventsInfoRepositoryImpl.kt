@@ -25,7 +25,7 @@ class LeaderIdEventsInfoRepositoryImpl @Inject constructor(val leaderApi: Leader
                         })
                     }
                 }
-                is Either.Failure -> either.error.toLeaderIdEventInfo()
+                is Either.Failure -> emit(either.error.toLeaderIdEventInfo())
             }
         }
 

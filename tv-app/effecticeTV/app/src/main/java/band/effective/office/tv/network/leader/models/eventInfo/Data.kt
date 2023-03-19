@@ -20,7 +20,7 @@ data class Data(
     @Json(name = "date_start")
     val dateStart: String,
     val documents: List<Any?>,
-    val ecpRequired: Boolean,
+    val ecpRequired: Boolean?,
     val expectedParticipantCount: Any?,
     val finished: Boolean,
     val format: String,
@@ -77,6 +77,6 @@ data class Data(
     @Json(name = "team_type")
     val teamType: Any?,
     val themes: List<ThemeX>,
-    val timezone: TimezoneX,
+    val timezone: TimezoneX?,
     val type: TypeX
 )

@@ -4,8 +4,8 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class ErrorNetworkResponse(
-    val code: Int? = null,
-    val error: Error? = null,
-    val errors: Errors? = null,
-    val message: String? = null
+    val code: Int?,
+    val error: Error?,
+    val errors: Errors?,
+    val message: String?
 )
