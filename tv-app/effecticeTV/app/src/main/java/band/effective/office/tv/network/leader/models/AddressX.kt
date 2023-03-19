@@ -16,7 +16,7 @@ data class AddressX(
     @Json(name = "geo_point")
     val geoPoint: String?,
     @Json(name = "geo_point_zoom")
-    val geoPoint_zoom: String?,
+    val geoPointZoom: String?,
     val house: String?,
     val id: Int?,
     val letter: Any?,

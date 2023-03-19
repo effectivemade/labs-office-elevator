@@ -7,11 +7,11 @@ import com.squareup.moshi.JsonClass
 data class Similar(
     val city: Any?,
     @Json(name = "date_end")
-    val date_end: String,
+    val dateEnd: String,
     @Json(name = "date_start")
-    val date_start: String,
+    val dateStart: String,
     @Json(name = "full_name")
-    val full_name: String,
+    val fullName: String,
     val id: Int,
     val photo: String?
 )

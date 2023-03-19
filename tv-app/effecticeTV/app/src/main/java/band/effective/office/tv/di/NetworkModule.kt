@@ -3,7 +3,7 @@ package band.effective.office.tv.di
 import band.effective.office.tv.BuildConfig
 import band.effective.office.tv.network.LeaderIdRetrofitClient
 import band.effective.office.tv.network.SynologyRetrofitClient
-import band.effective.office.tv.network.core.EitherAdapterFactory
+import band.effective.office.tv.core.network.EitherAdapterFactory
 import band.effective.office.tv.network.leader.LeaderApi
 import com.squareup.moshi.Moshi
 import dagger.Module
@@ -36,7 +36,7 @@ class NetworkModule {
     @Singleton
     @Provides
     @LeaderIdRetrofitClient
-    fun provideLeaderIdRetrofit(moshiConverterFactory: MoshiConverterFactory, client: OkHttpClient, eitherAdapterFactory:EitherAdapterFactory): Retrofit =
+    fun provideLeaderIdRetrofit(moshiConverterFactory: MoshiConverterFactory, client: OkHttpClient, eitherAdapterFactory: EitherAdapterFactory): Retrofit =
         Retrofit.Builder().addConverterFactory(moshiConverterFactory)
             .addCallAdapterFactory(eitherAdapterFactory).client(client)
             .baseUrl(BuildConfig.apiLeaderUrl).build()

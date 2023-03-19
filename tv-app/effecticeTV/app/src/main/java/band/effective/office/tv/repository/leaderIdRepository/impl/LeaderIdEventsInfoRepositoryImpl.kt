@@ -1,9 +1,9 @@
 package band.effective.office.tv.repository.leaderIdRepository.impl
 
-import band.effective.office.tv.model.LeaderIdEventInfo
-import band.effective.office.tv.model.toLeaderIdEventInfo
-import band.effective.office.tv.network.core.Either
-import band.effective.office.tv.network.core.ErrorReason
+import band.effective.office.tv.domain.model.LeaderIdEventInfo
+import band.effective.office.tv.domain.model.toLeaderIdEventInfo
+import band.effective.office.tv.core.network.Either
+import band.effective.office.tv.core.network.ErrorReason
 import band.effective.office.tv.network.leader.LeaderApi
 import band.effective.office.tv.repository.leaderIdRepository.LeaderIdEventsInfoRepository
 import kotlinx.coroutines.flow.Flow

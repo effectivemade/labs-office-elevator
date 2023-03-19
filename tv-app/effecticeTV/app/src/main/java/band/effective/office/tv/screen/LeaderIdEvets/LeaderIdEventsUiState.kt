@@ -1,6 +1,6 @@
 package band.effective.office.tv.screen.LeaderIdEvets
 
-import band.effective.office.tv.model.LeaderIdEventInfo
+import band.effective.office.tv.domain.model.LeaderIdEventInfo
 
 data class LeaderIdEventsUiState(
     val isLoad: Boolean,

@@ -21,7 +21,7 @@ fun LeaderIdEventsScreen(viewModel: LeaderIdEventsViewModel = hiltViewModel()) {
             }
         }
         items(state.eventsInfo.size) {
-            FullInfoEventCard(state.eventsInfo[it])
+            EventCard(state.eventsInfo[it])
         }
     }
 }

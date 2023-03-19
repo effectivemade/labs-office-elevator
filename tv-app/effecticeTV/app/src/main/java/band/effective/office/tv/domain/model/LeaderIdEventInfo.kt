@@ -1,4 +1,4 @@
-package band.effective.office.tv.model
+package band.effective.office.tv.domain.model
 
 import java.util.GregorianCalendar
 

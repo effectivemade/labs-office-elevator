@@ -1,4 +1,4 @@
-package band.effective.office.tv.network.core
+package band.effective.office.tv.core.network
 
 sealed class ErrorReason {
     abstract val message: String

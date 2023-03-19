@@ -20,7 +20,7 @@ data class Speaker(
     @Json(name = "number_participants")
     val numberParticipants: Any?,
     @Json(name = "quiz_answer_id")
-    val quizAnswer_id: Any?,
+    val quizAnswerId: Any?,
     @Json(name = "rejected_by")
     val rejectedBy: Any?,
     val role: String,

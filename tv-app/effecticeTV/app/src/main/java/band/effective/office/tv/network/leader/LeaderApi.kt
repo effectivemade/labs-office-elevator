@@ -1,7 +1,7 @@
 package band.effective.office.tv.network.leader
 
-import band.effective.office.tv.network.core.Either
-import band.effective.office.tv.network.core.ErrorReason
+import band.effective.office.tv.core.network.Either
+import band.effective.office.tv.core.network.ErrorReason
 import band.effective.office.tv.network.leader.models.eventInfo.EventInfoResponse
 import band.effective.office.tv.network.leader.models.searchEvent.SearchEventsResponse
 import retrofit2.http.GET

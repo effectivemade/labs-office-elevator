@@ -1,4 +1,4 @@
-package band.effective.office.tv.network.core
+package band.effective.office.tv.core.network
 
 import band.effective.office.tv.network.leader.models.errorNetwork.ErrorNetworkResponse
 import okhttp3.Request

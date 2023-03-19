@@ -1,4 +1,4 @@
-package band.effective.office.tv.network.core
+package band.effective.office.tv.core.network
 
 sealed class Either<out Error, out Data> {
     class Failure<out Error>(val error: Error) : Either<Error, Nothing>()

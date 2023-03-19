@@ -6,12 +6,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Text
-import band.effective.office.tv.model.LeaderIdEventInfo
+import band.effective.office.tv.domain.model.LeaderIdEventInfo
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 
 @Composable
-fun FullInfoEventCard(eventInfo: LeaderIdEventInfo){
+fun EventCard(eventInfo: LeaderIdEventInfo){
     Column(modifier = Modifier.fillMaxSize()){
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
