@@ -21,7 +21,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             if error != nil || user == nil {
                 GoogleAuthorization.shared.token = nil
             } else {
+                let dimension = round(100 * UIScreen.main.scale)
+                let imageUrl = user?.profile?.imageURL(withDimension: UInt(dimension))?.absoluteURL.absoluteString
+                let username = user?.profile?.givenName
+                let email = user?.profile?.email
                 GoogleAuthorization.shared.token = user?.idToken?.tokenString
+                GoogleAuthorization.shared.googleAccountUser = GoogleAccountUser(imageUrl: imageUrl, username: username, email: email)
             }
         }
         

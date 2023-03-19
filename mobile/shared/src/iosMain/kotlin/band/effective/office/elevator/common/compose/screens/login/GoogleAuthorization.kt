@@ -14,6 +14,8 @@ actual object GoogleAuthorization {
     lateinit var onSignInSuccess: () -> Unit
     lateinit var onSignInFailure: (e: Exception) -> Unit
 
+    lateinit var googleAccountUser: GoogleAccountUser
+
     actual var token: String? = null
         set(value) {
             field = if (value?.isNotBlank() == true) value else null
@@ -66,5 +68,9 @@ actual object GoogleAuthorization {
     }
     fun getServerClientId(): String {
         return BuildKonfig.webClient
+    }
+
+    actual fun getAccount(): GoogleAccountUser {
+        return googleAccountUser
     }
 }

@@ -128,4 +128,13 @@ object Dependencies {
         private const val VERSION = "20.4.0"
         const val SignIn = "com.google.android.gms:play-services-auth:$VERSION"
     }
+
+    object KViewmodel {
+        private const val VERSION = "0.14"
+        val core = "com.adeo:kviewmodel:$VERSION"
+        val composeExt = "com.adeo:kviewmodel-compose:$VERSION"
+        val odyssey = "com.adeo:kviewmodel-odyssey:$VERSION"
+    }
+
+    val asyncImageCompose = "io.github.qdsfdhvh:image-loader:1.2.10"
 }

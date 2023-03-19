@@ -137,4 +137,15 @@ actual object GoogleAuthorization {
             }
         }
     }
+
+    actual fun getAccount(): GoogleAccountUser {
+        val account =
+            GoogleSignIn.getLastSignedInAccount(Android.applicationContext.applicationContext)
+        Napier.d { "photoUrl: ${account?.photoUrl}" }
+        return GoogleAccountUser(
+            imageUrl = account?.photoUrl.toString(),
+            username = account?.displayName,
+            email = account?.email
+        )
+    }
 }

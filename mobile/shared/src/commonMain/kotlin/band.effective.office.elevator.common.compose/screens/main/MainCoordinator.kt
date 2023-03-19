@@ -1,13 +1,11 @@
 package band.effective.office.elevator.common.compose.screens.main
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import band.effective.office.elevator.common.compose.SafeArea
 import band.effective.office.elevator.common.compose.expects.ImageVector
 import band.effective.office.elevator.common.compose.navigation.NavRoute
 import band.effective.office.elevator.common.compose.navigation.bottom.BottomNavItems
@@ -57,11 +55,11 @@ internal fun MainCoordinator(onBack: () -> Unit) {
         ) {
             scene(NavRoute.Main.Home.route) {
                 selectedItem = it.route.route
-                ElevatorScreen(onSignOut = onBack)
+                ElevatorScreen()
             }
             scene(NavRoute.Main.Profile.route) {
                 selectedItem = it.route.route
-                ProfileScreen()
+                ProfileScreen(onSignOut = onBack)
             }
         }
     }

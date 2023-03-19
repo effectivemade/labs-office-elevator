@@ -12,4 +12,6 @@ expect object GoogleAuthorization {
         action: (token: String) -> Unit,
         failure: (message: String) -> Unit
     )
+
+    fun getAccount(): GoogleAccountUser
 }

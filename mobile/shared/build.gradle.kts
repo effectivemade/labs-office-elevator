@@ -1,6 +1,7 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+import java.io.FileInputStream
+import java.io.InputStreamReader
 import java.util.*
-import java.io.*
 
 plugins {
     kotlin("multiplatform")
@@ -47,6 +48,11 @@ kotlin {
                 api(Dependencies.Napier.logger)
 
                 api(Dependencies.precompose)
+
+                implementation(Dependencies.KViewmodel.core)
+                implementation(Dependencies.KViewmodel.composeExt)
+                implementation(Dependencies.KViewmodel.odyssey)
+                api(Dependencies.asyncImageCompose)
             }
         }
 
@@ -95,8 +101,8 @@ fun Project.getLocalProperty(key: String): String? {
     if (localProperties.isFile) {
         InputStreamReader(FileInputStream(localProperties), Charsets.UTF_8)
             .use { reader ->
-            properties.load(reader)
-        }
+                properties.load(reader)
+            }
     } else error("File from not found")
 
     return properties.getProperty(key).toString()

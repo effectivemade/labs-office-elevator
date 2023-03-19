@@ -2,17 +2,18 @@ package band.effective.office.elevator.common.compose.screens.home
 
 import band.effective.office.elevator.common.compose.network.ktorClient
 import band.effective.office.elevator.common.compose.screens.login.GoogleAuthorization
+import com.adeo.kviewmodel.BaseSharedViewModel
+import io.github.aakira.napier.Napier
 import io.ktor.client.request.*
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-@OptIn(FlowPreview::class)
-object ElevatorScreenViewModel {
-
-    sealed class Event {
-        object SignOut : Event()
-        object CallElevator : Event()
-    }
+internal class ElevatorScreenViewModel :
+    BaseSharedViewModel<ElevatorState, ElevatorAction, ElevatorEvent>(initialState = ElevatorState()) {
 
     private val mutableMessageStateFlow = MutableStateFlow("Press button to call elevator")
     val messageState = mutableMessageStateFlow.asStateFlow()
@@ -20,15 +21,14 @@ object ElevatorScreenViewModel {
     private val mutableButtonStateFlow = MutableStateFlow(false)
     val buttonState = mutableButtonStateFlow.asStateFlow()
 
-    private val scope = CoroutineScope(Dispatchers.Main)
-
     init {
-        scope.launch {
+        viewModelScope.launch {
+            Napier.d { "ElevatorScreen create viewmodel" }
             mutableButtonStateFlow.collectLatest { state ->
-                if (state){
+                if (state) {
                     GoogleAuthorization.performWithFreshToken(
                         action = { token ->
-                            scope.launch {
+                            viewModelScope.launch {
                                 doNetworkElevatorCall(token)
                             }
                         },
@@ -42,14 +42,14 @@ object ElevatorScreenViewModel {
         }
     }
 
-    fun sendEvent(event: Event) = scope.launch {
-        when (event) {
-            Event.CallElevator -> handleElevatorRequest()
-            Event.SignOut -> GoogleAuthorization.signOut()
+    override fun obtainEvent(viewEvent: ElevatorEvent) {
+        when (viewEvent) {
+            ElevatorEvent.CallElevator -> handleElevatorRequest()
+            ElevatorEvent.SignOut -> GoogleAuthorization.signOut()
         }
     }
 
-    private suspend fun handleElevatorRequest() {
+    private fun handleElevatorRequest() {
         mutableMessageStateFlow.update { "Attempt to call elevator" }
         mutableButtonStateFlow.update { true }
     }
