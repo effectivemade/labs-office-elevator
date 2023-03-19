@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.common.compose.components.GrayText
 import band.effective.office.elevator.common.compose.expects.ImageVector
@@ -72,7 +73,7 @@ internal fun ProfileScreen(onSignOut: () -> Unit) {
                             contentDescription = null,
                         )
                     }
-                    ImageVector("avatar_border", modifier = Modifier)
+                    ImageVector("avatar_border", modifier = Modifier, tint = null)
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))

@@ -3,9 +3,12 @@ package band.effective.office.elevator.common.compose.screens.main
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.*
+import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import band.effective.office.elevator.common.compose.components.NoRippleTheme
 import band.effective.office.elevator.common.compose.expects.ImageVector
 import band.effective.office.elevator.common.compose.navigation.NavRoute
 import band.effective.office.elevator.common.compose.navigation.bottom.BottomNavItems
@@ -22,29 +25,35 @@ internal fun MainCoordinator(onBack: () -> Unit) {
     var selectedItem by remember { mutableStateOf("") }
 
     Scaffold(bottomBar = {
-        BottomNavigation(backgroundColor = MaterialTheme.colors.background) {
-            BottomNavItems.values().forEach { item ->
-                BottomNavigationItem(
-                    label = {
-                        Text(item.label)
-                    },
-                    icon = {
-                        ImageVector(
-                            item.imageResource,
-                            modifier = Modifier.size(32.dp)
-                        )
-                    },
-                    selected = selectedItem == item.linkedRoute.route,
-                    onClick = {
-                        navigator.navigate(
-                            route = item.linkedRoute.route,
-                            NavOptions(
-                                launchSingleTop = true,
-                                popUpTo = PopUpTo.First(true)
-                            ),
-                        )
-                    }
-                )
+        CompositionLocalProvider(LocalRippleTheme provides NoRippleTheme) {
+            BottomNavigation(backgroundColor = MaterialTheme.colors.background) {
+                BottomNavItems.values().forEach { item ->
+                    BottomNavigationItem(
+                        label = {
+                            Text(
+                                item.label,
+                                color = if (selectedItem == item.linkedRoute.route) MaterialTheme.colors.secondary else Color.Unspecified
+                            )
+                        },
+                        icon = {
+                            ImageVector(
+                                item.imageResource,
+                                modifier = Modifier.size(24.dp),
+                                tint = if (selectedItem == item.linkedRoute.route) MaterialTheme.colors.secondary else null
+                            )
+                        },
+                        selected = selectedItem == item.linkedRoute.route,
+                        onClick = {
+                            navigator.navigate(
+                                route = item.linkedRoute.route,
+                                NavOptions(
+                                    launchSingleTop = true,
+                                    popUpTo = PopUpTo.First(true)
+                                ),
+                            )
+                        }
+                    )
+                }
             }
         }
     }) { innerPadding ->
