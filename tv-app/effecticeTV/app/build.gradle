@@ -25,9 +25,10 @@ android {
 
         buildConfigField ("String", "apiLeaderUrl", localProperties['apiLeaderUrl'])
 
-        buildConfigField ("String", "apiSynologyUrl", "\"http://${localProperties['synologyIP']}\"")
+        buildConfigField ("String", "apiSynologyUrl", localProperties['synologyIP'])
         buildConfigField ("String", "synologyLogin", localProperties['synologyLogin'])
         buildConfigField ("String", "synologyPassword", localProperties['synologyPassword'])
+        buildConfigField ("String", "folderPathPhotoSynology", localProperties['folderPathPhotoSynology'])
 
     }
 

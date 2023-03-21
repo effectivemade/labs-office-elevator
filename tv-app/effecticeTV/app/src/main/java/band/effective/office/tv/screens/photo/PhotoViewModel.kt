@@ -3,6 +3,7 @@ package band.effective.office.tv.screens.photo
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import band.effective.office.tv.BuildConfig
 import band.effective.office.tv.model.domain.Resource
 import band.effective.office.tv.repository.PhotoSynologyRepository
 import band.effective.office.tv.repository.SynologyRepository
@@ -30,7 +31,7 @@ class PhotoViewModel @Inject constructor(
     }
 
     private suspend fun updatePhoto() {
-       repository.getPhotosUrl("\"/BAND/Photos/Albums/Photo_March\"").collect { result->
+       repository.getPhotosUrl("\"${BuildConfig.folderPathPhotoSynology}\"").collect { result->
            when(result) {
                is Resource.Error -> {
                    _state.update { state ->
