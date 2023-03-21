@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.model.domain.Resource
 import band.effective.office.tv.repository.PhotoSynologyRepository
+import band.effective.office.tv.repository.SynologyRepository
 import band.effective.office.tv.screens.photo.model.toUIModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PhotoViewModel @Inject constructor(
-    private val repository: PhotoSynologyRepository
+    private val repository: SynologyRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(BestPhotoState.Empty)
