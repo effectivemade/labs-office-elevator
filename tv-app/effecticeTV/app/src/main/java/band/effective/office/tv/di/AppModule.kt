@@ -14,6 +14,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.CallAdapter
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
@@ -59,11 +60,20 @@ class AppModule {
 
     @Singleton
     @Provides
+    fun provideEitherSynologyAdapterFactory(): CallAdapter.Factory =
+        EitherSynologyAdapterFactory()
+
+    @Singleton
+    @Provides
     @SynologyRetrofitClient
-    fun provideSynologyRetrofit(moshiConverterFactory: MoshiConverterFactory, client: OkHttpClient): Retrofit =
+    fun provideSynologyRetrofit(
+        moshiConverterFactory: MoshiConverterFactory,
+        client: OkHttpClient,
+        callAdapter: CallAdapter.Factory
+    ): Retrofit =
         Retrofit.Builder()
             .addConverterFactory(moshiConverterFactory)
-            .addCallAdapterFactory(EitherSynologyAdapterFactory())
+            .addCallAdapterFactory(callAdapter)
             .client(client)
             .baseUrl(BuildConfig.apiSynologyUrl)
             .build()
