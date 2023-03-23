@@ -1,5 +1,6 @@
 package band.effective.office.tv.screens.photo.components
 
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -13,15 +14,24 @@ import band.effective.office.tv.screens.photo.model.Photo
 @Composable
 fun PhotoSlideShow(
     photos: List<Photo>,
-    lazyListState: TvLazyListState = rememberTvLazyListState()
+    lazyListState: TvLazyListState = rememberTvLazyListState(),
+    modifier: Modifier = Modifier,
+    modifierForFocus: Modifier = Modifier
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        TvLazyRow(
-            state = lazyListState,
-            modifier = Modifier.fillMaxSize()) {
-            items(photos) { photo->
-                PhotoUIItem(image = photo)
-            }
+    TvLazyRow(
+        state = lazyListState,
+        modifier = modifier
+            .fillMaxSize()
+            .focusable()
+    ) {
+        items(photos) { photo ->
+            PhotoUIItem(
+                image = photo,
+                modifier = modifierForFocus
+                    .fillMaxSize()
+                    .focusable()
+            )
         }
     }
+
 }

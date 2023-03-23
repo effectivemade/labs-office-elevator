@@ -22,7 +22,6 @@ fun PhotoUIItem(image: Photo, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxSize()
-            .clickable { }
     ) {
         SubcomposeAsyncImage(
             modifier = Modifier.size(

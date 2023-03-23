@@ -1,5 +1,6 @@
 package band.effective.office.tv.screens.photo.components
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
@@ -25,9 +26,9 @@ fun ButtonControls(
         contentDescription = null,
         modifier = modifier
             .onFocusChanged { state ->
-            changeFocusState(state.isFocused)
+                Log.e("focus", "focus changed")
+                changeFocusState(state.isFocused)
         }
-            .focusable(true)
             .clickable { onClick() }
     )
 }
