@@ -9,7 +9,8 @@ data class LeaderIdEventInfo(
     val isOnline: Boolean,
     val photoUrl: String,
     val organizer: String? = null,
-    val speakers: List<String>? = null
+    val speakers: List<String>? = null,
+    val endRegDate: GregorianCalendar? = null
 ){
     constructor(errorMessege: String): this(
         id = -1,

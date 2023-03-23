@@ -11,7 +11,8 @@ fun EventInfoResponse.toLeaderIdEventInfo(): LeaderIdEventInfo =
         isOnline = data.status == "online",
         photoUrl = data.photo,
         organizer = data.organizers[0].name,
-        speakers = data.speakers.map { "${it.user.firstName} ${it.user.lastName}" }
+        speakers = data.speakers.map { "${it.user.firstName} ${it.user.lastName}" },
+        endRegDate = stringToDateTime(data.registrationDateEnd)
     )
 
 fun stringToDateTime(str: String): GregorianCalendar {
@@ -21,7 +22,7 @@ fun stringToDateTime(str: String): GregorianCalendar {
     val timeComponents = time.split(":")
     return GregorianCalendar(
         dateComponents[0].toInt(),
-        dateComponents[1].toInt(),
+        dateComponents[1].toInt()-1,
         dateComponents[2].toInt(),
         timeComponents[0].toInt(),
         timeComponents[1].toInt()

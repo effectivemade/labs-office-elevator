@@ -1,21 +1,19 @@
 package band.effective.office.tv.screen.LeaderIdEvets
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Text
@@ -71,6 +69,14 @@ fun EventCard(eventInfo: LeaderIdEventInfo, modifier: Modifier = Modifier){
                     fontSize = 10.sp,
                     fontFamily = robotoFontFamily()
                 )
+                if (eventInfo.endRegDate != null && eventInfo.endRegDate > now()){
+                    Text(
+                        text = getTimeInterval(now(),eventInfo.endRegDate),
+                        color = Color.White,
+                        fontSize = 10.sp,
+                        fontFamily = robotoFontFamily()
+                    )
+                }
             }
             Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom){
                 Image(
@@ -86,7 +92,7 @@ fun getColor(colorString: String): Color {
 }
 
 fun dateToString(dateTime: GregorianCalendar): String =
-    "${dateTime.get(Calendar.YEAR)}.${dateTime.get(Calendar.MONTH)}.${dateTime.get(Calendar.DAY_OF_MONTH)} ${dateTime.get(Calendar.HOUR_OF_DAY)}:${dateTime.get(Calendar.MINUTE)}"
+    "${dateTime.get(Calendar.YEAR)}.${dateTime.get(Calendar.MONTH)+1}.${dateTime.get(Calendar.DAY_OF_MONTH)} ${dateTime.get(Calendar.HOUR_OF_DAY)}:${dateTime.get(Calendar.MINUTE)}"
 
 fun robotoFontFamily(): FontFamily =
     FontFamily(
@@ -96,3 +102,19 @@ fun robotoFontFamily(): FontFamily =
         Font(R.font.roboto_black, weight = FontWeight.Thin),
         Font(R.font.roboto_black, weight = FontWeight.Normal, style = FontStyle.Italic)
     )
+
+fun getTimeInterval(first: GregorianCalendar, last:GregorianCalendar): String{
+    var differenceInMinuts: Long = (last.timeInMillis - first.timeInMillis) / 60000
+    val minuts = differenceInMinuts % 60
+    differenceInMinuts/=60
+    val hours = differenceInMinuts % 24
+    differenceInMinuts/=24
+    val days = differenceInMinuts
+    return "${days} дней ${hours} часов ${minuts} минут"
+}
+
+fun now(): GregorianCalendar{
+    var result = GregorianCalendar()
+    result.set(Calendar.HOUR,result.get(Calendar.HOUR)+6)
+    return result
+}

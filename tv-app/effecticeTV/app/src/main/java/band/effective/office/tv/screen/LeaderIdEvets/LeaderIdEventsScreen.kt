@@ -20,25 +20,9 @@ fun LeaderIdEventsScreen(viewModel: LeaderIdEventsViewModel = hiltViewModel()) {
             EventCard(eventInfo = state.eventsInfo[1],
                 modifier = Modifier.padding(10.dp).fillMaxWidth(0.5f)
                     .fillMaxHeight())
-            EventCard(eventInfo = state.eventsInfo[0],
+            EventCard(eventInfo = state.eventsInfo[9],
                 modifier = Modifier.padding(10.dp).fillMaxWidth()
                     .fillMaxHeight())
         }
     }
-/*
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(200.dp)
-    ){
-        if (state.isError) {
-            item {
-                Text("error")
-            }
-        }
-        if (!state.isLoad) item {
-            Text("loading")
-        }
-        items(state.eventsInfo.size) {
-            EventCard(state.eventsInfo[it])
-        }
-    }*/
 }
