@@ -11,7 +11,7 @@ fun EventInfoResponse.toLeaderIdEventInfo(): LeaderIdEventInfo =
         isOnline = data.status == "online",
         photoUrl = data.photo,
         organizer = data.organizers[0].name,
-        speakers = data.speakers.map { it.user.firstName }
+        speakers = data.speakers.map { "${it.user.firstName} ${it.user.lastName}" }
     )
 
 fun stringToDateTime(str: String): GregorianCalendar {

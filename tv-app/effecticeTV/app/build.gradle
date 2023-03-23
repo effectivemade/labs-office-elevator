@@ -90,6 +90,9 @@ dependencies {
 
     //coil
     implementation libs.coil
+
+    //qr
+    implementation libs.zxing
 }
 kapt {
     correctErrorTypes true
