@@ -29,9 +29,7 @@ fun PhotoSlideShow(
                 image = photo,
                 modifier = modifierForFocus
                     .fillMaxSize()
-                    .focusable()
             )
         }
     }
-
 }

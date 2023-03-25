@@ -17,7 +17,6 @@ fun SlideShowPhotoControl(
     currentListPosition: Int,
     countItems: Int,
     modifier: Modifier = Modifier,
-    controls: FocusRequester,
     prevButton: FocusRequester,
     nextButton: FocusRequester,
     playButton: FocusRequester,
@@ -30,12 +29,7 @@ fun SlideShowPhotoControl(
     var focusPreviousButton by remember { mutableStateOf(false) }
     var focusNextButton by remember { mutableStateOf(false) }
     var focusPlayButton by remember { mutableStateOf(false) }
-
     Row(modifier = modifier
-        .focusRequester(controls)
-        .onFocusChanged { state ->
-            Log.e("focuse", state.hasFocus.toString())
-        }
         .focusable()
     ) {
         if (currentListPosition > 0) {
@@ -44,6 +38,9 @@ fun SlideShowPhotoControl(
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .focusRequester(prevButton)
+                    .onFocusChanged { state ->
+                       focusPreviousButton = state.isFocused
+                    }
                     .focusProperties {
                         up = backToPhoto
                         previous = backToPhoto
@@ -63,6 +60,10 @@ fun SlideShowPhotoControl(
             modifier = Modifier
                 .align(Alignment.CenterVertically)
                 .focusRequester(playButton)
+                .onFocusChanged { state ->
+                    Log.e("focus", "focus changed")
+                    focusPlayButton = state.isFocused
+                }
                 .focusProperties {
                     up = backToPhoto
                     previous = backToPhoto
@@ -86,6 +87,10 @@ fun SlideShowPhotoControl(
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .focusRequester(nextButton)
+                    .onFocusChanged { state ->
+                        Log.e("focus", "focus changed")
+                        focusNextButton = state.isFocused
+                    }
                     .focusProperties {
                         up = backToPhoto
                         previous = backToPhoto

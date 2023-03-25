@@ -25,10 +25,6 @@ fun ButtonControls(
         ),
         contentDescription = null,
         modifier = modifier
-            .onFocusChanged { state ->
-                Log.e("focus", "focus changed")
-                changeFocusState(state.isFocused)
-        }
             .clickable { onClick() }
     )
 }
