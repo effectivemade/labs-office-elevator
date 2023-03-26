@@ -59,5 +59,5 @@ class NetworkModule {
     @Singleton
     @Provides
     fun provideLeaderApi(@LeaderIdRetrofitClient retrofit: Retrofit): LeaderApi =
-        retrofit.create<LeaderApi>()
+        retrofit.create()
 }
