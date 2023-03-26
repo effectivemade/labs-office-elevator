@@ -8,6 +8,7 @@ HEADER_SEARCH_PATHS = $(inherited) "${PODS_TARGET_SRCROOT}"
 OTHER_LDFLAGS = $(inherited) -framework "AppAuth" -framework "CoreGraphics" -framework "CoreText" -framework "Foundation" -framework "GTMAppAuth" -framework "GTMSessionFetcher" -framework "LocalAuthentication" -framework "SafariServices" -framework "Security" -framework "UIKit" -weak_framework "AuthenticationServices"
 PODS_BUILD_DIR = ${BUILD_DIR}
 PODS_CONFIGURATION_BUILD_DIR = ${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)
+PODS_DEVELOPMENT_LANGUAGE = ${DEVELOPMENT_LANGUAGE}
 PODS_ROOT = ${SRCROOT}
 PODS_TARGET_SRCROOT = ${PODS_ROOT}/GoogleSignIn
 PODS_XCFRAMEWORKS_BUILD_DIR = $(PODS_CONFIGURATION_BUILD_DIR)/XCFrameworkIntermediates
