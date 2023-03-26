@@ -1,21 +1,23 @@
 package band.effective.office.tv.domain.model
 
-import java.util.GregorianCalendar
+import java.util.*
 
 data class LeaderIdEventInfo(
     val id: Int,
     val name: String,
-    val dateTime: GregorianCalendar,
+    val startDateTime: GregorianCalendar,
+    val finishDateTime: GregorianCalendar,
     val isOnline: Boolean,
     val photoUrl: String,
     val organizer: String? = null,
     val speakers: List<String>? = null,
     val endRegDate: GregorianCalendar? = null
-){
-    constructor(errorMessege: String): this(
+) {
+    constructor(errorMessege: String) : this(
         id = -1,
         name = errorMessege,
-        dateTime = GregorianCalendar(),
+        startDateTime = GregorianCalendar(),
+        finishDateTime = GregorianCalendar(),
         isOnline = false,
         photoUrl = ""
     )

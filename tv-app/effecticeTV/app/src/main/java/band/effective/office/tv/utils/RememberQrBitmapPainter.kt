@@ -63,7 +63,7 @@ fun rememberQrBitmapPainter(
             for (x in 0 until matrixWidth) {
                 for (y in 0 until matrixHeight) {
                     val shouldColorPixel = bitmapMatrix?.get(x, y) ?: false
-                    val pixelColor = if (shouldColorPixel) Color.BLACK else Color.WHITE
+                    val pixelColor = if (shouldColorPixel) Color.parseColor("#282828") else Color.WHITE
 
                     newBitmap.setPixel(x, y, pixelColor)
                 }
