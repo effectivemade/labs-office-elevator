@@ -1,5 +1,9 @@
 package band.effective.office.tv.core.ui
 
+import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -16,6 +20,8 @@ import band.effective.office.tv.screens.photo.components.SlideShowPhotoControl
 fun ScreenWithControlsTemplate(
     currentListPosition: Int,
     countItems: Int,
+    isPlay: Boolean,
+    isVisible: Boolean,
     nextButton: FocusRequester,
     prevButton: FocusRequester,
     playButton: FocusRequester,
@@ -30,25 +36,33 @@ fun ScreenWithControlsTemplate(
         modifier = modifier.fillMaxSize(),
     ) {
         content()
-        SlideShowPhotoControl(
-            currentListPosition = currentListPosition,
-            countItems = countItems,
-            prevButton = prevButton,
-            nextButton = nextButton,
-            playButton = playButton,
-            backToPhoto = backToPhoto,
+        Log.d("visible", "$isVisible")
+        AnimatedVisibility(
+            visible = isVisible,
+            enter = fadeIn(),
+            exit = fadeOut(),
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(bottom = 30.dp),
-            onClickPlayButton = {
-                onClickPlayButton()
-            },
-            onClickNextItemButton = {
-                onClickNextItemButton()
-            },
-            onClickPreviousItemButton = {
-                onClickPreviousItemButton()
-            }
-        )
+                .padding(bottom = 30.dp)
+        ) {
+            SlideShowPhotoControl(
+                currentListPosition = currentListPosition,
+                countItems = countItems,
+                isPlay = isPlay,
+                prevButton = prevButton,
+                nextButton = nextButton,
+                playButton = playButton,
+                backToPhoto = backToPhoto,
+                onClickPlayButton = {
+                    onClickPlayButton()
+                },
+                onClickNextItemButton = {
+                    onClickNextItemButton()
+                },
+                onClickPreviousItemButton = {
+                    onClickPreviousItemButton()
+                }
+            )
+        }
     }
 }

@@ -16,6 +16,7 @@ import band.effective.office.tv.R
 fun SlideShowPhotoControl(
     currentListPosition: Int,
     countItems: Int,
+    isPlay: Boolean,
     modifier: Modifier = Modifier,
     prevButton: FocusRequester,
     nextButton: FocusRequester,
@@ -25,7 +26,6 @@ fun SlideShowPhotoControl(
     onClickNextItemButton: () -> Unit,
     onClickPreviousItemButton: () -> Unit,
 ) {
-    var isPlay by remember { mutableStateOf(true) }
     var focusPreviousButton by remember { mutableStateOf(false) }
     var focusNextButton by remember { mutableStateOf(false) }
     var focusPlayButton by remember { mutableStateOf(false) }
@@ -53,7 +53,6 @@ fun SlideShowPhotoControl(
                 onClick = onClickPreviousItemButton
             )
         }
-        //TODO( think about the transfer of play state)
         ButtonControls(
             isFocus = focusPlayButton,
             modifier = Modifier
@@ -73,11 +72,10 @@ fun SlideShowPhotoControl(
             idActiveIcon = if (!isPlay) R.drawable.ic_play_active else R.drawable.ic_pause_active,
             idInactiveIcon = if (!isPlay) R.drawable.ic_play_inactive else R.drawable.ic_pause_inactive,
             onClick = {
-                isPlay = !isPlay
                 onClickPlayButton()
             }
         )
-        if (currentListPosition != countItems) {
+        if (currentListPosition < countItems) {
             ButtonControls(
                 isFocus = focusNextButton,
                 modifier = Modifier
