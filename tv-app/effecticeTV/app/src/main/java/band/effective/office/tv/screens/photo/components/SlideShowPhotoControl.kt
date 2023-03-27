@@ -50,7 +50,6 @@ fun SlideShowPhotoControl(
                     .focusable(),
                 idActiveIcon = R.drawable.ic_previous_active,
                 idInactiveIcon = R.drawable.ic_previous_inactive,
-                changeFocusState = { focusPreviousButton = it },
                 onClick = onClickPreviousItemButton
             )
         }
@@ -61,7 +60,6 @@ fun SlideShowPhotoControl(
                 .align(Alignment.CenterVertically)
                 .focusRequester(playButton)
                 .onFocusChanged { state ->
-                    Log.e("focus", "focus changed")
                     focusPlayButton = state.isFocused
                 }
                 .focusProperties {
@@ -74,13 +72,11 @@ fun SlideShowPhotoControl(
                 .focusable(),
             idActiveIcon = if (!isPlay) R.drawable.ic_play_active else R.drawable.ic_pause_active,
             idInactiveIcon = if (!isPlay) R.drawable.ic_play_inactive else R.drawable.ic_pause_inactive,
-            changeFocusState = { focusPlayButton = it },
             onClick = {
                 isPlay = !isPlay
                 onClickPlayButton()
             }
         )
-
         if (currentListPosition != countItems) {
             ButtonControls(
                 isFocus = focusNextButton,
@@ -88,7 +84,6 @@ fun SlideShowPhotoControl(
                     .align(Alignment.CenterVertically)
                     .focusRequester(nextButton)
                     .onFocusChanged { state ->
-                        Log.e("focus", "focus changed")
                         focusNextButton = state.isFocused
                     }
                     .focusProperties {
@@ -100,21 +95,8 @@ fun SlideShowPhotoControl(
                     .focusable(),
                 idActiveIcon = R.drawable.ic_next_active,
                 idInactiveIcon = R.drawable.ic_next_inactive,
-                changeFocusState = { focusNextButton = it },
                 onClick = onClickNextItemButton
             )
         }
     }
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//private fun PreviewSlideShowPhotoControl() {
-//    SlideShowPhotoControl(
-//        currentListPosition = 1,
-//        countItems = 3,
-//        onClickPlayButton = { /*TODO*/ },
-//        onClickNextItemButton = { /*TODO*/ },
-//        onClickPreviousItemButton = { /*TODO*/ },
-//    )
-//}

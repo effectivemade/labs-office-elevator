@@ -15,7 +15,6 @@ fun ButtonControls(
     idActiveIcon: Int,
     idInactiveIcon: Int,
     modifier: Modifier = Modifier,
-    changeFocusState: (Boolean)-> Unit,
     onClick: () -> Unit
 ) {
     Image(
