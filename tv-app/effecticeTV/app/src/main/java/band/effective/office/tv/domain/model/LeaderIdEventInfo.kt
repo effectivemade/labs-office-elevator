@@ -13,9 +13,9 @@ data class LeaderIdEventInfo(
     val speakers: List<String>? = null,
     val endRegDate: GregorianCalendar? = null
 ) {
-    constructor(errorMessege: String) : this(
+    constructor(errorMessage: String) : this(
         id = -1,
-        name = errorMessege,
+        name = errorMessage,
         startDateTime = GregorianCalendar(),
         finishDateTime = GregorianCalendar(),
         isOnline = false,

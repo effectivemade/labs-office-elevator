@@ -14,7 +14,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.tv.foundation.lazy.list.TvLazyRow
 import band.effective.office.tv.screen.LeaderIdEvets.LeaderIdEventsScreen
-import com.example.effecticetv.ui.theme.EffecticeTVTheme
+import band.effective.office.tv.ui.theme.EffecticeTVTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

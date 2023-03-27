@@ -13,7 +13,8 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Text
-import band.effective.office.tv.utils.getColorFromHex
+import com.example.effecticetv.ui.theme.CaptionColor
+import com.example.effecticetv.ui.theme.robotoFontFamily
 
 @Composable
 fun TextWithCaptionAndIcon(
@@ -37,7 +38,7 @@ fun TextWithCaptionAndIcon(
         if (caption != "") {
             Text(
                 text = "$caption: ",
-                color = getColorFromHex("#9F9F9F"),
+                color = CaptionColor,
                 fontSize = fontSize,
                 fontFamily = robotoFontFamily()
             )

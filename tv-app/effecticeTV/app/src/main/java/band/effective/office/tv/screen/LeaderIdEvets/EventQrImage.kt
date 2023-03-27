@@ -9,8 +9,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Text
 import band.effective.office.tv.domain.model.LeaderIdEventInfo
-import band.effective.office.tv.utils.getColorFromHex
 import band.effective.office.tv.utils.rememberQrBitmapPainter
+import com.example.effecticetv.ui.theme.CaptionColor
+import com.example.effecticetv.ui.theme.robotoFontFamily
 
 @Composable
 fun EventQrImage(eventInfo: LeaderIdEventInfo) {
@@ -22,7 +23,7 @@ fun EventQrImage(eventInfo: LeaderIdEventInfo) {
         Text(
             text = "Регистрация\n" +
                     "на мероприятие",
-            color = getColorFromHex("#9F9F9F"),
+            color = CaptionColor,
             fontSize = 14.sp,
             fontFamily = robotoFontFamily(),
             modifier = Modifier.padding(start = 30.dp)

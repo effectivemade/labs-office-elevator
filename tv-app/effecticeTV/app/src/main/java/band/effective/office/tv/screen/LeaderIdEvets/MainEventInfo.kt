@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Text
 import band.effective.office.tv.R
 import band.effective.office.tv.domain.model.LeaderIdEventInfo
+import com.example.effecticetv.ui.theme.robotoFontFamily
 
 @Composable
 fun MainEventInfo(eventInfo: LeaderIdEventInfo) {
@@ -32,20 +33,24 @@ fun MainEventInfo(eventInfo: LeaderIdEventInfo) {
             modifier = Modifier.padding(vertical = 14.dp)
         )
         if (eventInfo.speakers != null && eventInfo.speakers.isNotEmpty()) {
-            var speakers = ""
-            var speakerCounter = 0
-            for (speaker in eventInfo.speakers) {
-                if (speakerCounter >= 3) break
-                speakers += "$speaker "
-                speakerCounter++
-            }
             TextWithCaptionAndIcon(
                 resourceId = R.drawable.mic,
-                text = speakers,
+                text = speakersName(eventInfo.speakers),
                 caption = "Спикеры",
                 fontSize = 12.sp,
                 iconSize = 19.dp
             )
         }
     }
+}
+
+fun speakersName(speakers: List<String>): String{
+    var result = ""
+    var speakerCounter = 0
+    for (speaker in speakers) {
+        if (speakerCounter >= 3) break
+        result += "$speaker, "
+        speakerCounter++
+    }
+    return result.trim(',',' ')
 }

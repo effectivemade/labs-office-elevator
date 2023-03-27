@@ -10,14 +10,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import band.effective.office.tv.utils.getColorFromHex
+import com.example.effecticetv.ui.theme.BackgroundColor
 
 @Composable
 fun LeaderIdEventsScreen(viewModel: LeaderIdEventsViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsState()
     if (state.isLoad) {
         Box(
-            modifier = Modifier.background(getColorFromHex("#282828"))
+            modifier = Modifier.background(BackgroundColor)
         ) {
             EventCard(
                 eventInfo = state.eventsInfo[0],
