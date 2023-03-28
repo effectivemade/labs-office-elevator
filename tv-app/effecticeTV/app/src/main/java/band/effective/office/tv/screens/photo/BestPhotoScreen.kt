@@ -27,17 +27,16 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun BestPhotoScreen( viewModel: PhotoViewModel = hiltViewModel()) {
+fun BestPhotoScreen(viewModel: PhotoViewModel = hiltViewModel()) {
     val uiState by viewModel.state.collectAsState()
 
     val scope = rememberCoroutineScope()
     val lazyListState: TvLazyListState = rememberTvLazyListState()
     val (photo, prevButton, nextButton, playButton) = remember { FocusRequester.createRefs() }
-    var controlsVisible by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
-        viewModel.effect.collect{effect ->
-            when(effect){
+        viewModel.effect.collect { effect ->
+            when (effect) {
                 is BestPhotoEffect.ChangePlayState -> {}
                 is BestPhotoEffect.ScrollToItem -> lazyListState.animateScrollToItem(effect.index)
                 is BestPhotoEffect.ScrollToNextItem -> lazyListState.animateScrollToItem(
@@ -51,7 +50,6 @@ fun BestPhotoScreen( viewModel: PhotoViewModel = hiltViewModel()) {
         currentListPosition = lazyListState.firstVisibleItemIndex,
         countItems = uiState.photos.size,
         isPlay = uiState.isPlay,
-        isVisible = controlsVisible,
         nextButton = nextButton,
         prevButton = prevButton,
         playButton = playButton,
@@ -69,23 +67,20 @@ fun BestPhotoScreen( viewModel: PhotoViewModel = hiltViewModel()) {
             )
         },
         onClickPlayButton = { viewModel.sendEvent(BestPhotoEvent.OnClickPlayButton) },
-        onClickNextItemButton = { viewModel.sendEvent(BestPhotoEvent.OnClickNextItem(
-            lazyListState.firstVisibleItemIndex
-        )) },
-        onClickPreviousItemButton = {
-            viewModel.sendEvent(BestPhotoEvent.OnClickPreviousItem(
-                lazyListState.firstVisibleItemIndex
-            ))
+        onClickNextItemButton = {
+            viewModel.sendEvent(
+                BestPhotoEvent.OnClickNextItem(
+                    lazyListState.firstVisibleItemIndex
+                )
+            )
         },
-        modifier = Modifier
-            .onKeyEvent {
-            Log.d("BUTTON", "click button ${it.key.keyCode}")
-            if ((!listOf(Key.DirectionCenter, Key.Enter).contains(it.key) ||
-                it.key.keyCode == 98784247808L) && it.type == KeyEventType.KeyDown) { // NOTE: this number for emulator dpad
-                controlsVisible = !controlsVisible
-            }
-            return@onKeyEvent true
-        }
+        onClickPreviousItemButton = {
+            viewModel.sendEvent(
+                BestPhotoEvent.OnClickPreviousItem(
+                    lazyListState.firstVisibleItemIndex
+                )
+            )
+        },
     )
 }
 
