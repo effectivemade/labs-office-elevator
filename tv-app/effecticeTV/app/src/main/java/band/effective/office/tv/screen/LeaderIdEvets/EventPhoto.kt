@@ -20,6 +20,6 @@ fun EventPhoto(eventInfo: LeaderIdEventInfo) {
         contentDescription = eventInfo.name,
         Modifier
             .fillMaxHeight()
-            .padding(bottom = 10.dp),
+            .padding(start = 20.dp),
     )
 }

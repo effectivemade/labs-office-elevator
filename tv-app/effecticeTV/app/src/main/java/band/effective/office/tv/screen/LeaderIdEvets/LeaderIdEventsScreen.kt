@@ -10,6 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import band.effective.office.tv.screen.Load.LoadScreen
 import com.example.effecticetv.ui.theme.BackgroundColor
 
 @Composable
@@ -27,5 +28,7 @@ fun LeaderIdEventsScreen(viewModel: LeaderIdEventsViewModel = hiltViewModel()) {
             )
         }
 
+    } else {
+        LoadScreen("Events")
     }
 }

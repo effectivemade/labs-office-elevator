@@ -15,7 +15,7 @@ import com.example.effecticetv.ui.theme.robotoFontFamily
 
 @Composable
 fun EventQrImage(eventInfo: LeaderIdEventInfo) {
-    Row() {
+    Row(Modifier.padding(start = 20.dp)) {
         Image(
             painter = rememberQrBitmapPainter("https://leader-id.ru/events/${eventInfo.id}"),
             contentDescription = eventInfo.name,

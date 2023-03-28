@@ -1,0 +1,66 @@
+package band.effective.office.tv.screen.Load
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.Text
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import band.effective.office.tv.screen.LeaderIdEvets.TextWithCaptionAndIcon
+import com.example.effecticetv.ui.theme.BackgroundColor
+import com.example.effecticetv.ui.theme.robotoFontFamily
+import kotlinx.coroutines.delay
+import band.effective.office.tv.R
+
+@Composable
+fun LoadScreen(){
+    var ticks by remember { mutableStateOf(0) }
+    LaunchedEffect(Unit) {
+        while(true) {
+            delay(500)
+            ticks++
+        }
+    }
+    Column(
+        modifier = Modifier.background(BackgroundColor),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+        TextWithCaptionAndIcon(
+            resourceId = R.drawable.logo,
+            text = "effective",
+            fontSize = 60.sp,
+            iconSize = 50.dp
+        )
+        LoadCircle(modifier = Modifier.size(100.dp),ticks)
+    }
+}
+
+@Composable
+fun LoadScreen(text: String){
+    var ticks by remember { mutableStateOf(0) }
+    LaunchedEffect(Unit) {
+        while(true) {
+            delay(500)
+            ticks++
+        }
+    }
+    Column(
+        modifier = Modifier.background(BackgroundColor),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+        Text(
+            text = text,
+            color = Color.White,
+            fontSize = 50.sp,
+            fontFamily = robotoFontFamily()
+        )
+        LoadCircle(modifier = Modifier.size(100.dp),ticks)
+    }
+}
