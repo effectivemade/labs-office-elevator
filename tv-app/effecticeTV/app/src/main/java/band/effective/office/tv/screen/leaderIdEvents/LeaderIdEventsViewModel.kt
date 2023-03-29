@@ -44,7 +44,7 @@ class LeaderIdEventsViewModel @Inject constructor(
                         eventsInfo = it.eventsInfo + event
                     )
                 }
-                else
+            else
                 mutableState.update {
                     it.copy(
                         isLoad = true,
