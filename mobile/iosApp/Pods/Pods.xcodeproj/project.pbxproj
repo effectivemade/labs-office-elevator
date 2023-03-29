@@ -9,9 +9,9 @@
 /* Begin PBXAggregateTarget section */
 		8777C9F6889E59EFFD631D80AEE9048B /* shared */ = {
 			isa = PBXAggregateTarget;
-			buildConfigurationList = E2C9A712B98CC1C34C01BB3848F6503D /* Build configuration list for PBXAggregateTarget "shared" */;
+			buildConfigurationList = 0FDEA61196E18F9CAA5AA1C3D73A7686 /* Build configuration list for PBXAggregateTarget "shared" */;
 			buildPhases = (
-				00BA0ED4FF6D36FA45867E91C75D970F /* [CP-User] Build shared */,
+				6E02AB3659EFC9BC14AE4DE55EA2FB9C /* [CP-User] Build shared */,
 			);
 			dependencies = (
 			);
@@ -1418,7 +1418,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		00BA0ED4FF6D36FA45867E91C75D970F /* [CP-User] Build shared */ = {
+		6E02AB3659EFC9BC14AE4DE55EA2FB9C /* [CP-User] Build shared */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1426,7 +1426,7 @@
 			name = "[CP-User] Build shared";
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "                if [ \"YES\" = \"$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED\" ]; then\n                  echo \"Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \"YES\"\"\n                  exit 0\n                fi\n                set -ev\n                REPO_ROOT=\"$PODS_TARGET_SRCROOT\"\n                \"$REPO_ROOT/../../../../../../../private/var/folders/xs/bh5ck7bs3tv5hp49wtsbrkyr0000gn/T/wrap4loc/gradlew\" -p \"$REPO_ROOT\" $KOTLIN_PROJECT_PATH:syncFramework                     -Pkotlin.native.cocoapods.platform=$PLATFORM_NAME                     -Pkotlin.native.cocoapods.archs=\"$ARCHS\"                     -Pkotlin.native.cocoapods.configuration=\"$CONFIGURATION\"\n";
+			shellScript = "                if [ \"YES\" = \"$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED\" ]; then\n                  echo \"Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \"YES\"\"\n                  exit 0\n                fi\n                set -ev\n                REPO_ROOT=\"$PODS_TARGET_SRCROOT\"\n                \"$REPO_ROOT/../../../../../../../private/var/folders/xs/bh5ck7bs3tv5hp49wtsbrkyr0000gn/T/wrap24133loc/gradlew\" -p \"$REPO_ROOT\" $KOTLIN_PROJECT_PATH:syncFramework                     -Pkotlin.native.cocoapods.platform=$PLATFORM_NAME                     -Pkotlin.native.cocoapods.archs=\"$ARCHS\"                     -Pkotlin.native.cocoapods.configuration=\"$CONFIGURATION\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1773,6 +1773,25 @@
 			};
 			name = Release;
 		};
+		8629756A3F9EA471F8E20919E394CF78 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 35548E3BD8DA30925E8FE97E67B84868 /* shared.release.xcconfig */;
+			buildSettings = {
+				"ARCHS[sdk=iphonesimulator*]" = x86_64;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		8C20B4DC49AAE80A57103552AB4053E4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 466CD5F063C773FDBC08BE7148FAC530 /* GoogleSignIn.debug.xcconfig */;
@@ -1904,24 +1923,6 @@
 			};
 			name = Release;
 		};
-		996EB10E0B779E9CA37C4FD5EDE9F149 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 95B09EA82E7AF9ACCCCAF3E55C859116 /* shared.debug.xcconfig */;
-			buildSettings = {
-				"ARCHS[sdk=iphonesimulator*]" = x86_64;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
 		9A4DFA1244D965595C2334419DDA7E04 /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 404F38E55A727EF1786B49C2A972300C /* GoogleSignIn.release.xcconfig */;
@@ -2041,25 +2042,6 @@
 			};
 			name = Debug;
 		};
-		C336A7B6792A64408410D65DE1940185 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 35548E3BD8DA30925E8FE97E67B84868 /* shared.release.xcconfig */;
-			buildSettings = {
-				"ARCHS[sdk=iphonesimulator*]" = x86_64;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
 		C787002FA4C4FE6BC561E4294D831DFB /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CD3A3768FD2D7080E23D3D6065E940D5 /* AppAuth.release.xcconfig */;
@@ -2095,6 +2077,24 @@
 				VERSION_INFO_PREFIX = "";
 			};
 			name = Release;
+		};
+		F2AE3F62F9E1734F8D3D20077CC41ABF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 95B09EA82E7AF9ACCCCAF3E55C859116 /* shared.debug.xcconfig */;
+			buildSettings = {
+				"ARCHS[sdk=iphonesimulator*]" = x86_64;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
 		};
 		F860E28601606C7D869A47A3345B4BD3 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -2171,6 +2171,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		0FDEA61196E18F9CAA5AA1C3D73A7686 /* Build configuration list for PBXAggregateTarget "shared" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F2AE3F62F9E1734F8D3D20077CC41ABF /* Debug */,
+				8629756A3F9EA471F8E20919E394CF78 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		1166072F19D605AE7E4B016DD27CFA21 /* Build configuration list for PBXNativeTarget "GTMAppAuth" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -2221,15 +2230,6 @@
 			buildConfigurations = (
 				3116465253E5D2735E81E263946C254A /* Debug */,
 				C787002FA4C4FE6BC561E4294D831DFB /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		E2C9A712B98CC1C34C01BB3848F6503D /* Build configuration list for PBXAggregateTarget "shared" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				996EB10E0B779E9CA37C4FD5EDE9F149 /* Debug */,
-				C336A7B6792A64408410D65DE1940185 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

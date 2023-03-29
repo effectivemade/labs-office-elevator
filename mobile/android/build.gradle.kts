@@ -1,8 +1,17 @@
+import java.io.FileInputStream
+import java.util.*
+
 plugins {
     id("com.android.application")
     kotlin("android")
     id("kotlin-parcelize")
 }
+
+val keystorePropertiesFile = rootProject.file("keystore/keystore.properties")
+
+val keystoreProperties = Properties()
+
+keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 
 android {
     compileSdk = ConfigData.Android.compileSdkVersion
@@ -24,11 +33,31 @@ android {
         compose = true
     }
 
+    signingConfigs {
+        getByName("debug") {
+            keyPassword = "android"
+            storeFile = file("${rootDir}/signing/debug.keystore")
+            storePassword = "android"
+        }
+        create("release") {
+            keyAlias = keystoreProperties["keyAlias"] as String
+            keyPassword = keystoreProperties["keyPassword"] as String
+            storeFile = file(rootDir.path.plus("/").plus(keystoreProperties["storeFile"] as String))
+            storePassword = keystoreProperties["storePassword"] as String
+        }
+    }
+
     buildTypes {
+        getByName("release") {
+            signingConfig = signingConfigs.getByName("release")
+            isDebuggable = false
+            isMinifyEnabled = true
+        }
         getByName("debug") {
             signingConfig = signingConfigs.getByName("debug")
             isDebuggable = true
         }
+
     }
     lintOptions {
         isCheckReleaseBuilds = false
@@ -36,13 +65,6 @@ android {
 
     packagingOptions {
         exclude("META-INF/*")
-    }
-    signingConfigs {
-        getByName("debug") {
-            keyPassword = "android"
-            storeFile = file("${rootDir}/signing/debug.keystore")
-            storePassword = "android"
-        }
     }
 }
 
