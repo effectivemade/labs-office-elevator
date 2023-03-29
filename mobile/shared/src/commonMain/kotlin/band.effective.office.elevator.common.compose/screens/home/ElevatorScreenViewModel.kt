@@ -3,15 +3,13 @@ package band.effective.office.elevator.common.compose.screens.home
 import band.effective.office.elevator.common.compose.network.ktorClient
 import band.effective.office.elevator.common.compose.screens.login.GoogleAuthorization
 import com.adeo.kviewmodel.BaseSharedViewModel
-import io.github.aakira.napier.Napier
 import io.ktor.client.request.*
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
+@OptIn(FlowPreview::class)
 internal class ElevatorScreenViewModel :
     BaseSharedViewModel<ElevatorState, ElevatorAction, ElevatorEvent>(initialState = ElevatorState()) {
 
@@ -23,8 +21,8 @@ internal class ElevatorScreenViewModel :
 
     init {
         viewModelScope.launch {
-            Napier.d { "ElevatorScreen create viewmodel" }
-            mutableButtonStateFlow.collectLatest { state ->
+            mutableButtonStateFlow.debounce(1000).collectLatest { state ->
+                delay(500)
                 if (state) {
                     GoogleAuthorization.performWithFreshToken(
                         action = { token ->
@@ -62,7 +60,7 @@ internal class ElevatorScreenViewModel :
             when (response.status.value) {
                 in 200..299 -> {
                     mutableMessageStateFlow.update { "Success" }
-                    delay(1500)
+                    delay(500)
                     mutableMessageStateFlow.update { "" }
                     mutableButtonStateFlow.update { false }
                 }
