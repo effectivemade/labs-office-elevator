@@ -1,4 +1,4 @@
-package band.effective.office.tv.screen.Load
+package band.effective.office.tv.screen.load
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box

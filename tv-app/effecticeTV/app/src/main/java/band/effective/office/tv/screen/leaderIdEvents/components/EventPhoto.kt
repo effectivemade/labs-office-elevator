@@ -1,4 +1,4 @@
-package band.effective.office.tv.screen.LeaderIdEvets
+package band.effective.office.tv.screen.leaderIdEvents
 
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding

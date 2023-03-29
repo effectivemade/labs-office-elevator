@@ -1,4 +1,4 @@
-package band.effective.office.tv.screen.LeaderIdEvets
+package band.effective.office.tv.screen.leaderIdEvents
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -10,7 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import band.effective.office.tv.screen.Load.LoadScreen
+import band.effective.office.tv.screen.load.LoadScreen
 import com.example.effecticetv.ui.theme.BackgroundColor
 
 @Composable
@@ -21,7 +21,7 @@ fun LeaderIdEventsScreen(viewModel: LeaderIdEventsViewModel = hiltViewModel()) {
             modifier = Modifier.background(BackgroundColor)
         ) {
             EventCard(
-                eventInfo = state.eventsInfo[0],
+                eventInfo = state.eventsInfo[state.curentEvent],
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(start = 30.dp, top = 40.dp, bottom = 50.dp)

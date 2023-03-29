@@ -13,8 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.tv.foundation.lazy.list.TvLazyRow
-import band.effective.office.tv.screen.LeaderIdEvets.LeaderIdEventsScreen
-import band.effective.office.tv.screen.Load.LoadScreen
+import band.effective.office.tv.screen.leaderIdEvents.LeaderIdEventsScreen
+import band.effective.office.tv.screen.load.LoadScreen
 import band.effective.office.tv.ui.theme.EffecticeTVTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -43,21 +43,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-@Composable
-fun Greeting(name: String) {
-    TvLazyRow (
-        contentPadding = PaddingValues(16.dp),
-        userScrollEnabled = true
-        ){
-        items(100) {
-            Image(
-                modifier = Modifier.clickable {  },
-                painter = painterResource(id = R.drawable.ic_launcher_background),
-                contentDescription = ""
-            )
-            Spacer(modifier = Modifier.width(32.dp))
-        }
-    }
-}
-
