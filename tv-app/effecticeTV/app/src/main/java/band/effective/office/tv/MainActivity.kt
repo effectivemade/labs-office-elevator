@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.tv.foundation.lazy.list.TvLazyRow
-import band.effective.office.tv.screen.LeaderIdEvets.LeaderIdEventsScreen
+import band.effective.office.tv.screen.leaderIdEvents.LeaderIdEventsScreen
 import band.effective.office.tv.screen.Load.LoadScreen
 import band.effective.office.tv.ui.theme.EffecticeTVTheme
 import dagger.hilt.android.AndroidEntryPoint

@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import band.effective.office.tv.screen.LeaderIdEvets.TextWithCaptionAndIcon
+import band.effective.office.tv.screen.leaderIdEvents.TextWithCaptionAndIcon
 import com.example.effecticetv.ui.theme.BackgroundColor
 import com.example.effecticetv.ui.theme.robotoFontFamily
 import kotlinx.coroutines.delay

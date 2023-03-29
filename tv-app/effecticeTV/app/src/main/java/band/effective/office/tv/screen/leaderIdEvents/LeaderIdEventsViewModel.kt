@@ -1,4 +1,4 @@
-package band.effective.office.tv.screen.LeaderIdEvets
+package band.effective.office.tv.screen.leaderIdEvents
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,7 +25,24 @@ class LeaderIdEventsViewModel @Inject constructor(val leaderIdEventsInfoReposito
             if (event.id == -1) mutableState.update {
                 it.copy(isError = true, eventsInfo = it.eventsInfo + event)
             }
-            else mutableState.update { it.copy(isLoad = true, eventsInfo = it.eventsInfo + event) }
+            else mutableState.update { it.copy(isLoad = true, eventsInfo = it.eventsInfo + event, curentEvent = 0) }
+        }
+    }
+    fun sendEvent(event: LeaderIdScreenEvents){
+        when(event){
+            is LeaderIdScreenEvents.OnClickPlayButton -> {
+                mutableState.update { it.copy(isPlay = !it.isPlay) }
+            }
+            is LeaderIdScreenEvents.OnClickNextItem -> {
+                if (state.value.curentEvent + 1 < state.value.eventsInfo.size){
+                    mutableState.update { it.copy(curentEvent = it.curentEvent + 1) }
+                }
+            }
+            is LeaderIdScreenEvents.OnClickPreviousItem -> {
+                if (state.value.curentEvent - 1 > 0){
+                    mutableState.update { it.copy(curentEvent = it.curentEvent - 1) }
+                }
+            }
         }
     }
 }
