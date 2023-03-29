@@ -38,14 +38,21 @@ class LeaderIdEventsViewModel @Inject constructor(
             if (event.id == -1) mutableState.update {
                 it.copy(isError = true, eventsInfo = it.eventsInfo + event)
             }
-            else mutableState.update {
-                it.copy(
-                    isLoad = true,
-                    eventsInfo = it.eventsInfo + event,
-                    curentEvent = 0,
-                    isPlay = true
-                )
-            }
+            else if (state.value.isLoad)
+                mutableState.update {
+                    it.copy(
+                        eventsInfo = it.eventsInfo + event
+                    )
+                }
+                else
+                mutableState.update {
+                    it.copy(
+                        isLoad = true,
+                        eventsInfo = it.eventsInfo + event,
+                        curentEvent = 0,
+                        isPlay = true
+                    )
+                }
         }
     }
 
