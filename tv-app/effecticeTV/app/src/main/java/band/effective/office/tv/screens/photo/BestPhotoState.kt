@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 
 data class BestPhotoState(
-    val isSuccess: Boolean = false,
+    val isSuccess: Boolean = true,
     val photos: List<Photo> = listOf(),
     val error: String = "",
     val isPlay: Boolean = true,

@@ -1,6 +1,5 @@
-package band.effective.office.tv.screens.photo.components
+package band.effective.office.tv.core.ui.screen_with_controls.components
 
-import android.util.Log
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.*
@@ -11,6 +10,7 @@ import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import band.effective.office.tv.R
+import band.effective.office.tv.core.ui.screen_with_controls.components.ButtonControls
 
 @Composable
 fun SlideShowPhotoControl(
@@ -43,6 +43,7 @@ fun SlideShowPhotoControl(
                     }
                     .focusProperties {
                         up = backToPhoto
+                        down = backToPhoto
                         previous = backToPhoto
                         right = playButton
                         next = playButton
@@ -63,6 +64,7 @@ fun SlideShowPhotoControl(
                 }
                 .focusProperties {
                     up = backToPhoto
+                    down = backToPhoto
                     previous = backToPhoto
                     left = prevButton
                     right = nextButton
@@ -71,9 +73,8 @@ fun SlideShowPhotoControl(
                 .focusable(),
             idActiveIcon = if (!isPlay) R.drawable.ic_play_active else R.drawable.ic_pause_active,
             idInactiveIcon = if (!isPlay) R.drawable.ic_play_inactive else R.drawable.ic_pause_inactive,
-            onClick = {
-                onClickPlayButton()
-            }
+            onClick = onClickPlayButton
+
         )
         if (currentListPosition < countItems) {
             ButtonControls(
@@ -86,6 +87,7 @@ fun SlideShowPhotoControl(
                     }
                     .focusProperties {
                         up = backToPhoto
+                        down = backToPhoto
                         previous = backToPhoto
                         right = prevButton
                         left = playButton
