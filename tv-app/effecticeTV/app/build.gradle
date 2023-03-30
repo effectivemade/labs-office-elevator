@@ -29,10 +29,6 @@ android {
         buildConfigField ("String", "synologyLogin", localProperties['synologyLogin'])
         buildConfigField ("String", "synologyPassword", localProperties['synologyPassword'])
         buildConfigField ("String", "folderPathPhotoSynology", localProperties['folderPathPhotoSynology'])
-
-        buildConfigField ("int", "slideShowPeriod", "3")
-
-
     }
 
     buildTypes {
