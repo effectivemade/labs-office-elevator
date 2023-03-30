@@ -37,6 +37,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
                         GoogleAuthorization.shared.onSignInFailure(KotlinException(message: error?.localizedDescription))
                     return
                   }
+                    let dimension = round(100 * UIScreen.main.scale)
+                    let imageUrl = signInResult?.user.profile?.imageURL(withDimension: UInt(dimension))?.absoluteURL.absoluteString
+                    let username = signInResult?.user.profile?.givenName
+                    let email = signInResult?.user.profile?.email
+                    GoogleAuthorization.shared.token = signInResult?.user.idToken?.tokenString
+                    GoogleAuthorization.shared.googleAccountUser = GoogleAccountUser(imageUrl: imageUrl, username: username, email: email)
                     GoogleAuthorization.shared.onSignInSuccess()
                 }
         }
