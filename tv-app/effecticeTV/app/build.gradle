@@ -24,7 +24,6 @@ android {
         }
 
         buildConfigField ("String", "apiLeaderUrl", localProperties['apiLeaderUrl'])
-        buildConfigField ("int", "slideShowPeriod", localProperties['slideShowPeriod'])
     }
 
     buildTypes {

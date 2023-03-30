@@ -28,7 +28,7 @@ class TimerSlideShow @Inject constructor() {
             while (isActive && isPlay){
                 val startTime = System.currentTimeMillis()
                 var currentTime = System.currentTimeMillis()
-                while (isActive && currentTime - startTime < BuildConfig.slideShowPeriod * 1000)
+                while (isActive && currentTime - startTime < SliderProperties.slideShowPeriod * 1000)
                     currentTime = System.currentTimeMillis()
                 if (isActive && isPlay)
                     callbackToEnd()
@@ -42,7 +42,7 @@ class TimerSlideShow @Inject constructor() {
             while (isActive && isPlay){
                 val startTime = System.currentTimeMillis()
                 var currentTime = System.currentTimeMillis()
-                while (isActive && currentTime - startTime < BuildConfig.slideShowPeriod * 1000)
+                while (isActive && currentTime - startTime < SliderProperties.slideShowPeriod * 1000)
                     currentTime = System.currentTimeMillis()
                 if (isActive && isPlay)
                     callbackToEnd()
