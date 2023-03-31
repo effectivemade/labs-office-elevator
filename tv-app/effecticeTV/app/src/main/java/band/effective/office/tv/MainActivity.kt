@@ -10,6 +10,7 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import band.effective.office.tv.screen.load.LoadScreen
 import band.effective.office.tv.screen.menu.MenuScreen
+import band.effective.office.tv.screen.navigation.NavigationHost
 import com.example.effecticetv.ui.theme.BackgroundColor
 import com.example.effecticetv.ui.theme.EffecticeTVTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,7 +25,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    MenuScreen(Modifier.background(BackgroundColor))
+                    NavigationHost()
                 }
             }
         }
