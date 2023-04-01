@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.unit.dp
-import com.example.effecticetv.ui.theme.BackgroundColor
+import band.effective.office.tv.ui.theme.BackgroundColor
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin

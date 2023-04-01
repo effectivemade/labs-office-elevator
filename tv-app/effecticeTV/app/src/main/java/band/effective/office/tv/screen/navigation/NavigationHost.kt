@@ -1,31 +1,39 @@
 package band.effective.office.tv.screen.navigation
 
-import androidx.compose.foundation.background
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import band.effective.office.tv.screen.menu.MenuScreen
-import com.example.effecticetv.ui.theme.BackgroundColor
 
 @Composable
 fun NavigationHost() {
     val navController = rememberNavController()
-    val screensList = listOf("Events", "Best Photo", "History")
-    NavHost(navController = navController, startDestination = "menu") {
+    //TODO(Artem Gruzdev): replace title screen in string res
+    val screensList = listOf(
+        NavigationModel(
+            title = "Events",
+            screen = Screen.Events
+        ),
+        NavigationModel(
+            title = "Best Photo",
+            screen = Screen.BestPhoto),
+        NavigationModel(
+            screen = Screen.History,
+            title = "History"
+        )
+    )
+    NavHost(navController = navController, startDestination = Screen.Main.name) {
         // TODO(Maksim Mishenko): replace text with desired screen
-        composable("menu") {
+        composable(Screen.Main.name) {
             MenuScreen(
-                modifier = Modifier.background(BackgroundColor),
                 itemsList = screensList,
-                onNavigate = {
-                    navController.navigate(it)
-                })
+                navController = navController
+            )
         }
-        composable("Events") { Text("Events") }
-        composable("Best Photo") { Text("Best Photo") }
-        composable("History") { Text("History") }
+        composable(Screen.Events.name) { Text("Events") }
+        composable(Screen.BestPhoto.name) { Text("Best Photo") }
+        composable(Screen.History.name) { Text("History") }
     }
 }
