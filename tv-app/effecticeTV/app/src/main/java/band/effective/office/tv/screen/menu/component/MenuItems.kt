@@ -35,6 +35,7 @@ fun MenuItem(
                 else 1f
         }
         .background(animatedBackgroundColor)
+        .fillMaxHeight(if (isFocus) 0.95f else 0.9f)
         .onFocusChanged {
             isFocus = it.isFocused
             onFocus(it.isFocused)
