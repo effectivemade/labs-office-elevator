@@ -21,10 +21,12 @@ fun MenuItem(
     text: String, modifier: Modifier = Modifier, onClick: () -> Unit, onFocus: (Boolean) -> Unit
 ) {
     var isFocus by remember { mutableStateOf(false) }
+
     val animatedBackgroundColor by animateColorAsState(
         targetValue =
         if (isFocus) VividTangelo
         else QuickSilver)
+
     Box(modifier = modifier
         .graphicsLayer {
             scaleX =
@@ -40,7 +42,8 @@ fun MenuItem(
             isFocus = it.isFocused
             onFocus(it.isFocused)
         }
-        .clickable { onClick() }, contentAlignment = Alignment.Center
+        .clickable { onClick() },
+        contentAlignment = Alignment.Center
     ) {
         androidx.tv.material3.Text(
             text = text, color = Color.White, fontSize = 30.sp, fontFamily = robotoFontFamily()

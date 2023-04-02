@@ -1,5 +1,6 @@
 package band.effective.office.tv.screen.menu.component
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -14,6 +15,7 @@ import com.example.effecticetv.ui.theme.robotoFontFamily
 import java.text.SimpleDateFormat
 import java.util.*
 
+@SuppressLint("SimpleDateFormat")
 @Composable
 fun TimeComponent(){
     Box(

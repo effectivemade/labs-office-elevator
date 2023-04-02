@@ -10,14 +10,14 @@ import band.effective.office.tv.screen.menu.MenuScreen
 @Composable
 fun NavigationHost() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "menu") {
-        composable("menu") {
+    NavHost(navController = navController, startDestination = Screen.Menu.name) {
+        composable(Screen.Menu.name) {
             MenuScreen(
                 itemsList = NavigationModel.screensList,
                 navController = navController
             )
         }
-        for (screen in NavigationModel.screensList){
+        NavigationModel.screensList.forEach{ screen->
             composable(screen.screen.name) {screen.screenFun()}
         }
     }

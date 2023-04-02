@@ -14,9 +14,9 @@ data class NavigationModel(
 ) {
     companion object {
         val screensList = listOf(
-            NavigationModel(Screen.Events,@Composable { LeaderIdEventScreen() }, "Events"),
-            NavigationModel(Screen.BestPhoto,@Composable { BestFotoScreen() }, "Best Photo"),
-            NavigationModel(Screen.History,@Composable { HistoryScreen() }, "History")
+            NavigationModel(Screen.Events, @Composable { LeaderIdEventScreen() }, "Events"),
+            NavigationModel(Screen.BestPhoto, @Composable { BestFotoScreen() }, "Best Photo"),
+            NavigationModel(Screen.History, @Composable { HistoryScreen() }, "History")
         )
     }
 }
