@@ -10,6 +10,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Text
+import com.example.effecticetv.ui.theme.robotoFontFamily
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
 fun TimeComponent(){
@@ -20,9 +23,10 @@ fun TimeComponent(){
         contentAlignment = Alignment.TopEnd
     ) {
         Text(
-            text = "Время",
+            text = SimpleDateFormat("EEE, d MMMM HH:mm").format(GregorianCalendar().time),
             color = Color.White,
-            fontSize = 20.sp
+            fontSize = 20.sp,
+            fontFamily = robotoFontFamily()
         )
     }
 }
