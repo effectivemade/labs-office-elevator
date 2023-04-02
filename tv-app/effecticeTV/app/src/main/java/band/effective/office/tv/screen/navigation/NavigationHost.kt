@@ -1,6 +1,5 @@
 package band.effective.office.tv.screen.navigation
 
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,8 +16,8 @@ fun NavigationHost() {
                 navController = navController
             )
         }
-        NavigationModel.screensList.forEach{ screen->
-            composable(screen.screen.name) {screen.screenFun()}
+        NavigationModel.screensList.forEach { screen ->
+            composable(screen.screen.name) { screen.screenFun() }
         }
     }
 }

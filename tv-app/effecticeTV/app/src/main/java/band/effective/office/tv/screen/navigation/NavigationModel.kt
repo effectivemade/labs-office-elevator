@@ -1,7 +1,9 @@
 package band.effective.office.tv.screen.navigation
 
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import band.effective.office.tv.screen.bestphoto.BestPhotoScreen
+import band.effective.office.tv.screen.history.HistoryScreen
+import band.effective.office.tv.screen.leaderIdEvets.LeaderIdEventScreen
 
 // TODO(Maksim Mishenko): paste screens
 
@@ -15,23 +17,8 @@ data class NavigationModel(
     companion object {
         val screensList = listOf(
             NavigationModel(Screen.Events, @Composable { LeaderIdEventScreen() }, "Events"),
-            NavigationModel(Screen.BestPhoto, @Composable { BestFotoScreen() }, "Best Photo"),
+            NavigationModel(Screen.BestPhoto, @Composable { BestPhotoScreen() }, "Best Photo"),
             NavigationModel(Screen.History, @Composable { HistoryScreen() }, "History")
         )
     }
-}
-
-@Composable
-fun LeaderIdEventScreen() {
-    Text(text = "Events")
-}
-
-@Composable
-fun BestFotoScreen() {
-    Text("Best Photo")
-}
-
-@Composable
-fun HistoryScreen() {
-    Text("History")
 }
