@@ -54,7 +54,7 @@ fun MenuScreen(
                 coroutineScope.launch { scrollState.animateScrollTo(0) }
             }
             Spacer(Modifier.height(20.dp))
-            MenuComponent(itemsList = itemsList, onNavigate = { navController.navigate(it) })
+            MenuComponent(itemsList = itemsList, onNavigate = { navController.navigate(it.name) })
         }
     }
     TimeComponent()

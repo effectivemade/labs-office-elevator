@@ -18,7 +18,7 @@ fun NavigationHost() {
             )
         }
         for (screen in NavigationModel.screensList){
-            composable(screen.title) {screen.screen()}
+            composable(screen.screen.name) {screen.screenFun()}
         }
     }
 }
