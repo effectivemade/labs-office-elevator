@@ -4,7 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,14 +18,13 @@ import band.effective.office.tv.screen.menu.component.ButtonAutoplay
 import band.effective.office.tv.screen.menu.component.MenuComponent
 import band.effective.office.tv.screen.menu.component.TimeComponent
 import band.effective.office.tv.screen.navigation.NavigationModel
-import band.effective.office.tv.ui.theme.BackgroundColor
+import band.effective.office.tv.ui.theme.CharlestonGreen
 import com.example.effecticetv.ui.theme.robotoFontFamily
 import kotlinx.coroutines.launch
 
 @Composable
 fun MenuScreen(
-    itemsList: List<NavigationModel>,
-    navController: NavController = rememberNavController()
+    itemsList: List<NavigationModel>, navController: NavController = rememberNavController()
 ) {
     //TODO(Artem Gruzdev) replace text in str res and use theme. Also do scroll
 
@@ -34,7 +34,7 @@ fun MenuScreen(
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundColor)
+            .background(CharlestonGreen)
             .verticalScroll(scrollState)
     ) {
         val boxScope = this
@@ -54,9 +54,7 @@ fun MenuScreen(
                 coroutineScope.launch { scrollState.animateScrollTo(0) }
             }
             Spacer(Modifier.height(20.dp))
-            MenuComponent(
-                itemsList = itemsList,
-                onNavigate = { navController.navigate(it) })
+            MenuComponent(itemsList = itemsList, onNavigate = { navController.navigate(it) })
         }
     }
     TimeComponent()
