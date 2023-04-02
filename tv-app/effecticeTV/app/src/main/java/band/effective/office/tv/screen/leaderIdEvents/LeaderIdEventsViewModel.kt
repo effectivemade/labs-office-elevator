@@ -37,8 +37,7 @@ class LeaderIdEventsViewModel @Inject constructor(
     fun load() = viewModelScope.launch {
         leaderIdEventsInfoRepository.getEventsInfo(100).collect { event ->
             if (event.id == -1) mutableState.update {
-                Log.e("errerer",event.name)
-                it.copy(isError = true, eventsInfo = it.eventsInfo + event)
+                it.copy(isError = true, eventsInfo = it.eventsInfo + event, errorText = it.errorText + "${event.name}\n")
             }
             else if (state.value.isLoad)
                 mutableState.update {

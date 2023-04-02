@@ -9,7 +9,7 @@ fun EventInfoResponse.toLeaderIdEventInfo(): LeaderIdEventInfo = LeaderIdEventIn
     startDateTime = stringToDateTime(data.dateStart),
     finishDateTime = stringToDateTime(data.dateEnd),
     isOnline = data.status == "online",
-    photoUrl = data.photo,
+    photoUrl = data.photo?:"",
     organizer = data.organizers[0].name,
     speakers = data.speakers.map { "${it.user.firstName} ${it.user.lastName}" },
     endRegDate = stringToDateTime(data.registrationDateEnd)
