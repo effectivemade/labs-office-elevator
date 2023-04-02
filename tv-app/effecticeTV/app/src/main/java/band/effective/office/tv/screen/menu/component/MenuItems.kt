@@ -15,6 +15,8 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.effecticetv.ui.theme.robotoFontFamily
 
 @Composable
 fun MenuItem(
@@ -34,12 +36,11 @@ fun MenuItem(
     Box(
         modifier = modifier
             .graphicsLayer {
-                Log.d("CALL", "call")
                 scaleX =
-                    if (isFocus) 1.25f
+                    if (isFocus) 1.1f
                     else 1f
                 scaleY =
-                    if (isFocus) 1.25f
+                    if (isFocus) 1.1f
                     else 1f
             }
             .background(animatedBackgroundColor)
@@ -53,6 +54,9 @@ fun MenuItem(
     ) {
         Text(
             text = text,
+            fontSize = 40.sp,
+            color = Color.White,
+            fontFamily = robotoFontFamily()
         )
     }
 }

@@ -27,6 +27,7 @@ fun NavigationHost() {
     NavHost(navController = navController, startDestination = Screen.Main.name) {
         // TODO(Maksim Mishenko): replace text with desired screen
         composable(Screen.Main.name) {
+
             MenuScreen(
                 itemsList = screensList,
                 navController = navController
