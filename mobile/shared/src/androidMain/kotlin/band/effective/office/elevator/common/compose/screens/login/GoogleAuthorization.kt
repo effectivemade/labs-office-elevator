@@ -59,6 +59,7 @@ actual object GoogleAuthorization {
 
     actual fun signOut() {
         val client = GoogleSignIn.getClient(Android.applicationContext.applicationContext, gso)
+        this.token = null
         client.signOut()
     }
 

@@ -121,20 +121,17 @@ object Dependencies {
         const val logger = "io.github.aakira:napier:${Versions.napier}"
     }
 
-    const val precompose = "moe.tlaster:precompose:${Versions.precompose}"
-
-
     object Google {
         private const val VERSION = "20.4.0"
         const val SignIn = "com.google.android.gms:play-services-auth:$VERSION"
     }
 
-    object KViewmodel {
-        private const val VERSION = "0.14"
-        val core = "com.adeo:kviewmodel:$VERSION"
-        val composeExt = "com.adeo:kviewmodel-compose:$VERSION"
-        val odyssey = "com.adeo:kviewmodel-odyssey:$VERSION"
-    }
-
     val asyncImageCompose = "io.github.qdsfdhvh:image-loader:1.2.10"
+
+    object Voyager {
+        private const val VERSION = "1.0.0-rc04"
+        const val navigator = "cafe.adriel.voyager:voyager-navigator:$VERSION"
+        const val tab = "cafe.adriel.voyager:voyager-tab-navigator:$VERSION"
+        const val transition = "cafe.adriel.voyager:voyager-transitions:$VERSION"
+    }
 }

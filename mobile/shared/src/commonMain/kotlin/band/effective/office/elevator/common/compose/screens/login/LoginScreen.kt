@@ -14,13 +14,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.common.compose.expects.showToast
 import band.effective.office.elevator.common.compose.imageResource
+import cafe.adriel.voyager.core.model.rememberScreenModel
+import cafe.adriel.voyager.core.screen.Screen
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+internal class LoginScreen(private val onSignInSuccess: () -> Unit) : Screen {
+    @Composable
+    override fun Content() {
+        val loginViewModel: LoginViewModel = rememberScreenModel { LoginViewModel() }
+        LoginScreenContent(
+            onSignInSuccess = onSignInSuccess, viewModel = loginViewModel
+        )
+    }
+}
+
 @Composable
-internal fun LoginScreen(onSignInSuccess: () -> Unit, viewModel: LoginViewModel) {
+internal fun LoginScreenContent(onSignInSuccess: () -> Unit, viewModel: LoginViewModel) {
     val scope = rememberCoroutineScope()
     scope.launch {
-        viewModel.effectState.collect { effect ->
+        viewModel.effectState.collectLatest { effect ->
             when (effect) {
                 is LoginViewModel.Effect.SignInFailure -> showToast(effect.message)
                 LoginViewModel.Effect.SignInSuccess -> {
