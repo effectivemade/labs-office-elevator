@@ -1,5 +1,6 @@
 package band.effective.office.tv.screen.leaderIdEvents
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
@@ -36,6 +37,7 @@ class LeaderIdEventsViewModel @Inject constructor(
     fun load() = viewModelScope.launch {
         leaderIdEventsInfoRepository.getEventsInfo(100).collect { event ->
             if (event.id == -1) mutableState.update {
+                Log.e("errerer",event.name)
                 it.copy(isError = true, eventsInfo = it.eventsInfo + event)
             }
             else if (state.value.isLoad)
