@@ -2,7 +2,7 @@ package band.effective.office.tv.screen.menu.component
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -18,19 +18,23 @@ fun MenuComponent(
     onNavigate: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    TvLazyRow(
+    Row(
         modifier = modifier
-            .fillMaxSize()
-            .animateContentSize(),
-        contentPadding = PaddingValues(horizontal = 50.dp, vertical = 20.dp),
+            .fillMaxWidth()
+            .height(400.dp),
         horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        items(itemsList) {
+        Spacer(modifier = Modifier.width(20.dp))
+        for (item in itemsList) {
+            var weight by remember { mutableStateOf(1f) }
             MenuItem(
-                text = it.title,
-                focusedBackgroundColor = VividTangelo,
-                unFocusedBackgroundColor = CaptionColor,
-                onClick = { onNavigate(it.screen.name) }
+                text = item.title,
+                onClick = { onNavigate(item.title) },
+                onFocus = {
+                    weight = if (it) 1.1f else 1f
+                },
+                modifier = Modifier.weight(weight)
             )
             Spacer(modifier = Modifier.width(20.dp))
         }
