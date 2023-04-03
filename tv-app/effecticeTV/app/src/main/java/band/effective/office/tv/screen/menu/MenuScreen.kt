@@ -18,7 +18,6 @@ import band.effective.office.tv.screen.menu.component.ButtonAutoplay
 import band.effective.office.tv.screen.menu.component.MenuComponent
 import band.effective.office.tv.screen.menu.component.TimeComponent
 import band.effective.office.tv.screen.navigation.NavigationModel
-import band.effective.office.tv.ui.theme.CharlestonGreen
 import com.example.effecticetv.ui.theme.robotoFontFamily
 import kotlinx.coroutines.launch
 
@@ -34,7 +33,6 @@ fun MenuScreen(
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .background(CharlestonGreen)
             .verticalScroll(scrollState)
     ) {
         val boxScope = this

@@ -17,7 +17,7 @@ fun LoadCircle(modifier: Modifier, inactive: Int){
     Box(modifier = modifier){
         Canvas(modifier = modifier){
             val positions: List<Pair<Float, Float>> = getCords(Pair(size.width/2,size.height/2),size.width/2 )
-            val colors: List<Color> = List(positions.size){if (inactive % positions.size == it) CharlestonGreen else Color.White}
+            val colors: List<Color> = List(positions.size) {if (inactive % positions.size == it) CharlestonGreen else Color.White}
             translate(left = -size.width/2) {
                 for (index in positions.indices){
                     translate(left = positions[index].first, top = positions[index].second) {

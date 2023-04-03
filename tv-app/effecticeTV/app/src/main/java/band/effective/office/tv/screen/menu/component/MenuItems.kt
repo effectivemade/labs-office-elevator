@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -12,8 +13,6 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.sp
-import band.effective.office.tv.ui.theme.QuickSilver
-import band.effective.office.tv.ui.theme.VividTangelo
 import com.example.effecticetv.ui.theme.robotoFontFamily
 
 @Composable
@@ -24,8 +23,8 @@ fun MenuItem(
 
     val animatedBackgroundColor by animateColorAsState(
         targetValue =
-        if (isFocus) VividTangelo
-        else QuickSilver)
+        if (isFocus) MaterialTheme.colors.primaryVariant
+        else MaterialTheme.colors.secondary)
 
     Box(modifier = modifier
         .graphicsLayer {

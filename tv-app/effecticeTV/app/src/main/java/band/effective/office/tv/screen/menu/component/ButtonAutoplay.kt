@@ -6,17 +6,15 @@ import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import band.effective.office.tv.ui.theme.BlackOlive
-import band.effective.office.tv.ui.theme.VividTangelo
 import com.example.effecticetv.ui.theme.robotoFontFamily
 
 @Composable
@@ -25,8 +23,8 @@ fun ButtonAutoplay(onFocus: ()->Unit) {
     //TODO(Artem Gruzdev) replace text in str res
     val animatedBackgroundColor by animateColorAsState(
         targetValue =
-        if (isFocus) VividTangelo
-        else BlackOlive
+        if (isFocus) MaterialTheme.colors.primaryVariant
+        else MaterialTheme.colors.secondaryVariant
     )
     Button(
         onClick = { /*TODO*/ },
