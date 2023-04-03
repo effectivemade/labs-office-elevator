@@ -15,7 +15,7 @@ class AuthSynologyRepositoryImpl @Inject constructor(
     private val synologyApi: SynologyApi
 ) : AuthSynologyRepository {
 
-    override suspend fun auth(): Resource<AuthModel> {
+    override suspend fun auth(): Either<String, AuthModel> {
         val res: Either<ErrorReason, SynologyAuthResponse> =
             synologyApi.auth(
                 version = 3,
@@ -27,10 +27,10 @@ class AuthSynologyRepositoryImpl @Inject constructor(
         return res.unpack(
             success = { response ->
                 val sid = response.data?.sid ?: ""
-                Resource.Data(AuthModel(sid = sid))
+                Either.Success(AuthModel(sid))
             },
             error = { error ->
-                Resource.Error(error.message ?: "")
+                Either.Failure(error.message)
             }
         )
     }

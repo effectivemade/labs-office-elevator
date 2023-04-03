@@ -21,7 +21,7 @@ class PhotoSynologyRepositoryImpl @Inject constructor(
     override suspend fun getPhotosUrl(
         folderPath: String,
         sid: String
-    ): Flow<Resource<List<PhotoDomain>>> =
+    ): Flow<Either<String, List<PhotoDomain>>> =
         flow {
             val res: Either<ErrorReason, SynologyListResponse> =
                 synologyApi.getFiles(
@@ -33,10 +33,10 @@ class PhotoSynologyRepositoryImpl @Inject constructor(
             emit(res.unpack(
                 success = { response ->
                     val paths = response.toDomain(sid)
-                    Resource.Data(paths)
+                    Either.Success(paths)
                 },
                 error = { error ->
-                    Resource.Error(error.message ?: "")
+                    Either.Failure(error.message)
                 }
             )
             )

@@ -1,14 +1,12 @@
 package band.effective.office.tv.screens.photo
 
-import android.os.CountDownTimer
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.BuildConfig
 import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
-import band.effective.office.tv.model.domain.Resource
+import band.effective.office.tv.core.network.entity.Either
 import band.effective.office.tv.repository.SynologyRepository
-import band.effective.office.tv.screens.photo.model.Photo
 import band.effective.office.tv.screens.photo.model.toUIModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
@@ -71,20 +69,19 @@ class PhotoViewModel @Inject constructor(
     }
 
     private suspend fun updatePhoto() {
-        repository.getPhotosUrl("\"${BuildConfig.folderPathPhotoSynology}\"").collect { result ->
-            when (result) {
-                is Resource.Error -> {
-                    mutableState.update { state ->
-                        state.copy(isSuccess = false, error = result.error)
-                    }
-                }
-                is Resource.Data -> {
-                    mutableState.update { state ->
-                        state.copy(photos = result.toUIModel(), isSuccess = true)
-                    }
-                    slideShow.startTimer()
-                }
-            }
+       repository.getPhotosUrl("\"${BuildConfig.folderPathPhotoSynology}\"").collect { result->
+           when(result) {
+               is Either.Failure -> {
+                   mutableState.update { state ->
+                       state.copy(isSuccess = false, error = result.error)
+                   }
+               }
+               is Either.Success -> {
+                   mutableState.update { state ->
+                       state.copy(photos = result.toUIModel(), isSuccess = true)
+                   }
+               }
+           }
         }
     }
 }
