@@ -1,6 +1,5 @@
 package band.effective.office.tv.screens.photo
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.BuildConfig
