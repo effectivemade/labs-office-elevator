@@ -1,4 +1,4 @@
-package band.effective.office.tv.screens.photo.model
+package band.effective.office.tv.screen.photo.model
 
 import band.effective.office.tv.core.network.entity.Either
 import band.effective.office.tv.model.domain.synology.PhotoDomain

@@ -1,11 +1,11 @@
-package band.effective.office.tv.screens.photo
+package band.effective.office.tv.screen.photo
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.BuildConfig
 import band.effective.office.tv.core.network.entity.Either
 import band.effective.office.tv.repository.SynologyRepository
-import band.effective.office.tv.screens.photo.model.toUIModel
+import band.effective.office.tv.screen.photo.model.toUIModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

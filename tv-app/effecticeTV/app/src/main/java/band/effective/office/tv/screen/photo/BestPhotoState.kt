@@ -1,6 +1,6 @@
-package band.effective.office.tv.screens.photo
+package band.effective.office.tv.screen.photo
 
-import band.effective.office.tv.screens.photo.model.Photo
+import band.effective.office.tv.screen.photo.model.Photo
 
 
 data class BestPhotoState(
