@@ -8,6 +8,7 @@ kotlin = "1.8.0"
 okhttp3-var = "4.10.0"
 retrofit-moshi = "2.9.0"
 coil-ver = "2.2.2"
+nav-ver = "2.5.3"
 
 [libraries]
 retrofit = {module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit-ver"}
@@ -23,7 +24,7 @@ okhttp3-logging = {module = "com.squareup.okhttp3:logging-interceptor", version.
 retrofit-moshi = {module = "com.squareup.retrofit2:converter-moshi", version.ref = "retrofit-moshi"}
 moshi-gen = {module = "com.squareup.moshi:moshi-kotlin-codegen", version.ref = "moshi-ver"}
 coil = {module = "io.coil-kt:coil-compose", version.ref = "coil-ver"}
-
+navigation = {module = "androidx.navigation:navigation-compose", version.ref = "nav-ver"}
 
 [plugins]
 kotlin-kapt = {id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin"}
