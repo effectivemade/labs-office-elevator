@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Calendar
+import java.util.GregorianCalendar
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,7 +37,9 @@ class LeaderIdEventsViewModel @Inject constructor(
     }
 
     fun load() = viewModelScope.launch {
-        leaderIdEventsInfoRepository.getEventsInfo(100).collect { event ->
+        val finish = GregorianCalendar()
+        finish.set(Calendar.MONTH,GregorianCalendar().get(Calendar.MONTH) + 1)
+        leaderIdEventsInfoRepository.getEventsInfo(finish).collect { event ->
             if (event.id == -1) mutableState.update {
                 it.copy(isError = true, eventsInfo = it.eventsInfo + event, errorText = it.errorText + "${event.name}\n")
             }

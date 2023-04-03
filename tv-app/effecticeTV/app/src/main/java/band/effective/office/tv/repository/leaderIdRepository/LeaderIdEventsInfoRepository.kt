@@ -2,7 +2,8 @@ package band.effective.office.tv.repository.leaderIdRepository
 
 import band.effective.office.tv.domain.model.LeaderIdEventInfo
 import kotlinx.coroutines.flow.Flow
+import java.util.*
 
 interface LeaderIdEventsInfoRepository {
-    suspend fun getEventsInfo(count: Int = 10, cityId: Int = 893, placeId: Int = 3942): Flow<LeaderIdEventInfo>
+    suspend fun getEventsInfo(finishDate: GregorianCalendar, cityId: Int = 893, placeId: Int = 3942): Flow<LeaderIdEventInfo>
 }

@@ -10,9 +10,14 @@ import retrofit2.http.Query
 
 interface LeaderApi {
     @GET("api/v4/events/search")
-    suspend fun searchEvents(@Query("paginationSize") count: Int,
-                     @Query("cityId") cityId: Int,
-                     @Query("placeIds[]") placeId: Int): Either<ErrorReason, SearchEventsResponse>
+    suspend fun searchEvents(
+        @Query("paginationSize") count: Int,
+        @Query("dateFrom") dateFrom: String,
+        @Query("dateTo") dateTo: String,
+        @Query("cityId") cityId: Int,
+        @Query("placeIds[]") placeId: Int
+    ): Either<ErrorReason, SearchEventsResponse>
+
     @GET("api/v4/events/{eventId}")
     suspend fun eventInfo(@Path("eventId") eventId: Int): Either<ErrorReason, EventInfoResponse>
 }
