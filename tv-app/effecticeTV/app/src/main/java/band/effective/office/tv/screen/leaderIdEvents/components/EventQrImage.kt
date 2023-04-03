@@ -17,7 +17,7 @@ import com.example.effecticetv.ui.theme.robotoFontFamily
 fun EventQrImage(eventInfo: LeaderIdEventInfo) {
     Row(Modifier.padding(start = 20.dp)) {
         Image(
-            painter = rememberQrBitmapPainter("https://leader-id.ru/events/${eventInfo.id}"),
+            painter = rememberQrBitmapPainter(content = "https://leader-id.ru/events/${eventInfo.id}",curentQr = eventInfo.id),
             contentDescription = eventInfo.name,
         )
         Text(

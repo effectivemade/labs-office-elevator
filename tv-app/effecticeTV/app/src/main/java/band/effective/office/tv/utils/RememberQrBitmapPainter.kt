@@ -2,6 +2,7 @@ package band.effective.office.tv.utils
 
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.util.Log
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
@@ -19,9 +20,9 @@ import kotlinx.coroutines.launch
 fun rememberQrBitmapPainter(
     content: String,
     size: Dp = 150.dp,
-    padding: Dp = 0.dp
+    padding: Dp = 0.dp,
+    curentQr: Int
 ): BitmapPainter {
-
     val density = LocalDensity.current
     val sizePx = with(density) { size.roundToPx() }
     val paddingPx = with(density) { padding.roundToPx() }
@@ -31,7 +32,8 @@ fun rememberQrBitmapPainter(
         mutableStateOf<Bitmap?>(null)
     }
 
-    LaunchedEffect(bitmap) {
+    LaunchedEffect(bitmap,curentQr) {
+        Log.e("qr","ex.message!!")
         if (bitmap != null) return@LaunchedEffect
 
         launch(Dispatchers.IO) {
