@@ -1,11 +1,9 @@
 package band.effective.office.tv.screens.photo
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.BuildConfig
-import band.effective.office.tv.model.domain.Resource
-import band.effective.office.tv.repository.PhotoSynologyRepository
+import band.effective.office.tv.core.network.entity.Either
 import band.effective.office.tv.repository.SynologyRepository
 import band.effective.office.tv.screens.photo.model.toUIModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,8 +18,8 @@ class PhotoViewModel @Inject constructor(
     private val repository: SynologyRepository
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(BestPhotoState.Empty)
-    val state = _state.asStateFlow()
+    private val mutableState = MutableStateFlow(BestPhotoState.Empty)
+    val state = mutableState.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -33,15 +31,13 @@ class PhotoViewModel @Inject constructor(
     private suspend fun updatePhoto() {
        repository.getPhotosUrl("\"${BuildConfig.folderPathPhotoSynology}\"").collect { result->
            when(result) {
-               is Resource.Error -> {
-                   _state.update { state ->
+               is Either.Failure -> {
+                   mutableState.update { state ->
                        state.copy(isSuccess = false, error = result.error)
                    }
-                   Log.e("TAG", result.error)
                }
-               is Resource.Data -> {
-                   Log.d("href", result.data.toString())
-                   _state.update { state ->
+               is Either.Success -> {
+                   mutableState.update { state ->
                        state.copy(photos = result.toUIModel(), isSuccess = true)
                    }
                }
