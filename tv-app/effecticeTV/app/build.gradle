@@ -93,6 +93,9 @@ dependencies {
 
     //qr
     implementation libs.zxing
+
+    //navigation
+    implementation libs.navigation
 }
 kapt {
     correctErrorTypes true

@@ -11,12 +11,13 @@ import band.effective.office.tv.R
 
 // Set of Material typography styles to start with
 val Typography = Typography(
+    defaultFontFamily = robotoFontFamily(),
+    /* Other default text styles to override
     body1 = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = robotoFontFamily(),
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp
     )
-    /* Other default text styles to override
     button = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.W500,
