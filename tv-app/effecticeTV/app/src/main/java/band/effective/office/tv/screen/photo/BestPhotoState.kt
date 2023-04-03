@@ -1,10 +1,6 @@
-package band.effective.office.tv.screens.photo
+package band.effective.office.tv.screen.photo
 
-import androidx.tv.foundation.lazy.list.TvLazyListState
-import androidx.tv.foundation.lazy.list.rememberTvLazyListState
-import band.effective.office.tv.screens.photo.model.Photo
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import band.effective.office.tv.screen.photo.model.Photo
 
 
 data class BestPhotoState(
@@ -12,6 +8,7 @@ data class BestPhotoState(
     val photos: List<Photo> = listOf(),
     val error: String = "",
     val isPlay: Boolean = true,
+    val isLoading: Boolean = false
 ){
     companion object {
         val Empty = BestPhotoState()

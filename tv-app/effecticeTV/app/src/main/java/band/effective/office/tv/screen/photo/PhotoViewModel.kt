@@ -1,4 +1,4 @@
-package band.effective.office.tv.screens.photo
+package band.effective.office.tv.screen.photo
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -6,7 +6,7 @@ import band.effective.office.tv.BuildConfig
 import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
 import band.effective.office.tv.core.network.entity.Either
 import band.effective.office.tv.repository.SynologyRepository
-import band.effective.office.tv.screens.photo.model.toUIModel
+import band.effective.office.tv.screen.photo.model.toUIModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -68,6 +68,11 @@ class PhotoViewModel @Inject constructor(
     }
 
     private suspend fun updatePhoto() {
+
+        mutableState.update {state ->
+            state.copy(isLoading = true)
+        }
+
        repository.getPhotosUrl("\"${BuildConfig.folderPathPhotoSynology}\"").collect { result->
            when(result) {
                is Either.Failure -> {
@@ -77,7 +82,7 @@ class PhotoViewModel @Inject constructor(
                }
                is Either.Success -> {
                    mutableState.update { state ->
-                       state.copy(photos = result.toUIModel(), isSuccess = true)
+                       state.copy(photos = result.toUIModel(), isSuccess = true, isLoading = false)
                    }
                }
            }
