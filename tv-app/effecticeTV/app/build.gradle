@@ -95,6 +95,9 @@ dependencies {
 
     //coil
     implementation libs.coil
+
+    //navigation
+    implementation libs.navigation
 }
 kapt {
     correctErrorTypes true
