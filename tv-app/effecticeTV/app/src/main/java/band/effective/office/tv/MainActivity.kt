@@ -28,20 +28,4 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun TemporaryScreen() {
-    TvLazyRow (
-        contentPadding = PaddingValues(16.dp),
-        userScrollEnabled = true
-        ){
-        items(100) {
-            Image(
-                modifier = Modifier.clickable {  },
-                painter = painterResource(id = R.drawable.ic_launcher_background),
-                contentDescription = ""
-            )
-            Spacer(modifier = Modifier.width(32.dp))
-        }
-    }
-}
 

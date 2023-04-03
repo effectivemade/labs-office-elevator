@@ -1,9 +1,9 @@
 package band.effective.office.tv.screen.navigation
 
 import androidx.compose.runtime.Composable
-import band.effective.office.tv.screen.bestphoto.BestPhotoScreen
 import band.effective.office.tv.screen.history.HistoryScreen
 import band.effective.office.tv.screen.leaderIdEvets.LeaderIdEventScreen
+import band.effective.office.tv.screen.photo.BestPhotoScreen
 
 // TODO(Maksim Mishenko): paste screens
 
