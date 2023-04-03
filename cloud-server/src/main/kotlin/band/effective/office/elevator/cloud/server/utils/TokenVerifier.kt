@@ -1,5 +1,6 @@
 package band.effective.office.elevator.cloud.server.utils
 
+import band.effective.office.common.utils.PropertiesUtil
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
 import com.google.api.client.http.javanet.NetHttpTransport
@@ -7,9 +8,9 @@ import com.google.api.client.json.gson.GsonFactory
 
 object TokenVerifier {
 
-    private val androidClient = PropertiesUtil.read("androidClient")
-    private val iosClient = PropertiesUtil.read("iosClient")
-    private val verifyDomain = PropertiesUtil.read("verifyDomain")
+    private val androidClient = PropertiesUtil.read("GOOGLE_CLOUD_ANDROID_CLIENT")
+    private val iosClient = PropertiesUtil.read("GOOGLE_CLOUD_IOS_CLIENT")
+    private val verifyDomain = PropertiesUtil.read("OFFICE_ELEVATOR_ACCEPTED_DOMAIN")
 
     private var verifier: GoogleIdTokenVerifier =
         GoogleIdTokenVerifier.Builder(NetHttpTransport(), GsonFactory())

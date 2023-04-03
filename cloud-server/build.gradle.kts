@@ -23,18 +23,20 @@ ktor {
     docker {
         externalRegistry.set(
             io.ktor.plugin.features.DockerImageRegistry.dockerHub(
-                appName = provider { TODO("Get from env") },
-                username = provider { TODO("Get from env") },
-                password = provider { TODO("Get from env") },
+                appName = provider { System.getenv()["OFFICE_ELEVATOR_EXTERNAL_DOCKER_APPNAME"] },
+                username = provider { System.getenv()["OFFICE_ELEVATOR_EXTERNAL_DOCKER_USERNAME"] },
+                password = provider { System.getenv()["OFFICE_ELEVATOR_EXTERNAL_DOCKER_PASSWORD"] },
             )
         )
 
-        portMappings.set(listOf(
-            io.ktor.plugin.features.DockerPortMapping(
-                2105,
-                80,
-                io.ktor.plugin.features.DockerPortMappingProtocol.TCP
+        portMappings.set(
+            listOf(
+                io.ktor.plugin.features.DockerPortMapping(
+                    2105,
+                    80,
+                    io.ktor.plugin.features.DockerPortMappingProtocol.TCP
+                )
             )
-        ))
+        )
     }
 }

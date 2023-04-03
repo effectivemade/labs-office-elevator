@@ -1,19 +1,12 @@
 package band.effective.office.elevator.plugins
 
-import band.effective.office.common.utils.DateUtils
-import band.effective.office.common.utils.HashUtil
-import band.effective.office.common.utils.toGMTDate
-import band.effective.office.common.utils.toVerifiableDate
+import band.effective.office.common.utils.*
 import band.effective.office.elevator.utils.ElevatorController
-import band.effective.office.elevator.utils.PropertiesUtil
-import io.ktor.http.HttpStatusCode
-import io.ktor.server.application.Application
-import io.ktor.server.application.call
-import io.ktor.server.response.respond
-import io.ktor.server.routing.get
-import io.ktor.server.routing.post
-import io.ktor.server.routing.routing
-import io.ktor.util.date.GMTDate
+import io.ktor.http.*
+import io.ktor.server.application.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+import io.ktor.util.date.*
 
 
 fun Application.configureRouting() {
@@ -28,9 +21,10 @@ fun Application.configureRouting() {
             val token = call.request.queryParameters["token"]
 
             when {
-                call.request.queryParameters["command"] != "go" -> call.respond(HttpStatusCode.NotFound).apply {
-                    println("""[NotFound]: queryParameters["command"] != "go" """)
-                }
+                call.request.queryParameters["command"] != "go" -> call.respond(HttpStatusCode.NotFound)
+                    .apply {
+                        println("""[NotFound]: queryParameters["command"] != "go" """)
+                    }
 
                 !DateUtils.isCorrectTime(time) -> {
                     call.respond(
@@ -42,7 +36,7 @@ fun Application.configureRouting() {
 
                 token != HashUtil.sha256(
                     value = GMTDate().toVerifiableDate(),
-                    password = PropertiesUtil.read("password")
+                    password = PropertiesUtil.read("OFFICE_ELEVATOR_EXCHANGE_PASSWORD")
                 ) -> {
                     call.respond(
                         HttpStatusCode.Forbidden,

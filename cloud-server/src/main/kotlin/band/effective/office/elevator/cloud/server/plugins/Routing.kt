@@ -3,7 +3,7 @@ package band.effective.office.elevator.cloud.server.plugins
 import band.effective.office.common.utils.HashUtil
 import band.effective.office.common.utils.toVerifiableDate
 import band.effective.office.elevator.cloud.server.client.ktorClient
-import band.effective.office.elevator.cloud.server.utils.PropertiesUtil
+import band.effective.office.common.utils.PropertiesUtil
 import band.effective.office.elevator.cloud.server.utils.TokenVerifier
 import io.ktor.client.request.post
 import io.ktor.http.HttpStatusCode
@@ -41,7 +41,7 @@ fun Application.configureRouting() {
                             "token",
                             HashUtil.sha256(
                                 value = currentTime.toVerifiableDate(),
-                                password = PropertiesUtil.read("password")
+                                password = PropertiesUtil.read("OFFICE_ELEVATOR_EXCHANGE_PASSWORD")
                             )
                         )
                     }
