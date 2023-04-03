@@ -1,8 +1,6 @@
 package band.effective.office.tv.screen.leaderIdEvents
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.focusable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
@@ -17,10 +15,8 @@ import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.tv.foundation.lazy.list.rememberTvLazyListState
 import band.effective.office.tv.core.ui.screen_with_controls.ScreenWithControlsTemplate
 import band.effective.office.tv.screen.load.LoadScreen
-import com.example.effecticetv.ui.theme.BackgroundColor
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -52,7 +48,7 @@ fun LeaderIdEventsScreen(viewModel: LeaderIdEventsViewModel = hiltViewModel()) {
                 onClickPlayButton = { viewModel.sendEvent(LeaderIdScreenEvents.OnClickPlayButton) },
                 onClickNextItemButton = { viewModel.sendEvent(LeaderIdScreenEvents.OnClickNextItem) },
                 onClickPreviousItemButton = { viewModel.sendEvent(LeaderIdScreenEvents.OnClickPreviousItem) },
-                modifier = Modifier.fillMaxSize().background(BackgroundColor)
+                modifier = Modifier.fillMaxSize()
             )
         }
         else -> LoadScreen("Events")

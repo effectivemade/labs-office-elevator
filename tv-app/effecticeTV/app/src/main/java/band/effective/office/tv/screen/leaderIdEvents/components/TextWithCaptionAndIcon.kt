@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -14,7 +15,6 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Text
-import com.example.effecticetv.ui.theme.CaptionColor
 import com.example.effecticetv.ui.theme.robotoFontFamily
 
 @Composable
@@ -39,7 +39,7 @@ fun TextWithCaptionAndIcon(
         if (caption != "") {
             Text(
                 text = "$caption: ",
-                color = CaptionColor,
+                color = MaterialTheme.colors.secondary,
                 fontSize = fontSize,
                 fontFamily = robotoFontFamily()
             )
