@@ -26,10 +26,10 @@ fun ScreenWithControlsTemplate(
     playButton: FocusRequester,
     contentFocus: FocusRequester,
     modifier: Modifier = Modifier,
-    content: @Composable BoxScope.() -> Unit,
     onClickPlayButton: () -> Unit,
     onClickNextItemButton: () -> Unit,
-    onClickPreviousItemButton: () -> Unit
+    onClickPreviousItemButton: () -> Unit,
+    content: @Composable BoxScope.() -> Unit
 ) {
     var controlsVisible by remember { mutableStateOf(false) }
     val  (prevButton, nextButton) = remember { FocusRequester.createRefs() }

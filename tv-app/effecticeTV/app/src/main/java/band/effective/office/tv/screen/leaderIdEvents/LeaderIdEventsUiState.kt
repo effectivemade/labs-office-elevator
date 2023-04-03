@@ -3,7 +3,8 @@ package band.effective.office.tv.screen.leaderIdEvents
 import band.effective.office.tv.domain.model.LeaderIdEventInfo
 
 data class LeaderIdEventsUiState(
-    val isLoad: Boolean,
+    val isLoading: Boolean,
+    val isLoaded: Boolean,
     val isError: Boolean,
     val eventsInfo: List<LeaderIdEventInfo>,
     val curentEvent: Int,
@@ -12,7 +13,8 @@ data class LeaderIdEventsUiState(
 ) {
     companion object {
         val empty = LeaderIdEventsUiState(
-            isLoad = false,
+            isLoading = true,
+            isLoaded = false,
             isError = false,
             eventsInfo = listOf(),
             curentEvent = -1,

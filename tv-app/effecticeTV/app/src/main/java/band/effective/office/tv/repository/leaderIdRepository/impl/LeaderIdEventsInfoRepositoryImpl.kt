@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 class LeaderIdEventsInfoRepositoryImpl @Inject constructor(val leaderApi: LeaderApi) :
     LeaderIdEventsInfoRepository {
-    override suspend fun getEventsInfo(finishDate: GregorianCalendar, cityId: Int, placeId: Int): Flow<LeaderIdEventInfo> =
+    override suspend fun getEventsInfo(finishDate: GregorianCalendar, cityId: Int, placeId: Int): Flow<Either<String,LeaderIdEventInfo>> =
         flow{
             when (val either = leaderApi.searchEvents(100, getDate(GregorianCalendar()),getDate(finishDate), cityId, placeId)) {
                 is Either.Success -> {
@@ -23,12 +23,12 @@ class LeaderIdEventsInfoRepositoryImpl @Inject constructor(val leaderApi: Leader
                     ids.forEach {
                         emit(
                             when (val apiResponse = leaderApi.eventInfo(it)){
-                            is Either.Success -> apiResponse.data.toLeaderIdEventInfo()
-                            is Either.Failure -> apiResponse.error.toLeaderIdEventInfo()
+                            is Either.Success -> Either.Success(apiResponse.data.toLeaderIdEventInfo())
+                            is Either.Failure -> Either.Success(apiResponse.error.toLeaderIdEventInfo())
                         })
                     }
                 }
-                is Either.Failure -> emit(either.error.toLeaderIdEventInfo())
+                is Either.Failure -> emit(Either.Failure(either.error.message))
             }
         }
 

@@ -1,8 +1,8 @@
 package band.effective.office.tv.screen.leaderIdEvents
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import band.effective.office.tv.core.network.Either
 import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
 import band.effective.office.tv.repository.leaderIdRepository.LeaderIdEventsInfoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -10,8 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.Calendar
-import java.util.GregorianCalendar
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,8 +20,9 @@ class LeaderIdEventsViewModel @Inject constructor(
 ) : ViewModel() {
     private var mutableState = MutableStateFlow(LeaderIdEventsUiState.empty)
     val state = mutableState.asStateFlow()
-
+    val finish = GregorianCalendar()
     init {
+        finish.set(Calendar.MONTH, GregorianCalendar().get(Calendar.MONTH) + 1)
         load()
         timer.init(
             scope = viewModelScope,
@@ -37,27 +37,26 @@ class LeaderIdEventsViewModel @Inject constructor(
     }
 
     fun load() = viewModelScope.launch {
-        val finish = GregorianCalendar()
-        finish.set(Calendar.MONTH,GregorianCalendar().get(Calendar.MONTH) + 1)
-        leaderIdEventsInfoRepository.getEventsInfo(finish).collect { event ->
-            if (event.id == -1) mutableState.update {
-                it.copy(isError = true, eventsInfo = it.eventsInfo + event, errorText = it.errorText + "${event.name}\n")
-            }
-            else if (state.value.isLoad)
-                mutableState.update {
-                    it.copy(
-                        eventsInfo = it.eventsInfo + event
-                    )
+        leaderIdEventsInfoRepository.getEventsInfo(finish).collect { either ->
+            when {
+                either is Either.Failure -> mutableState.update {
+                    it.copy(isError = true, errorText = it.errorText + "${either.error}\n")
                 }
-            else
-                mutableState.update {
+                either is Either.Success && !state.value.isLoaded -> mutableState.update {
                     it.copy(
-                        isLoad = true,
-                        eventsInfo = it.eventsInfo + event,
+                        isLoading = false,
+                        isLoaded = true,
+                        eventsInfo = it.eventsInfo + either.data,
                         curentEvent = 0,
                         isPlay = true
                     )
                 }
+                either is Either.Success -> mutableState.update {
+                    it.copy(
+                        eventsInfo = it.eventsInfo + either.data
+                    )
+                }
+            }
         }
     }
 
