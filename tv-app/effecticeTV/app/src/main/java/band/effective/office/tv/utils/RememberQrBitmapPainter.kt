@@ -33,7 +33,6 @@ fun rememberQrBitmapPainter(
     }
 
     LaunchedEffect(bitmap,curentQr) {
-        Log.e("qr","ex.message!!")
         if (bitmap != null) return@LaunchedEffect
 
         launch(Dispatchers.IO) {

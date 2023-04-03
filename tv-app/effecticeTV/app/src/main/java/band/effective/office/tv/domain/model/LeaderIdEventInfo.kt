@@ -8,7 +8,7 @@ data class LeaderIdEventInfo(
     val startDateTime: GregorianCalendar,
     val finishDateTime: GregorianCalendar,
     val isOnline: Boolean,
-    val photoUrl: String,
+    val photoUrl: String?,
     val organizer: String? = null,
     val speakers: List<String>? = null,
     val endRegDate: GregorianCalendar? = null
@@ -19,6 +19,6 @@ data class LeaderIdEventInfo(
         startDateTime = GregorianCalendar(),
         finishDateTime = GregorianCalendar(),
         isOnline = false,
-        photoUrl = ""
+        photoUrl = null
     )
 }
