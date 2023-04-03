@@ -2,6 +2,9 @@ package band.effective.office.tv.core.ui.screen_with_controls.components
 
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -9,6 +12,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.unit.dp
 import band.effective.office.tv.R
 import band.effective.office.tv.core.ui.screen_with_controls.components.ButtonControls
 
@@ -39,7 +43,7 @@ fun SlideShowPhotoControl(
                     .align(Alignment.CenterVertically)
                     .focusRequester(prevButton)
                     .onFocusChanged { state ->
-                       focusPreviousButton = state.isFocused
+                        focusPreviousButton = state.isFocused
                     }
                     .focusProperties {
                         up = backToPhoto
@@ -51,7 +55,13 @@ fun SlideShowPhotoControl(
                     .focusable(),
                 idActiveIcon = R.drawable.ic_previous_active,
                 idInactiveIcon = R.drawable.ic_previous_inactive,
-                onClick = onClickPreviousItemButton
+                onClick = {
+                    if(currentListPosition == 1) {
+                        prevButton.freeFocus()
+                        playButton.requestFocus()
+                    }
+                    onClickPreviousItemButton()
+                }
             )
         }
         ButtonControls(
@@ -76,7 +86,7 @@ fun SlideShowPhotoControl(
             onClick = onClickPlayButton
 
         )
-        if (currentListPosition < countItems) {
+        if (currentListPosition < countItems - 1) {
             ButtonControls(
                 isFocus = focusNextButton,
                 modifier = Modifier
@@ -95,8 +105,15 @@ fun SlideShowPhotoControl(
                     .focusable(),
                 idActiveIcon = R.drawable.ic_next_active,
                 idInactiveIcon = R.drawable.ic_next_inactive,
-                onClick = onClickNextItemButton
+                onClick = {
+                    if (currentListPosition == countItems - 2){
+                        nextButton.freeFocus()
+                        playButton.requestFocus()
+                    }
+                    onClickNextItemButton()
+                }
             )
-        }
+        } else
+            Spacer(modifier = Modifier.width(81.dp))
     }
 }
