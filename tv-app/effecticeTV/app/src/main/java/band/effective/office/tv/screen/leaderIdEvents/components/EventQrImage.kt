@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Text
-import band.effective.office.tv.domain.model.LeaderIdEventInfo
+import band.effective.office.tv.domain.model.leaderId.LeaderIdEventInfo
 import band.effective.office.tv.utils.rememberQrBitmapPainter
 import com.example.effecticetv.ui.theme.robotoFontFamily
 

@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import band.effective.office.tv.R
-import band.effective.office.tv.domain.model.LeaderIdEventInfo
+import band.effective.office.tv.domain.model.leaderId.LeaderIdEventInfo
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 

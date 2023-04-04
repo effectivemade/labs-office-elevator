@@ -1,4 +1,4 @@
-package band.effective.office.tv.domain.model
+package band.effective.office.tv.domain.model.leaderId
 
 import band.effective.office.tv.network.leader.models.eventInfo.EventInfoResponse
 import java.util.*

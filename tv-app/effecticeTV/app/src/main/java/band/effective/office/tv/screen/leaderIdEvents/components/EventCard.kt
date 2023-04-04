@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import band.effective.office.tv.domain.model.LeaderIdEventInfo
+import band.effective.office.tv.domain.model.leaderId.LeaderIdEventInfo
 
 @Composable
 fun EventCard(eventInfo: LeaderIdEventInfo, modifier: Modifier = Modifier) {

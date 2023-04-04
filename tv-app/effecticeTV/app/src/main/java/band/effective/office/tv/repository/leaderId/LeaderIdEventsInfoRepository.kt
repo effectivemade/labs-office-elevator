@@ -1,7 +1,7 @@
-package band.effective.office.tv.repository.leaderIdRepository
+package band.effective.office.tv.repository.leaderId
 
 import band.effective.office.tv.core.network.Either
-import band.effective.office.tv.domain.model.LeaderIdEventInfo
+import band.effective.office.tv.domain.model.leaderId.LeaderIdEventInfo
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 

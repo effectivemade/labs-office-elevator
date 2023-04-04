@@ -3,13 +3,13 @@ retrofit-ver = "2.9.0"
 tv-ver="1.0.0-alpha04"
 moshi-ver="1.14.0"
 hilt-var = "2.44"
-hilt-nav-var = "1.0.0"
 kotlin = "1.8.0"
 okhttp3-var = "4.10.0"
 retrofit-moshi = "2.9.0"
 coil-ver = "2.2.2"
 zxing-ver = "3.5.1"
 nav-ver = "2.5.3"
+hilt-nav-var = "1.0.0"
 
 [libraries]
 retrofit = {module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit-ver"}

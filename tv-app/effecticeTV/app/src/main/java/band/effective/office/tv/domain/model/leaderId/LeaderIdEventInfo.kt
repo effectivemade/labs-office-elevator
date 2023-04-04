@@ -1,4 +1,4 @@
-package band.effective.office.tv.domain.model
+package band.effective.office.tv.domain.model.leaderId
 
 import java.util.*
 

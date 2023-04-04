@@ -1,11 +1,9 @@
 package band.effective.office.tv.screen.navigation
 
 import androidx.compose.runtime.Composable
-import band.effective.office.tv.screen.bestphoto.BestPhotoScreen
 import band.effective.office.tv.screen.history.HistoryScreen
 import band.effective.office.tv.screen.leaderIdEvents.LeaderIdEventsScreen
-
-// TODO(Maksim Mishenko): paste screens
+import band.effective.office.tv.screen.photo.BestPhotoScreen
 
 enum class Screen {
     Menu, Events, BestPhoto, History
