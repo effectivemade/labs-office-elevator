@@ -27,7 +27,7 @@ fun ButtonAutoplay(onFocus: ()->Unit) {
         else MaterialTheme.colors.secondaryVariant
     )
     Button(
-        onClick = { /*TODO*/ },
+        onClick = { /*TODO(Maksim Mishenko) add autoplay*/ },
         colors = ButtonDefaults.buttonColors(animatedBackgroundColor),
         modifier = Modifier
             .onFocusChanged { focusState ->

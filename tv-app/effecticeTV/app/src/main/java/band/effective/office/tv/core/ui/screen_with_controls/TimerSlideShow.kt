@@ -55,8 +55,3 @@ class TimerSlideShow @Inject constructor() {
         timerJob?.cancel()
     }
 }
-
-
-object SliderProperties {
-    const val slideShowPeriod: Int = 10 // for example
-}

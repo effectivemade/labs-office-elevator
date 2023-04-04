@@ -96,6 +96,9 @@ dependencies {
     //coil
     implementation libs.coil
 
+    //qr
+    implementation libs.zxing
+
     //navigation
     implementation libs.navigation
 }

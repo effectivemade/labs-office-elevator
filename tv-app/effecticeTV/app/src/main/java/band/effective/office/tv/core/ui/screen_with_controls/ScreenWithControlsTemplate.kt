@@ -26,28 +26,29 @@ fun ScreenWithControlsTemplate(
     playButton: FocusRequester,
     contentFocus: FocusRequester,
     modifier: Modifier = Modifier,
-    content: @Composable BoxScope.() -> Unit,
     onClickPlayButton: () -> Unit,
     onClickNextItemButton: () -> Unit,
-    onClickPreviousItemButton: () -> Unit
+    onClickPreviousItemButton: () -> Unit,
+    content: @Composable BoxScope.() -> Unit
 ) {
     var controlsVisible by remember { mutableStateOf(false) }
-    val (prevButton, nextButton) = remember { FocusRequester.createRefs() }
-
+    val  (prevButton, nextButton) = remember { FocusRequester.createRefs() }
     Box(
         modifier = modifier
-            .onKeyEvent {
-                if ((listOf(Key.DirectionCenter, Key.Enter, Key.DirectionUp).contains(it.key)
-                            || (it.key == Key.NavigatePrevious && controlsVisible))
-                    && it.type == KeyEventType.KeyDown
-                ) {
-                    controlsVisible = !controlsVisible
-                }
-                return@onKeyEvent false
+                .onKeyEvent {
+            Log.d("BUTTON", "click button ${it.key.keyCode}")
+            if ((listOf(Key.DirectionCenter, Key.Enter).contains(it.key)
+                        || (it.key == Key.NavigatePrevious && controlsVisible))
+                && it.type == KeyEventType.KeyDown
+            ) {
+                controlsVisible = !controlsVisible
             }
+            return@onKeyEvent false
+        }
             .fillMaxSize(),
     ) {
         content()
+        Log.d("visible", "$controlsVisible")
         AnimatedVisibility(
             visible = controlsVisible,
             enter = fadeIn(),

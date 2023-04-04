@@ -1,6 +1,6 @@
 package band.effective.office.tv.network.use_cases
 
-import band.effective.office.tv.repository.PhotoSynologyRepository
+import band.effective.office.tv.repository.synology.PhotoSynologyRepository
 import javax.inject.Inject
 
 class PhotoSynologyUseCase @Inject constructor(
