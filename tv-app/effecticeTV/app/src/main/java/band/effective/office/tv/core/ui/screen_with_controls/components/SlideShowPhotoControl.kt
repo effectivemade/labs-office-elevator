@@ -33,6 +33,7 @@ fun SlideShowPhotoControl(
     var focusPreviousButton by remember { mutableStateOf(false) }
     var focusNextButton by remember { mutableStateOf(false) }
     var focusPlayButton by remember { mutableStateOf(false) }
+
     Row(modifier = modifier
         .focusable()
     ) {
@@ -50,9 +51,11 @@ fun SlideShowPhotoControl(
                         down = backToPhoto
                         previous = backToPhoto
                         right = playButton
+                        left = nextButton
                         next = playButton
                     }
-                    .focusable(),
+                    .focusable()
+                    .size(70.dp),
                 idActiveIcon = R.drawable.ic_previous_active,
                 idInactiveIcon = R.drawable.ic_previous_inactive,
                 onClick = {
@@ -63,7 +66,9 @@ fun SlideShowPhotoControl(
                     onClickPreviousItemButton()
                 }
             )
-        }
+        } else
+            Spacer(modifier = Modifier.width(70.dp))
+
         ButtonControls(
             isFocus = focusPlayButton,
             modifier = Modifier
@@ -80,7 +85,8 @@ fun SlideShowPhotoControl(
                     right = nextButton
                     next = nextButton
                 }
-                .focusable(),
+                .focusable()
+                .size(80.dp),
             idActiveIcon = if (!isPlay) R.drawable.ic_play_active else R.drawable.ic_pause_active,
             idInactiveIcon = if (!isPlay) R.drawable.ic_play_inactive else R.drawable.ic_pause_inactive,
             onClick = onClickPlayButton
@@ -102,7 +108,8 @@ fun SlideShowPhotoControl(
                         right = prevButton
                         left = playButton
                     }
-                    .focusable(),
+                    .focusable()
+                    .size(70.dp),
                 idActiveIcon = R.drawable.ic_next_active,
                 idInactiveIcon = R.drawable.ic_next_inactive,
                 onClick = {
@@ -114,6 +121,6 @@ fun SlideShowPhotoControl(
                 }
             )
         } else
-            Spacer(modifier = Modifier.width(81.dp))
+            Spacer(modifier = Modifier.width(70.dp))
     }
 }

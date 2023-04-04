@@ -6,6 +6,7 @@ import band.effective.office.tv.BuildConfig
 import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
 import band.effective.office.tv.core.network.entity.Either
 import band.effective.office.tv.repository.SynologyRepository
+import band.effective.office.tv.screen.photo.model.Photo
 import band.effective.office.tv.screen.photo.model.toUIModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
@@ -30,7 +31,6 @@ class PhotoViewModel @Inject constructor(
             callbackToEnd = { mutableEffect.emit(BestPhotoEffect.ScrollToNextItem) },
             isPlay = true
         )
-
         viewModelScope.launch {
             repository.auth()
             updatePhoto()
@@ -83,6 +83,7 @@ class PhotoViewModel @Inject constructor(
                    mutableState.update { state ->
                        state.copy(photos = result.toUIModel(), isError = false, isLoading = false)
                    }
+                   slideShow.startTimer()
                }
            }
         }
