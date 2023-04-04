@@ -40,10 +40,9 @@ fun BestPhotoScreen(viewModel: PhotoViewModel = hiltViewModel()) {
             }
         }
     }
-    if (uiState.isLoading) {
-        LoadScreen()
-    } else {
-        if (!uiState.isSuccess) {
+
+    when {
+        uiState.isError -> {
             Box(modifier = Modifier.fillMaxSize()) {
                 Text(
                     text = uiState.error,
@@ -53,7 +52,10 @@ fun BestPhotoScreen(viewModel: PhotoViewModel = hiltViewModel()) {
                 )
             }
         }
-        else {
+        uiState.isLoading -> {
+            LoadScreen()
+        }
+        else -> {
             ScreenWithControlsTemplate(
                 currentListPosition = lazyListState.firstVisibleItemIndex,
                 countItems = uiState.photos.size,

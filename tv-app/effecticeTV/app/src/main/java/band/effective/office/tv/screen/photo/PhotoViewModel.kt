@@ -68,7 +68,6 @@ class PhotoViewModel @Inject constructor(
     }
 
     private suspend fun updatePhoto() {
-
         mutableState.update {state ->
             state.copy(isLoading = true)
         }
@@ -77,12 +76,12 @@ class PhotoViewModel @Inject constructor(
            when(result) {
                is Either.Failure -> {
                    mutableState.update { state ->
-                       state.copy(isSuccess = false, error = result.error)
+                       state.copy(isError = true, error = result.error)
                    }
                }
                is Either.Success -> {
                    mutableState.update { state ->
-                       state.copy(photos = result.toUIModel(), isSuccess = true, isLoading = false)
+                       state.copy(photos = result.toUIModel(), isError = false, isLoading = false)
                    }
                }
            }

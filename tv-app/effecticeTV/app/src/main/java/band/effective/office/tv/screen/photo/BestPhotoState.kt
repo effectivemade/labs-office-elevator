@@ -4,11 +4,11 @@ import band.effective.office.tv.screen.photo.model.Photo
 
 
 data class BestPhotoState(
-    val isSuccess: Boolean = true,
+    val isError: Boolean = false,
     val photos: List<Photo> = listOf(),
     val error: String = "",
     val isPlay: Boolean = true,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = true
 ){
     companion object {
         val Empty = BestPhotoState()
