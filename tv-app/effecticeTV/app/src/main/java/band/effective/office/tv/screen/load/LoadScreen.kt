@@ -3,6 +3,7 @@ package band.effective.office.tv.screen.load
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -11,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import band.effective.office.tv.screen.leaderIdEvets.TextWithCaptionAndIcon
+import band.effective.office.tv.screen.leaderIdEvents.TextWithCaptionAndIcon
 import com.example.effecticetv.ui.theme.robotoFontFamily
 import kotlinx.coroutines.delay
 import band.effective.office.tv.R
@@ -26,6 +27,7 @@ fun LoadScreen(){
         }
     }
     Column(
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ){
@@ -49,6 +51,7 @@ fun LoadScreen(text: String){
         }
     }
     Column(
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ){
