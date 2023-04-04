@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import band.effective.office.tv.core.ui.screen_with_controls.ScreenWithControlsTemplate
 import band.effective.office.tv.screen.error.ErrorScreen
+import band.effective.office.tv.screen.leaderIdEvents.components.EventCard
 import band.effective.office.tv.screen.load.LoadScreen
 
 @OptIn(ExperimentalComposeUiApi::class)

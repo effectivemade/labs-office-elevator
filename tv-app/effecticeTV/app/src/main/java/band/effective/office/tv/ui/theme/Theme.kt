@@ -15,7 +15,7 @@ private val DarkColorPalette = darkColors(
 )
 
 @Composable
-fun EffecticeTVTheme(content: @Composable () -> Unit) {
+fun EffectiveTVTheme(content: @Composable () -> Unit) {
     MaterialTheme(
         colors = DarkColorPalette,
         typography = Typography,

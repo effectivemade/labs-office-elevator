@@ -1,6 +1,5 @@
 package band.effective.office.tv.screen.load
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import band.effective.office.tv.screen.leaderIdEvents.TextWithCaptionAndIcon
+import band.effective.office.tv.screen.leaderIdEvents.components.TextWithCaptionAndIcon
 import com.example.effecticetv.ui.theme.robotoFontFamily
 import kotlinx.coroutines.delay
 import band.effective.office.tv.R

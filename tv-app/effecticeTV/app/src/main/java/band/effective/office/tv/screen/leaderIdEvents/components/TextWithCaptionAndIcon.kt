@@ -1,4 +1,4 @@
-package band.effective.office.tv.screen.leaderIdEvents
+package band.effective.office.tv.screen.leaderIdEvents.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
