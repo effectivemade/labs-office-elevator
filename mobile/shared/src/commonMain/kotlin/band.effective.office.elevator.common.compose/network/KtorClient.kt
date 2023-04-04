@@ -7,8 +7,7 @@ import io.ktor.client.plugins.logging.*
 
 val ktorClient: HttpClient = HttpClient() {
     defaultRequest {
-        host = "167.99.5.228"
-//        host = BaseUrl
+        host = "51.250.11.188"
         port = 2105
     }
     install(Logging) {
