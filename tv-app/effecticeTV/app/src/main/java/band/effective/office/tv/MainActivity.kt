@@ -1,6 +1,5 @@
 package band.effective.office.tv
 
-import android.app.Application
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -18,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import androidx.tv.foundation.lazy.list.TvLazyRow
 import band.effective.office.tv.domain.LatestEmployeeUiState
 import band.effective.office.tv.domain.models.Employee.EmployeeInfo
-import band.effective.office.tv.domain.models.Employee.EmployeeInfoDto
 import band.effective.office.tv.repository.BirthdaysRepositoryImpl
 import band.effective.office.tv.source.BirthdayRemoteDataSource
 import band.effective.office.tv.useCases.BirthdaysUseCase
@@ -67,13 +65,13 @@ fun BirthdaysSceen() {
             BirthdaysRepositoryImpl(
                 BirthdayRemoteDataSource()
             )
-        ), Application()
+        )
     )
-    LaunchedEffect("onStart") {
+    LaunchedEffect("birthdayScreenKey") {
         viewModel.uiState.collect {
             viewModel.uiState.collect { state ->
                 when (state) {
-                    is LatestEmployeeUiState.Success -> logBirthdays(state.employeeInfos)
+                    is LatestEmployeeUiState.Success -> showUi(state.employeeInfos)
                     is LatestEmployeeUiState.Error -> Log.d(
                         "BirthdayScreen",
                         "Error occurred ${state.exception}"
@@ -84,7 +82,7 @@ fun BirthdaysSceen() {
     }
 }
 
-private fun logBirthdays(employeeInfos: List<EmployeeInfo>) {
-    employeeInfos.map { Log.d("BirthdayScreen", it.toString()) }
+private fun showUi(employeeInfos: List<EmployeeInfo>) {
+    //Need to write ui logic here
 }
 

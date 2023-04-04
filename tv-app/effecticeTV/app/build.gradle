@@ -24,6 +24,7 @@ android {
         }
 
         buildConfigField("String", "apiLeaderUrl", localProperties['apiLeaderUrl'])
+        buildConfigField("String", "notionToken", localProperties['NOTION_TOKEN'])
     }
 
     buildTypes {

@@ -1,16 +1,21 @@
 package band.effective.office.tv.source
 
 import android.util.Log
+import band.effective.office.tv.BuildConfig
 import band.effective.office.tv.domain.models.Employee.EmployeeInfoDto
 import notion.api.v1.NotionClient
 import notion.api.v1.model.common.File
 import notion.api.v1.model.pages.Page
 import notion.api.v1.request.databases.QueryDatabaseRequest
+import java.io.FileInputStream
+import java.io.InputStream
+import java.util.*
 
 class BirthdayRemoteDataSource {
+
     fun fetchLatestBirthdays(): List<EmployeeInfoDto> {
         val employeeInfoList: MutableList<EmployeeInfoDto> = mutableListOf()
-        NotionClient(token = "secret_DuEWVknGQm55uiDiIrBz6E9nbQ1R4vixZPz5BLfeauX").use { client ->
+        NotionClient(BuildConfig.notionToken).use { client ->
             getPagesFromDatabase(client).map {
                 val icon: File = it.icon as File
                 Log.d("BirthdaysRepositoryImpl", "${it.properties}")
@@ -32,9 +37,13 @@ class BirthdayRemoteDataSource {
     private fun getPagesFromDatabase(client: NotionClient): List<Page> {
         return client.queryDatabase(
             request = QueryDatabaseRequest(
-                "862d1f2393c9473fbc4ff6d9a74d3310"
+                DATABASE_ID
             )
         ).results
+    }
+
+    companion object {
+        const val DATABASE_ID: String = "862d1f2393c9473fbc4ff6d9a74d3310"
     }
 
 }
