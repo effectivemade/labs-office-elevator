@@ -3,12 +3,12 @@ package band.effective.office.tv.view.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import band.effective.office.tv.domain.LatestEmployeeUiState
+import band.effective.office.tv.domain.LatestEventInfoUiState
 import band.effective.office.tv.domain.models.Employee.Anniversary
 import band.effective.office.tv.domain.models.Employee.Birthday
 import band.effective.office.tv.domain.models.Employee.EmployeeInfo
 import band.effective.office.tv.domain.models.Employee.NewEmployee
-import band.effective.office.tv.useCases.BirthdaysUseCase
+import band.effective.office.tv.useCases.EmployeeInfoUseCase
 import band.effective.office.tv.utils.DateUtlils.getYearsWithTheCompany
 import band.effective.office.tv.utils.DateUtlils.isCelebrationToday
 import band.effective.office.tv.utils.DateUtlils.isNewEmployeeToday
@@ -16,11 +16,11 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 
-class BirthdayScreenViewModel(
-    private val birthdaysUseCase: BirthdaysUseCase,
+class EventStoryViewModel(
+    private val employeeInfoUseCase: EmployeeInfoUseCase,
 ) : ViewModel() {
     val uiState =
-        MutableStateFlow<LatestEmployeeUiState>(LatestEmployeeUiState.Success(emptyList()))
+        MutableStateFlow<LatestEventInfoUiState>(LatestEventInfoUiState.Success(emptyList()))
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 
     init {
@@ -30,8 +30,8 @@ class BirthdayScreenViewModel(
     private fun fetchBirthdays() {
         viewModelScope.launch {
             withContext(ioDispatcher) {
-                birthdaysUseCase.getLatestBirthdays().catch { exception ->
-                    uiState.value = LatestEmployeeUiState.Error(exception)
+                employeeInfoUseCase.getLatestBirthdays().catch { exception ->
+                    uiState.value = LatestEventInfoUiState.Error(exception)
                 }.collect { birthdays ->
                     val resultList = mutableListOf<EmployeeInfo>()
                     birthdays.map {
@@ -62,7 +62,7 @@ class BirthdayScreenViewModel(
                             )
                         }
                     }
-                    uiState.value = LatestEmployeeUiState.Success(resultList)
+                    uiState.value = LatestEventInfoUiState.Success(resultList)
                 }
             }
         }

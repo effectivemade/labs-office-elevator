@@ -7,11 +7,8 @@ import notion.api.v1.NotionClient
 import notion.api.v1.model.common.File
 import notion.api.v1.model.pages.Page
 import notion.api.v1.request.databases.QueryDatabaseRequest
-import java.io.FileInputStream
-import java.io.InputStream
-import java.util.*
 
-class BirthdayRemoteDataSource {
+class EmployeeInfoRemoteDataSource {
 
     fun fetchLatestBirthdays(): List<EmployeeInfoDto> {
         val employeeInfoList: MutableList<EmployeeInfoDto> = mutableListOf()

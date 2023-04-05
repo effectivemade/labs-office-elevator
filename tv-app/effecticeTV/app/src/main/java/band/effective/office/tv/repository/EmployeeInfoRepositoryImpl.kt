@@ -1,15 +1,15 @@
 package band.effective.office.tv.repository
 
 import band.effective.office.tv.domain.models.Employee.EmployeeInfoEntity
-import band.effective.office.tv.source.BirthdayRemoteDataSource
+import band.effective.office.tv.source.EmployeeInfoRemoteDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class BirthdaysRepositoryImpl(
-    private val birthdayRemoteDataSource: BirthdayRemoteDataSource
+class EmployeeInfoRepositoryImpl(
+    private val employeeInfoRemoteDataSource: EmployeeInfoRemoteDataSource
 ) {
     val latestBirthdays: Flow<List<EmployeeInfoEntity>> = flow {
-        val employeesInfo = birthdayRemoteDataSource.fetchLatestBirthdays()
+        val employeesInfo = employeeInfoRemoteDataSource.fetchLatestBirthdays()
         val result = mutableListOf<EmployeeInfoEntity>()
         employeesInfo.map {
             result.add(

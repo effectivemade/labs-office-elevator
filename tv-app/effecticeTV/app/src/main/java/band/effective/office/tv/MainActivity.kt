@@ -15,12 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.tv.foundation.lazy.list.TvLazyRow
-import band.effective.office.tv.domain.LatestEmployeeUiState
+import band.effective.office.tv.domain.LatestEventInfoUiState
 import band.effective.office.tv.domain.models.Employee.EmployeeInfo
-import band.effective.office.tv.repository.BirthdaysRepositoryImpl
-import band.effective.office.tv.source.BirthdayRemoteDataSource
-import band.effective.office.tv.useCases.BirthdaysUseCase
-import band.effective.office.tv.view.viewmodel.BirthdayScreenViewModel
+import band.effective.office.tv.repository.EmployeeInfoRepositoryImpl
+import band.effective.office.tv.source.EmployeeInfoRemoteDataSource
+import band.effective.office.tv.useCases.EmployeeInfoUseCase
+import band.effective.office.tv.view.viewmodel.EventStoryViewModel
 import com.example.effecticetv.ui.theme.EffecticeTVTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -60,10 +60,10 @@ fun TemporaryScreen() {
 
 @Composable
 fun BirthdaysSceen() {
-    val viewModel = BirthdayScreenViewModel(
-        BirthdaysUseCase(
-            BirthdaysRepositoryImpl(
-                BirthdayRemoteDataSource()
+    val viewModel = EventStoryViewModel(
+        EmployeeInfoUseCase(
+            EmployeeInfoRepositoryImpl(
+                EmployeeInfoRemoteDataSource()
             )
         )
     )
@@ -71,8 +71,8 @@ fun BirthdaysSceen() {
         viewModel.uiState.collect {
             viewModel.uiState.collect { state ->
                 when (state) {
-                    is LatestEmployeeUiState.Success -> showUi(state.employeeInfos)
-                    is LatestEmployeeUiState.Error -> Log.d(
+                    is LatestEventInfoUiState.Success -> showUi(state.employeeInfos)
+                    is LatestEventInfoUiState.Error -> Log.d(
                         "BirthdayScreen",
                         "Error occurred ${state.exception}"
                     )
