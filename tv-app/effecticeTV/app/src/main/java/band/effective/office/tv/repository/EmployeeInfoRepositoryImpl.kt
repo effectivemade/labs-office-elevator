@@ -4,10 +4,9 @@ import band.effective.office.tv.domain.models.Employee.EmployeeInfoEntity
 import band.effective.office.tv.source.EmployeeInfoRemoteDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
-class EmployeeInfoRepositoryImpl(
-    private val employeeInfoRemoteDataSource: EmployeeInfoRemoteDataSource
-) {
+class EmployeeInfoRepositoryImpl @Inject constructor(private val employeeInfoRemoteDataSource: EmployeeInfoRemoteDataSource) {
     val latestBirthdays: Flow<List<EmployeeInfoEntity>> = flow {
         val employeesInfo = employeeInfoRemoteDataSource.fetchLatestBirthdays()
         val result = mutableListOf<EmployeeInfoEntity>()

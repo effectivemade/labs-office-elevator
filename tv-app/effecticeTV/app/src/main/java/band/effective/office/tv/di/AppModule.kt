@@ -44,7 +44,10 @@ class AppModule {
     @Singleton
     @Provides
     @LeaderIdRetrofitClient
-    fun provideLeaderIdRetrofit(moshiConverterFactory: MoshiConverterFactory, client: OkHttpClient): Retrofit =
+    fun provideLeaderIdRetrofit(
+        moshiConverterFactory: MoshiConverterFactory,
+        client: OkHttpClient
+    ): Retrofit =
         Retrofit.Builder()
             .addConverterFactory(moshiConverterFactory)
             .client(client)
@@ -54,7 +57,10 @@ class AppModule {
     @Singleton
     @Provides
     @SynologyRetrofitClient
-    fun provideSynologyRetrofit(moshiConverterFactory: MoshiConverterFactory, client: OkHttpClient): Retrofit =
+    fun provideSynologyRetrofit(
+        moshiConverterFactory: MoshiConverterFactory,
+        client: OkHttpClient
+    ): Retrofit =
         Retrofit.Builder()
             .addConverterFactory(moshiConverterFactory)
             .client(client)

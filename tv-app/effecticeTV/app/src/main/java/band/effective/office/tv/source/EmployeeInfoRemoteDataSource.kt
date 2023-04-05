@@ -1,21 +1,19 @@
 package band.effective.office.tv.source
 
-import android.util.Log
 import band.effective.office.tv.BuildConfig
 import band.effective.office.tv.domain.models.Employee.EmployeeInfoDto
 import notion.api.v1.NotionClient
 import notion.api.v1.model.common.File
 import notion.api.v1.model.pages.Page
 import notion.api.v1.request.databases.QueryDatabaseRequest
+import javax.inject.Inject
 
-class EmployeeInfoRemoteDataSource {
-
+class EmployeeInfoRemoteDataSource @Inject constructor() {
     fun fetchLatestBirthdays(): List<EmployeeInfoDto> {
         val employeeInfoList: MutableList<EmployeeInfoDto> = mutableListOf()
         NotionClient(BuildConfig.notionToken).use { client ->
             getPagesFromDatabase(client).map {
                 val icon: File = it.icon as File
-                Log.d("BirthdaysRepositoryImpl", "${it.properties}")
                 employeeInfoList.add(
                     EmployeeInfoDto(
                         firstName = it.properties["Name"]?.title?.get(0)?.text?.content,
