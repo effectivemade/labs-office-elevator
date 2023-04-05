@@ -7,7 +7,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,7 +17,6 @@ import band.effective.office.elevator.common.compose.imageResource
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 internal class LoginScreen(private val onSignInSuccess: () -> Unit) : Screen {
     @Composable
@@ -31,8 +30,7 @@ internal class LoginScreen(private val onSignInSuccess: () -> Unit) : Screen {
 
 @Composable
 internal fun LoginScreenContent(onSignInSuccess: () -> Unit, viewModel: LoginViewModel) {
-    val scope = rememberCoroutineScope()
-    scope.launch {
+    LaunchedEffect(viewModel.effectState) {
         viewModel.effectState.collectLatest { effect ->
             when (effect) {
                 is LoginViewModel.Effect.SignInFailure -> showToast(effect.message)

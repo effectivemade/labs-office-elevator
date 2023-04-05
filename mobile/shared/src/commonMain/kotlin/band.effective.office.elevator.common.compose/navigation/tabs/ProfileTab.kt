@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import band.effective.office.elevator.common.compose.navigation.tabs.internal.Tab
 import band.effective.office.elevator.common.compose.navigation.tabs.internal.TabOptions
 import band.effective.office.elevator.common.compose.screens.login.LoginScreen
-import band.effective.office.elevator.common.compose.screens.main.MainScreenWrapper
+import cafe.adriel.voyager.core.lifecycle.main.MainScreenWrapper
 import band.effective.office.elevator.common.compose.screens.profile.ProfileScreen
 import band.effective.office.elevator.common.compose.screens.profile.ProfileScreenViewModel
 import cafe.adriel.voyager.core.model.rememberScreenModel

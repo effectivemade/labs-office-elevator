@@ -4,7 +4,6 @@ import band.effective.office.elevator.common.compose.network.ktorClient
 import band.effective.office.elevator.common.compose.screens.login.GoogleAuthorization
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
-import io.github.aakira.napier.Napier
 import io.ktor.client.request.*
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
@@ -86,10 +85,5 @@ internal class ElevatorScreenViewModel : ScreenModel {
             }
             mutableButtonStateFlow.update { false }
         }
-    }
-
-    override fun onDispose() {
-        Napier.e { "onDispose" }
-        super.onDispose()
     }
 }

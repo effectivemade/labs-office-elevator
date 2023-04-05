@@ -23,7 +23,7 @@ internal fun TabNavigator(
         screen = tab,
         disposeBehavior = NavigatorDisposeBehavior(
             disposeNestedNavigators = disposeNestedNavigators,
-            disposeSteps = false
+            disposeSteps = true
         ),
         onBackPressed = null
     ) { navigator ->
