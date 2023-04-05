@@ -1,17 +1,8 @@
-import java.io.FileInputStream
-import java.util.*
-
 plugins {
     id("com.android.application")
     kotlin("android")
     id("kotlin-parcelize")
 }
-
-val keystorePropertiesFile = rootProject.file("keystore/keystore.properties")
-
-val keystoreProperties = Properties()
-
-keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 
 android {
     compileSdk = ConfigData.Android.compileSdkVersion
@@ -36,14 +27,14 @@ android {
     signingConfigs {
         getByName("debug") {
             keyPassword = "android"
-            storeFile = file("${rootDir}/signing/debug.keystore")
+            storeFile = file("${rootDir}/mobile/keystore/debug.keystore")
             storePassword = "android"
         }
         create("release") {
-            keyAlias = keystoreProperties["keyAlias"] as String
-            keyPassword = keystoreProperties["keyPassword"] as String
-            storeFile = file(rootDir.path.plus("/").plus(keystoreProperties["storeFile"] as String))
-            storePassword = keystoreProperties["storePassword"] as String
+            keyAlias = System.getenv()["OFFICE_ELEVATOR_RELEASE_ALIAS"]
+            keyPassword = System.getenv()["OFFICE_ELEVATOR_RELEASE_KEY_PASSWORD"]
+            storeFile = file("${rootDir}/mobile/keystore/main.keystore")
+            storePassword = System.getenv()["OFFICE_ELEVATOR_RELEASE_STORE_PASSWORD"]
         }
     }
 

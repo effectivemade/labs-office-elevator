@@ -7,14 +7,13 @@ import com.google.api.client.json.gson.GsonFactory
 
 object TokenVerifier {
 
-    private val androidClient = PropertiesUtil.read("androidClient")
-    private val iosClient = PropertiesUtil.read("iosClient")
-    private val verifyDomain = PropertiesUtil.read("verifyDomain")
+    private const val webClient =
+        "726357293621-s4lju93oibotmefghoh3b3ucckalh933.apps.googleusercontent.com"
+    private const val verifyDomain = "effective.band"
 
     private var verifier: GoogleIdTokenVerifier =
         GoogleIdTokenVerifier.Builder(NetHttpTransport(), GsonFactory())
-            .setAudience(listOf(androidClient, iosClient))
-            .build()
+            .setAudience(listOf(webClient)).build()
 
     fun isCorrectToken(token: String?): Boolean {
         if (token.isNullOrBlank()) return false
@@ -29,7 +28,7 @@ object TokenVerifier {
             val result = (verifyDomain == hostedDomain) && emailVerified
             result
         } else {
-            println("Token is incorrect")
+            println("Google ID token is not verified")
             false
         }
     }

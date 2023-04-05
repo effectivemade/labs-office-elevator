@@ -60,9 +60,7 @@ actual object GoogleAuthorization {
         this.getLastSignedAccountCallback = callback
     }
 
-    fun getClientId(): String {
-        return BuildKonfig.iosClient
-    }
+    fun getClientId(): String = "726357293621-hegk0410bsb1a5hvl3ihpc4d2bfkmlgb.apps.googleusercontent.com"
 
     fun getServerClientId(): String {
         return BuildKonfig.webClient

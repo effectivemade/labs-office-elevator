@@ -1,7 +1,4 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
-import java.io.FileInputStream
-import java.io.InputStreamReader
-import java.util.*
 
 plugins {
     kotlin("multiplatform")
@@ -84,22 +81,10 @@ buildkonfig {
     packageName = "band.effective.office.elevator"
 
     defaultConfigs {
-        buildConfigField(STRING, "webClient", getLocalProperty("webClient"))
-        buildConfigField(STRING, "iosClient", getLocalProperty("iosClient"))
-        buildConfigField(STRING, "androidClient", getLocalProperty("androidClient"))
+        buildConfigField(
+            STRING,
+            "webClient",
+            "726357293621-s4lju93oibotmefghoh3b3ucckalh933.apps.googleusercontent.com"
+        )
     }
-}
-
-fun Project.getLocalProperty(key: String): String? {
-    val file = "${rootProject.rootDir.path}/keystore/elevator.properties"
-    val properties = Properties()
-    val localProperties = File(file)
-    if (localProperties.isFile) {
-        InputStreamReader(FileInputStream(localProperties), Charsets.UTF_8)
-            .use { reader ->
-                properties.load(reader)
-            }
-    } else error("File from not found")
-
-    return properties.getProperty(key).toString()
 }
