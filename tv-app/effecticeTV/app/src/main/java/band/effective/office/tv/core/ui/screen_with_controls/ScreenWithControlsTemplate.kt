@@ -37,7 +37,7 @@ fun ScreenWithControlsTemplate(
         modifier = modifier
                 .onKeyEvent {
             Log.d("BUTTON", "click button ${it.key.keyCode}")
-            if ((listOf(Key.DirectionCenter, Key.Enter).contains(it.key)
+            if ((listOf(Key.DirectionCenter, Key.Enter, Key.DirectionUp).contains(it.key)
                         || (it.key == Key.NavigatePrevious && controlsVisible))
                 && it.type == KeyEventType.KeyDown
             ) {
