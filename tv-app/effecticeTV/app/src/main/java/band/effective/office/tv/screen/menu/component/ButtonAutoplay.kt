@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.sp
 import com.example.effecticetv.ui.theme.robotoFontFamily
 
 @Composable
-fun ButtonAutoplay(onFocus: ()->Unit) {
+fun ButtonAutoplay(onFocus: ()->Unit, onClick: ()->Unit) {
     var isFocus by remember { mutableStateOf(false) }
     //TODO(Artem Gruzdev) replace text in str res
     val animatedBackgroundColor by animateColorAsState(
@@ -27,7 +27,7 @@ fun ButtonAutoplay(onFocus: ()->Unit) {
         else MaterialTheme.colors.secondaryVariant
     )
     Button(
-        onClick = { /*TODO(Maksim Mishenko) add autoplay*/ },
+        onClick = { onClick() },
         colors = ButtonDefaults.buttonColors(animatedBackgroundColor),
         modifier = Modifier
             .onFocusChanged { focusState ->

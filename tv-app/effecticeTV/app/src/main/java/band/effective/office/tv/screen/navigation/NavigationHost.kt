@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import band.effective.office.tv.screen.autoplay.AutoplayScreen
 import band.effective.office.tv.screen.menu.MenuScreen
 
 @Composable
@@ -19,5 +20,6 @@ fun NavigationHost() {
         NavigationModel.screensList.forEach { screen ->
             composable(screen.screen.name) { screen.screenFun() }
         }
+        composable(Screen.Autoplay.name) { AutoplayScreen() }
     }
 }

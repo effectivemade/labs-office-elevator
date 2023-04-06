@@ -18,6 +18,7 @@ import band.effective.office.tv.screen.menu.component.ButtonAutoplay
 import band.effective.office.tv.screen.menu.component.MenuComponent
 import band.effective.office.tv.screen.menu.component.TimeComponent
 import band.effective.office.tv.screen.navigation.NavigationModel
+import band.effective.office.tv.screen.navigation.Screen
 import com.example.effecticetv.ui.theme.robotoFontFamily
 import kotlinx.coroutines.launch
 
@@ -48,9 +49,10 @@ fun MenuScreen(
                 color = Color.White
             )
             Spacer(Modifier.height(20.dp))
-            ButtonAutoplay {
+            ButtonAutoplay (onFocus = {
                 coroutineScope.launch { scrollState.animateScrollTo(0) }
-            }
+            },
+            onClick = {navController.navigate(Screen.Autoplay.name)})
             Spacer(Modifier.height(20.dp))
             MenuComponent(itemsList = itemsList, onNavigate = { navController.navigate(it.name) })
         }

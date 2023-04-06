@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.core.network.Either
 import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
+import band.effective.office.tv.core.ui.autoplay.AutoplayableViewModel
+import band.effective.office.tv.core.ui.autoplay.NavigateRequests
 import band.effective.office.tv.repository.leaderId.LeaderIdEventsInfoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,10 +19,11 @@ import javax.inject.Inject
 class LeaderIdEventsViewModel @Inject constructor(
     private val leaderIdEventsInfoRepository: LeaderIdEventsInfoRepository,
     private val timer: TimerSlideShow
-) : ViewModel() {
+) : ViewModel(), AutoplayableViewModel {
     private var mutableState = MutableStateFlow(LeaderIdEventsUiState.empty)
-    val state = mutableState.asStateFlow()
+    override val state = mutableState.asStateFlow()
     val finish = GregorianCalendar()
+
     init {
         finish.set(Calendar.MONTH, GregorianCalendar().get(Calendar.MONTH) + 1)
         load()
@@ -29,6 +32,10 @@ class LeaderIdEventsViewModel @Inject constructor(
             callbackToEnd = {
                 if (state.value.curentEvent + 1 < state.value.eventsInfo.size) {
                     mutableState.update { it.copy(curentEvent = it.curentEvent + 1) }
+                }
+                else {
+                    mutableState.update { it.copy(navigateRequest = NavigateRequests.Forward) }
+                    timer.stopTimer()
                 }
             },
             isPlay = state.value.isPlay
@@ -40,7 +47,11 @@ class LeaderIdEventsViewModel @Inject constructor(
         leaderIdEventsInfoRepository.getEventsInfo(finish).collect { either ->
             when {
                 either is Either.Failure -> mutableState.update {
-                    it.copy(isError = true, errorText = it.errorText + "${either.error}\n")
+                    it.copy(
+                        isLoading = false,
+                        isError = true,
+                        errorText = it.errorText + "${either.error}\n"
+                    )
                 }
                 either is Either.Success && !state.value.isLoaded -> mutableState.update {
                     it.copy(
@@ -73,10 +84,18 @@ class LeaderIdEventsViewModel @Inject constructor(
                 if (state.value.curentEvent + 1 < state.value.eventsInfo.size) {
                     mutableState.update { it.copy(curentEvent = it.curentEvent + 1) }
                 }
+                else {
+                    mutableState.update { it.copy(navigateRequest = NavigateRequests.Forward) }
+                    timer.stopTimer()
+                }
             }
             is LeaderIdScreenEvents.OnClickPreviousItem -> {
                 if (state.value.curentEvent - 1 >= 0) {
                     mutableState.update { it.copy(curentEvent = it.curentEvent - 1) }
+                }
+                else {
+                    mutableState.update { it.copy(navigateRequest = NavigateRequests.Back) }
+                    timer.stopTimer()
                 }
             }
         }

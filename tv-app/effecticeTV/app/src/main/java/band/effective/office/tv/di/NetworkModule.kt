@@ -1,15 +1,14 @@
 package band.effective.office.tv.di
 
 import band.effective.office.tv.BuildConfig
+import band.effective.office.tv.core.network.EitherLeaderIdAdapterFactory
 import band.effective.office.tv.core.network.EitherSynologyAdapterFactory
+import band.effective.office.tv.domain.autoplay.AutoplayController
 import band.effective.office.tv.network.LeaderIdRetrofitClient
 import band.effective.office.tv.network.SynologyRetrofitClient
-import band.effective.office.tv.network.synology.SynologyApi
-import band.effective.office.tv.core.network.EitherLeaderIdAdapterFactory
 import band.effective.office.tv.network.leader.LeaderApi
+import band.effective.office.tv.network.synology.SynologyApi
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
-import com.squareup.moshi.addAdapter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -42,7 +41,11 @@ class NetworkModule {
     @Singleton
     @Provides
     @LeaderIdRetrofitClient
-    fun provideLeaderIdRetrofit(moshiConverterFactory: MoshiConverterFactory, client: OkHttpClient, eitherLeaderIdAdapterFactory: EitherLeaderIdAdapterFactory): Retrofit =
+    fun provideLeaderIdRetrofit(
+        moshiConverterFactory: MoshiConverterFactory,
+        client: OkHttpClient,
+        eitherLeaderIdAdapterFactory: EitherLeaderIdAdapterFactory
+    ): Retrofit =
         Retrofit.Builder().addConverterFactory(moshiConverterFactory)
             .addCallAdapterFactory(eitherLeaderIdAdapterFactory).client(client)
             .baseUrl(BuildConfig.apiLeaderUrl).build()
@@ -81,4 +84,10 @@ class NetworkModule {
     @Provides
     fun provideApiSynology(@SynologyRetrofitClient retrofit: Retrofit) =
         retrofit.create(SynologyApi::class.java)
+
+    //TODO(Maksim Mishenko) replase it
+    @Singleton
+    @Provides
+    fun provideAutoplayController() = AutoplayController()
+
 }
