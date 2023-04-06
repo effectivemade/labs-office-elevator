@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import band.effective.office.elevator.common.compose.expects.generateVibration
 import band.effective.office.elevator.common.compose.expects.showToast
 import band.effective.office.elevator.common.compose.imageResource
 import cafe.adriel.voyager.core.model.rememberScreenModel
@@ -36,6 +37,7 @@ internal fun LoginScreenContent(onSignInSuccess: () -> Unit, viewModel: LoginVie
                 is LoginViewModel.Effect.SignInFailure -> showToast(effect.message)
                 LoginViewModel.Effect.SignInSuccess -> {
                     showToast("Successfully authorization")
+                    generateVibration(300)
                     onSignInSuccess()
                 }
             }

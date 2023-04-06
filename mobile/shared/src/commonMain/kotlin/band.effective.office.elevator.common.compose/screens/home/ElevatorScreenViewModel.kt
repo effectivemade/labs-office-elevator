@@ -1,5 +1,6 @@
 package band.effective.office.elevator.common.compose.screens.home
 
+import band.effective.office.elevator.common.compose.expects.generateVibration
 import band.effective.office.elevator.common.compose.network.ktorClient
 import band.effective.office.elevator.common.compose.screens.login.GoogleAuthorization
 import cafe.adriel.voyager.core.model.ScreenModel
@@ -27,22 +28,23 @@ internal class ElevatorScreenViewModel : ScreenModel {
     /***
      * This method must be deleted when `ScreenModel` will work properly
      */
-    fun load() {
+    private fun load() {
         mutableMessageStateFlow.update { ElevatorMessageState.Start }
         coroutineScope.launch {
-            mutableButtonStateFlow.debounce(1000).collectLatest { state ->
-                delay(500)
-                if (state) {
-                    GoogleAuthorization.performWithFreshToken(action = { token ->
-                        coroutineScope.launch {
-                            doNetworkElevatorCall(token)
-                        }
-                    }, failure = { message ->
-                        mutableMessageStateFlow.update { ElevatorMessageState.AuthorizationError }
-                        mutableButtonStateFlow.update { false }
-                    })
+            mutableButtonStateFlow.onEach { isEnable -> if (isEnable) generateVibration(50) }
+                .debounce(1000).collectLatest { state ->
+                    delay(500)
+                    if (state) {
+                        GoogleAuthorization.performWithFreshToken(action = { token ->
+                            coroutineScope.launch {
+                                doNetworkElevatorCall(token)
+                            }
+                        }, failure = { message ->
+                            mutableMessageStateFlow.update { ElevatorMessageState.AuthorizationError }
+                            mutableButtonStateFlow.update { false }
+                        })
+                    }
                 }
-            }
         }
     }
 
@@ -84,6 +86,8 @@ internal class ElevatorScreenViewModel : ScreenModel {
                 ElevatorMessageState.UndefinedError
             }
             mutableButtonStateFlow.update { false }
+        } finally {
+            generateVibration(50)
         }
     }
 }

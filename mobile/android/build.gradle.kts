@@ -10,6 +10,8 @@ android {
     defaultConfig {
         minSdk = ConfigData.Android.minSdkVersion
         targetSdk = ConfigData.Android.targetSdkVersion
+        versionCode = 1
+        versionName = "1.0.0"
     }
 
     compileOptions {

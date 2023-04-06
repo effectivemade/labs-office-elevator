@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.common.compose.components.ElevatorButton
+import band.effective.office.elevator.common.compose.expects.generateVibration
 
 @Composable
 internal fun ElevatorScreen(viewModel: ElevatorScreenViewModel) {
