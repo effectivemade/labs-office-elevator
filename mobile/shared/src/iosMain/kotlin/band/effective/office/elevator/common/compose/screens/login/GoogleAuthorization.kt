@@ -22,8 +22,7 @@ actual object GoogleAuthorization {
         }
 
     actual fun signIn(
-        onSignInSuccess: () -> Unit,
-        onSignInFailure: (e: Exception) -> Unit
+        onSignInSuccess: () -> Unit, onSignInFailure: (e: Exception) -> Unit
     ) {
         this.onSignInSuccess = onSignInSuccess
         this.onSignInFailure = onSignInFailure
@@ -31,21 +30,19 @@ actual object GoogleAuthorization {
     }
 
     actual fun signOut() {
+        this.token = null
         this.signOutCallback()
     }
 
     actual suspend fun performWithFreshToken(
-        action: (token: String) -> Unit,
-        failure: (message: String) -> Unit
+        action: (token: String) -> Unit, failure: (message: String) -> Unit
     ) {
         try {
             getLastSignedAccountCallback()
             token?.let { action(it) } ?: failure("Something went wrong. Please try again")
         } catch (e: Exception) {
             Napier.d(
-                tag = TAG,
-                message = "PerformWithFreshToken cause error",
-                throwable = e
+                tag = TAG, message = "PerformWithFreshToken cause error", throwable = e
             )
             e.message?.let { failure(it) }
         }

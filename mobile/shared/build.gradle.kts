@@ -28,7 +28,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(compose.ui)
+                //implementation(compose.ui)
                 implementation(compose.foundation)
                 implementation(compose.material)
                 implementation(compose.runtime)
@@ -44,11 +44,7 @@ kotlin {
 
                 api(Dependencies.Napier.logger)
 
-                api(Dependencies.precompose)
-
-                implementation(Dependencies.KViewmodel.core)
-                implementation(Dependencies.KViewmodel.composeExt)
-                implementation(Dependencies.KViewmodel.odyssey)
+                //implementation(Dependencies.Voyager.transition)
                 api(Dependencies.asyncImageCompose)
             }
         }

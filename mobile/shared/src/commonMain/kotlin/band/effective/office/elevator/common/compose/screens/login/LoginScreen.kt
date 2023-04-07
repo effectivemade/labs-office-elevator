@@ -7,24 +7,37 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import band.effective.office.elevator.common.compose.expects.generateVibration
 import band.effective.office.elevator.common.compose.expects.showToast
 import band.effective.office.elevator.common.compose.imageResource
-import kotlinx.coroutines.launch
+import cafe.adriel.voyager.core.model.rememberScreenModel
+import cafe.adriel.voyager.core.screen.Screen
+import kotlinx.coroutines.flow.collectLatest
+
+internal class LoginScreen(private val onSignInSuccess: () -> Unit) : Screen {
+    @Composable
+    override fun Content() {
+        val loginViewModel: LoginViewModel = rememberScreenModel { LoginViewModel() }
+        LoginScreenContent(
+            onSignInSuccess = onSignInSuccess, viewModel = loginViewModel
+        )
+    }
+}
 
 @Composable
-internal fun LoginScreen(onSignInSuccess: () -> Unit, viewModel: LoginViewModel) {
-    val scope = rememberCoroutineScope()
-    scope.launch {
-        viewModel.effectState.collect { effect ->
+internal fun LoginScreenContent(onSignInSuccess: () -> Unit, viewModel: LoginViewModel) {
+    LaunchedEffect(viewModel.effectState) {
+        viewModel.effectState.collectLatest { effect ->
             when (effect) {
                 is LoginViewModel.Effect.SignInFailure -> showToast(effect.message)
                 LoginViewModel.Effect.SignInSuccess -> {
                     showToast("Successfully authorization")
+                    generateVibration(300)
                     onSignInSuccess()
                 }
             }

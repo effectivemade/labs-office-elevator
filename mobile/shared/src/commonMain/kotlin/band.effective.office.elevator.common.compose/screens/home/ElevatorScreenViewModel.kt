@@ -1,8 +1,10 @@
 package band.effective.office.elevator.common.compose.screens.home
 
+import band.effective.office.elevator.common.compose.expects.generateVibration
 import band.effective.office.elevator.common.compose.network.ktorClient
 import band.effective.office.elevator.common.compose.screens.login.GoogleAuthorization
-import com.adeo.kviewmodel.BaseSharedViewModel
+import cafe.adriel.voyager.core.model.ScreenModel
+import cafe.adriel.voyager.core.model.coroutineScope
 import io.ktor.client.request.*
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
@@ -10,37 +12,43 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 @OptIn(FlowPreview::class)
-internal class ElevatorScreenViewModel :
-    BaseSharedViewModel<ElevatorState, ElevatorAction, ElevatorEvent>(initialState = ElevatorState()) {
+internal class ElevatorScreenViewModel : ScreenModel {
 
-    private val mutableMessageStateFlow = MutableStateFlow("Press button to call elevator")
+    private val mutableMessageStateFlow =
+        MutableStateFlow<ElevatorMessageState>(ElevatorMessageState.Start)
     val messageState = mutableMessageStateFlow.asStateFlow()
 
     private val mutableButtonStateFlow = MutableStateFlow(false)
     val buttonState = mutableButtonStateFlow.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            mutableButtonStateFlow.debounce(1000).collectLatest { state ->
-                delay(500)
-                if (state) {
-                    GoogleAuthorization.performWithFreshToken(
-                        action = { token ->
-                            viewModelScope.launch {
+        load()
+    }
+
+    /***
+     * This method must be deleted when `ScreenModel` will work properly
+     */
+    private fun load() {
+        mutableMessageStateFlow.update { ElevatorMessageState.Start }
+        coroutineScope.launch {
+            mutableButtonStateFlow.onEach { isEnable -> if (isEnable) generateVibration(50) }
+                .debounce(1000).collectLatest { state ->
+                    delay(500)
+                    if (state) {
+                        GoogleAuthorization.performWithFreshToken(action = { token ->
+                            coroutineScope.launch {
                                 doNetworkElevatorCall(token)
                             }
-                        },
-                        failure = { message ->
-                            mutableMessageStateFlow.update { message }
+                        }, failure = { message ->
+                            mutableMessageStateFlow.update { ElevatorMessageState.AuthorizationError }
                             mutableButtonStateFlow.update { false }
-                        }
-                    )
+                        })
+                    }
                 }
-            }
         }
     }
 
-    override fun obtainEvent(viewEvent: ElevatorEvent) {
+    fun sendEvent(viewEvent: ElevatorEvent) {
         when (viewEvent) {
             ElevatorEvent.CallElevator -> handleElevatorRequest()
             ElevatorEvent.SignOut -> GoogleAuthorization.signOut()
@@ -48,7 +56,7 @@ internal class ElevatorScreenViewModel :
     }
 
     private fun handleElevatorRequest() {
-        mutableMessageStateFlow.update { "Attempt to call elevator" }
+        mutableMessageStateFlow.update { ElevatorMessageState.Loading }
         mutableButtonStateFlow.update { true }
     }
 
@@ -59,25 +67,27 @@ internal class ElevatorScreenViewModel :
             }
             when (response.status.value) {
                 in 200..299 -> {
-                    mutableMessageStateFlow.update { "Success" }
+                    mutableMessageStateFlow.update { ElevatorMessageState.Success }
                     delay(500)
-                    mutableMessageStateFlow.update { "" }
+                    mutableMessageStateFlow.update { ElevatorMessageState.Empty }
                     mutableButtonStateFlow.update { false }
                 }
                 403 -> {
-                    mutableMessageStateFlow.update { "Could not verify you Google account. Please try again or re-authenticate in app" }
+                    mutableMessageStateFlow.update { ElevatorMessageState.IncorrectToken }
                     mutableButtonStateFlow.update { false }
                 }
                 else -> {
-                    mutableMessageStateFlow.update { "Oops, something went wrong. Please try again" }
+                    mutableMessageStateFlow.update { ElevatorMessageState.UndefinedError }
                     mutableButtonStateFlow.update { false }
                 }
             }
         } catch (cause: Throwable) {
             mutableMessageStateFlow.update {
-                cause.message?.substringBefore("[") ?: "Something went wrong"
+                ElevatorMessageState.UndefinedError
             }
             mutableButtonStateFlow.update { false }
+        } finally {
+            generateVibration(50)
         }
     }
 }

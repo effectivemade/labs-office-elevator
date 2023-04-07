@@ -10,6 +10,8 @@ android {
     defaultConfig {
         minSdk = ConfigData.Android.minSdkVersion
         targetSdk = ConfigData.Android.targetSdkVersion
+        versionCode = 1
+        versionName = "1.0.0"
     }
 
     compileOptions {
@@ -64,6 +66,7 @@ dependencies {
 
     implementation(Dependencies.AndroidX.AppCompat.appCompat)
     implementation(Dependencies.Android.material)
+    implementation(Dependencies.AndroidX.Activity.activityCompose)
 
     implementation(Dependencies.JetBrains.Compose.runtime)
     implementation(Dependencies.JetBrains.Compose.ui)
