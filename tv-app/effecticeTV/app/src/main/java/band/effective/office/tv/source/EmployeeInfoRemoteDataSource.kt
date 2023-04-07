@@ -32,13 +32,9 @@ class EmployeeInfoRemoteDataSource @Inject constructor() {
     private fun getPagesFromDatabase(client: NotionClient): List<Page> {
         return client.queryDatabase(
             request = QueryDatabaseRequest(
-                DATABASE_ID
+                BuildConfig.notionDatabaseId
             )
         ).results
-    }
-
-    companion object {
-        const val DATABASE_ID: String = "862d1f2393c9473fbc4ff6d9a74d3310"
     }
 
 }

@@ -17,7 +17,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class AppModule {
-
     @Provides
     fun provideMoshi(): Moshi = Moshi.Builder()
         .build()
@@ -67,3 +66,4 @@ class AppModule {
             .baseUrl(BuildConfig.apiLeaderUrl)
             .build()
 }
+

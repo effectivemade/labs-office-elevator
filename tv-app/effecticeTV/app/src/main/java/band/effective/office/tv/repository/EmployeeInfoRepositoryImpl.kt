@@ -6,8 +6,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class EmployeeInfoRepositoryImpl @Inject constructor(private val employeeInfoRemoteDataSource: EmployeeInfoRemoteDataSource) {
-    val latestBirthdays: Flow<List<EmployeeInfoEntity>> = flow {
+class EmployeeInfoRepositoryImpl @Inject constructor(private val employeeInfoRemoteDataSource: EmployeeInfoRemoteDataSource) :
+    EmployeeInfoRepository {
+    override val latestEvents: Flow<List<EmployeeInfoEntity>> = flow {
         val employeesInfo = employeeInfoRemoteDataSource.fetchLatestBirthdays()
         val result = mutableListOf<EmployeeInfoEntity>()
         employeesInfo.map {
