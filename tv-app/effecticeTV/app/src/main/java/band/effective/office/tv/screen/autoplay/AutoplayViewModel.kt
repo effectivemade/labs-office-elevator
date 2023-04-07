@@ -20,36 +20,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AutoplayViewModel @Inject constructor(
-    synologyRepository: SynologyRepository,
-    slideShow: TimerSlideShow,
-    leaderIdEventsInfoRepository: LeaderIdEventsInfoRepository,
     val autoplayController: AutoplayController
 ) : ViewModel() {
-    val photoViewModel: PhotoViewModel = PhotoViewModel(synologyRepository, slideShow)
-    val eventsViewModel: LeaderIdEventsViewModel =
-        LeaderIdEventsViewModel(leaderIdEventsInfoRepository, slideShow)
 
     private var mutableState = MutableStateFlow(AutoplayUiState.defaultState)
     val state = mutableState.asStateFlow()
 
     init {
         autoplayController.init(viewModelScope)
-        autoplayController.registerScreen(
-            ScreenDescription(
-                Screen.Events, {
-                    LeaderIdEventsScreen(eventsViewModel)
-                }, eventsViewModel
-            )
-        )
-        autoplayController.registerScreen(
-            ScreenDescription(
-                Screen.BestPhoto, {
-                    BestPhotoScreen(
-                        photoViewModel
-                    )
-                }, photoViewModel
-            )
-        )
+
         load()
     }
 

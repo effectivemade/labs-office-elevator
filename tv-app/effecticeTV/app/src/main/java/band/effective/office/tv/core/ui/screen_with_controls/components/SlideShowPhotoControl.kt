@@ -37,7 +37,7 @@ fun SlideShowPhotoControl(
     Row(modifier = modifier
         .focusable()
     ) {
-        if (currentListPosition > 0) {
+        //if (currentListPosition > 0) {
             ButtonControls(
                 isFocus = focusPreviousButton,
                 modifier = Modifier
@@ -66,8 +66,8 @@ fun SlideShowPhotoControl(
                     onClickPreviousItemButton()
                 }
             )
-        } else
-            Spacer(modifier = Modifier.width(70.dp))
+        //} else
+         //  Spacer(modifier = Modifier.width(70.dp))
 
         ButtonControls(
             isFocus = focusPlayButton,
@@ -92,7 +92,7 @@ fun SlideShowPhotoControl(
             onClick = onClickPlayButton
 
         )
-        if (currentListPosition < countItems - 1) {
+        //if (currentListPosition < countItems - 1) {
             ButtonControls(
                 isFocus = focusNextButton,
                 modifier = Modifier
@@ -120,7 +120,7 @@ fun SlideShowPhotoControl(
                     onClickNextItemButton()
                 }
             )
-        } else
-            Spacer(modifier = Modifier.width(70.dp))
+        //} else
+        //    Spacer(modifier = Modifier.width(70.dp))
     }
 }

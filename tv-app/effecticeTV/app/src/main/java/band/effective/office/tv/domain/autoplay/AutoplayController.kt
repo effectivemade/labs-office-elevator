@@ -1,6 +1,5 @@
 package band.effective.office.tv.domain.autoplay
 
-import android.util.Log
 import band.effective.office.tv.core.ui.autoplay.NavigateRequests
 import band.effective.office.tv.screen.autoplay.ScreenDescription
 import band.effective.office.tv.screen.navigation.Screen
@@ -33,6 +32,7 @@ class AutoplayController {
                 when {
                     loadState.isLoaded -> isLoadMap[loadState.screenName] = ScreenState.Data
                     loadState.isError -> {
+                        //TODO(Maksim Mishenko): repair error handler
                         isLoadMap[loadState.screenName] = ScreenState.Data
                         /*mutableCurrentScreenIndex.update {
                             screensList.indexOfFirst {
@@ -44,7 +44,6 @@ class AutoplayController {
                 }
                 if (isLoadMap.values.all { it == ScreenState.Data } && currentScreenIndex.value == -1) mutableCurrentScreenIndex.update { 0 }
                 if (loadState.navigateRequest != NavigateRequests.Nowhere) {
-                    Log.e("sdfsg","${loadState.navigateRequest}")
                     mutableCurrentScreenIndex.update { (it + if (loadState.navigateRequest == NavigateRequests.Forward) 1 else screensList.size - 1) % screensList.size }
                     loadState.navigateRequest = NavigateRequests.Nowhere
                 }
