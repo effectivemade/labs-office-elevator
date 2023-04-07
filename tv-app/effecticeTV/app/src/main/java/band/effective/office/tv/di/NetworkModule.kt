@@ -86,10 +86,4 @@ class NetworkModule {
     @Provides
     fun provideApiSynology(@SynologyRetrofitClient retrofit: Retrofit) =
         retrofit.create(SynologyApi::class.java)
-
-    //TODO(Maksim Mishenko) replase it
-    @Singleton
-    @Provides
-    fun provideAutoplayController() = AutoplayController()
-
 }

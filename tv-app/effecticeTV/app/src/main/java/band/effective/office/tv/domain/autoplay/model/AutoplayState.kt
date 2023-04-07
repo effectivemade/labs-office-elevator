@@ -1,10 +1,6 @@
-package band.effective.office.tv.core.ui.autoplay
+package band.effective.office.tv.domain.autoplay.model
 
 import band.effective.office.tv.screen.navigation.Screen
-
-enum class NavigateRequests{
-    Nowhere, Forward, Back
-}
 
 interface AutoplayState {
     val isLoading: Boolean

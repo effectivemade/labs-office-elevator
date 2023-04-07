@@ -1,7 +1,7 @@
 package band.effective.office.tv.screen.leaderIdEvents
 
-import band.effective.office.tv.core.ui.autoplay.AutoplayState
-import band.effective.office.tv.core.ui.autoplay.NavigateRequests
+import band.effective.office.tv.domain.autoplay.model.AutoplayState
+import band.effective.office.tv.domain.autoplay.model.NavigateRequests
 import band.effective.office.tv.domain.model.leaderId.LeaderIdEventInfo
 import band.effective.office.tv.screen.navigation.Screen
 

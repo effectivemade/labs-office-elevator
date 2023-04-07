@@ -5,7 +5,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
-import band.effective.office.tv.core.ui.autoplay.AutoplayableViewModel
+import band.effective.office.tv.domain.autoplay.AutoplayableViewModel
+import band.effective.office.tv.domain.autoplay.model.ScreenDescription
 import band.effective.office.tv.screen.error.ErrorScreen
 import band.effective.office.tv.screen.leaderIdEvents.LeaderIdEventsScreen
 import band.effective.office.tv.screen.leaderIdEvents.LeaderIdEventsViewModel
@@ -15,9 +16,13 @@ import band.effective.office.tv.screen.photo.BestPhotoScreen
 import band.effective.office.tv.screen.photo.PhotoViewModel
 
 @Composable
-fun ViewModelToScreen(viewModel: ViewModel) = when{
-    viewModel is LeaderIdEventsViewModel -> @Composable{ LeaderIdEventsScreen(viewModel)}
-    viewModel is PhotoViewModel -> @Composable{ BestPhotoScreen(viewModel)}
+fun ViewModelToScreen(viewModel: ViewModel) = when (viewModel) {
+    is LeaderIdEventsViewModel -> @Composable {
+        LeaderIdEventsScreen(viewModel)
+    }
+    is PhotoViewModel -> @Composable {
+        BestPhotoScreen(viewModel)
+    }
     else -> {}
 }
 

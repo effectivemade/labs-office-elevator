@@ -1,7 +1,7 @@
 package band.effective.office.tv.screen.photo
 
-import band.effective.office.tv.core.ui.autoplay.AutoplayState
-import band.effective.office.tv.core.ui.autoplay.NavigateRequests
+import band.effective.office.tv.domain.autoplay.model.AutoplayState
+import band.effective.office.tv.domain.autoplay.model.NavigateRequests
 import band.effective.office.tv.screen.navigation.Screen
 import band.effective.office.tv.screen.photo.model.Photo
 
@@ -15,7 +15,7 @@ data class BestPhotoState(
     override val isLoaded: Boolean = false,
     override val screenName: Screen = Screen.BestPhoto,
     override var navigateRequest: NavigateRequests = NavigateRequests.Nowhere
-): AutoplayState{
+): AutoplayState {
     companion object {
         val Empty = BestPhotoState()
     }

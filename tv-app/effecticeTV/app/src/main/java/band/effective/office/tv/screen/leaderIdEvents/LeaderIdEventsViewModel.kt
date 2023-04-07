@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.core.network.Either
 import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
-import band.effective.office.tv.core.ui.autoplay.AutoplayableViewModel
-import band.effective.office.tv.core.ui.autoplay.NavigateRequests
+import band.effective.office.tv.domain.autoplay.AutoplayableViewModel
+import band.effective.office.tv.domain.autoplay.model.NavigateRequests
 import band.effective.office.tv.repository.leaderId.LeaderIdEventsInfoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

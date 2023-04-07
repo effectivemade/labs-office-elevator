@@ -1,17 +1,14 @@
 package band.effective.office.tv.domain.autoplay
 
-import band.effective.office.tv.core.ui.autoplay.NavigateRequests
-import band.effective.office.tv.screen.autoplay.ScreenDescription
+import band.effective.office.tv.domain.autoplay.model.NavigateRequests
+import band.effective.office.tv.domain.autoplay.model.ScreenDescription
+import band.effective.office.tv.domain.autoplay.model.ScreenState
 import band.effective.office.tv.screen.navigation.Screen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
-enum class ScreenState {
-    Data, Error, Load
-}
 
 class AutoplayController {
     private var scope: CoroutineScope? = null
