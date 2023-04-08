@@ -12,7 +12,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         
         let iosClient = GoogleAuthorization.shared.getClientId()
         let serverIdClient = GoogleAuthorization.shared.getServerClientId()
-        print("iosClient: " + iosClient + "\n" + "serverClient: " + serverIdClient)
         let config = GIDConfiguration.init(clientID: iosClient, serverClientID: serverIdClient)
         
         GIDSignIn.sharedInstance.configuration = config

@@ -1,18 +1,21 @@
-package cafe.adriel.voyager.core.lifecycle.main
+package band.effective.office.elevator.common.compose.screens.main
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.BottomNavigation
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import band.effective.office.elevator.common.compose.SafeArea
 import band.effective.office.elevator.common.compose.components.TabNavigationItem
-import band.effective.office.elevator.common.compose.expects.notchPadding
 import band.effective.office.elevator.common.compose.navigation.tabs.ElevatorTab
 import band.effective.office.elevator.common.compose.navigation.tabs.ProfileTab
 import band.effective.office.elevator.common.compose.navigation.tabs.internal.CurrentTab
 import band.effective.office.elevator.common.compose.navigation.tabs.internal.TabNavigator
 import cafe.adriel.voyager.core.screen.Screen
-import io.github.aakira.napier.Napier
 
 internal class MainScreenWrapper : Screen {
     @Composable
@@ -22,14 +25,19 @@ internal class MainScreenWrapper : Screen {
             disposeNestedNavigators = true
         ) {
             Scaffold(
-                modifier = Modifier.notchPadding(),
+                modifier = Modifier,
                 content = {
                     CurrentTab()
                 },
                 bottomBar = {
-                    BottomNavigation {
-                        TabNavigationItem(ElevatorTab)
-                        TabNavigationItem(ProfileTab)
+
+                    Box(modifier = Modifier.background(MaterialTheme.colors.primary)) {
+                        BottomNavigation(
+                            modifier = Modifier.height(55.dp + SafeArea.current.value.calculateBottomPadding())
+                        ) {
+                            TabNavigationItem(ElevatorTab)
+                            TabNavigationItem(ProfileTab)
+                        }
                     }
                 }
             )

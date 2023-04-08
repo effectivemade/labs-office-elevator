@@ -1,10 +1,9 @@
 package band.effective.office.elevator.common.compose.navigation
 
 import androidx.compose.runtime.Composable
-import band.effective.office.elevator.common.compose.expects.showToast
 import band.effective.office.elevator.common.compose.screens.login.GoogleAuthorization
 import band.effective.office.elevator.common.compose.screens.login.LoginScreen
-import cafe.adriel.voyager.core.lifecycle.main.MainScreenWrapper
+import band.effective.office.elevator.common.compose.screens.main.MainScreenWrapper
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
