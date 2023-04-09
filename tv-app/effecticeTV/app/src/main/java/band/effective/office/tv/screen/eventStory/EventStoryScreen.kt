@@ -8,9 +8,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import band.effective.office.tv.R
-import band.effective.office.tv.view.uiStateModels.LatestEventInfoUiState
 import band.effective.office.tv.domain.models.Employee.EmployeeInfo
-import band.effective.office.tv.view.viewmodel.EventStoryViewModel
 
 @Composable
 fun EventStoryScreen() {
@@ -23,10 +21,12 @@ fun EventStoryScreen() {
     LaunchedEffect("birthdayScreenKey") {
         viewModel.uiState.collect {
             viewModel.uiState.collect { state ->
-                when (state) {
-                    is LatestEventInfoUiState.Success -> showUi(state.employeeInfos)
-                    is LatestEventInfoUiState.Error -> {
-                        val message: String = errorMessage + state.exception
+                when (state.isError) {
+                    (false) -> {
+                        showUi(state.eventsInfo)
+                    }
+                    else -> {
+                        val message: String = errorMessage + state.errorText
                         showErrorMessage(context, message)
                     }
                 }

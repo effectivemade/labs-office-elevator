@@ -5,7 +5,9 @@ import band.effective.office.tv.source.EmployeeInfoRemoteDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class EmployeeInfoRepositoryImpl @Inject constructor(private val employeeInfoRemoteDataSource: EmployeeInfoRemoteDataSource) :
     EmployeeInfoRepository {
     override val latestEvents: Flow<List<EmployeeInfoEntity>> = flow {

@@ -1,4 +1,4 @@
-package band.effective.office.tv.domain.models.Employee
+package band.effective.office.tv.network.notion
 
 class EmployeeInfoDto(
     val firstName: String?,

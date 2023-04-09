@@ -1,13 +1,15 @@
 package band.effective.office.tv.source
 
 import band.effective.office.tv.BuildConfig
-import band.effective.office.tv.domain.models.Employee.EmployeeInfoDto
+import band.effective.office.tv.network.notion.EmployeeInfoDto
 import notion.api.v1.NotionClient
 import notion.api.v1.model.common.File
 import notion.api.v1.model.pages.Page
 import notion.api.v1.request.databases.QueryDatabaseRequest
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class EmployeeInfoRemoteDataSource @Inject constructor() {
     fun fetchLatestBirthdays(): List<EmployeeInfoDto> {
         val employeeInfoList: MutableList<EmployeeInfoDto> = mutableListOf()
