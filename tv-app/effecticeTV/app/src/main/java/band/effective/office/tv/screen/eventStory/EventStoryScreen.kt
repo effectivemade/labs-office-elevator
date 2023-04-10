@@ -4,6 +4,8 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -18,25 +20,21 @@ fun EventStoryScreen() {
 
 
     val viewModel = hiltViewModel<EventStoryViewModel>()
+    val state by viewModel.uiState.collectAsState()
     LaunchedEffect("birthdayScreenKey") {
-        viewModel.uiState.collect {
-            viewModel.uiState.collect { state ->
-                when (state.isError) {
-                    (false) -> {
-                        showUi(state.eventsInfo)
-                    }
-                    else -> {
-                        val message: String = errorMessage + state.errorText
-                        showErrorMessage(context, message)
-                    }
-                }
+        when (state.isError) {
+            (false) -> {
+                showUi(state.eventsInfo)
+            }
+            else -> {
+                val message: String = errorMessage + state.errorText
+                showErrorMessage(context, message)
             }
         }
     }
 }
 
 private fun showUi(employeeInfos: List<EmployeeInfo>) {
-    //TODO(Parkhomenko Egor): write UI logic here
 }
 
 private fun showErrorMessage(context: Context, message: String) {
