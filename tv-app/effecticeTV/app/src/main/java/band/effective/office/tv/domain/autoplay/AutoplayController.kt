@@ -29,13 +29,12 @@ class AutoplayController {
                 when {
                     loadState.isLoaded -> isLoadMap[loadState.screenName] = ScreenState.Data
                     loadState.isError -> {
-                        //TODO(Maksim Mishenko): repair error handler
-                        isLoadMap[loadState.screenName] = ScreenState.Data
-                        /*mutableCurrentScreenIndex.update {
+                        isLoadMap[loadState.screenName] = ScreenState.Error
+                        mutableCurrentScreenIndex.update {
                             screensList.indexOfFirst {
                                 it.screenName == loadState.screenName
                             }
-                        }*/
+                        }
                     }
                     else -> isLoadMap[loadState.screenName] = ScreenState.Load
                 }

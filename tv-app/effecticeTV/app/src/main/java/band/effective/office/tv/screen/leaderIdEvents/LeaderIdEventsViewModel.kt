@@ -35,7 +35,6 @@ class LeaderIdEventsViewModel @Inject constructor(
                 }
                 else {
                     mutableState.update { it.copy(navigateRequest = NavigateRequests.Forward) }
-                    timer.stopTimer()
                 }
             },
             isPlay = state.value.isPlay
@@ -95,7 +94,6 @@ class LeaderIdEventsViewModel @Inject constructor(
                 }
                 else {
                     mutableState.update { it.copy(navigateRequest = NavigateRequests.Back) }
-                    timer.stopTimer()
                 }
             }
         }
