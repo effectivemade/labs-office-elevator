@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.foundation.lazy.list.TvLazyRow
 import band.effective.office.tv.screen.eventStory.EventStoryScreen
 import com.example.effecticetv.ui.theme.EffecticeTVTheme
@@ -27,7 +28,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    EventStoryScreen()
+                    EventStoryScreen(hiltViewModel())
                 }
             }
         }

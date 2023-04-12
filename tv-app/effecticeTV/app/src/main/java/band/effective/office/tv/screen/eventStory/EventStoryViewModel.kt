@@ -20,7 +20,6 @@ class EventStoryViewModel @Inject constructor(private var employeeInfoUseCase: E
     val uiState = _uiState.asStateFlow()
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 
-
     init {
         fetchBirthdays()
     }
