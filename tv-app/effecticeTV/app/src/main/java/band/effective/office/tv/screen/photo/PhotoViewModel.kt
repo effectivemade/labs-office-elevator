@@ -6,6 +6,7 @@ import band.effective.office.tv.BuildConfig
 import band.effective.office.tv.core.network.entity.Either
 import band.effective.office.tv.domain.autoplay.AutoplayableViewModel
 import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
+import band.effective.office.tv.domain.autoplay.model.NavigateRequests
 import band.effective.office.tv.repository.synology.SynologyRepository
 import band.effective.office.tv.screen.photo.model.toUIModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -64,6 +65,7 @@ class PhotoViewModel @Inject constructor(
                     mutableEffect.emit(BestPhotoEffect.ChangePlayState(isPlay))
                 }
             }
+            is BestPhotoEvent.OnRequestSwitchScreen -> mutableState.update { it.copy(navigateRequest = event.request) }
         }
     }
 

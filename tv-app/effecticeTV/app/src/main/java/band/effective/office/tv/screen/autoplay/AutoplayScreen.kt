@@ -30,8 +30,9 @@ fun ViewModelToScreen(viewModel: ViewModel) = when (viewModel) {
 fun AutoplayScreen(viewModel: AutoplayViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsState()
     val viewModels = mapOf<Screen, ViewModel>(
+        Screen.BestPhoto to hiltViewModel<PhotoViewModel>(),
         Screen.Events to hiltViewModel<LeaderIdEventsViewModel>(),
-        Screen.BestPhoto to hiltViewModel<PhotoViewModel>()
+
     )
     viewModels.forEach { (screen, vm) ->
         viewModel.autoplayController.registerScreen(

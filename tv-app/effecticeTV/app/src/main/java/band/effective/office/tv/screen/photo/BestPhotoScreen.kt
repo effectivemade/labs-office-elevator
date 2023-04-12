@@ -18,6 +18,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.foundation.lazy.list.TvLazyListState
 import androidx.tv.foundation.lazy.list.rememberTvLazyListState
 import band.effective.office.tv.core.ui.screen_with_controls.ScreenWithControlsTemplate
+import band.effective.office.tv.domain.autoplay.model.NavigateRequests
 import band.effective.office.tv.screen.load.LoadScreen
 import band.effective.office.tv.screens.photo.components.PhotoSlideShow
 
@@ -33,10 +34,30 @@ fun BestPhotoScreen(viewModel: PhotoViewModel = hiltViewModel()) {
         viewModel.effect.collect { effect ->
             when (effect) {
                 is BestPhotoEffect.ChangePlayState -> {}
-                is BestPhotoEffect.ScrollToItem -> lazyListState.animateScrollToItem(effect.index)
-                is BestPhotoEffect.ScrollToNextItem -> lazyListState.animateScrollToItem(
-                    lazyListState.firstVisibleItemIndex + 1
-                )
+                is BestPhotoEffect.ScrollToItem -> {
+                    when (effect.index) {
+                        uiState.photos.size -> viewModel.sendEvent(
+                            BestPhotoEvent.OnRequestSwitchScreen(
+                                NavigateRequests.Forward
+                            )
+                        )
+                        -1 -> viewModel.sendEvent(
+                            BestPhotoEvent.OnRequestSwitchScreen(
+                                NavigateRequests.Back
+                            )
+                        )
+                        else -> lazyListState.animateScrollToItem(effect.index)
+                    }
+                }
+                is BestPhotoEffect.ScrollToNextItem -> {
+                    if (uiState.photos.size == lazyListState.firstVisibleItemIndex + 1) {
+                        viewModel.sendEvent(BestPhotoEvent.OnRequestSwitchScreen(NavigateRequests.Forward))
+                    } else {
+                        lazyListState.animateScrollToItem(
+                            lazyListState.firstVisibleItemIndex + 1
+                        )
+                    }
+                }
             }
         }
     }
@@ -63,15 +84,14 @@ fun BestPhotoScreen(viewModel: PhotoViewModel = hiltViewModel()) {
                 contentFocus = contentFocus,
                 playButton = playButton,
                 content = {
-                    PhotoSlideShow(
-                        photos = uiState.photos, lazyListState,
+                    PhotoSlideShow(photos = uiState.photos,
+                        lazyListState,
                         modifierForFocus = Modifier
                             .focusRequester(contentFocus)
                             .focusProperties {
                                 down = playButton
                             }
-                            .focusable()
-                    )
+                            .focusable())
                 },
                 onClickPlayButton = { viewModel.sendEvent(BestPhotoEvent.OnClickPlayButton) },
                 onClickNextItemButton = {

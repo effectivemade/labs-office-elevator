@@ -15,25 +15,26 @@ data class BestPhotoState(
     override val isLoaded: Boolean = false,
     override val screenName: Screen = Screen.BestPhoto,
     override var navigateRequest: NavigateRequests = NavigateRequests.Nowhere
-): AutoplayState {
+) : AutoplayState {
     companion object {
         val Empty = BestPhotoState()
     }
 }
 
 sealed interface BestPhotoEvent {
-    object OnClickPlayButton: BestPhotoEvent
+    object OnClickPlayButton : BestPhotoEvent
 
-    data class OnClickNextItem (val index: Int): BestPhotoEvent
+    data class OnClickNextItem(val index: Int) : BestPhotoEvent
 
-    data class OnClickPreviousItem (val index: Int): BestPhotoEvent
+    data class OnClickPreviousItem(val index: Int) : BestPhotoEvent
 
+    data class OnRequestSwitchScreen(val request: NavigateRequests): BestPhotoEvent
 }
 
 sealed interface BestPhotoEffect {
-    data class ScrollToItem(val index: Int): BestPhotoEffect
+    data class ScrollToItem(val index: Int) : BestPhotoEffect
 
-    data class ChangePlayState(val isPlay: Boolean): BestPhotoEffect
+    data class ChangePlayState(val isPlay: Boolean) : BestPhotoEffect
 
-    object ScrollToNextItem: BestPhotoEffect
+    object ScrollToNextItem : BestPhotoEffect
 }
