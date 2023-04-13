@@ -16,6 +16,8 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.input.key.*
 import androidx.compose.ui.unit.dp
 import band.effective.office.tv.core.ui.screen_with_controls.components.SlideShowPhotoControl
+import band.effective.office.tv.core.ui.screen_with_controls.model.MenuState
+import kotlinx.coroutines.flow.update
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -31,26 +33,25 @@ fun ScreenWithControlsTemplate(
     onClickPreviousItemButton: () -> Unit,
     content: @Composable BoxScope.() -> Unit
 ) {
-    var controlsVisible by remember { mutableStateOf(false) }
-    val  (prevButton, nextButton) = remember { FocusRequester.createRefs() }
+    val state by MenuState.state.collectAsState()
+    val (prevButton, nextButton) = remember { FocusRequester.createRefs() }
     Box(
         modifier = modifier
-                .onKeyEvent {
-            Log.d("BUTTON", "click button ${it.key.keyCode}")
-            if ((listOf(Key.DirectionCenter, Key.Enter).contains(it.key)
-                        || (it.key == Key.NavigatePrevious && controlsVisible))
-                && it.type == KeyEventType.KeyDown
-            ) {
-                controlsVisible = !controlsVisible
+            .onKeyEvent {
+                Log.d("BUTTON", "click button ${it.key.keyCode}")
+                if ((listOf(Key.DirectionCenter, Key.Enter).contains(it.key)
+                            || (it.key == Key.NavigatePrevious && state.isVisible))
+                    && it.type == KeyEventType.KeyDown
+                ) {
+                    MenuState.state.update { it.copy(isVisible = !it.isVisible) }
+                }
+                return@onKeyEvent false
             }
-            return@onKeyEvent false
-        }
             .fillMaxSize(),
     ) {
         content()
-        Log.d("visible", "$controlsVisible")
         AnimatedVisibility(
-            visible = controlsVisible,
+            visible = state.isVisible,
             enter = fadeIn(),
             exit = fadeOut(),
             modifier = Modifier

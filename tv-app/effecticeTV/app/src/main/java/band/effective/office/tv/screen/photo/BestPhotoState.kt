@@ -1,5 +1,7 @@
 package band.effective.office.tv.screen.photo
 
+import androidx.tv.foundation.lazy.list.TvLazyListState
+import androidx.tv.foundation.lazy.list.rememberTvLazyListState
 import band.effective.office.tv.domain.autoplay.model.AutoplayState
 import band.effective.office.tv.domain.autoplay.model.NavigateRequests
 import band.effective.office.tv.screen.navigation.Screen
