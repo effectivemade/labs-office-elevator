@@ -22,6 +22,14 @@ class LeaderIdEventsViewModel @Inject constructor(
 ) : ViewModel(), AutoplayableViewModel {
     private var mutableState = MutableStateFlow(LeaderIdEventsUiState.empty)
     override val state = mutableState.asStateFlow()
+    override fun switchToFirstItem() {
+        mutableState.update { it.copy(curentEvent = 0) }
+    }
+
+    override fun switchToLastItem() {
+        mutableState.update { it.copy(curentEvent = it.eventsInfo.size - 1) }
+    }
+
     val finish = GregorianCalendar()
 
     init {
@@ -32,8 +40,7 @@ class LeaderIdEventsViewModel @Inject constructor(
             callbackToEnd = {
                 if (state.value.curentEvent + 1 < state.value.eventsInfo.size) {
                     mutableState.update { it.copy(curentEvent = it.curentEvent + 1) }
-                }
-                else {
+                } else {
                     mutableState.update { it.copy(navigateRequest = NavigateRequests.Forward) }
                 }
             },
@@ -52,10 +59,10 @@ class LeaderIdEventsViewModel @Inject constructor(
                         errorText = it.errorText + "${either.error}\n"
                     )
                 }
-                either is Either.Success && !state.value.isLoaded -> mutableState.update {
+                either is Either.Success && !state.value.isData -> mutableState.update {
                     it.copy(
                         isLoading = false,
-                        isLoaded = true,
+                        isData = true,
                         eventsInfo = it.eventsInfo + either.data,
                         curentEvent = 0,
                         isPlay = true
@@ -82,17 +89,14 @@ class LeaderIdEventsViewModel @Inject constructor(
             is LeaderIdScreenEvents.OnClickNextItem -> {
                 if (state.value.curentEvent + 1 < state.value.eventsInfo.size) {
                     mutableState.update { it.copy(curentEvent = it.curentEvent + 1) }
-                }
-                else {
+                } else {
                     mutableState.update { it.copy(navigateRequest = NavigateRequests.Forward) }
-                    timer.stopTimer()
                 }
             }
             is LeaderIdScreenEvents.OnClickPreviousItem -> {
                 if (state.value.curentEvent - 1 >= 0) {
                     mutableState.update { it.copy(curentEvent = it.curentEvent - 1) }
-                }
-                else {
+                } else {
                     mutableState.update { it.copy(navigateRequest = NavigateRequests.Back) }
                 }
             }

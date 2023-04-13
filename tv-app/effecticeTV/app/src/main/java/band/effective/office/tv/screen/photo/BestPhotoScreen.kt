@@ -1,5 +1,6 @@
 package band.effective.office.tv.screen.photo
 
+import android.util.Log
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,6 +33,7 @@ fun BestPhotoScreen(viewModel: PhotoViewModel = hiltViewModel()) {
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
+            Log.e("scroll","screen")
             when (effect) {
                 is BestPhotoEffect.ChangePlayState -> {}
                 is BestPhotoEffect.ScrollToItem -> {
@@ -46,7 +48,9 @@ fun BestPhotoScreen(viewModel: PhotoViewModel = hiltViewModel()) {
                                 NavigateRequests.Back
                             )
                         )
-                        else -> lazyListState.animateScrollToItem(effect.index)
+                        else -> {
+                            lazyListState.animateScrollToItem(effect.index)
+                        }
                     }
                 }
                 is BestPhotoEffect.ScrollToNextItem -> {

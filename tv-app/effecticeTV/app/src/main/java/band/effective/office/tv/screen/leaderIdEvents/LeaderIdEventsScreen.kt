@@ -27,7 +27,7 @@ fun LeaderIdEventsScreen(viewModel: LeaderIdEventsViewModel = hiltViewModel()) {
     when {
         state.isError -> ErrorScreen(state.errorText)
         state.isLoading -> LoadScreen("Events")
-        state.isLoaded -> ScreenWithControlsTemplate(
+        state.isData -> ScreenWithControlsTemplate(
             modifier = Modifier.fillMaxSize(),
             currentListPosition = state.curentEvent,
             countItems = state.eventsInfo.size,

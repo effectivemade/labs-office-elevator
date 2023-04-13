@@ -28,14 +28,13 @@ class AutoplayViewModel @Inject constructor(
 
     init {
         autoplayController.init(viewModelScope)
-
         load()
     }
 
     fun load() = viewModelScope.launch {
-        autoplayController.currentScreenIndex.collect{ curentScreenIndex ->
-            if (curentScreenIndex<0) mutableState.update { it.copy(isLoading = true) }
-            else mutableState.update { it.copy(isLoading = false, isLoaded = true, currentScreen = curentScreenIndex) }
+        autoplayController.currentScreenIndex.collect{ currentScreenIndex ->
+            if (currentScreenIndex<0) mutableState.update { it.copy(isLoading = true) }
+            else mutableState.update { it.copy(isLoading = false, isLoaded = true, currentScreen = currentScreenIndex) }
         }
     }
 

@@ -12,7 +12,7 @@ data class BestPhotoState(
     val error: String = "",
     val isPlay: Boolean = true,
     override val isLoading: Boolean = true,
-    override val isLoaded: Boolean = false,
+    override val isData: Boolean = false,
     override val screenName: Screen = Screen.BestPhoto,
     override var navigateRequest: NavigateRequests = NavigateRequests.Nowhere
 ) : AutoplayState {

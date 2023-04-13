@@ -5,4 +5,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface AutoplayableViewModel {
     val state: StateFlow<AutoplayState>
+
+    fun switchToFirstItem()
+    fun switchToLastItem()
 }

@@ -7,7 +7,7 @@ import band.effective.office.tv.screen.navigation.Screen
 
 data class LeaderIdEventsUiState(
     override val isLoading: Boolean,
-    override val isLoaded: Boolean,
+    override val isData: Boolean,
     override val isError: Boolean,
     val eventsInfo: List<LeaderIdEventInfo>,
     val curentEvent: Int,
@@ -19,7 +19,7 @@ data class LeaderIdEventsUiState(
     companion object {
         val empty = LeaderIdEventsUiState(
             isLoading = true,
-            isLoaded = false,
+            isData = false,
             isError = false,
             eventsInfo = listOf(),
             curentEvent = -1,
