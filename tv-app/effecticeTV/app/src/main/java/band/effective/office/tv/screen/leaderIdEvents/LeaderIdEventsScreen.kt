@@ -12,12 +12,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import band.effective.office.tv.core.ui.screen_with_controls.ScreenWithControlsTemplate
+import band.effective.office.tv.core.ui.screen_with_controls.model.MenuButton
+import band.effective.office.tv.core.ui.screen_with_controls.model.MenuState
 import band.effective.office.tv.screen.error.ErrorScreen
 import band.effective.office.tv.screen.leaderIdEvents.components.EventCard
 import band.effective.office.tv.screen.load.LoadScreen
+import kotlinx.coroutines.flow.update
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -28,7 +32,9 @@ fun LeaderIdEventsScreen(viewModel: LeaderIdEventsViewModel = hiltViewModel()) {
         state.isError -> ErrorScreen(state.errorText)
         state.isLoading -> LoadScreen("Events")
         state.isData -> ScreenWithControlsTemplate(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().onFocusChanged { focusState ->
+                if (focusState.isFocused) MenuState.state.update { it.copy(selectButton = MenuButton.Nothink) }
+            },
             currentListPosition = state.curentEvent,
             countItems = state.eventsInfo.size,
             isPlay = state.isPlay,

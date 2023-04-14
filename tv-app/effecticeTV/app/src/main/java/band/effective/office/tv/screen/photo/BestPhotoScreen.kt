@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.*
 import androidx.compose.ui.unit.sp
@@ -19,9 +20,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.foundation.lazy.list.TvLazyListState
 import androidx.tv.foundation.lazy.list.rememberTvLazyListState
 import band.effective.office.tv.core.ui.screen_with_controls.ScreenWithControlsTemplate
+import band.effective.office.tv.core.ui.screen_with_controls.model.MenuButton
+import band.effective.office.tv.core.ui.screen_with_controls.model.MenuState
 import band.effective.office.tv.domain.autoplay.model.NavigateRequests
 import band.effective.office.tv.screen.load.LoadScreen
 import band.effective.office.tv.screens.photo.components.PhotoSlideShow
+import kotlinx.coroutines.flow.update
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -82,6 +86,9 @@ fun BestPhotoScreen(viewModel: PhotoViewModel = hiltViewModel()) {
         }
         else -> {
             ScreenWithControlsTemplate(
+                modifier = Modifier.onFocusChanged { focusState ->
+                    if (focusState.isFocused) MenuState.state.update { it.copy(selectButton = MenuButton.Nothink) }
+                },
                 currentListPosition = lazyListState.firstVisibleItemIndex,
                 countItems = uiState.photos.size,
                 isPlay = uiState.isPlay,
