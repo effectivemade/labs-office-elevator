@@ -21,6 +21,7 @@ fun NavigationHost() {
         NavigationModel.screensList.forEach { screen ->
             composable(screen.screen.name) { screen.screenFun() }
         }
-        composable(Screen.Autoplay.name) { AutoplayMenuScreen() }
+        composable(Screen.Autoplay.name) { AutoplayScreen() }
+        composable(Screen.AutoplayMenu.name) { AutoplayMenuScreen(navController) }
     }
 }

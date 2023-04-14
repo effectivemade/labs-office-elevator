@@ -10,7 +10,7 @@ import band.effective.office.tv.screen.navigation.Screen
 
 sealed class MenuItemType {
     object SimpleItem : MenuItemType()
-    data class SelectableItem(val onCheckedChange: (Boolean) -> Unit) : MenuItemType()
+    data class SelectableItem(val onCheckedChange: (Pair<Screen, Boolean>) -> Unit) : MenuItemType()
 }
 
 @Composable
@@ -46,8 +46,8 @@ fun MenuComponent(
                     onFocus = {
                         weight = if (it) 1.1f else 1f
                     },
-                    onCheckedChange = {menuItemType.onCheckedChange(it)}
-                    )
+                    onCheckedChange = { menuItemType.onCheckedChange(Pair(item.first,it)) }
+                )
             }
 
             Spacer(modifier = Modifier.width(20.dp))

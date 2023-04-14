@@ -26,14 +26,14 @@ fun ViewModelToScreen(viewModel: ViewModel) = when (viewModel) {
     else -> {}
 }
 
+object userSelect{
+    var viewModels = mapOf<Screen, ViewModel>()
+}
+
 @Composable
 fun AutoplayScreen(viewModel: AutoplayViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsState()
-    val viewModels = mapOf<Screen, ViewModel>(
-        Screen.BestPhoto to hiltViewModel<PhotoViewModel>(),
-        Screen.Events to hiltViewModel<LeaderIdEventsViewModel>(),
-
-    )
+    val viewModels = userSelect.viewModels
     viewModels.forEach { (screen, vm) ->
         viewModel.autoplayController.registerScreen(
             ScreenDescription(
