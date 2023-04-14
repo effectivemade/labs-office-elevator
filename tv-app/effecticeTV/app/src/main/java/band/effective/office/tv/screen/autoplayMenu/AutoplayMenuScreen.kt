@@ -5,6 +5,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import band.effective.office.tv.screen.menu.component.ButtonAutoplay
 import band.effective.office.tv.screen.menu.component.MenuComponent
+import band.effective.office.tv.screen.menu.component.MenuItemType
 import band.effective.office.tv.screen.navigation.Screen
 import kotlinx.coroutines.launch
 
@@ -16,7 +17,7 @@ fun AutoplayMenuScreen() {
             itemsList = listOf(
                 Pair(Screen.BestPhoto, "Photo"),
                 Pair(Screen.Events, "Events")
-            ), onNavigate = {})
+            ), onNavigate = {}, menuItemType = MenuItemType.SelectableItem{})
         ButtonAutoplay (
             text = "play",
             onClick = {}
