@@ -4,6 +4,7 @@ import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -17,6 +18,7 @@ import band.effective.office.tv.R
 import band.effective.office.tv.core.ui.screen_with_controls.model.MenuButton
 import band.effective.office.tv.core.ui.screen_with_controls.model.MenuState
 import kotlinx.coroutines.flow.update
+
 
 @Composable
 fun SlideShowPhotoControl(
@@ -33,6 +35,14 @@ fun SlideShowPhotoControl(
     onClickPreviousItemButton: () -> Unit,
 ) {
     val state by MenuState.state.collectAsState()
+    LaunchedEffect(Unit) {
+        when (state.selectButton) {
+            MenuButton.Play -> playButton
+            MenuButton.Nothink -> backToPhoto
+            MenuButton.Prev -> prevButton
+            MenuButton.Next -> nextButton
+        }.requestFocus()
+    }
     Row(
         modifier = modifier.focusable()
     ) {
@@ -41,7 +51,7 @@ fun SlideShowPhotoControl(
                 .align(Alignment.CenterVertically)
                 .focusRequester(prevButton)
                 .onFocusChanged { state ->
-                    MenuState.state.update { it.copy(selectButton = if (state.isFocused) MenuButton.Prev else MenuButton.Nothink) }
+                    if (state.isFocused) MenuState.state.update { it.copy(selectButton = MenuButton.Prev) }
                 }
                 .focusProperties {
                     up = backToPhoto
@@ -64,7 +74,7 @@ fun SlideShowPhotoControl(
                 .align(Alignment.CenterVertically)
                 .focusRequester(playButton)
                 .onFocusChanged { state ->
-                    MenuState.state.update { it.copy(selectButton = if (state.isFocused) MenuButton.Play else MenuButton.Nothink) }
+                    if (state.isFocused) MenuState.state.update { it.copy(selectButton = MenuButton.Play) }
                 }
                 .focusProperties {
                     up = backToPhoto
@@ -86,7 +96,7 @@ fun SlideShowPhotoControl(
                 .align(Alignment.CenterVertically)
                 .focusRequester(nextButton)
                 .onFocusChanged { state ->
-                    MenuState.state.update { it.copy(selectButton = if (state.isFocused) MenuButton.Next else MenuButton.Nothink) }
+                    if (state.isFocused) MenuState.state.update { it.copy(selectButton = MenuButton.Next) }
                 }
                 .focusProperties {
                     up = backToPhoto
