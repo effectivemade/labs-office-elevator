@@ -10,7 +10,7 @@ import band.effective.office.tv.screen.navigation.Screen
 
 @Composable
 fun MenuComponent(
-    itemsList: List<NavigationModel>,
+    itemsList: List<Pair<Screen,String>>,
     onNavigate: (Screen) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -25,8 +25,8 @@ fun MenuComponent(
         for (item in itemsList) {
             var weight by remember { mutableStateOf(1f) }
             MenuItem(
-                text = item.title,
-                onClick = { onNavigate(item.screen) },
+                text = item.second,
+                onClick = { onNavigate(item.first) },
                 onFocus = {
                     weight = if (it) 1.1f else 1f
                 },

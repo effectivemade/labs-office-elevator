@@ -49,12 +49,14 @@ fun MenuScreen(
                 color = Color.White
             )
             Spacer(Modifier.height(20.dp))
-            ButtonAutoplay (onFocus = {
+            ButtonAutoplay (
+                text = "autoplay",
+                onFocus = {
                 coroutineScope.launch { scrollState.animateScrollTo(0) }
             },
             onClick = {navController.navigate(Screen.Autoplay.name)})
             Spacer(Modifier.height(20.dp))
-            MenuComponent(itemsList = itemsList, onNavigate = { navController.navigate(it.name) })
+            MenuComponent(itemsList = itemsList.map { Pair(it.screen,it.title) }, onNavigate = { navController.navigate(it.name) })
         }
     }
     TimeComponent()
