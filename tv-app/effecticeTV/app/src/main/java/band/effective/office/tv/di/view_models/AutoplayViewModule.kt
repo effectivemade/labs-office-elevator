@@ -11,7 +11,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class AutoplayViewModule {
-    @Singleton
     @Provides
     fun provideAutoplayController() = AutoplayController()
 }

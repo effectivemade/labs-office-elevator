@@ -1,5 +1,6 @@
 package band.effective.office.tv.screen.autoplayMenu
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
