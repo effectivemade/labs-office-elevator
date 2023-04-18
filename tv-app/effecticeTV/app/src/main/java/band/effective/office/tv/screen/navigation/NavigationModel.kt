@@ -7,7 +7,7 @@ import band.effective.office.tv.screen.leaderIdEvents.LeaderIdEventsScreen
 import band.effective.office.tv.screen.photo.BestPhotoScreen
 
 enum class Screen {
-    Menu, Events, BestPhoto, History, Autoplay
+    Menu, Events, BestPhoto, History, Autoplay, AutoplayMenu
 }
 
 data class NavigationModel(
