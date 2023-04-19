@@ -35,7 +35,10 @@ interface SynologyApi {
         @Query("offset") offset: Int,
         @Query("limit") limit: Int,
         @Query("album_id") albumId: Int,
-        @Query("additional") additional: String = "[\"thumbnail\",\"resolution\",\"orientation\",\"video_convert\",\"video_meta\",\"provider_user_id\"]"
+        @Query("additional") additional: String =
+            "[\"thumbnail\",\"resolution\"," +
+            "\"orientation\",\"video_convert\"," +
+            "\"video_meta\",\"provider_user_id\"]"
     ): Either<ErrorReason, SynologyPhotoSAlbumsResponse>
 
     @GET("/webapi/entry.cgi?api=SYNO.FileStation.List")

@@ -2,7 +2,6 @@ package band.effective.office.tv.screen.photo
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import band.effective.office.tv.BuildConfig
 import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
 import band.effective.office.tv.core.network.entity.Either
 import band.effective.office.tv.repository.synology.SynologyRepository
@@ -71,7 +70,7 @@ class PhotoViewModel @Inject constructor(
             state.copy(isLoading = true)
         }
 
-       repository.getPhotosUrl("\"${BuildConfig.folderPathPhotoSynology}\"").collect { result->
+       repository.getPhotosUrl().collect { result->
            when(result) {
                is Either.Failure -> {
                    mutableState.update { state ->

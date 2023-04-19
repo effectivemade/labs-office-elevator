@@ -14,33 +14,30 @@ import javax.inject.Inject
 class PhotoSynologyRepositoryImpl @Inject constructor(
     private val synologyApi: SynologyApi,
 ) : PhotoSynologyRepository {
-    override suspend fun getPhotosUrl(
-        folderPath: String,
-        sid: String
-    ): Flow<Either<String, List<PhotoDomain>>> =
+    override suspend fun getPhotosUrl(sid: String): Flow<Either<String, List<PhotoDomain>>> =
         flow {
             val photos: MutableList<PhotoDomain> = mutableListOf()
             when (
                 val res: Either<ErrorReason, SynologyAlbumsResponse> =
-                synologyApi.getAlbums(
-                    sid = sid,
-                    version = 2,
-                    method = "list",
-                    offset = 0,
-                    limit = 100
-                )
+                    synologyApi.getAlbums(
+                        sid = sid,
+                        version = 2,
+                        method = "list",
+                        offset = 0,
+                        limit = 100
+                    )
             ) {
                 is Either.Success -> {
-                    res.data.albumsData.albums.forEach {album ->
+                    res.data.albumsData.albums.forEach { album ->
                         when (
                             val photo = synologyApi.getPhotosFromAlbum(
-                            sid = sid,
-                            version = 1,
-                            method = "list",
-                            albumId = album.id,
-                            offset = 0,
-                            limit = album.item_count
-                        )
+                                sid = sid,
+                                version = 1,
+                                method = "list",
+                                albumId = album.id,
+                                offset = 0,
+                                limit = album.item_count
+                            )
                         ) {
                             is Either.Success ->
                                 photos.addAll(photo.data.toDomain(sid = sid))
@@ -50,9 +47,8 @@ class PhotoSynologyRepositoryImpl @Inject constructor(
                     emit(Either.Success(photos))
                 }
                 is Either.Failure -> {
-                    emit(Either.Failure( res.error.message))
+                    emit(Either.Failure(res.error.message))
                 }
             }
-
         }
 }
