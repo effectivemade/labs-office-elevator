@@ -18,7 +18,8 @@ class EmployeeInfoRemoteDataSource @Inject constructor() {
                 val icon: File = it.icon as File
                 employeeInfoList.add(
                     EmployeeInfoDto(
-                        firstName = it.properties["Name"]?.title?.get(0)?.text?.content,
+                        firstName = it.properties["Name"]?.title?.get(0)?.text?.content?.split(" ")
+                            ?.get(0),
                         startDate = it.properties["Start Date"]?.date?.start,
                         nextBirthdayDate = it.properties["Next B-DAY"]?.date?.start,
                         photoUrl = icon.file?.url

@@ -1,6 +1,7 @@
 package band.effective.office.tv.screen.eventStory
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -18,13 +19,28 @@ fun EventStoryScreen(viewModel: EventStoryViewModel) {
     val state by viewModel.uiState.collectAsState()
     when {
         state.isLoading -> LoadScreen()
-        state.isError -> showErrorMessage(context, errorMessage + state.errorText)
-        state.isLoaded -> EventInfo(state.eventsInfo)
+        state.isError -> {
+            showErrorMessage(context, errorMessage + state.errorText)
+            Log.d("EventStoryScreen", errorMessage + state.stackTrace)
+        }
+        state.isLoaded -> {
+            state.eventsInfo.map {
+                Log.d("EventStoryScreenTest", it.name)
+            }
+            Log.d(
+                "EventStoryScreenTest",
+                "Current index is - " + state.currentStoryIndex.toString()
+            )
+            EventInfo(state.eventsInfo, state.currentStoryIndex)
+        }
     }
+
 }
 
 private fun showErrorMessage(context: Context, message: String) {
     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 }
 
-private fun LoadScreen() {}
+private fun LoadScreen() {
+
+}
