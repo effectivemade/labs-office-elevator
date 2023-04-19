@@ -24,7 +24,7 @@ fun TimeComponent() {
                 TextClock(context).apply {
                     format24Hour = "EEE, d MMMM HH:mm"
                     format12Hour = "EEE, d MMMM hh:mm a"
-                    textSize = 25f
+                    textSize = 17f
                     setTextColor(Color.WHITE)
                 }
             }
