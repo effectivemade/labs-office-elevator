@@ -1,4 +1,4 @@
-package band.effective.office.tv.network.mattermostWebSocketClient
+package band.effective.office.tv.network.mattermost.mattermostWebSocketClient
 
 import band.effective.office.tv.domain.botLogic.model.BotEvent
 

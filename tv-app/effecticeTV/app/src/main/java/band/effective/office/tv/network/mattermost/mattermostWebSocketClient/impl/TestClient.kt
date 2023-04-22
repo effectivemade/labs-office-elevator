@@ -1,7 +1,7 @@
-package band.effective.office.tv.network.mattermostWebSocketClient.impl
+package band.effective.office.tv.network.mattermost.mattermostWebSocketClient.impl
 
 import android.util.Log
-import band.effective.office.tv.network.mattermostWebSocketClient.MattermostWebSocketClient
+import band.effective.office.tv.network.mattermost.mattermostWebSocketClient.MattermostWebSocketClient
 import band.effective.office.tv.domain.botLogic.model.BotEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -1,17 +1,18 @@
 package band.effective.office.tv.di
 
 import band.effective.office.tv.BuildConfig
-import band.effective.office.tv.core.network.EitherSynologyAdapterFactory
-import band.effective.office.tv.network.LeaderIdRetrofitClient
-import band.effective.office.tv.network.SynologyRetrofitClient
-import band.effective.office.tv.network.synology.SynologyApi
 import band.effective.office.tv.core.network.EitherLeaderIdAdapterFactory
+import band.effective.office.tv.core.network.EitherSynologyAdapterFactory
+import band.effective.office.tv.network.AuthInterceptor
+import band.effective.office.tv.network.LeaderIdRetrofitClient
+import band.effective.office.tv.network.MattermostClient
+import band.effective.office.tv.network.SynologyRetrofitClient
 import band.effective.office.tv.network.leader.LeaderApi
-import band.effective.office.tv.network.mattermostWebSocketClient.MattermostWebSocketClient
-import band.effective.office.tv.network.mattermostWebSocketClient.impl.TestClient
+import band.effective.office.tv.network.mattermost.MattermostApi
+import band.effective.office.tv.network.mattermost.mattermostWebSocketClient.MattermostWebSocketClient
+import band.effective.office.tv.network.mattermost.mattermostWebSocketClient.impl.MattermostWebSocketClientImpl
+import band.effective.office.tv.network.synology.SynologyApi
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
-import com.squareup.moshi.addAdapter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -39,12 +40,28 @@ class NetworkModule {
 
     @Singleton
     @Provides
+    @MattermostClient
+    fun provideMattermostOkHttpClient() = OkHttpClient.Builder()
+        .addInterceptor(AuthInterceptor(BuildConfig.mattermostBotToken))
+        .addInterceptor(
+            HttpLoggingInterceptor()
+                .apply {
+                    level = HttpLoggingInterceptor.Level.BODY
+                })
+        .build()
+
+    @Singleton
+    @Provides
     fun provideEitherAdapterFactory(): EitherLeaderIdAdapterFactory = EitherLeaderIdAdapterFactory()
 
     @Singleton
     @Provides
     @LeaderIdRetrofitClient
-    fun provideLeaderIdRetrofit(moshiConverterFactory: MoshiConverterFactory, client: OkHttpClient, eitherLeaderIdAdapterFactory: EitherLeaderIdAdapterFactory): Retrofit =
+    fun provideLeaderIdRetrofit(
+        moshiConverterFactory: MoshiConverterFactory,
+        client: OkHttpClient,
+        eitherLeaderIdAdapterFactory: EitherLeaderIdAdapterFactory
+    ): Retrofit =
         Retrofit.Builder().addConverterFactory(moshiConverterFactory)
             .addCallAdapterFactory(eitherLeaderIdAdapterFactory).client(client)
             .baseUrl(BuildConfig.apiLeaderUrl).build()
@@ -76,6 +93,21 @@ class NetworkModule {
 
     @Singleton
     @Provides
+    @MattermostClient
+    fun provideMattermostRetrofit(
+        moshiConverterFactory: MoshiConverterFactory,
+        @MattermostClient client: OkHttpClient,
+        callAdapter: CallAdapter.Factory
+    ): Retrofit =
+        Retrofit.Builder()
+            .addConverterFactory(moshiConverterFactory)
+            .addCallAdapterFactory(callAdapter)
+            .client(client)
+            .baseUrl("https://${BuildConfig.apiMattermostUrl}")
+            .build()
+
+    @Singleton
+    @Provides
     fun provideLeaderApi(@LeaderIdRetrofitClient retrofit: Retrofit): LeaderApi =
         retrofit.create()
 
@@ -86,5 +118,14 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun provideMattermostClient(): MattermostWebSocketClient = TestClient()
+    fun provideApiMattermost(@MattermostClient retrofit: Retrofit): MattermostApi =
+        retrofit.create()
+
+    @Singleton
+    @Provides
+    fun provideMattermostClient(
+        okHttpClient: OkHttpClient,
+        mattermostApi: MattermostApi
+    ): MattermostWebSocketClient =
+        MattermostWebSocketClientImpl(okHttpClient, mattermostApi)
 }

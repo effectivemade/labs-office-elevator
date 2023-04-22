@@ -2,7 +2,7 @@ package band.effective.office.tv.domain.botLogic.impl
 
 import band.effective.office.tv.domain.botLogic.MessengerBot
 import band.effective.office.tv.domain.botLogic.model.BotEvent
-import band.effective.office.tv.network.mattermostWebSocketClient.MattermostWebSocketClient
+import band.effective.office.tv.network.mattermost.mattermostWebSocketClient.MattermostWebSocketClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

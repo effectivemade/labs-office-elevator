@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.domain.botLogic.MessengerBot
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -17,7 +18,8 @@ class MessageScreenViewModel @Inject constructor(private val bot: MessengerBot) 
     val state = mutableState.asStateFlow()
 
     init {
-        bot.start()
+        viewModelScope.launch(Dispatchers.IO) {bot.start()  }
+
         collectEvent()
     }
 

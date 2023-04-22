@@ -11,3 +11,7 @@ annotation class LeaderIdRetrofitClient
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class SynologyRetrofitClient
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class MattermostClient
