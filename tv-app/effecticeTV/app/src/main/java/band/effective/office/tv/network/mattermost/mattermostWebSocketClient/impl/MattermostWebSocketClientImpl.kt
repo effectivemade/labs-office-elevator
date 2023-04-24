@@ -22,6 +22,7 @@ class MattermostWebSocketClientImpl @Inject constructor(
     var webSocket: WebSocket? = null
     var lastSeq = 0
     var userId: String? = null
+    var eventHandler: (BotEvent) -> Unit = {}
 
     private class MattermostWebSocketListener(private val handler: (String) -> Unit) :
         WebSocketListener() {
@@ -51,27 +52,40 @@ class MattermostWebSocketClientImpl @Inject constructor(
     private fun handler(response: String) {
         val correctResponse =
             response.replace("\\", "").replace("\"{", "{").replace("}\"", "}")
-                .replace("seq_reply", "seq").replace("\"[","[").replace("]\"","]")
+                .replace("seq_reply", "seq").replace("\"[", "[").replace("]\"", "]")
         when {
             response.contains("posted") -> {
                 val adapter = moshi.adapter(PostJson::class.java)
                 val post = adapter.fromJson(correctResponse)
                 Log.i("socket", post.toString())
-                if (post != null && userId != null && post.data.post.userId != userId) postMessage(
-                    post.data.post.channelId,
-                    "Получено сообщение: ${post.data.post.message}",
-                    if (post.data.post.rootId == "") post.data.post.id else post.data.post.rootId
-                )
+                if (post != null && userId != null && post.data.post.userId != userId) {
+                    eventHandler(
+                        BotEvent.PostMessage(
+                            message = post.data.post.message,
+                            messageId = post.data.post.id,
+                            userName = post.data.senderName,
+                            userId = post.data.post.userId,
+                            rootId = post.data.post.rootId,
+                            channelId = post.data.post.channelId
+                        )
+                    )
+                }
             }
             response.contains("reaction_added") -> {
                 val adapter = moshi.adapter(ReactionJson::class.java)
                 val reaction = adapter.fromJson(correctResponse)
                 Log.i("socket", reaction.toString())
-                if (reaction != null && userId != null && reaction.data.reaction.userId != userId) postMessage(
-                    reaction.data.reaction.channelId,
-                    "Получен эмоджи: ${reaction.data.reaction.emojiName}",
-                    reaction.data.reaction.postId
-                )
+                if (reaction != null && userId != null && reaction.data.reaction.userId != userId) {
+                    eventHandler(
+                        BotEvent.Reaction(
+                            messageId = reaction.data.reaction.postId,
+                            userId = reaction.data.reaction.userId,
+                            rootId = reaction.data.reaction.postId,
+                            channelId = reaction.data.reaction.channelId,
+                            emojiName = reaction.data.reaction.emojiName
+                        )
+                    )
+                }
             }
             else -> {
                 Log.i("socket", response)
@@ -82,10 +96,8 @@ class MattermostWebSocketClientImpl @Inject constructor(
         }
     }
 
-    fun postMessage(channelId: String, message: String, root: String = "") {
-        CoroutineScope(Dispatchers.IO).launch {
-            api.createPost(PostMessageData(channelId, message, root))
-        }
+    override suspend fun postMessage(channelId: String, message: String, root: String) {
+        api.createPost(PostMessageData(channelId, message, root))
     }
 
     override fun disconnect() {
@@ -93,6 +105,6 @@ class MattermostWebSocketClientImpl @Inject constructor(
     }
 
     override fun subscribe(handler: (BotEvent) -> Unit) {
-
+        eventHandler = handler
     }
 }

@@ -6,4 +6,5 @@ interface MattermostWebSocketClient {
     fun connect()
     fun disconnect()
     fun subscribe(handler: (BotEvent) -> Unit)
+    suspend fun postMessage(channelId: String, message: String, root: String = "")
 }

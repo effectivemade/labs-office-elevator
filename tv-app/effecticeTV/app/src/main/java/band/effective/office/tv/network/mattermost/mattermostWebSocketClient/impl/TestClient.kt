@@ -24,10 +24,14 @@ class TestClient: MattermostWebSocketClient {
             var currentMessageIndex = 0
             while (true){
                 Log.i("Mattermost Test Client", messages[currentMessageIndex])
-                handler(BotEvent(messages[currentMessageIndex]))
+                //handler(BotEvent(messages[currentMessageIndex]))
                 currentMessageIndex = (currentMessageIndex + 1) % messages.size
                 delay(10000)
             }
         }
+    }
+
+    override suspend fun postMessage(channelId: String, message: String, root: String) {
+
     }
 }
