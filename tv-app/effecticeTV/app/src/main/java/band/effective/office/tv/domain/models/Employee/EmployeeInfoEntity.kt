@@ -10,31 +10,31 @@ class EmployeeInfoEntity(
     val photoUrl: String,
 )
 
-fun processEmployeeInfo(data: List<EmployeeInfoEntity>): MutableList<EmployeeInfo> {
+fun List<EmployeeInfoEntity>.processEmployeeInfo(): MutableList<EmployeeInfo> {
     val resultList = mutableListOf<EmployeeInfo>()
-    data.map {
-        if (isCelebrationToday(it.nextBirthdayDate)) {
+    this.map {employee ->
+        if (isCelebrationToday(employee.nextBirthdayDate)) {
             resultList.add(
                 Birthday(
-                    it.firstName,
-                    it.photoUrl,
+                    employee.firstName,
+                    employee.photoUrl,
                 )
             )
         }
-        if (isCelebrationToday(it.startDate)) {
+        if (isCelebrationToday(employee.startDate)) {
             resultList.add(
                 Anniversary(
-                    it.firstName,
-                    it.photoUrl,
-                    DateUtlils.getYearsWithTheCompany(it.startDate)
+                    employee.firstName,
+                    employee.photoUrl,
+                    DateUtlils.getYearsFromStartDate(employee.startDate)
                 )
             )
         }
-        if (isNewEmployeeToday(it.startDate)) {
+        if (isNewEmployeeToday(employee.startDate)) {
             resultList.add(
                 NewEmployee(
-                    it.firstName,
-                    it.photoUrl,
+                    employee.firstName,
+                    employee.photoUrl,
                 )
             )
         }

@@ -1,28 +1,23 @@
-package band.effective.office.tv.screen.eventStory
+package band.effective.office.tv.screen.components
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import band.effective.office.tv.domain.models.Employee.Birthday
 import band.effective.office.tv.domain.models.Employee.EmployeeInfo
-import com.example.effecticetv.ui.theme.EffecticeTVTheme
-import com.example.effecticetv.ui.theme.Gray
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
+import com.example.effecticetv.ui.theme.IndependentColors
 
 @Composable
 fun StoryIndicator(stories: List<EmployeeInfo>, currentStoryIndex: Int, modifier: Modifier) {
@@ -31,22 +26,19 @@ fun StoryIndicator(stories: List<EmployeeInfo>, currentStoryIndex: Int, modifier
     val screenWidth = screenConfiguration.screenWidthDp.dp
     val indicatorWidth = (screenWidth - 64.dp - (stories.size - 1) * 8.dp) / (stories.size)
 
-    Row(modifier = modifier) {
+    Row(modifier = modifier, horizontalArrangement = Arrangement.Center) {
         stories.forEachIndexed { index, _ ->
             val animatedColor =
                 animateColorAsState(
-                    if (index == currentStoryIndex) Color.White else Gray
-                ) {
-
-                }
-            Surface(
-                color = animatedColor.value,
+                    if (index == currentStoryIndex) Color.White else IndependentColors.StoryIndicatorGray
+                )
+            Box(
                 modifier = Modifier
                     .width(indicatorWidth)
+                    .height(8.dp)
+                    .background(animatedColor.value)
                     .padding(end = 8.dp)
-            ) {
-                Text("")
-            }
+            )
         }
     }
 }

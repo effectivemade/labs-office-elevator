@@ -10,17 +10,15 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import band.effective.office.tv.domain.models.Employee.EmployeeInfo
-import band.effective.office.tv.screen.eventStory.StoryIndicator
-import com.example.effecticetv.ui.theme.Gray
-import com.example.effecticetv.ui.theme.LightGray
+import com.example.effecticetv.ui.theme.IndependentColors
 
 @Composable
-fun EventInfo(eventsInfo: MutableList<EmployeeInfo>, currentStoryIndex: Int) {
+fun EventStoryScreenContent(eventsInfo: MutableList<EmployeeInfo>, currentStoryIndex: Int) {
 
     Surface(
-        modifier = Modifier.fillMaxSize(), color = LightGray
+        modifier = Modifier.fillMaxSize(), color = IndependentColors.StoryBackgroundGray
     ) {
-        Column() {
+        Column {
             StoryIndicator(
                 eventsInfo, currentStoryIndex,
                 Modifier

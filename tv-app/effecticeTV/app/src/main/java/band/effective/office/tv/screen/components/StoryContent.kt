@@ -1,15 +1,13 @@
 package band.effective.office.tv.screen.components
 
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -29,7 +27,7 @@ import band.effective.office.tv.domain.models.Employee.Birthday
 import band.effective.office.tv.domain.models.Employee.EmployeeInfo
 import band.effective.office.tv.domain.models.Employee.EventType
 import band.effective.office.tv.domain.models.Employee.NewEmployee
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.AsyncImage
 import com.example.effecticetv.ui.theme.drukLCGWideMedium
 import com.example.effecticetv.ui.theme.museoCyrl
 
@@ -46,6 +44,7 @@ fun StoryContent(employeeInfoes: List<EmployeeInfo>, currentStoryIndex: Int, mod
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
         modifier = modifier
             .fillMaxSize()
             .padding(vertical = 64.dp)
@@ -53,8 +52,8 @@ fun StoryContent(employeeInfoes: List<EmployeeInfo>, currentStoryIndex: Int, mod
         Column(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
-                .widthIn(0.dp, screenWidth / 2)
                 .padding(bottom = 24.dp)
+                .width(400.dp)
                 .fillMaxSize()
         ) {
             Text(
@@ -81,17 +80,20 @@ fun StoryContent(employeeInfoes: List<EmployeeInfo>, currentStoryIndex: Int, mod
                 )
             } else {
                 Text(
-                    text = stringResource(id = R.string.now_in_team)
+                    text = stringResource(id = R.string.now_in_team),
+                    fontSize = 54.sp,
+                    fontFamily = drukLCGWideMedium,
                 )
             }
 
         }
 
-        Image(
-            painter = rememberAsyncImagePainter(employeeInfoes[currentStoryIndex].photoUrl),
+        AsyncImage(
+            model = employeeInfoes[currentStoryIndex].photoUrl,
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(300.dp)
+                .padding(10.dp)
                 .clip(CircleShape),
             contentDescription = "Employee photo"
         )

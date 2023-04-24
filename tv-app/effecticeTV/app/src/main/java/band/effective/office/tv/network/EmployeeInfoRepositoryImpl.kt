@@ -1,7 +1,8 @@
-package band.effective.office.tv.repository
+package band.effective.office.tv.network
 
 import band.effective.office.tv.domain.models.Employee.EmployeeInfoEntity
-import band.effective.office.tv.source.EmployeeInfoRemoteDataSource
+import band.effective.office.tv.domain.models.Employee.EmployeeInfoRepository
+import band.effective.office.tv.network.notion.EmployeeInfoRemoteDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -13,13 +14,13 @@ class EmployeeInfoRepositoryImpl @Inject constructor(private val employeeInfoRem
     override val latestEvents: Flow<List<EmployeeInfoEntity>> = flow {
         val employeesInfo = employeeInfoRemoteDataSource.fetchLatestBirthdays()
         val result = mutableListOf<EmployeeInfoEntity>()
-        employeesInfo.map {
+        employeesInfo.map { employee ->
             result.add(
                 EmployeeInfoEntity(
-                    it.firstName ?: throw NullPointerException(),
-                    it.startDate ?: throw NullPointerException(),
-                    it.nextBirthdayDate ?: throw NullPointerException(),
-                    it.photoUrl ?: throw NullPointerException()
+                    employee.firstName ?: throw NullPointerException(),
+                    employee.startDate ?: throw NullPointerException(),
+                    employee.nextBirthdayDate ?: throw NullPointerException(),
+                    employee.photoUrl ?: throw NullPointerException()
                 )
             )
         }
