@@ -10,7 +10,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import band.effective.office.tv.R
+import band.effective.office.tv.domain.models.Employee.EmployeeInfo
 import band.effective.office.tv.screen.components.EventStoryScreenContent
+import band.effective.office.tv.screen.components.NoStoriesScreen
 
 @Composable
 fun EventStoryScreen(viewModel: EventStoryViewModel = hiltViewModel()) {
@@ -22,9 +24,14 @@ fun EventStoryScreen(viewModel: EventStoryViewModel = hiltViewModel()) {
     when {
         state.isLoading -> LoadScreen()
         state.isError -> showErrorMessage(context, errorMessage + state.errorText)
-        state.isLoaded -> EventStoryScreenContent(state.eventsInfo, state.currentStoryIndex)
+        state.isLoaded -> Stories(state.eventsInfo, state.currentStoryIndex)
     }
 
+}
+
+@Composable
+private fun Stories(eventsInfo: MutableList<EmployeeInfo>, currentStoryIndex: Int) {
+    if (eventsInfo.size == 0) NoStoriesScreen() else EventStoryScreenContent(eventsInfo, currentStoryIndex)
 }
 
 //TODO (ParkhomenkoEgor): Change toast to custom component

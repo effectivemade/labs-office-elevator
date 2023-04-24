@@ -6,4 +6,6 @@
     <string name="for_years">года</string>
     <string name="now_in_team">теперь в команде</string>
     <string name="error_occurred">Произошла ошибка, подробнее:</string>
+    <string name="today_no_stories">На сегодня Stories нет</string>
+    <string name="back">Назад</string>
 </resources>

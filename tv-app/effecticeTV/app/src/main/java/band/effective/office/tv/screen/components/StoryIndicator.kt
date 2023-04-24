@@ -34,10 +34,10 @@ fun StoryIndicator(stories: List<EmployeeInfo>, currentStoryIndex: Int, modifier
                 )
             Box(
                 modifier = Modifier
+                    .padding(end = 8.dp)
                     .width(indicatorWidth)
                     .height(8.dp)
                     .background(animatedColor.value)
-                    .padding(end = 8.dp)
             )
         }
     }
