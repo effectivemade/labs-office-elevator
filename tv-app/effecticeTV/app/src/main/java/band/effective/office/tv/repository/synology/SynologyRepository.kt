@@ -8,5 +8,5 @@ import kotlinx.coroutines.flow.Flow
 interface SynologyRepository  {
     suspend fun auth(): Either<String, AuthModel>
 
-    suspend fun getPhotosUrl(folderPath: String): Flow<Either<String, List<PhotoDomain>>>
+    suspend fun getPhotosUrl(): Flow<Either<String, List<PhotoDomain>>>
 }

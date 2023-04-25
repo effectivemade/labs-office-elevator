@@ -31,7 +31,7 @@ fun PhotoUIItem(image: Photo, modifier: Modifier = Modifier) {
             model = image.photoThumb,
             loading = { LoadScreen("Best photo") },
             contentDescription = null,
-            contentScale = ContentScale.FillBounds,
+            contentScale = ContentScale.Crop,
         )
     }
 }
