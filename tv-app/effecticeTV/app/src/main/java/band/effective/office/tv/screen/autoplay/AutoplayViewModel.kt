@@ -12,7 +12,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AutoplayViewModel @Inject constructor(val autoplayController: AutoplayController) : ViewModel() {
-    //val autoplayController: AutoplayController = AutoplayController()
     private var mutableState = MutableStateFlow(AutoplayUiState.defaultState)
     val state = mutableState.asStateFlow()
 
