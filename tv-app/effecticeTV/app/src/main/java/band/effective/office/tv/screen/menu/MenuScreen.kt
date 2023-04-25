@@ -1,6 +1,5 @@
 package band.effective.office.tv.screen.menu
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -49,15 +48,21 @@ fun MenuScreen(
                 color = Color.White
             )
             Spacer(Modifier.height(20.dp))
-            ButtonAutoplay (
+            ButtonAutoplay(
                 text = "autoplay",
                 onFocus = {
-                coroutineScope.launch { scrollState.animateScrollTo(0) }
-            },
-            onClick = {navController.navigate(Screen.AutoplayMenu.name)})
+                    coroutineScope.launch { scrollState.animateScrollTo(0) }
+                },
+                onClick = { navController.navigate(Screen.AutoplayMenu.name) })
             Spacer(Modifier.height(20.dp))
-            MenuComponent(itemsList = itemsList.map { Pair(it.screen,it.title) }, onNavigate = { navController.navigate(it.name) })
+            MenuComponent(
+                itemsList = itemsList.map { Pair(it.screen, it.title) },
+                onNavigate = { navController.navigate(it.name) })
         }
     }
-    TimeComponent()
+    TimeComponent(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(20.dp)
+    )
 }
