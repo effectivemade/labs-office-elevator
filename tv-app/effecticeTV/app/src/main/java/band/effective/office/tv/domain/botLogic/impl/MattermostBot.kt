@@ -6,9 +6,6 @@ import band.effective.office.tv.domain.model.message.BotMessage
 import band.effective.office.tv.domain.model.message.MessageQueue
 import band.effective.office.tv.network.mattermost.mattermostWebSocketClient.MattermostWebSocketClient
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -16,25 +13,57 @@ import javax.inject.Inject
 class MattermostBot @Inject constructor(private val client: MattermostWebSocketClient) :
     MessengerBot {
     override fun start(scope: CoroutineScope) {
-        client.connect()
+        scope.launch { client.connect() }
         client.subscribe { event ->
-            when (event){
+            when (event) {
                 is BotEvent.PostMessage -> {
-                    MessageQueue.push(BotMessage(event.message, GregorianCalendar()))
-                    scope.launch { client.postMessage(
-                        channelId = event.channelId,
-                        message = event.toString(),
-                        root = if (event.rootId == "") event.messageId else event.rootId
-                    ) }
+                    if (event.message.contains(client.name())) {
+                        val message = event.toBotMessage()
+                        MessageQueue.secondQueue.push(message.copy(text = event.message.replace("@${client.name()} ", "")))
+                        postMessage(scope, message.copy(text = "Сообщение принято"))
+                    }
+
                 }
                 is BotEvent.Reaction -> {
-                    scope.launch { client.postMessage(
-                        channelId = event.channelId,
-                        message = event.toString(),
-                        root = event.messageId
-                    ) }
+                    when (event.emojiName) {
+                        "warning" -> {
+                            val message = MessageQueue.secondQueue.message(event.messageId)
+                            if (message != null) {
+                                MessageQueue.secondQueue.removeMessage(message)
+                                MessageQueue.firstQueue.push(message)
+                                postMessage(scope, message.copy(text = "Приоритет повышен"))
+                            }
+                        }
+                        "no_entry_sign" -> {
+                            val message = MessageQueue.secondQueue.message(event.messageId)
+                                ?: MessageQueue.firstQueue.message(event.messageId)
+                            if (message != null) {
+                                MessageQueue.secondQueue.removeMessage(message)
+                                MessageQueue.firstQueue.removeMessage(message)
+                                postMessage(scope, message.copy(text = "Сообщение удалено"))
+                            }
+                        }
+                    }
+
                 }
             }
         }
     }
+
+    private fun postMessage(scope: CoroutineScope, message: BotMessage) = scope.launch {
+        client.postMessage(
+            channelId = message.channelId,
+            message = message.text,
+            root = message.rootId
+        )
+    }
 }
+
+private fun BotEvent.PostMessage.toBotMessage(): BotMessage =
+    BotMessage(
+        channelId,
+        messageId,
+        message,
+        GregorianCalendar(),
+        if (rootId == "") messageId else rootId
+    )

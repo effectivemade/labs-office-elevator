@@ -7,9 +7,6 @@ import band.effective.office.tv.network.mattermost.MattermostApi
 import band.effective.office.tv.network.mattermost.mattermostWebSocketClient.MattermostWebSocketClient
 import band.effective.office.tv.network.mattermost.model.*
 import com.squareup.moshi.Moshi
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import okhttp3.*
 import javax.inject.Inject
 
@@ -22,6 +19,7 @@ class MattermostWebSocketClientImpl @Inject constructor(
     var webSocket: WebSocket? = null
     var lastSeq = 0
     var userId: String? = null
+    var botName: String? = null
     var eventHandler: (BotEvent) -> Unit = {}
 
     private class MattermostWebSocketListener(private val handler: (String) -> Unit) :
@@ -36,10 +34,10 @@ class MattermostWebSocketClientImpl @Inject constructor(
         }
     }
 
-    override fun connect() {
-        CoroutineScope(Dispatchers.IO).launch {
-            userId = api.auth().id
-        }
+    override suspend fun connect() {
+        val authResponse = api.auth()
+        userId = authResponse.id
+        botName = authResponse.username
         webSocket = client.newWebSocket(Request.Builder()
             .url("ws://${BuildConfig.apiMattermostUrl}websocket").build(),
             MattermostWebSocketListener { handler(it) })
@@ -99,6 +97,8 @@ class MattermostWebSocketClientImpl @Inject constructor(
     override suspend fun postMessage(channelId: String, message: String, root: String) {
         api.createPost(PostMessageData(channelId, message, root))
     }
+
+    override fun name(): String = botName ?: ""
 
     override fun disconnect() {
         webSocket?.close(1000, null)

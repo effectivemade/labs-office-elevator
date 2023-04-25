@@ -25,11 +25,12 @@ class MessageScreenViewModel @Inject constructor(private val bot: MessengerBot) 
     }
 
     private fun collectEvent() = viewModelScope.launch {
-        MessageQueue.queue.collect { messageQueue ->
-            if (messageQueue.queue.isNotEmpty()) {
-                mutableState.update { messageQueue.top().message }
+        val firstQueue = MessageQueue.firstQueue
+        firstQueue.queue.collect {
+            if (firstQueue.isNotEmpty()) {
+                mutableState.update { firstQueue.top().text }
                 delay(2000)
-                MessageQueue.pop()
+                firstQueue.pop()
             }
         }
     }
