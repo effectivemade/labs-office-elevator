@@ -1,11 +1,13 @@
 package band.effective.office.tv.di.view_models
 
+import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
 import band.effective.office.tv.repository.synology.AuthSynologyRepository
 import band.effective.office.tv.repository.synology.PhotoSynologyRepository
 import band.effective.office.tv.repository.synology.SynologyRepository
 import band.effective.office.tv.repository.synology.impl.AuthSynologyRepositoryImpl
 import band.effective.office.tv.repository.synology.impl.PhotoSynologyRepositoryImpl
 import band.effective.office.tv.repository.synology.impl.SynologyRepositoryImpl
+import band.effective.office.tv.screen.photo.PhotoViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
