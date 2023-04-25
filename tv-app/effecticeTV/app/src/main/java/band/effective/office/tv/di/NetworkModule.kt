@@ -1,18 +1,15 @@
 package band.effective.office.tv.di
 
 import band.effective.office.tv.BuildConfig
-import band.effective.office.tv.core.network.EitherLeaderIdAdapterFactory
 import band.effective.office.tv.core.network.EitherSynologyAdapterFactory
-import band.effective.office.tv.network.AuthInterceptor
 import band.effective.office.tv.network.LeaderIdRetrofitClient
-import band.effective.office.tv.network.MattermostClient
 import band.effective.office.tv.network.SynologyRetrofitClient
-import band.effective.office.tv.network.leader.LeaderApi
-import band.effective.office.tv.network.mattermost.MattermostApi
-import band.effective.office.tv.network.mattermost.mattermostWebSocketClient.MattermostWebSocketClient
-import band.effective.office.tv.network.mattermost.mattermostWebSocketClient.impl.MattermostWebSocketClientImpl
 import band.effective.office.tv.network.synology.SynologyApi
+import band.effective.office.tv.core.network.EitherLeaderIdAdapterFactory
+import band.effective.office.tv.network.leader.LeaderApi
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
+import com.squareup.moshi.addAdapter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -115,17 +112,4 @@ class NetworkModule {
     @Provides
     fun provideApiSynology(@SynologyRetrofitClient retrofit: Retrofit) =
         retrofit.create(SynologyApi::class.java)
-
-    @Singleton
-    @Provides
-    fun provideApiMattermost(@MattermostClient retrofit: Retrofit): MattermostApi =
-        retrofit.create()
-
-    @Singleton
-    @Provides
-    fun provideMattermostClient(
-        okHttpClient: OkHttpClient,
-        mattermostApi: MattermostApi
-    ): MattermostWebSocketClient =
-        MattermostWebSocketClientImpl(okHttpClient, mattermostApi)
 }

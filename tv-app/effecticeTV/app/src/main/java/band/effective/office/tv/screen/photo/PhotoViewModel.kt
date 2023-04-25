@@ -3,26 +3,39 @@ package band.effective.office.tv.screen.photo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.BuildConfig
-import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
 import band.effective.office.tv.core.network.entity.Either
+import band.effective.office.tv.domain.autoplay.AutoplayableViewModel
+import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
 import band.effective.office.tv.repository.synology.SynologyRepository
 import band.effective.office.tv.screen.photo.model.toUIModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class PhotoViewModel @Inject constructor(
     private val repository: SynologyRepository,
     private val slideShow: TimerSlideShow
-) : ViewModel() {
+) : ViewModel(), AutoplayableViewModel {
 
     private val mutableState = MutableStateFlow(BestPhotoState.Empty)
-    val state = mutableState.asStateFlow()
+    override val state = mutableState.asStateFlow()
 
     private val mutableEffect = MutableSharedFlow<BestPhotoEffect>()
     val effect = mutableEffect.asSharedFlow()
+
+    override fun switchToFirstItem() {
+        viewModelScope.launch {
+            mutableEffect.emit(BestPhotoEffect.ScrollToItem(0))
+        }
+    }
+
+    override fun switchToLastItem() {
+        viewModelScope.launch {
+            mutableEffect.emit(BestPhotoEffect.ScrollToItem(state.value.photos.size-1))
+        }
+    }
 
     init {
         slideShow.init(
@@ -63,28 +76,34 @@ class PhotoViewModel @Inject constructor(
                     mutableEffect.emit(BestPhotoEffect.ChangePlayState(isPlay))
                 }
             }
+            is BestPhotoEvent.OnRequestSwitchScreen -> mutableState.update { it.copy(navigateRequest = event.request) }
         }
     }
 
     private suspend fun updatePhoto() {
-        mutableState.update {state ->
+        mutableState.update { state ->
             state.copy(isLoading = true)
         }
 
-       repository.getPhotosUrl("\"${BuildConfig.folderPathPhotoSynology}\"").collect { result->
-           when(result) {
-               is Either.Failure -> {
-                   mutableState.update { state ->
-                       state.copy(isError = true, error = result.error)
-                   }
-               }
-               is Either.Success -> {
-                   mutableState.update { state ->
-                       state.copy(photos = result.toUIModel(), isError = false, isLoading = false)
-                   }
-                   slideShow.startTimer()
-               }
-           }
+        repository.getPhotosUrl("\"${BuildConfig.folderPathPhotoSynology}\"").collect { result ->
+            when (result) {
+                is Either.Failure -> {
+                    mutableState.update { state ->
+                        state.copy(isError = true, error = result.error, isLoading = false)
+                    }
+                }
+                is Either.Success -> {
+                    mutableState.update { state ->
+                        state.copy(
+                            photos = result.toUIModel(),
+                            isError = false,
+                            isLoading = false,
+                            isData = true
+                        )
+                    }
+                    slideShow.startTimer()
+                }
+            }
         }
     }
 }
