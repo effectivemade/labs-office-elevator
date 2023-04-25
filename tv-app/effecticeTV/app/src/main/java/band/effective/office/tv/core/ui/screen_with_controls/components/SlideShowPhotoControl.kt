@@ -2,10 +2,11 @@ package band.effective.office.tv.core.ui.screen_with_controls.components
 
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -14,7 +15,10 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.unit.dp
 import band.effective.office.tv.R
-import band.effective.office.tv.core.ui.screen_with_controls.components.ButtonControls
+import band.effective.office.tv.core.ui.screen_with_controls.model.MenuButton
+import band.effective.office.tv.core.ui.screen_with_controls.model.MenuState
+import kotlinx.coroutines.flow.update
+
 
 @Composable
 fun SlideShowPhotoControl(
@@ -30,52 +34,47 @@ fun SlideShowPhotoControl(
     onClickNextItemButton: () -> Unit,
     onClickPreviousItemButton: () -> Unit,
 ) {
-    var focusPreviousButton by remember { mutableStateOf(false) }
-    var focusNextButton by remember { mutableStateOf(false) }
-    var focusPlayButton by remember { mutableStateOf(false) }
-
-    Row(modifier = modifier
-        .focusable()
+    val state by MenuState.state.collectAsState()
+    LaunchedEffect(Unit) {
+        when (state.selectButton) {
+            MenuButton.Play -> playButton
+            MenuButton.Nothink -> backToPhoto
+            MenuButton.Prev -> prevButton
+            MenuButton.Next -> nextButton
+        }.requestFocus()
+    }
+    Row(
+        modifier = modifier.focusable()
     ) {
-        if (currentListPosition > 0) {
-            ButtonControls(
-                isFocus = focusPreviousButton,
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .focusRequester(prevButton)
-                    .onFocusChanged { state ->
-                        focusPreviousButton = state.isFocused
-                    }
-                    .focusProperties {
-                        up = backToPhoto
-                        down = backToPhoto
-                        previous = backToPhoto
-                        right = playButton
-                        left = nextButton
-                        next = playButton
-                    }
-                    .focusable()
-                    .size(70.dp),
-                idActiveIcon = R.drawable.ic_previous_active,
-                idInactiveIcon = R.drawable.ic_previous_inactive,
-                onClick = {
-                    if(currentListPosition == 1) {
-                        prevButton.freeFocus()
-                        playButton.requestFocus()
-                    }
-                    onClickPreviousItemButton()
+        ButtonControls(isFocus = state.selectButton == MenuButton.Prev,
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .focusRequester(prevButton)
+                .onFocusChanged { state ->
+                    if (state.isFocused) MenuState.state.update { it.copy(selectButton = MenuButton.Prev) }
                 }
-            )
-        } else
-            Spacer(modifier = Modifier.width(70.dp))
+                .focusProperties {
+                    up = backToPhoto
+                    down = backToPhoto
+                    previous = backToPhoto
+                    right = playButton
+                    left = nextButton
+                    next = playButton
+                }
+                .focusable()
+                .size(70.dp),
+            idActiveIcon = R.drawable.ic_previous_active,
+            idInactiveIcon = R.drawable.ic_previous_inactive,
+            onClick = {
+                onClickPreviousItemButton()
+            })
 
-        ButtonControls(
-            isFocus = focusPlayButton,
+        ButtonControls(isFocus = state.selectButton == MenuButton.Play,
             modifier = Modifier
                 .align(Alignment.CenterVertically)
                 .focusRequester(playButton)
                 .onFocusChanged { state ->
-                    focusPlayButton = state.isFocused
+                    if (state.isFocused) MenuState.state.update { it.copy(selectButton = MenuButton.Play) }
                 }
                 .focusProperties {
                     up = backToPhoto
@@ -92,35 +91,26 @@ fun SlideShowPhotoControl(
             onClick = onClickPlayButton
 
         )
-        if (currentListPosition < countItems - 1) {
-            ButtonControls(
-                isFocus = focusNextButton,
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .focusRequester(nextButton)
-                    .onFocusChanged { state ->
-                        focusNextButton = state.isFocused
-                    }
-                    .focusProperties {
-                        up = backToPhoto
-                        down = backToPhoto
-                        previous = backToPhoto
-                        right = prevButton
-                        left = playButton
-                    }
-                    .focusable()
-                    .size(70.dp),
-                idActiveIcon = R.drawable.ic_next_active,
-                idInactiveIcon = R.drawable.ic_next_inactive,
-                onClick = {
-                    if (currentListPosition == countItems - 2){
-                        nextButton.freeFocus()
-                        playButton.requestFocus()
-                    }
-                    onClickNextItemButton()
+        ButtonControls(isFocus = state.selectButton == MenuButton.Next,
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .focusRequester(nextButton)
+                .onFocusChanged { state ->
+                    if (state.isFocused) MenuState.state.update { it.copy(selectButton = MenuButton.Next) }
                 }
-            )
-        } else
-            Spacer(modifier = Modifier.width(70.dp))
+                .focusProperties {
+                    up = backToPhoto
+                    down = backToPhoto
+                    previous = backToPhoto
+                    right = prevButton
+                    left = playButton
+                }
+                .focusable()
+                .size(70.dp),
+            idActiveIcon = R.drawable.ic_next_active,
+            idInactiveIcon = R.drawable.ic_next_inactive,
+            onClick = {
+                onClickNextItemButton()
+            })
     }
 }

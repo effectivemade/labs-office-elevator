@@ -1,6 +1,5 @@
 package band.effective.office.tv.screen.menu
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -18,6 +17,7 @@ import band.effective.office.tv.screen.menu.component.ButtonAutoplay
 import band.effective.office.tv.screen.menu.component.MenuComponent
 import band.effective.office.tv.screen.menu.component.TimeComponent
 import band.effective.office.tv.screen.navigation.NavigationModel
+import band.effective.office.tv.screen.navigation.Screen
 import com.example.effecticetv.ui.theme.robotoFontFamily
 import kotlinx.coroutines.launch
 
@@ -48,12 +48,21 @@ fun MenuScreen(
                 color = Color.White
             )
             Spacer(Modifier.height(20.dp))
-            ButtonAutoplay {
-                coroutineScope.launch { scrollState.animateScrollTo(0) }
-            }
+            ButtonAutoplay(
+                text = "autoplay",
+                onFocus = {
+                    coroutineScope.launch { scrollState.animateScrollTo(0) }
+                },
+                onClick = { navController.navigate(Screen.AutoplayMenu.name) })
             Spacer(Modifier.height(20.dp))
-            MenuComponent(itemsList = itemsList, onNavigate = { navController.navigate(it.name) })
+            MenuComponent(
+                itemsList = itemsList.map { Pair(it.screen, it.title) },
+                onNavigate = { navController.navigate(it.name) })
         }
     }
-    TimeComponent()
+    TimeComponent(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(20.dp)
+    )
 }
