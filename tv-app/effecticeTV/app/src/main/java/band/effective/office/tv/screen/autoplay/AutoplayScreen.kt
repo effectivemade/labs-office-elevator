@@ -11,6 +11,8 @@ import band.effective.office.tv.screen.error.ErrorScreen
 import band.effective.office.tv.screen.leaderIdEvents.LeaderIdEventsScreen
 import band.effective.office.tv.screen.leaderIdEvents.LeaderIdEventsViewModel
 import band.effective.office.tv.screen.load.LoadScreen
+import band.effective.office.tv.screen.message.secondaryMessage.SecondaryMessageScreen
+import band.effective.office.tv.screen.message.secondaryMessage.SecondaryMessageViewModel
 import band.effective.office.tv.screen.navigation.Screen
 import band.effective.office.tv.screen.photo.BestPhotoScreen
 import band.effective.office.tv.screen.photo.PhotoViewModel
@@ -22,6 +24,9 @@ fun ViewModelToScreen(viewModel: ViewModel) = when (viewModel) {
     }
     is PhotoViewModel -> @Composable {
         BestPhotoScreen(viewModel)
+    }
+    is SecondaryMessageViewModel-> @Composable {
+        SecondaryMessageScreen(viewModel)
     }
     else -> {}
 }

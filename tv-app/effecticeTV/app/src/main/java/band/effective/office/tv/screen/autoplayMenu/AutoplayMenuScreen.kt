@@ -20,6 +20,7 @@ import band.effective.office.tv.screen.leaderIdEvents.LeaderIdEventsViewModel
 import band.effective.office.tv.screen.menu.component.ButtonAutoplay
 import band.effective.office.tv.screen.menu.component.MenuComponent
 import band.effective.office.tv.screen.menu.component.MenuItemType
+import band.effective.office.tv.screen.message.secondaryMessage.SecondaryMessageViewModel
 import band.effective.office.tv.screen.navigation.Screen
 import band.effective.office.tv.screen.photo.PhotoViewModel
 import com.example.effecticetv.ui.theme.robotoFontFamily
@@ -28,7 +29,8 @@ import com.example.effecticetv.ui.theme.robotoFontFamily
 fun AutoplayMenuScreen(navController: NavController) {
     val pairsScreenVM = listOf(
         Pair(Screen.BestPhoto, hiltViewModel<PhotoViewModel>()),
-        Pair(Screen.Events, hiltViewModel<LeaderIdEventsViewModel>())
+        Pair(Screen.Events, hiltViewModel<LeaderIdEventsViewModel>()),
+        Pair(Screen.MessageScreen, hiltViewModel<SecondaryMessageViewModel>())
     )
     var mutableScreenList = mutableListOf<Screen>()
     Column(
@@ -47,7 +49,8 @@ fun AutoplayMenuScreen(navController: NavController) {
                 .fillMaxHeight(0.8f),
             itemsList = listOf(
                 Pair(Screen.BestPhoto, stringResource(R.string.best_photo_screen_title)),
-                Pair(Screen.Events, stringResource(R.string.event_screen_title))
+                Pair(Screen.Events, stringResource(R.string.event_screen_title)),
+                Pair(Screen.MessageScreen, stringResource(R.string.event_screen_title))
             ), onNavigate = {}, menuItemType = MenuItemType.SelectableItem {
                 if (it.second) {
                     mutableScreenList.add(it.first)

@@ -6,7 +6,6 @@ import band.effective.office.tv.domain.autoplay.AutoplayableViewModel
 import band.effective.office.tv.domain.autoplay.model.NavigateRequests
 import band.effective.office.tv.domain.model.message.MessageQueue
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -30,21 +29,24 @@ class SecondaryMessageViewModel @Inject constructor() : ViewModel(), Autoplayabl
     }
 
     private fun updateMessageList() = viewModelScope.launch {
-        MessageQueue.secondQueue.queue.collect{
-            if (MessageQueue.secondQueue.isNotEmpty()){
+        MessageQueue.secondQueue.queue.collect {
+            if (MessageQueue.secondQueue.isNotEmpty()) {
                 mutableState.update {
                     it.copy(
                         isData = true,
-                        messageList = it.messageList + MessageQueue.secondQueue.top().text,
-                        navigateRequest = NavigateRequests.Nowhere
+                        messageList = it.messageList + MessageQueue.secondQueue.top().text
                     )
                 }
                 MessageQueue.secondQueue.pop()
             }
-            else{
-                delay(10000)
-                mutableState.update { it.copy(navigateRequest = NavigateRequests.Forward) }
-            }
+        }
+    }
+
+    fun nextScreen() {
+        mutableState.update {
+            it.copy(
+                navigateRequest = NavigateRequests.Forward
+            )
         }
     }
 }
