@@ -1,4 +1,4 @@
-package band.effective.office.tv.screen.message
+package band.effective.office.tv.screen.message.primaryMessage
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,9 +14,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MessageScreenViewModel @Inject constructor(private val bot: MessengerBot) :
+class PrimaryMessageViewModel @Inject constructor(private val bot: MessengerBot) :
     ViewModel() {
-    private val mutableState = MutableStateFlow("")
+    private val mutableState = MutableStateFlow(PrimaryMessageScreenState.empty)
     val state = mutableState.asStateFlow()
 
     init {
@@ -28,9 +28,15 @@ class MessageScreenViewModel @Inject constructor(private val bot: MessengerBot) 
         val firstQueue = MessageQueue.firstQueue
         firstQueue.queue.collect {
             if (firstQueue.isNotEmpty()) {
-                mutableState.update { firstQueue.top().text }
-                delay(2000)
+                mutableState.update { it.copy(
+                    isEmpty = false,
+                    currentMessage = firstQueue.top().text
+                ) }
+                delay(10000)
                 firstQueue.pop()
+            }
+            else {
+                mutableState.update { PrimaryMessageScreenState.empty }
             }
         }
     }

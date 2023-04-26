@@ -1,15 +1,15 @@
 package band.effective.office.tv
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
-import band.effective.office.tv.screen.message.MessageScreen
-import band.effective.office.tv.screen.message.MessageScreenViewModel
+import androidx.navigation.compose.rememberNavController
+import band.effective.office.tv.screen.message.primaryMessage.PrimaryMessageScreen
+import band.effective.office.tv.screen.message.secondaryMessage.SecondaryMessageScreen
 import band.effective.office.tv.screen.navigation.NavigationHost
 import band.effective.office.tv.ui.theme.EffectiveTVTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,8 +24,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    MessageScreen {
-                        NavigationHost()
+                    val navController = rememberNavController()
+                    PrimaryMessageScreen {
+                        SecondaryMessageScreen()
+                    //NavigationHost(navController)
                     }
                 }
             }

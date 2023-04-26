@@ -11,10 +11,8 @@ import okhttp3.*
 import javax.inject.Inject
 
 class MattermostWebSocketClientImpl @Inject constructor(
-    private val client: OkHttpClient,
-    private val api: MattermostApi
-) :
-    MattermostWebSocketClient {
+    private val client: OkHttpClient, private val api: MattermostApi
+) : MattermostWebSocketClient {
     val moshi = Moshi.Builder().build()
     var webSocket: WebSocket? = null
     var lastSeq = 0
@@ -49,7 +47,7 @@ class MattermostWebSocketClientImpl @Inject constructor(
 
     private fun handler(response: String) {
         val correctResponse =
-            response.replace("\\", "").replace("\"{", "{").replace("}\"", "}")
+            response.replace("\\n", "\n").replace("\\", "").replace("\"{", "{").replace("}\"", "}")
                 .replace("seq_reply", "seq").replace("\"[", "[").replace("]\"", "]")
         when {
             response.contains("posted") -> {
@@ -88,8 +86,7 @@ class MattermostWebSocketClientImpl @Inject constructor(
             else -> {
                 Log.i("socket", response)
                 lastSeq =
-                    moshi.adapter(OtherJson::class.java).fromJson(correctResponse)?.seq
-                        ?: lastSeq
+                    moshi.adapter(OtherJson::class.java).fromJson(correctResponse)?.seq ?: lastSeq
             }
         }
     }
