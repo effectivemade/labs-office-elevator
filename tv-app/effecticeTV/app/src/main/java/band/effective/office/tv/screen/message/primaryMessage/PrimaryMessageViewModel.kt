@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.domain.botLogic.MessengerBot
 import band.effective.office.tv.domain.model.message.MessageQueue
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,7 +19,7 @@ class PrimaryMessageViewModel @Inject constructor(private val bot: MessengerBot)
     val state = mutableState.asStateFlow()
 
     init {
-        viewModelScope.launch(Dispatchers.IO) { bot.start(viewModelScope) }
+        viewModelScope.launch() { bot.start(viewModelScope) }
         collectEvent()
     }
 
@@ -28,14 +27,16 @@ class PrimaryMessageViewModel @Inject constructor(private val bot: MessengerBot)
         val firstQueue = MessageQueue.firstQueue
         firstQueue.queue.collect {
             if (firstQueue.isNotEmpty()) {
-                mutableState.update { it.copy(
-                    isEmpty = false,
-                    currentMessage = firstQueue.top().text
-                ) }
-                delay(10000)
+                mutableState.update {
+                    it.copy(
+                        isEmpty = false,
+                        currentMessage = firstQueue.top()
+                    )
+                }
+                val showMessageTime = 10000L
+                delay(showMessageTime)
                 firstQueue.pop()
-            }
-            else {
+            } else {
                 mutableState.update { PrimaryMessageScreenState.empty }
             }
         }

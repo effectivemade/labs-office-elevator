@@ -8,4 +8,15 @@ data class BotMessage(
     val text: String,
     val finish: GregorianCalendar,
     val rootId: String
-)
+) {
+    companion object {
+        val emptyMessage =
+            BotMessage(
+                channelId = "",
+                id = "",
+                text = "",
+                finish = GregorianCalendar(),
+                rootId = ""
+            )
+    }
+}

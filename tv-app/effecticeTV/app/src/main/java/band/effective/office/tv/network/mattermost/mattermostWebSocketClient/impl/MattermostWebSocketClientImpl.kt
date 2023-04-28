@@ -3,12 +3,14 @@ package band.effective.office.tv.network.mattermost.mattermostWebSocketClient.im
 import android.util.Log
 import band.effective.office.tv.BuildConfig
 import band.effective.office.tv.domain.botLogic.model.BotEvent
+import band.effective.office.tv.domain.model.message.toBotEvent
 import band.effective.office.tv.network.mattermost.MattermostApi
 import band.effective.office.tv.network.mattermost.mattermostWebSocketClient.MattermostWebSocketClient
 import band.effective.office.tv.network.mattermost.model.*
 import com.squareup.moshi.Moshi
 import okhttp3.*
 import javax.inject.Inject
+
 
 class MattermostWebSocketClientImpl @Inject constructor(
     private val client: OkHttpClient, private val api: MattermostApi
@@ -56,14 +58,7 @@ class MattermostWebSocketClientImpl @Inject constructor(
                 Log.i("socket", post.toString())
                 if (post != null && userId != null && post.data.post.userId != userId) {
                     eventHandler(
-                        BotEvent.PostMessage(
-                            message = post.data.post.message,
-                            messageId = post.data.post.id,
-                            userName = post.data.senderName,
-                            userId = post.data.post.userId,
-                            rootId = post.data.post.rootId,
-                            channelId = post.data.post.channelId
-                        )
+                        post.toBotEvent()
                     )
                 }
             }
@@ -73,13 +68,7 @@ class MattermostWebSocketClientImpl @Inject constructor(
                 Log.i("socket", reaction.toString())
                 if (reaction != null && userId != null && reaction.data.reaction.userId != userId) {
                     eventHandler(
-                        BotEvent.Reaction(
-                            messageId = reaction.data.reaction.postId,
-                            userId = reaction.data.reaction.userId,
-                            rootId = reaction.data.reaction.postId,
-                            channelId = reaction.data.reaction.channelId,
-                            emojiName = reaction.data.reaction.emojiName
-                        )
+                        reaction.toBotEvent()
                     )
                 }
             }
@@ -105,3 +94,6 @@ class MattermostWebSocketClientImpl @Inject constructor(
         eventHandler = handler
     }
 }
+
+
+

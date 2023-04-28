@@ -17,11 +17,11 @@ class SecondaryMessageViewModel @Inject constructor() : ViewModel(), Autoplayabl
     private var mutableState = MutableStateFlow(SecondaryMessageState.empty)
     override val state = mutableState.asStateFlow()
     override fun switchToFirstItem() {
-        //mutableState.update { SecondaryMessageState.empty  }
+
     }
 
     override fun switchToLastItem() {
-        //mutableState.update { SecondaryMessageState.empty  }
+
     }
 
     init {
@@ -34,7 +34,7 @@ class SecondaryMessageViewModel @Inject constructor() : ViewModel(), Autoplayabl
                 mutableState.update {
                     it.copy(
                         isData = true,
-                        messageList = it.messageList + MessageQueue.secondQueue.top().text
+                        messageList = it.messageList + MessageQueue.secondQueue.top()
                     )
                 }
                 MessageQueue.secondQueue.pop()
