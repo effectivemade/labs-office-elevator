@@ -4,4 +4,5 @@
     <string name="autoplay_menu_button">play</string>
     <string name="event_screen_title">Events</string>
     <string name="best_photo_screen_title">Photo</string>
+    <string name="message_screen_title">Message</string>
 </resources>

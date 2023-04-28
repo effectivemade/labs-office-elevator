@@ -50,7 +50,7 @@ fun AutoplayMenuScreen(navController: NavController) {
             itemsList = listOf(
                 Pair(Screen.BestPhoto, stringResource(R.string.best_photo_screen_title)),
                 Pair(Screen.Events, stringResource(R.string.event_screen_title)),
-                Pair(Screen.MessageScreen, stringResource(R.string.event_screen_title))
+                Pair(Screen.MessageScreen, stringResource(R.string.message_screen_title))
             ), onNavigate = {}, menuItemType = MenuItemType.SelectableItem {
                 if (it.second) {
                     mutableScreenList.add(it.first)
