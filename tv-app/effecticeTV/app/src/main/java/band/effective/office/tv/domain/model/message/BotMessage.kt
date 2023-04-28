@@ -18,5 +18,12 @@ data class BotMessage(
                 finish = GregorianCalendar(),
                 rootId = ""
             )
+        val deletedMessage: MutableList<BotMessage> = mutableListOf()
+        fun safeMessage(message: BotMessage){
+            deletedMessage.add(message)
+            if (deletedMessage.size > 10){
+                deletedMessage.removeAt(0)
+            }
+        }
     }
 }

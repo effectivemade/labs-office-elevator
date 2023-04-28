@@ -6,7 +6,10 @@ import kotlinx.coroutines.flow.update
 class MessageQueue {
     val queue: MutableStateFlow<UpdatingQueue> = MutableStateFlow(UpdatingQueue())
     fun push(message: BotMessage) = queue.update { it.push(message = message) }
-    fun pop() = queue.update { it.pop() }
+    fun pop() = queue.update {
+        BotMessage.safeMessage(it.top())
+        it.pop()
+    }
     fun top(): BotMessage = queue.value.top()
     fun isNotEmpty() = queue.value.queue.isNotEmpty()
     fun removeMessage(message: BotMessage) = queue.update { it.copy(queue = it.queue - message) }

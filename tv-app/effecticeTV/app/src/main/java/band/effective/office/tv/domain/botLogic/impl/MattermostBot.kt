@@ -19,7 +19,14 @@ class MattermostBot @Inject constructor(private val client: MattermostWebSocketC
                 is BotEvent.PostMessage -> {
                     if (event.message.contains(client.name())) {
                         val message = event.toBotMessage()
-                        MessageQueue.secondQueue.push(message.copy(text = event.message.replace("@${client.name()} ", "")))
+                        MessageQueue.secondQueue.push(
+                            message.copy(
+                                text = event.message.replace(
+                                    "@${client.name()} ",
+                                    ""
+                                )
+                            )
+                        )
                         postMessage(scope, message.copy(text = "Сообщение принято"))
                     }
 
@@ -28,6 +35,7 @@ class MattermostBot @Inject constructor(private val client: MattermostWebSocketC
                     when (event.emojiName) {
                         "warning" -> {
                             val message = MessageQueue.secondQueue.message(event.messageId)
+                                ?: BotMessage.deletedMessage.first { it.id == event.messageId }
                             if (message != null) {
                                 MessageQueue.secondQueue.removeMessage(message)
                                 MessageQueue.firstQueue.push(message)
