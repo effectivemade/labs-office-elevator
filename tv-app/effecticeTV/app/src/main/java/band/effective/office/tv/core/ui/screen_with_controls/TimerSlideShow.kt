@@ -1,6 +1,5 @@
 package band.effective.office.tv.core.ui.screen_with_controls
 
-import band.effective.office.tv.BuildConfig
 import kotlinx.coroutines.*
 import javax.inject.Inject
 

@@ -1,11 +1,14 @@
 package band.effective.office.tv.di
 
 import band.effective.office.tv.BuildConfig
+import band.effective.office.tv.core.network.EitherDuolingoAdapterFactory
 import band.effective.office.tv.core.network.EitherLeaderIdAdapterFactory
 import band.effective.office.tv.core.network.EitherSynologyAdapterFactory
 import band.effective.office.tv.domain.autoplay.AutoplayController
+import band.effective.office.tv.network.DualingoRetrofitClient
 import band.effective.office.tv.network.LeaderIdRetrofitClient
 import band.effective.office.tv.network.SynologyRetrofitClient
+import band.effective.office.tv.network.duolingo.DuolingoApi
 import band.effective.office.tv.network.leader.LeaderApi
 import band.effective.office.tv.network.synology.SynologyApi
 import band.effective.office.tv.screen.leaderIdEvents.LeaderIdEventsViewModel
@@ -59,8 +62,15 @@ class NetworkModule {
 
     @Singleton
     @Provides
+    @SynologyRetrofitClient
     fun provideEitherSynologyAdapterFactory(): CallAdapter.Factory =
         EitherSynologyAdapterFactory()
+
+    @Singleton
+    @Provides
+    @DualingoRetrofitClient
+    fun provideEitherDuolingoAdapterFactory(): CallAdapter.Factory =
+        EitherDuolingoAdapterFactory()
 
     @Singleton
     @Provides
@@ -68,13 +78,28 @@ class NetworkModule {
     fun provideSynologyRetrofit(
         moshiConverterFactory: MoshiConverterFactory,
         client: OkHttpClient,
-        callAdapter: CallAdapter.Factory
+        @SynologyRetrofitClient callAdapter: CallAdapter.Factory
     ): Retrofit =
         Retrofit.Builder()
             .addConverterFactory(moshiConverterFactory)
             .addCallAdapterFactory(callAdapter)
             .client(client)
             .baseUrl(BuildConfig.apiSynologyUrl)
+            .build()
+
+    @Singleton
+    @Provides
+    @DualingoRetrofitClient
+    fun provideDuolingoRetrofit(
+        moshiConverterFactory: MoshiConverterFactory,
+        client: OkHttpClient,
+        @DualingoRetrofitClient callAdapter: CallAdapter.Factory
+    ): Retrofit =
+        Retrofit.Builder()
+            .addConverterFactory(moshiConverterFactory)
+            .addCallAdapterFactory(callAdapter)
+            .client(client)
+            .baseUrl(BuildConfig.duolingoUrl)
             .build()
 
     @Singleton
@@ -86,4 +111,9 @@ class NetworkModule {
     @Provides
     fun provideApiSynology(@SynologyRetrofitClient retrofit: Retrofit) =
         retrofit.create(SynologyApi::class.java)
+
+    @Singleton
+    @Provides
+    fun provideApiDuolingo(@DualingoRetrofitClient retrofit: Retrofit) =
+        retrofit.create(DuolingoApi::class.java)
 }

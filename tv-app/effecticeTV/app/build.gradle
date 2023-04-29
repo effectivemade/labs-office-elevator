@@ -29,6 +29,8 @@ android {
         buildConfigField ("String", "synologyLogin", localProperties['synologyLogin'])
         buildConfigField ("String", "synologyPassword", localProperties['synologyPassword'])
         buildConfigField ("String", "folderPathPhotoSynology", localProperties['folderPathPhotoSynology'])
+        buildConfigField ("String", "duolingoUrl", localProperties['duolingoUrl'])
+
     }
 
     buildTypes {

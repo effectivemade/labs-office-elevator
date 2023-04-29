@@ -16,7 +16,8 @@ class AuthSynologyRepositoryImpl @Inject constructor(
 
     override suspend fun auth(): Either<String, AuthModel> {
         val res: Either<ErrorReason, SynologyAuthResponse> =
-            synologyApi.auth(
+            synologyApi.
+            auth(
                 version = 3,
                 method = "login",
                 login = BuildConfig.synologyLogin,
