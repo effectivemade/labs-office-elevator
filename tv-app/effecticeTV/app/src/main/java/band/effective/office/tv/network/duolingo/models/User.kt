@@ -1,5 +1,8 @@
 package band.effective.office.tv.network.duolingo.models
 
+import com.squareup.moshi.JsonClass
+
+@JsonClass(generateAdapter = true)
 data class User(
     val _achievements: List<Any>?,
     val achievements: List<Any>?,
@@ -20,17 +23,17 @@ data class User(
     val hasPlus: Boolean,
     val hasRecentActivity15: Boolean,
     val id: Int,
-    val joinedClassroomIds: List<Any>,
+    val joinedClassroomIds: List<Any>?,
     val learningLanguage: String,
-    val liveOpsFeatures: List<Any>,
+    val liveOpsFeatures: List<LiveOpsFeature>?,
     val motivation: String,
     val name: String,
-    val observedClassroomIds: List<Any>,
+    val observedClassroomIds: List<Any>?,
     val picture: String,
-    val privacySettings: List<Any>,
+    val privacySettings: List<Any>?,
     val profileCountry: String,
     val roles: List<String>,
-    val shakeToReportEnabled: Any,
+    val shakeToReportEnabled: Any?,
     val shouldForceConnectPhoneNumber: Boolean,
     val streak: Int,
     val streakData: StreakData,

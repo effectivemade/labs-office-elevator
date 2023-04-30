@@ -9,7 +9,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -21,23 +20,22 @@ class DuolingoRepositoryImpl @Inject constructor(
         flow {
             val duolingoUsersInfo: MutableList<DuolingoUser> = mutableListOf()
             var errorRequest: String = ""
-            coroutineScope.launch(Dispatchers.IO) {
-                usersName.forEach { user ->
-                    withContext(Dispatchers.IO) {
-                        when (val duolingoUser = duolingoApi.getUserInfo(user)) {
-                            is Either.Success -> {
-                                duolingoUsersInfo.add(
-                                    duolingoUser.data.toDomain()
-                                )
-                            }
-                            is Either.Failure -> {errorRequest = duolingoUser.error.message}
-                        }
-                    }
+            usersName.forEach { user ->
+                withContext(Dispatchers.IO) {
+                    val duolingoUser = duolingoApi.getUserInfo(user)
+//                    when (val duolingoUser = duolingoApi.getUserInfo(user)) {
+//                        is Either.Success -> {
+//                            duolingoUsersInfo.add(
+//                                duolingoUser.data.toDomain()
+//                            )
+//                        }
+//                        is Either.Failure -> {errorRequest = duolingoUser.error.message}
+//                    }
                 }
-                emit(
-                    if(duolingoUsersInfo.isEmpty()) Either.Failure(errorRequest)
-                    else Either.Success(duolingoUsersInfo.toList())
-                )
             }
+            emit(
+                if(duolingoUsersInfo.isEmpty()) Either.Failure(errorRequest)
+                else Either.Success(duolingoUsersInfo.toList())
+            )
         }
 }

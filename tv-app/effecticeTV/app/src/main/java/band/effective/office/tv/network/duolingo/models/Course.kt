@@ -1,5 +1,8 @@
 package band.effective.office.tv.network.duolingo.models
 
+import com.squareup.moshi.JsonClass
+
+@JsonClass(generateAdapter = true)
 data class Course(
     val authorId: String,
     val crowns: Int,
