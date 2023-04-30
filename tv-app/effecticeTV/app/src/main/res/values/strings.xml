@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">effectice TV</string>
-
+    <string name="autoplay_menu_title">Настройки автоплея</string>
+    <string name="autoplay_menu_button">play</string>
+    <string name="event_screen_title">Events</string>
+    <string name="best_photo_screen_title">Photo</string>
     <string name="congratulations_birthday">с днем рождения!</string>
     <string name="with_us">с нами</string>
     <string name="for_years">года</string>

@@ -27,6 +27,7 @@ import band.effective.office.tv.domain.models.Employee.Birthday
 import band.effective.office.tv.domain.models.Employee.EmployeeInfo
 import band.effective.office.tv.domain.models.Employee.EventType
 import band.effective.office.tv.domain.models.Employee.NewEmployee
+import band.effective.office.tv.utils.getCorrectDeclension
 import coil.compose.AsyncImage
 import com.example.effecticetv.ui.theme.drukLCGWideMedium
 import com.example.effecticetv.ui.theme.museoCyrl
@@ -53,7 +54,7 @@ fun StoryContent(employeeInfoes: List<EmployeeInfo>, currentStoryIndex: Int, mod
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .padding(bottom = 24.dp)
-                .width(400.dp)
+                .width(500.dp)
                 .fillMaxSize()
         ) {
             Text(
@@ -66,8 +67,11 @@ fun StoryContent(employeeInfoes: List<EmployeeInfo>, currentStoryIndex: Int, mod
                 val story = employeeInfoes[currentStoryIndex] as Anniversary
                 Text(
                     text =
-                    stringResource(id = R.string.with_us) + story.yearsInCompany + stringResource(
-                        id = R.string.for_years
+                    stringResource(id = R.string.with_us) + " " + story.yearsInCompany + " " + getCorrectDeclension(
+                        story.yearsInCompany,
+                        "год",
+                        "года",
+                        "лет"
                     ),
                     fontSize = 54.sp,
                     fontFamily = drukLCGWideMedium,

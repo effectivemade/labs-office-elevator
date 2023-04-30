@@ -23,7 +23,12 @@ android {
             useSupportLibrary true
         }
 
-        buildConfigField("String", "apiLeaderUrl", localProperties['apiLeaderUrl'])
+        buildConfigField ("String", "apiLeaderUrl", localProperties['apiLeaderUrl'])
+
+        buildConfigField ("String", "apiSynologyUrl", localProperties['synologyIP'])
+        buildConfigField ("String", "synologyLogin", localProperties['synologyLogin'])
+        buildConfigField ("String", "synologyPassword", localProperties['synologyPassword'])
+        buildConfigField ("String", "folderPathPhotoSynology", localProperties['folderPathPhotoSynology'])
         buildConfigField("String", "notionToken", localProperties['NOTION_TOKEN'])
         buildConfigField("String", "notionDatabaseId", localProperties['NOTION_DATABASE_ID'])
     }
@@ -90,12 +95,17 @@ dependencies {
     implementation libs.hilt.nav
     kapt libs.hitl.compiller
 
+    //qr
+    implementation libs.zxing
+
+    //navigation
+    implementation libs.navigation
+
     //coil
     implementation libs.coil
 
     //notion
     implementation libs.notion
-
 }
 kapt {
     correctErrorTypes true
