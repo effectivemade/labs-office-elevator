@@ -14,16 +14,26 @@ class EmployeeInfoRemoteDataSource @Inject constructor() {
         val employeeInfoList: MutableList<EmployeeInfoDto> = mutableListOf()
         NotionClient(BuildConfig.notionToken).use { client ->
             getPagesFromDatabase(client).map { page ->
-                val icon: File? = page.icon as File?
-                employeeInfoList.add(
-                    EmployeeInfoDto(
-                        firstName = page.properties["Name"]?.title?.get(0)?.text?.content?.split(" ")
-                            ?.get(0),
-                        startDate = page.properties["Start Date"]?.date?.start,
-                        nextBirthdayDate = page.properties["Next B-DAY"]?.date?.start,
-                        photoUrl = icon?.file?.url ?: "https://ui-avatars.com/api/?name=John+Doe"
+                val icon: File? = try {
+                    page.icon as File?
+                } catch (ex: Exception) {
+                    null
+                }
+                val firstName = page.properties["Name"]?.title?.get(0)?.text?.content?.split(" ")
+                    ?.get(0)
+                val startDate = page.properties["Start Date"]?.date?.start
+                val nextBirthdayDate = page.properties["Next B-DAY"]?.date?.start
+                val photoUrl = icon?.file?.url ?: "https://ui-avatars.com/api/?name=John+Doe"
+                if (firstName != null && startDate != null && nextBirthdayDate != null) {
+                    employeeInfoList.add(
+                        EmployeeInfoDto(
+                            firstName = firstName,
+                            startDate = startDate,
+                            nextBirthdayDate = nextBirthdayDate,
+                            photoUrl = photoUrl
+                        )
                     )
-                )
+                }
 
             }
         }
