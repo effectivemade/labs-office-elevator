@@ -36,7 +36,7 @@ val Typography = Typography(
     ),
     h2 = TextStyle(
         fontFamily = robotoFontFamily(),
-        fontWeight = FontWeight.Black,
+        fontWeight = FontWeight.Normal,
         fontSize = 40.sp,
         color = Color.Black
     ),
@@ -50,8 +50,8 @@ val Typography = Typography(
 fun robotoFontFamily(): FontFamily =
     FontFamily(
         Font(R.font.roboto_black),
-        Font(R.font.roboto_black, weight = FontWeight.Bold),
-        Font(R.font.roboto_black, weight = FontWeight.Light),
-        Font(R.font.roboto_black, weight = FontWeight.Thin),
-        Font(R.font.roboto_black, weight = FontWeight.Normal, style = FontStyle.Italic)
+        Font(R.font.roboto_bold, weight = FontWeight.Bold),
+        Font(R.font.roboto_light, weight = FontWeight.Light),
+        Font(R.font.roboto_thin, weight = FontWeight.Thin),
+        Font(R.font.roboto_italic, weight = FontWeight.Normal, style = FontStyle.Italic)
     )

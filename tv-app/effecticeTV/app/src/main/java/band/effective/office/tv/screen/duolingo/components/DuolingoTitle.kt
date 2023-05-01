@@ -28,8 +28,8 @@ fun DuolingoTitle(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.width(30.dp))
         Text(
             text = "Duolingo",
-            fontWeight = FontWeight.Normal,
-            fontStyle = MaterialTheme.typography.h2.fontStyle,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = MaterialTheme.typography.h3.fontSize,
             color = Color.Black,
             textAlign = TextAlign.Center
         )

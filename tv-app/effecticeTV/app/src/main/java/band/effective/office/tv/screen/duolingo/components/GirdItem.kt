@@ -12,6 +12,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -26,10 +27,16 @@ fun GirdItem (
     photo: String,
     place: Int
 ){
-    Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically ){
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ){
         Text(
             text = place.toString(),
             fontStyle = MaterialTheme.typography.h2.fontStyle,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = MaterialTheme.typography.h2.fontSize,
             textAlign = TextAlign.Center,
             color = Color.Black
         )
@@ -46,9 +53,11 @@ fun GirdItem (
         )
         Spacer(modifier = Modifier.width(30.dp))
         Text(
-            modifier = Modifier.width(100.dp),
+            modifier = Modifier.width(200.dp),
             text = name,
             fontStyle = MaterialTheme.typography.h2.fontStyle,
+            fontSize = MaterialTheme.typography.h2.fontSize,
+            fontWeight = FontWeight.SemiBold,
             color = indicatorUsersColor,
             textAlign = TextAlign.Center
         )
@@ -56,6 +65,8 @@ fun GirdItem (
         Text(
             text = indicatorUsers,
             fontStyle = MaterialTheme.typography.h2.fontStyle,
+            fontSize = MaterialTheme.typography.h2.fontSize,
+            fontWeight = FontWeight.SemiBold,
             color = indicatorUsersColor,
             textAlign = TextAlign.Center
         )
