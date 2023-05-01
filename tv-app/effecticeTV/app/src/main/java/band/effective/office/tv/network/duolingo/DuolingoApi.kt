@@ -1,5 +1,7 @@
 package band.effective.office.tv.network.duolingo
 
+import band.effective.office.tv.core.network.entity.Either
+import band.effective.office.tv.core.network.entity.ErrorReason
 import band.effective.office.tv.network.duolingo.models.DuolingoResponse
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -12,8 +14,7 @@ interface DuolingoApi {
             "streakData{currentStreak,previousStreak},totalXp,username")
     @Headers(
         "User-Agent: Mozilla/5.0 (Android 13; Mobile; rv:68.0) Gecko/68.0 Firefox/112.0",
-        "Accept-Encoding: gzip, deflate, br",
         "Accept: */*"
     )
-    suspend fun getUserInfo(@Query("username") username: String): DuolingoResponse
+    suspend fun getUserInfo(@Query("username") username: String): Either<ErrorReason, DuolingoResponse>
 }

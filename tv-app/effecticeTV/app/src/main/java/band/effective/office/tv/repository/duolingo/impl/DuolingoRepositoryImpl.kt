@@ -22,15 +22,14 @@ class DuolingoRepositoryImpl @Inject constructor(
             var errorRequest: String = ""
             usersName.forEach { user ->
                 withContext(Dispatchers.IO) {
-                    val duolingoUser = duolingoApi.getUserInfo(user)
-//                    when (val duolingoUser = duolingoApi.getUserInfo(user)) {
-//                        is Either.Success -> {
-//                            duolingoUsersInfo.add(
-//                                duolingoUser.data.toDomain()
-//                            )
-//                        }
-//                        is Either.Failure -> {errorRequest = duolingoUser.error.message}
-//                    }
+                    when (val duolingoUser = duolingoApi.getUserInfo(user)) {
+                        is Either.Success -> {
+                            duolingoUsersInfo.add(
+                                duolingoUser.data.toDomain()
+                            )
+                        }
+                        is Either.Failure -> {errorRequest = duolingoUser.error.message}
+                    }
                 }
             }
             emit(

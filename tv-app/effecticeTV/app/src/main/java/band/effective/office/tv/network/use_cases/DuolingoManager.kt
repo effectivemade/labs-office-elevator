@@ -13,6 +13,6 @@ class DuolingoManager @Inject constructor(
 ) {
     suspend fun getDuolingoUserinfo(): Flow<Either<String, List<DuolingoUser>>> =
         duolingoRepository.getUsers(
-            listOf("daiki835234", "000412.c47nqLLM", "ph.QoO1Qq", "8ufC9")
+            listOf("daiki835234", "000412.c47nqLLM", "ph.QoO1Qq", "8ufC9", "8ufC9", "8ufC9")
         )
 }
