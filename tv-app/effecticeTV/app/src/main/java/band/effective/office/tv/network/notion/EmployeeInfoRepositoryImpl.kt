@@ -1,8 +1,7 @@
-package band.effective.office.tv.network
+package band.effective.office.tv.network.notion
 
 import band.effective.office.tv.domain.models.Employee.EmployeeInfoEntity
 import band.effective.office.tv.domain.models.Employee.EmployeeInfoRepository
-import band.effective.office.tv.network.notion.EmployeeInfoRemoteDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject

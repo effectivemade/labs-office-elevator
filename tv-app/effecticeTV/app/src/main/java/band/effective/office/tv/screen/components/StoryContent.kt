@@ -1,6 +1,5 @@
 package band.effective.office.tv.screen.components
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,8 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,11 +37,6 @@ fun StoryContent(employeeInfoes: List<EmployeeInfo>, currentStoryIndex: Int, mod
     val isAnniversary = employeeInfoes[currentStoryIndex].eventType == EventType.Anniversary
     val isBirthday = employeeInfoes[currentStoryIndex].eventType == EventType.Birthday
 
-    val screenConfiguration = LocalConfiguration.current
-    val screenWidth = screenConfiguration.screenWidthDp.dp
-
-    Log.d("StoryContent", "Size of employeeInfo - ${employeeInfoes.size}")
-
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -61,6 +55,7 @@ fun StoryContent(employeeInfoes: List<EmployeeInfo>, currentStoryIndex: Int, mod
                 text = employeeInfoes[currentStoryIndex].name + ",",
                 fontSize = 64.sp,
                 fontFamily = museoCyrl,
+                color = Color.Black,
                 fontStyle = FontStyle.Italic
             )
             if (isAnniversary) {
@@ -74,18 +69,21 @@ fun StoryContent(employeeInfoes: List<EmployeeInfo>, currentStoryIndex: Int, mod
                         "лет"
                     ),
                     fontSize = 54.sp,
+                    color = Color.Black,
                     fontFamily = drukLCGWideMedium,
                 )
             } else if (isBirthday) {
                 Text(
                     text = stringResource(id = R.string.congratulations_birthday),
                     fontSize = 54.sp,
+                    color = Color.Black,
                     fontFamily = drukLCGWideMedium,
                 )
             } else {
                 Text(
                     text = stringResource(id = R.string.now_in_team),
                     fontSize = 54.sp,
+                    color = Color.Black,
                     fontFamily = drukLCGWideMedium,
                 )
             }

@@ -30,7 +30,7 @@ fun StoryIndicator(stories: List<EmployeeInfo>, currentStoryIndex: Int, modifier
         stories.forEachIndexed { index, _ ->
             val animatedColor =
                 animateColorAsState(
-                    if (index == currentStoryIndex) Color.White else IndependentColors.StoryIndicatorGray
+                    if (index == currentStoryIndex) IndependentColors.StoryActiviteIndicatoGray else IndependentColors.StoryIndicatorGray
                 )
             Box(
                 modifier = Modifier

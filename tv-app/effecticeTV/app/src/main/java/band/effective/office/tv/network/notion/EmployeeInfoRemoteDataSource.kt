@@ -13,15 +13,15 @@ class EmployeeInfoRemoteDataSource @Inject constructor() {
     fun fetchLatestBirthdays(): List<EmployeeInfoDto> {
         val employeeInfoList: MutableList<EmployeeInfoDto> = mutableListOf()
         NotionClient(BuildConfig.notionToken).use { client ->
-            getPagesFromDatabase(client).map {page   ->
-                val icon: File = page.icon as File
+            getPagesFromDatabase(client).map { page ->
+                val icon: File? = page.icon as File?
                 employeeInfoList.add(
                     EmployeeInfoDto(
                         firstName = page.properties["Name"]?.title?.get(0)?.text?.content?.split(" ")
                             ?.get(0),
                         startDate = page.properties["Start Date"]?.date?.start,
                         nextBirthdayDate = page.properties["Next B-DAY"]?.date?.start,
-                        photoUrl = icon.file?.url
+                        photoUrl = icon?.file?.url ?: "https://ui-avatars.com/api/?name=John+Doe"
                     )
                 )
 

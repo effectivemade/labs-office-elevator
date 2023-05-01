@@ -13,10 +13,13 @@ import band.effective.office.tv.domain.models.Employee.EmployeeInfo
 import com.example.effecticetv.ui.theme.IndependentColors
 
 @Composable
-fun EventStoryScreenContent(eventsInfo: MutableList<EmployeeInfo>, currentStoryIndex: Int) {
-
+fun EventStoryScreenContent(
+    eventsInfo: MutableList<EmployeeInfo>,
+    currentStoryIndex: Int,
+    modifier: Modifier = Modifier
+) {
     Surface(
-        modifier = Modifier.fillMaxSize(), color = IndependentColors.StoryBackgroundGray
+        modifier = modifier, color = IndependentColors.StoryBackgroundGray
     ) {
         Column {
             StoryIndicator(

@@ -1,7 +1,7 @@
 package band.effective.office.tv.di
 
 import band.effective.office.tv.domain.models.Employee.EmployeeInfoRepository
-import band.effective.office.tv.network.EmployeeInfoRepositoryImpl
+import band.effective.office.tv.network.notion.EmployeeInfoRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

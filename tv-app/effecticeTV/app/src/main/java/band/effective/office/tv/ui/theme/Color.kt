@@ -13,6 +13,7 @@ val BlackOlive = Color(0xFF434040)
 val Black = Color(0xFF242424)
 val Orange = Color(0xFFF36D25)
 object IndependentColors {
-    val StoryBackgroundGray = Color(0xFFE1E1E1)
+    val StoryBackgroundGray = Color(0xFFF9F9F9)
     val StoryIndicatorGray = Color (0xFFB6B6B6)
+    val StoryActiviteIndicatoGray = Color(0XFF979797)
 }
