@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import band.effective.office.tv.domain.models.Employee.EmployeeInfo
+import band.effective.office.tv.domain.model.notion.EmployeeInfo
 import com.example.effecticetv.ui.theme.IndependentColors
 
 @Composable

@@ -21,11 +21,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.tv.R
-import band.effective.office.tv.domain.models.Employee.Anniversary
-import band.effective.office.tv.domain.models.Employee.Birthday
-import band.effective.office.tv.domain.models.Employee.EmployeeInfo
-import band.effective.office.tv.domain.models.Employee.EventType
-import band.effective.office.tv.domain.models.Employee.NewEmployee
+import band.effective.office.tv.domain.model.notion.Anniversary
+import band.effective.office.tv.domain.model.notion.Birthday
+import band.effective.office.tv.domain.model.notion.EmployeeInfo
+import band.effective.office.tv.domain.model.notion.EventType
+import band.effective.office.tv.domain.model.notion.NewEmployee
 import band.effective.office.tv.utils.getCorrectDeclension
 import coil.compose.AsyncImage
 import com.example.effecticetv.ui.theme.drukLCGWideMedium
@@ -36,7 +36,6 @@ fun StoryContent(employeeInfoes: List<EmployeeInfo>, currentStoryIndex: Int, mod
 
     val isAnniversary = employeeInfoes[currentStoryIndex].eventType == EventType.Anniversary
     val isBirthday = employeeInfoes[currentStoryIndex].eventType == EventType.Birthday
-
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,

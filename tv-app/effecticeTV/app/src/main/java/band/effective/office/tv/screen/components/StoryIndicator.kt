@@ -10,13 +10,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
-import band.effective.office.tv.domain.models.Employee.Birthday
-import band.effective.office.tv.domain.models.Employee.EmployeeInfo
+import band.effective.office.tv.domain.model.notion.Birthday
+import band.effective.office.tv.domain.model.notion.EmployeeInfo
 import com.example.effecticetv.ui.theme.IndependentColors
 
 @Composable

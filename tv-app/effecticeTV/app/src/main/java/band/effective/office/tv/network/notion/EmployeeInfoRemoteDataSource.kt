@@ -1,5 +1,6 @@
 package band.effective.office.tv.network.notion
 
+import android.util.Log
 import band.effective.office.tv.BuildConfig
 import notion.api.v1.NotionClient
 import notion.api.v1.model.common.File
@@ -23,8 +24,12 @@ class EmployeeInfoRemoteDataSource @Inject constructor() {
                     ?.get(0)
                 val startDate = page.properties["Start Date"]?.date?.start
                 val nextBirthdayDate = page.properties["Next B-DAY"]?.date?.start
-                val photoUrl = icon?.file?.url ?: "https://ui-avatars.com/api/?name=John+Doe"
-                if (firstName != null && startDate != null && nextBirthdayDate != null) {
+                val photoUrl = if (firstName != null) {
+                    icon?.file?.url ?: "https://ui-avatars.com/api/?name=${firstName}"
+                } else {
+                    icon?.file?.url ?: "https://ui-avatars.com/api/?name=John+Doe"
+                }
+                if (firstName != null && (startDate != null || nextBirthdayDate != null)) {
                     employeeInfoList.add(
                         EmployeeInfoDto(
                             firstName = firstName,

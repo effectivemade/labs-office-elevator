@@ -1,14 +1,12 @@
 package band.effective.office.tv.screen.eventStory
 
-import android.os.CountDownTimer
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
 import band.effective.office.tv.domain.autoplay.AutoplayableViewModel
 import band.effective.office.tv.domain.autoplay.model.NavigateRequests
-import band.effective.office.tv.domain.models.Employee.*
-import band.effective.office.tv.domain.models.Employee.EmployeeInfoRepository
+import band.effective.office.tv.domain.model.notion.EmployeeInfoRepository
+import band.effective.office.tv.domain.model.notion.processEmployeeInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow

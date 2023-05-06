@@ -2,7 +2,7 @@ package band.effective.office.tv.screen.eventStory
 
 import band.effective.office.tv.domain.autoplay.model.AutoplayState
 import band.effective.office.tv.domain.autoplay.model.NavigateRequests
-import band.effective.office.tv.domain.models.Employee.EmployeeInfo
+import band.effective.office.tv.domain.model.notion.EmployeeInfo
 import band.effective.office.tv.screen.navigation.Screen
 
 data class LatestEventInfoUiState(

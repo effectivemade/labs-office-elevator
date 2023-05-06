@@ -1,4 +1,4 @@
-package band.effective.office.tv.domain.models.Employee
+package band.effective.office.tv.domain.model.notion
 
 sealed class EmployeeInfo(val name: String, val photoUrl: String, val eventType: EventType)
 

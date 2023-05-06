@@ -1,7 +1,7 @@
 package band.effective.office.tv.network.notion
 
-import band.effective.office.tv.domain.models.Employee.EmployeeInfoEntity
-import band.effective.office.tv.domain.models.Employee.EmployeeInfoRepository
+import band.effective.office.tv.domain.model.notion.EmployeeInfoEntity
+import band.effective.office.tv.domain.model.notion.EmployeeInfoRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -16,10 +16,10 @@ class EmployeeInfoRepositoryImpl @Inject constructor(private val employeeInfoRem
         employeesInfo.map { employee ->
             result.add(
                 EmployeeInfoEntity(
-                    employee.firstName ?: throw NullPointerException(),
-                    employee.startDate ?: throw NullPointerException(),
-                    employee.nextBirthdayDate ?: throw NullPointerException(),
-                    employee.photoUrl ?: throw NullPointerException()
+                    employee.firstName ?: "",
+                    employee.startDate ?: "",
+                    employee.nextBirthdayDate ?: "",
+                    employee.photoUrl ?: ""
                 )
             )
         }

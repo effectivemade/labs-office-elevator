@@ -1,6 +1,5 @@
-package band.effective.office.tv.domain.models.Employee
+package band.effective.office.tv.domain.model.notion
 
-import band.effective.office.tv.domain.models.Employee.EmployeeInfoEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Singleton
 
