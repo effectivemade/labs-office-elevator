@@ -4,6 +4,7 @@ import band.effective.office.tv.domain.botLogic.MessengerBot
 import band.effective.office.tv.domain.botLogic.model.BotEvent
 import band.effective.office.tv.domain.model.message.BotMessage
 import band.effective.office.tv.domain.model.message.MessageQueue
+import band.effective.office.tv.domain.model.message.User
 import band.effective.office.tv.network.mattermost.mattermostWebSocketClient.MattermostWebSocketClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -69,9 +70,10 @@ class MattermostBot @Inject constructor(private val client: MattermostWebSocketC
 
 private fun BotEvent.PostMessage.toBotMessage(): BotMessage =
     BotMessage(
-        channelId,
-        messageId,
-        message,
-        GregorianCalendar(),
-        if (rootId == "") messageId else rootId
+        channelId = channelId,
+        author =  User(id = userId, name = userName),
+        id = messageId,
+        text = message,
+        finish =  GregorianCalendar(),
+        rootId = if (rootId == "") messageId else rootId
     )

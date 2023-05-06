@@ -4,6 +4,7 @@ import java.util.*
 
 data class BotMessage(
     val channelId: String,
+    val author: User,
     val id: String,
     val text: String,
     val finish: GregorianCalendar,
@@ -13,6 +14,7 @@ data class BotMessage(
         val emptyMessage =
             BotMessage(
                 channelId = "",
+                author = User(),
                 id = "",
                 text = "",
                 finish = GregorianCalendar(),
