@@ -75,7 +75,7 @@ class NetworkModule {
     ): Retrofit =
         Retrofit.Builder().addConverterFactory(moshiConverterFactory)
             .addCallAdapterFactory(eitherLeaderIdAdapterFactory).client(client)
-            .baseUrl("https://uselessfacts.jsph.pl/api/v2/").build()
+            .baseUrl(BuildConfig.uselessFactsApi).build()
 
     @Singleton
     @Provides
@@ -136,13 +136,4 @@ class NetworkModule {
     @Provides
     fun provideUselessFactApi(@UselessFactClient retrofit: Retrofit): UselessFactApi =
         retrofit.create()
-}
-@Module
-@InstallIn(SingletonComponent::class)
-interface NetworkModuleBinds{
-    @Singleton
-    @Binds
-    fun provideMattermostClient(
-        mattermostWebSocketClientImpl: MattermostWebSocketClientImpl
-    ): MattermostWebSocketClient
 }

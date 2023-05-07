@@ -30,6 +30,7 @@ android {
         buildConfigField ("String", "synologyLogin", localProperties['synologyLogin'])
         buildConfigField ("String", "synologyPassword", localProperties['synologyPassword'])
         buildConfigField ("String", "folderPathPhotoSynology", localProperties['folderPathPhotoSynology'])
+        buildConfigField ("String", "uselessFactsApi", localProperties['uselessFactsApi'])
     }
 
     buildTypes {

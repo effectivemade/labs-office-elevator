@@ -1,5 +1,7 @@
 package band.effective.office.tv.di.view_models
 
+import band.effective.office.tv.domain.botLogic.MessengerBot
+import band.effective.office.tv.domain.botLogic.impl.MattermostBot
 import band.effective.office.tv.repository.uselessFactRepository.UselessFactRepository
 import band.effective.office.tv.repository.uselessFactRepository.impl.UselessFactRepositoryImpl
 import dagger.Binds
@@ -14,4 +16,7 @@ interface MessageViewModelModule {
     @ViewModelScoped
     @Binds
     fun bindsUselessFactRepository(repository: UselessFactRepositoryImpl): UselessFactRepository
+    @ViewModelScoped
+    @Binds
+    fun bindsMessengerBot(mattermostBot: MattermostBot): MessengerBot
 }
