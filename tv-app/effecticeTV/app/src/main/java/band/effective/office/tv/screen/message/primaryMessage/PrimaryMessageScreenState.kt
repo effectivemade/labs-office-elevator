@@ -4,12 +4,14 @@ import band.effective.office.tv.domain.model.message.BotMessage
 
 data class PrimaryMessageScreenState(
     val isEmpty: Boolean,
-    val currentMessage: BotMessage
+    val messagesList: List<BotMessage>,
+    val currentMessage: Int
 ) {
     companion object {
         val empty = PrimaryMessageScreenState(
             isEmpty = true,
-            currentMessage = BotMessage.emptyMessage
+            messagesList = listOf(),
+            currentMessage = 0
         )
     }
 }

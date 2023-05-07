@@ -1,12 +1,11 @@
 package band.effective.office.tv.screen.message.primaryMessage
 
-import androidx.compose.foundation.layout.fillMaxSize
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import band.effective.office.tv.screen.message.component.OneMessageScreen
+import band.effective.office.tv.screen.message.MessageScreen
 
 @Composable
 fun PrimaryMessageScreen(
@@ -17,6 +16,9 @@ fun PrimaryMessageScreen(
     if (state.isEmpty) {
         content()
     } else {
-        OneMessageScreen(modifier = Modifier.fillMaxSize(), message = state.currentMessage)
+        MessageScreen(
+            messagesList = state.messagesList,
+            currentIndex = state.currentMessage
+        )
     }
 }
