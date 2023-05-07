@@ -1,5 +1,6 @@
 package band.effective.office.tv.domain.botLogic.impl
 
+import band.effective.office.tv.domain.botLogic.BotConfig
 import band.effective.office.tv.domain.botLogic.MessengerBot
 import band.effective.office.tv.domain.botLogic.model.BotEvent
 import band.effective.office.tv.domain.model.message.BotMessage
@@ -34,7 +35,7 @@ class MattermostBot @Inject constructor(private val client: MattermostWebSocketC
                 }
                 is BotEvent.Reaction -> {
                     when (event.emojiName) {
-                        "warning" -> {
+                        BotConfig.importantMessageReaction -> {
                             val message = MessageQueue.secondQueue.message(event.messageId)
                                 ?: BotMessage.deletedMessage.first { it.id == event.messageId }
                             if (message != null) {
@@ -43,7 +44,7 @@ class MattermostBot @Inject constructor(private val client: MattermostWebSocketC
                                 postMessage(scope, message.copy(text = "Приоритет повышен"))
                             }
                         }
-                        "no_entry_sign" -> {
+                        BotConfig.deleteMessageReaction -> {
                             val message = MessageQueue.secondQueue.message(event.messageId)
                                 ?: MessageQueue.firstQueue.message(event.messageId)
                             if (message != null) {

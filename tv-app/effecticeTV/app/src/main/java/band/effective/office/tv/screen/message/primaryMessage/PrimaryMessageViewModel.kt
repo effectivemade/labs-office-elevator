@@ -3,6 +3,7 @@ package band.effective.office.tv.screen.message.primaryMessage
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
+import band.effective.office.tv.domain.botLogic.BotConfig
 import band.effective.office.tv.domain.botLogic.MessengerBot
 import band.effective.office.tv.domain.model.message.MessageQueue
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,7 +33,8 @@ class PrimaryMessageViewModel @Inject constructor(
                     mutableState.update { PrimaryMessageScreenState.empty }
                 }
             },
-            isPlay = true
+            isPlay = true,
+            period = BotConfig.importantMessageDelay
         )
         collectEvent()
     }

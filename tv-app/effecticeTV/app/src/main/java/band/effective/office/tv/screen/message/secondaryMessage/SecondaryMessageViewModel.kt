@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
 import band.effective.office.tv.domain.autoplay.AutoplayableViewModel
 import band.effective.office.tv.domain.autoplay.model.NavigateRequests
+import band.effective.office.tv.domain.botLogic.BotConfig
 import band.effective.office.tv.domain.model.message.MessageQueue
 import band.effective.office.tv.repository.uselessFactRepository.UselessFactRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -40,7 +41,8 @@ class SecondaryMessageViewModel @Inject constructor(
                     mutableState.update { SecondaryMessageState.empty.copy(navigateRequest = NavigateRequests.Forward) }
                 }
             },
-            isPlay = true
+            isPlay = true,
+            period = BotConfig.commonMessageDelay
         )
         timer.startTimer()
         //getUselessFact() //NOTE(Maksim Mishenko) speak about when call this screen
