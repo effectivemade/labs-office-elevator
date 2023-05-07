@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModel
 import band.effective.office.tv.domain.autoplay.AutoplayableViewModel
 import band.effective.office.tv.domain.autoplay.model.ScreenDescription
 import band.effective.office.tv.screen.error.ErrorScreen
+import band.effective.office.tv.screen.eventStory.EventStoryScreen
+import band.effective.office.tv.screen.eventStory.EventStoryViewModel
 import band.effective.office.tv.screen.leaderIdEvents.LeaderIdEventsScreen
 import band.effective.office.tv.screen.leaderIdEvents.LeaderIdEventsViewModel
 import band.effective.office.tv.screen.load.LoadScreen
@@ -22,6 +24,9 @@ fun ViewModelToScreen(viewModel: ViewModel) = when (viewModel) {
     }
     is PhotoViewModel -> @Composable {
         BestPhotoScreen(viewModel)
+    }
+    is EventStoryViewModel -> @Composable {
+        EventStoryScreen(viewModel)
     }
     else -> {}
 }

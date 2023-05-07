@@ -1,4 +1,4 @@
-package band.effective.office.tv.domain.models.Employee
+package band.effective.office.tv.domain.model.notion
 
 enum class EventType(eventName: String) {
     Birthday("Birthday"),

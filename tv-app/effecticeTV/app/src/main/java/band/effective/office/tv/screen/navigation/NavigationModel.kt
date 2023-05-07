@@ -7,7 +7,7 @@ import band.effective.office.tv.screen.leaderIdEvents.LeaderIdEventsScreen
 import band.effective.office.tv.screen.photo.BestPhotoScreen
 
 enum class Screen {
-    Menu, Events, BestPhoto, History, Autoplay, AutoplayMenu, Duolingo
+    Menu, Events, BestPhoto, History, Autoplay, AutoplayMenu, Stories
 }
 
 data class NavigationModel(
@@ -15,6 +15,7 @@ data class NavigationModel(
 ) {
     companion object {
         val screensList = listOf(
+            NavigationModel(Screen.Stories, @Composable { EventStoryScreen()}, "Stories"),
             NavigationModel(Screen.Events, @Composable { LeaderIdEventsScreen() }, "Events"),
             NavigationModel(Screen.BestPhoto, @Composable { BestPhotoScreen() }, "Best Photo"),
             NavigationModel(Screen.History, @Composable { HistoryScreen() }, "History")

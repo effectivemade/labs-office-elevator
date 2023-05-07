@@ -24,7 +24,6 @@ android {
         }
 
         buildConfigField("String", "apiLeaderUrl", localProperties['apiLeaderUrl'])
-        buildConfigField("String", "notionToken", localProperties['NOTION_TOKEN'])
 
         buildConfigField ("String", "apiSynologyUrl", localProperties['synologyIP'])
         buildConfigField ("String", "synologyLogin", localProperties['synologyLogin'])
@@ -32,6 +31,8 @@ android {
         buildConfigField ("String", "folderPathPhotoSynology", localProperties['folderPathPhotoSynology'])
         buildConfigField ("String", "duolingoUrl", localProperties['duolingoUrl'])
 
+        buildConfigField("String", "notionToken", localProperties['NOTION_TOKEN'])
+        buildConfigField("String", "notionDatabaseId", localProperties['NOTION_DATABASE_ID'])
     }
 
     buildTypes {
@@ -98,6 +99,24 @@ dependencies {
 
     //coil
     implementation libs.coil
+
+<<<<<<<<< Temporary merge branch 1
+    //notion
+    implementation("com.github.seratch:notion-sdk-jvm-core:1.8.0")
+
+    //coroutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
+
+    //lifecycle
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.6.1"
+=========
+    //qr
+    implementation libs.zxing
+
+    //navigation
+    implementation libs.navigation
+>>>>>>>>> Temporary merge branch 2
 }
 kapt {
     correctErrorTypes true
