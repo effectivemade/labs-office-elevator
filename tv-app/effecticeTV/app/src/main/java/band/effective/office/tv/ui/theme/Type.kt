@@ -1,6 +1,7 @@
-package com.example.effecticetv.ui.theme
+package band.effective.office.tv.ui.theme
 
 import androidx.compose.material.Typography
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -15,12 +16,11 @@ val drukLCGWideMedium = FontFamily(Font(R.font.druktextwidelcg_medium))
 // Set of Material typography styles to start with
 val Typography = Typography(
     defaultFontFamily = robotoFontFamily(),
-    /* Other default text styles to override
     body1 = TextStyle(
         fontFamily = robotoFontFamily(),
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp
-    )
+    ),
     button = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.W500,
@@ -47,7 +47,6 @@ val Typography = Typography(
         fontWeight = FontWeight.Bold,
         fontSize = 25.sp
     )
-    */
 )
 
 fun robotoFontFamily(): FontFamily =

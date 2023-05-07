@@ -9,22 +9,45 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.tv.domain.model.duolingo.DuolingoUser
+import band.effective.office.tv.screen.eventStory.KeySortDuolingoUser
+import band.effective.office.tv.utils.getCorrectDeclension
 
 @Composable
-fun TopsUser(modifier: Modifier = Modifier, users: List<DuolingoUser>) {
+fun TopsUser(
+    modifier: Modifier = Modifier,
+    users: List<DuolingoUser>,
+    keySort: KeySortDuolingoUser
+) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(count = 2),
         horizontalArrangement = Arrangement.spacedBy(200.dp),
         verticalArrangement = Arrangement.spacedBy(30.dp)
-    ){
-        itemsIndexed(users){index: Int, item: DuolingoUser ->
-            GirdItem(
-                name = item.username,
-                indicatorUsers = "${item.totalXp} XP",
-                indicatorUsersColor = Color.Gray,
-                photo = item.photo,
-                place = index + 1
-            )
+    ) {
+        itemsIndexed(users) { index: Int, item: DuolingoUser ->
+            when (keySort) {
+                KeySortDuolingoUser.Xp -> {
+                    GirdItem(
+                        name = item.username,
+                        indicatorUsers = "${item.totalXp} XP",
+                        indicatorUsersColor = Color.Green,
+                        photo = item.photo,
+                        place = index + 1
+                    )
+                }
+                KeySortDuolingoUser.Streak -> {
+                    GirdItem(
+                        name = item.username,
+                        indicatorUsers = "${item.streakDay} " +
+                                getCorrectDeclension(
+                                    number = item.streakDay,
+                                    "день", "дня", "дней"
+                                ),
+                        indicatorUsersColor = Color.Red,
+                        photo = item.photo,
+                        place = index + 1
+                    )
+                }
+            }
         }
     }
 }

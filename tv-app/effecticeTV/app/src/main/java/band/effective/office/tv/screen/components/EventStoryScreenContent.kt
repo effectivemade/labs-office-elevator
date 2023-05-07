@@ -9,12 +9,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import band.effective.office.tv.domain.model.notion.EmployeeInfo
+import band.effective.office.tv.domain.model.duolingo.DuolingoUser
+import band.effective.office.tv.screen.duolingo.DuolingoScreen
+import band.effective.office.tv.screen.eventStory.KeySortDuolingoUser
+import band.effective.office.tv.screen.eventStory.models.DuolingoUserInfo
+import band.effective.office.tv.screen.eventStory.models.EmployeeInfoUI
+import band.effective.office.tv.screen.eventStory.models.StoryModel
+import band.effective.office.tv.screen.eventStory.models.StoryType
 import com.example.effecticetv.ui.theme.IndependentColors
 
 @Composable
 fun EventStoryScreenContent(
-    eventsInfo: MutableList<EmployeeInfo>,
+    eventsInfo: List<StoryModel>,
     currentStoryIndex: Int,
     modifier: Modifier = Modifier
 ) {
@@ -23,18 +29,32 @@ fun EventStoryScreenContent(
     ) {
         Column {
             StoryIndicator(
-                eventsInfo, currentStoryIndex,
+                eventsInfo.size,
+                currentStoryIndex,
                 Modifier
                     .padding(32.dp)
                     .fillMaxWidth()
                     .height(8.dp)
             )
-            StoryContent(
-                eventsInfo, currentStoryIndex,
-                Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 64.dp)
-            )
+            when(val item = eventsInfo[currentStoryIndex].storyType) {
+                StoryType.Employee -> {
+                    val storyData = eventsInfo[currentStoryIndex]
+                    StoryContent(
+                        storyData as EmployeeInfoUI,
+                        Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 64.dp)
+                    )
+                }
+                StoryType.Duolingo -> {
+                    val duolingoItem = eventsInfo[currentStoryIndex] as DuolingoUserInfo
+                    DuolingoScreen(
+                        keySort = duolingoItem.keySort,
+                        duolingoUser = duolingoItem.users
+                    )
+                }
+            }
+
         }
     }
 }

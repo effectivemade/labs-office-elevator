@@ -2,24 +2,27 @@ package band.effective.office.tv.screen.eventStory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import band.effective.office.tv.core.network.entity.Either
 import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
 import band.effective.office.tv.domain.autoplay.AutoplayableViewModel
 import band.effective.office.tv.domain.autoplay.model.NavigateRequests
+import band.effective.office.tv.domain.model.duolingo.DuolingoUser
+import band.effective.office.tv.domain.model.notion.EmployeeInfoEntity
 import band.effective.office.tv.domain.model.notion.EmployeeInfoRepository
 import band.effective.office.tv.domain.model.notion.processEmployeeInfo
+import band.effective.office.tv.network.use_cases.DuolingoManager
+import band.effective.office.tv.screen.eventStory.models.DuolingoUserInfo
+import band.effective.office.tv.screen.eventStory.models.StoryModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @HiltViewModel
 class EventStoryViewModel @Inject constructor(
     private val repository: EmployeeInfoRepository,
-    private val timer: TimerSlideShow
+    private val timer: TimerSlideShow,
+    private val duolingo: DuolingoManager
 ) :
     ViewModel(), AutoplayableViewModel {
     private val mutableState =
@@ -37,7 +40,10 @@ class EventStoryViewModel @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 
     init {
-        fetchBirthdays()
+
+        viewModelScope.launch {
+            initDataStory()
+        }
         timer.init(
             scope = viewModelScope,
             callbackToEnd = {
@@ -52,28 +58,71 @@ class EventStoryViewModel @Inject constructor(
         timer.startTimer()
     }
 
-    private fun fetchBirthdays() {
-        viewModelScope.launch {
-            withContext(ioDispatcher) {
-                repository.latestEvents.catch { exception ->
-                    mutableState.update { state ->
-                        state.copy(
-                            isError = true,
-                            errorText = exception.message ?: "",
-                            isLoading = false,
-                        )
+//    private suspend fun fetchBirthdays() =
+//        repository.latestEvents.catch { exception ->
+//            mutableState.update { state ->
+//                state.copy(
+//                    isError = true,
+//                    errorText = exception.message ?: "",
+//                    isLoading = false,
+//                )
+//            }
+//        }.onEach { events ->
+//            val resultList = events.processEmployeeInfo()
+//            mutableState.update { state ->
+//                state.copy(
+//                    eventsInfo = resultList,
+//                    currentStoryIndex = 0,
+//                    isLoading = false,
+//                    isData = true,
+//                    isPlay = true,
+//                )
+//            }
+//        }
+
+
+    private suspend fun initDataStory() {
+        withContext(ioDispatcher) {
+            repository.latestEvents.combine(duolingo.getDuolingoUserinfo()) { employeeInfoEntities: List<EmployeeInfoEntity>, usersDuolingo: Either<String, List<DuolingoUser>> ->
+                when (usersDuolingo) {
+                    is Either.Success -> {
+                        employeeInfoEntities.processEmployeeInfo().map { it as StoryModel } +
+                            run {
+                                val users = usersDuolingo.data
+                                val userXpSort = DuolingoUserInfo(
+                                    users = users.sortedByDescending { it.totalXp },
+                                    keySort = KeySortDuolingoUser.Xp
+                                    ) as StoryModel
+                                val userStreakSort = DuolingoUserInfo(
+                                    users = users.sortedByDescending { it.streakDay },
+                                    keySort = KeySortDuolingoUser.Streak
+                                    ) as StoryModel
+                                listOf(userXpSort, userStreakSort)
+                            }
                     }
-                }.collectLatest { events ->
-                    val resultList = events.processEmployeeInfo()
-                    mutableState.update { state ->
-                        state.copy(
-                            eventsInfo = resultList,
-                            currentStoryIndex = 0,
-                            isLoading = false,
-                            isData = true,
-                            isPlay = true,
-                        )
+
+                    is Either.Failure -> {
+                        employeeInfoEntities.processEmployeeInfo().map { it as StoryModel }
                     }
+                }
+            }.catch { exception ->
+                mutableState.update { state ->
+                    state.copy(
+                        isError = true,
+                        errorText = exception.message ?: "",
+                        isLoading = false,
+                    )
+                }
+            }.collectLatest { events ->
+                mutableState.update { oldState ->
+                    oldState.copy(
+                        isLoading = false,
+                        isData = true,
+                        isError = false,
+                        eventsInfo = events,
+                        currentStoryIndex = 0,
+                        isPlay = true
+                    )
                 }
             }
         }

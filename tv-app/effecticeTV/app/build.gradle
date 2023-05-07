@@ -100,7 +100,6 @@ dependencies {
     //coil
     implementation libs.coil
 
-<<<<<<<<< Temporary merge branch 1
     //notion
     implementation("com.github.seratch:notion-sdk-jvm-core:1.8.0")
 
@@ -110,13 +109,11 @@ dependencies {
 
     //lifecycle
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.6.1"
-=========
     //qr
     implementation libs.zxing
 
     //navigation
     implementation libs.navigation
->>>>>>>>> Temporary merge branch 2
 }
 kapt {
     correctErrorTypes true

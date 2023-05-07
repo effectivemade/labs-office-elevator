@@ -22,20 +22,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.tv.R
 import band.effective.office.tv.domain.model.notion.Anniversary
-import band.effective.office.tv.domain.model.notion.Birthday
-import band.effective.office.tv.domain.model.notion.EmployeeInfo
 import band.effective.office.tv.domain.model.notion.EventType
-import band.effective.office.tv.domain.model.notion.NewEmployee
+import band.effective.office.tv.screen.eventStory.models.AnniversaryUI
+import band.effective.office.tv.screen.eventStory.models.EmployeeInfoUI
+import band.effective.office.tv.screen.eventStory.models.NewEmployeeUI
+import band.effective.office.tv.ui.theme.drukLCGWideMedium
+import band.effective.office.tv.ui.theme.museoCyrl
 import band.effective.office.tv.utils.getCorrectDeclension
 import coil.compose.AsyncImage
-import com.example.effecticetv.ui.theme.drukLCGWideMedium
-import com.example.effecticetv.ui.theme.museoCyrl
+
 
 @Composable
-fun StoryContent(employeeInfoes: List<EmployeeInfo>, currentStoryIndex: Int, modifier: Modifier) {
+fun StoryContent(employeeInfo: EmployeeInfoUI, modifier: Modifier) {
 
-    val isAnniversary = employeeInfoes[currentStoryIndex].eventType == EventType.Anniversary
-    val isBirthday = employeeInfoes[currentStoryIndex].eventType == EventType.Birthday
+    val isAnniversary = employeeInfo.eventType == EventType.Anniversary
+    val isBirthday = employeeInfo.eventType == EventType.Birthday
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -51,14 +52,14 @@ fun StoryContent(employeeInfoes: List<EmployeeInfo>, currentStoryIndex: Int, mod
                 .fillMaxSize()
         ) {
             Text(
-                text = employeeInfoes[currentStoryIndex].name + ",",
+                text = employeeInfo.name + ",",
                 fontSize = 64.sp,
                 fontFamily = museoCyrl,
                 color = Color.Black,
                 fontStyle = FontStyle.Italic
             )
             if (isAnniversary) {
-                val story = employeeInfoes[currentStoryIndex] as Anniversary
+                val story = employeeInfo as AnniversaryUI
                 Text(
                     text =
                     stringResource(id = R.string.with_us) + " " + story.yearsInCompany + " " + getCorrectDeclension(
@@ -90,7 +91,7 @@ fun StoryContent(employeeInfoes: List<EmployeeInfo>, currentStoryIndex: Int, mod
         }
 
         AsyncImage(
-            model = employeeInfoes[currentStoryIndex].photoUrl,
+            model = employeeInfo.photoUrl,
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(300.dp)
@@ -108,13 +109,8 @@ fun StoryContent(employeeInfoes: List<EmployeeInfo>, currentStoryIndex: Int, mod
 @Preview
 fun PreviewStoryContent() {
     StoryContent(
-        employeeInfoes = listOf(
-            NewEmployee("John Doe", "testUrl"),
-            Birthday("John Doe", "testUrl"),
-            NewEmployee("John Doe", "testUrl"),
-            Birthday("John Doe", "testUrl")
-        ),
-        1,
+        employeeInfo =
+            NewEmployeeUI("John Doe", "testUrl"),
         Modifier
             .fillMaxSize()
             .padding(vertical = 64.dp)

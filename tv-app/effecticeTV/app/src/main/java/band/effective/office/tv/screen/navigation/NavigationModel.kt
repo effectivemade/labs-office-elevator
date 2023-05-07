@@ -1,7 +1,7 @@
 package band.effective.office.tv.screen.navigation
 
 import androidx.compose.runtime.Composable
-import band.effective.office.tv.screen.autoplay.AutoplayScreen
+import band.effective.office.tv.screen.eventStory.EventStoryScreen
 import band.effective.office.tv.screen.history.HistoryScreen
 import band.effective.office.tv.screen.leaderIdEvents.LeaderIdEventsScreen
 import band.effective.office.tv.screen.photo.BestPhotoScreen

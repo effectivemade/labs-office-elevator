@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -19,14 +20,14 @@ import band.effective.office.tv.domain.model.notion.EmployeeInfo
 import com.example.effecticetv.ui.theme.IndependentColors
 
 @Composable
-fun StoryIndicator(stories: List<EmployeeInfo>, currentStoryIndex: Int, modifier: Modifier) {
+fun StoryIndicator(countStories: Int, currentStoryIndex: Int, modifier: Modifier) {
 
     val screenConfiguration = LocalConfiguration.current
     val screenWidth = screenConfiguration.screenWidthDp.dp
-    val indicatorWidth = (screenWidth - 64.dp - (stories.size - 1) * 8.dp) / (stories.size)
+    val indicatorWidth = (screenWidth - 64.dp - (countStories - 1) * 8.dp) / (countStories)
 
-    Row(modifier = modifier, horizontalArrangement = Arrangement.Center) {
-        stories.forEachIndexed { index, _ ->
+    LazyRow(modifier = modifier, horizontalArrangement = Arrangement.Center) {
+        items(countStories) { index ->
             val animatedColor =
                 animateColorAsState(
                     if (index == currentStoryIndex) IndependentColors.StoryActiviteIndicatoGray else IndependentColors.StoryIndicatorGray
@@ -46,12 +47,6 @@ fun StoryIndicator(stories: List<EmployeeInfo>, currentStoryIndex: Int, modifier
 @Composable
 fun PreviewStoryIndicator() {
     StoryIndicator(
-        listOf(
-            Birthday("John Doe", "test"),
-            Birthday("John Doe", "test"),
-            Birthday("John Doe", "test"),
-            Birthday("John Doe", "test"),
-            Birthday("John Doe", "test"),
-        ), 1, Modifier.padding(24.dp)
+       5, 1, Modifier.padding(24.dp)
     )
 }

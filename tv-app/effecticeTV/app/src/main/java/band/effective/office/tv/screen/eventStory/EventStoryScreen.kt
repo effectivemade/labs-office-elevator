@@ -18,7 +18,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import band.effective.office.tv.R
 import band.effective.office.tv.core.ui.screen_with_controls.ScreenWithControlsTemplate
@@ -41,7 +40,7 @@ fun EventStoryScreen(viewModel: EventStoryViewModel = hiltViewModel()) {
     when {
         state.isLoading -> LoadScreen("Stories")
         state.isError -> showErrorMessage(context, errorMessage + state.errorText)
-        state.isData -> if (state.eventsInfo.size == 0) NoStoriesScreen() else ScreenWithControlsTemplate(
+        state.isData -> if (state.eventsInfo.isEmpty()) NoStoriesScreen() else ScreenWithControlsTemplate(
             modifier = Modifier
                 .fillMaxSize()
                 .onFocusChanged { focusState ->

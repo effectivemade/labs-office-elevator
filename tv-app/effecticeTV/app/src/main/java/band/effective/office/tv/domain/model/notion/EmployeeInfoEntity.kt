@@ -1,5 +1,9 @@
 package band.effective.office.tv.domain.model.notion
 
+import band.effective.office.tv.screen.eventStory.models.AnniversaryUI
+import band.effective.office.tv.screen.eventStory.models.BirthdayUI
+import band.effective.office.tv.screen.eventStory.models.EmployeeInfoUI
+import band.effective.office.tv.screen.eventStory.models.NewEmployeeUI
 import band.effective.office.tv.utils.DateUtlils
 import java.util.*
 
@@ -10,12 +14,12 @@ class EmployeeInfoEntity(
     val photoUrl: String,
 )
 
-fun List<EmployeeInfoEntity>.processEmployeeInfo(): MutableList<EmployeeInfo> {
-    val resultList = mutableListOf<EmployeeInfo>()
+fun List<EmployeeInfoEntity>.processEmployeeInfo(): List<EmployeeInfoUI> {
+    val resultList = mutableListOf<EmployeeInfoUI>()
     this.map {employee ->
         if (employee.nextBirthdayDate.isNotBlank() && isCelebrationToday(employee.nextBirthdayDate)) {
             resultList.add(
-                Birthday(
+                BirthdayUI(
                     employee.firstName,
                     employee.photoUrl,
                 )
@@ -23,7 +27,7 @@ fun List<EmployeeInfoEntity>.processEmployeeInfo(): MutableList<EmployeeInfo> {
         }
         if (employee.startDate.isNotBlank() && isCelebrationToday(employee.startDate)) {
             resultList.add(
-                Anniversary(
+                AnniversaryUI(
                     employee.firstName,
                     employee.photoUrl,
                     DateUtlils.getYearsFromStartDate(employee.startDate)
@@ -32,7 +36,7 @@ fun List<EmployeeInfoEntity>.processEmployeeInfo(): MutableList<EmployeeInfo> {
         }
         if (employee.startDate.isNotBlank() && isNewEmployeeToday(employee.startDate)) {
             resultList.add(
-                NewEmployee(
+                NewEmployeeUI(
                     employee.firstName,
                     employee.photoUrl,
                 )
