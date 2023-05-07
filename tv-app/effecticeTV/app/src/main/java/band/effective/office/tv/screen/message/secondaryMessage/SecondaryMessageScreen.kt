@@ -16,5 +16,5 @@ fun SecondaryMessageScreen(viewModel: SecondaryMessageViewModel = hiltViewModel(
         delay(showMessageTime)
         viewModel.nextScreen()
     }
-    MessageScreen(messagesList = state.messageList)
+    MessageScreen(messagesList = state.messageList, uselessFact = state.uselessFact)
 }

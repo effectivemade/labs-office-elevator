@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.domain.autoplay.AutoplayableViewModel
 import band.effective.office.tv.domain.autoplay.model.NavigateRequests
 import band.effective.office.tv.domain.model.message.MessageQueue
+import band.effective.office.tv.repository.uselessFactRepository.UselessFactRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,19 +14,24 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SecondaryMessageViewModel @Inject constructor() : ViewModel(), AutoplayableViewModel {
+class SecondaryMessageViewModel @Inject constructor(private val uselessFactRepository: UselessFactRepository) : ViewModel(), AutoplayableViewModel {
     private var mutableState = MutableStateFlow(SecondaryMessageState.empty)
     override val state = mutableState.asStateFlow()
     override fun switchToFirstItem() {
-
+        getUselessFact()
     }
 
     override fun switchToLastItem() {
-
+        getUselessFact()
     }
 
     init {
         updateMessageList()
+        getUselessFact()
+    }
+
+    private fun getUselessFact() = viewModelScope.launch {
+        mutableState.update { it.copy(uselessFact = uselessFactRepository.fact()) }
     }
 
     private fun updateMessageList() = viewModelScope.launch {
@@ -34,7 +40,8 @@ class SecondaryMessageViewModel @Inject constructor() : ViewModel(), Autoplayabl
                 mutableState.update {
                     it.copy(
                         isData = true,
-                        messageList = it.messageList + MessageQueue.secondQueue.top()
+                        messageList = it.messageList + MessageQueue.secondQueue.top(),
+                        uselessFact = uselessFactRepository.fact()
                     )
                 }
                 MessageQueue.secondQueue.pop()

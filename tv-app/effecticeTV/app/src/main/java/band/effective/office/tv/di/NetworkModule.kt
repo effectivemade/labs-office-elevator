@@ -3,15 +3,13 @@ package band.effective.office.tv.di
 import band.effective.office.tv.BuildConfig
 import band.effective.office.tv.core.network.EitherLeaderIdAdapterFactory
 import band.effective.office.tv.core.network.EitherSynologyAdapterFactory
-import band.effective.office.tv.network.AuthInterceptor
-import band.effective.office.tv.network.LeaderIdRetrofitClient
-import band.effective.office.tv.network.MattermostClient
-import band.effective.office.tv.network.SynologyRetrofitClient
+import band.effective.office.tv.network.*
 import band.effective.office.tv.network.leader.LeaderApi
 import band.effective.office.tv.network.mattermost.MattermostApi
 import band.effective.office.tv.network.mattermost.mattermostWebSocketClient.MattermostWebSocketClient
 import band.effective.office.tv.network.mattermost.mattermostWebSocketClient.impl.MattermostWebSocketClientImpl
 import band.effective.office.tv.network.synology.SynologyApi
+import band.effective.office.tv.network.uselessFact.UselessFactApi
 import com.squareup.moshi.Moshi
 import dagger.Binds
 import dagger.Module
@@ -69,6 +67,18 @@ class NetworkModule {
 
     @Singleton
     @Provides
+    @UselessFactClient
+    fun provideUselessFactRetrofit(
+        moshiConverterFactory: MoshiConverterFactory,
+        client: OkHttpClient,
+        eitherLeaderIdAdapterFactory: EitherLeaderIdAdapterFactory
+    ): Retrofit =
+        Retrofit.Builder().addConverterFactory(moshiConverterFactory)
+            .addCallAdapterFactory(eitherLeaderIdAdapterFactory).client(client)
+            .baseUrl("https://uselessfacts.jsph.pl/api/v2/").build()
+
+    @Singleton
+    @Provides
     fun provideMoshiConverterFactory(moshi: Moshi): MoshiConverterFactory =
         MoshiConverterFactory.create(moshi).asLenient()
 
@@ -120,6 +130,11 @@ class NetworkModule {
     @Singleton
     @Provides
     fun provideApiMattermost(@MattermostClient retrofit: Retrofit): MattermostApi =
+        retrofit.create()
+
+    @Singleton
+    @Provides
+    fun provideUselessFactApi(@UselessFactClient retrofit: Retrofit): UselessFactApi =
         retrofit.create()
 }
 @Module
