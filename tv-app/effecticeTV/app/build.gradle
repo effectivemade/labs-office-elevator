@@ -23,7 +23,8 @@ android {
             useSupportLibrary true
         }
 
-        buildConfigField ("String", "apiLeaderUrl", localProperties['apiLeaderUrl'])
+        buildConfigField("String", "apiLeaderUrl", localProperties['apiLeaderUrl'])
+        buildConfigField("String", "notionToken", localProperties['NOTION_TOKEN'])
 
         buildConfigField ("String", "apiSynologyUrl", localProperties['synologyIP'])
         buildConfigField ("String", "synologyLogin", localProperties['synologyLogin'])
@@ -97,12 +98,6 @@ dependencies {
 
     //coil
     implementation libs.coil
-
-    //qr
-    implementation libs.zxing
-
-    //navigation
-    implementation libs.navigation
 }
 kapt {
     correctErrorTypes true
