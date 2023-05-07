@@ -2,6 +2,7 @@ package band.effective.office.tv.screen.message.secondaryMessage
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
 import band.effective.office.tv.domain.autoplay.AutoplayableViewModel
 import band.effective.office.tv.domain.autoplay.model.NavigateRequests
 import band.effective.office.tv.domain.model.message.MessageQueue
@@ -14,7 +15,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SecondaryMessageViewModel @Inject constructor(private val uselessFactRepository: UselessFactRepository) : ViewModel(), AutoplayableViewModel {
+class SecondaryMessageViewModel @Inject constructor(
+    private val uselessFactRepository: UselessFactRepository,
+    private val timer: TimerSlideShow
+) : ViewModel(), AutoplayableViewModel {
     private var mutableState = MutableStateFlow(SecondaryMessageState.empty)
     override val state = mutableState.asStateFlow()
     override fun switchToFirstItem() {
@@ -27,7 +31,19 @@ class SecondaryMessageViewModel @Inject constructor(private val uselessFactRepos
 
     init {
         updateMessageList()
-        getUselessFact()
+        timer.init(
+            scope = viewModelScope,
+            callbackToEnd = {
+                if (state.value.currentIndex + 1 < state.value.messageList.size) {
+                    mutableState.update { it.copy(currentIndex = it.currentIndex + 1) }
+                } else {
+                    mutableState.update { SecondaryMessageState.empty.copy(navigateRequest = NavigateRequests.Forward) }
+                }
+            },
+            isPlay = true
+        )
+        timer.startTimer()
+        //getUselessFact() //NOTE(Maksim Mishenko) speak about when call this screen
     }
 
     private fun getUselessFact() = viewModelScope.launch {
@@ -46,14 +62,6 @@ class SecondaryMessageViewModel @Inject constructor(private val uselessFactRepos
                 }
                 MessageQueue.secondQueue.pop()
             }
-        }
-    }
-
-    fun nextScreen() {
-        mutableState.update {
-            it.copy(
-                navigateRequest = NavigateRequests.Forward
-            )
         }
     }
 }

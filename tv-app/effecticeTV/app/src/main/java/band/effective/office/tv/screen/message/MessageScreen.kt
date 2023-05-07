@@ -11,10 +11,22 @@ import band.effective.office.tv.screen.message.component.MoreMessagesScreen
 import band.effective.office.tv.screen.message.component.OneMessageScreen
 
 @Composable
-fun MessageScreen(modifier: Modifier = Modifier, messagesList: List<BotMessage> = listOf(), uselessFact: String = "") {
+fun MessageScreen(
+    modifier: Modifier = Modifier,
+    messagesList: List<BotMessage> = listOf(),
+    currentIndex: Int = 0,
+    uselessFact: String = ""
+) {
     when (messagesList.size) {
-        0 -> EmptyMessageScreen(modifier.fillMaxSize().padding(horizontal = 10.dp), uselessFact)
+        0 -> EmptyMessageScreen(
+            modifier
+                .fillMaxSize()
+                .padding(horizontal = 10.dp), uselessFact)
         1 -> OneMessageScreen(modifier = modifier, message = messagesList[0])
-        else -> MoreMessagesScreen(modifier = modifier, messagesList = messagesList)
+        else -> MoreMessagesScreen(
+            modifier = modifier,
+            messagesList = messagesList,
+            currentIndex = currentIndex
+        )
     }
 }

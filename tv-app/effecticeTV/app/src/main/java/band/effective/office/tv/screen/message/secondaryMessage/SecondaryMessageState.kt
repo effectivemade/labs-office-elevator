@@ -7,6 +7,7 @@ import band.effective.office.tv.screen.navigation.Screen
 
 data class SecondaryMessageState(
     val messageList: List<BotMessage>,
+    val currentIndex: Int = 0,
     override val isLoading: Boolean = false,
     override val isData: Boolean,
     override val isError: Boolean = false,
