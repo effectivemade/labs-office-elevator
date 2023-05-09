@@ -55,30 +55,7 @@ class EventStoryViewModel @Inject constructor(
             },
             isPlay = state.value.isPlay
         )
-        timer.startTimer()
     }
-
-//    private suspend fun fetchBirthdays() =
-//        repository.latestEvents.catch { exception ->
-//            mutableState.update { state ->
-//                state.copy(
-//                    isError = true,
-//                    errorText = exception.message ?: "",
-//                    isLoading = false,
-//                )
-//            }
-//        }.onEach { events ->
-//            val resultList = events.processEmployeeInfo()
-//            mutableState.update { state ->
-//                state.copy(
-//                    eventsInfo = resultList,
-//                    currentStoryIndex = 0,
-//                    isLoading = false,
-//                    isData = true,
-//                    isPlay = true,
-//                )
-//            }
-//        }
 
 
     private suspend fun initDataStory() {
@@ -86,7 +63,7 @@ class EventStoryViewModel @Inject constructor(
             repository.latestEvents.combine(duolingo.getDuolingoUserinfo()) { employeeInfoEntities: List<EmployeeInfoEntity>, usersDuolingo: Either<String, List<DuolingoUser>> ->
                 when (usersDuolingo) {
                     is Either.Success -> {
-                        employeeInfoEntities.processEmployeeInfo().map { it as StoryModel } +
+                        employeeInfoEntities.processEmployeeInfo() +
                             run {
                                 val users = usersDuolingo.data
                                 val userXpSort = DuolingoUserInfo(
@@ -102,7 +79,7 @@ class EventStoryViewModel @Inject constructor(
                     }
 
                     is Either.Failure -> {
-                        employeeInfoEntities.processEmployeeInfo().map { it as StoryModel }
+                        employeeInfoEntities.processEmployeeInfo()
                     }
                 }
             }.catch { exception ->
@@ -124,6 +101,7 @@ class EventStoryViewModel @Inject constructor(
                         isPlay = true
                     )
                 }
+                timer.startTimer()
             }
         }
     }
