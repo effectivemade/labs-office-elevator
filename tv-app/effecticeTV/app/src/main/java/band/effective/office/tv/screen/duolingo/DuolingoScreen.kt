@@ -29,24 +29,20 @@ fun DuolingoScreen(keySort: KeySortDuolingoUser, duolingoUser: List<DuolingoUser
             .padding(horizontal = 80.dp)) {
             DuolingoTitle(Modifier.padding(start = 10.dp))
             Spacer(modifier = Modifier.height(60.dp))
-            when (keySort){
+            val textTitle = when (keySort){
                 KeySortDuolingoUser.Xp -> {
-                    Text(
-                        text = "Tоп по XP",
-                        fontFamily = MaterialTheme.typography.h1.fontFamily,
-                        fontSize = MaterialTheme.typography.h1.fontSize,
-                        fontWeight = FontWeight.SemiBold
-                    )
+                    "Tоп по XP"
                 }
                 KeySortDuolingoUser.Streak -> {
-                    Text(
-                        text = "Топ по дням в ударном режиме",
-                        fontFamily = MaterialTheme.typography.h1.fontFamily,
-                        fontSize = MaterialTheme.typography.h1.fontSize,
-                        fontWeight = FontWeight.SemiBold
-                    )
+                    "Топ по дням в ударном режиме"
                 }
             }
+            Text(
+                text = textTitle,
+                fontFamily = MaterialTheme.typography.h1.fontFamily,
+                fontSize = MaterialTheme.typography.h1.fontSize,
+                fontWeight = FontWeight.SemiBold
+            )
             Spacer(modifier = Modifier.height(60.dp))
             TopsUser(users = duolingoUser, keySort = keySort)
         }

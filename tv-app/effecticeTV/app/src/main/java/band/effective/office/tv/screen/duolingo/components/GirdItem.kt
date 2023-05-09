@@ -58,7 +58,7 @@ fun GirdItem (
             fontStyle = MaterialTheme.typography.h2.fontStyle,
             fontSize = MaterialTheme.typography.h2.fontSize,
             fontWeight = FontWeight.SemiBold,
-            color = indicatorUsersColor,
+            color = Color.Black,
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.width(200.dp))
