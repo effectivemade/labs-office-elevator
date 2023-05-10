@@ -45,15 +45,15 @@ fun GirdItem (
             model = photo,
             contentDescription = null,
             modifier = Modifier
-                .size(90.dp)
+                .size(32.dp)
                 .clip(CircleShape),
             contentScale = ContentScale.Crop,
             placeholder = painterResource(id = R.drawable.duolingo_logo),
             error = painterResource(id = R.drawable.duolingo_logo)
         )
-        Spacer(modifier = Modifier.width(30.dp))
+        Spacer(modifier = Modifier.width(15.dp))
         Text(
-            modifier = Modifier.width(200.dp),
+            modifier = Modifier.width(100.dp),
             text = name,
             fontStyle = MaterialTheme.typography.h2.fontStyle,
             fontSize = MaterialTheme.typography.h2.fontSize,
@@ -61,7 +61,7 @@ fun GirdItem (
             color = Color.Black,
             textAlign = TextAlign.Center
         )
-        Spacer(modifier = Modifier.width(200.dp))
+        Spacer(modifier = Modifier.width(100.dp))
         Text(
             text = indicatorUsers,
             fontStyle = MaterialTheme.typography.h2.fontStyle,

@@ -34,12 +34,12 @@ val Typography = Typography(
     h1 = TextStyle(
         fontFamily = robotoFontFamily(),
         fontWeight = FontWeight.Normal,
-        fontSize = 50.sp
+        fontSize = 30.sp
     ),
     h2 = TextStyle(
         fontFamily = robotoFontFamily(),
         fontWeight = FontWeight.Normal,
-        fontSize = 40.sp,
+        fontSize = 20.sp,
         color = Color.Black
     ),
     h3 = TextStyle(

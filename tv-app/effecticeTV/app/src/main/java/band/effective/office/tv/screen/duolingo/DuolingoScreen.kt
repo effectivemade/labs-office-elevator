@@ -28,7 +28,7 @@ fun DuolingoScreen(keySort: KeySortDuolingoUser, duolingoUser: List<DuolingoUser
             .fillMaxSize()
             .padding(horizontal = 80.dp)) {
             DuolingoTitle(Modifier.padding(start = 10.dp))
-            Spacer(modifier = Modifier.height(60.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             val textTitle = when (keySort){
                 KeySortDuolingoUser.Xp -> {
                     "Tоп по XP"
@@ -43,7 +43,7 @@ fun DuolingoScreen(keySort: KeySortDuolingoUser, duolingoUser: List<DuolingoUser
                 fontSize = MaterialTheme.typography.h1.fontSize,
                 fontWeight = FontWeight.SemiBold
             )
-            Spacer(modifier = Modifier.height(60.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             TopsUser(users = duolingoUser, keySort = keySort)
         }
     }

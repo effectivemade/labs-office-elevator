@@ -20,7 +20,7 @@ fun TopsUser(
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(count = 2),
-        horizontalArrangement = Arrangement.spacedBy(200.dp),
+        horizontalArrangement = Arrangement.spacedBy(100.dp),
         verticalArrangement = Arrangement.spacedBy(30.dp)
     ) {
         itemsIndexed(users) { index: Int, item: DuolingoUser ->
