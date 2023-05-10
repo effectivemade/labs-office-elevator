@@ -20,6 +20,10 @@ class MattermostBot @Inject constructor(private val client: MattermostWebSocketC
             when (event) {
                 is BotEvent.PostMessage -> {
                     if (event.message.contains(client.name())) {
+                        if (event.message.length > 500){
+                            postMessage(scope, event.toBotMessage().copy(text = "Слишком много букавок"))
+                            return@subscribe
+                        }
                         val message = event.toBotMessage()
                         MessageQueue.secondQueue.push(
                             message.copy(
@@ -36,6 +40,9 @@ class MattermostBot @Inject constructor(private val client: MattermostWebSocketC
                 is BotEvent.Reaction -> {
                     when (event.emojiName) {
                         BotConfig.importantMessageReaction -> {
+                            if (MessageQueue.firstQueue.message(event.messageId) != null){
+                                return@subscribe
+                            }
                             val message = MessageQueue.secondQueue.message(event.messageId)
                                 ?: BotMessage.deletedMessage.first { it.id == event.messageId }
                             if (message != null) {

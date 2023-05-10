@@ -1,6 +1,5 @@
 package band.effective.office.tv.screen.message.primaryMessage
 
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -21,9 +20,15 @@ fun PrimaryMessageScreen(
         content()
     } else {
         MessageScreen(
-            modifier = Modifier.fillMaxSize().padding(30.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(30.dp),
             messagesList = state.messagesList,
-            currentIndex = state.currentMessage
+            currentIndex = state.currentMessage,
+            isPlay = state.isPlay,
+            onClickPreviousItemButton = { viewModel.onEvent(PrimaryMessageScreenEvents.OnClickPrevButton) },
+            onClickNextItemButton = { viewModel.onEvent(PrimaryMessageScreenEvents.OnClickNextButton) },
+            onClickPlayButton = { viewModel.onEvent(PrimaryMessageScreenEvents.OnClickPlayButton) }
         )
     }
 }

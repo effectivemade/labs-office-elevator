@@ -24,10 +24,12 @@ class SecondaryMessageViewModel @Inject constructor(
     override val state = mutableState.asStateFlow()
     override fun switchToFirstItem() {
         getUselessFact()
+        mutableState.update { it.copy(currentIndex = 0) }
     }
 
     override fun switchToLastItem() {
         getUselessFact()
+        mutableState.update { it.copy(currentIndex = it.messageList.size - 1) }
     }
 
     init {
@@ -38,7 +40,12 @@ class SecondaryMessageViewModel @Inject constructor(
                 if (state.value.currentIndex + 1 < state.value.messageList.size) {
                     mutableState.update { it.copy(currentIndex = it.currentIndex + 1) }
                 } else {
-                    mutableState.update { SecondaryMessageState.empty.copy(navigateRequest = NavigateRequests.Forward) }
+                    mutableState.update {
+                        it.copy(
+                            navigateRequest = NavigateRequests.Forward,
+                            currentIndex = 0
+                        )
+                    }
                 }
             },
             isPlay = true,
@@ -63,6 +70,44 @@ class SecondaryMessageViewModel @Inject constructor(
                     )
                 }
                 MessageQueue.secondQueue.pop()
+            }
+        }
+    }
+
+    fun onEvent(event: SecondaryMessageScreenEvents) {
+        timer.stopTimer()
+        when (event) {
+            is SecondaryMessageScreenEvents.OnClickNextButton -> {
+                if (state.value.currentIndex + 1 < state.value.messageList.size) {
+                    mutableState.update { it.copy(currentIndex = it.currentIndex + 1) }
+                } else {
+                    mutableState.update {
+                        it.copy(
+                            currentIndex = 0,
+                            navigateRequest = NavigateRequests.Forward
+                        )
+                    }
+                }
+                timer.startTimer()
+            }
+            is SecondaryMessageScreenEvents.OnClickPrevButton -> {
+                if (state.value.currentIndex == 0) {
+                    mutableState.update {
+                        it.copy(
+                            currentIndex = it.messageList.size - 1,
+                            navigateRequest = NavigateRequests.Back
+                        )
+                    }
+                } else {
+                    mutableState.update { it.copy(currentIndex = it.currentIndex - 1) }
+                }
+                timer.startTimer()
+            }
+            is SecondaryMessageScreenEvents.OnClickPlayButton -> {
+                mutableState.update { it.copy(isPlay = !it.isPlay) }
+                if (state.value.isPlay){
+                    timer.startTimer()
+                }
             }
         }
     }
