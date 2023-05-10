@@ -33,7 +33,7 @@ class PrimaryMessageViewModel @Inject constructor(
                     mutableState.update { PrimaryMessageScreenState.empty }
                 }
             },
-            isPlay = true,
+            isPlay = state.value.isPlay,
             period = BotConfig.importantMessageDelay
         )
         collectEvent()

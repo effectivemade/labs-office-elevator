@@ -48,7 +48,7 @@ class SecondaryMessageViewModel @Inject constructor(
                     }
                 }
             },
-            isPlay = true,
+            isPlay = state.value.isPlay,
             period = BotConfig.commonMessageDelay
         )
         timer.startTimer()
@@ -104,10 +104,10 @@ class SecondaryMessageViewModel @Inject constructor(
                 timer.startTimer()
             }
             is SecondaryMessageScreenEvents.OnClickPlayButton -> {
-                mutableState.update { it.copy(isPlay = !it.isPlay) }
-                if (state.value.isPlay){
+                if (!state.value.isPlay){
                     timer.startTimer()
                 }
+                mutableState.update { it.copy(isPlay = !it.isPlay) }
             }
         }
     }
