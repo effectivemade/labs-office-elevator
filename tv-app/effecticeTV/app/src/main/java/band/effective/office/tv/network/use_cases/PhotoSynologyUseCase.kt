@@ -6,9 +6,6 @@ import javax.inject.Inject
 class PhotoSynologyUseCase @Inject constructor(
     private val photoSynologyRepository: PhotoSynologyRepository
 ) {
-    suspend operator fun invoke(folderPath: String, sid: String) =
-        photoSynologyRepository.getPhotosUrl(
-            folderPath = folderPath,
-            sid = sid
-        )
+    suspend operator fun invoke(sid: String) =
+        photoSynologyRepository.getPhotosUrl(sid = sid)
 }

@@ -29,13 +29,10 @@ class SynologyRepositoryImpl @Inject constructor(
             }
         }
 
-    override suspend fun getPhotosUrl(
-        folderPath: String
-    ): Flow<Either<String, List<PhotoDomain>>> =
+    override suspend fun getPhotosUrl(): Flow<Either<String, List<PhotoDomain>>> =
         withContext(Dispatchers.IO) {
             photoSynology(
                 sid = sid?:"",
-                folderPath = folderPath
             )
         }
 }

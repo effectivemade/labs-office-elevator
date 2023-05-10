@@ -5,7 +5,7 @@ import band.effective.office.tv.domain.model.synology.PhotoDomain
 import kotlinx.coroutines.flow.Flow
 
 interface PhotoSynologyRepository {
-    suspend fun getPhotosUrl(folderPath: String, sid: String):
+    suspend fun getPhotosUrl(sid: String):
             Flow<Either<String, List<PhotoDomain>>>
 }
 
