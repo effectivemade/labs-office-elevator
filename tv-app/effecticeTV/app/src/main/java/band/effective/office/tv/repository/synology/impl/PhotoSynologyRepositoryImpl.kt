@@ -28,7 +28,7 @@ class PhotoSynologyRepositoryImpl @Inject constructor(
                     )
             ) {
                 is Either.Success -> {
-                    res.data.albumsData.albums.forEach { album ->
+                    res.data.albumsData.albums.filter { it.name.contains("Best Photo") }.forEach { album ->
                         when (
                             val photo = synologyApi.getPhotosFromAlbum(
                                 sid = sid,
