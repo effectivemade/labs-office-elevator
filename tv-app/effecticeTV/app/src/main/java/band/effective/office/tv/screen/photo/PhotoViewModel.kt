@@ -75,7 +75,9 @@ class PhotoViewModel @Inject constructor(
                     mutableEffect.emit(BestPhotoEffect.ChangePlayState(isPlay))
                 }
             }
-            else -> {}
+            is BestPhotoEvent.OnRequestSwitchScreen ->{
+                mutableState.update { it.copy(navigateRequest = event.request) }
+            }
         }
     }
 

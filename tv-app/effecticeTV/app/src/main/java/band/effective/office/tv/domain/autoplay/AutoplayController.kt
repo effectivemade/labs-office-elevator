@@ -1,5 +1,6 @@
 package band.effective.office.tv.domain.autoplay
 
+import android.util.Log
 import band.effective.office.tv.domain.autoplay.model.AutoplayState
 import band.effective.office.tv.domain.autoplay.model.NavigateRequests
 import band.effective.office.tv.domain.autoplay.model.ScreenDescription
@@ -58,11 +59,13 @@ class AutoplayController {
                 mutableCurrentScreenIndex.update{(it+1)% screensList.size}
                 screensList[currentScreenIndex.value].viewModel.switchToFirstItem()
                 loadState.navigateRequest = NavigateRequests.Nowhere
+                Log.i("Autoplay Controller","Navigate forward to ${screensList[currentScreenIndex.value].screenName.name}")
             }
             NavigateRequests.Back -> {
                 mutableCurrentScreenIndex.update { (it + screensList.size - 1) % screensList.size }
                 screensList[currentScreenIndex.value].viewModel.switchToLastItem()
                 loadState.navigateRequest = NavigateRequests.Nowhere
+                Log.i("Autoplay Controller","Navigate back to ${screensList[currentScreenIndex.value].screenName.name}")
             }
             NavigateRequests.Nowhere -> {}
         }
@@ -83,7 +86,6 @@ class AutoplayController {
                         mutableMap
                     }
                 }
-                else -> {}
             }
             navigate(loadState)
         }
