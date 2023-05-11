@@ -11,7 +11,7 @@ data class LeaderIdEventsUiState(
     override val isError: Boolean,
     val eventsInfo: List<LeaderIdEventInfo>,
     val curentEvent: Int,
-    val isPlay: Boolean,
+    override val isPlay: Boolean,
     val errorText: String,
     override val screenName: Screen = Screen.Events,
     override var navigateRequest: NavigateRequests = NavigateRequests.Nowhere

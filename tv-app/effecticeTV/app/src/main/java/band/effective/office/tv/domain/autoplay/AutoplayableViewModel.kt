@@ -6,6 +6,6 @@ import kotlinx.coroutines.flow.StateFlow
 interface AutoplayableViewModel {
     val state: StateFlow<AutoplayState>
 
-    fun switchToFirstItem()
-    fun switchToLastItem()
+    fun switchToFirstItem(prevScreenState: AutoplayState)
+    fun switchToLastItem(prevScreenState: AutoplayState)
 }

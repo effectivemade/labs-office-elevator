@@ -1,11 +1,11 @@
 package band.effective.office.tv.screen.leaderIdEvents
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.core.network.Either
 import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
 import band.effective.office.tv.domain.autoplay.AutoplayableViewModel
+import band.effective.office.tv.domain.autoplay.model.AutoplayState
 import band.effective.office.tv.domain.autoplay.model.NavigateRequests
 import band.effective.office.tv.repository.leaderId.LeaderIdEventsInfoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,14 +23,18 @@ class LeaderIdEventsViewModel @Inject constructor(
 ) : ViewModel(), AutoplayableViewModel {
     private var mutableState = MutableStateFlow(LeaderIdEventsUiState.empty)
     override val state = mutableState.asStateFlow()
-    override fun switchToFirstItem() {
-        if (state.value.isPlay) timer.startTimer()
-        mutableState.update { it.copy(curentEvent = 0) }
+    override fun switchToFirstItem(prevScreenState: AutoplayState) {
+        if (prevScreenState.isPlay) timer.startTimer()
+        mutableState.update { it.copy(curentEvent = 0, isPlay = prevScreenState.isPlay) }
     }
 
-    override fun switchToLastItem() {
-        if (state.value.isPlay) timer.startTimer()
-        mutableState.update { it.copy(curentEvent = it.eventsInfo.size - 1) }
+    override fun switchToLastItem(prevScreenState: AutoplayState) {
+        if (prevScreenState.isPlay) timer.startTimer()
+        mutableState.update {
+            it.copy(
+                curentEvent = it.eventsInfo.size - 1, isPlay = prevScreenState.isPlay
+            )
+        }
     }
 
     val finish = GregorianCalendar()
@@ -39,16 +43,14 @@ class LeaderIdEventsViewModel @Inject constructor(
         finish.set(Calendar.MONTH, GregorianCalendar().get(Calendar.MONTH) + 1)
         load()
         timer.init(
-            scope = viewModelScope,
-            callbackToEnd = {
+            scope = viewModelScope, callbackToEnd = {
                 if (state.value.curentEvent + 1 < state.value.eventsInfo.size) {
                     mutableState.update { it.copy(curentEvent = it.curentEvent + 1) }
                 } else {
                     mutableState.update { it.copy(navigateRequest = NavigateRequests.Forward) }
                     timer.stopTimer()
                 }
-            },
-            isPlay = state.value.isPlay
+            }, isPlay = state.value.isPlay
         )
     }
 

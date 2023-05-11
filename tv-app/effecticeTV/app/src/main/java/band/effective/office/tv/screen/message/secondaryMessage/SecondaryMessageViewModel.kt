@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
 import band.effective.office.tv.domain.autoplay.AutoplayableViewModel
+import band.effective.office.tv.domain.autoplay.model.AutoplayState
 import band.effective.office.tv.domain.autoplay.model.NavigateRequests
 import band.effective.office.tv.domain.botLogic.BotConfig
 import band.effective.office.tv.domain.model.message.MessageQueue
@@ -22,16 +23,16 @@ class SecondaryMessageViewModel @Inject constructor(
 ) : ViewModel(), AutoplayableViewModel {
     private var mutableState = MutableStateFlow(SecondaryMessageState.empty)
     override val state = mutableState.asStateFlow()
-    override fun switchToFirstItem() {
+    override fun switchToFirstItem(prevScreenState: AutoplayState) {
         getUselessFact()
-        if (state.value.isPlay) timer.startTimer()
-        mutableState.update { it.copy(currentIndex = 0) }
+        if (prevScreenState.isPlay) timer.startTimer()
+        mutableState.update { it.copy(currentIndex = 0, isPlay = prevScreenState.isPlay) }
     }
 
-    override fun switchToLastItem() {
+    override fun switchToLastItem(prevScreenState: AutoplayState) {
         getUselessFact()
-        if (state.value.isPlay) timer.startTimer()
-        mutableState.update { it.copy(currentIndex = it.messageList.size - 1) }
+        if (prevScreenState.isPlay) timer.startTimer()
+        mutableState.update { it.copy(currentIndex = it.messageList.size - 1, isPlay = prevScreenState.isPlay) }
     }
 
     init {
