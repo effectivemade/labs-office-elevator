@@ -23,21 +23,23 @@ fun OneMessageScreen(modifier: Modifier, message: BotMessage) {
     Row(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = 10.dp),
+            .padding(horizontal = 100.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        AsyncImage(
-            modifier = Modifier.size(250.dp).clip(CircleShape),
-            model = ImageRequest.Builder(LocalContext.current)
-                .data("https://${BuildConfig.apiMattermostUrl}users/${message.author.id}/image")
-                .addHeader("Authorization", "Bearer ${BuildConfig.mattermostBotToken}")
-                .build(),
-            contentDescription = ""
-        )
-        Spacer(modifier = Modifier.width(20.dp))
         Column(modifier = Modifier) {
-            Row {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                AsyncImage(
+                    modifier = Modifier.clip(CircleShape),
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data("https://${BuildConfig.apiMattermostUrl}users/${message.author.id}/image")
+                        .addHeader("Authorization", "Bearer ${BuildConfig.mattermostBotToken}")
+                        .build(),
+                    contentDescription = ""
+                )
+                Spacer(modifier = Modifier.width(20.dp))
                 Text(text = message.author.name)
                 Spacer(modifier = Modifier.width(20.dp))
                 Text(
@@ -45,7 +47,7 @@ fun OneMessageScreen(modifier: Modifier, message: BotMessage) {
                     color = MaterialTheme.colors.primaryVariant
                 )
             }
-            Spacer(modifier = Modifier.width(50.dp))
+            Spacer(modifier = Modifier.width(100.dp))
             Text(
                 text = message.text,
                 fontFamily = robotoFontFamily(),
