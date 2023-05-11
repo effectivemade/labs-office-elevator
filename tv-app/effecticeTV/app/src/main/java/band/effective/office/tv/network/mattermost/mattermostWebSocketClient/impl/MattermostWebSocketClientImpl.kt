@@ -13,14 +13,19 @@ import javax.inject.Inject
 
 
 class MattermostWebSocketClientImpl @Inject constructor(
-    private val client: OkHttpClient, private val api: MattermostApi
+    private val client: OkHttpClient,
+    private val api: MattermostApi,
+    private val moshi: Moshi
 ) : MattermostWebSocketClient {
-    val moshi = Moshi.Builder().build()
-    var webSocket: WebSocket? = null
-    var lastSeq = 0
-    var userId: String? = null
-    var botName: String? = null
-    var eventHandler: (BotEvent) -> Unit = {}
+    private val webSocket by lazy {
+        client.newWebSocket(Request.Builder()
+            .url("ws://${BuildConfig.apiMattermostUrl}websocket").build(),
+            MattermostWebSocketListener { handler(it) })
+    }
+    private var lastSeq = 0
+    lateinit var userId: String
+    lateinit var botName: String
+    lateinit var eventHandler: (BotEvent) -> Unit
 
     private class MattermostWebSocketListener(private val handler: (String) -> Unit) :
         WebSocketListener() {
@@ -34,66 +39,69 @@ class MattermostWebSocketClientImpl @Inject constructor(
         }
     }
 
+    /**Connect with mattermost*/
     override suspend fun connect() {
         val authResponse = api.auth()
         userId = authResponse.id
         botName = authResponse.username
-        webSocket = client.newWebSocket(Request.Builder()
-            .url("ws://${BuildConfig.apiMattermostUrl}websocket").build(),
-            MattermostWebSocketListener { handler(it) })
-
-        webSocket!!.send(
+        webSocket.send(
             moshi.adapter(WebSocketAuthJson::class.java).toJson(WebSocketAuthJson.default)
         )
     }
 
     private fun handler(response: String) {
-        val correctResponse =
-            response.replace("\\n", "\n").replace("\\", "").replace("\"{", "{").replace("}\"", "}")
-                .replace("seq_reply", "seq").replace("\"[", "[").replace("]\"", "]")
         when {
-            response.contains("posted") -> {
-                val adapter = moshi.adapter(PostJson::class.java)
-                val post = adapter.fromJson(correctResponse)
+            response.isPost() -> {
+                val post = moshi.adapter(PostJson::class.java).fromJson(response.correct())
                 Log.i("socket", post.toString())
-                if (post != null && userId != null && post.data.post.userId != userId) {
-                    eventHandler(
-                        post.toBotEvent()
-                    )
+                if (post != null && post.data.post.userId != userId) {
+                    eventHandler(post.toBotEvent())
                 }
             }
-            response.contains("reaction_added") -> {
-                val adapter = moshi.adapter(ReactionJson::class.java)
-                val reaction = adapter.fromJson(correctResponse)
+            response.isReaction() -> {
+                val reaction = moshi.adapter(ReactionJson::class.java).fromJson(response.correct())
                 Log.i("socket", reaction.toString())
-                if (reaction != null && userId != null && reaction.data.reaction.userId != userId) {
-                    eventHandler(
-                        reaction.toBotEvent()
-                    )
+                if (reaction != null && reaction.data.reaction.userId != userId) {
+                    eventHandler(reaction.toBotEvent())
                 }
             }
             else -> {
                 Log.i("socket", response)
                 lastSeq =
-                    moshi.adapter(OtherJson::class.java).fromJson(correctResponse)?.seq ?: lastSeq
+                    moshi.adapter(OtherJson::class.java).fromJson(response.correct())?.seq ?: lastSeq
             }
         }
     }
 
+    /**
+     * Send message in chat
+     * @param channelId id of the chat you are sending the message
+     * @param message text you are sending
+     * @param root thread's id*/
     override suspend fun postMessage(channelId: String, message: String, root: String) {
         api.createPost(PostMessageData(channelId, message, root))
     }
 
-    override fun name(): String = botName ?: ""
+    /**Get bot name*/
+    override fun name(): String = botName
 
+
+    /**Disconnect from server*/
     override fun disconnect() {
-        webSocket?.close(1000, null)
+        webSocket.close(1000, null)
     }
 
+    /**Subscribe on server events
+     * @param handler events handler*/
     override fun subscribe(handler: (BotEvent) -> Unit) {
         eventHandler = handler
     }
+
+    private fun String.isPost(): Boolean = contains("posted")
+
+    private fun String.isReaction(): Boolean = contains("reaction_added")
+
+    private fun String.correct(): String =
+        replace("\\n", "\n").replace("\\", "").replace("\"{", "{").replace("}\"", "}")
+            .replace("seq_reply", "seq").replace("\"[", "[").replace("]\"", "]")
 }
-
-
-

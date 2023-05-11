@@ -5,4 +5,5 @@ object BotConfig {
     const val deleteMessageReaction = "no_entry_sign"
     const val importantMessageDelay = 60
     const val commonMessageDelay = 30
+    const val maxMessageLength = 500
 }

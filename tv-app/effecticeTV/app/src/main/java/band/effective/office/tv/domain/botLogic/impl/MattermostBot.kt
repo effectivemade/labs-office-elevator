@@ -5,50 +5,45 @@ import band.effective.office.tv.domain.botLogic.MessengerBot
 import band.effective.office.tv.domain.botLogic.model.BotEvent
 import band.effective.office.tv.domain.model.message.BotMessage
 import band.effective.office.tv.domain.model.message.MessageQueue
-import band.effective.office.tv.domain.model.message.User
+import band.effective.office.tv.domain.model.message.toBotMessage
 import band.effective.office.tv.network.mattermost.mattermostWebSocketClient.MattermostWebSocketClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import java.util.*
 import javax.inject.Inject
 
 class MattermostBot @Inject constructor(private val client: MattermostWebSocketClient) :
     MessengerBot {
+    private lateinit var scope: CoroutineScope
+    /**Start mattermost bot
+     * @param scope scope for bot*/
     override fun start(scope: CoroutineScope) {
+        this.scope = scope
         scope.launch { client.connect() }
         client.subscribe { event ->
             when (event) {
                 is BotEvent.PostMessage -> {
-                    if (event.message.contains(client.name())) {
-                        if (event.message.length > 500){
-                            postMessage(scope, event.toBotMessage().copy(text = "Слишком много букавок"))
+                    if (event.message.isForBot()) {
+                        val message = event.toBotMessage().filter()
+                        if (message.text.length > BotConfig.maxMessageLength){
+                            message.answer("Слишком много букавок")
                             return@subscribe
                         }
-                        val message = event.toBotMessage()
-                        MessageQueue.secondQueue.push(
-                            message.copy(
-                                text = event.message.replace(
-                                    "@${client.name()} ",
-                                    ""
-                                )
-                            )
-                        )
-                        postMessage(scope, message.copy(text = "Сообщение принято"))
+                        MessageQueue.secondQueue.push(message)
+                        message.answer("Сообщение принято")
                     }
-
                 }
                 is BotEvent.Reaction -> {
                     when (event.emojiName) {
                         BotConfig.importantMessageReaction -> {
-                            if (MessageQueue.firstQueue.message(event.messageId) != null){
+                            if (MessageQueue.firstQueue.contain(event.messageId)){
                                 return@subscribe
                             }
                             val message = MessageQueue.secondQueue.message(event.messageId)
-                                ?: BotMessage.deletedMessage.first { it.id == event.messageId }
+                                ?: BotMessage.deletedMessage.firstOrNull() { it.id == event.messageId }
                             if (message != null) {
                                 MessageQueue.secondQueue.removeMessage(message)
                                 MessageQueue.firstQueue.push(message)
-                                postMessage(scope, message.copy(text = "Приоритет повышен"))
+                                message.answer("Приоритет повышен")
                             }
                         }
                         BotConfig.deleteMessageReaction -> {
@@ -57,31 +52,34 @@ class MattermostBot @Inject constructor(private val client: MattermostWebSocketC
                             if (message != null && message.author.id == event.userId) {
                                 MessageQueue.secondQueue.removeMessage(message)
                                 MessageQueue.firstQueue.removeMessage(message)
-                                postMessage(scope, message.copy(text = "Сообщение удалено"))
+                                message.answer("Сообщение удалено")
                             }
                         }
                     }
-
                 }
             }
         }
     }
-
-    private fun postMessage(scope: CoroutineScope, message: BotMessage) = scope.launch {
+    /**Send message in chat
+     * @param message chanelId, text and thread for post, other message's fields no matter*/
+    private fun postMessage(message: BotMessage) = scope.launch {
         client.postMessage(
             channelId = message.channelId,
             message = message.text,
             root = message.rootId
         )
     }
-}
+    /**Check that it's message for bot*/
+    private fun String.isForBot(): Boolean = contains(client.name())
 
-private fun BotEvent.PostMessage.toBotMessage(): BotMessage =
-    BotMessage(
-        channelId = channelId,
-        author =  User(id = userId, name = userName),
-        id = messageId,
-        text = message,
-        finish =  GregorianCalendar(),
-        rootId = if (rootId == "") messageId else rootId
+    /**Send answer on message*/
+    private fun BotMessage.answer(text: String) = postMessage(copy(text = text))
+
+    /**Filter message's text from useless information*/
+    private fun BotMessage.filter() = copy(
+        text = text.replace(
+            "@${client.name()} ",
+            ""
+        )
     )
+}

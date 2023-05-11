@@ -3,6 +3,7 @@ package band.effective.office.tv.domain.model.message
 import band.effective.office.tv.domain.botLogic.model.BotEvent
 import band.effective.office.tv.network.mattermost.model.PostJson
 import band.effective.office.tv.network.mattermost.model.ReactionJson
+import java.util.*
 
 fun PostJson.toBotEvent(): BotEvent.PostMessage =
     BotEvent.PostMessage(
@@ -21,4 +22,14 @@ fun ReactionJson.toBotEvent(): BotEvent.Reaction =
         rootId = data.reaction.postId,
         channelId = data.reaction.channelId,
         emojiName = data.reaction.emojiName
+    )
+
+fun BotEvent.PostMessage.toBotMessage(): BotMessage =
+    BotMessage(
+        channelId = channelId,
+        author =  User(id = userId, name = userName),
+        id = messageId,
+        text = message,
+        finish =  GregorianCalendar(),
+        rootId = if (rootId == "") messageId else rootId
     )

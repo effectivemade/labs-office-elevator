@@ -15,6 +15,8 @@ class MessageQueue {
     fun removeMessage(message: BotMessage) = queue.update { it.copy(queue = it.queue - message) }
     fun message(id: String) = queue.value.queue.firstOrNull { it.id == id }
 
+    fun contain(id: String): Boolean = message(id) != null
+
     companion object {
         val firstQueue = MessageQueue()
         val secondQueue = MessageQueue()
