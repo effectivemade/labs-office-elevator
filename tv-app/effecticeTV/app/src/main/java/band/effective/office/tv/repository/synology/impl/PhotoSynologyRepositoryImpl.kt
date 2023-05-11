@@ -28,9 +28,9 @@ class PhotoSynologyRepositoryImpl @Inject constructor(
                     )
             ) {
                 is Either.Success -> {
-                    res.data.albumsData.albums.filter { it.name.contains("Best Photo") }.forEach { album ->
+                    res.data.albumsData.albums.filter { it.name.contains("Best of") }.forEach { album ->
                         when (
-                            val photo = synologyApi.getPhotosFromAlbum(
+                            val files = synologyApi.getPhotosFromAlbum(
                                 sid = sid,
                                 version = 1,
                                 method = "list",
@@ -39,8 +39,10 @@ class PhotoSynologyRepositoryImpl @Inject constructor(
                                 limit = album.item_count
                             )
                         ) {
-                            is Either.Success ->
-                                photos.addAll(photo.data.toDomain(sid = sid))
+                            is Either.Success -> {
+                                val photo = files.data.photoData.photosInfo.filter { it.type == "photo" }
+                                photos.addAll(photo.toDomain(sid = sid))
+                            }
                             else -> {}
                         }
                     }
