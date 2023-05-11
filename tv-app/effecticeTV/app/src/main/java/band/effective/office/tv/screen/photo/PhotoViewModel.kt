@@ -25,12 +25,14 @@ class PhotoViewModel @Inject constructor(
     val effect = mutableEffect.asSharedFlow()
 
     override fun switchToFirstItem() {
+        if (state.value.isPlay) slideShow.startTimer()
         viewModelScope.launch {
             mutableEffect.emit(BestPhotoEffect.ScrollToItem(0))
         }
     }
 
     override fun switchToLastItem() {
+        if (state.value.isPlay) slideShow.startTimer()
         viewModelScope.launch {
             mutableEffect.emit(BestPhotoEffect.ScrollToItem(state.value.photos.size-1))
         }
@@ -77,6 +79,7 @@ class PhotoViewModel @Inject constructor(
             }
             is BestPhotoEvent.OnRequestSwitchScreen ->{
                 mutableState.update { it.copy(navigateRequest = event.request) }
+                slideShow.stopTimer()
             }
         }
     }

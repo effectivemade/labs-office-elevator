@@ -24,11 +24,13 @@ class SecondaryMessageViewModel @Inject constructor(
     override val state = mutableState.asStateFlow()
     override fun switchToFirstItem() {
         getUselessFact()
+        if (state.value.isPlay) timer.startTimer()
         mutableState.update { it.copy(currentIndex = 0) }
     }
 
     override fun switchToLastItem() {
         getUselessFact()
+        if (state.value.isPlay) timer.startTimer()
         mutableState.update { it.copy(currentIndex = it.messageList.size - 1) }
     }
 
@@ -46,12 +48,12 @@ class SecondaryMessageViewModel @Inject constructor(
                             currentIndex = 0
                         )
                     }
+                    timer.stopTimer()
                 }
             },
             isPlay = state.value.isPlay,
             period = BotConfig.commonMessageDelay
         )
-        timer.startTimer()
         //getUselessFact() //NOTE(Maksim Mishenko) speak about when call this screen
     }
 
@@ -74,12 +76,13 @@ class SecondaryMessageViewModel @Inject constructor(
         }
     }
 
-    fun onEvent(event: SecondaryMessageScreenEvents) {
+    fun sendEvent(event: SecondaryMessageScreenEvents) {
         timer.stopTimer()
         when (event) {
             is SecondaryMessageScreenEvents.OnClickNextButton -> {
                 if (state.value.currentIndex + 1 < state.value.messageList.size) {
                     mutableState.update { it.copy(currentIndex = it.currentIndex + 1) }
+                    timer.startTimer()
                 } else {
                     mutableState.update {
                         it.copy(
@@ -88,7 +91,6 @@ class SecondaryMessageViewModel @Inject constructor(
                         )
                     }
                 }
-                timer.startTimer()
             }
             is SecondaryMessageScreenEvents.OnClickPrevButton -> {
                 if (state.value.currentIndex == 0) {
@@ -98,13 +100,13 @@ class SecondaryMessageViewModel @Inject constructor(
                             navigateRequest = NavigateRequests.Back
                         )
                     }
+                    timer.startTimer()
                 } else {
                     mutableState.update { it.copy(currentIndex = it.currentIndex - 1) }
                 }
-                timer.startTimer()
             }
             is SecondaryMessageScreenEvents.OnClickPlayButton -> {
-                if (!state.value.isPlay){
+                if (!state.value.isPlay) {
                     timer.startTimer()
                 }
                 mutableState.update { it.copy(isPlay = !it.isPlay) }

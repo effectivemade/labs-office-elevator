@@ -32,35 +32,39 @@ fun MessageScreen(
     onClickPreviousItemButton: () -> Unit
 ) {
     val (contentFocus, playButton) = remember { FocusRequester.createRefs() }
-    when (messagesList.size) {
-        0 -> EmptyMessageScreen(modifier = modifier, uselessFact = uselessFact)
-        1 -> OneMessageScreen(modifier = modifier, message = messagesList[0])
-        else ->
-            ScreenWithControlsTemplate(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .onFocusChanged { focusState ->
-                        if (focusState.isFocused) MenuState.state.update { it.copy(selectButton = MenuButton.Nothink) }
-                    },
-                currentListPosition = currentIndex,
-                countItems = messagesList.size,
-                isPlay = isPlay,
-                playButton = playButton,
-                contentFocus = contentFocus,
-                onClickPlayButton = { onClickPlayButton() },
-                onClickNextItemButton = { onClickNextItemButton() },
-                onClickPreviousItemButton = { onClickPreviousItemButton() }) {
-                MoreMessagesScreen(
-                    modifier = modifier
-                        .focusRequester(contentFocus)
-                        .focusProperties {
-                            down = playButton
-                        }
-                        .focusable(),
-                    messagesList = messagesList,
-                    currentIndex = currentIndex
-                )
-            }
-
+    ScreenWithControlsTemplate(modifier = Modifier
+        .fillMaxSize()
+        .onFocusChanged { focusState ->
+            if (focusState.isFocused) MenuState.state.update { it.copy(selectButton = MenuButton.Nothink) }
+        },
+        currentListPosition = currentIndex,
+        countItems = messagesList.size,
+        isPlay = isPlay,
+        playButton = playButton,
+        contentFocus = contentFocus,
+        onClickPlayButton = { onClickPlayButton() },
+        onClickNextItemButton = { onClickNextItemButton() },
+        onClickPreviousItemButton = { onClickPreviousItemButton() }) {
+        when (messagesList.size) {
+            0 -> EmptyMessageScreen(modifier = modifier
+                .focusRequester(contentFocus)
+                .focusProperties {
+                    down = playButton
+                }
+                .focusable(), uselessFact = uselessFact)
+            1 -> OneMessageScreen(modifier = modifier
+                .focusRequester(contentFocus)
+                .focusProperties {
+                    down = playButton
+                }
+                .focusable(), message = messagesList[0])
+            else -> MoreMessagesScreen(modifier = modifier
+                .focusRequester(contentFocus)
+                .focusProperties {
+                    down = playButton
+                }
+                .focusable(), messagesList = messagesList, currentIndex = currentIndex)
+        }
     }
+
 }

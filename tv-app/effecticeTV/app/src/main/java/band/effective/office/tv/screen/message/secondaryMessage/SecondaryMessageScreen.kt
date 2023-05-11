@@ -17,8 +17,8 @@ fun SecondaryMessageScreen(viewModel: SecondaryMessageViewModel = hiltViewModel(
         currentIndex = state.currentIndex,
         uselessFact = state.uselessFact,
         isPlay = state.isPlay,
-        onClickPlayButton = { viewModel.onEvent(SecondaryMessageScreenEvents.OnClickPlayButton) },
-        onClickNextItemButton = { viewModel.onEvent(SecondaryMessageScreenEvents.OnClickNextButton) },
-        onClickPreviousItemButton = { viewModel.onEvent(SecondaryMessageScreenEvents.OnClickPrevButton) }
+        onClickPlayButton = { viewModel.sendEvent(SecondaryMessageScreenEvents.OnClickPlayButton) },
+        onClickNextItemButton = { viewModel.sendEvent(SecondaryMessageScreenEvents.OnClickNextButton) },
+        onClickPreviousItemButton = { viewModel.sendEvent(SecondaryMessageScreenEvents.OnClickPrevButton) }
     )
 }

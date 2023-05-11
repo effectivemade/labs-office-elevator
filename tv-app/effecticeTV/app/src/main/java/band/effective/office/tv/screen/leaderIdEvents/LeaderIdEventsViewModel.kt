@@ -1,5 +1,6 @@
 package band.effective.office.tv.screen.leaderIdEvents
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.core.network.Either
@@ -23,10 +24,12 @@ class LeaderIdEventsViewModel @Inject constructor(
     private var mutableState = MutableStateFlow(LeaderIdEventsUiState.empty)
     override val state = mutableState.asStateFlow()
     override fun switchToFirstItem() {
+        if (state.value.isPlay) timer.startTimer()
         mutableState.update { it.copy(curentEvent = 0) }
     }
 
     override fun switchToLastItem() {
+        if (state.value.isPlay) timer.startTimer()
         mutableState.update { it.copy(curentEvent = it.eventsInfo.size - 1) }
     }
 
@@ -42,11 +45,11 @@ class LeaderIdEventsViewModel @Inject constructor(
                     mutableState.update { it.copy(curentEvent = it.curentEvent + 1) }
                 } else {
                     mutableState.update { it.copy(navigateRequest = NavigateRequests.Forward) }
+                    timer.stopTimer()
                 }
             },
             isPlay = state.value.isPlay
         )
-        timer.startTimer()
     }
 
     fun load() = viewModelScope.launch {
@@ -91,6 +94,7 @@ class LeaderIdEventsViewModel @Inject constructor(
                     mutableState.update { it.copy(curentEvent = it.curentEvent + 1) }
                 } else {
                     mutableState.update { it.copy(navigateRequest = NavigateRequests.Forward) }
+                    timer.stopTimer()
                 }
             }
             is LeaderIdScreenEvents.OnClickPreviousItem -> {
@@ -98,6 +102,7 @@ class LeaderIdEventsViewModel @Inject constructor(
                     mutableState.update { it.copy(curentEvent = it.curentEvent - 1) }
                 } else {
                     mutableState.update { it.copy(navigateRequest = NavigateRequests.Back) }
+                    timer.stopTimer()
                 }
             }
         }
