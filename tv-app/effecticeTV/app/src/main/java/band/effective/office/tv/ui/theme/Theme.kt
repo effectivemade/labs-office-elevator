@@ -1,10 +1,10 @@
-package com.example.effecticetv.ui.theme
+package band.effective.office.tv.ui.theme
 
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import band.effective.office.tv.ui.theme.Shapes
+import com.example.effecticetv.ui.theme.*
 
 private val DarkColorPalette = darkColors(
     primary = Color.White,

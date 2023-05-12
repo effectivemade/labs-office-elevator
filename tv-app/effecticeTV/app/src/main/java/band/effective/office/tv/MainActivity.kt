@@ -8,7 +8,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import band.effective.office.tv.screen.navigation.NavigationHost
-import com.example.effecticetv.ui.theme.EffectiveTVTheme
+import band.effective.office.tv.ui.theme.EffectiveTVTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

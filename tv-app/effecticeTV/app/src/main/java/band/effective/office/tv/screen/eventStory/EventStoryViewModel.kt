@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
 import band.effective.office.tv.domain.autoplay.AutoplayableViewModel
 import band.effective.office.tv.domain.autoplay.model.NavigateRequests
-import band.effective.office.tv.domain.model.notion.EmployeeInfoRepository
+import band.effective.office.tv.repository.notion.EmployeeInfoRepository
 import band.effective.office.tv.domain.model.notion.processEmployeeInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
@@ -103,6 +103,14 @@ class EventStoryViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun playStory() {
+        timer.startTimer()
+    }
+
+    fun stopStory() {
+        timer.stopTimer()
     }
 }
 

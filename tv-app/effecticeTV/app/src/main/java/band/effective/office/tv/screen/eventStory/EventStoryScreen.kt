@@ -5,7 +5,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -18,7 +17,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import band.effective.office.tv.R
 import band.effective.office.tv.core.ui.screen_with_controls.ScreenWithControlsTemplate
@@ -63,8 +61,9 @@ fun EventStoryScreen(viewModel: EventStoryViewModel = hiltViewModel()) {
                     .focusProperties {
                         down = playButton
                     }
-                    .focusable())
-
+                    .focusable(),
+                onImageLoaded = { viewModel.playStory() },
+                onImageLoading = { viewModel.stopStory() })
         }
     }
 

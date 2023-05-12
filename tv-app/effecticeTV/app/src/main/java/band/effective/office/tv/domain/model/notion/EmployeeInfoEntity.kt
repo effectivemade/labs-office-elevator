@@ -12,7 +12,7 @@ class EmployeeInfoEntity(
 
 fun List<EmployeeInfoEntity>.processEmployeeInfo(): MutableList<EmployeeInfo> {
     val resultList = mutableListOf<EmployeeInfo>()
-    this.map {employee ->
+    this.forEach { employee ->
         if (employee.nextBirthdayDate.isNotBlank() && isCelebrationToday(employee.nextBirthdayDate)) {
             resultList.add(
                 Birthday(

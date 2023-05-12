@@ -16,7 +16,9 @@ import com.example.effecticetv.ui.theme.IndependentColors
 fun EventStoryScreenContent(
     eventsInfo: MutableList<EmployeeInfo>,
     currentStoryIndex: Int,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onImageLoading: () -> Unit,
+    onImageLoaded: () -> Unit,
 ) {
     Surface(
         modifier = modifier, color = IndependentColors.StoryBackgroundGray
@@ -30,7 +32,7 @@ fun EventStoryScreenContent(
                     .height(8.dp)
             )
             StoryContent(
-                eventsInfo, currentStoryIndex,
+                eventsInfo, currentStoryIndex, { onImageLoading() }, { onImageLoaded() },
                 Modifier
                     .fillMaxSize()
                     .padding(horizontal = 64.dp)
