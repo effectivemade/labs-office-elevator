@@ -20,6 +20,7 @@ data class BotMessage(
                 finish = GregorianCalendar(),
                 rootId = ""
             )
+        /**List deleted and saved message*/
         val deletedMessage: MutableList<BotMessage> = mutableListOf()
         fun safeMessage(message: BotMessage){
             deletedMessage.add(message)

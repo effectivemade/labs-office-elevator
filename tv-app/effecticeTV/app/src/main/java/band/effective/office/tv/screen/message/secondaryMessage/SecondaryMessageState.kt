@@ -14,7 +14,7 @@ data class SecondaryMessageState(
     override val screenName: Screen = Screen.MessageScreen,
     override var navigateRequest: NavigateRequests = NavigateRequests.Nowhere,
     val uselessFact: String = "",
-    override val isPlay: Boolean = false
+    override val isPlay: Boolean = true
 ) : AutoplayState {
     companion object {
         val empty = SecondaryMessageState(isData = true, messageList = listOf())

@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import band.effective.office.tv.domain.model.message.BotMessage
 
 @Composable
-fun MoreMessagesScreen(modifier: Modifier, messagesList: List<BotMessage>, currentIndex: Int = 0) {
+fun ManyMessagesScreen(modifier: Modifier, messagesList: List<BotMessage>, currentIndex: Int = 0) {
     Box(modifier = modifier) {
         Box(
             modifier = Modifier.fillMaxSize(),

@@ -18,8 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SecondaryMessageViewModel @Inject constructor(
-    private val uselessFactRepository: UselessFactRepository,
-    private val timer: TimerSlideShow
+    private val uselessFactRepository: UselessFactRepository, private val timer: TimerSlideShow
 ) : ViewModel(), AutoplayableViewModel {
     private var mutableState = MutableStateFlow(SecondaryMessageState.empty)
     override val state = mutableState.asStateFlow()
@@ -32,30 +31,29 @@ class SecondaryMessageViewModel @Inject constructor(
     override fun switchToLastItem(prevScreenState: AutoplayState) {
         getUselessFact()
         if (prevScreenState.isPlay) timer.startTimer()
-        mutableState.update { it.copy(currentIndex = it.messageList.size - 1, isPlay = prevScreenState.isPlay) }
+        mutableState.update {
+            it.copy(
+                currentIndex = it.messageList.size - 1, isPlay = prevScreenState.isPlay
+            )
+        }
     }
 
     init {
         updateMessageList()
         timer.init(
-            scope = viewModelScope,
-            callbackToEnd = {
+            scope = viewModelScope, callbackToEnd = {
                 if (state.value.currentIndex + 1 < state.value.messageList.size) {
                     mutableState.update { it.copy(currentIndex = it.currentIndex + 1) }
                 } else {
                     mutableState.update {
                         it.copy(
-                            navigateRequest = NavigateRequests.Forward,
-                            currentIndex = 0
+                            navigateRequest = NavigateRequests.Forward, currentIndex = 0
                         )
                     }
                     timer.stopTimer()
                 }
-            },
-            isPlay = state.value.isPlay,
-            period = BotConfig.commonMessageDelay
+            }, isPlay = state.value.isPlay, period = BotConfig.commonMessageDelay
         )
-        //getUselessFact() //NOTE(Maksim Mishenko) speak about when call this screen
     }
 
     private fun getUselessFact() = viewModelScope.launch {
@@ -65,14 +63,9 @@ class SecondaryMessageViewModel @Inject constructor(
     private fun updateMessageList() = viewModelScope.launch {
         MessageQueue.secondQueue.queue.collect {
             if (MessageQueue.secondQueue.isNotEmpty()) {
-                mutableState.update {
-                    it.copy(
-                        isData = true,
-                        messageList = it.messageList + MessageQueue.secondQueue.top(),
-                        uselessFact = uselessFactRepository.fact()
-                    )
-                }
-                MessageQueue.secondQueue.pop()
+                mutableState.update { it.copy(messageList = MessageQueue.secondQueue.queue.value.queue) }
+            } else {
+                mutableState.update { SecondaryMessageState.empty }
             }
         }
     }
@@ -87,14 +80,13 @@ class SecondaryMessageViewModel @Inject constructor(
                 } else {
                     mutableState.update {
                         it.copy(
-                            currentIndex = 0,
-                            navigateRequest = NavigateRequests.Forward
+                            currentIndex = 0, navigateRequest = NavigateRequests.Forward
                         )
                     }
                 }
             }
             is SecondaryMessageScreenEvents.OnClickPrevButton -> {
-                if (state.value.currentIndex == 0) {
+                if (state.value.currentIndex <= 0) {
                     mutableState.update {
                         it.copy(
                             currentIndex = it.messageList.size - 1,

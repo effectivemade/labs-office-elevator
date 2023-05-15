@@ -23,7 +23,7 @@ class MattermostWebSocketClientImpl @Inject constructor(
             MattermostWebSocketListener { handler(it) })
     }
     private var lastSeq = 0
-    lateinit var userId: String
+    lateinit var botId: String
     lateinit var botName: String
     lateinit var eventHandler: (BotEvent) -> Unit
 
@@ -42,7 +42,7 @@ class MattermostWebSocketClientImpl @Inject constructor(
     /**Connect with mattermost*/
     override suspend fun connect() {
         val authResponse = api.auth()
-        userId = authResponse.id
+        botId = authResponse.id
         botName = authResponse.username
         webSocket.send(
             moshi.adapter(WebSocketAuthJson::class.java).toJson(WebSocketAuthJson.default)
@@ -52,17 +52,17 @@ class MattermostWebSocketClientImpl @Inject constructor(
     private fun handler(response: String) {
         when {
             response.isPost() -> {
-                val post = moshi.adapter(PostJson::class.java).fromJson(response.correct())
+                val post = moshi.adapter(PostJson::class.java).fromJson(response.correct())?.toBotEvent()
                 Log.i("socket", post.toString())
-                if (post != null && post.data.post.userId != userId) {
-                    eventHandler(post.toBotEvent())
+                if (post != null && !post.botIsAuthor()) {
+                    eventHandler(post)
                 }
             }
             response.isReaction() -> {
-                val reaction = moshi.adapter(ReactionJson::class.java).fromJson(response.correct())
+                val reaction = moshi.adapter(ReactionJson::class.java).fromJson(response.correct())?.toBotEvent()
                 Log.i("socket", reaction.toString())
-                if (reaction != null && reaction.data.reaction.userId != userId) {
-                    eventHandler(reaction.toBotEvent())
+                if (reaction != null && !reaction.botIsAuthor()) {
+                    eventHandler(reaction)
                 }
             }
             else -> {
@@ -104,4 +104,6 @@ class MattermostWebSocketClientImpl @Inject constructor(
     private fun String.correct(): String =
         replace("\\n", "\n").replace("\\", "").replace("\"{", "{").replace("}\"", "}")
             .replace("seq_reply", "seq").replace("\"[", "[").replace("]\"", "]")
+
+    private fun BotEvent.botIsAuthor() = userId == botId
 }

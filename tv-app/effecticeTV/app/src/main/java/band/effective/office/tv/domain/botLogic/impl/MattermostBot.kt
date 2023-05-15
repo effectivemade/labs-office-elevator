@@ -48,10 +48,11 @@ class MattermostBot @Inject constructor(private val client: MattermostWebSocketC
                         }
                         BotConfig.deleteMessageReaction -> {
                             val message = MessageQueue.secondQueue.message(event.messageId)
-                                ?: MessageQueue.firstQueue.message(event.messageId)
+                                ?: MessageQueue.firstQueue.message(event.messageId) ?: BotMessage.deletedMessage.firstOrNull {it.id == event.messageId}
                             if (message != null && message.author.id == event.userId) {
                                 MessageQueue.secondQueue.removeMessage(message)
                                 MessageQueue.firstQueue.removeMessage(message)
+                                BotMessage.deletedMessage.remove(message)
                                 message.answer("Сообщение удалено")
                             }
                         }

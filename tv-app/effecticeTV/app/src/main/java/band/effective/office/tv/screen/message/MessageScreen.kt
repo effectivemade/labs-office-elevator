@@ -15,7 +15,7 @@ import band.effective.office.tv.core.ui.screen_with_controls.model.MenuButton
 import band.effective.office.tv.core.ui.screen_with_controls.model.MenuState
 import band.effective.office.tv.domain.model.message.BotMessage
 import band.effective.office.tv.screen.message.component.EmptyMessageScreen
-import band.effective.office.tv.screen.message.component.MoreMessagesScreen
+import band.effective.office.tv.screen.message.component.ManyMessagesScreen
 import band.effective.office.tv.screen.message.component.OneMessageScreen
 import kotlinx.coroutines.flow.update
 
@@ -45,25 +45,20 @@ fun MessageScreen(
         onClickPlayButton = { onClickPlayButton() },
         onClickNextItemButton = { onClickNextItemButton() },
         onClickPreviousItemButton = { onClickPreviousItemButton() }) {
+        val modifierWithFocus = modifier
+            .focusRequester(contentFocus)
+            .focusProperties {
+                down = playButton
+            }
+            .focusable()
         when (messagesList.size) {
-            0 -> EmptyMessageScreen(modifier = modifier
-                .focusRequester(contentFocus)
-                .focusProperties {
-                    down = playButton
-                }
-                .focusable(), uselessFact = uselessFact)
-            1 -> OneMessageScreen(modifier = modifier
-                .focusRequester(contentFocus)
-                .focusProperties {
-                    down = playButton
-                }
-                .focusable(), message = messagesList[0])
-            else -> MoreMessagesScreen(modifier = modifier
-                .focusRequester(contentFocus)
-                .focusProperties {
-                    down = playButton
-                }
-                .focusable(), messagesList = messagesList, currentIndex = currentIndex)
+            0 -> EmptyMessageScreen(modifier = modifierWithFocus, uselessFact = uselessFact)
+            1 -> OneMessageScreen(modifier = modifierWithFocus, message = messagesList[0])
+            else -> ManyMessagesScreen(
+                modifier = modifierWithFocus,
+                messagesList = messagesList,
+                currentIndex = currentIndex
+            )
         }
     }
 
