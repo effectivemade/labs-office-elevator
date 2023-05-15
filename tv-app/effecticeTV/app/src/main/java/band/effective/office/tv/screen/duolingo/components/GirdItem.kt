@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import band.effective.office.tv.R
+import band.effective.office.tv.screen.duolingo.model.FlagInfo
 
 @Composable
 fun GirdItem (
@@ -24,6 +25,7 @@ fun GirdItem (
     name: String,
     indicatorUsers: String,
     indicatorUsersColor: Color,
+    flags: List<FlagInfo>,
     photo: String,
     place: Int
 ){
@@ -52,15 +54,28 @@ fun GirdItem (
             error = painterResource(id = R.drawable.duolingo_logo)
         )
         Spacer(modifier = Modifier.width(15.dp))
-        Text(
-            modifier = Modifier.width(100.dp),
-            text = name,
-            fontStyle = MaterialTheme.typography.h2.fontStyle,
-            fontSize = MaterialTheme.typography.h2.fontSize,
-            fontWeight = FontWeight.SemiBold,
-            color = Color.Black,
-            textAlign = TextAlign.Center
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                modifier = Modifier.width(100.dp),
+                text = name,
+                fontStyle = MaterialTheme.typography.h2.fontStyle,
+                fontSize = MaterialTheme.typography.h2.fontSize,
+                fontWeight = FontWeight.SemiBold,
+                color = Color.Black,
+                textAlign = TextAlign.Center,
+                maxLines = 1
+            )
+            Row (horizontalArrangement = Arrangement.Center){
+                flags.forEach { flag ->
+                    Flag(modifier = Modifier.size(25.dp), drawableFlagId = flag.drawableId)
+                    Spacer(modifier = Modifier.width(15.dp))
+                }
+            }
+        }
+
         Spacer(modifier = Modifier.width(100.dp))
         Text(
             text = indicatorUsers,

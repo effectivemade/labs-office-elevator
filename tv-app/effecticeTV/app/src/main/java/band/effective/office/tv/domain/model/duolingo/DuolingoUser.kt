@@ -6,7 +6,8 @@ data class DuolingoUser(
     val username: String,
     val totalXp: Int,
     val photo: String,
-    val streakDay: Int
+    val streakDay: Int,
+    val countryLang: List<String>
 )
 
 fun DuolingoResponse.toDomain(): DuolingoUser {
@@ -15,7 +16,8 @@ fun DuolingoResponse.toDomain(): DuolingoUser {
         username = user.name,
         totalXp = user.totalXp,
         photo = parseUrlForDuolingoAvatar(user.picture),
-        streakDay = user.streak
+        streakDay = user.streak,
+        countryLang = user.courses.map { it.learningLanguage }
     )
 }
 fun parseUrlForDuolingoAvatar(url: String) = "https:$url/xxlarge"

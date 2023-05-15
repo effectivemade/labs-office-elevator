@@ -2,6 +2,7 @@ package band.effective.office.tv.screen.eventStory.models
 
 import band.effective.office.tv.domain.model.duolingo.DuolingoUser
 import band.effective.office.tv.domain.model.notion.EventType
+import band.effective.office.tv.screen.duolingo.model.DuolingoUserUI
 import band.effective.office.tv.screen.eventStory.KeySortDuolingoUser
 
 sealed class EmployeeInfoUI(
@@ -28,7 +29,7 @@ data class NewEmployeeUI(
 
 data class DuolingoUserInfo(
     val keySort: KeySortDuolingoUser,
-    val users: List<DuolingoUser>
+    val users: List<DuolingoUserUI>
 ): StoryModel(StoryType.Duolingo)
 
 enum class StoryType {

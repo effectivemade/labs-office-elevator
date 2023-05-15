@@ -11,6 +11,7 @@ coil-ver = "2.2.2"
 zxing-ver = "3.5.1"
 nav-ver = "2.5.3"
 notion-ver = "1.8.0"
+coil-svg-ver = "2.3.0"
 
 [libraries]
 retrofit = {module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit-ver"}
@@ -29,6 +30,7 @@ coil = {module = "io.coil-kt:coil-compose", version.ref = "coil-ver"}
 zxing = {module = "com.google.zxing:core", version.ref = "zxing-ver"}
 navigation = {module = "androidx.navigation:navigation-compose", version.ref = "nav-ver"}
 notion = {module = "com.github.seratch:notion-sdk-jvm-core", version.ref = "notion-ver"}
+coil-svg = {module = "io.coil-kt:coil-svg", version.ref = "coil-svg-ver"}
 
 [plugins]
 kotlin-kapt = {id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin"}

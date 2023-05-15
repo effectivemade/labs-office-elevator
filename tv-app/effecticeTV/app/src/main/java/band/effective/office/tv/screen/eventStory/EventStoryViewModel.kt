@@ -11,6 +11,7 @@ import band.effective.office.tv.domain.model.notion.EmployeeInfoEntity
 import band.effective.office.tv.domain.model.notion.EmployeeInfoRepository
 import band.effective.office.tv.domain.model.notion.processEmployeeInfo
 import band.effective.office.tv.network.use_cases.DuolingoManager
+import band.effective.office.tv.screen.duolingo.model.toUI
 import band.effective.office.tv.screen.eventStory.models.DuolingoUserInfo
 import band.effective.office.tv.screen.eventStory.models.StoryModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -67,11 +68,11 @@ class EventStoryViewModel @Inject constructor(
                             run {
                                 val users = usersDuolingo.data
                                 val userXpSort = DuolingoUserInfo(
-                                    users = users.sortedByDescending { it.totalXp },
+                                    users = users.sortedByDescending { it.totalXp }.toUI(),
                                     keySort = KeySortDuolingoUser.Xp
                                     ) as StoryModel
                                 val userStreakSort = DuolingoUserInfo(
-                                    users = users.sortedByDescending { it.streakDay },
+                                    users = users.sortedByDescending { it.streakDay }.toUI(),
                                     keySort = KeySortDuolingoUser.Streak
                                     ) as StoryModel
                                 listOf(userXpSort, userStreakSort)

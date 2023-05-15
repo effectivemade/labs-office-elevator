@@ -99,6 +99,7 @@ dependencies {
 
     //coil
     implementation libs.coil
+    implementation libs.coil.svg
 
     //notion
     implementation("com.github.seratch:notion-sdk-jvm-core:1.8.0")

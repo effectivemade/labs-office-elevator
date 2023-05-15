@@ -8,14 +8,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import band.effective.office.tv.domain.model.duolingo.DuolingoUser
+import band.effective.office.tv.screen.duolingo.model.DuolingoUserUI
 import band.effective.office.tv.screen.eventStory.KeySortDuolingoUser
 import band.effective.office.tv.utils.getCorrectDeclension
 
 @Composable
 fun TopsUser(
     modifier: Modifier = Modifier,
-    users: List<DuolingoUser>,
+    users: List<DuolingoUserUI>,
     keySort: KeySortDuolingoUser
 ) {
     LazyVerticalGrid(
@@ -23,7 +23,7 @@ fun TopsUser(
         horizontalArrangement = Arrangement.spacedBy(100.dp),
         verticalArrangement = Arrangement.spacedBy(30.dp)
     ) {
-        itemsIndexed(users) { index: Int, item: DuolingoUser ->
+        itemsIndexed(users) { index: Int, item: DuolingoUserUI ->
             when (keySort) {
                 KeySortDuolingoUser.Xp -> {
                     GirdItem(
@@ -31,7 +31,8 @@ fun TopsUser(
                         indicatorUsers = "${item.totalXp} XP",
                         indicatorUsersColor = Color.Green,
                         photo = item.photo,
-                        place = index + 1
+                        place = index + 1,
+                        flags = item.countryLang
                     )
                 }
                 KeySortDuolingoUser.Streak -> {
@@ -44,7 +45,8 @@ fun TopsUser(
                                 ),
                         indicatorUsersColor = Color.Red,
                         photo = item.photo,
-                        place = index + 1
+                        place = index + 1,
+                        flags = item.countryLang
                     )
                 }
             }

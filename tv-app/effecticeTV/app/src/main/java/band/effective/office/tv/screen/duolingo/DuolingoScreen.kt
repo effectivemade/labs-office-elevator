@@ -15,10 +15,11 @@ import androidx.tv.material3.Text
 import band.effective.office.tv.domain.model.duolingo.DuolingoUser
 import band.effective.office.tv.screen.duolingo.components.DuolingoTitle
 import band.effective.office.tv.screen.duolingo.components.TopsUser
+import band.effective.office.tv.screen.duolingo.model.DuolingoUserUI
 import band.effective.office.tv.screen.eventStory.KeySortDuolingoUser
 
 @Composable
-fun DuolingoScreen(keySort: KeySortDuolingoUser, duolingoUser: List<DuolingoUser>) {
+fun DuolingoScreen(keySort: KeySortDuolingoUser, duolingoUser: List<DuolingoUserUI>) {
     Box(
         modifier = Modifier
             .background(Color.White)
