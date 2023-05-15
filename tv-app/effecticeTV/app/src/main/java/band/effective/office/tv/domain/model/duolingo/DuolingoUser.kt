@@ -10,14 +10,17 @@ data class DuolingoUser(
     val countryLang: List<String>
 )
 
-fun DuolingoResponse.toDomain(): DuolingoUser {
-    val user = users.first()
-    return DuolingoUser(
-        username = user.name,
-        totalXp = user.totalXp,
-        photo = parseUrlForDuolingoAvatar(user.picture),
-        streakDay = user.streak,
-        countryLang = user.courses.map { it.learningLanguage }
-    )
+fun DuolingoResponse.toDomain(): DuolingoUser? {
+    return if (users.isEmpty()) null
+    else {
+        val user = users.first()
+        DuolingoUser(
+            username = user.name ?: user.username,
+            totalXp = user.totalXp,
+            photo = parseUrlForDuolingoAvatar(user.picture),
+            streakDay = user.streak,
+            countryLang = user.courses.map { it.learningLanguage }
+        )
+    }
 }
 fun parseUrlForDuolingoAvatar(url: String) = "https:$url/xxlarge"

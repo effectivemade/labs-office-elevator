@@ -19,14 +19,13 @@ class DuolingoRepositoryImpl @Inject constructor(
     override suspend fun getUsers(usersName: List<String>): Flow<Either<String, List<DuolingoUser>>> =
         flow {
             val duolingoUsersInfo: MutableList<DuolingoUser> = mutableListOf()
-            var errorRequest: String = ""
+            var errorRequest = ""
             usersName.forEach { user ->
                 withContext(Dispatchers.IO) {
                     when (val duolingoUser = duolingoApi.getUserInfo(user)) {
                         is Either.Success -> {
-                            duolingoUsersInfo.add(
-                                duolingoUser.data.toDomain()
-                            )
+                            val user = duolingoUser.data.toDomain()
+                            if (user != null) duolingoUsersInfo.add(user)
                         }
                         is Either.Failure -> {errorRequest = duolingoUser.error.message}
                     }
