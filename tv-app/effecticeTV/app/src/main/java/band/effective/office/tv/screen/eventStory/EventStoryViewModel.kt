@@ -45,6 +45,7 @@ class EventStoryViewModel @Inject constructor(
                     mutableState.update { it.copy(currentStoryIndex = it.currentStoryIndex + 1) }
                 } else {
                     mutableState.update { it.copy(navigateRequest = NavigateRequests.Forward) }
+                    mutableState.update { it.copy(currentStoryIndex = 0) }
                 }
             },
             isPlay = state.value.isPlay
@@ -93,6 +94,7 @@ class EventStoryViewModel @Inject constructor(
                     mutableState.update { it.copy(currentStoryIndex = it.currentStoryIndex + 1) }
                 } else {
                     mutableState.update { it.copy(navigateRequest = NavigateRequests.Forward) }
+                    mutableState.update { it.copy(currentStoryIndex = 0) }
                 }
             }
             is EventStoryScreenEvents.OnClickPreviousItem -> {
@@ -100,6 +102,7 @@ class EventStoryViewModel @Inject constructor(
                     mutableState.update { it.copy(currentStoryIndex = it.currentStoryIndex - 1) }
                 } else {
                     mutableState.update { it.copy(navigateRequest = NavigateRequests.Back) }
+                    mutableState.update { it.copy(currentStoryIndex = state.value.eventsInfo.size - 1) }
                 }
             }
         }
