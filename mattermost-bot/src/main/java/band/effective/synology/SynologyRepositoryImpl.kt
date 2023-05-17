@@ -63,17 +63,30 @@ class SynologyRepositoryImpl : SynologyRepository {
 
         val body = synologyApi.uploadPhoto(body = requestBody, cookie = cookie.orEmpty())
         val byte = body.body()?.byteStream()
-        val gzip = GZIPInputStream(byte)
-        val  bufferedReader =  BufferedReader(InputStreamReader(gzip, "UTF-8"));
-        val jsonString = bufferedReader.readText()
-        try {
-            val adapter =  moshi.adapter(UploadPhotoResponse::class.java)
-            val obj = adapter.fromJson(jsonString)
-            return Either.Success(obj!!)
-        }
-        catch (e: Exception) {
-            return Either.Failure(ErrorReason.UnexpectedError(throwable = Throwable(message = e.message, cause = null)))
-        }
+        val adapter = moshi.adapter(UploadPhotoResponse::class.java)
+        return synologyApi.uploadPhotoEither(body = requestBody, cookie = cookie.orEmpty())
+
+        // this code is needed for gzip decoding. the server stopped sending data to gzip, so the code left
+//        try {
+//            val gzip = GZIPInputStream(byte)
+//            val bufferedReader = BufferedReader(InputStreamReader(gzip, "UTF-8"));
+//            val jsonString = bufferedReader.readText()
+//            return try {
+//                val obj = adapter.fromJson(jsonString)
+//                Either.Success(obj!!)
+//            } catch (e: Exception) {
+//                Either.Failure(ErrorReason.UnexpectedError(throwable = Throwable(message = e.message, cause = null)))
+//            }
+//        } catch (e: Exception) {
+//            return try {
+//                val str = String(byte?.readBytes()?: byteArrayOf())
+//                println(str)
+//                val obj = adapter.fromJson(str)
+//                Either.Success(obj!!)
+//            } catch (e: Exception) {
+//                Either.Failure(ErrorReason.UnexpectedError(throwable = Throwable(message = e.message, cause = null)))
+//            }
+//        }
     }
 
     override suspend fun addPhotoToAlbums(
@@ -152,6 +165,7 @@ class SynologyRepositoryImpl : SynologyRepository {
             is Either.Failure -> {
                 Either.Failure(album.error)
             }
+
         }
     }
     private fun removeHeaderFromRequestBody(delegate: RequestBody): RequestBody {

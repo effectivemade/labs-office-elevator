@@ -46,6 +46,16 @@ interface SynologyApi {
             @Body body: RequestBody
     ): Response<ResponseBody>
 
+    @POST("/webapi/entry.cgi")
+    @Headers(
+            "X-Requested-With: XMLHttpRequest",
+            "Accept-Encoding: gzip, deflate, br"
+    )
+    suspend fun uploadPhotoEither(
+            @Header("Cookie") cookie: String,
+            @Body body: RequestBody
+    ): Either<ErrorReason, UploadPhotoResponse>
+
     @POST("/webapi/entry.cgi/SYNO.Foto.Browse.NormalAlbum")
     suspend fun addPhotoToAlbum(
         @Header("Cookie") cookie: String,

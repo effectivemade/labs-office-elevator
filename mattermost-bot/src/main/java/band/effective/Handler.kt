@@ -23,7 +23,13 @@ class Handler : Function<Unit, Unit> {
 }
 
 fun main (): Unit = runBlocking {
-
+    val mattermostRepository = MattermostRepositoryImpl(
+            token = MattermostSettings.mattermostToken,
+            coroutineScope = this
+    )
+    val synologyRepository = SynologyRepositoryImpl()
+    val botManager = BotManager(mattermost = mattermostRepository, coroutineScope = this, synology = synologyRepository)
+    botManager.updatePhoto()
 }
 
 

@@ -1,5 +1,7 @@
 package band.effective.core
 
+import band.effective.MattermostSettings
+import band.effective.SynologySettings
 import band.effective.mattermost.MattermostApi
 import band.effective.mattermost.models.response.adapter.ChannelsAdapter
 import band.effective.mattermost.models.response.adapter.EitherMattermostAdapterFactory
@@ -25,20 +27,25 @@ val okHttpClient = OkHttpClient.Builder()
         level = HttpLoggingInterceptor.Level.BODY
     }).build()
 
+val unsafeOkHttpClient = UnsafeOkHttpClient.getUnsafeOkHttpClient()
+        .addInterceptor(HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }).build()
+
 val mattermostEitherFactory = EitherMattermostAdapterFactory()
 
 val mattermostApi = Retrofit.Builder()
         .addConverterFactory(moshiConverterFactory)
         .addCallAdapterFactory(mattermostEitherFactory)
         .client(okHttpClient)
-        .baseUrl("https://mattermost.effective.band/api/v4/")
+        .baseUrl(MattermostSettings.baseURL)
         .build()
         .create(MattermostApi::class.java)
 
 val synologyApi = Retrofit.Builder()
         .addConverterFactory(moshiConverterFactory)
         .addCallAdapterFactory(mattermostEitherFactory)
-        .client(okHttpClient)
-        .baseUrl("http://10.0.1.108:5000") //TODO add base url
+        .client(unsafeOkHttpClient)
+        .baseUrl(SynologySettings.baseURL) //TODO add base url
         .build()
         .create(SynologyApi::class.java)
