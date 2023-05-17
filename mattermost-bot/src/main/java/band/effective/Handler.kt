@@ -6,33 +6,24 @@ import kotlinx.coroutines.*
 import java.util.function.Function
 
 
-class Request {
-    var queryStringParameters: Map<String, String>? = null
-}
-
-
-class Response(private val statusCode: Int, private val headers: Map<String, String>, private val isBase64Encoded: Boolean, private val body: String)
-
-
-class Handler : Function<Request, Response> {
+class Handler : Function<Unit, Unit> {
     private val statusCode = 200
     private val isBase64Encoded = false
-    override fun apply(request: Request): Response {
-        val headers: MutableMap<String, String> = HashMap()
-        headers["Content-Type"] = "text/plain"
-        val name = request.queryStringParameters!!["name"]
-        return Response(statusCode, headers, isBase64Encoded, String.format("Hello, %s!", name))
-    }
+
+    override fun apply(p0: Unit) =
+        runBlocking {
+            val mattermostRepository = MattermostRepositoryImpl(
+                    token = MattermostSettings.mattermostToken,
+                    coroutineScope = this
+            )
+            val synologyRepository = SynologyRepositoryImpl()
+            val botManager = BotManager(mattermost = mattermostRepository, coroutineScope = this, synology = synologyRepository)
+            botManager.updatePhoto()
+        }
 }
 
 fun main (): Unit = runBlocking {
-    val mattermostRepository = MattermostRepositoryImpl(
-            token = MattermostSettings.mattermostToken,
-            coroutineScope = this
-    )
-    val synologyRepository = SynologyRepositoryImpl()
-    val botManager = BotManager(mattermost = mattermostRepository, coroutineScope = this, synology = synologyRepository)
-    botManager.updatePhoto()
+
 }
 
 
