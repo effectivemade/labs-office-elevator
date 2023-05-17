@@ -54,10 +54,7 @@ fun GirdItem (
             error = painterResource(id = R.drawable.duolingo_logo)
         )
         Spacer(modifier = Modifier.width(15.dp))
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
+        Column {
             Text(
                 modifier = Modifier.width(100.dp),
                 text = name,
@@ -65,10 +62,10 @@ fun GirdItem (
                 fontSize = MaterialTheme.typography.h2.fontSize,
                 fontWeight = FontWeight.SemiBold,
                 color = Color.Black,
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Start,
                 maxLines = 1
             )
-            Row (horizontalArrangement = Arrangement.Center){
+            Row {
                 flags.forEach { flag ->
                     Flag(modifier = Modifier.size(25.dp), drawableFlagId = flag.drawableId)
                     Spacer(modifier = Modifier.width(15.dp))
@@ -76,8 +73,9 @@ fun GirdItem (
             }
         }
 
-        Spacer(modifier = Modifier.width(100.dp))
+        Spacer(modifier = Modifier.width(50.dp))
         Text(
+            modifier = Modifier.width(150.dp),
             text = indicatorUsers,
             fontStyle = MaterialTheme.typography.h2.fontStyle,
             fontSize = MaterialTheme.typography.h2.fontSize,

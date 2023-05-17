@@ -1,5 +1,6 @@
 package band.effective.office.tv.screen.duolingo.components
 
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -19,6 +20,7 @@ fun TopsUser(
     keySort: KeySortDuolingoUser
 ) {
     LazyVerticalGrid(
+        modifier = modifier.focusable(),
         columns = GridCells.Fixed(count = 2),
         horizontalArrangement = Arrangement.spacedBy(100.dp),
         verticalArrangement = Arrangement.spacedBy(30.dp)
