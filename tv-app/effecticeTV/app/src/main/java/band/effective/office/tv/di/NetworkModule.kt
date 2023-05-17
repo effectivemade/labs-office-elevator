@@ -1,5 +1,6 @@
 package band.effective.office.tv.di
 
+import UnsafeOkHttpClient
 import band.effective.office.tv.BuildConfig
 import band.effective.office.tv.core.network.EitherLeaderIdAdapterFactory
 import band.effective.office.tv.core.network.EitherSynologyAdapterFactory
@@ -36,6 +37,15 @@ class NetworkModule {
             level = HttpLoggingInterceptor.Level.BODY
         }).build()
 
+
+    @Singleton
+    @Provides
+    @band.effective.office.tv.network.UnsafeOkHttpClient
+    fun provideUnsafeOkHttpClient() =
+        UnsafeOkHttpClient.getUnsafeOkHttpClient().addInterceptor(HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }).build()
+
     @Singleton
     @Provides
     fun provideEitherAdapterFactory(): EitherLeaderIdAdapterFactory = EitherLeaderIdAdapterFactory()
@@ -67,7 +77,7 @@ class NetworkModule {
     @SynologyRetrofitClient
     fun provideSynologyRetrofit(
         moshiConverterFactory: MoshiConverterFactory,
-        client: OkHttpClient,
+        @band.effective.office.tv.network.UnsafeOkHttpClient client: OkHttpClient,
         callAdapter: CallAdapter.Factory
     ): Retrofit =
         Retrofit.Builder()
