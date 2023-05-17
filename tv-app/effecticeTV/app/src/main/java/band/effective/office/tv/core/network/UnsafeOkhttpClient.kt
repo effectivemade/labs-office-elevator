@@ -1,3 +1,5 @@
+package band.effective.office.tv.core.network
+
 import okhttp3.OkHttpClient
 import java.security.cert.CertificateException
 import javax.net.ssl.HostnameVerifier

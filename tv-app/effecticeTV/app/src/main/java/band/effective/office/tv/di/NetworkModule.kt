@@ -1,16 +1,13 @@
 package band.effective.office.tv.di
 
-import UnsafeOkHttpClient
 import band.effective.office.tv.BuildConfig
 import band.effective.office.tv.core.network.EitherLeaderIdAdapterFactory
 import band.effective.office.tv.core.network.EitherSynologyAdapterFactory
-import band.effective.office.tv.domain.autoplay.AutoplayController
+import band.effective.office.tv.core.network.UnsafeOkHttpClient
 import band.effective.office.tv.network.LeaderIdRetrofitClient
 import band.effective.office.tv.network.SynologyRetrofitClient
 import band.effective.office.tv.network.leader.LeaderApi
 import band.effective.office.tv.network.synology.SynologyApi
-import band.effective.office.tv.screen.leaderIdEvents.LeaderIdEventsViewModel
-import band.effective.office.tv.screen.photo.PhotoViewModel
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
