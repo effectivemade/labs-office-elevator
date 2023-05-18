@@ -46,6 +46,6 @@ val synologyApi = Retrofit.Builder()
         .addConverterFactory(moshiConverterFactory)
         .addCallAdapterFactory(mattermostEitherFactory)
         .client(unsafeOkHttpClient)
-        .baseUrl(SynologySettings.baseURL) //TODO add base url
+        .baseUrl(SynologySettings.baseURL)
         .build()
         .create(SynologyApi::class.java)
