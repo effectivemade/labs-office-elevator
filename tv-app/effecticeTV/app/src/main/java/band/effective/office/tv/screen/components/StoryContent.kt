@@ -1,5 +1,6 @@
 package band.effective.office.tv.screen.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,26 +25,29 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.tv.R
 import band.effective.office.tv.domain.model.notion.Anniversary
-import band.effective.office.tv.domain.model.notion.EmployeeInfo
 import band.effective.office.tv.domain.model.notion.EventType
+import band.effective.office.tv.screen.eventStory.models.EmployeeInfoUI
+import band.effective.office.tv.screen.eventStory.models.NewEmployeeUI
+import band.effective.office.tv.ui.theme.drukLCGWideMedium
+import band.effective.office.tv.ui.theme.museoCyrl
 import band.effective.office.tv.utils.getCorrectDeclension
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
-import com.example.effecticetv.ui.theme.drukLCGWideMedium
-import com.example.effecticetv.ui.theme.museoCyrl
 
 @Composable
 fun StoryContent(
-    employeeInfoes: List<EmployeeInfo>, currentStoryIndex: Int, onImageLoading: () -> Unit,
-    onImageLoaded: () -> Unit, modifier: Modifier
+    employeeInfo: EmployeeInfoUI,
+    onImageLoading: () -> Unit,
+    onImageLoaded: () -> Unit,
+    modifier: Modifier
 ) {
-    val isAnniversary = employeeInfoes[currentStoryIndex].eventType == EventType.Anniversary
-    val isBirthday = employeeInfoes[currentStoryIndex].eventType == EventType.Birthday
+    val isAnniversary = employeeInfo.eventType == EventType.Anniversary
+    val isBirthday = employeeInfo.eventType == EventType.Birthday
     val painter = rememberAsyncImagePainter(
         model = ImageRequest.Builder(LocalContext.current)
-            .data(employeeInfoes[currentStoryIndex].photoUrl).size(Size.ORIGINAL).build()
+            .data(employeeInfo.photoUrl).size(Size.ORIGINAL).build()
     )
     if (painter.state is AsyncImagePainter.State.Loading) {
         onImageLoading()
@@ -76,14 +81,14 @@ fun StoryContent(
                     .fillMaxSize()
             ) {
                 Text(
-                    text = employeeInfoes[currentStoryIndex].name + ",",
+                    text = employeeInfo.name + ",",
                     fontSize = 64.sp,
                     fontFamily = museoCyrl,
                     color = Color.Black,
                     fontStyle = FontStyle.Italic
                 )
                 if (isAnniversary) {
-                    val story = employeeInfoes[currentStoryIndex] as Anniversary
+                    val story = employeeInfo as Anniversary
                     Text(
                         text =
                         stringResource(id = R.string.with_us) + " " + story.yearsInCompany + " " + getCorrectDeclension(
@@ -111,30 +116,26 @@ fun StoryContent(
                         fontFamily = drukLCGWideMedium,
                     )
                 }
-
+            }
+            Image(
+                painter = painter,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(300.dp)
+                    .padding(10.dp)
+                    .clip(CircleShape),
+                contentDescription = "Employee photo"
+            )
         }
-
-        AsyncImage(
-            model = employeeInfo.photoUrl,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(300.dp)
-                .padding(10.dp)
-                .clip(CircleShape),
-            contentDescription = "Employee photo"
-        )
-
     }
-
-
 }
 
 @Composable
 @Preview
 fun PreviewStoryContent() {
     StoryContent(
-        employeeInfo =
-            NewEmployeeUI("John Doe", "testUrl"),
+        employeeInfo = NewEmployeeUI("John Doe", "testUrl"),
+        {}, {},
         Modifier
             .fillMaxSize()
             .padding(vertical = 64.dp)
