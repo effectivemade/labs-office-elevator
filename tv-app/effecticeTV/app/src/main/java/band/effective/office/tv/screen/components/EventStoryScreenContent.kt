@@ -22,7 +22,9 @@ import com.example.effecticetv.ui.theme.IndependentColors
 fun EventStoryScreenContent(
     eventsInfo: List<StoryModel>,
     currentStoryIndex: Int,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onImageLoading: () -> Unit,
+    onImageLoaded: () -> Unit,
 ) {
     Surface(
         modifier = modifier, color = IndependentColors.StoryBackgroundGray
@@ -41,6 +43,7 @@ fun EventStoryScreenContent(
                     val storyData = eventsInfo[currentStoryIndex]
                     StoryContent(
                         storyData as EmployeeInfoUI,
+                        { onImageLoading() }, { onImageLoaded() },
                         Modifier
                             .fillMaxSize()
                             .padding(horizontal = 64.dp)

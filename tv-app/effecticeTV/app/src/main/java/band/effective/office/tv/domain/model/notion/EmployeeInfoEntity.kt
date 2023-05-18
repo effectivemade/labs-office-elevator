@@ -14,8 +14,8 @@ class EmployeeInfoEntity(
     val photoUrl: String,
 )
 
-fun List<EmployeeInfoEntity>.processEmployeeInfo(): List<EmployeeInfoUI> {
-    val resultList = mutableListOf<EmployeeInfoUI>()
+fun List<EmployeeInfoEntity>.processEmployeeInfo(): MutableList<EmployeeInfo> {
+    val resultList = mutableListOf<EmployeeInfo>()
     this.map {employee ->
         if (employee.nextBirthdayDate.isNotBlank() && isCelebrationToday(employee.nextBirthdayDate)) {
             resultList.add(

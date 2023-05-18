@@ -5,7 +5,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -62,8 +61,9 @@ fun EventStoryScreen(viewModel: EventStoryViewModel = hiltViewModel()) {
                     .focusProperties {
                         down = playButton
                     }
-                    .focusable())
-
+                    .focusable(),
+                onImageLoaded = { viewModel.playStory() },
+                onImageLoading = { viewModel.stopStory() })
         }
     }
 

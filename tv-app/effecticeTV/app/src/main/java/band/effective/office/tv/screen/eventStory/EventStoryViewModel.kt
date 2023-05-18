@@ -2,13 +2,13 @@ package band.effective.office.tv.screen.eventStory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import band.effective.office.tv.core.network.entity.Either
 import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
 import band.effective.office.tv.domain.autoplay.AutoplayableViewModel
 import band.effective.office.tv.domain.autoplay.model.NavigateRequests
 import band.effective.office.tv.domain.model.duolingo.DuolingoUser
 import band.effective.office.tv.domain.model.notion.EmployeeInfoEntity
 import band.effective.office.tv.domain.model.notion.EmployeeInfoRepository
+import band.effective.office.tv.repository.notion.EmployeeInfoRepository
 import band.effective.office.tv.domain.model.notion.processEmployeeInfo
 import band.effective.office.tv.network.use_cases.DuolingoManager
 import band.effective.office.tv.screen.duolingo.model.toUI
@@ -52,6 +52,7 @@ class EventStoryViewModel @Inject constructor(
                     mutableState.update { it.copy(currentStoryIndex = it.currentStoryIndex + 1) }
                 } else {
                     mutableState.update { it.copy(navigateRequest = NavigateRequests.Forward) }
+                    mutableState.update { it.copy(currentStoryIndex = 0) }
                 }
             },
             isPlay = state.value.isPlay
@@ -102,7 +103,6 @@ class EventStoryViewModel @Inject constructor(
                         isPlay = true
                     )
                 }
-                timer.startTimer()
             }
         }
     }
@@ -121,6 +121,7 @@ class EventStoryViewModel @Inject constructor(
                     mutableState.update { it.copy(currentStoryIndex = it.currentStoryIndex + 1) }
                 } else {
                     mutableState.update { it.copy(navigateRequest = NavigateRequests.Forward) }
+                    mutableState.update { it.copy(currentStoryIndex = 0) }
                 }
             }
             is EventStoryScreenEvents.OnClickPreviousItem -> {
@@ -128,9 +129,18 @@ class EventStoryViewModel @Inject constructor(
                     mutableState.update { it.copy(currentStoryIndex = it.currentStoryIndex - 1) }
                 } else {
                     mutableState.update { it.copy(navigateRequest = NavigateRequests.Back) }
+                    mutableState.update { it.copy(currentStoryIndex = state.value.eventsInfo.size - 1) }
                 }
             }
         }
+    }
+
+    fun playStory() {
+        timer.startTimer()
+    }
+
+    fun stopStory() {
+        timer.stopTimer()
     }
 }
 
