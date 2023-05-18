@@ -3,7 +3,7 @@ package band.effective.office.tv.utils
 import java.text.SimpleDateFormat
 import java.util.*
 
-fun toEndTimeInterval(event: GregorianCalendar, eventName: String): String {
+fun toEndEventTimeInterval(event: GregorianCalendar, eventName: String): String {
     val now = GregorianCalendar()
     val differenceInMinuts: Long = (event.timeInMillis - now.timeInMillis) / 60000
     val differenceInHours = differenceInMinuts / 60
@@ -28,8 +28,6 @@ fun toEndTimeInterval(event: GregorianCalendar, eventName: String): String {
     return "$eventName закончится через $difference"
 }
 
-// NOTE(Maksim Mishenko): Now, month's name displayed on Eng.
-// Must be checked on a device with a configured language
 fun startEndTimeInterval(start: GregorianCalendar, finish: GregorianCalendar): String {
     val dateDateFormat = SimpleDateFormat("dd MMMM")
     val timeDateFormat = SimpleDateFormat("HH:mm")

@@ -10,7 +10,9 @@ import band.effective.office.tv.network.mattermost.mattermostWebSocketClient.Mat
 import band.effective.office.tv.network.mattermost.mattermostWebSocketClient.impl.MattermostWebSocketClientImpl
 import band.effective.office.tv.network.synology.SynologyApi
 import band.effective.office.tv.network.uselessFact.UselessFactApi
+import band.effective.office.tv.utils.GregorianCalendarMoshiAdapter
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.addAdapter
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -28,8 +30,9 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class NetworkModule {
 
+    @OptIn(ExperimentalStdlibApi::class)
     @Provides
-    fun provideMoshi(): Moshi = Moshi.Builder().build()
+    fun provideMoshi(): Moshi = Moshi.Builder().addAdapter(GregorianCalendarMoshiAdapter()).build()
 
     @Provides
     fun provideOkHttpClient() =

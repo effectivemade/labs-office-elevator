@@ -8,7 +8,7 @@ import androidx.compose.ui.unit.sp
 import band.effective.office.tv.R
 import band.effective.office.tv.domain.model.leaderId.LeaderIdEventInfo
 import band.effective.office.tv.utils.startEndTimeInterval
-import band.effective.office.tv.utils.toEndTimeInterval
+import band.effective.office.tv.utils.toEndEventTimeInterval
 import java.util.*
 
 @Composable
@@ -24,7 +24,7 @@ fun AdditionalEventInfo(eventInfo: LeaderIdEventInfo) {
         if (eventInfo.endRegDate != null && eventInfo.endRegDate > GregorianCalendar()) {
             TextWithCaptionAndIcon(
                 resourceId = R.drawable.error_circle,
-                text = toEndTimeInterval(eventInfo.endRegDate, "Регистрация"),
+                text = toEndEventTimeInterval(eventInfo.endRegDate, "Регистрация"),
                 caption = "",
                 fontSize = fontSize,
                 iconSize = iconSize

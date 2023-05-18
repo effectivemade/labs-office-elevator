@@ -43,7 +43,7 @@ fun OneMessageScreen(modifier: Modifier, message: BotMessage) {
                 Text(text = message.author.name)
                 Spacer(modifier = Modifier.width(20.dp))
                 Text(
-                    text = calendarToString(message.finish),
+                    text = calendarToString(message.start),
                     color = MaterialTheme.colors.primaryVariant
                 )
             }

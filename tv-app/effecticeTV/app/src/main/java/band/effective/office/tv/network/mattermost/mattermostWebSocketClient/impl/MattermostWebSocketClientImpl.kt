@@ -2,8 +2,13 @@ package band.effective.office.tv.network.mattermost.mattermostWebSocketClient.im
 
 import android.util.Log
 import band.effective.office.tv.BuildConfig
+import band.effective.office.tv.domain.botLogic.BotConfig
 import band.effective.office.tv.domain.botLogic.model.BotEvent
+import band.effective.office.tv.domain.botLogic.model.BotInfo
+import band.effective.office.tv.domain.botLogic.model.toBotInfo
+import band.effective.office.tv.domain.model.message.BotMessage
 import band.effective.office.tv.domain.model.message.toBotEvent
+import band.effective.office.tv.domain.model.message.toBotMessage
 import band.effective.office.tv.network.mattermost.MattermostApi
 import band.effective.office.tv.network.mattermost.mattermostWebSocketClient.MattermostWebSocketClient
 import band.effective.office.tv.network.mattermost.model.*
@@ -23,8 +28,7 @@ class MattermostWebSocketClientImpl @Inject constructor(
             MattermostWebSocketListener { handler(it) })
     }
     private var lastSeq = 0
-    lateinit var botId: String
-    lateinit var botName: String
+    lateinit var authResponse: AuthJson
     lateinit var eventHandler: (BotEvent) -> Unit
 
     private class MattermostWebSocketListener(private val handler: (String) -> Unit) :
@@ -35,15 +39,12 @@ class MattermostWebSocketClientImpl @Inject constructor(
         }
 
         override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-            Log.e("socket", t.message ?: "error")
+            Log.e("socket", t.toString())
         }
     }
 
-    /**Connect with mattermost*/
     override suspend fun connect() {
-        val authResponse = api.auth()
-        botId = authResponse.id
-        botName = authResponse.username
+        authResponse = api.auth()
         webSocket.send(
             moshi.adapter(WebSocketAuthJson::class.java).toJson(WebSocketAuthJson.default)
         )
@@ -52,14 +53,16 @@ class MattermostWebSocketClientImpl @Inject constructor(
     private fun handler(response: String) {
         when {
             response.isPost() -> {
-                val post = moshi.adapter(PostJson::class.java).fromJson(response.correct())?.toBotEvent()
+                val post =
+                    moshi.adapter(PostJson::class.java).fromJson(response.correct())?.toBotEvent()
                 Log.i("socket", post.toString())
                 if (post != null && !post.botIsAuthor()) {
                     eventHandler(post)
                 }
             }
             response.isReaction() -> {
-                val reaction = moshi.adapter(ReactionJson::class.java).fromJson(response.correct())?.toBotEvent()
+                val reaction = moshi.adapter(ReactionJson::class.java).fromJson(response.correct())
+                    ?.toBotEvent()
                 Log.i("socket", reaction.toString())
                 if (reaction != null && !reaction.botIsAuthor()) {
                     eventHandler(reaction)
@@ -68,31 +71,53 @@ class MattermostWebSocketClientImpl @Inject constructor(
             else -> {
                 Log.i("socket", response)
                 lastSeq =
-                    moshi.adapter(OtherJson::class.java).fromJson(response.correct())?.seq ?: lastSeq
+                    moshi.adapter(OtherJson::class.java).fromJson(response.correct())?.seq
+                        ?: lastSeq
             }
         }
     }
 
-    /**
-     * Send message in chat
-     * @param channelId id of the chat you are sending the message
-     * @param message text you are sending
-     * @param root thread's id*/
+
     override suspend fun postMessage(channelId: String, message: String, root: String) {
         api.createPost(PostMessageData(channelId, message, root))
     }
 
-    /**Get bot name*/
-    override fun name(): String = botName
+    override suspend fun saveMessage(message: BotMessage): BotMessage {
+        val post = api.createPost(
+            PostMessageData(
+                channelId = BotConfig.directId,
+                message = "save",
+                rootId = "",
+                props = message
+            )
+        )
+        return message.copy(directId = post.id)
+    }
 
 
-    /**Disconnect from server*/
+    override fun botInfo(): BotInfo = authResponse.toBotInfo()
+    override suspend fun getDirectMessages(): List<BotMessage> =
+        api.getChanelPosts(BotConfig.directId).order.map { api.getPost(it).props.copy(directId = it) }
+
+    override suspend fun deleteMessage(messageId: String) {
+        api.deletePost(messageId)
+    }
+
+    override suspend fun getUserName(userId: String): String = api.getUser(userId).username
+
+    override suspend fun getMessage(messageId: String): BotMessage {
+        val message = api.getPost(messageId)
+        val author = api.getUser(message.userId)
+        return message.toBotMessage(author.username)
+    }
+
+
+
     override fun disconnect() {
         webSocket.close(1000, null)
     }
 
-    /**Subscribe on server events
-     * @param handler events handler*/
+
     override fun subscribe(handler: (BotEvent) -> Unit) {
         eventHandler = handler
     }
@@ -105,5 +130,7 @@ class MattermostWebSocketClientImpl @Inject constructor(
         replace("\\n", "\n").replace("\\", "").replace("\"{", "{").replace("}\"", "}")
             .replace("seq_reply", "seq").replace("\"[", "[").replace("]\"", "]")
 
-    private fun BotEvent.botIsAuthor() = userId == botId
+    private fun BotEvent.botIsAuthor() = userId == authResponse.id
 }
+
+

@@ -1,5 +1,6 @@
 package band.effective.office.tv.network.mattermost.model
 
+import band.effective.office.tv.domain.model.message.BotMessage
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -26,7 +27,7 @@ data class Post(
     val participants: Any?,
     @Json(name = "pending_post_id")
     val pendingPostId: String,
-    val props: Props,
+    val props: BotMessage,
     @Json(name = "reply_count")
     val replyCount: Int,
     @Json(name = "root_id")

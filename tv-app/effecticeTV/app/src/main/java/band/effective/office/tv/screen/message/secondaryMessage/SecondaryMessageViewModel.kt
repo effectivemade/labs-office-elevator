@@ -63,7 +63,14 @@ class SecondaryMessageViewModel @Inject constructor(
     private fun updateMessageList() = viewModelScope.launch {
         MessageQueue.secondQueue.queue.collect {
             if (MessageQueue.secondQueue.isNotEmpty()) {
-                mutableState.update { it.copy(messageList = MessageQueue.secondQueue.queue.value.queue) }
+                mutableState.update {
+                    it.copy(
+                        messageList = MessageQueue.secondQueue.queue.value.queue,
+                        currentIndex = if (MessageQueue.secondQueue.queue.value.queue.size < it.messageList.size)
+                            MessageQueue.secondQueue.queue.value.queue.size - 1
+                        else it.currentIndex
+                    )
+                }
             } else {
                 mutableState.update { SecondaryMessageState.empty }
             }

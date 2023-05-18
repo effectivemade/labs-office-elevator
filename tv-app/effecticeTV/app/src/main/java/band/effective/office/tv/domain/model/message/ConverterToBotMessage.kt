@@ -1,6 +1,7 @@
 package band.effective.office.tv.domain.model.message
 
 import band.effective.office.tv.domain.botLogic.model.BotEvent
+import band.effective.office.tv.network.mattermost.model.Post
 import band.effective.office.tv.network.mattermost.model.PostJson
 import band.effective.office.tv.network.mattermost.model.ReactionJson
 import java.util.*
@@ -30,6 +31,17 @@ fun BotEvent.PostMessage.toBotMessage(): BotMessage =
         author =  User(id = userId, name = userName),
         id = messageId,
         text = message,
+        start =  GregorianCalendar(),
         finish =  GregorianCalendar(),
         rootId = if (rootId == "") messageId else rootId
     )
+
+fun Post.toBotMessage(userName: String): BotMessage = BotMessage(
+    channelId = channelId,
+    author =  User(id = userId, name = userName),
+    id = id,
+    text = message,
+    start =  GregorianCalendar(),
+    finish =  GregorianCalendar(),
+    rootId = if (rootId == "") id else rootId
+)
