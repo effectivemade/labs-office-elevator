@@ -81,7 +81,7 @@ fun GirdItem (
             fontSize = MaterialTheme.typography.h2.fontSize,
             fontWeight = FontWeight.SemiBold,
             color = indicatorUsersColor,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Right
         )
     }
 }

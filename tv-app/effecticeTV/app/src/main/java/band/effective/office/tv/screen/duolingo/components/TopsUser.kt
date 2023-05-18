@@ -23,7 +23,7 @@ fun TopsUser(
         modifier = modifier.focusable(),
         columns = GridCells.Fixed(count = 2),
         horizontalArrangement = Arrangement.spacedBy(100.dp),
-        verticalArrangement = Arrangement.spacedBy(30.dp)
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         itemsIndexed(users) { index: Int, item: DuolingoUserUI ->
             when (keySort) {

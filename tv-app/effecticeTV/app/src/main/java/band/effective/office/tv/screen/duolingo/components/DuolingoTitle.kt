@@ -21,7 +21,7 @@ import band.effective.office.tv.R
 fun DuolingoTitle(modifier: Modifier = Modifier) {
     Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
         Image(
-            modifier = Modifier.size(50.dp),
+            modifier = Modifier.size(40.dp),
             painter = painterResource(id = R.drawable.duolingo_logo),
             contentDescription = null
         )
