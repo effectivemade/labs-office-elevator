@@ -44,8 +44,10 @@ class SynologyRepositoryImpl : SynologyRepository {
                 password = SynologySettings.synologyPassword,
         )
         cookie = ""
-        val headersCooki = res.headers().toMultimap()["Set-Cookie"]
-        headersCooki?.forEach { cookie += it }
+        val headersCookie = res.headers().toMultimap()["Set-Cookie"]
+        // TODO
+        headersCookie.reduce{}
+        headersCookie?.forEach { cookie += it }
     }
 
     override suspend fun getAlbums(): Either<ErrorReason, SynologyAlbumsResponse> =
@@ -116,6 +118,7 @@ class SynologyRepositoryImpl : SynologyRepository {
                     val albums = albumsReq.data.albumsData.albums
                     albums.find { it.name == "${SynologySettings.synologyAlbumTypeName} $currentYear" }.let {
                         if (it != null) currentAlbumId = it.id
+                        // TODO
                         it ?: when (val createAlbum = createAlbum("${SynologySettings.synologyAlbumTypeName} $currentYear")) {
                             is Either.Success -> currentAlbumId = createAlbum.data.albumId
                             is Either.Failure -> throw Error("albums ${SynologySettings.synologyAlbumTypeName} $currentYear not found and cant be created ")
@@ -168,6 +171,7 @@ class SynologyRepositoryImpl : SynologyRepository {
 
         }
     }
+    // TODO add comment
     private fun removeHeaderFromRequestBody(delegate: RequestBody): RequestBody {
         return object : RequestBody() {
             override fun contentType(): MediaType? {

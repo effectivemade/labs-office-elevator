@@ -96,6 +96,10 @@ class MattermostRepositoryImpl(private val token: String, private val coroutineS
                     }
                     val filesInPostsWithReaction = postsWithReaction.map { post -> post.metadata.files }
                     val files: MutableList<FileInfo> = mutableListOf()
+                    // TODO
+                    filesInPostsWithReaction.flatMap { listIsFile ->
+
+                    }
                     filesInPostsWithReaction.forEach { filesInPost ->
                         filesInPost?.forEach { file ->
                             if (file.mime_type.contains("image")) files.add(FileInfo(file.id, file.name, file.mime_type, file.post_id))
@@ -111,8 +115,8 @@ class MattermostRepositoryImpl(private val token: String, private val coroutineS
 
     override suspend fun makeReaction(emojiInfo: EmojiInfo): Either<ErrorReason, EmojiInfoForApi> =
             mattermostApi.makeReaction(
-                token,
-                createJsonRequestBody(emojiInfo.mapForApi(userId!!))
+                token = token,
+                emojiParams = createJsonRequestBody(emojiInfo.mapForApi(userId!!))
             )
 
     override suspend fun getUserIdFromToken(): Either<ErrorReason, UserInfo> =

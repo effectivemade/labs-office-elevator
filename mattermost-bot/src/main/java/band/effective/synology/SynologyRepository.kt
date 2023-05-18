@@ -18,6 +18,7 @@ interface SynologyRepository {
 
     suspend fun uploadPhoto(requestBody: RequestBody): Either<ErrorReason, UploadPhotoResponse>
 
+   // TODO replace  this
     suspend fun addPhotoToAlbums(albumId: Int, itemId: Int): Either<ErrorReason, AddPhotoToAlbumResponse>
 
     suspend fun uploadPhotoToAlbum(file: ByteArray, fileName: String, fileType: String): Either<ErrorReason, UploadPhotoResponse>

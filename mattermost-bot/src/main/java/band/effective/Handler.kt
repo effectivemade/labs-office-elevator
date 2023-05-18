@@ -7,6 +7,7 @@ import java.util.function.Function
 
 
 class Handler : Function<Unit, Unit> {
+    // TODO вынести в companion
     private val statusCode = 200
     private val isBase64Encoded = false
 
@@ -21,7 +22,7 @@ class Handler : Function<Unit, Unit> {
             botManager.updatePhoto()
         }
 }
-
+// TODO вынести логику в функцию
 fun main (): Unit = runBlocking {
     val mattermostRepository = MattermostRepositoryImpl(
             token = MattermostSettings.mattermostToken,
@@ -30,6 +31,8 @@ fun main (): Unit = runBlocking {
     val synologyRepository = SynologyRepositoryImpl()
     val botManager = BotManager(mattermost = mattermostRepository, coroutineScope = this, synology = synologyRepository)
     botManager.updatePhoto()
+    // TODO вынести все в перемеенный окуржения
+    System.getenv("dfkdfkk")
 }
 
 
