@@ -12,18 +12,10 @@ import band.effective.mattermost.models.response.models.Post
 
 
 interface MattermostRepository {
-    suspend fun getChannels(): Either<ErrorReason, List<Channel>>
-
-    suspend fun getPostsFromChannel(channelId: String, sinceTime: Long): Either<ErrorReason, ResponseGetPostsForChannel>
-
     suspend fun downloadFile(fileId: String): ByteArray?
-
-    suspend fun getAllPostsFromChannels(): Either<ErrorReason, List<Post>>
 
     suspend fun getFilesIdsFromPosts(): Either<ErrorReason, List<FileInfo>>
 
     suspend fun makeReaction(emojiInfo: EmojiInfo): Either<ErrorReason, EmojiInfoForApi>
-
-    suspend fun getUserIdFromToken(): Either<ErrorReason, UserInfo>
 
 }

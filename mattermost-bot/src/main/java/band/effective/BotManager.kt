@@ -14,7 +14,6 @@ class BotManager(
 ) {
     suspend fun updatePhoto () {
         when (val filesIds = mattermost.getFilesIdsFromPosts()) {
-            list
             is Either.Success -> {
                 filesIds.data.forEach { fileInfo ->
                     coroutineScope.async {

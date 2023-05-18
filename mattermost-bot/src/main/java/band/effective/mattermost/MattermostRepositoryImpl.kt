@@ -38,11 +38,6 @@ class MattermostRepositoryImpl(private val token: String, private val coroutineS
             }
         }
     }
-    override suspend fun getChannels(): Either<ErrorReason, List<Channel>> =
-            mattermostApi.getChannelMattermost(token = token)
-
-    override suspend fun getPostsFromChannel(channelId: String, sinceTime: Long): Either<ErrorReason, ResponseGetPostsForChannel> =
-            mattermostApi.getPostsFromChannel(channelId = channelId, token = token, sinceTime = sinceTime)
 
     override suspend fun downloadFile(fileId: String): ByteArray? {
         val response = mattermostApi.downloadFile(token = token, fileId = fileId)
@@ -52,7 +47,7 @@ class MattermostRepositoryImpl(private val token: String, private val coroutineS
         return buffer
     }
 
-    override suspend fun getAllPostsFromChannels(): Either<ErrorReason, List<Post>> {
+    private suspend fun getAllPostsFromChannels(): Either<ErrorReason, List<Post>> {
         when (val channels = mattermostApi.getChannelMattermost(token)) {
             is Either.Success -> {
                 val postsCache = Collections.synchronizedList(mutableListOf<Post>())
@@ -90,24 +85,22 @@ class MattermostRepositoryImpl(private val token: String, private val coroutineS
                 is Either.Success -> {
                     val postsWithReaction = posts.data.filter { post ->
                         if (post.metadata.reactions != null) {
-                            (post.metadata.reactions.count { reaction -> reaction.emoji_name == MattermostSettings.emojiToRequestSave } > 0 &&
-                                    post.metadata.reactions.count { reaction -> reaction.emoji_name == MattermostSettings.emojiToSaveSuccess } == 0)
+                            post.metadata.reactions.count { reaction -> reaction.emoji_name == MattermostSettings.emojiToRequestSave } > 0 &&
+                                    post.metadata.reactions.count { reaction -> reaction.emoji_name == MattermostSettings.emojiToSaveSuccess } == 0
+
                         } else false
                     }
                     val filesInPostsWithReaction = postsWithReaction.map { post -> post.metadata.files }
-                    val files: MutableList<FileInfo> = mutableListOf()
-                    // TODO
-                    filesInPostsWithReaction.flatMap { listIsFile ->
 
+                     val files: List<FileInfo> = filesInPostsWithReaction.flatMap { listIsFile ->
+                         listIsFile?.filter { file ->
+                             file.mime_type.contains("image")
+                         }?.map { file ->
+                             FileInfo(file.id, file.name, file.mime_type, file.post_id)
+                         } ?: emptyList()
                     }
-                    filesInPostsWithReaction.forEach { filesInPost ->
-                        filesInPost?.forEach { file ->
-                            if (file.mime_type.contains("image")) files.add(FileInfo(file.id, file.name, file.mime_type, file.post_id))
-                        }
-                    }
-                    Either.Success(files.toList())
+                    Either.Success(files)
                 }
-
                 is Either.Failure -> {
                     posts
                 }
@@ -116,10 +109,11 @@ class MattermostRepositoryImpl(private val token: String, private val coroutineS
     override suspend fun makeReaction(emojiInfo: EmojiInfo): Either<ErrorReason, EmojiInfoForApi> =
             mattermostApi.makeReaction(
                 token = token,
-                emojiParams = createJsonRequestBody(emojiInfo.mapForApi(userId!!))
+                emojiInfo = emojiInfo
+//                emojiParams = createJsonRequestBody(emojiInfo.mapForApi(userId!!))
             )
 
-    override suspend fun getUserIdFromToken(): Either<ErrorReason, UserInfo> =
+    private suspend fun getUserIdFromToken(): Either<ErrorReason, UserInfo> =
             when(val userInfo = mattermostApi.getUserInfoFromToken(token)) {
                 is Either.Success -> {
                     Either.Success(userInfo.data.toUserInfo())
@@ -135,4 +129,4 @@ class MattermostRepositoryImpl(private val token: String, private val coroutineS
                     JSONObject(params).toString())
 }
 
-private val MILLISECOND_IN_DAY = 86400000
+private const val MILLISECOND_IN_DAY = 86400000
