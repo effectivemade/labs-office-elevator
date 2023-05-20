@@ -13,12 +13,11 @@ import band.effective.office.tv.network.mattermost.MattermostApi
 import band.effective.office.tv.network.mattermost.mattermostWebSocketClient.MattermostWebSocketClient
 import band.effective.office.tv.network.mattermost.mattermostWebSocketClient.impl.MattermostWebSocketClientImpl
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
-import com.squareup.moshi.addAdapter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import notion.api.v1.NotionClient
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.CallAdapter
@@ -130,4 +129,9 @@ class NetworkModule {
         mattermostApi: MattermostApi
     ): MattermostWebSocketClient =
         MattermostWebSocketClientImpl(okHttpClient, mattermostApi)
+    @Singleton
+    @Provides
+    fun provideNotionClient(): NotionClient {
+        return NotionClient(BuildConfig.notionToken)
+    }
 }
