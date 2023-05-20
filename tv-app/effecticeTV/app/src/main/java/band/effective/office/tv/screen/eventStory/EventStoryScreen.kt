@@ -39,7 +39,7 @@ fun EventStoryScreen(viewModel: EventStoryViewModel = hiltViewModel()) {
     when {
         state.isLoading -> LoadScreen(stringResource(id = R.string.stories))
         state.isError -> showErrorMessage(context, errorMessage + state.errorText)
-        state.isData -> if (state.eventsInfo.size == 0) {
+        state.isData -> if (state.eventsInfo.isEmpty()) {
             NoStoriesScreen()
         } else {
             EventStoryScreenContent(state, viewModel, contentFocus, playButton)

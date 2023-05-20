@@ -19,14 +19,16 @@ import javax.inject.Singleton
 class EmployeeInfoRemoteDataSourceImpl @Inject constructor(private val notionClient: NotionClient) :
     EmployeeInfoRemoteDataSource {
 
-    private val employeeInfoList: MutableList<EmployeeInfoDto> = mutableListOf()
+    private var employeeInfoList: MutableList<EmployeeInfoDto> = mutableListOf()
 
     override suspend fun fetchLatestBirthdays(): Flow<Either<String, List<EmployeeInfoDto>>> =
         flow {
             notionClient.use { client ->
-                when (val res: Either<ErrorReason, List<EmployeeInfoDto>> = queryDatabasePages(client)) {
+                when (val res: Either<ErrorReason, List<EmployeeInfoDto>> =
+                    queryDatabasePages(client)) {
                     is Either.Success -> {
                         emit(Either.Success(res.data))
+                        Log.d("test", employeeInfoList.size.toString())
                     }
                     is Either.Failure -> {
                         emit(Either.Failure(res.error.message))
@@ -73,6 +75,7 @@ class EmployeeInfoRemoteDataSourceImpl @Inject constructor(private val notionCli
     }
 
     private fun queryDatabasePages(client: NotionClient): Either<ErrorReason, List<EmployeeInfoDto>> {
+        employeeInfoList = mutableListOf()
         try {
             getPagesFromDatabase(client).map { page ->
                 queryPage(page)
