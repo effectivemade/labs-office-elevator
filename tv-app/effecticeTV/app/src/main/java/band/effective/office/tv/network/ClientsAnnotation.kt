@@ -19,3 +19,8 @@ annotation class MattermostClient
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class UselessFactClient
+
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class DualingoRetrofitClient

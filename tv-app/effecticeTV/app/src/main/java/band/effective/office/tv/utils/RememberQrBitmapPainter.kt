@@ -2,7 +2,6 @@ package band.effective.office.tv.utils
 
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.util.Log
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter

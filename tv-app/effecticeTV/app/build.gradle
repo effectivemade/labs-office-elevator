@@ -32,6 +32,10 @@ android {
         buildConfigField ("String", "folderPathPhotoSynology", localProperties['folderPathPhotoSynology'])
         buildConfigField ("String", "uselessFactsApi", localProperties['uselessFactsApi'])
         buildConfigField ("String", "mattermostBotDirectId", localProperties['mattermostBotDirectId'])
+        buildConfigField ("String", "duolingoUrl", localProperties['duolingoUrl'])
+
+        buildConfigField("String", "notionToken", localProperties['NOTION_TOKEN'])
+        buildConfigField("String", "notionDatabaseId", localProperties['NOTION_DATABASE_ID'])
     }
 
     buildTypes {
@@ -98,7 +102,17 @@ dependencies {
 
     //coil
     implementation libs.coil
+    implementation libs.coil.svg
 
+    //notion
+    implementation("com.github.seratch:notion-sdk-jvm-core:1.8.0")
+
+    //coroutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
+
+    //lifecycle
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.6.1"
     //qr
     implementation libs.zxing
 

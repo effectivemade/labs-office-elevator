@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import band.effective.office.tv.R
 import band.effective.office.tv.screen.autoplay.UserSelect
+import band.effective.office.tv.screen.eventStory.EventStoryViewModel
 import band.effective.office.tv.screen.leaderIdEvents.LeaderIdEventsViewModel
 import band.effective.office.tv.screen.menu.component.ButtonAutoplay
 import band.effective.office.tv.screen.menu.component.MenuComponent
@@ -23,7 +24,7 @@ import band.effective.office.tv.screen.menu.component.MenuItemType
 import band.effective.office.tv.screen.message.secondaryMessage.SecondaryMessageViewModel
 import band.effective.office.tv.screen.navigation.Screen
 import band.effective.office.tv.screen.photo.PhotoViewModel
-import com.example.effecticetv.ui.theme.robotoFontFamily
+import band.effective.office.tv.ui.theme.robotoFontFamily
 
 @Composable
 fun AutoplayMenuScreen(navController: NavController) {
@@ -31,6 +32,8 @@ fun AutoplayMenuScreen(navController: NavController) {
         Pair(Screen.BestPhoto, hiltViewModel<PhotoViewModel>()),
         Pair(Screen.Events, hiltViewModel<LeaderIdEventsViewModel>()),
         Pair(Screen.MessageScreen, hiltViewModel<SecondaryMessageViewModel>())
+        Pair(Screen.Events, hiltViewModel<LeaderIdEventsViewModel>()),
+        Pair(Screen.Stories, hiltViewModel<EventStoryViewModel>())
     )
     var mutableScreenList = mutableListOf<Screen>()
     Column(
@@ -48,6 +51,7 @@ fun AutoplayMenuScreen(navController: NavController) {
                 .padding(horizontal = 100.dp)
                 .fillMaxHeight(0.8f),
             itemsList = listOf(
+                Pair(Screen.Stories, "Stories"),
                 Pair(Screen.BestPhoto, stringResource(R.string.best_photo_screen_title)),
                 Pair(Screen.Events, stringResource(R.string.event_screen_title)),
                 Pair(Screen.MessageScreen, stringResource(R.string.message_screen_title))

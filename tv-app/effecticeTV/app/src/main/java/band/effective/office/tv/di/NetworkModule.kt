@@ -1,9 +1,15 @@
 package band.effective.office.tv.di
 
 import band.effective.office.tv.BuildConfig
+import band.effective.office.tv.core.network.EitherDuolingoAdapterFactory
 import band.effective.office.tv.core.network.EitherLeaderIdAdapterFactory
 import band.effective.office.tv.core.network.EitherSynologyAdapterFactory
 import band.effective.office.tv.network.*
+import band.effective.office.tv.domain.autoplay.AutoplayController
+import band.effective.office.tv.network.DualingoRetrofitClient
+import band.effective.office.tv.network.LeaderIdRetrofitClient
+import band.effective.office.tv.network.SynologyRetrofitClient
+import band.effective.office.tv.network.duolingo.DuolingoApi
 import band.effective.office.tv.network.leader.LeaderApi
 import band.effective.office.tv.network.mattermost.MattermostApi
 import band.effective.office.tv.network.mattermost.mattermostWebSocketClient.MattermostWebSocketClient
@@ -18,6 +24,9 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.CallAdapter
@@ -87,8 +96,15 @@ class NetworkModule {
 
     @Singleton
     @Provides
+    @SynologyRetrofitClient
     fun provideEitherSynologyAdapterFactory(): CallAdapter.Factory =
         EitherSynologyAdapterFactory()
+
+    @Singleton
+    @Provides
+    @DualingoRetrofitClient
+    fun provideEitherDuolingoAdapterFactory(): CallAdapter.Factory =
+        EitherDuolingoAdapterFactory()
 
     @Singleton
     @Provides
@@ -96,7 +112,7 @@ class NetworkModule {
     fun provideSynologyRetrofit(
         moshiConverterFactory: MoshiConverterFactory,
         client: OkHttpClient,
-        callAdapter: CallAdapter.Factory
+        @SynologyRetrofitClient callAdapter: CallAdapter.Factory
     ): Retrofit =
         Retrofit.Builder()
             .addConverterFactory(moshiConverterFactory)
@@ -122,6 +138,21 @@ class NetworkModule {
 
     @Singleton
     @Provides
+    @DualingoRetrofitClient
+    fun provideDuolingoRetrofit(
+        moshiConverterFactory: MoshiConverterFactory,
+        client: OkHttpClient,
+        @DualingoRetrofitClient callAdapter: CallAdapter.Factory
+    ): Retrofit =
+        Retrofit.Builder()
+            .addConverterFactory(moshiConverterFactory)
+            .addCallAdapterFactory(callAdapter)
+            .client(client)
+            .baseUrl(BuildConfig.duolingoUrl)
+            .build()
+
+    @Singleton
+    @Provides
     fun provideLeaderApi(@LeaderIdRetrofitClient retrofit: Retrofit): LeaderApi =
         retrofit.create()
 
@@ -139,4 +170,15 @@ class NetworkModule {
     @Provides
     fun provideUselessFactApi(@UselessFactClient retrofit: Retrofit): UselessFactApi =
         retrofit.create()
+
+    @Singleton
+    @Provides
+    fun provideApiDuolingo(@DualingoRetrofitClient retrofit: Retrofit) =
+        retrofit.create(DuolingoApi::class.java)
+
+    @Singleton
+    @Provides
+    fun providesCoroutineScope(): CoroutineScope {
+        return CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    }
 }
