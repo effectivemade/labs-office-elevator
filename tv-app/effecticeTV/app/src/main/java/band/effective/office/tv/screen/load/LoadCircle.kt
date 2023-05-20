@@ -8,7 +8,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.unit.dp
-import band.effective.office.tv.ui.theme.CharlestonGreen
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
