@@ -11,4 +11,5 @@
     <string name="error_occurred">Произошла ошибка, подробнее:</string>
     <string name="today_no_stories">На сегодня Stories нет</string>
     <string name="back">Назад</string>
+    <string name="stories">Stories</string>
 </resources>

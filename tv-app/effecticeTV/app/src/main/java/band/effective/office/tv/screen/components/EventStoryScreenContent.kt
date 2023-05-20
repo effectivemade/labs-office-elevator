@@ -36,7 +36,9 @@ fun EventStoryScreenContent(
                 Modifier
                     .padding(32.dp)
                     .fillMaxWidth()
-                    .height(8.dp)
+                    .height(8.dp),
+                stories = eventsInfo,
+                currentStoryIndex = currentStoryIndex,
             )
             when(val item = eventsInfo[currentStoryIndex].storyType) {
                 StoryType.Employee -> {

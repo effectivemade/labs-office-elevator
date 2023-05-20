@@ -23,14 +23,14 @@ android {
             useSupportLibrary true
         }
 
-        buildConfigField("String", "apiLeaderUrl", localProperties['apiLeaderUrl'])
-
+        buildConfigField ("String", "apiLeaderUrl", localProperties['apiLeaderUrl'])
+        buildConfigField ("String", "apiMattermostUrl", localProperties['apiMattermostUrl'])
+        buildConfigField ("String", "mattermostBotToken", localProperties['mattermostBotToken'])
         buildConfigField ("String", "apiSynologyUrl", localProperties['synologyIP'])
         buildConfigField ("String", "synologyLogin", localProperties['synologyLogin'])
         buildConfigField ("String", "synologyPassword", localProperties['synologyPassword'])
         buildConfigField ("String", "folderPathPhotoSynology", localProperties['folderPathPhotoSynology'])
         buildConfigField ("String", "duolingoUrl", localProperties['duolingoUrl'])
-
         buildConfigField("String", "notionToken", localProperties['NOTION_TOKEN'])
         buildConfigField("String", "notionDatabaseId", localProperties['NOTION_DATABASE_ID'])
     }
@@ -97,24 +97,17 @@ dependencies {
     implementation libs.hilt.nav
     kapt libs.hitl.compiller
 
-    //coil
-    implementation libs.coil
-    implementation libs.coil.svg
-
-    //notion
-    implementation("com.github.seratch:notion-sdk-jvm-core:1.8.0")
-
-    //coroutines
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
-
-    //lifecycle
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.6.1"
     //qr
     implementation libs.zxing
 
     //navigation
     implementation libs.navigation
+
+    //coil
+    implementation libs.coil
+
+    //notion
+    implementation libs.notion
 }
 kapt {
     correctErrorTypes true

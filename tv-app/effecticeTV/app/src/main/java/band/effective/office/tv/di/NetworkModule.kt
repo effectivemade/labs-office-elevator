@@ -11,8 +11,6 @@ import band.effective.office.tv.network.SynologyRetrofitClient
 import band.effective.office.tv.network.duolingo.DuolingoApi
 import band.effective.office.tv.network.leader.LeaderApi
 import band.effective.office.tv.network.synology.SynologyApi
-import band.effective.office.tv.screen.leaderIdEvents.LeaderIdEventsViewModel
-import band.effective.office.tv.screen.photo.PhotoViewModel
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
@@ -21,6 +19,7 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import notion.api.v1.NotionClient
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.CallAdapter
@@ -41,6 +40,18 @@ class NetworkModule {
         OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }).build()
+
+    @Singleton
+    @Provides
+    @MattermostClient
+    fun provideMattermostOkHttpClient() = OkHttpClient.Builder()
+        .addInterceptor(AuthInterceptor(BuildConfig.mattermostBotToken))
+        .addInterceptor(
+            HttpLoggingInterceptor()
+                .apply {
+                    level = HttpLoggingInterceptor.Level.BODY
+                })
+        .build()
 
     @Singleton
     @Provides
@@ -107,6 +118,21 @@ class NetworkModule {
 
     @Singleton
     @Provides
+    @MattermostClient
+    fun provideMattermostRetrofit(
+        moshiConverterFactory: MoshiConverterFactory,
+        @MattermostClient client: OkHttpClient,
+        callAdapter: CallAdapter.Factory
+    ): Retrofit =
+        Retrofit.Builder()
+            .addConverterFactory(moshiConverterFactory)
+            .addCallAdapterFactory(callAdapter)
+            .client(client)
+            .baseUrl("https://${BuildConfig.apiMattermostUrl}")
+            .build()
+
+    @Singleton
+    @Provides
     fun provideLeaderApi(@LeaderIdRetrofitClient retrofit: Retrofit): LeaderApi =
         retrofit.create()
 
@@ -124,5 +150,23 @@ class NetworkModule {
     @Provides
     fun providesCoroutineScope(): CoroutineScope {
         return CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    }
+
+    @Singleton
+    @Provides
+    fun provideApiMattermost(@MattermostClient retrofit: Retrofit): MattermostApi =
+        retrofit.create()
+
+    @Singleton
+    @Provides
+    fun provideMattermostClient(
+        okHttpClient: OkHttpClient,
+        mattermostApi: MattermostApi
+    ): MattermostWebSocketClient =
+        MattermostWebSocketClientImpl(okHttpClient, mattermostApi)
+    @Singleton
+    @Provides
+    fun provideNotionClient(): NotionClient {
+        return NotionClient(BuildConfig.notionToken)
     }
 }

@@ -24,7 +24,7 @@ data class LatestEventInfoUiState(
             isPlay = false,
             isLoading = true,
             isData = false,
-            eventsInfo = mutableListOf(),
+            eventsInfo = listOf(),
             currentStoryIndex = -1,
         )
     }

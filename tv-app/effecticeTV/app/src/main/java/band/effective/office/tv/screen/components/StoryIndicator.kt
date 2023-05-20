@@ -30,7 +30,7 @@ fun StoryIndicator(countStories: Int, currentStoryIndex: Int, modifier: Modifier
         items(countStories) { index ->
             val animatedColor =
                 animateColorAsState(
-                    if (index == currentStoryIndex) IndependentColors.StoryActiviteIndicatoGray else IndependentColors.StoryIndicatorGray
+                    if (index == currentStoryIndex) IndependentColors.StoryActiviteIndicatorGray else IndependentColors.StoryIndicatorGray
                 )
             Box(
                 modifier = Modifier
