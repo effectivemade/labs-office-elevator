@@ -15,6 +15,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import notion.api.v1.NotionClient
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.CallAdapter
@@ -86,4 +87,10 @@ class NetworkModule {
     @Provides
     fun provideApiSynology(@SynologyRetrofitClient retrofit: Retrofit) =
         retrofit.create(SynologyApi::class.java)
+
+    @Singleton
+    @Provides
+    fun provideNotionClient(): NotionClient {
+        return NotionClient(BuildConfig.notionToken)
+    }
 }

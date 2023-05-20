@@ -14,9 +14,9 @@ import com.example.effecticetv.ui.theme.IndependentColors
 
 @Composable
 fun EventStoryScreenContent(
-    eventsInfo: MutableList<EmployeeInfo>,
-    currentStoryIndex: Int,
     modifier: Modifier = Modifier,
+    eventsInfo: List<EmployeeInfo>,
+    currentStoryIndex: Int,
     onImageLoading: () -> Unit,
     onImageLoaded: () -> Unit,
 ) {
@@ -25,17 +25,21 @@ fun EventStoryScreenContent(
     ) {
         Column {
             StoryIndicator(
-                eventsInfo, currentStoryIndex,
-                Modifier
+                modifier = Modifier
                     .padding(32.dp)
                     .fillMaxWidth()
-                    .height(8.dp)
+                    .height(8.dp),
+                stories = eventsInfo,
+                currentStoryIndex = currentStoryIndex,
             )
             StoryContent(
-                eventsInfo, currentStoryIndex, { onImageLoading() }, { onImageLoaded() },
-                Modifier
+                modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 64.dp)
+                    .padding(horizontal = 64.dp),
+                employeeInfoes = eventsInfo,
+                currentStoryIndex = currentStoryIndex,
+                onImageLoading = { onImageLoading() },
+                onImageLoaded = { onImageLoaded() },
             )
         }
     }

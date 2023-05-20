@@ -2,16 +2,17 @@ package band.effective.office.tv.screen.eventStory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import band.effective.office.tv.core.network.entity.Either
 import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
 import band.effective.office.tv.domain.autoplay.AutoplayableViewModel
 import band.effective.office.tv.domain.autoplay.model.NavigateRequests
+import band.effective.office.tv.domain.model.notion.EmployeeInfoEntity
 import band.effective.office.tv.repository.notion.EmployeeInfoRepository
 import band.effective.office.tv.domain.model.notion.processEmployeeInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
@@ -34,86 +35,135 @@ class EventStoryViewModel @Inject constructor(
         mutableState.update { state -> state.copy(currentStoryIndex = state.eventsInfo.size - 1) }
     }
 
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
-
     init {
-        fetchBirthdays()
+        fetchStories()
+        initTimer()
+        startTimer()
+    }
+
+    private fun fetchStories() {
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            updateStateAsException(exception as Error)
+        }
+        viewModelScope.launch(Dispatchers.Default + exceptionHandler) {
+            repository.latestEvents().collectLatest { events ->
+                when (events) {
+                    is Either.Success -> {
+                        updateStateAsSuccessfulFetch(events.data)
+                    }
+                    is Either.Failure -> {
+                        updateStateAsException(Error(events.error))
+                    }
+                }
+            }
+        }
+    }
+
+    fun startTimer() {
+        timer.startTimer()
+    }
+
+    fun stopTimer() {
+        timer.stopTimer()
+    }
+
+    private fun initTimer() {
         timer.init(
             scope = viewModelScope,
             callbackToEnd = {
-                if (state.value.currentStoryIndex + 1 < state.value.eventsInfo.size) {
-                    mutableState.update { it.copy(currentStoryIndex = it.currentStoryIndex + 1) }
+                if (isLastStory()) {
+                    onLastStory()
                 } else {
-                    mutableState.update { it.copy(navigateRequest = NavigateRequests.Forward) }
-                    mutableState.update { it.copy(currentStoryIndex = 0) }
+                    moveToNextStory()
                 }
             },
             isPlay = state.value.isPlay
         )
-        timer.startTimer()
     }
 
-    private fun fetchBirthdays() {
-        viewModelScope.launch {
-            withContext(ioDispatcher) {
-                repository.latestEvents.catch { exception ->
-                    mutableState.update { state ->
-                        state.copy(
-                            isError = true,
-                            errorText = exception.message ?: "",
-                            isLoading = false,
-                        )
-                    }
-                }.collectLatest { events ->
-                    val resultList = events.processEmployeeInfo()
-                    mutableState.update { state ->
-                        state.copy(
-                            eventsInfo = resultList,
-                            currentStoryIndex = 0,
-                            isLoading = false,
-                            isData = true,
-                            isPlay = true,
-                        )
-                    }
-                }
-            }
+    private fun updateStateAsException(error: Error) {
+        mutableState.update { state ->
+            state.copy(
+                isError = true,
+                errorText = error.message ?: "",
+                isLoading = false,
+            )
+        }
+    }
+
+    private fun updateStateAsSuccessfulFetch(events: List<EmployeeInfoEntity>) {
+        val resultList = events.processEmployeeInfo()
+        mutableState.update { state ->
+            state.copy(
+                eventsInfo = resultList,
+                currentStoryIndex = 0,
+                isLoading = false,
+                isData = true,
+                isPlay = true,
+            )
         }
     }
 
     fun sendEvent(event: EventStoryScreenEvents) {
-        timer.resetTimer()
         when (event) {
             is EventStoryScreenEvents.OnClickPlayButton -> {
-                timer.stopTimer()
-                val isPlay = !state.value.isPlay
-                mutableState.update { it.copy(isPlay = isPlay) }
-                if (isPlay) timer.startTimer()
+                handlePlayState()
             }
             is EventStoryScreenEvents.OnClickNextItem -> {
-                if (state.value.currentStoryIndex + 1 < state.value.eventsInfo.size) {
-                    mutableState.update { it.copy(currentStoryIndex = it.currentStoryIndex + 1) }
-                } else {
-                    mutableState.update { it.copy(navigateRequest = NavigateRequests.Forward) }
-                    mutableState.update { it.copy(currentStoryIndex = 0) }
-                }
+                playNextStory()
             }
             is EventStoryScreenEvents.OnClickPreviousItem -> {
-                if (state.value.currentStoryIndex - 1 >= 0) {
-                    mutableState.update { it.copy(currentStoryIndex = it.currentStoryIndex - 1) }
-                } else {
-                    mutableState.update { it.copy(navigateRequest = NavigateRequests.Back) }
-                    mutableState.update { it.copy(currentStoryIndex = state.value.eventsInfo.size - 1) }
-                }
+                playPreviousStory()
             }
         }
     }
 
-    fun playStory() {
-        timer.startTimer()
+    private fun handlePlayState() {
+        timer.resetTimer()
+        stopTimer()
+        val isPlay = !state.value.isPlay
+        mutableState.update { it.copy(isPlay = isPlay) }
+        if (isPlay) timer.startTimer()
     }
 
-    fun stopStory() {
-        timer.stopTimer()
+    private fun playNextStory() {
+        timer.resetTimer()
+        if (isLastStory()) {
+            onLastStory()
+        } else {
+            moveToNextStory()
+        }
     }
+
+    private fun playPreviousStory() {
+        timer.resetTimer()
+        if (isFirstStory()) {
+            onFirstStory()
+        } else {
+            moveToPreviousStory()
+        }
+    }
+
+    private fun moveToNextStory() =
+        mutableState.update { it.copy(currentStoryIndex = it.currentStoryIndex + 1) }
+
+    private fun moveToPreviousStory() =
+        mutableState.update { it.copy(currentStoryIndex = it.currentStoryIndex - 1) }
+
+    private fun isLastStory() = state.value.currentStoryIndex + 1 == state.value.eventsInfo.size
+
+    private fun isFirstStory() = state.value.currentStoryIndex == 0
+
+    private fun onLastStory() {
+        mutableState.update { it.copy(navigateRequest = NavigateRequests.Forward) }
+        mutableState.update { it.copy(currentStoryIndex = 0) }
+    }
+
+    private fun onFirstStory() {
+        mutableState.update { it.copy(navigateRequest = NavigateRequests.Back) }
+        mutableState.update { it.copy(currentStoryIndex = state.value.eventsInfo.size - 1) }
+    }
+
+
 }
 

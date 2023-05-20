@@ -19,7 +19,7 @@ import band.effective.office.tv.domain.model.notion.EmployeeInfo
 import com.example.effecticetv.ui.theme.IndependentColors
 
 @Composable
-fun StoryIndicator(stories: List<EmployeeInfo>, currentStoryIndex: Int, modifier: Modifier) {
+fun StoryIndicator(modifier: Modifier, stories: List<EmployeeInfo>, currentStoryIndex: Int) {
 
     val screenConfiguration = LocalConfiguration.current
     val screenWidth = screenConfiguration.screenWidthDp.dp
@@ -46,12 +46,15 @@ fun StoryIndicator(stories: List<EmployeeInfo>, currentStoryIndex: Int, modifier
 @Composable
 fun PreviewStoryIndicator() {
     StoryIndicator(
+        modifier = Modifier.padding(24.dp),
+        stories =
         listOf(
             Birthday("John Doe", "test"),
             Birthday("John Doe", "test"),
             Birthday("John Doe", "test"),
             Birthday("John Doe", "test"),
             Birthday("John Doe", "test"),
-        ), 1, Modifier.padding(24.dp)
+        ),
+        currentStoryIndex = 1,
     )
 }

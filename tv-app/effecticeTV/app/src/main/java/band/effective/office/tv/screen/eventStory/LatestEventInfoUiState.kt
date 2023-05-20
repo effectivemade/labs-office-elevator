@@ -11,7 +11,7 @@ data class LatestEventInfoUiState(
     override val isLoading: Boolean,
     override val isData: Boolean,
     val isPlay: Boolean,
-    val eventsInfo: MutableList<EmployeeInfo>,
+    val eventsInfo: List<EmployeeInfo>,
     var currentStoryIndex: Int,
     override val screenName: Screen = Screen.Stories,
     override var navigateRequest: NavigateRequests = NavigateRequests.Nowhere,
@@ -23,7 +23,7 @@ data class LatestEventInfoUiState(
             isPlay = false,
             isLoading = true,
             isData = false,
-            eventsInfo = mutableListOf(),
+            eventsInfo = listOf(),
             currentStoryIndex = -1,
         )
     }
