@@ -69,11 +69,18 @@ class EventStoryViewModel @Inject constructor(
                             run {
                                 val users = usersDuolingo.data
                                 val userXpSort = DuolingoUserInfo(
-                                    users = users.sortedByDescending { it.totalXp }.toUI(),
+                                    users = users
+                                        .sortedByDescending { it.totalXp }
+                                        .subList(0, if (users.size <= 10) users.size else 11) // 11 because we show 10 users on screen
+                                        .toUI(),
                                     keySort = KeySortDuolingoUser.Xp
                                     ) as StoryModel
                                 val userStreakSort = DuolingoUserInfo(
-                                    users = users.sortedByDescending { it.streakDay }.toUI(),
+                                    users = users
+                                        .sortedByDescending { it.streakDay }
+                                        .subList(0, if (users.size <= 10) users.size else 11) // 11 because we show 10 users on screen
+                                        .filter { it.streakDay != 0 }
+                                        .toUI(),
                                     keySort = KeySortDuolingoUser.Streak
                                     ) as StoryModel
                                 listOf(userXpSort, userStreakSort)

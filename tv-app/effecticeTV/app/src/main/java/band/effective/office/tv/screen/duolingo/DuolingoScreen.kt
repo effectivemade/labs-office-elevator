@@ -26,8 +26,9 @@ fun DuolingoScreen(keySort: KeySortDuolingoUser, duolingoUser: List<DuolingoUser
             .fillMaxSize()
     ) {
         Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 80.dp)) {
+                .fillMaxSize()
+                .padding(horizontal = 80.dp)
+        ) {
             DuolingoTitle(Modifier.padding(start = 10.dp))
             Spacer(modifier = Modifier.height(10.dp))
             val textTitle = when (keySort){

@@ -73,7 +73,7 @@ fun GirdItem (
             }
         }
 
-        Spacer(modifier = Modifier.width(50.dp))
+        Spacer(modifier = Modifier.width(25.dp))
         Text(
             modifier = Modifier.width(150.dp),
             text = indicatorUsers,
