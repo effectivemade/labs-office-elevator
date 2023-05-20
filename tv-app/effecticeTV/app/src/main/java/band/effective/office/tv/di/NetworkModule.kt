@@ -4,12 +4,12 @@ import band.effective.office.tv.BuildConfig
 import band.effective.office.tv.core.network.EitherDuolingoAdapterFactory
 import band.effective.office.tv.core.network.EitherLeaderIdAdapterFactory
 import band.effective.office.tv.core.network.EitherSynologyAdapterFactory
-import band.effective.office.tv.domain.autoplay.AutoplayController
-import band.effective.office.tv.network.DualingoRetrofitClient
-import band.effective.office.tv.network.LeaderIdRetrofitClient
-import band.effective.office.tv.network.SynologyRetrofitClient
+import band.effective.office.tv.network.*
 import band.effective.office.tv.network.duolingo.DuolingoApi
 import band.effective.office.tv.network.leader.LeaderApi
+import band.effective.office.tv.network.mattermost.MattermostApi
+import band.effective.office.tv.network.mattermost.mattermostWebSocketClient.MattermostWebSocketClient
+import band.effective.office.tv.network.mattermost.mattermostWebSocketClient.impl.MattermostWebSocketClientImpl
 import band.effective.office.tv.network.synology.SynologyApi
 import com.squareup.moshi.Moshi
 import dagger.Module
@@ -122,11 +122,9 @@ class NetworkModule {
     fun provideMattermostRetrofit(
         moshiConverterFactory: MoshiConverterFactory,
         @MattermostClient client: OkHttpClient,
-        callAdapter: CallAdapter.Factory
     ): Retrofit =
         Retrofit.Builder()
             .addConverterFactory(moshiConverterFactory)
-            .addCallAdapterFactory(callAdapter)
             .client(client)
             .baseUrl("https://${BuildConfig.apiMattermostUrl}")
             .build()

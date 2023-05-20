@@ -31,21 +31,20 @@ fun EventStoryScreenContent(
     ) {
         Column {
             StoryIndicator(
-                eventsInfo.size,
-                currentStoryIndex,
-                Modifier
+                countStories = eventsInfo.size,
+                currentStoryIndex = currentStoryIndex,
+                modifier = Modifier
                     .padding(32.dp)
                     .fillMaxWidth()
                     .height(8.dp),
-                stories = eventsInfo,
-                currentStoryIndex = currentStoryIndex,
             )
-            when(val item = eventsInfo[currentStoryIndex].storyType) {
+            when(eventsInfo[currentStoryIndex].storyType) {
                 StoryType.Employee -> {
                     val storyData = eventsInfo[currentStoryIndex]
                     StoryContent(
-                        storyData as EmployeeInfoUI,
-                        { onImageLoading() }, { onImageLoaded() },
+                        employeeInfo = storyData as EmployeeInfoUI,
+                        onImageLoading = onImageLoading,
+                        onImageLoaded =  onImageLoaded,
                         Modifier
                             .fillMaxSize()
                             .padding(horizontal = 64.dp)

@@ -16,8 +16,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class EmployeeInfoRemoteDataSourceImpl @Inject constructor(private val notionClient: NotionClient) :
-    EmployeeInfoRemoteDataSource {
+class EmployeeInfoRemoteDataSourceImpl @Inject constructor(
+    private val notionClient: NotionClient
+    ): EmployeeInfoRemoteDataSource
+{
 
     private var employeeInfoList: MutableList<EmployeeInfoDto> = mutableListOf()
 
@@ -64,6 +66,21 @@ class EmployeeInfoRemoteDataSourceImpl @Inject constructor(private val notionCli
         }
         return Either.Success(employeeInfoList)
 
+    }
+
+    override suspend fun getDuolingoUserName(): List<String> {
+        val duolingoUserNames: MutableList<String> = mutableListOf()
+        NotionClient(BuildConfig.notionToken).use { client ->
+            getPagesFromDatabase(client).forEach { page ->
+                val userName = page.properties["Профиль Duolingo"]?.richText?.run {
+                    if (isNotEmpty())
+                        get(0).plainText.toString()
+                    else ""
+                }.orEmpty()
+                if (userName.isNotEmpty()) duolingoUserNames.add(userName)
+            }
+        }
+        return duolingoUserNames.toList()
     }
 
     private fun getPagesFromDatabase(client: NotionClient): List<Page> {

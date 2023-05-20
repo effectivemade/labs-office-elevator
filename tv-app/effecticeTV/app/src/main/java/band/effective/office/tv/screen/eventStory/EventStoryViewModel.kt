@@ -10,6 +10,7 @@ import band.effective.office.tv.domain.model.duolingo.DuolingoUser
 import band.effective.office.tv.domain.model.notion.EmployeeInfoEntity
 import band.effective.office.tv.domain.model.notion.processEmployeeInfo
 import band.effective.office.tv.network.use_cases.DuolingoManager
+import band.effective.office.tv.repository.notion.EmployeeInfoRepository
 import band.effective.office.tv.screen.duolingo.model.toUI
 import band.effective.office.tv.screen.eventStory.models.DuolingoUserInfo
 import band.effective.office.tv.screen.eventStory.models.StoryModel
@@ -23,10 +24,8 @@ class EventStoryViewModel @Inject constructor(
     private val repository: EmployeeInfoRepository,
     private val timer: TimerSlideShow,
     private val duolingo: DuolingoManager
-) :
-    ViewModel(), AutoplayableViewModel {
-    private val mutableState =
-        MutableStateFlow(LatestEventInfoUiState.empty)
+) : ViewModel(), AutoplayableViewModel {
+    private val mutableState = MutableStateFlow(LatestEventInfoUiState.empty)
     override val state = mutableState.asStateFlow()
 
     override fun switchToFirstItem() {
@@ -42,88 +41,87 @@ class EventStoryViewModel @Inject constructor(
         viewModelScope.launch {
             initDataStory()
         }
-        timer.init(
-            scope = viewModelScope,
-            callbackToEnd = {
-                if (state.value.currentStoryIndex + 1 < state.value.eventsInfo.size) {
-                    mutableState.update { it.copy(currentStoryIndex = it.currentStoryIndex + 1) }
-                } else {
-                    mutableState.update { it.copy(navigateRequest = NavigateRequests.Forward) }
-                    mutableState.update { it.copy(currentStoryIndex = 0) }
-                }
-            },
-            isPlay = state.value.isPlay
-        )
-        timer.startTimer()
+        initTimer()
+        startTimer()
     }
 
-
     private suspend fun initDataStory() {
-        withContext(ioDispatcher) {
-            repository.latestEvents.combine(duolingo.getDuolingoUserinfo()) { employeeInfoEntities: List<EmployeeInfoEntity>, usersDuolingo: Either<String, List<DuolingoUser>> ->
-                when (usersDuolingo) {
-                    is Either.Success -> {
-                        employeeInfoEntities.processEmployeeInfo() +
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            updateStateAsException((exception as Error).message.orEmpty())
+        }
+        withContext(Dispatchers.IO + exceptionHandler) {
+            repository.latestEvents()
+                .combine(duolingo.getDuolingoUserinfo()) { employeeInfoEntities: Either<String, List<EmployeeInfoEntity>>, usersDuolingo: Either<String, List<DuolingoUser>> ->
+                    var error = ""
+                    val duolingoInfo = when (usersDuolingo) {
+                        is Either.Success -> {
                             run {
                                 val users = usersDuolingo.data
                                 val userXpSort = DuolingoUserInfo(
                                     users = users
                                         .sortedByDescending { it.totalXp }
-                                        .subList(0, if (users.size <= 10) users.size else 11) // 11 because we show 10 users on screen
+                                        .subList(
+                                            0,
+                                            if (users.size <= countShowUsers) users.size else countShowUsers + 1
+                                        )
                                         .toUI(),
                                     keySort = KeySortDuolingoUser.Xp
-                                    ) as StoryModel
+                                ) as StoryModel
                                 val userStreakSort = DuolingoUserInfo(
                                     users = users
                                         .sortedByDescending { it.streakDay }
-                                        .subList(0, if (users.size <= 10) users.size else 11) // 11 because we show 10 users on screen
+                                        .subList(
+                                            0,
+                                            if (users.size <= countShowUsers) users.size else countShowUsers + 1
+                                        )
                                         .filter { it.streakDay != 0 }
                                         .toUI(),
                                     keySort = KeySortDuolingoUser.Streak
-                                    ) as StoryModel
+                                ) as StoryModel
                                 listOf(userXpSort, userStreakSort)
                             }
+                        }
+                        is Either.Failure -> {
+                            error = usersDuolingo.error
+                            emptyList()
+                        }
                     }
-
-                    is Either.Failure -> {
-                        employeeInfoEntities.processEmployeeInfo()
+                    val notionInfo = when (employeeInfoEntities) {
+                        is Either.Success -> {
+                            employeeInfoEntities.data.processEmployeeInfo()
+                        }
+                        is Either.Failure -> {
+                            error = employeeInfoEntities.error
+                            emptyList()
+                        }
                     }
-                }
-            }.catch { exception ->
-                mutableState.update { state ->
-                    state.copy(
-                        isError = true,
-                        errorText = exception.message ?: "",
-                        isLoading = false,
+                    if (notionInfo.isEmpty() && duolingoInfo.isEmpty()) return@combine Either.Failure(
+                        error
                     )
-                }
-            }.collectLatest { events ->
-                mutableState.update { oldState ->
-                    oldState.copy(
-                        isLoading = false,
-                        isData = true,
-                        isError = false,
-                        eventsInfo = events,
-                        currentStoryIndex = 0,
-                        isPlay = true
-                    )
+                    else Either.Success(notionInfo + duolingoInfo)
+                }.collectLatest { events ->
+                when (events) {
+                    is Either.Success -> updateStateAsSuccessfulFetch(events.data)
+                    is Either.Failure -> updateStateAsException(events.error)
                 }
             }
-    private fun updateStateAsException(error: Error) {
+        }
+    }
+
+    private fun updateStateAsException(error: String) {
         mutableState.update { state ->
             state.copy(
                 isError = true,
-                errorText = error.message ?: "",
+                errorText = error,
                 isLoading = false,
             )
         }
     }
 
-    private fun updateStateAsSuccessfulFetch(events: List<EmployeeInfoEntity>) {
-        val resultList = events.processEmployeeInfo()
+    private fun updateStateAsSuccessfulFetch(events: List<StoryModel>) {
         mutableState.update { state ->
             state.copy(
-                eventsInfo = resultList,
+                eventsInfo = events,
                 currentStoryIndex = 0,
                 isLoading = false,
                 isData = true,
@@ -191,5 +189,29 @@ class EventStoryViewModel @Inject constructor(
         mutableState.update { it.copy(navigateRequest = NavigateRequests.Back) }
         mutableState.update { it.copy(currentStoryIndex = state.value.eventsInfo.size - 1) }
     }
+
+    fun startTimer() {
+        timer.startTimer()
+    }
+
+    fun stopTimer() {
+        timer.stopTimer()
+    }
+
+    private fun initTimer() {
+        timer.init(
+            scope = viewModelScope,
+            callbackToEnd = {
+                if (isLastStory()) {
+                    onLastStory()
+                } else {
+                    moveToNextStory()
+                }
+            },
+            isPlay = state.value.isPlay
+        )
+    }
+
+    private val countShowUsers = 10
 }
 
