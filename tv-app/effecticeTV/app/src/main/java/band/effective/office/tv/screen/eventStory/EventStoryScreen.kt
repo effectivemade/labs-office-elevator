@@ -32,28 +32,28 @@ fun EventStoryScreen(viewModel: EventStoryViewModel = hiltViewModel()) {
     val errorMessage = stringResource(id = R.string.error_occurred)
 
     val state by viewModel.state.collectAsState()
-    val (contentFocus, playButton) = remember { FocusRequester.createRefs() }
+
     when {
         state.isLoading -> LoadScreen(stringResource(id = R.string.stories))
         state.isError -> showErrorMessage(context, errorMessage + state.errorText)
         state.isData -> if (state.eventsInfo.isEmpty()) {
             NoStoriesScreen()
         } else {
-            EventStoryScreenContent(state, viewModel, contentFocus, playButton)
+            EventStoryScreenContent(state, viewModel)
         }
     }
 
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun EventStoryScreenContent(
     state: LatestEventInfoUiState,
     viewModel: EventStoryViewModel,
-    contentFocus: FocusRequester,
-    playButton: FocusRequester
 ) {
     val state by viewModel.state.collectAsState()
     var oldPlayValue by remember { mutableStateOf(false) }
+    val (contentFocus, playButton) = remember { FocusRequester.createRefs() }
     ScreenWithControlsTemplate(
         modifier = Modifier
             .fillMaxSize()

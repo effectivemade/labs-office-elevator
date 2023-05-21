@@ -29,9 +29,9 @@ import band.effective.office.tv.ui.theme.robotoFontFamily
 @Composable
 fun AutoplayMenuScreen(navController: NavController) {
     val pairsScreenVM = listOf(
+        Pair(Screen.Stories, hiltViewModel<EventStoryViewModel>()),
         Pair(Screen.BestPhoto, hiltViewModel<PhotoViewModel>()),
         Pair(Screen.Events, hiltViewModel<LeaderIdEventsViewModel>()),
-        Pair(Screen.Stories, hiltViewModel<EventStoryViewModel>())
     )
     var mutableScreenList = mutableListOf<Screen>()
     Column(
