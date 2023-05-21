@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.tv.material3.Text
 import band.effective.office.tv.domain.model.duolingo.DuolingoUser
 import band.effective.office.tv.screen.duolingo.DuolingoScreen
 import band.effective.office.tv.screen.eventStory.KeySortDuolingoUser
@@ -38,7 +39,12 @@ fun EventStoryScreenContent(
                     .height(8.dp)
             )
             when(val item = eventsInfo[currentStoryIndex].storyType) {
+
                 StoryType.Employee -> {
+                    //NOTE(Maksim Mishenko): fiend bug in dualingo.
+                    //TODO(Maksim Mishenko): uncomment code after fix
+                    Text("Временная затычка")
+                /*
                     val storyData = eventsInfo[currentStoryIndex]
                     StoryContent(
                         storyData as EmployeeInfoUI,
@@ -47,6 +53,7 @@ fun EventStoryScreenContent(
                             .fillMaxSize()
                             .padding(horizontal = 64.dp)
                     )
+                    */
                 }
                 StoryType.Duolingo -> {
                     val duolingoItem = eventsInfo[currentStoryIndex] as DuolingoUserInfo

@@ -8,6 +8,7 @@ import band.effective.office.tv.domain.autoplay.AutoplayableViewModel
 import band.effective.office.tv.domain.autoplay.model.AutoplayState
 import band.effective.office.tv.domain.autoplay.model.NavigateRequests
 import band.effective.office.tv.domain.model.duolingo.DuolingoUser
+import band.effective.office.tv.domain.model.message.BotMessage
 import band.effective.office.tv.domain.model.message.MessageQueue
 import band.effective.office.tv.domain.model.notion.EmployeeInfoEntity
 import band.effective.office.tv.domain.model.notion.processEmployeeInfo
@@ -27,6 +28,8 @@ import javax.inject.Inject
 
 private fun MessageQueue.toListOfEmployeeInfo(): List<MessageInfo> =
     this.queue.value.queue.map { MessageInfo(it) }
+
+private fun BotMessage.toMessageInfo(): MessageInfo = MessageInfo(this)
 
 @HiltViewModel
 class EventStoryViewModel @Inject constructor(
@@ -76,8 +79,35 @@ class EventStoryViewModel @Inject constructor(
             },
             isPlay = state.value.isPlay
         )
+        checkMessage()
     }
 
+    private fun checkMessage() = viewModelScope.launch {
+
+        MessageQueue.secondQueue.queue.collect {
+            val messages = MessageQueue.secondQueue.queue.value.queue
+            val messagesInStory =
+                state.value.eventsInfo.filterIsInstance<MessageInfo>().map { it.message }
+            val commonMessages =
+                messagesInStory.filter { messagesInStory -> messages.any { messageInQueue -> messageInQueue.id == messagesInStory.id } }
+            val addMessages = (messages - commonMessages).map { it.toMessageInfo() }
+            val deleteMessages = (messagesInStory - commonMessages).map { it.toMessageInfo() }
+            mutableState.update {
+                it.copy(
+                    eventsInfo = it.eventsInfo + addMessages - deleteMessages,
+                    currentStoryIndex = if (MessageQueue.secondQueue.queue.value.queue.size < it.eventsInfo.size)
+                        it.currentStoryIndex - 1
+                    else it.currentStoryIndex
+                )
+            }
+        }
+    }
+
+    fun code() {
+
+        val messagesInStory2 =
+            state.value.eventsInfo.filterIsInstance<MessageInfo>().map { it.message }
+    }
 
     private suspend fun initDataStory() {
         withContext(ioDispatcher) {
@@ -111,7 +141,7 @@ class EventStoryViewModel @Inject constructor(
                                     listOf(
                                         userXpSort,
                                         userStreakSort
-                                    ) //+ MessageQueue.secondQueue.toListOfEmployeeInfo()
+                                    ) + MessageQueue.secondQueue.toListOfEmployeeInfo()
                                 }
                     }
 

@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -19,7 +20,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 
 @Composable
-fun OneMessageScreen(modifier: Modifier, message: BotMessage) {
+fun OneMessageScreen(modifier: Modifier, message: BotMessage, textColor: Color = Color.Black) {
     Row(
         modifier = modifier
             .fillMaxSize()
@@ -40,7 +41,10 @@ fun OneMessageScreen(modifier: Modifier, message: BotMessage) {
                     contentDescription = ""
                 )
                 Spacer(modifier = Modifier.width(20.dp))
-                Text(text = message.author.name)
+                Text(
+                    text = message.author.name,
+                    color = textColor
+                )
                 Spacer(modifier = Modifier.width(20.dp))
                 Text(
                     text = calendarToString(message.start),
@@ -51,7 +55,8 @@ fun OneMessageScreen(modifier: Modifier, message: BotMessage) {
             Text(
                 text = message.text,
                 fontFamily = robotoFontFamily(),
-                fontSize = 20.sp
+                fontSize = 20.sp,
+                color = textColor
             )
         }
     }
