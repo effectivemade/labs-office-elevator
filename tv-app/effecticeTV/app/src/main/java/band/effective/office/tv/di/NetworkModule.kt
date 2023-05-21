@@ -126,12 +126,10 @@ class NetworkModule {
     @MattermostClient
     fun provideMattermostRetrofit(
         moshiConverterFactory: MoshiConverterFactory,
-        @MattermostClient client: OkHttpClient,
-        callAdapter: CallAdapter.Factory
+        @MattermostClient client: OkHttpClient
     ): Retrofit =
         Retrofit.Builder()
             .addConverterFactory(moshiConverterFactory)
-            .addCallAdapterFactory(callAdapter)
             .client(client)
             .baseUrl("https://${BuildConfig.apiMattermostUrl}")
             .build()

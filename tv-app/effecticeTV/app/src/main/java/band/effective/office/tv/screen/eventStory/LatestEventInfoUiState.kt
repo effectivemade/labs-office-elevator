@@ -10,7 +10,7 @@ data class LatestEventInfoUiState(
     val errorText: String,
     override val isLoading: Boolean,
     override val isData: Boolean,
-    val isPlay: Boolean,
+    override val isPlay: Boolean,
     val eventsInfo: List<StoryModel>,
     var currentStoryIndex: Int,
     val keySort: KeySortDuolingoUser = KeySortDuolingoUser.Xp,

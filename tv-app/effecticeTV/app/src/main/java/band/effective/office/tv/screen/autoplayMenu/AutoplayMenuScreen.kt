@@ -31,7 +31,7 @@ fun AutoplayMenuScreen(navController: NavController) {
     val pairsScreenVM = listOf(
         Pair(Screen.BestPhoto, hiltViewModel<PhotoViewModel>()),
         Pair(Screen.Events, hiltViewModel<LeaderIdEventsViewModel>()),
-        Pair(Screen.MessageScreen, hiltViewModel<SecondaryMessageViewModel>())
+        Pair(Screen.MessageScreen, hiltViewModel<SecondaryMessageViewModel>()),
         Pair(Screen.Events, hiltViewModel<LeaderIdEventsViewModel>()),
         Pair(Screen.Stories, hiltViewModel<EventStoryViewModel>())
     )

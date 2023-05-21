@@ -13,10 +13,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.tv.BuildConfig
 import band.effective.office.tv.domain.model.message.BotMessage
+import band.effective.office.tv.ui.theme.robotoFontFamily
 import band.effective.office.tv.utils.calendarToString
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.effecticetv.ui.theme.robotoFontFamily
 
 @Composable
 fun OneMessageScreen(modifier: Modifier, message: BotMessage) {
