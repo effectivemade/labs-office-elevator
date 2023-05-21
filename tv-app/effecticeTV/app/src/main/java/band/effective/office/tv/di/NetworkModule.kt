@@ -4,6 +4,9 @@ import band.effective.office.tv.BuildConfig
 import band.effective.office.tv.core.network.EitherDuolingoAdapterFactory
 import band.effective.office.tv.core.network.EitherLeaderIdAdapterFactory
 import band.effective.office.tv.core.network.EitherSynologyAdapterFactory
+import band.effective.office.tv.core.network.UnsafeOkHttpClient
+import band.effective.office.tv.network.LeaderIdRetrofitClient
+import band.effective.office.tv.network.SynologyRetrofitClient
 import band.effective.office.tv.network.*
 import band.effective.office.tv.network.duolingo.DuolingoApi
 import band.effective.office.tv.network.leader.LeaderApi
@@ -40,6 +43,15 @@ class NetworkModule {
     @Provides
     fun provideOkHttpClient() =
         OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }).build()
+
+
+    @Singleton
+    @Provides
+    @band.effective.office.tv.network.UnsafeOkHttpClient
+    fun provideUnsafeOkHttpClient() =
+        UnsafeOkHttpClient.getUnsafeOkHttpClient().addInterceptor(HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }).build()
 
@@ -106,8 +118,8 @@ class NetworkModule {
     @SynologyRetrofitClient
     fun provideSynologyRetrofit(
         moshiConverterFactory: MoshiConverterFactory,
-        client: OkHttpClient,
-        @DualingoRetrofitClient callAdapter: CallAdapter.Factory
+        @band.effective.office.tv.network.UnsafeOkHttpClient client: OkHttpClient,
+        callAdapter: CallAdapter.Factory
     ): Retrofit =
         Retrofit.Builder()
             .addConverterFactory(moshiConverterFactory)
