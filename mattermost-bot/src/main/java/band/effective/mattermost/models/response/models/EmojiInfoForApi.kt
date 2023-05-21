@@ -6,7 +6,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class EmojiInfoForApi(
     @Json(name = "create_at")
-    val createAt: Int,
+    val createAt: Long,
     @Json(name = "emoji_name")
     val emojiName: String,
     @Json(name = "post_id")
@@ -38,3 +38,11 @@ data class EmojiInfo(
             "user_id" to userId
     )
 }
+
+fun EmojiInfo.toDataModel(userId: String) =
+        EmojiInfoForApi(
+                createAt = createAt,
+                emojiName = emojiName,
+                postId = postId,
+                userId = userId
+        )

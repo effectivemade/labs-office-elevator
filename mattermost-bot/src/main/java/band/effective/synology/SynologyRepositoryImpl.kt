@@ -9,6 +9,7 @@ import band.effective.synology.models.SynologyAlbumInfo
 import band.effective.synology.models.respone.AddPhotoToAlbumResponse
 import band.effective.synology.models.respone.SynologyAlbumsResponse
 import band.effective.synology.models.respone.UploadPhotoResponse
+import band.effective.utils.getEnv
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,22 +32,22 @@ class SynologyRepositoryImpl : SynologyRepository {
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     init {
-        login()
+        coroutineScope.launch {
+            login()
+        }
     }
 
-    private fun login() {
-        coroutineScope.launch {
-            println("login in synology")
-            val res = synologyApi.auth(
-                    version = 3,
-                    method = "login",
-                    login = SynologySettings.synologyAccount,
-                    password = SynologySettings.synologyPassword,
-            )
-            cookie = ""
-            val headersCookie = res.headers().toMultimap()["Set-Cookie"]
-            cookie = headersCookie?.reduce { first, second -> first + second }
-        }
+    private suspend fun login() {
+        println("login in synology")
+        val res = synologyApi.auth(
+                version = 3,
+                method = "login",
+                login = getEnv(SynologySettings.synologyAccount),
+                password = getEnv(SynologySettings.synologyPassword),
+        )
+        cookie = ""
+        val headersCookie = res.headers().toMultimap()["Set-Cookie"]
+        cookie = headersCookie?.reduce { first, second -> first + second }
     }
 
     private suspend fun getAlbums(): Either<ErrorReason, SynologyAlbumsResponse> =
@@ -98,6 +99,7 @@ class SynologyRepositoryImpl : SynologyRepository {
                         }
                     }
                 }
+
                 is Either.Failure -> {
                     return Either.Failure(albumsReq.error)
                 }
@@ -107,10 +109,10 @@ class SynologyRepositoryImpl : SynologyRepository {
         return uploadPhoto(requestBody)
     }
 
-    private fun setRequestToUpload(file: ByteArray, fileName: String, fileType: String): RequestBody  {
+    private fun setRequestToUpload(file: ByteArray, fileName: String, fileType: String): RequestBody {
 
-        val reqApi = RequestBody.create(MediaType.parse("text/plain"),"SYNO.Foto.Upload.Item")
-        val reqMethod = RequestBody.create(MediaType.parse("text/plain"),"upload")
+        val reqApi = RequestBody.create(MediaType.parse("text/plain"), "SYNO.Foto.Upload.Item")
+        val reqMethod = RequestBody.create(MediaType.parse("text/plain"), "upload")
         val reqVersion = RequestBody.create(MediaType.parse("text/plain"), "1")
         val reqDuplicate = RequestBody.create(MediaType.parse("text/plain"), "\"ignore\"")
         val reqName = RequestBody.create(MediaType.parse("text/plain"), "\"$fileName\"")
@@ -120,7 +122,7 @@ class SynologyRepositoryImpl : SynologyRepository {
                 .addFormDataPart("api", null, removeHeaderFromRequestBody(reqApi))
                 .addFormDataPart("method", null, removeHeaderFromRequestBody(reqMethod))
                 .addFormDataPart("version", null, removeHeaderFromRequestBody(reqVersion))
-                .addFormDataPart("file", fileName, removeHeaderFromRequestBody( RequestBody.create(
+                .addFormDataPart("file", fileName, removeHeaderFromRequestBody(RequestBody.create(
                         MediaType.get(fileType),
                         file
                 )))
@@ -131,12 +133,13 @@ class SynologyRepositoryImpl : SynologyRepository {
     }
 
 
-     private suspend fun createAlbum(albumName: String): Either<ErrorReason, SynologyAlbumInfo> {
-        val requestBody = RequestBody.create(MediaType.get("text/plane"),"api=SYNO.Foto.Browse.NormalAlbum&method=create&version=1&name=%22$albumName%22&item=%5B%5D")
-        return when (val album = synologyApi.createAlbum(cookie = cookie.orEmpty(),requestBody)) {
+    private suspend fun createAlbum(albumName: String): Either<ErrorReason, SynologyAlbumInfo> {
+        val requestBody = RequestBody.create(MediaType.get("text/plane"), "api=SYNO.Foto.Browse.NormalAlbum&method=create&version=1&name=%22$albumName%22&item=%5B%5D")
+        return when (val album = synologyApi.createAlbum(cookie = cookie.orEmpty(), requestBody)) {
             is Either.Success -> {
                 Either.Success(SynologyAlbumInfo(album.data.albumsData.album.id))
             }
+
             is Either.Failure -> {
                 Either.Failure(album.error)
             }
@@ -145,7 +148,7 @@ class SynologyRepositoryImpl : SynologyRepository {
 
     private fun currentAlbumName(): String {
         val currentYear = Calendar.getInstance().get(Calendar.YEAR)
-        return "${SynologySettings.synologyAlbumTypeName} $currentYear"
+        return "${getEnv(SynologySettings.synologyAlbumTypeName)} $currentYear"
     }
 
     // This method remove headers from multipart, because synology photo don't work with these headers

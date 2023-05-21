@@ -7,11 +7,9 @@ import band.effective.mattermost.models.FileInfo
 import band.effective.mattermost.models.response.ResponseGetPostsForChannel
 import band.effective.core.mattermostApi
 import band.effective.mattermost.models.UserInfo
-import band.effective.mattermost.models.response.models.EmojiInfo
-import band.effective.mattermost.models.response.models.EmojiInfoForApi
-import band.effective.mattermost.models.response.models.Channel
-import band.effective.mattermost.models.response.models.Post
+import band.effective.mattermost.models.response.models.*
 import band.effective.mattermost.models.response.toUserInfo
+import band.effective.utils.getEnv
 import kotlinx.coroutines.*
 import okhttp3.RequestBody
 import org.json.JSONObject
@@ -85,9 +83,11 @@ class MattermostRepositoryImpl(private val token: String, private val coroutineS
                 is Either.Success -> {
                     val postsWithReaction = posts.data.filter { post ->
                         if (post.metadata.reactions != null) {
-                            post.metadata.reactions.count { reaction -> reaction.emoji_name == MattermostSettings.emojiToRequestSave } > 0 &&
-                                    post.metadata.reactions.count { reaction -> reaction.emoji_name == MattermostSettings.emojiToSaveSuccess } == 0
-
+                            val countToRequestSaveReaction =
+                                    post.metadata.reactions.count { reaction -> reaction.emoji_name == getEnv(MattermostSettings.emojiToRequestSave) }
+                            val countSaveReaction =
+                                    post.metadata.reactions.count { reaction -> reaction.emoji_name == getEnv(MattermostSettings.emojiToSaveSuccess) }
+                            countToRequestSaveReaction > 0 && countSaveReaction == 0
                         } else false
                     }
                     val filesInPostsWithReaction = postsWithReaction.map { post -> post.metadata.files }
@@ -109,8 +109,7 @@ class MattermostRepositoryImpl(private val token: String, private val coroutineS
     override suspend fun makeReaction(emojiInfo: EmojiInfo): Either<ErrorReason, EmojiInfoForApi> =
             mattermostApi.makeReaction(
                 token = token,
-                emojiInfo = emojiInfo
-//                emojiParams = createJsonRequestBody(emojiInfo.mapForApi(userId!!))
+                emojiInfo = emojiInfo.toDataModel(userId = userId.orEmpty())
             )
 
     private suspend fun getUserIdFromToken(): Either<ErrorReason, UserInfo> =
@@ -122,11 +121,6 @@ class MattermostRepositoryImpl(private val token: String, private val coroutineS
                 Either.Failure(userInfo.error)
             }
         }
-
-    private fun createJsonRequestBody(params: Map<String, Any>) =
-            RequestBody.create(
-                    okhttp3.MediaType.parse("application/json; charset=utf-8"),
-                    JSONObject(params).toString())
 }
 
 private const val MILLISECOND_IN_DAY = 86400000

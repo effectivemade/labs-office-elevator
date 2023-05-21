@@ -23,7 +23,5 @@ class ChannelsAdapter: JsonAdapter<List<Channel>>() {
     }
 
     @ToJson
-    override fun toJson(p0: JsonWriter, p1: List<Channel>?) {
-        TODO("Not yet implemented")
-    }
+    override fun toJson(p0: JsonWriter, p1: List<Channel>?) {}
 }

@@ -7,6 +7,7 @@ import band.effective.mattermost.models.response.adapter.ChannelsAdapter
 import band.effective.mattermost.models.response.adapter.EitherMattermostAdapterFactory
 import band.effective.mattermost.models.response.adapter.PostsAdapter
 import band.effective.synology.SynologyApi
+import band.effective.utils.getEnv
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient
@@ -38,7 +39,7 @@ val mattermostApi = Retrofit.Builder()
         .addConverterFactory(moshiConverterFactory)
         .addCallAdapterFactory(mattermostEitherFactory)
         .client(okHttpClient)
-        .baseUrl(MattermostSettings.baseURL)
+        .baseUrl(getEnv(MattermostSettings.baseURL))
         .build()
         .create(MattermostApi::class.java)
 
@@ -46,6 +47,6 @@ val synologyApi = Retrofit.Builder()
         .addConverterFactory(moshiConverterFactory)
         .addCallAdapterFactory(mattermostEitherFactory)
         .client(unsafeOkHttpClient)
-        .baseUrl(SynologySettings.baseURL)
+        .baseUrl(getEnv(SynologySettings.baseURL))
         .build()
         .create(SynologyApi::class.java)

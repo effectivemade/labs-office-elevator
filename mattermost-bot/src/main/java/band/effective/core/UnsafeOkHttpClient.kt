@@ -7,7 +7,8 @@ import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
-// TODO add comment
+// This is OkHttpClient ignore problems with ssl certificate.
+// This is a temporary solution until the synology issue is fixed.
 class UnsafeOkHttpClient {
     companion object {
         fun getUnsafeOkHttpClient(): OkHttpClient.Builder {
