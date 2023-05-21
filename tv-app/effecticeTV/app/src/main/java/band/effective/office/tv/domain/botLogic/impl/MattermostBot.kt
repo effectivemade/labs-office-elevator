@@ -154,7 +154,7 @@ class MattermostBot @Inject constructor(
             ?: BotMessage.deletedMessage.firstOrNull { it.id == messageId }
         if (message != null && message.directId != "")
             client.deleteMessage(message.directId)
-        if (message != null && message.author.id == userId) {
+        if ((message != null) && (message.author.id == userId)) {
             MessageQueue.secondQueue.removeMessage(message)
             MessageQueue.firstQueue.removeMessage(message)
             BotMessage.deletedMessage.remove(message)

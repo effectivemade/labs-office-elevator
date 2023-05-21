@@ -92,21 +92,16 @@ class EventStoryViewModel @Inject constructor(
                 messagesInStory.filter { messagesInStory -> messages.any { messageInQueue -> messageInQueue.id == messagesInStory.id } }
             val addMessages = (messages - commonMessages).map { it.toMessageInfo() }
             val deleteMessages = (messagesInStory - commonMessages).map { it.toMessageInfo() }
+            val newEventInfo = state.value.eventsInfo + addMessages - deleteMessages
             mutableState.update {
                 it.copy(
-                    eventsInfo = it.eventsInfo + addMessages - deleteMessages,
-                    currentStoryIndex = if (MessageQueue.secondQueue.queue.value.queue.size < it.eventsInfo.size)
-                        it.currentStoryIndex - 1
+                    eventsInfo = newEventInfo,
+                    currentStoryIndex = if (it.currentStoryIndex >= newEventInfo.size)
+                        newEventInfo.size - 1
                     else it.currentStoryIndex
                 )
             }
         }
-    }
-
-    fun code() {
-
-        val messagesInStory2 =
-            state.value.eventsInfo.filterIsInstance<MessageInfo>().map { it.message }
     }
 
     private suspend fun initDataStory() {
