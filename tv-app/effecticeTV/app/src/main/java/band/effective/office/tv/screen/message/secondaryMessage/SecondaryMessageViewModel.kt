@@ -38,6 +38,16 @@ class SecondaryMessageViewModel @Inject constructor(
         }
     }
 
+    override fun stopTimer() {
+        timer.stopTimer()
+        mutableState.update { it.copy(isPlay = false) }
+    }
+
+    override fun startTimer() {
+        timer.startTimer()
+        mutableState.update { it.copy(isPlay = true) }
+    }
+
     init {
         updateMessageList()
         timer.init(

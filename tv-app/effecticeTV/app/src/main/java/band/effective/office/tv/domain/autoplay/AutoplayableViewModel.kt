@@ -8,4 +8,6 @@ interface AutoplayableViewModel {
 
     fun switchToFirstItem(prevScreenState: AutoplayState)
     fun switchToLastItem(prevScreenState: AutoplayState)
+    fun stopTimer()
+    fun startTimer()
 }

@@ -23,7 +23,7 @@ data class LeaderIdEventsUiState(
             isError = false,
             eventsInfo = listOf(),
             curentEvent = -1,
-            isPlay = false,
+            isPlay = true,
             errorText = ""
         )
     }

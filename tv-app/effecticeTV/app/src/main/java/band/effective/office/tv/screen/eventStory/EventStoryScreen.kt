@@ -55,6 +55,8 @@ private fun EventStoryScreenContent(
     contentFocus: FocusRequester,
     playButton: FocusRequester
 ) {
+    val state by viewModel.state.collectAsState()
+    var oldPlayValue = state.isPlay
     ScreenWithControlsTemplate(
         modifier = Modifier
             .fillMaxSize()
@@ -79,8 +81,11 @@ private fun EventStoryScreenContent(
                 .focusable(),
             eventsInfo = state.eventsInfo,
             currentStoryIndex = state.currentStoryIndex,
-            onImageLoaded = { viewModel.startTimer() },
-            onImageLoading = { viewModel.stopTimer() })
+            onImageLoaded = { if (oldPlayValue) viewModel.startTimer() },
+            onImageLoading = {
+                oldPlayValue = state.isPlay
+                viewModel.stopTimer()
+            })
     }
 
 }

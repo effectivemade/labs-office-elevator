@@ -1,5 +1,6 @@
 package band.effective.office.tv.screen.eventStory
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.core.network.entity.Either
@@ -41,19 +42,19 @@ class EventStoryViewModel @Inject constructor(
     override val state = mutableState.asStateFlow()
 
     override fun switchToFirstItem(prevScreenState: AutoplayState) {
+        if (prevScreenState.isPlay) startTimer()
         mutableState.update { state ->
             state.copy(
-                currentStoryIndex = 0,
-                isPlay = prevScreenState.isPlay
+                currentStoryIndex = 0
             )
         }
     }
 
     override fun switchToLastItem(prevScreenState: AutoplayState) {
+        if (prevScreenState.isPlay) stopTimer()
         mutableState.update { state ->
             state.copy(
-                currentStoryIndex = state.eventsInfo.size - 1,
-                isPlay = prevScreenState.isPlay
+                currentStoryIndex = state.eventsInfo.size - 1
             )
         }
     }
@@ -231,6 +232,7 @@ class EventStoryViewModel @Inject constructor(
     private fun onLastStory() {
         mutableState.update { it.copy(navigateRequest = NavigateRequests.Forward) }
         mutableState.update { it.copy(currentStoryIndex = 0) }
+        Log.e("Autoplay Controller","Autoplay Controller")
     }
 
     private fun onFirstStory() {
@@ -238,12 +240,14 @@ class EventStoryViewModel @Inject constructor(
         mutableState.update { it.copy(currentStoryIndex = state.value.eventsInfo.size - 1) }
     }
 
-    fun startTimer() {
+    override fun startTimer() {
         timer.startTimer()
+        mutableState.update { it.copy(isPlay = true) }
     }
 
-    fun stopTimer() {
+    override fun stopTimer() {
         timer.stopTimer()
+        mutableState.update { it.copy(isPlay = false) }
     }
 
     private fun initTimer() {

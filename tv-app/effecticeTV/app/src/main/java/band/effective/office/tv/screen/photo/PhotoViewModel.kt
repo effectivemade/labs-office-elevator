@@ -42,6 +42,16 @@ class PhotoViewModel @Inject constructor(
         }
     }
 
+    override fun stopTimer() {
+        slideShow.stopTimer()
+        mutableState.update { it.copy(isPlay = false) }
+    }
+
+    override fun startTimer() {
+        slideShow.startTimer()
+        mutableState.update { it.copy(isPlay = true) }
+    }
+
     init {
         slideShow.init(
             scope = viewModelScope,
@@ -82,8 +92,8 @@ class PhotoViewModel @Inject constructor(
                 }
             }
             is BestPhotoEvent.OnRequestSwitchScreen ->{
-                mutableState.update { it.copy(navigateRequest = event.request) }
                 slideShow.stopTimer()
+                mutableState.update { it.copy(navigateRequest = event.request) }
             }
         }
     }

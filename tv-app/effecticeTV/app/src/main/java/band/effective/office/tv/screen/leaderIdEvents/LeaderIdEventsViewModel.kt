@@ -1,5 +1,6 @@
 package band.effective.office.tv.screen.leaderIdEvents
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.core.network.Either
@@ -24,17 +25,30 @@ class LeaderIdEventsViewModel @Inject constructor(
     private var mutableState = MutableStateFlow(LeaderIdEventsUiState.empty)
     override val state = mutableState.asStateFlow()
     override fun switchToFirstItem(prevScreenState: AutoplayState) {
-        if (prevScreenState.isPlay) timer.startTimer()
+        Log.e("Autoplay Controller","$prevScreenState")
+        if (prevScreenState.isPlay)
+            timer.startTimer()
         mutableState.update { it.copy(curentEvent = 0, isPlay = prevScreenState.isPlay) }
     }
 
     override fun switchToLastItem(prevScreenState: AutoplayState) {
-        if (prevScreenState.isPlay) timer.startTimer()
+        if (prevScreenState.isPlay)
+            timer.startTimer()
         mutableState.update {
             it.copy(
                 curentEvent = it.eventsInfo.size - 1, isPlay = prevScreenState.isPlay
             )
         }
+    }
+
+    override fun stopTimer() {
+        timer.stopTimer()
+        mutableState.update { it.copy(isPlay = false) }
+    }
+
+    override fun startTimer() {
+        timer.startTimer()
+        mutableState.update { it.copy(isPlay = true) }
     }
 
     val finish = GregorianCalendar()
@@ -48,10 +62,11 @@ class LeaderIdEventsViewModel @Inject constructor(
                     mutableState.update { it.copy(curentEvent = it.curentEvent + 1) }
                 } else {
                     mutableState.update { it.copy(navigateRequest = NavigateRequests.Forward) }
-                    timer.stopTimer()
                 }
             }, isPlay = state.value.isPlay
         )
+        if (state.value.isPlay)
+            timer.startTimer()
     }
 
     fun load() = viewModelScope.launch {
@@ -89,7 +104,8 @@ class LeaderIdEventsViewModel @Inject constructor(
                 timer.stopTimer()
                 val isPlay = !state.value.isPlay
                 mutableState.update { it.copy(isPlay = isPlay) }
-                if (isPlay) timer.startTimer()
+                if (isPlay)
+                    timer.startTimer()
             }
             is LeaderIdScreenEvents.OnClickNextItem -> {
                 if (state.value.curentEvent + 1 < state.value.eventsInfo.size) {
