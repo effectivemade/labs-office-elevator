@@ -119,7 +119,7 @@ class NetworkModule {
     fun provideSynologyRetrofit(
         moshiConverterFactory: MoshiConverterFactory,
         @band.effective.office.tv.network.UnsafeOkHttpClient client: OkHttpClient,
-        callAdapter: CallAdapter.Factory
+        @DualingoRetrofitClient callAdapter: CallAdapter.Factory
     ): Retrofit =
         Retrofit.Builder()
             .addConverterFactory(moshiConverterFactory)
