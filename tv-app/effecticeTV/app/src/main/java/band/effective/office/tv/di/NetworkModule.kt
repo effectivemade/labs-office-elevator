@@ -5,21 +5,14 @@ import band.effective.office.tv.core.network.EitherDuolingoAdapterFactory
 import band.effective.office.tv.core.network.EitherLeaderIdAdapterFactory
 import band.effective.office.tv.core.network.EitherSynologyAdapterFactory
 import band.effective.office.tv.network.*
-import band.effective.office.tv.domain.autoplay.AutoplayController
-import band.effective.office.tv.network.DualingoRetrofitClient
-import band.effective.office.tv.network.LeaderIdRetrofitClient
-import band.effective.office.tv.network.SynologyRetrofitClient
 import band.effective.office.tv.network.duolingo.DuolingoApi
 import band.effective.office.tv.network.leader.LeaderApi
 import band.effective.office.tv.network.mattermost.MattermostApi
-import band.effective.office.tv.network.mattermost.mattermostWebSocketClient.MattermostWebSocketClient
-import band.effective.office.tv.network.mattermost.mattermostWebSocketClient.impl.MattermostWebSocketClientImpl
 import band.effective.office.tv.network.synology.SynologyApi
 import band.effective.office.tv.network.uselessFact.UselessFactApi
 import band.effective.office.tv.utils.GregorianCalendarMoshiAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.addAdapter
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,6 +20,7 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import notion.api.v1.NotionClient
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.CallAdapter
@@ -63,6 +57,7 @@ class NetworkModule {
 
     @Singleton
     @Provides
+    @LeaderIdRetrofitClient
     fun provideEitherAdapterFactory(): EitherLeaderIdAdapterFactory = EitherLeaderIdAdapterFactory()
 
     @Singleton
@@ -112,7 +107,7 @@ class NetworkModule {
     fun provideSynologyRetrofit(
         moshiConverterFactory: MoshiConverterFactory,
         client: OkHttpClient,
-        @SynologyRetrofitClient callAdapter: CallAdapter.Factory
+        @DualingoRetrofitClient callAdapter: CallAdapter.Factory
     ): Retrofit =
         Retrofit.Builder()
             .addConverterFactory(moshiConverterFactory)
@@ -178,5 +173,10 @@ class NetworkModule {
     @Provides
     fun providesCoroutineScope(): CoroutineScope {
         return CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    }
+    @Singleton
+    @Provides
+    fun provideNotionClient(): NotionClient {
+        return NotionClient(BuildConfig.notionToken)
     }
 }

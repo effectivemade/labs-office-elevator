@@ -31,29 +31,24 @@ fun EventStoryScreenContent(
     ) {
         Column {
             StoryIndicator(
-                eventsInfo.size,
-                currentStoryIndex,
-                Modifier
+                countStories = eventsInfo.size,
+                currentStoryIndex = currentStoryIndex,
+                modifier = Modifier
                     .padding(32.dp)
                     .fillMaxWidth()
-                    .height(8.dp)
+                    .height(8.dp),
             )
-            when(val item = eventsInfo[currentStoryIndex].storyType) {
-
+            when(eventsInfo[currentStoryIndex].storyType) {
                 StoryType.Employee -> {
-                    //NOTE(Maksim Mishenko): fiend bug in dualingo.
-                    //TODO(Maksim Mishenko): uncomment code after fix
-                    Text("Временная затычка")
-                /*
                     val storyData = eventsInfo[currentStoryIndex]
                     StoryContent(
-                        storyData as EmployeeInfoUI,
-                        { onImageLoading() }, { onImageLoaded() },
+                        employeeInfo = storyData as EmployeeInfoUI,
+                        onImageLoading = onImageLoading,
+                        onImageLoaded =  onImageLoaded,
                         Modifier
                             .fillMaxSize()
                             .padding(horizontal = 64.dp)
                     )
-                    */
                 }
                 StoryType.Duolingo -> {
                     val duolingoItem = eventsInfo[currentStoryIndex] as DuolingoUserInfo

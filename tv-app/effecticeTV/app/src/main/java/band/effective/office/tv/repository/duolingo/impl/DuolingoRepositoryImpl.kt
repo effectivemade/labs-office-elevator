@@ -14,7 +14,6 @@ import javax.inject.Inject
 
 class DuolingoRepositoryImpl @Inject constructor(
     private val duolingoApi: DuolingoApi,
-     private val coroutineScope: CoroutineScope
 ): DuolingoRepository {
     override suspend fun getUsers(usersName: List<String>): Flow<Either<String, List<DuolingoUser>>> =
         flow {

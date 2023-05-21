@@ -31,6 +31,7 @@ class TimerSlideShow @Inject constructor() {
                 var currentTime = System.currentTimeMillis()
                 while (isActive && currentTime - startTime < period * 1000)
                     currentTime = System.currentTimeMillis()
+                //TODO(Stanislav Radchenko): @Maksim Mishenko improve this code
                 if (isActive && isPlay)
                     callbackToEnd()
             }

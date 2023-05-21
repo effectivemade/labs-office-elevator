@@ -37,34 +37,50 @@ fun EventStoryScreen(viewModel: EventStoryViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsState()
     val (contentFocus, playButton) = remember { FocusRequester.createRefs() }
     when {
-        state.isLoading -> LoadScreen("Stories")
+        state.isLoading -> LoadScreen(stringResource(id = R.string.stories))
         state.isError -> showErrorMessage(context, errorMessage + state.errorText)
-        state.isData -> if (state.eventsInfo.isEmpty()) NoStoriesScreen() else ScreenWithControlsTemplate(
+        state.isData -> if (state.eventsInfo.isEmpty()) {
+            NoStoriesScreen()
+        } else {
+            EventStoryScreenContent(state, viewModel, contentFocus, playButton)
+        }
+    }
+
+}
+
+@Composable
+private fun EventStoryScreenContent(
+    state: LatestEventInfoUiState,
+    viewModel: EventStoryViewModel,
+    contentFocus: FocusRequester,
+    playButton: FocusRequester
+) {
+    ScreenWithControlsTemplate(
+        modifier = Modifier
+            .fillMaxSize()
+            .onFocusChanged { focusState ->
+                if (focusState.isFocused) MenuState.state.update { it.copy(selectButton = MenuButton.Nothink) }
+            },
+        currentListPosition = state.currentStoryIndex,
+        countItems = state.eventsInfo.size,
+        isPlay = state.isPlay,
+        playButton = playButton,
+        contentFocus = contentFocus,
+        onClickPlayButton = { viewModel.sendEvent(EventStoryScreenEvents.OnClickPlayButton) },
+        onClickNextItemButton = { viewModel.sendEvent(EventStoryScreenEvents.OnClickNextItem) },
+        onClickPreviousItemButton = { viewModel.sendEvent(EventStoryScreenEvents.OnClickPreviousItem) }) {
+        EventStoryScreenContent(
             modifier = Modifier
                 .fillMaxSize()
-                .onFocusChanged { focusState ->
-                    if (focusState.isFocused) MenuState.state.update { it.copy(selectButton = MenuButton.Nothink) }
-                },
-            currentListPosition = state.currentStoryIndex,
-            countItems = state.eventsInfo.size,
-            isPlay = state.isPlay,
-            playButton = playButton,
-            contentFocus = contentFocus,
-            onClickPlayButton = { viewModel.sendEvent(EventStoryScreenEvents.OnClickPlayButton) },
-            onClickNextItemButton = { viewModel.sendEvent(EventStoryScreenEvents.OnClickNextItem) },
-            onClickPreviousItemButton = { viewModel.sendEvent(EventStoryScreenEvents.OnClickPreviousItem) }) {
-            EventStoryScreenContent(state.eventsInfo,
-                state.currentStoryIndex,
-                Modifier
-                    .fillMaxSize()
-                    .focusRequester(contentFocus)
-                    .focusProperties {
-                        down = playButton
-                    }
-                    .focusable(),
-                onImageLoaded = { viewModel.playStory() },
-                onImageLoading = { viewModel.stopStory() })
-        }
+                .focusRequester(contentFocus)
+                .focusProperties {
+                    down = playButton
+                }
+                .focusable(),
+            eventsInfo = state.eventsInfo,
+            currentStoryIndex = state.currentStoryIndex,
+            onImageLoaded = { viewModel.startTimer() },
+            onImageLoading = { viewModel.stopTimer() })
     }
 
 }
