@@ -81,4 +81,6 @@ class PrimaryMessageViewModel @Inject constructor(
             }
         }
     }
+
+    fun endShow(){mutableState.update { PrimaryMessageScreenState.empty }}
 }

@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import band.effective.office.tv.screen.message.MessageScreen
@@ -23,12 +24,15 @@ fun PrimaryMessageScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(30.dp),
+
             messagesList = state.messagesList,
             currentIndex = state.currentMessage,
             isPlay = state.isPlay,
+            textColor = Color.White,
             onClickPreviousItemButton = { viewModel.onEvent(PrimaryMessageScreenEvents.OnClickPrevButton) },
             onClickNextItemButton = { viewModel.onEvent(PrimaryMessageScreenEvents.OnClickNextButton) },
-            onClickPlayButton = { viewModel.onEvent(PrimaryMessageScreenEvents.OnClickPlayButton) }
+            onClickPlayButton = { viewModel.onEvent(PrimaryMessageScreenEvents.OnClickPlayButton) },
+            onClickButton = { viewModel.endShow() }
         )
     }
 }

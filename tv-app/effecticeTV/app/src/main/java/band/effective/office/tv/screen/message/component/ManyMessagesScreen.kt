@@ -14,7 +14,13 @@ import androidx.compose.ui.unit.dp
 import band.effective.office.tv.domain.model.message.BotMessage
 
 @Composable
-fun ManyMessagesScreen(modifier: Modifier, messagesList: List<BotMessage>, currentIndex: Int = 0) {
+fun ManyMessagesScreen(
+    modifier: Modifier,
+    messagesList: List<BotMessage>,
+    currentIndex: Int = 0,
+    textColor: Color = Color.Black,
+    onClickButton: (() -> Unit)? = null
+) {
     Box(modifier = modifier) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -30,8 +36,13 @@ fun ManyMessagesScreen(modifier: Modifier, messagesList: List<BotMessage>, curre
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
-        ){
-            OneMessageScreen(modifier = modifier, message = messagesList[currentIndex])
+        ) {
+            OneMessageScreen(
+                modifier = modifier,
+                message = messagesList[currentIndex],
+                onClickButton = onClickButton,
+                textColor = textColor
+            )
         }
     }
 }
@@ -53,7 +64,7 @@ fun ProgressIndicator(
                 animateColorAsState(
                     if (index == currentIndex) currentElementColor else elementColor
                 )
-            Row{
+            Row {
                 Box(
                     modifier = elementModifier
                         .width(8.dp)

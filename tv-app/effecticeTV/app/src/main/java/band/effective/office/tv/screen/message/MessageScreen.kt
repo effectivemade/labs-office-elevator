@@ -10,6 +10,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import band.effective.office.tv.core.ui.screen_with_controls.ScreenWithControlsTemplate
 import band.effective.office.tv.core.ui.screen_with_controls.model.MenuButton
 import band.effective.office.tv.core.ui.screen_with_controls.model.MenuState
@@ -27,9 +28,11 @@ fun MessageScreen(
     currentIndex: Int = 0,
     uselessFact: String = "",
     isPlay: Boolean,
+    textColor: Color = Color.Black,
     onClickPlayButton: () -> Unit,
     onClickNextItemButton: () -> Unit,
-    onClickPreviousItemButton: () -> Unit
+    onClickPreviousItemButton: () -> Unit,
+    onClickButton: (() -> Unit)? = null
 ) {
     val (contentFocus, playButton) = remember { FocusRequester.createRefs() }
     ScreenWithControlsTemplate(modifier = Modifier
@@ -53,11 +56,17 @@ fun MessageScreen(
             .focusable()
         when (messagesList.size) {
             0 -> EmptyMessageScreen(modifier = modifierWithFocus, uselessFact = uselessFact)
-            1 -> OneMessageScreen(modifier = modifierWithFocus, message = messagesList[0])
+            1 -> OneMessageScreen(
+                modifier = modifierWithFocus,
+                message = messagesList[0],
+                onClickButton = onClickButton,
+                textColor = textColor
+            )
             else -> ManyMessagesScreen(
                 modifier = modifierWithFocus,
                 messagesList = messagesList,
-                currentIndex = currentIndex
+                currentIndex = currentIndex,
+                onClickButton = onClickButton
             )
         }
     }

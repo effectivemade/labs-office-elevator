@@ -14,21 +14,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.tv.BuildConfig
 import band.effective.office.tv.domain.model.message.BotMessage
+import band.effective.office.tv.screen.menu.component.ButtonAutoplay
 import band.effective.office.tv.ui.theme.robotoFontFamily
 import band.effective.office.tv.utils.calendarToString
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 
 @Composable
-fun OneMessageScreen(modifier: Modifier, message: BotMessage, textColor: Color = Color.Black) {
-    Row(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 100.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+fun OneMessageScreen(
+    modifier: Modifier,
+    message: BotMessage,
+    textColor: Color = Color.Black,
+    onClickButton: (() -> Unit)? = null
+) {
+    Column(
+        modifier = modifier.padding(horizontal = 100.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(modifier = Modifier) {
+        Column() {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -51,12 +55,19 @@ fun OneMessageScreen(modifier: Modifier, message: BotMessage, textColor: Color =
                     color = MaterialTheme.colors.primaryVariant
                 )
             }
-            Spacer(modifier = Modifier.width(100.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = message.text,
                 fontFamily = robotoFontFamily(),
                 fontSize = 20.sp,
                 color = textColor
+            )
+        }
+        if (onClickButton != null) {
+            Spacer(modifier = Modifier.height(20.dp))
+            ButtonAutoplay(
+                text = "Закрыть",
+                onClick = { onClickButton() }
             )
         }
     }
