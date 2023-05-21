@@ -47,7 +47,6 @@ interface MattermostApi {
     @POST("reactions")
     suspend fun makeReaction(
         @Header("Authorization") token: String,
-//        @Body emojiParams: RequestBody,
         @Body emojiInfo: EmojiInfoForApi
     ): Either<ErrorReason, EmojiInfoForApi>
 
