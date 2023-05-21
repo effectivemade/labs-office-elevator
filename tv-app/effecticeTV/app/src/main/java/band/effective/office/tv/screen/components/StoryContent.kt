@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import band.effective.office.tv.R
 import band.effective.office.tv.domain.model.notion.Anniversary
 import band.effective.office.tv.domain.model.notion.EventType
+import band.effective.office.tv.screen.eventStory.models.AnniversaryUI
 import band.effective.office.tv.screen.eventStory.models.EmployeeInfoUI
 import band.effective.office.tv.screen.eventStory.models.NewEmployeeUI
 import band.effective.office.tv.ui.theme.drukLCGWideMedium
@@ -88,7 +89,7 @@ fun StoryContent(
                     fontStyle = FontStyle.Italic
                 )
                 if (isAnniversary) {
-                    val story = employeeInfo as Anniversary
+                    val story = employeeInfo as AnniversaryUI
                     Text(
                         text =
                         stringResource(id = R.string.with_us) + " " + story.yearsInCompany + " " + getCorrectDeclension(
