@@ -195,8 +195,8 @@ class EventStoryViewModel @Inject constructor(
 
     private fun handlePlayState() {
         timer.resetTimer()
-        stopTimer()
         val isPlay = !state.value.isPlay
+        stopTimer()
         mutableState.update { it.copy(isPlay = isPlay) }
         if (isPlay) timer.startTimer()
     }

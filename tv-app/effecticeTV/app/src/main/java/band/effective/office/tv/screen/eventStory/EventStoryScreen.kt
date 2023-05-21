@@ -5,10 +5,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -56,7 +53,7 @@ private fun EventStoryScreenContent(
     playButton: FocusRequester
 ) {
     val state by viewModel.state.collectAsState()
-    var oldPlayValue = state.isPlay
+    var oldPlayValue by remember { mutableStateOf(false) }
     ScreenWithControlsTemplate(
         modifier = Modifier
             .fillMaxSize()
@@ -81,9 +78,14 @@ private fun EventStoryScreenContent(
                 .focusable(),
             eventsInfo = state.eventsInfo,
             currentStoryIndex = state.currentStoryIndex,
-            onImageLoaded = { if (oldPlayValue) viewModel.startTimer() },
+            onImageLoaded = {
+                if (oldPlayValue){
+                    viewModel.startTimer()
+                    oldPlayValue = false
+                }
+                            },
             onImageLoading = {
-                oldPlayValue = state.isPlay
+                oldPlayValue = state.isPlay || oldPlayValue
                 viewModel.stopTimer()
             })
     }

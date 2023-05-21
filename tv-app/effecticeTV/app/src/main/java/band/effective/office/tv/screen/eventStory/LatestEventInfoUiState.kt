@@ -21,7 +21,7 @@ data class LatestEventInfoUiState(
         val empty = LatestEventInfoUiState(
             isError = false,
             errorText = "",
-            isPlay = false,
+            isPlay = true,
             isLoading = true,
             isData = false,
             eventsInfo = listOf(),

@@ -60,8 +60,9 @@ class AutoplayController {
 
         when (stateValue.navigateRequest) {
             NavigateRequests.Forward -> {
-                mutableCurrentScreenIndex.update { (it + 1) % screensList.size }
-                screensList[currentScreenIndex.value].viewModel.switchToFirstItem(stateValue)
+                val newIndex = (mutableCurrentScreenIndex.value + 1) % screensList.size
+                screensList[newIndex].viewModel.switchToFirstItem(stateValue)
+                mutableCurrentScreenIndex.update { newIndex }
                 description.viewModel.state.value.navigateRequest = NavigateRequests.Nowhere
                 Log.i(
                     "Autoplay Controller",
@@ -69,8 +70,9 @@ class AutoplayController {
                 )
             }
             NavigateRequests.Back -> {
-                mutableCurrentScreenIndex.update { (it + screensList.size - 1) % screensList.size }
-                screensList[currentScreenIndex.value].viewModel.switchToLastItem(stateValue)
+                val newIndex = (mutableCurrentScreenIndex.value + screensList.size - 1) % screensList.size
+                screensList[newIndex].viewModel.switchToLastItem(stateValue)
+                mutableCurrentScreenIndex.update { newIndex }
                 description.viewModel.state.value.navigateRequest = NavigateRequests.Nowhere
                 Log.i(
                     "Autoplay Controller",
