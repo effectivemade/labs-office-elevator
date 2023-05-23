@@ -56,7 +56,7 @@ The screen also contains buttons that can be used to interact with stories (swit
 
 The office of our company is located in the "boiling point" building, which hosts many interesting events every day. "Boiling point" has its own [api](https://apps.leader-id.ru/swagger/) for getting events. In order not to miss events that are interesting for employees, we use the boiling point api to receive and display information about events for the month. There is a qr on the screen to go to the registration site for the event.
 
-<img src="assets/leader-events-screen.png" height="200" title="LeaderID Events Screen">
+<img src="assets/leader-events-screen.png" title="LeaderID Events Screen">
 
 ## Mattermost messages :speech_balloon:
 
