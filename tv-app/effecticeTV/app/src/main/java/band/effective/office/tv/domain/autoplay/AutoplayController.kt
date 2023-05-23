@@ -26,8 +26,9 @@ class AutoplayController {
     }
 
     fun registerScreen(description: ScreenDescription) {
-        if (screensList.any({it.screenName == description.screenName})) return
-        if (screensList.isEmpty()) description.viewModel.state.value.navigateRequest = NavigateRequests.First
+        if (screensList.any({ it.screenName == description.screenName })) return
+        if (screensList.isEmpty()) description.viewModel.state.value.navigateRequest =
+            NavigateRequests.First
         screensList.add(description)
         mutableLoadMap.update { it.plus(Pair(description.screenName, ScreenState.Load)) }
         checkScreenState(description)
@@ -37,11 +38,7 @@ class AutoplayController {
     private fun checkError() = scope?.launch {
         loadMap.collect() {
             if (it.containsValue(ScreenState.Error)) {
-                mutableCurrentScreenIndex.update {
-                    screensList.indexOfFirst {
-                        it.viewModel.state.value.isError
-                    }
-                }
+                mutableLoadMap.update { it.filter { it.value != ScreenState.Error } }
             }
         }
     }
@@ -70,7 +67,8 @@ class AutoplayController {
                 )
             }
             NavigateRequests.Back -> {
-                val newIndex = (mutableCurrentScreenIndex.value + screensList.size - 1) % screensList.size
+                val newIndex =
+                    (mutableCurrentScreenIndex.value + screensList.size - 1) % screensList.size
                 screensList[newIndex].viewModel.switchToLastItem(stateValue)
                 mutableCurrentScreenIndex.update { newIndex }
                 description.viewModel.state.value.navigateRequest = NavigateRequests.Nowhere
@@ -80,7 +78,7 @@ class AutoplayController {
                 )
             }
             NavigateRequests.Nowhere -> {}
-            NavigateRequests.First->{
+            NavigateRequests.First -> {
                 description.viewModel.startTimer()
                 description.viewModel.state.value.navigateRequest = NavigateRequests.Nowhere
             }
