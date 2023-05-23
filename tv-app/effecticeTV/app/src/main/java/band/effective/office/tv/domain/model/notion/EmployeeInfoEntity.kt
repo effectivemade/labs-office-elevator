@@ -21,15 +21,6 @@ fun List<EmployeeInfoEntity>.processEmployeeInfo(): List<EmployeeInfo> {
                 )
             )
         }
-        if (employee.startDate.isNotBlank() && isCelebrationToday(employee.startDate)) {
-            resultList.add(
-                Anniversary(
-                    employee.firstName,
-                    employee.photoUrl,
-                    DateUtlils.getYearsFromStartDate(employee.startDate)
-                )
-            )
-        }
         if (employee.startDate.isNotBlank() && isNewEmployeeToday(employee.startDate)) {
             resultList.add(
                 NewEmployee(
@@ -37,6 +28,16 @@ fun List<EmployeeInfoEntity>.processEmployeeInfo(): List<EmployeeInfo> {
                     employee.photoUrl,
                 )
             )
+        } else {
+            if (employee.startDate.isNotBlank() && isCelebrationToday(employee.startDate)) {
+                resultList.add(
+                    Anniversary(
+                        employee.firstName,
+                        employee.photoUrl,
+                        DateUtlils.getYearsFromStartDate(employee.startDate)
+                    )
+                )
+            }
         }
     }
     return resultList
