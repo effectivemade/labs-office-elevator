@@ -117,7 +117,7 @@ class MattermostBot @Inject constructor(
             client.deleteMessage(message.directId)
         }
         if (message != null) {
-            MessageQueue.firstQueue.push(message)
+            MessageQueue.firstQueue.push(message.copy(directId = ""))
             message.answer("Приоритет повышен")
         }
     }
