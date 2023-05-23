@@ -1,5 +1,7 @@
 package band.effective.office.tv.utils
 
+import java.text.SimpleDateFormat
+import java.time.Year
 import java.util.*
 
 fun String.getDate(): GregorianCalendar {
@@ -10,4 +12,15 @@ fun String.getDate(): GregorianCalendar {
         components[1].toInt() - 1,
         components[0].toInt()
     )
+}
+
+fun String.getDate(pattern: String): GregorianCalendar{
+    val df = SimpleDateFormat(pattern)
+    val date = df.parse(this)
+    val cal = GregorianCalendar()
+    if (date != null) {
+        cal.time = date
+        cal.set(Calendar.YEAR, GregorianCalendar().get(Calendar.YEAR))
+    }
+    return cal
 }

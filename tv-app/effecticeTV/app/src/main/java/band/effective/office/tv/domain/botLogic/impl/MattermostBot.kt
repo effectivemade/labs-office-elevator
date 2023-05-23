@@ -51,7 +51,7 @@ class MattermostBot @Inject constructor(
                             else
                                 message.answer("Слишком много букавок")
                         }
-                        else -> {
+                        !message.fromThread() -> {
                             if (addMessage(message.copy(finish = tomorrow())))
                                 message.answer("Сообщение принято")
                             else
@@ -100,17 +100,22 @@ class MattermostBot @Inject constructor(
 
     /**Check that message is command for pin message on later date*/
     private fun BotMessage.isPinCommand() =
-        text.lowercase().contains("закрепи до") && filter().text.getDate()
+        text.lowercase().contains("закрепи до") && filter().text.getDate("dd MMM")
             .after(GregorianCalendar()) && rootId != ""
 
     /**Copy message from common message queue to important message queue
      * @param messageId message id*/
-    private fun incrementImportant(messageId: String) {
+    private suspend fun incrementImportant(messageId: String) {
         if (MessageQueue.firstQueue.contain(messageId)) {
             return
         }
-        val message = MessageQueue.secondQueue.message(messageId)
-            ?: BotMessage.deletedMessage.firstOrNull() { it.id == messageId }
+        var message = MessageQueue.secondQueue.message(messageId)
+        if (message == null) {
+            message = BotMessage.deletedMessage.firstOrNull() { it.id == messageId }
+        } else {
+            MessageQueue.secondQueue.removeMessage(message)
+            client.deleteMessage(message.directId)
+        }
         if (message != null) {
             MessageQueue.firstQueue.push(message)
             message.answer("Приоритет повышен")
@@ -125,7 +130,7 @@ class MattermostBot @Inject constructor(
             MessageQueue.secondQueue.message(message.rootId)
                 ?: client.getMessage(message.rootId)
         pinningMessage.finish =
-            message.filter().text.getDate().fullDay()
+            message.filter().text.getDate("dd MMM").fullDay()
         if (!MessageQueue.secondQueue.contain(pinningMessage.id)) {
             return addMessage(pinningMessage)
         }
@@ -162,4 +167,9 @@ class MattermostBot @Inject constructor(
         }
         return false
     }
+
+    /**Check that message from thread*/
+    private fun BotMessage.fromThread(): Boolean = rootId != id
 }
+
+
