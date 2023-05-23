@@ -34,7 +34,7 @@ Shows employee name, photo and congratulatory text, with the number of years wit
 
 ### New employee: :baby_chick:
 
-Shows employee name and congratulatory text:
+Shows employee name and congratulatory text.
 
 ## Duolingo
 
@@ -42,11 +42,11 @@ Since a lot of people in the company are learning languages with the [Duolingo](
 
 ### Duolingo top on XP: 🥇
 
-Shows duolingo top of employees by xp, with their names, photo, languages and all time XP:
+Shows duolingo top of employees by xp, with their names, photo, languages and all time XP.
 
 ### Duolingo top of the day in shock mode: ⚡
 
-Shows duolingo top by number of days in stike mode :
+Shows duolingo top by number of days in stike mode.
 
 The screen also contains buttons that can be used to interact with stories (switch, pause or resume). You can see them by pressing the down button on the remote control. The screen can be started in two formats: separate from all or be added to the autoplay to play with another screens, using autoplay menu.
 
