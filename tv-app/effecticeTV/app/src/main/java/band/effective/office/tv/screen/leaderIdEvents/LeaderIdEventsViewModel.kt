@@ -25,7 +25,7 @@ class LeaderIdEventsViewModel @Inject constructor(
     private var mutableState = MutableStateFlow(LeaderIdEventsUiState.empty)
     override val state = mutableState.asStateFlow()
     override fun switchToFirstItem(prevScreenState: AutoplayState) {
-        Log.e("Autoplay Controller","$prevScreenState")
+        Log.e("Autoplay Controller", "$prevScreenState")
         if (prevScreenState.isPlay)
             timer.startTimer()
         mutableState.update { it.copy(curentEvent = 0, isPlay = prevScreenState.isPlay) }
@@ -61,7 +61,7 @@ class LeaderIdEventsViewModel @Inject constructor(
                 if (state.value.curentEvent + 1 < state.value.eventsInfo.size) {
                     mutableState.update { it.copy(curentEvent = it.curentEvent + 1) }
                 } else {
-                    mutableState.update { it.copy(navigateRequest = NavigateRequests.Forward) }
+                    mutableState.update { it.copy(curentEvent = 0,navigateRequest = NavigateRequests.Forward) }
                 }
             }, isPlay = state.value.isPlay
         )
@@ -111,16 +111,24 @@ class LeaderIdEventsViewModel @Inject constructor(
                 if (state.value.curentEvent + 1 < state.value.eventsInfo.size) {
                     mutableState.update { it.copy(curentEvent = it.curentEvent + 1) }
                 } else {
-                    mutableState.update { it.copy(navigateRequest = NavigateRequests.Forward) }
-                    timer.stopTimer()
+                    mutableState.update {
+                        it.copy(
+                            curentEvent = 0,
+                            navigateRequest = NavigateRequests.Forward
+                        )
+                    }
                 }
             }
             is LeaderIdScreenEvents.OnClickPreviousItem -> {
                 if (state.value.curentEvent - 1 >= 0) {
                     mutableState.update { it.copy(curentEvent = it.curentEvent - 1) }
                 } else {
-                    mutableState.update { it.copy(navigateRequest = NavigateRequests.Back) }
-                    timer.stopTimer()
+                    mutableState.update {
+                        it.copy(
+                            curentEvent = it.eventsInfo.size - 1,
+                            navigateRequest = NavigateRequests.Back
+                        )
+                    }
                 }
             }
         }
