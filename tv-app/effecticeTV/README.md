@@ -65,7 +65,7 @@ Our company uses Mattermost as a corporate messenger. Employees want to display 
 <img src="assets/message-in-story.png" title="Message in story">
 <img src="assets/message.png" title="Urgent message">
 
-## Photo slide show :sunrise
+## Photo slide show :sunrise:
 
 You can display your corporate photos in this app. Photos are taken from the web, namely from [Synology photo](https://www.synology.com/en-global/dsm/feature/photos). You can group photos by albums, and show only the ones you need.
 You can also automate the process of adding photos to an album using our [bot for mattermost](https://github.com/effectivemade/labs-office-elevator/tree/mattermost_synology_bot/mattermost-bot)
