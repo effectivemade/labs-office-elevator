@@ -1,11 +1,14 @@
 package band.effective.office.tv.repository.duolingo.impl
 
+import android.content.Context
 import band.effective.office.tv.BuildConfig
+import band.effective.office.tv.R
 import band.effective.office.tv.core.network.entity.Either
 import band.effective.office.tv.domain.model.duolingo.DuolingoUser
 import band.effective.office.tv.domain.model.duolingo.toDomain
 import band.effective.office.tv.network.duolingo.DuolingoApi
 import band.effective.office.tv.repository.duolingo.DuolingoRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -19,9 +22,11 @@ import javax.inject.Inject
 
 class DuolingoRepositoryImpl @Inject constructor(
     private val duolingoApi: DuolingoApi,
-    private val notionClient: NotionClient
+    private val notionClient: NotionClient,
+    @ApplicationContext private val context: Context
 ) : DuolingoRepository {
-    private val duolingoAttributeName = "Профиль Duolingo"
+
+    private val duolingoAttributeName = context.resources.getString(R.string.duolingo_attribute_name)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override suspend fun getUsers(): Flow<Either<String, List<DuolingoUser>>> =

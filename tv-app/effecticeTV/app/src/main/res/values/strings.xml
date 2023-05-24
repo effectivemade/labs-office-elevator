@@ -12,4 +12,7 @@
     <string name="today_no_stories">На сегодня Stories нет</string>
     <string name="back">Назад</string>
     <string name="stories">Stories</string>
+    <string name="top_for_XP">"Tоп по XP"</string>
+    <string name="top_for_days">"Топ по дням в ударном режиме"</string>
+    <string name="duolingo_attribute_name">Профиль Duolingo</string>
 </resources>
