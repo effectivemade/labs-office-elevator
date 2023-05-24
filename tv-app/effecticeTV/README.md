@@ -65,6 +65,11 @@ Our company uses Mattermost as a corporate messenger. Employees want to display 
 <img src="assets/message-in-story.png" title="Message in story">
 <img src="assets/message.png" title="Urgent message">
 
+## Photo slide show :sunrise
+
+You can display your corporate photos in this app. Photos are taken from the web, namely from [Synology photo](https://www.synology.com/en-global/dsm/feature/photos). You can group photos by albums, and show only the ones you need.
+You can also automate the process of adding photos to an album using our [bot for mattermost](https://github.com/effectivemade/labs-office-elevator/tree/mattermost_synology_bot/mattermost-bot)
+
 ## Autoplay :arrow_forward:
 
 For the convenience of the display, it is possible to automatically switch screens between themselves.
@@ -115,4 +120,7 @@ To start the project, you will need to add the fields required for build config 
 * [Notion sdk](https://github.com/seratch/notion-sdk-jvm)
 * [LeaderId Api](https://apps.leader-id.ru/swagger/)
 * [Mattermost Api](https://api.mattermost.com/)
+* [Synology Documentation Api](https://global.download.synology.com/download/Document/Software/DeveloperGuide/Package/FileStation/All/enu/Synology_File_Station_API_Guide.pdf)
+* [Unofficial documentation on Synology Photo Api](https://github.com/zeichensatz/SynologyPhotosAPI)
+
 
