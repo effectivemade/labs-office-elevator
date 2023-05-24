@@ -68,21 +68,6 @@ class EmployeeInfoRemoteDataSourceImpl @Inject constructor(
 
     }
 
-    override suspend fun getDuolingoUserName(): List<String> {
-        val duolingoUserNames: MutableList<String> = mutableListOf()
-        NotionClient(BuildConfig.notionToken).use { client ->
-            getPagesFromDatabase(client).forEach { page ->
-                val userName = page.properties["Профиль Duolingo"]?.richText?.run {
-                    if (isNotEmpty())
-                        get(0).plainText.toString()
-                    else ""
-                }.orEmpty()
-                if (userName.isNotEmpty()) duolingoUserNames.add(userName)
-            }
-        }
-        return duolingoUserNames.toList()
-    }
-
     private fun getPagesFromDatabase(client: NotionClient): List<Page> {
         return client.queryDatabase(
             request = QueryDatabaseRequest(

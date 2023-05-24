@@ -5,5 +5,4 @@ import kotlinx.coroutines.flow.Flow
 
 interface EmployeeInfoRemoteDataSource {
     suspend fun fetchLatestBirthdays(): Flow<Either<String, List<EmployeeInfoDto>>>
-    suspend fun getDuolingoUserName(): List<String>
 }

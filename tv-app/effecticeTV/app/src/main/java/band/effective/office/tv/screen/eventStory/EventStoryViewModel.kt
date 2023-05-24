@@ -6,13 +6,7 @@ import band.effective.office.tv.core.network.entity.Either
 import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
 import band.effective.office.tv.domain.autoplay.AutoplayableViewModel
 import band.effective.office.tv.domain.autoplay.model.NavigateRequests
-import band.effective.office.tv.domain.model.duolingo.DuolingoUser
-import band.effective.office.tv.domain.model.notion.EmployeeInfoEntity
-import band.effective.office.tv.domain.model.notion.processEmployeeInfo
-import band.effective.office.tv.network.use_cases.DuolingoManager
-import band.effective.office.tv.repository.notion.EmployeeInfoRepository
-import band.effective.office.tv.screen.duolingo.model.toUI
-import band.effective.office.tv.screen.eventStory.models.DuolingoUserInfo
+import band.effective.office.tv.network.use_cases.EventStoryDataCombinerUseCase
 import band.effective.office.tv.screen.eventStory.models.StoryModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
@@ -21,9 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EventStoryViewModel @Inject constructor(
-    private val repository: EmployeeInfoRepository,
+    private val eventStoryData: EventStoryDataCombinerUseCase,
     private val timer: TimerSlideShow,
-    private val duolingo: DuolingoManager
 ) : ViewModel(), AutoplayableViewModel {
     private val mutableState = MutableStateFlow(LatestEventInfoUiState.empty)
     override val state = mutableState.asStateFlow()
@@ -50,61 +43,12 @@ class EventStoryViewModel @Inject constructor(
             updateStateAsException((exception as Error).message.orEmpty())
         }
         withContext(Dispatchers.IO + exceptionHandler) {
-            repository.latestEvents()
-                .combine(duolingo.getDuolingoUserinfo()) { employeeInfoEntities: Either<String, List<EmployeeInfoEntity>>, usersDuolingo: Either<String, List<DuolingoUser>> ->
-                    var error = ""
-                    val duolingoInfo = when (usersDuolingo) {
-                        is Either.Success -> {
-                            run {
-                                val users = usersDuolingo.data
-                                val userXpSort = DuolingoUserInfo(
-                                    users = users
-                                        .sortedByDescending { it.totalXp }
-                                        .subList(
-                                            0,
-                                            if (users.size <= countShowUsers) users.size else countShowUsers + 1
-                                        )
-                                        .toUI(),
-                                    keySort = KeySortDuolingoUser.Xp
-                                ) as StoryModel
-                                val userStreakSort = DuolingoUserInfo(
-                                    users = users
-                                        .sortedByDescending { it.streakDay }
-                                        .subList(
-                                            0,
-                                            if (users.size <= countShowUsers) users.size else countShowUsers + 1
-                                        )
-                                        .filter { it.streakDay != 0 }
-                                        .toUI(),
-                                    keySort = KeySortDuolingoUser.Streak
-                                ) as StoryModel
-                                listOf(userXpSort, userStreakSort)
-                            }
-                        }
-                        is Either.Failure -> {
-                            error = usersDuolingo.error
-                            emptyList()
-                        }
+            eventStoryData.getAllDataForStories().collectLatest { events ->
+                    when (events) {
+                        is Either.Success -> updateStateAsSuccessfulFetch(events.data)
+                        is Either.Failure -> updateStateAsException(events.error)
                     }
-                    val notionInfo = when (employeeInfoEntities) {
-                        is Either.Success -> {
-                            employeeInfoEntities.data.processEmployeeInfo()
-                        }
-                        is Either.Failure -> {
-                            error = employeeInfoEntities.error
-                            emptyList()
-                        }
-                    }
-                    if (notionInfo.isEmpty() && duolingoInfo.isEmpty()) return@combine Either.Failure(
-                        error
-                    )
-                    else Either.Success(notionInfo + duolingoInfo)
-                }.collectLatest { events ->
-                when (events) {
-                    is Either.Success -> updateStateAsSuccessfulFetch(events.data)
-                    is Either.Failure -> updateStateAsException(events.error)
                 }
-            }
         }
     }
 
@@ -211,7 +155,6 @@ class EventStoryViewModel @Inject constructor(
             isPlay = state.value.isPlay
         )
     }
-
-    private val countShowUsers = 10
 }
+
 
