@@ -7,6 +7,7 @@ import band.effective.office.tv.domain.model.message.BotMessage
 import band.effective.office.tv.domain.model.message.MessageQueue
 import band.effective.office.tv.domain.model.message.toBotMessage
 import band.effective.office.tv.network.mattermost.mattermostWebSocketClient.MattermostWebSocketClient
+import band.effective.office.tv.utils.calendarToString
 import band.effective.office.tv.utils.fullDay
 import band.effective.office.tv.utils.getDate
 import band.effective.office.tv.utils.tomorrow
@@ -26,16 +27,17 @@ class MattermostBot @Inject constructor(
     }
 
     private fun initBot() = scope.launch {
-        client.connect()
-        client.getDirectMessages().forEach { message ->
-            if (message.finish.after(GregorianCalendar())) {
-                MessageQueue.secondQueue.push(message)
-            } else {
-                client.deleteMessage(message.directId)
+        if (client.connect()) {
+            client.getDirectMessages().forEach { message ->
+                if (message.finish.after(GregorianCalendar())) {
+                    MessageQueue.secondQueue.push(message)
+                } else {
+                    client.deleteMessage(message.directId)
+                }
             }
-        }
-        client.subscribe { event ->
-            handler(event)
+            client.subscribe { event ->
+                handler(event)
+            }
         }
     }
 
@@ -47,7 +49,7 @@ class MattermostBot @Inject constructor(
                     when {
                         message.isPinCommand() -> {
                             if (pinMessage(message))
-                                message.answer("Сообщение закреплено")
+                                message.answer("Сообщение закреплено до ${calendarToString(message.finish,"dd.MM.YY HH:mm")}")
                             else
                                 message.answer("Слишком много букавок")
                         }

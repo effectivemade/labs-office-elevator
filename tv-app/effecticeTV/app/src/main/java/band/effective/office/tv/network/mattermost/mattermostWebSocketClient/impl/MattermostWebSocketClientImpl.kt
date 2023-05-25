@@ -2,6 +2,7 @@ package band.effective.office.tv.network.mattermost.mattermostWebSocketClient.im
 
 import android.util.Log
 import band.effective.office.tv.BuildConfig
+import band.effective.office.tv.core.network.Either
 import band.effective.office.tv.domain.botLogic.BotConfig
 import band.effective.office.tv.domain.botLogic.model.BotEvent
 import band.effective.office.tv.domain.botLogic.model.BotInfo
@@ -18,13 +19,11 @@ import javax.inject.Inject
 
 
 class MattermostWebSocketClientImpl @Inject constructor(
-    private val client: OkHttpClient,
-    private val api: MattermostApi,
-    private val moshi: Moshi
+    private val client: OkHttpClient, private val api: MattermostApi, private val moshi: Moshi
 ) : MattermostWebSocketClient {
     private val webSocket by lazy {
-        client.newWebSocket(Request.Builder()
-            .url("ws://${BuildConfig.apiMattermostUrl}websocket").build(),
+        client.newWebSocket(Request.Builder().url("ws://${BuildConfig.apiMattermostUrl}websocket")
+            .build(),
             MattermostWebSocketListener { handler(it) })
     }
     private var lastSeq = 0
@@ -43,12 +42,21 @@ class MattermostWebSocketClientImpl @Inject constructor(
         }
     }
 
-    override suspend fun connect() {
-        authResponse = api.auth()
-        webSocket.send(
-            moshi.adapter(WebSocketAuthJson::class.java).toJson(WebSocketAuthJson.default)
-        )
+    override suspend fun connect(): Boolean = when (val response = api.auth()) {
+        is Either.Success -> {
+            authResponse = response.data
+            webSocket.send(
+                moshi.adapter(WebSocketAuthJson::class.java).toJson(WebSocketAuthJson.default)
+            )
+            true
+        }
+
+        is Either.Failure -> {
+            Log.e("socket", response.error.message)
+            false
+        }
     }
+
 
     private fun handler(response: String) {
         when {
@@ -70,9 +78,8 @@ class MattermostWebSocketClientImpl @Inject constructor(
             }
             else -> {
                 Log.i("socket", response)
-                lastSeq =
-                    moshi.adapter(OtherJson::class.java).fromJson(response.correct())?.seq
-                        ?: lastSeq
+                lastSeq = moshi.adapter(OtherJson::class.java).fromJson(response.correct())?.seq
+                    ?: lastSeq
             }
         }
     }
@@ -85,32 +92,68 @@ class MattermostWebSocketClientImpl @Inject constructor(
     override suspend fun saveMessage(message: BotMessage): BotMessage {
         val post = api.createPost(
             PostMessageData(
-                channelId = BotConfig.directId,
-                message = "save",
-                rootId = "",
-                props = message
+                channelId = BotConfig.directId, message = "save", rootId = "", props = message
             )
         )
-        return message.copy(directId = post.id)
+        return message.copy(
+            directId = when (post) {
+                is Either.Success -> post.data.id
+                is Either.Failure -> {
+                    Log.e("socket", post.error.message)
+                    ""
+                }
+            }
+        )
     }
 
 
     override fun botInfo(): BotInfo = authResponse.toBotInfo()
     override suspend fun getDirectMessages(): List<BotMessage> =
-        api.getChanelPosts(BotConfig.directId).order.map { api.getPost(it).props.copy(directId = it) }
+        when (val response = api.getChanelPosts(BotConfig.directId)) {
+            is Either.Success -> response.data.order.mapNotNull {
+                when (val postResponse = api.getPost(it)) {
+                    is Either.Success -> postResponse.data.props.copy(directId = it)
+                    is Either.Failure -> {
+                        Log.e("socket", postResponse.error.message)
+                        null
+                    }
+                }
+            }
+            is Either.Failure -> {
+                Log.e("socket", response.error.message)
+                listOf()
+            }
+        }
 
-    override suspend fun deleteMessage(messageId: String) {
-        api.deletePost(messageId)
-    }
+    override suspend fun deleteMessage(messageId: String): Boolean =
+        when (val response = api.deletePost(messageId)) {
+            is Either.Success -> true
+            is Either.Failure -> {
+                Log.e("socket", response.error.message)
+                false
+            }
+        }
 
-    override suspend fun getUserName(userId: String): String = api.getUser(userId).username
+    override suspend fun getUserName(userId: String): String =
+        when (val response = api.getUser(userId)) {
+            is Either.Success -> response.data.username
+            is Either.Failure -> {
+                Log.e("socket", response.error.message)
+                "@john.doe"
+            }
+        }
 
     override suspend fun getMessage(messageId: String): BotMessage {
-        val message = api.getPost(messageId)
-        val author = api.getUser(message.userId)
-        return message.toBotMessage(author.username)
+        val message = when (val response = api.getPost(messageId)) {
+            is Either.Success -> response.data
+            is Either.Failure -> {
+                Log.e("socket", response.error.message)
+                Post.errorPost.copy(message = response.error.message)
+            }
+        }
+        val author = getUserName(message.userId)
+        return message.toBotMessage(author)
     }
-
 
 
     override fun disconnect() {

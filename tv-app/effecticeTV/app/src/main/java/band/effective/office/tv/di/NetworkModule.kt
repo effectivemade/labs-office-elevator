@@ -1,9 +1,10 @@
 package band.effective.office.tv.di
 
 import band.effective.office.tv.BuildConfig
-import band.effective.office.tv.core.network.EitherDuolingoAdapterFactory
-import band.effective.office.tv.core.network.EitherLeaderIdAdapterFactory
+import band.effective.office.tv.core.network.*
 import band.effective.office.tv.core.network.EitherSynologyAdapterFactory
+import band.effective.office.tv.network.LeaderIdRetrofitClient
+import band.effective.office.tv.network.SynologyRetrofitClient
 import band.effective.office.tv.network.*
 import band.effective.office.tv.network.duolingo.DuolingoApi
 import band.effective.office.tv.network.leader.LeaderApi
@@ -24,6 +25,7 @@ import notion.api.v1.NotionClient
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.CallAdapter
+import retrofit2.CallAdapter.Factory
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
@@ -100,6 +102,11 @@ class NetworkModule {
     @DualingoRetrofitClient
     fun provideEitherDuolingoAdapterFactory(): CallAdapter.Factory =
         EitherDuolingoAdapterFactory()
+    @Singleton
+    @Provides
+    @MattermostClient
+    fun provideEitherMattermostAdapterFactory(): CallAdapter.Factory =
+        EitherMattermostAdapterFactory()
 
     @Singleton
     @Provides
@@ -121,10 +128,12 @@ class NetworkModule {
     @MattermostClient
     fun provideMattermostRetrofit(
         moshiConverterFactory: MoshiConverterFactory,
-        @MattermostClient client: OkHttpClient
+        @MattermostClient client: OkHttpClient,
+        @MattermostClient callAdapter: Factory
     ): Retrofit =
         Retrofit.Builder()
             .addConverterFactory(moshiConverterFactory)
+            .addCallAdapterFactory(callAdapter)
             .client(client)
             .baseUrl("https://${BuildConfig.apiMattermostUrl}")
             .build()
