@@ -21,8 +21,8 @@ employees, report about interesting events, show important messages pinned by em
 Mattermost.
 
 * [Office-Elevator](https://github.com/effectivemade/labs-office-elevator/tree/effective_tv/mobile-app)
-Mobile cross-platform application for interacting with the elevator in the office. Allows you to
-call the elevator remotely, after logging in through your google account
+  Mobile cross-platform application for interacting with the elevator in the office. Allows you to
+  call the elevator remotely, after logging in through your google account
 
 ## Authors: :writing_hand:
 
