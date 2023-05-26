@@ -14,15 +14,16 @@ technologies as little as possible.
 
 ## Project Structure: :dizzy:
 
-* [Effective-TV](https://github.com/effectivemade/labs-office-elevator/tree/feature/docs/tv-app/effecticeTV)
+[Effective-TV](https://github.com/effectivemade/labs-office-elevator/tree/feature/docs/tv-app/effecticeTV)
 
 Application for Android TV, which will show various interesting statistics about
 employees, report about interesting events, show important messages pinned by employees in chats in
 Mattermost.
 
-* [Office-Elevator](https://github.com/effectivemade/labs-office-elevator/tree/effective_tv/mobile-app)
-  Mobile cross-platform application for interacting with the elevator in the office. Allows you to
-  call the elevator remotely, after logging in through your google account
+[Office-Elevator](https://github.com/effectivemade/labs-office-elevator/tree/effective_tv/mobile-app)
+
+Mobile cross-platform application for interacting with the elevator in the office. Allows you to
+call the elevator remotely, after logging in through your google account
 
 ## Authors: :writing_hand:
 
