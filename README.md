@@ -27,7 +27,7 @@ call the elevator remotely, after logging in through your google account
 
 ## Authors: :writing_hand:
 
-[Artem Gruzdev](https://github.com/gull192) (Effective-TV)
-[Egor Parkomenko](https://github.com/1MPULSEONE) (Effective-TV)
-[Stanislav Radchenko](https://github.com/Radch-enko) (Office-Elevator, Effective-TV)
-[Maksim Mishenko](https://github.com/UserNameMax) (Effective-TV)
+* [Artem Gruzdev](https://github.com/gull192) (Effective-TV)
+* [Egor Parkomenko](https://github.com/1MPULSEONE) (Effective-TV)
+* [Stanislav Radchenko](https://github.com/Radch-enko) (Office-Elevator, Effective-TV)
+* [Maksim Mishenko](https://github.com/UserNameMax) (Effective-TV)
