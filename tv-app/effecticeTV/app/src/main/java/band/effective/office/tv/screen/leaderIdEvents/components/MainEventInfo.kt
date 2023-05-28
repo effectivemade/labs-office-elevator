@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Text
 import band.effective.office.tv.R
 import band.effective.office.tv.domain.model.leaderId.LeaderIdEventInfo
-import com.example.effecticetv.ui.theme.robotoFontFamily
+import band.effective.office.tv.ui.theme.robotoFontFamily
 
 @Composable
 fun MainEventInfo(eventInfo: LeaderIdEventInfo) {

@@ -82,6 +82,7 @@ private fun EventStoryScreenContent(
             onImageLoaded = { viewModel.startTimer() },
             onImageLoading = { viewModel.stopTimer() })
     }
+
 }
 
 //TODO (ParkhomenkoEgor): Change toast to custom component

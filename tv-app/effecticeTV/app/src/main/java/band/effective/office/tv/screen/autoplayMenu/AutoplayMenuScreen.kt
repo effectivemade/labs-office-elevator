@@ -23,7 +23,7 @@ import band.effective.office.tv.screen.menu.component.MenuComponent
 import band.effective.office.tv.screen.menu.component.MenuItemType
 import band.effective.office.tv.screen.navigation.Screen
 import band.effective.office.tv.screen.photo.PhotoViewModel
-import com.example.effecticetv.ui.theme.robotoFontFamily
+import band.effective.office.tv.ui.theme.robotoFontFamily
 
 @Composable
 fun AutoplayMenuScreen(navController: NavController) {

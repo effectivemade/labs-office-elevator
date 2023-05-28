@@ -20,30 +20,35 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.tv.R
 import band.effective.office.tv.domain.model.notion.Anniversary
-import band.effective.office.tv.domain.model.notion.EmployeeInfo
 import band.effective.office.tv.domain.model.notion.EventType
+import band.effective.office.tv.screen.eventStory.models.AnniversaryUI
+import band.effective.office.tv.screen.eventStory.models.EmployeeInfoUI
+import band.effective.office.tv.screen.eventStory.models.NewEmployeeUI
+import band.effective.office.tv.ui.theme.drukLCGWideMedium
+import band.effective.office.tv.ui.theme.museoCyrl
 import band.effective.office.tv.utils.getCorrectDeclension
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
-import com.example.effecticetv.ui.theme.drukLCGWideMedium
-import com.example.effecticetv.ui.theme.museoCyrl
 
 @Composable
 fun StoryContent(
-    employeeInfoes: List<EmployeeInfo>, currentStoryIndex: Int, onImageLoading: () -> Unit,
-    onImageLoaded: () -> Unit, modifier: Modifier
+    employeeInfo: EmployeeInfoUI,
+    onImageLoading: () -> Unit,
+    onImageLoaded: () -> Unit,
+    modifier: Modifier
 ) {
-    val isAnniversary = employeeInfoes[currentStoryIndex].eventType == EventType.Anniversary
-    val isBirthday = employeeInfoes[currentStoryIndex].eventType == EventType.Birthday
+    val isAnniversary = employeeInfo.eventType == EventType.Anniversary
+    val isBirthday = employeeInfo.eventType == EventType.Birthday
     val painter = rememberAsyncImagePainter(
         model = ImageRequest.Builder(LocalContext.current)
-            .data(employeeInfoes[currentStoryIndex].photoUrl).size(Size.ORIGINAL).build()
+            .data(employeeInfo.photoUrl).size(Size.ORIGINAL).build()
     )
     if (painter.state is AsyncImagePainter.State.Loading) {
         onImageLoading()
@@ -77,14 +82,14 @@ fun StoryContent(
                     .fillMaxSize()
             ) {
                 Text(
-                    text = employeeInfoes[currentStoryIndex].name + ",",
+                    text = employeeInfo.name + ",",
                     fontSize = 64.sp,
                     fontFamily = museoCyrl,
                     color = Color.Black,
                     fontStyle = FontStyle.Italic
                 )
                 if (isAnniversary) {
-                    val story = employeeInfoes[currentStoryIndex] as Anniversary
+                    val story = employeeInfo as AnniversaryUI
                     Text(
                         text =
                         stringResource(id = R.string.with_us) + " " + story.yearsInCompany + " " + getCorrectDeclension(
@@ -112,7 +117,6 @@ fun StoryContent(
                         fontFamily = drukLCGWideMedium,
                     )
                 }
-
             }
             Image(
                 painter = painter,
@@ -125,4 +129,16 @@ fun StoryContent(
             )
         }
     }
+}
+
+@Composable
+@Preview
+fun PreviewStoryContent() {
+    StoryContent(
+        employeeInfo = NewEmployeeUI("John Doe", "testUrl"),
+        {}, {},
+        Modifier
+            .fillMaxSize()
+            .padding(vertical = 64.dp)
+    )
 }

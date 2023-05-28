@@ -2,11 +2,9 @@ package band.effective.office.tv.repository.notion.impl
 
 import band.effective.office.tv.core.network.entity.Either
 import band.effective.office.tv.domain.model.notion.EmployeeInfoEntity
-import band.effective.office.tv.network.notion.EmployeeInfoDto
 import band.effective.office.tv.network.notion.EmployeeInfoRemoteDataSourceImpl
 import band.effective.office.tv.repository.notion.EmployeeInfoRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 import javax.inject.Singleton

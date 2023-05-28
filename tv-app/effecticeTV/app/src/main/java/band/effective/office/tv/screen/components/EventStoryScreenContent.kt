@@ -9,14 +9,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import band.effective.office.tv.domain.model.notion.EmployeeInfo
-import com.example.effecticetv.ui.theme.IndependentColors
+import band.effective.office.tv.screen.duolingo.DuolingoScreen
+import band.effective.office.tv.screen.eventStory.models.DuolingoUserInfo
+import band.effective.office.tv.screen.eventStory.models.EmployeeInfoUI
+import band.effective.office.tv.screen.eventStory.models.StoryModel
+import band.effective.office.tv.screen.eventStory.models.StoryType
+import band.effective.office.tv.ui.theme.IndependentColors
 
 @Composable
 fun EventStoryScreenContent(
-    modifier: Modifier = Modifier,
-    eventsInfo: List<EmployeeInfo>,
+    eventsInfo: List<StoryModel>,
     currentStoryIndex: Int,
+    modifier: Modifier = Modifier,
     onImageLoading: () -> Unit,
     onImageLoaded: () -> Unit,
 ) {
@@ -25,22 +29,34 @@ fun EventStoryScreenContent(
     ) {
         Column {
             StoryIndicator(
+                countStories = eventsInfo.size,
+                currentStoryIndex = currentStoryIndex,
                 modifier = Modifier
                     .padding(32.dp)
                     .fillMaxWidth()
                     .height(8.dp),
-                stories = eventsInfo,
-                currentStoryIndex = currentStoryIndex,
             )
-            StoryContent(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 64.dp),
-                employeeInfoes = eventsInfo,
-                currentStoryIndex = currentStoryIndex,
-                onImageLoading = { onImageLoading() },
-                onImageLoaded = { onImageLoaded() },
-            )
+            when(eventsInfo[currentStoryIndex].storyType) {
+                StoryType.Employee -> {
+                    val storyData = eventsInfo[currentStoryIndex]
+                    StoryContent(
+                        employeeInfo = storyData as EmployeeInfoUI,
+                        onImageLoading = onImageLoading,
+                        onImageLoaded =  onImageLoaded,
+                        Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 64.dp)
+                    )
+                }
+                StoryType.Duolingo -> {
+                    val duolingoItem = eventsInfo[currentStoryIndex] as DuolingoUserInfo
+                    DuolingoScreen(
+                        keySort = duolingoItem.keySort,
+                        duolingoUser = duolingoItem.users
+                    )
+                }
+            }
+
         }
     }
 }
