@@ -59,7 +59,7 @@ fun MessageScreen(
             1 -> OneMessageScreen(
                 modifier = modifierWithFocus,
                 message = messagesList[0],
-                onClickButton = onClickButton,
+                onClickBackButton = onClickButton,
                 textColor = textColor
             )
             else -> ManyMessagesScreen(

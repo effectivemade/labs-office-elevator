@@ -115,6 +115,7 @@ class MattermostBot @Inject constructor(
             ?: BotMessage.deletedMessage.firstOrNull() { it.id == messageId }
         if (message != null) {
             MessageQueue.firstQueue.push(message)
+
             message.answer("Приоритет повышен")
         }
     }

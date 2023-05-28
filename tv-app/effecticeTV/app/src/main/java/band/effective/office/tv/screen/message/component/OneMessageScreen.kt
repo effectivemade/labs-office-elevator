@@ -1,5 +1,6 @@
 package band.effective.office.tv.screen.message.component
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
@@ -25,7 +26,7 @@ fun OneMessageScreen(
     modifier: Modifier,
     message: BotMessage,
     textColor: Color = Color.Black,
-    onClickButton: (() -> Unit)? = null
+    onClickBackButton: (() -> Unit)? = null
 ) {
     Column(
         modifier = modifier.padding(horizontal = 100.dp),
@@ -63,12 +64,8 @@ fun OneMessageScreen(
                 color = textColor
             )
         }
-        if (onClickButton != null) {
-            Spacer(modifier = Modifier.height(20.dp))
-            ButtonAutoplay(
-                text = "Закрыть",
-                onClick = { onClickButton() }
-            )
+        BackHandler {
+            onClickBackButton?.invoke()
         }
     }
 }
