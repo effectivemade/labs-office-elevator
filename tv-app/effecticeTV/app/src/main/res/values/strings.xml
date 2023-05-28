@@ -4,4 +4,15 @@
     <string name="autoplay_menu_button">play</string>
     <string name="event_screen_title">Events</string>
     <string name="best_photo_screen_title">Photo</string>
+    <string name="congratulations_birthday">с днем рождения!</string>
+    <string name="with_us">с нами</string>
+    <string name="for_years">года</string>
+    <string name="now_in_team">теперь в команде</string>
+    <string name="error_occurred">Произошла ошибка, подробнее:</string>
+    <string name="today_no_stories">На сегодня Stories нет</string>
+    <string name="back">Назад</string>
+    <string name="stories">Stories</string>
+    <string name="top_for_XP">"Tоп по XP"</string>
+    <string name="top_for_days">"Топ по дням в ударном режиме"</string>
+    <string name="duolingo_attribute_name">Профиль Duolingo</string>
 </resources>

@@ -15,3 +15,11 @@ annotation class SynologyRetrofitClient
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class UnsafeOkHttpClient
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class DualingoRetrofitClient
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class MattermostClient

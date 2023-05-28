@@ -1,6 +1,5 @@
 package band.effective.office.tv.core.ui.screen_with_controls
 
-import band.effective.office.tv.BuildConfig
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
@@ -30,6 +29,7 @@ class TimerSlideShow @Inject constructor() {
                 var currentTime = System.currentTimeMillis()
                 while (isActive && currentTime - startTime < SliderProperties.slideShowPeriod * 1000)
                     currentTime = System.currentTimeMillis()
+                //TODO(Stanislav Radchenko): @Maksim Mishenko improve this code
                 if (isActive && isPlay)
                     callbackToEnd()
             }
