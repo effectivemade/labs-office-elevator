@@ -3,8 +3,8 @@ package band.effective.office.tv.repository.synology.impl
 import band.effective.office.tv.core.network.entity.Either
 import band.effective.office.tv.domain.model.synology.PhotoDomain
 import band.effective.office.tv.network.synology.models.AuthModel
-import band.effective.office.tv.network.use_cases.AuthSynologyUseCase
-import band.effective.office.tv.network.use_cases.PhotoSynologyUseCase
+import band.effective.office.tv.domain.use_cases.AuthSynologyUseCase
+import band.effective.office.tv.domain.use_cases.PhotoSynologyUseCase
 import band.effective.office.tv.repository.synology.SynologyRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

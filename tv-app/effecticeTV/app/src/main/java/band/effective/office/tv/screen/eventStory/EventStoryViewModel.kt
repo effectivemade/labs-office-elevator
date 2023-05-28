@@ -6,7 +6,7 @@ import band.effective.office.tv.core.network.entity.Either
 import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
 import band.effective.office.tv.domain.autoplay.AutoplayableViewModel
 import band.effective.office.tv.domain.autoplay.model.NavigateRequests
-import band.effective.office.tv.network.use_cases.EventStoryDataCombinerUseCase
+import band.effective.office.tv.domain.use_cases.EventStoryDataCombinerUseCase
 import band.effective.office.tv.screen.eventStory.models.StoryModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*

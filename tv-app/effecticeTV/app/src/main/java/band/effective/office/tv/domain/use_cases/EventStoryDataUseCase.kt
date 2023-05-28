@@ -1,4 +1,4 @@
-package band.effective.office.tv.network.use_cases
+package band.effective.office.tv.domain.use_cases
 
 import band.effective.office.tv.core.network.entity.Either
 import band.effective.office.tv.domain.model.duolingo.DuolingoUser
