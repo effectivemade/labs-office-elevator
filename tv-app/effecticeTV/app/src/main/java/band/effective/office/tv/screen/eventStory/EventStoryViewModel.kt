@@ -30,7 +30,6 @@ class EventStoryViewModel @Inject constructor(
     }
 
     init {
-
         viewModelScope.launch {
             initDataStory()
         }
@@ -46,6 +45,7 @@ class EventStoryViewModel @Inject constructor(
             eventStoryData.getAllDataForStories().collectLatest { events ->
                     when (events) {
                         is Either.Success -> updateStateAsSuccessfulFetch(events.data)
+
                         is Either.Failure -> updateStateAsException(events.error)
                     }
                 }

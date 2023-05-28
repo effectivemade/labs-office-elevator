@@ -9,14 +9,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import band.effective.office.tv.domain.model.duolingo.DuolingoUser
 import band.effective.office.tv.screen.duolingo.DuolingoScreen
-import band.effective.office.tv.screen.eventStory.KeySortDuolingoUser
 import band.effective.office.tv.screen.eventStory.models.DuolingoUserInfo
 import band.effective.office.tv.screen.eventStory.models.EmployeeInfoUI
 import band.effective.office.tv.screen.eventStory.models.StoryModel
 import band.effective.office.tv.screen.eventStory.models.StoryType
-import com.example.effecticetv.ui.theme.IndependentColors
+import band.effective.office.tv.ui.theme.IndependentColors
 
 @Composable
 fun EventStoryScreenContent(
