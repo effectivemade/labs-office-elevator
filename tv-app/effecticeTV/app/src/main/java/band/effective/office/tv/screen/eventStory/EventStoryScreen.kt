@@ -24,7 +24,6 @@ import band.effective.office.tv.screen.components.NoStoriesScreen
 import band.effective.office.tv.screen.load.LoadScreen
 import kotlinx.coroutines.flow.update
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun EventStoryScreen(viewModel: EventStoryViewModel = hiltViewModel()) {
 
@@ -76,6 +75,7 @@ private fun EventStoryScreenContent(
                     down = playButton
                 }
                 .focusable(),
+            imageLoader = viewModel.imageLoader,
             eventsInfo = state.eventsInfo,
             currentStoryIndex = state.currentStoryIndex,
             onImageLoaded = {

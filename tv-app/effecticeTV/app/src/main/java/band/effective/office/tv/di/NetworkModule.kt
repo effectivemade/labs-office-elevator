@@ -58,7 +58,12 @@ class NetworkModule {
     @Singleton
     @Provides
     @MattermostClient
-    fun provideMattermostOkHttpClient() = OkHttpClient.Builder()
+    fun provideAuthInterceptor() : AuthInterceptor = AuthInterceptor(BuildConfig.mattermostBotToken)
+
+    @Singleton
+    @Provides
+    @MattermostClient
+    fun provideMattermostOkHttpClient(@MattermostClient authInterceptor: AuthInterceptor) = OkHttpClient.Builder()
         .addInterceptor(AuthInterceptor(BuildConfig.mattermostBotToken))
         .addInterceptor(
             HttpLoggingInterceptor()

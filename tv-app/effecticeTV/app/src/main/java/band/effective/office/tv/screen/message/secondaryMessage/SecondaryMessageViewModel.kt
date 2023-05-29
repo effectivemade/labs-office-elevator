@@ -8,7 +8,9 @@ import band.effective.office.tv.domain.autoplay.model.AutoplayState
 import band.effective.office.tv.domain.autoplay.model.NavigateRequests
 import band.effective.office.tv.domain.botLogic.BotConfig
 import band.effective.office.tv.domain.model.message.MessageQueue
+import band.effective.office.tv.network.MattermostClient
 import band.effective.office.tv.repository.uselessFactRepository.UselessFactRepository
+import coil.ImageLoader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,7 +20,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SecondaryMessageViewModel @Inject constructor(
-    private val uselessFactRepository: UselessFactRepository, private val timer: TimerSlideShow
+    private val uselessFactRepository: UselessFactRepository,
+    private val timer: TimerSlideShow,
+    @MattermostClient val imageLoader: ImageLoader
 ) : ViewModel(), AutoplayableViewModel {
     private var mutableState = MutableStateFlow(SecondaryMessageState.empty)
     override val state = mutableState.asStateFlow()
@@ -76,8 +80,7 @@ class SecondaryMessageViewModel @Inject constructor(
                 mutableState.update {
                     it.copy(
                         messageList = MessageQueue.secondQueue.queue.value.queue,
-                        currentIndex = if (MessageQueue.secondQueue.queue.value.queue.size < it.messageList.size)
-                            MessageQueue.secondQueue.queue.value.queue.size - 1
+                        currentIndex = if (MessageQueue.secondQueue.queue.value.queue.size < it.messageList.size) MessageQueue.secondQueue.queue.value.queue.size - 1
                         else it.currentIndex
                     )
                 }

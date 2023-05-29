@@ -13,12 +13,14 @@ import band.effective.office.tv.domain.model.message.BotMessage
 import band.effective.office.tv.domain.model.message.MessageQueue
 import band.effective.office.tv.domain.model.notion.EmployeeInfoEntity
 import band.effective.office.tv.domain.model.notion.processEmployeeInfo
+import band.effective.office.tv.network.MattermostClient
 import band.effective.office.tv.network.use_cases.DuolingoManager
 import band.effective.office.tv.repository.notion.EmployeeInfoRepository
 import band.effective.office.tv.screen.duolingo.model.toUI
 import band.effective.office.tv.screen.eventStory.models.DuolingoUserInfo
 import band.effective.office.tv.screen.eventStory.models.MessageInfo
 import band.effective.office.tv.screen.eventStory.models.StoryModel
+import coil.ImageLoader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -36,7 +38,8 @@ private fun BotMessage.toMessageInfo(): MessageInfo = MessageInfo(this)
 class EventStoryViewModel @Inject constructor(
     private val repository: EmployeeInfoRepository,
     private val timer: TimerSlideShow,
-    private val duolingo: DuolingoManager
+    private val duolingo: DuolingoManager,
+    @MattermostClient val imageLoader: ImageLoader
 ) : ViewModel(), AutoplayableViewModel {
     private val mutableState = MutableStateFlow(LatestEventInfoUiState.empty)
     override val state = mutableState.asStateFlow()

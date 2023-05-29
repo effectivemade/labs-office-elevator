@@ -12,10 +12,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.tv.domain.model.message.BotMessage
+import coil.ImageLoader
 
 @Composable
 fun ManyMessagesScreen(
     modifier: Modifier,
+    imageLoader: ImageLoader,
     messagesList: List<BotMessage>,
     currentIndex: Int = 0,
     textColor: Color = Color.Black,
@@ -39,6 +41,7 @@ fun ManyMessagesScreen(
         ) {
             OneMessageScreen(
                 modifier = modifier,
+                imageLoader = imageLoader,
                 message = messagesList[currentIndex],
                 onClickButton = onClickButton,
                 textColor = textColor

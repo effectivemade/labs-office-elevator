@@ -5,6 +5,8 @@ import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
 import band.effective.office.tv.domain.botLogic.BotConfig
 import band.effective.office.tv.domain.botLogic.MessengerBot
 import band.effective.office.tv.domain.model.message.MessageQueue
+import band.effective.office.tv.network.MattermostClient
+import coil.ImageLoader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,7 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class PrimaryMessageViewModel @Inject constructor(
     private val bot: MessengerBot,
-    private val timer: TimerSlideShow
+    private val timer: TimerSlideShow,
+    @MattermostClient val imageLoader: ImageLoader
 ) :
     ViewModel() {
     private val mutableState = MutableStateFlow(PrimaryMessageScreenState.empty)

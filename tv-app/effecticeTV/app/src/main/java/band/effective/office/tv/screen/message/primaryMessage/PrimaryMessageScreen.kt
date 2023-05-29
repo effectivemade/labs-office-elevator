@@ -24,7 +24,7 @@ fun PrimaryMessageScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(30.dp),
-
+            imageLoader = viewModel.imageLoader,
             messagesList = state.messagesList,
             currentIndex = state.currentMessage,
             isPlay = state.isPlay,

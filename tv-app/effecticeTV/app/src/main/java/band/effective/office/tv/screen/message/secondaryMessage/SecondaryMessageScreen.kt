@@ -13,6 +13,7 @@ fun SecondaryMessageScreen(viewModel: SecondaryMessageViewModel = hiltViewModel(
     val state by viewModel.state.collectAsState()
     MessageScreen(
         modifier = Modifier.fillMaxSize(),
+        imageLoader = viewModel.imageLoader,
         messagesList = state.messageList,
         currentIndex = state.currentIndex,
         uselessFact = state.uselessFact,

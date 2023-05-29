@@ -18,12 +18,14 @@ import band.effective.office.tv.domain.model.message.BotMessage
 import band.effective.office.tv.screen.message.component.EmptyMessageScreen
 import band.effective.office.tv.screen.message.component.ManyMessagesScreen
 import band.effective.office.tv.screen.message.component.OneMessageScreen
+import coil.ImageLoader
 import kotlinx.coroutines.flow.update
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun MessageScreen(
     modifier: Modifier = Modifier,
+    imageLoader: ImageLoader,
     messagesList: List<BotMessage> = listOf(),
     currentIndex: Int = 0,
     uselessFact: String = "",
@@ -58,12 +60,14 @@ fun MessageScreen(
             0 -> EmptyMessageScreen(modifier = modifierWithFocus, uselessFact = uselessFact)
             1 -> OneMessageScreen(
                 modifier = modifierWithFocus,
+                imageLoader = imageLoader,
                 message = messagesList[0],
                 onClickButton = onClickButton,
                 textColor = textColor
             )
             else -> ManyMessagesScreen(
                 modifier = modifierWithFocus,
+                imageLoader = imageLoader,
                 messagesList = messagesList,
                 currentIndex = currentIndex,
                 onClickButton = onClickButton
