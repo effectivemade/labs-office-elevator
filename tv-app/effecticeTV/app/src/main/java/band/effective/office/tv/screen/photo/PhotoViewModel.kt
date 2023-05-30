@@ -5,18 +5,21 @@ import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
 import band.effective.office.tv.core.network.entity.Either
 import band.effective.office.tv.domain.autoplay.AutoplayableViewModel
+import band.effective.office.tv.network.UnsafeOkHttpClient
 import band.effective.office.tv.repository.synology.SynologyRepository
 import band.effective.office.tv.screen.photo.model.toUIModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import okhttp3.OkHttpClient
 import javax.inject.Inject
 
 @HiltViewModel
 class PhotoViewModel @Inject constructor(
     private val repository: SynologyRepository,
-    private val slideShow: TimerSlideShow
-) : ViewModel(), AutoplayableViewModel {
+    private val slideShow: TimerSlideShow,
+    @UnsafeOkHttpClient val unsafeOkHttpClient: OkHttpClient
+): ViewModel(), AutoplayableViewModel {
 
     private val mutableState = MutableStateFlow(BestPhotoState.Empty)
     override val state = mutableState.asStateFlow()
