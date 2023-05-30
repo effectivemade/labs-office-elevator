@@ -19,6 +19,7 @@ import band.effective.office.tv.repository.notion.EmployeeInfoRepository
 import band.effective.office.tv.screen.duolingo.model.toUI
 import band.effective.office.tv.screen.eventStory.models.DuolingoUserInfo
 import band.effective.office.tv.screen.eventStory.models.MessageInfo
+import band.effective.office.tv.domain.use_cases.EventStoryDataCombinerUseCase
 import band.effective.office.tv.screen.eventStory.models.StoryModel
 import coil.ImageLoader
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,14 +30,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-private fun MessageQueue.toListOfEmployeeInfo(): List<MessageInfo> =
-    this.queue.value.queue.map { MessageInfo(it) }
-
-private fun BotMessage.toMessageInfo(): MessageInfo = MessageInfo(this)
-
 @HiltViewModel
 class EventStoryViewModel @Inject constructor(
-    private val repository: EmployeeInfoRepository,
+    private val eventStoryData: EventStoryDataCombinerUseCase,
     private val timer: TimerSlideShow,
     private val duolingo: DuolingoManager,
     @MattermostClient val imageLoader: ImageLoader
@@ -63,35 +59,11 @@ class EventStoryViewModel @Inject constructor(
     }
 
     init {
-
         viewModelScope.launch {
             initDataStory()
         }
         initTimer()
         startTimer()
-        checkMessage()
-    }
-
-    private fun checkMessage() = viewModelScope.launch {
-
-        MessageQueue.secondQueue.queue.collect {
-            val messages = MessageQueue.secondQueue.queue.value.queue
-            val messagesInStory =
-                state.value.eventsInfo.filterIsInstance<MessageInfo>().map { it.message }
-            val commonMessages =
-                messagesInStory.filter { messagesInStory -> messages.any { messageInQueue -> messageInQueue.id == messagesInStory.id } }
-            val addMessages = (messages - commonMessages).map { it.toMessageInfo() }
-            val deleteMessages = (messagesInStory - commonMessages).map { it.toMessageInfo() }
-            val newEventInfo = state.value.eventsInfo + addMessages - deleteMessages
-            mutableState.update {
-                it.copy(
-                    eventsInfo = newEventInfo,
-                    currentStoryIndex = if (it.currentStoryIndex >= newEventInfo.size)
-                        newEventInfo.size - 1
-                    else it.currentStoryIndex
-                )
-            }
-        }
     }
 
     private suspend fun initDataStory() {
@@ -99,61 +71,10 @@ class EventStoryViewModel @Inject constructor(
             updateStateAsException((exception as Error).message.orEmpty())
         }
         withContext(Dispatchers.IO + exceptionHandler) {
-            repository.latestEvents()
-                .combine(duolingo.getDuolingoUserinfo()) { employeeInfoEntities: Either<String, List<EmployeeInfoEntity>>, usersDuolingo: Either<String, List<DuolingoUser>> ->
-                    var error = ""
-                    val duolingoInfo = when (usersDuolingo) {
-                        is Either.Success -> {
-                            run {
-                                val users = usersDuolingo.data
-                                val userXpSort = DuolingoUserInfo(
-                                    users = users
-                                        .sortedByDescending { it.totalXp }
-                                        .subList(
-                                            0,
-                                            if (users.size <= countShowUsers) users.size else countShowUsers + 1
-                                        )
-                                        .toUI(),
-                                    keySort = KeySortDuolingoUser.Xp
-                                ) as StoryModel
-                                val userStreakSort = DuolingoUserInfo(
-                                    users = users
-                                        .sortedByDescending { it.streakDay }
-                                        .subList(
-                                            0,
-                                            if (users.size <= countShowUsers) users.size else countShowUsers + 1
-                                        )
-                                        .filter { it.streakDay != 0 }
-                                        .toUI(),
-                                    keySort = KeySortDuolingoUser.Streak
-                                ) as StoryModel
-                                listOf(
-                                    userXpSort,
-                                    userStreakSort
-                                ) + MessageQueue.secondQueue.toListOfEmployeeInfo()
-                            }
-                        }
-                        is Either.Failure -> {
-                            error = usersDuolingo.error
-                            emptyList()
-                        }
-                    }
-                    val notionInfo = when (employeeInfoEntities) {
-                        is Either.Success -> {
-                            employeeInfoEntities.data.processEmployeeInfo()
-                        }
-                        is Either.Failure -> {
-                            error = employeeInfoEntities.error
-                            emptyList()
-                        }
-                    }
-                    if (notionInfo.isEmpty() && duolingoInfo.isEmpty()) return@combine Either.Failure(
-                        error
-                    )
-                    else Either.Success(notionInfo + duolingoInfo)
-                }.collectLatest { events ->
+            eventStoryData.getAllDataForStories().collectLatest { events ->
                     when (events) {
                         is Either.Success -> updateStateAsSuccessfulFetch(events.data)
+
                         is Either.Failure -> updateStateAsException(events.error)
                     }
                 }
@@ -235,7 +156,6 @@ class EventStoryViewModel @Inject constructor(
     private fun onLastStory() {
         mutableState.update { it.copy(navigateRequest = NavigateRequests.Forward) }
         mutableState.update { it.copy(currentStoryIndex = 0) }
-        Log.e("Autoplay Controller","Autoplay Controller")
     }
 
     private fun onFirstStory() {

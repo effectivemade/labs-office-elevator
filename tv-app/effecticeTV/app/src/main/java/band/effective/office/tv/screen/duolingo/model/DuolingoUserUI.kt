@@ -23,4 +23,5 @@ fun DuolingoUser.toUI(): DuolingoUserUI {
     )
 }
 fun List<DuolingoUser>.toUI() = map { it.toUI() }
+
 data class FlagInfo(val drawableId: Int)

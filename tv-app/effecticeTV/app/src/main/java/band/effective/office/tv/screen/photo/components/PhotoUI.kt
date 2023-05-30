@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -18,19 +19,18 @@ import band.effective.office.tv.screen.load.LoadScreen
 import band.effective.office.tv.screen.photo.model.Photo
 import coil.ImageLoader
 import coil.compose.SubcomposeAsyncImage
+import band.effective.office.tv.R
+import okhttp3.OkHttpClient
 
 
 @Composable
-fun PhotoUIItem(image: Photo, modifier: Modifier = Modifier) {
+fun PhotoUIItem(image: Photo, modifier: Modifier = Modifier, okHttpClient: OkHttpClient) {
 
     val photoWith = LocalConfiguration.current.screenWidthDp.dp
     val photoHeight = LocalConfiguration.current.screenHeightDp.dp
 
     val imageLoader = ImageLoader.Builder(LocalContext.current)
-        .okHttpClient {
-            UnsafeOkHttpClient.getUnsafeOkHttpClient()
-                .build()
-        }
+        .okHttpClient(okHttpClient)
         .build()
 
     Box(
@@ -44,12 +44,12 @@ fun PhotoUIItem(image: Photo, modifier: Modifier = Modifier) {
             ),
             imageLoader = imageLoader,
             model = image.photoThumb,
-            loading = { LoadScreen("Best photo") },
+            loading = { LoadScreen(stringResource(id = R.string.photo_title)) },
             contentDescription = null,
             contentScale = ContentScale.Crop,
             error = {
                 Text(
-                    text = "Мы пока не поддердиваем этот формат фото, позже все будет ок)",
+                    text = stringResource(id = R.string.error_show_photo),
                     fontSize = 40.sp,
                     color = Color.Red,
                     textAlign = TextAlign.Center,
