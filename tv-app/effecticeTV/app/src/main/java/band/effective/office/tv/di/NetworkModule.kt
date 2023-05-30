@@ -44,9 +44,9 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    @band.effective.office.tv.network.UnsafeOkHttpClient
+    @UnsafeOkHttpClient
     fun provideUnsafeOkHttpClient() =
-        UnsafeOkHttpClient.getUnsafeOkHttpClient().addInterceptor(HttpLoggingInterceptor().apply {
+        band.effective.office.tv.core.network.UnsafeOkHttpClient.getUnsafeOkHttpClient().addInterceptor(HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }).build()
 
@@ -100,7 +100,7 @@ class NetworkModule {
     @SynologyRetrofitClient
     fun provideSynologyRetrofit(
         moshiConverterFactory: MoshiConverterFactory,
-        @band.effective.office.tv.network.UnsafeOkHttpClient client: OkHttpClient,
+        @UnsafeOkHttpClient client: OkHttpClient,
         @SynologyRetrofitClient callAdapter: CallAdapter.Factory
     ): Retrofit =
         Retrofit.Builder()
