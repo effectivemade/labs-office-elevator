@@ -1,6 +1,5 @@
 package band.effective.office.tv.screen.eventStory
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.core.network.entity.Either
@@ -8,18 +7,11 @@ import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
 import band.effective.office.tv.domain.autoplay.AutoplayableViewModel
 import band.effective.office.tv.domain.autoplay.model.AutoplayState
 import band.effective.office.tv.domain.autoplay.model.NavigateRequests
-import band.effective.office.tv.domain.model.duolingo.DuolingoUser
 import band.effective.office.tv.domain.model.message.BotMessage
 import band.effective.office.tv.domain.model.message.MessageQueue
-import band.effective.office.tv.domain.model.notion.EmployeeInfoEntity
-import band.effective.office.tv.domain.model.notion.processEmployeeInfo
-import band.effective.office.tv.network.MattermostClient
-import band.effective.office.tv.network.use_cases.DuolingoManager
-import band.effective.office.tv.repository.notion.EmployeeInfoRepository
-import band.effective.office.tv.screen.duolingo.model.toUI
-import band.effective.office.tv.screen.eventStory.models.DuolingoUserInfo
-import band.effective.office.tv.screen.eventStory.models.MessageInfo
 import band.effective.office.tv.domain.use_cases.EventStoryDataCombinerUseCase
+import band.effective.office.tv.network.MattermostClient
+import band.effective.office.tv.screen.eventStory.models.MessageInfo
 import band.effective.office.tv.screen.eventStory.models.StoryModel
 import coil.ImageLoader
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,7 +26,6 @@ import javax.inject.Inject
 class EventStoryViewModel @Inject constructor(
     private val eventStoryData: EventStoryDataCombinerUseCase,
     private val timer: TimerSlideShow,
-    private val duolingo: DuolingoManager,
     @MattermostClient val imageLoader: ImageLoader
 ) : ViewModel(), AutoplayableViewModel {
     private val mutableState = MutableStateFlow(LatestEventInfoUiState.empty)
@@ -64,6 +55,29 @@ class EventStoryViewModel @Inject constructor(
         }
         initTimer()
         startTimer()
+        checkMessage()
+    }
+
+    private fun checkMessage() = viewModelScope.launch {
+
+        MessageQueue.secondQueue.queue.collect {
+            val messages = MessageQueue.secondQueue.queue.value.queue
+            val messagesInStory =
+                state.value.eventsInfo.filterIsInstance<MessageInfo>().map { it.message }
+            val commonMessages =
+                messagesInStory.filter { messagesInStory -> messages.any { messageInQueue -> messageInQueue.id == messagesInStory.id } }
+            val addMessages = (messages - commonMessages.toSet()).map { it.toMessageInfo() }
+            val deleteMessages = (messagesInStory - commonMessages.toSet()).map { it.toMessageInfo() }
+            val newEventInfo = state.value.eventsInfo + addMessages - deleteMessages.toSet()
+            mutableState.update {
+                it.copy(
+                    eventsInfo = newEventInfo,
+                    currentStoryIndex = if (it.currentStoryIndex >= newEventInfo.size)
+                        newEventInfo.size - 1
+                    else it.currentStoryIndex
+                )
+            }
+        }
     }
 
     private suspend fun initDataStory() {
@@ -72,12 +86,12 @@ class EventStoryViewModel @Inject constructor(
         }
         withContext(Dispatchers.IO + exceptionHandler) {
             eventStoryData.getAllDataForStories().collectLatest { events ->
-                    when (events) {
-                        is Either.Success -> updateStateAsSuccessfulFetch(events.data)
+                when (events) {
+                    is Either.Success -> updateStateAsSuccessfulFetch(events.data)
 
-                        is Either.Failure -> updateStateAsException(events.error)
-                    }
+                    is Either.Failure -> updateStateAsException(events.error)
                 }
+            }
         }
     }
 
@@ -186,6 +200,8 @@ class EventStoryViewModel @Inject constructor(
             isPlay = state.value.isPlay
         )
     }
+
+    private fun BotMessage.toMessageInfo(): MessageInfo = MessageInfo(this)
 
     private val countShowUsers = 10
 }

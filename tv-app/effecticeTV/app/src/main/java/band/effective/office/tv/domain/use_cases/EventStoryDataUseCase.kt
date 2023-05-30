@@ -2,6 +2,8 @@ package band.effective.office.tv.domain.use_cases
 
 import band.effective.office.tv.core.network.entity.Either
 import band.effective.office.tv.domain.model.duolingo.DuolingoUser
+import band.effective.office.tv.domain.model.message.BotMessage
+import band.effective.office.tv.domain.model.message.MessageQueue
 import band.effective.office.tv.domain.model.notion.EmployeeInfoEntity
 import band.effective.office.tv.domain.model.notion.processEmployeeInfo
 import band.effective.office.tv.repository.duolingo.DuolingoRepository
@@ -9,6 +11,7 @@ import band.effective.office.tv.repository.notion.EmployeeInfoRepository
 import band.effective.office.tv.screen.duolingo.model.toUI
 import band.effective.office.tv.screen.eventStory.KeySortDuolingoUser
 import band.effective.office.tv.screen.eventStory.models.DuolingoUserInfo
+import band.effective.office.tv.screen.eventStory.models.MessageInfo
 import band.effective.office.tv.screen.eventStory.models.StoryModel
 import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
@@ -42,11 +45,16 @@ class EventStoryDataCombinerUseCase @Inject constructor(
                         emptyList()
                     }
                 }
+                val messagesFromMattermost = MessageQueue.secondQueue.toListOfEmployeeInfo()
+
                 if (notionInfo.isEmpty() && duolingoInfo.isEmpty()) return@combine Either.Failure(
                     error
                 )
-                else Either.Success(notionInfo + duolingoInfo)
+                else Either.Success(notionInfo + duolingoInfo + messagesFromMattermost)
             }
+
+    private fun MessageQueue.toListOfEmployeeInfo(): List<MessageInfo> =
+        this.queue.value.queue.map { MessageInfo(it) }
 
     private fun List<DuolingoUser>.subListForScreen() =
         subList(

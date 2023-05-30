@@ -5,11 +5,11 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import band.effective.office.tv.screen.duolingo.DuolingoScreen
 import band.effective.office.tv.screen.eventStory.models.*
 import band.effective.office.tv.screen.message.component.OneMessageScreen
+import band.effective.office.tv.ui.theme.IndependentColors
 import coil.ImageLoader
-import com.example.effecticetv.ui.theme.IndependentColors
+import band.effective.office.tv.screen.duolingo.DuolingoScreen
 
 @Composable
 fun EventStoryScreenContent(
