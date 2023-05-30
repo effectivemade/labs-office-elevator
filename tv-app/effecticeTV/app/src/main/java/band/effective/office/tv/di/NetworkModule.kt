@@ -7,8 +7,6 @@ import band.effective.office.tv.core.network.EitherSynologyAdapterFactory
 import band.effective.office.tv.network.LeaderIdRetrofitClient
 import band.effective.office.tv.network.SynologyRetrofitClient
 import band.effective.office.tv.core.network.UnsafeOkHttpClient
-import band.effective.office.tv.network.LeaderIdRetrofitClient
-import band.effective.office.tv.network.SynologyRetrofitClient
 import band.effective.office.tv.network.*
 import band.effective.office.tv.network.duolingo.DuolingoApi
 import band.effective.office.tv.network.leader.LeaderApi

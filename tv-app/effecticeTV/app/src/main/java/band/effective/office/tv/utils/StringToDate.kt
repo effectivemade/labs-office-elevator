@@ -22,5 +22,6 @@ fun String.getDate(pattern: String): GregorianCalendar{
         cal.time = date
         cal.set(Calendar.YEAR, GregorianCalendar().get(Calendar.YEAR))
     }
+    val date2 = cal.time
     return cal
 }
