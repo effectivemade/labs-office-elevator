@@ -64,7 +64,7 @@ class MattermostBot @Inject constructor(
             is BotEvent.Reaction -> {
                 when (event.emojiName) {
                     BotConfig.importantMessageReaction -> {
-                        incrementImportant(event.messageId)
+                        incrementImportant(event.messageId, event.userId)
                     }
                     BotConfig.deleteMessageReaction -> {
                         if (deleteMessage(event.messageId, event.userId))
@@ -105,17 +105,18 @@ class MattermostBot @Inject constructor(
             .after(GregorianCalendar()) && rootId != ""
 
     /**Copy message from common message queue to important message queue
-     * @param messageId message id*/
-    private fun incrementImportant(messageId: String) {
+     * @param messageId message id
+     * @param userId user incrementing important*/
+    private suspend fun incrementImportant(messageId: String, userId: String) {
         if (MessageQueue.firstQueue.contain(messageId)) {
             return
         }
         val message = MessageQueue.secondQueue.message(messageId)
             ?: BotMessage.deletedMessage.firstOrNull() { it.id == messageId }
-        if (message != null) {
+        if (message != null && message.author.id == userId) {
             MessageQueue.firstQueue.push(message)
-
             message.answer(stringGetter.getString(R.string.bot_increment_important))
+            deleteMessage(messageId,userId)
         }
     }
 
