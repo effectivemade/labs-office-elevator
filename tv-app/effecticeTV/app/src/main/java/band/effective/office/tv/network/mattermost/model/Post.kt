@@ -21,7 +21,7 @@ data class Post(
     @Json(name = "last_reply_at")
     val lastReplyAt: Int,
     val message: String,
-    val metadata: Metadata,
+    val metadata: Metadata?,
     @Json(name = "original_id")
     val originalId: String,
     val participants: Any?,
@@ -37,4 +37,28 @@ data class Post(
     val updateAt: Long,
     @Json(name = "user_id")
     val userId: String
-)
+) {
+    companion object {
+        val errorPost = Post(
+            channelId = "",
+            createAt = 0,
+            deleteAt = 0,
+            editAt = 0,
+            hashtags = "",
+            id = "",
+            isPinned = false,
+            lastReplyAt = 0,
+            message = "",
+            metadata = null,
+            originalId = "",
+            participants = null,
+            pendingPostId = "",
+            props = BotMessage(),
+            replyCount = 0,
+            rootId = "",
+            type = "error",
+            updateAt = 0,
+            userId = ""
+        )
+    }
+}

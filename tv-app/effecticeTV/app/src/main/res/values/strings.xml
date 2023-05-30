@@ -16,4 +16,11 @@
     <string name="today_no_stories">На сегодня Stories нет</string>
     <string name="back">Назад</string>
     <string name="stories">Stories</string>
+    <string name="bot_get_message">Сообщение принято</string>
+    <string name="bot_pin_message">Сообщение закреплено до</string>
+    <string name="bot_get_message_error">Слишком много букавок</string>
+    <string name="bot_delete_message">Сообщение удалено</string>
+    <string name="bot_delete_message_error">permission denied, try with sudo</string>
+    <string name="bot_pin_command">закрепи до</string>
+    <string name="bot_increment_important">Приоритет повышен</string>
 </resources>

@@ -1,5 +1,6 @@
 package band.effective.office.tv.domain.botLogic.impl
 
+import band.effective.office.tv.R
 import band.effective.office.tv.domain.botLogic.BotConfig
 import band.effective.office.tv.domain.botLogic.MessengerBot
 import band.effective.office.tv.domain.botLogic.model.BotEvent
@@ -7,16 +8,15 @@ import band.effective.office.tv.domain.model.message.BotMessage
 import band.effective.office.tv.domain.model.message.MessageQueue
 import band.effective.office.tv.domain.model.message.toBotMessage
 import band.effective.office.tv.network.mattermost.mattermostWebSocketClient.MattermostWebSocketClient
-import band.effective.office.tv.utils.fullDay
-import band.effective.office.tv.utils.getDate
-import band.effective.office.tv.utils.tomorrow
+import band.effective.office.tv.utils.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
 class MattermostBot @Inject constructor(
-    private val client: MattermostWebSocketClient
+    private val client: MattermostWebSocketClient,
+    private val stringGetter: RStringGetter
 ) :
     MessengerBot {
     private lateinit var scope: CoroutineScope
@@ -26,16 +26,17 @@ class MattermostBot @Inject constructor(
     }
 
     private fun initBot() = scope.launch {
-        client.connect()
-        client.getDirectMessages().forEach { message ->
-            if (message.finish.after(GregorianCalendar())) {
-                MessageQueue.secondQueue.push(message)
-            } else {
-                client.deleteMessage(message.directId)
+        if (client.connect()) {
+            client.getDirectMessages().forEach { message ->
+                if (message.finish.after(GregorianCalendar())) {
+                    MessageQueue.secondQueue.push(message)
+                } else {
+                    client.deleteMessage(message.directId)
+                }
             }
-        }
-        client.subscribe { event ->
-            handler(event)
+            client.subscribe { event ->
+                handler(event)
+            }
         }
     }
 
@@ -47,15 +48,15 @@ class MattermostBot @Inject constructor(
                     when {
                         message.isPinCommand() -> {
                             if (pinMessage(message))
-                                message.answer("Сообщение закреплено")
+                                message.answer("${stringGetter.getString(R.string.bot_pin_message)} ${calendarToString(message.finish,"dd.MM.YY HH:mm")}")
                             else
-                                message.answer("Слишком много букавок")
+                                message.answer(stringGetter.getString(R.string.bot_get_message_error))
                         }
                         !message.fromThread() -> {
                             if (addMessage(message.copy(finish = tomorrow())))
-                                message.answer("Сообщение принято")
+                                message.answer(stringGetter.getString(R.string.bot_get_message))
                             else
-                                message.answer("Слишком много букавок")
+                                message.answer(stringGetter.getString(R.string.bot_get_message_error))
                         }
                     }
                 }
@@ -63,14 +64,14 @@ class MattermostBot @Inject constructor(
             is BotEvent.Reaction -> {
                 when (event.emojiName) {
                     BotConfig.importantMessageReaction -> {
-                        incrementImportant(event.messageId)
+                        incrementImportant(event.messageId, event.userId)
                     }
                     BotConfig.deleteMessageReaction -> {
                         if (deleteMessage(event.messageId, event.userId))
-                            client.getMessage(event.messageId).answer("Сообщение удалено")
+                            client.getMessage(event.messageId).answer(stringGetter.getString(R.string.bot_delete_message))
                         else
                             client.getMessage(event.messageId)
-                                .answer("permission denied, try with sudo")
+                                .answer(stringGetter.getString(R.string.bot_delete_message_error))
                     }
                 }
             }
@@ -95,17 +96,18 @@ class MattermostBot @Inject constructor(
     private fun BotMessage.filter() = copy(
         text = text.replace(
             "@${client.botInfo().name}", ""
-        ).replace("закрепи до", "").trim(' ', ',', '.')
+        ).replace(stringGetter.getString(R.string.bot_pin_command), "").trim(' ', ',', '.')
     )
 
     /**Check that message is command for pin message on later date*/
     private fun BotMessage.isPinCommand() =
-        text.lowercase().contains("закрепи до") && filter().text.getDate("dd MMM")
+        text.lowercase().contains(stringGetter.getString(R.string.bot_pin_command)) && filter().text.getDate("dd MMM")
             .after(GregorianCalendar()) && rootId != ""
 
     /**Copy message from common message queue to important message queue
-     * @param messageId message id*/
-    private suspend fun incrementImportant(messageId: String) {
+     * @param messageId message id
+     * @param userId user incrementing important*/
+    private suspend fun incrementImportant(messageId: String, userId: String) {
         if (MessageQueue.firstQueue.contain(messageId)) {
             return
         }
@@ -116,9 +118,10 @@ class MattermostBot @Inject constructor(
             MessageQueue.secondQueue.removeMessage(message)
             client.deleteMessage(message.directId)
         }
-        if (message != null) {
+        if (message != null && message.author.id == userId) {
             MessageQueue.firstQueue.push(message.copy(directId = ""))
-            message.answer("Приоритет повышен")
+            message.answer(stringGetter.getString(R.string.bot_increment_important))
+            deleteMessage(messageId,userId)
         }
     }
 
@@ -171,5 +174,3 @@ class MattermostBot @Inject constructor(
     /**Check that message from thread*/
     private fun BotMessage.fromThread(): Boolean = rootId != id
 }
-
-

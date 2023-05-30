@@ -1,9 +1,11 @@
 package band.effective.office.tv.di
 
+import android.content.Context
 import band.effective.office.tv.BuildConfig
-import band.effective.office.tv.core.network.EitherDuolingoAdapterFactory
-import band.effective.office.tv.core.network.EitherLeaderIdAdapterFactory
+import band.effective.office.tv.core.network.*
 import band.effective.office.tv.core.network.EitherSynologyAdapterFactory
+import band.effective.office.tv.network.LeaderIdRetrofitClient
+import band.effective.office.tv.network.SynologyRetrofitClient
 import band.effective.office.tv.core.network.UnsafeOkHttpClient
 import band.effective.office.tv.network.LeaderIdRetrofitClient
 import band.effective.office.tv.network.SynologyRetrofitClient
@@ -14,11 +16,13 @@ import band.effective.office.tv.network.mattermost.MattermostApi
 import band.effective.office.tv.network.synology.SynologyApi
 import band.effective.office.tv.network.uselessFact.UselessFactApi
 import band.effective.office.tv.utils.GregorianCalendarMoshiAdapter
+import band.effective.office.tv.utils.RStringGetter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.addAdapter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,6 +31,7 @@ import notion.api.v1.NotionClient
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.CallAdapter
+import retrofit2.CallAdapter.Factory
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
@@ -117,6 +122,11 @@ class NetworkModule {
     @DualingoRetrofitClient
     fun provideEitherDuolingoAdapterFactory(): CallAdapter.Factory =
         EitherDuolingoAdapterFactory()
+    @Singleton
+    @Provides
+    @MattermostClient
+    fun provideEitherMattermostAdapterFactory(): CallAdapter.Factory =
+        EitherMattermostAdapterFactory()
 
     @Singleton
     @Provides
@@ -138,10 +148,12 @@ class NetworkModule {
     @MattermostClient
     fun provideMattermostRetrofit(
         moshiConverterFactory: MoshiConverterFactory,
-        @MattermostClient client: OkHttpClient
+        @MattermostClient client: OkHttpClient,
+        @MattermostClient callAdapter: Factory
     ): Retrofit =
         Retrofit.Builder()
             .addConverterFactory(moshiConverterFactory)
+            .addCallAdapterFactory(callAdapter)
             .client(client)
             .baseUrl("https://${BuildConfig.apiMattermostUrl}")
             .build()
@@ -196,4 +208,8 @@ class NetworkModule {
     fun provideNotionClient(): NotionClient {
         return NotionClient(BuildConfig.notionToken)
     }
+
+    @Singleton
+    @Provides
+    fun provideRStringGetter(@ApplicationContext appContext: Context): RStringGetter = RStringGetter(context = appContext)
 }

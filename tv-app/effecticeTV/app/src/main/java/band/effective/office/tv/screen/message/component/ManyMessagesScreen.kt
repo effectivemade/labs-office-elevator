@@ -43,7 +43,7 @@ fun ManyMessagesScreen(
                 modifier = modifier,
                 imageLoader = imageLoader,
                 message = messagesList[currentIndex],
-                onClickButton = onClickButton,
+                onClickBackButton = onClickButton,
                 textColor = textColor
             )
         }

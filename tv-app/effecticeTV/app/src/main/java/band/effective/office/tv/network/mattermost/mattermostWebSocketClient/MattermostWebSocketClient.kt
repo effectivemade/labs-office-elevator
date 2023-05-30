@@ -6,7 +6,7 @@ import band.effective.office.tv.domain.model.message.BotMessage
 
 interface MattermostWebSocketClient {
     /**Connect with mattermost*/
-    suspend fun connect()
+    suspend fun connect(): Boolean
 
     /**Disconnect from server*/
     fun disconnect()
@@ -35,8 +35,9 @@ interface MattermostWebSocketClient {
     /**Get message by id*/
     suspend fun getMessage(messageId: String): BotMessage
 
-    /**Delete message by id*/
-    suspend fun deleteMessage(messageId: String)
-
+    /**Delete message by id
+     * @return true if message is delete*/
+    suspend fun deleteMessage(messageId: String): Boolean
+    /**Get user name by id*/
     suspend fun getUserName(userId: String): String
 }
