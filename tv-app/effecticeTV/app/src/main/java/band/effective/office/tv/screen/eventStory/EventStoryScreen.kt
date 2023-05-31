@@ -5,10 +5,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -27,7 +24,6 @@ import band.effective.office.tv.screen.components.NoStoriesScreen
 import band.effective.office.tv.screen.load.LoadScreen
 import kotlinx.coroutines.flow.update
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun EventStoryScreen(viewModel: EventStoryViewModel = hiltViewModel()) {
 
@@ -35,26 +31,28 @@ fun EventStoryScreen(viewModel: EventStoryViewModel = hiltViewModel()) {
     val errorMessage = stringResource(id = R.string.error_occurred)
 
     val state by viewModel.state.collectAsState()
-    val (contentFocus, playButton) = remember { FocusRequester.createRefs() }
+
     when {
         state.isLoading -> LoadScreen(stringResource(id = R.string.stories))
         state.isError -> showErrorMessage(context, errorMessage + state.errorText)
         state.isData -> if (state.eventsInfo.isEmpty()) {
             NoStoriesScreen()
         } else {
-            EventStoryScreenContent(state, viewModel, contentFocus, playButton)
+            EventStoryScreenContent(state, viewModel)
         }
     }
 
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun EventStoryScreenContent(
     state: LatestEventInfoUiState,
     viewModel: EventStoryViewModel,
-    contentFocus: FocusRequester,
-    playButton: FocusRequester
 ) {
+    val state by viewModel.state.collectAsState()
+    var oldPlayValue by remember { mutableStateOf(false) }
+    val (contentFocus, playButton) = remember { FocusRequester.createRefs() }
     ScreenWithControlsTemplate(
         modifier = Modifier
             .fillMaxSize()
@@ -77,10 +75,19 @@ private fun EventStoryScreenContent(
                     down = playButton
                 }
                 .focusable(),
+            imageLoader = viewModel.imageLoader,
             eventsInfo = state.eventsInfo,
             currentStoryIndex = state.currentStoryIndex,
-            onImageLoaded = { viewModel.startTimer() },
-            onImageLoading = { viewModel.stopTimer() })
+            onImageLoaded = {
+                if (oldPlayValue){
+                    viewModel.startTimer()
+                    oldPlayValue = false
+                }
+                            },
+            onImageLoading = {
+                oldPlayValue = state.isPlay || oldPlayValue
+                viewModel.stopTimer()
+            })
     }
 
 }

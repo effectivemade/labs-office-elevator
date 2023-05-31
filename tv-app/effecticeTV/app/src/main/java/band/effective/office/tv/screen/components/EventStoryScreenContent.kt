@@ -1,26 +1,22 @@
 package band.effective.office.tv.screen.components
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Surface
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import band.effective.office.tv.screen.duolingo.DuolingoScreen
-import band.effective.office.tv.screen.eventStory.models.DuolingoUserInfo
-import band.effective.office.tv.screen.eventStory.models.EmployeeInfoUI
-import band.effective.office.tv.screen.eventStory.models.StoryModel
-import band.effective.office.tv.screen.eventStory.models.StoryType
+import band.effective.office.tv.screen.eventStory.models.*
+import band.effective.office.tv.screen.message.component.OneMessageScreen
 import band.effective.office.tv.ui.theme.IndependentColors
+import coil.ImageLoader
+import band.effective.office.tv.screen.duolingo.DuolingoScreen
 
 @Composable
 fun EventStoryScreenContent(
     eventsInfo: List<StoryModel>,
     currentStoryIndex: Int,
     modifier: Modifier = Modifier,
+    imageLoader: ImageLoader,
     onImageLoading: () -> Unit,
     onImageLoaded: () -> Unit,
 ) {
@@ -36,13 +32,13 @@ fun EventStoryScreenContent(
                     .fillMaxWidth()
                     .height(8.dp),
             )
-            when(eventsInfo[currentStoryIndex].storyType) {
+            when (eventsInfo[currentStoryIndex].storyType) {
                 StoryType.Employee -> {
                     val storyData = eventsInfo[currentStoryIndex]
                     StoryContent(
                         employeeInfo = storyData as EmployeeInfoUI,
                         onImageLoading = onImageLoading,
-                        onImageLoaded =  onImageLoaded,
+                        onImageLoaded = onImageLoaded,
                         Modifier
                             .fillMaxSize()
                             .padding(horizontal = 64.dp)
@@ -53,6 +49,14 @@ fun EventStoryScreenContent(
                     DuolingoScreen(
                         keySort = duolingoItem.keySort,
                         duolingoUser = duolingoItem.users
+                    )
+                }
+                StoryType.Message -> {
+                    val messageItem = eventsInfo[currentStoryIndex] as MessageInfo
+                    OneMessageScreen(
+                        modifier = modifier,
+                        imageLoader = imageLoader,
+                        message = messageItem.message
                     )
                 }
             }

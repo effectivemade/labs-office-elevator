@@ -12,7 +12,7 @@ data class BestPhotoState(
     override val isError: Boolean = false,
     val photos: List<Photo> = listOf(),
     val error: String = "",
-    val isPlay: Boolean = true,
+    override val isPlay: Boolean = true,
     override val isLoading: Boolean = true,
     override val isData: Boolean = false,
     override val screenName: Screen = Screen.BestPhoto,

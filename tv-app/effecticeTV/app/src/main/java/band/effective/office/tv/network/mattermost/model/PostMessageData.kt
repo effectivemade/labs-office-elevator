@@ -1,5 +1,6 @@
 package band.effective.office.tv.network.mattermost.model
 
+import band.effective.office.tv.domain.model.message.BotMessage
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -9,5 +10,6 @@ data class PostMessageData(
     val channelId: String,
     val message: String,
     @Json(name = "root_id")
-    val rootId: String
+    val rootId: String,
+    val props: BotMessage? = null
 )

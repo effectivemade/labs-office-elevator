@@ -7,5 +7,6 @@ interface AutoplayState {
     val isData: Boolean
     val isError: Boolean
     val screenName: Screen
+    val isPlay: Boolean
     var navigateRequest: NavigateRequests
 }

@@ -30,6 +30,8 @@ android {
         buildConfigField ("String", "synologyLogin", localProperties['synologyLogin'])
         buildConfigField ("String", "synologyPassword", localProperties['synologyPassword'])
         buildConfigField ("String", "folderPathPhotoSynology", localProperties['folderPathPhotoSynology'])
+        buildConfigField ("String", "uselessFactsApi", localProperties['uselessFactsApi'])
+        buildConfigField ("String", "mattermostBotDirectId", localProperties['mattermostBotDirectId'])
         buildConfigField ("String", "duolingoUrl", localProperties['duolingoUrl'])
         buildConfigField("String", "notionToken", localProperties['NOTION_TOKEN'])
         buildConfigField("String", "notionDatabaseId", localProperties['NOTION_DATABASE_ID'])

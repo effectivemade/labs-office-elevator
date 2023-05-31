@@ -1,6 +1,7 @@
 package band.effective.office.tv.screen.eventStory.models
 
 import band.effective.office.tv.domain.model.duolingo.DuolingoUser
+import band.effective.office.tv.domain.model.message.BotMessage
 import band.effective.office.tv.domain.model.notion.EventType
 import band.effective.office.tv.screen.duolingo.model.DuolingoUserUI
 import band.effective.office.tv.screen.eventStory.KeySortDuolingoUser
@@ -32,8 +33,12 @@ data class DuolingoUserInfo(
     val users: List<DuolingoUserUI>
 ): StoryModel(StoryType.Duolingo)
 
+data class MessageInfo(
+    val message: BotMessage
+): StoryModel(StoryType.Message)
+
 enum class StoryType {
-    Duolingo, Employee
+    Duolingo, Employee, Message
 }
 
 abstract class StoryModel(val storyType: StoryType)

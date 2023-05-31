@@ -2,9 +2,11 @@ package band.effective.office.tv.screen.photo
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import band.effective.office.tv.BuildConfig
 import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
 import band.effective.office.tv.core.network.entity.Either
 import band.effective.office.tv.domain.autoplay.AutoplayableViewModel
+import band.effective.office.tv.domain.autoplay.model.AutoplayState
 import band.effective.office.tv.network.UnsafeOkHttpClient
 import band.effective.office.tv.repository.synology.SynologyRepository
 import band.effective.office.tv.screen.photo.model.toUIModel
@@ -27,16 +29,30 @@ class PhotoViewModel @Inject constructor(
     private val mutableEffect = MutableSharedFlow<BestPhotoEffect>()
     val effect = mutableEffect.asSharedFlow()
 
-    override fun switchToFirstItem() {
+    override fun switchToFirstItem(prevScreenState: AutoplayState) {
+        if (prevScreenState.isPlay) slideShow.startTimer()
+        mutableState.update { it.copy(isPlay = prevScreenState.isPlay) }
         viewModelScope.launch {
             mutableEffect.emit(BestPhotoEffect.ScrollToItem(0))
         }
     }
 
-    override fun switchToLastItem() {
+    override fun switchToLastItem(prevScreenState: AutoplayState) {
+        if (prevScreenState.isPlay) slideShow.startTimer()
+        mutableState.update { it.copy(isPlay = prevScreenState.isPlay) }
         viewModelScope.launch {
             mutableEffect.emit(BestPhotoEffect.ScrollToItem(state.value.photos.size-1))
         }
+    }
+
+    override fun stopTimer() {
+        slideShow.stopTimer()
+        mutableState.update { it.copy(isPlay = false) }
+    }
+
+    override fun startTimer() {
+        slideShow.startTimer()
+        mutableState.update { it.copy(isPlay = true) }
     }
 
     init {
@@ -78,7 +94,10 @@ class PhotoViewModel @Inject constructor(
                     mutableEffect.emit(BestPhotoEffect.ChangePlayState(isPlay))
                 }
             }
-            else -> {}
+            is BestPhotoEvent.OnRequestSwitchScreen ->{
+                slideShow.stopTimer()
+                mutableState.update { it.copy(navigateRequest = event.request) }
+            }
         }
     }
 

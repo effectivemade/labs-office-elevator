@@ -5,28 +5,48 @@ import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.core.network.entity.Either
 import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
 import band.effective.office.tv.domain.autoplay.AutoplayableViewModel
+import band.effective.office.tv.domain.autoplay.model.AutoplayState
 import band.effective.office.tv.domain.autoplay.model.NavigateRequests
+import band.effective.office.tv.domain.model.message.BotMessage
+import band.effective.office.tv.domain.model.message.MessageQueue
 import band.effective.office.tv.domain.use_cases.EventStoryDataCombinerUseCase
+import band.effective.office.tv.network.MattermostClient
+import band.effective.office.tv.screen.eventStory.models.MessageInfo
 import band.effective.office.tv.screen.eventStory.models.StoryModel
+import coil.ImageLoader
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class EventStoryViewModel @Inject constructor(
     private val eventStoryData: EventStoryDataCombinerUseCase,
     private val timer: TimerSlideShow,
+    @MattermostClient val imageLoader: ImageLoader
 ) : ViewModel(), AutoplayableViewModel {
     private val mutableState = MutableStateFlow(LatestEventInfoUiState.empty)
     override val state = mutableState.asStateFlow()
 
-    override fun switchToFirstItem() {
-        mutableState.update { state -> state.copy(currentStoryIndex = 0) }
+    override fun switchToFirstItem(prevScreenState: AutoplayState) {
+        if (prevScreenState.isPlay) startTimer()
+        mutableState.update { state ->
+            state.copy(
+                currentStoryIndex = 0
+            )
+        }
     }
 
-    override fun switchToLastItem() {
-        mutableState.update { state -> state.copy(currentStoryIndex = state.eventsInfo.size - 1) }
+    override fun switchToLastItem(prevScreenState: AutoplayState) {
+        if (prevScreenState.isPlay) stopTimer()
+        mutableState.update { state ->
+            state.copy(
+                currentStoryIndex = state.eventsInfo.size - 1
+            )
+        }
     }
 
     init {
@@ -35,6 +55,29 @@ class EventStoryViewModel @Inject constructor(
         }
         initTimer()
         startTimer()
+        checkMessage()
+    }
+
+    private fun checkMessage() = viewModelScope.launch {
+
+        MessageQueue.secondQueue.queue.collect {
+            val messages = MessageQueue.secondQueue.queue.value.queue
+            val messagesInStory =
+                state.value.eventsInfo.filterIsInstance<MessageInfo>().map { it.message }
+            val commonMessages =
+                messagesInStory.filter { messagesInStory -> messages.any { messageInQueue -> messageInQueue.id == messagesInStory.id } }
+            val addMessages = (messages - commonMessages.toSet()).map { it.toMessageInfo() }
+            val deleteMessages = (messagesInStory - commonMessages.toSet()).map { it.toMessageInfo() }
+            val newEventInfo = state.value.eventsInfo + addMessages - deleteMessages.toSet()
+            mutableState.update {
+                it.copy(
+                    eventsInfo = newEventInfo,
+                    currentStoryIndex = if (it.currentStoryIndex >= newEventInfo.size)
+                        newEventInfo.size - 1
+                    else it.currentStoryIndex
+                )
+            }
+        }
     }
 
     private suspend fun initDataStory() {
@@ -43,12 +86,12 @@ class EventStoryViewModel @Inject constructor(
         }
         withContext(Dispatchers.IO + exceptionHandler) {
             eventStoryData.getAllDataForStories().collectLatest { events ->
-                    when (events) {
-                        is Either.Success -> updateStateAsSuccessfulFetch(events.data)
+                when (events) {
+                    is Either.Success -> updateStateAsSuccessfulFetch(events.data)
 
-                        is Either.Failure -> updateStateAsException(events.error)
-                    }
+                    is Either.Failure -> updateStateAsException(events.error)
                 }
+            }
         }
     }
 
@@ -90,8 +133,8 @@ class EventStoryViewModel @Inject constructor(
 
     private fun handlePlayState() {
         timer.resetTimer()
-        stopTimer()
         val isPlay = !state.value.isPlay
+        stopTimer()
         mutableState.update { it.copy(isPlay = isPlay) }
         if (isPlay) timer.startTimer()
     }
@@ -134,12 +177,14 @@ class EventStoryViewModel @Inject constructor(
         mutableState.update { it.copy(currentStoryIndex = state.value.eventsInfo.size - 1) }
     }
 
-    fun startTimer() {
+    override fun startTimer() {
         timer.startTimer()
+        mutableState.update { it.copy(isPlay = true) }
     }
 
-    fun stopTimer() {
+    override fun stopTimer() {
         timer.stopTimer()
+        mutableState.update { it.copy(isPlay = false) }
     }
 
     private fun initTimer() {
@@ -155,6 +200,9 @@ class EventStoryViewModel @Inject constructor(
             isPlay = state.value.isPlay
         )
     }
-}
 
+    private fun BotMessage.toMessageInfo(): MessageInfo = MessageInfo(this)
+
+    private val countShowUsers = 10
+}
 
