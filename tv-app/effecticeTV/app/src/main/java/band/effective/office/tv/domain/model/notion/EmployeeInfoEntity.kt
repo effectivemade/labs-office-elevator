@@ -16,7 +16,7 @@ class EmployeeInfoEntity(
 
 fun List<EmployeeInfoEntity>.processEmployeeInfo(): List<EmployeeInfoUI> {
     val resultList = mutableListOf<EmployeeInfoUI>()
-    this.map {employee ->
+    this.forEach { employee ->
         if (employee.nextBirthdayDate.isNotBlank() && isCelebrationToday(employee.nextBirthdayDate)) {
             resultList.add(
                 BirthdayUI(
@@ -33,14 +33,15 @@ fun List<EmployeeInfoEntity>.processEmployeeInfo(): List<EmployeeInfoUI> {
                     DateUtlils.getYearsFromStartDate(employee.startDate)
                 )
             )
-        }
-        if (employee.startDate.isNotBlank() && isNewEmployeeToday(employee.startDate)) {
-            resultList.add(
-                NewEmployeeUI(
-                    employee.firstName,
-                    employee.photoUrl,
+        } else {
+            if (employee.startDate.isNotBlank() && isNewEmployeeToday(employee.startDate)) {
+                resultList.add(
+                    NewEmployeeUI(
+                        employee.firstName,
+                        employee.photoUrl,
+                    )
                 )
-            )
+            }
         }
     }
     return resultList
