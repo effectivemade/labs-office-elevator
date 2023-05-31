@@ -1,9 +1,5 @@
 package band.effective.office.tv.domain.model.notion
 
-import band.effective.office.tv.screen.eventStory.models.AnniversaryUI
-import band.effective.office.tv.screen.eventStory.models.BirthdayUI
-import band.effective.office.tv.screen.eventStory.models.EmployeeInfoUI
-import band.effective.office.tv.screen.eventStory.models.NewEmployeeUI
 import band.effective.office.tv.utils.DateUtlils
 import java.util.*
 
@@ -14,33 +10,34 @@ class EmployeeInfoEntity(
     val photoUrl: String,
 )
 
-fun List<EmployeeInfoEntity>.processEmployeeInfo(): List<EmployeeInfoUI> {
-    val resultList = mutableListOf<EmployeeInfoUI>()
-    this.map {employee ->
+fun List<EmployeeInfoEntity>.processEmployeeInfo(): List<EmployeeInfo> {
+    val resultList = mutableListOf<EmployeeInfo>()
+    this.forEach { employee ->
         if (employee.nextBirthdayDate.isNotBlank() && isCelebrationToday(employee.nextBirthdayDate)) {
             resultList.add(
-                BirthdayUI(
+                Birthday(
                     employee.firstName,
                     employee.photoUrl,
-                )
-            )
-        }
-        if (employee.startDate.isNotBlank() && isCelebrationToday(employee.startDate)) {
-            resultList.add(
-                AnniversaryUI(
-                    employee.firstName,
-                    employee.photoUrl,
-                    DateUtlils.getYearsFromStartDate(employee.startDate)
                 )
             )
         }
         if (employee.startDate.isNotBlank() && isNewEmployeeToday(employee.startDate)) {
             resultList.add(
-                NewEmployeeUI(
+                NewEmployee(
                     employee.firstName,
                     employee.photoUrl,
                 )
             )
+        } else {
+            if (employee.startDate.isNotBlank() && isCelebrationToday(employee.startDate)) {
+                resultList.add(
+                    Anniversary(
+                        employee.firstName,
+                        employee.photoUrl,
+                        DateUtlils.getYearsFromStartDate(employee.startDate)
+                    )
+                )
+            }
         }
     }
     return resultList
