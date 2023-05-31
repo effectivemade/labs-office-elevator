@@ -2,7 +2,7 @@ package band.effective.office.tv.screen.eventStory
 
 import band.effective.office.tv.domain.autoplay.model.AutoplayState
 import band.effective.office.tv.domain.autoplay.model.NavigateRequests
-import band.effective.office.tv.domain.model.notion.EmployeeInfo
+import band.effective.office.tv.screen.eventStory.models.StoryModel
 import band.effective.office.tv.screen.navigation.Screen
 
 data class LatestEventInfoUiState(
@@ -10,9 +10,10 @@ data class LatestEventInfoUiState(
     val errorText: String,
     override val isLoading: Boolean,
     override val isData: Boolean,
-    val isPlay: Boolean,
-    val eventsInfo: List<EmployeeInfo>,
+    override val isPlay: Boolean,
+    val eventsInfo: List<StoryModel>,
     var currentStoryIndex: Int,
+    val keySort: KeySortDuolingoUser = KeySortDuolingoUser.Xp,
     override val screenName: Screen = Screen.Stories,
     override var navigateRequest: NavigateRequests = NavigateRequests.Nowhere,
 ) : AutoplayState {
@@ -20,11 +21,15 @@ data class LatestEventInfoUiState(
         val empty = LatestEventInfoUiState(
             isError = false,
             errorText = "",
-            isPlay = false,
+            isPlay = true,
             isLoading = true,
             isData = false,
             eventsInfo = listOf(),
             currentStoryIndex = -1,
         )
     }
+}
+
+enum class KeySortDuolingoUser {
+    Xp, Streak
 }

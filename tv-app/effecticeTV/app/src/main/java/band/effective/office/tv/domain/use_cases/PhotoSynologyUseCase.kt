@@ -1,4 +1,4 @@
-package band.effective.office.tv.network.use_cases
+package band.effective.office.tv.domain.use_cases
 
 import band.effective.office.tv.repository.synology.PhotoSynologyRepository
 import javax.inject.Inject

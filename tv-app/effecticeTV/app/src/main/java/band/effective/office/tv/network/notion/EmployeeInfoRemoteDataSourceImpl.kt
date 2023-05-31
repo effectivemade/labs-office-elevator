@@ -16,8 +16,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class EmployeeInfoRemoteDataSourceImpl @Inject constructor(private val notionClient: NotionClient) :
-    EmployeeInfoRemoteDataSource {
+class EmployeeInfoRemoteDataSourceImpl @Inject constructor(
+    private val notionClient: NotionClient
+    ): EmployeeInfoRemoteDataSource
+{
 
     private var employeeInfoList: MutableList<EmployeeInfoDto> = mutableListOf()
 

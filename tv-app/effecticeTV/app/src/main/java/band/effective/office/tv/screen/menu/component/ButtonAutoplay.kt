@@ -14,7 +14,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.effecticetv.ui.theme.robotoFontFamily
+import band.effective.office.tv.ui.theme.robotoFontFamily
 
 @Composable
 fun ButtonAutoplay(text: String = "", onFocus: () -> Unit = {}, onClick: () -> Unit = {}) {

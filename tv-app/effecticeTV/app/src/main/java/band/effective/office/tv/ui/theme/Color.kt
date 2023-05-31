@@ -1,4 +1,4 @@
-package com.example.effecticetv.ui.theme
+package band.effective.office.tv.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

@@ -5,97 +5,110 @@ import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.core.network.entity.Either
 import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
 import band.effective.office.tv.domain.autoplay.AutoplayableViewModel
+import band.effective.office.tv.domain.autoplay.model.AutoplayState
 import band.effective.office.tv.domain.autoplay.model.NavigateRequests
-import band.effective.office.tv.domain.model.notion.EmployeeInfoEntity
-import band.effective.office.tv.repository.notion.EmployeeInfoRepository
-import band.effective.office.tv.domain.model.notion.processEmployeeInfo
+import band.effective.office.tv.domain.model.message.BotMessage
+import band.effective.office.tv.domain.model.message.MessageQueue
+import band.effective.office.tv.domain.use_cases.EventStoryDataCombinerUseCase
+import band.effective.office.tv.network.MattermostClient
+import band.effective.office.tv.screen.eventStory.models.MessageInfo
+import band.effective.office.tv.screen.eventStory.models.StoryModel
+import coil.ImageLoader
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class EventStoryViewModel @Inject constructor(
-    private val repository: EmployeeInfoRepository,
-    private val timer: TimerSlideShow
-) :
-    ViewModel(), AutoplayableViewModel {
-    private val mutableState =
-        MutableStateFlow(LatestEventInfoUiState.empty)
+    private val eventStoryData: EventStoryDataCombinerUseCase,
+    private val timer: TimerSlideShow,
+    @MattermostClient val imageLoader: ImageLoader
+) : ViewModel(), AutoplayableViewModel {
+    private val mutableState = MutableStateFlow(LatestEventInfoUiState.empty)
     override val state = mutableState.asStateFlow()
 
-    override fun switchToFirstItem() {
-        mutableState.update { state -> state.copy(currentStoryIndex = 0) }
+    override fun switchToFirstItem(prevScreenState: AutoplayState) {
+        if (prevScreenState.isPlay) startTimer()
+        mutableState.update { state ->
+            state.copy(
+                currentStoryIndex = 0
+            )
+        }
     }
 
-    override fun switchToLastItem() {
-        mutableState.update { state -> state.copy(currentStoryIndex = state.eventsInfo.size - 1) }
+    override fun switchToLastItem(prevScreenState: AutoplayState) {
+        if (prevScreenState.isPlay) stopTimer()
+        mutableState.update { state ->
+            state.copy(
+                currentStoryIndex = state.eventsInfo.size - 1
+            )
+        }
     }
 
     init {
-        fetchStories()
+        viewModelScope.launch {
+            initDataStory()
+        }
         initTimer()
         startTimer()
+        checkMessage()
     }
 
-    private fun fetchStories() {
-        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            updateStateAsException(exception as Error)
+    private fun checkMessage() = viewModelScope.launch {
+
+        MessageQueue.secondQueue.queue.collect {
+            val messages = MessageQueue.secondQueue.queue.value.queue
+            val messagesInStory =
+                state.value.eventsInfo.filterIsInstance<MessageInfo>().map { it.message }
+            val commonMessages =
+                messagesInStory.filter { messagesInStory -> messages.any { messageInQueue -> messageInQueue.id == messagesInStory.id } }
+            val addMessages = (messages - commonMessages.toSet()).map { it.toMessageInfo() }
+            val deleteMessages = (messagesInStory - commonMessages.toSet()).map { it.toMessageInfo() }
+            val newEventInfo = state.value.eventsInfo + addMessages - deleteMessages.toSet()
+            mutableState.update {
+                it.copy(
+                    eventsInfo = newEventInfo,
+                    currentStoryIndex = if (it.currentStoryIndex >= newEventInfo.size)
+                        newEventInfo.size - 1
+                    else it.currentStoryIndex
+                )
+            }
         }
-        viewModelScope.launch(Dispatchers.Default + exceptionHandler) {
-            repository.latestEvents().collectLatest { events ->
+    }
+
+    private suspend fun initDataStory() {
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            updateStateAsException((exception as Error).message.orEmpty())
+        }
+        withContext(Dispatchers.IO + exceptionHandler) {
+            eventStoryData.getAllDataForStories().collectLatest { events ->
                 when (events) {
-                    is Either.Success -> {
-                        updateStateAsSuccessfulFetch(events.data)
-                    }
-                    is Either.Failure -> {
-                        updateStateAsException(Error(events.error))
-                    }
+                    is Either.Success -> updateStateAsSuccessfulFetch(events.data)
+
+                    is Either.Failure -> updateStateAsException(events.error)
                 }
             }
         }
     }
 
-    fun startTimer() {
-        timer.startTimer()
-    }
-
-    fun stopTimer() {
-        timer.stopTimer()
-    }
-
-    private fun initTimer() {
-        timer.init(
-            scope = viewModelScope,
-            callbackToEnd = {
-                if (isLastStory()) {
-                    onLastStory()
-                } else {
-                    moveToNextStory()
-                }
-            },
-            isPlay = state.value.isPlay
-        )
-    }
-
-    private fun updateStateAsException(error: Error) {
+    private fun updateStateAsException(error: String) {
         mutableState.update { state ->
             state.copy(
                 isError = true,
-                errorText = error.message ?: "",
+                errorText = error,
                 isLoading = false,
             )
         }
     }
 
-    private fun updateStateAsSuccessfulFetch(events: List<EmployeeInfoEntity>) {
-        val resultList = events.processEmployeeInfo()
+    private fun updateStateAsSuccessfulFetch(events: List<StoryModel>) {
         mutableState.update { state ->
             state.copy(
-                eventsInfo = resultList,
+                eventsInfo = events,
                 currentStoryIndex = 0,
                 isLoading = false,
                 isData = true,
@@ -120,8 +133,8 @@ class EventStoryViewModel @Inject constructor(
 
     private fun handlePlayState() {
         timer.resetTimer()
-        stopTimer()
         val isPlay = !state.value.isPlay
+        stopTimer()
         mutableState.update { it.copy(isPlay = isPlay) }
         if (isPlay) timer.startTimer()
     }
@@ -164,6 +177,32 @@ class EventStoryViewModel @Inject constructor(
         mutableState.update { it.copy(currentStoryIndex = state.value.eventsInfo.size - 1) }
     }
 
+    override fun startTimer() {
+        timer.startTimer()
+        mutableState.update { it.copy(isPlay = true) }
+    }
 
+    override fun stopTimer() {
+        timer.stopTimer()
+        mutableState.update { it.copy(isPlay = false) }
+    }
+
+    private fun initTimer() {
+        timer.init(
+            scope = viewModelScope,
+            callbackToEnd = {
+                if (isLastStory()) {
+                    onLastStory()
+                } else {
+                    moveToNextStory()
+                }
+            },
+            isPlay = state.value.isPlay
+        )
+    }
+
+    private fun BotMessage.toMessageInfo(): MessageInfo = MessageInfo(this)
+
+    private val countShowUsers = 10
 }
 

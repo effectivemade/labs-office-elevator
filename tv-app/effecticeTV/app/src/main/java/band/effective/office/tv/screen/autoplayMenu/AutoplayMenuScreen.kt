@@ -21,16 +21,17 @@ import band.effective.office.tv.screen.leaderIdEvents.LeaderIdEventsViewModel
 import band.effective.office.tv.screen.menu.component.ButtonAutoplay
 import band.effective.office.tv.screen.menu.component.MenuComponent
 import band.effective.office.tv.screen.menu.component.MenuItemType
+import band.effective.office.tv.screen.message.secondaryMessage.SecondaryMessageViewModel
 import band.effective.office.tv.screen.navigation.Screen
 import band.effective.office.tv.screen.photo.PhotoViewModel
-import com.example.effecticetv.ui.theme.robotoFontFamily
+import band.effective.office.tv.ui.theme.robotoFontFamily
 
 @Composable
 fun AutoplayMenuScreen(navController: NavController) {
     val pairsScreenVM = listOf(
+        Pair(Screen.Stories, hiltViewModel<EventStoryViewModel>()),
         Pair(Screen.BestPhoto, hiltViewModel<PhotoViewModel>()),
         Pair(Screen.Events, hiltViewModel<LeaderIdEventsViewModel>()),
-        Pair(Screen.Stories, hiltViewModel<EventStoryViewModel>())
     )
     var mutableScreenList = mutableListOf<Screen>()
     Column(

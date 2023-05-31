@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.tv.screen.leaderIdEvents.components.TextWithCaptionAndIcon
-import com.example.effecticetv.ui.theme.robotoFontFamily
+import band.effective.office.tv.ui.theme.robotoFontFamily
 import kotlinx.coroutines.delay
 import band.effective.office.tv.R
 

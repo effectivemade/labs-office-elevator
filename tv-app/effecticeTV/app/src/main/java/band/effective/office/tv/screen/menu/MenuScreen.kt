@@ -18,7 +18,7 @@ import band.effective.office.tv.screen.menu.component.MenuComponent
 import band.effective.office.tv.screen.menu.component.TimeComponent
 import band.effective.office.tv.screen.navigation.NavigationModel
 import band.effective.office.tv.screen.navigation.Screen
-import com.example.effecticetv.ui.theme.robotoFontFamily
+import band.effective.office.tv.ui.theme.robotoFontFamily
 import kotlinx.coroutines.launch
 
 @Composable
