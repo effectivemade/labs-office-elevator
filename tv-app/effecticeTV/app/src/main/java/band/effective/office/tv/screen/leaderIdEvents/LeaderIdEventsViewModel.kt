@@ -47,6 +47,7 @@ class LeaderIdEventsViewModel @Inject constructor(
 
     private fun checkAutoplayState() = viewModelScope.launch {
         autoplayController.state.collect { controllerState ->
+            if (controllerState.screensList.isEmpty()) return@collect
             if (controllerState.screensList[controllerState.currentScreenNumber] == Screen.Events) {
                 mutableState.update {
                     it.copy(
