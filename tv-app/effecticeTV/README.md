@@ -7,17 +7,17 @@ The main purpose of the subproject is to show information about employees (such 
 
 ### Stories types
 
-|                      Birthdays                       |                 Anniversary of working                 |
-|:----------------------------------------------------:|:------------------------------------------------------:|
-| <img src="assets/birthday-example.png" height="200"> | <img src="assets/aniversary-example.png" height="200"> |
+|                         Birthdays                          |                    Anniversary of working                    |
+|:----------------------------------------------------------:|:------------------------------------------------------------:|
+| <img src="../../assets/birthday-example.png" height="150"> | <img src="../../assets/aniversary-example.png" height="150"> |
 
-|                       New employee                       |                   Duolingo top on XP                    |
-|:--------------------------------------------------------:|:-------------------------------------------------------:|
-| <img src="assets/new-employee-example.png" height="200"> | <img src="assets/duolingo-xp-example.png" height="200"> |
+|                          New employee                          |                      Duolingo top on XP                       |
+|:--------------------------------------------------------------:|:-------------------------------------------------------------:|
+| <img src="../../assets/new-employee-example.png" height="150"> | <img src="../../assets/duolingo-xp-example.png" height="150"> |
 
-|              Duolingo top of the day in shock mode              |
-|:---------------------------------------------------------------:|
-| <img src="assets/duolingo-shock-mode-example.png" height="200"> |
+|                 Duolingo top of the day in shock mode                 |
+|:---------------------------------------------------------------------:|
+| <img src="../../assets/duolingo-shock-mode-example.png" height="150"> |
 
 
 # Features :fire:
@@ -56,14 +56,14 @@ The screen also contains buttons that can be used to interact with stories (swit
 
 The office of our company is located in the "boiling point" building, which hosts many interesting events every day. "Boiling point" has its own [api](https://apps.leader-id.ru/swagger/) for getting events. In order not to miss events that are interesting for employees, we use the boiling point api to receive and display information about events for the month. There is a qr on the screen to go to the registration site for the event.
 
-<img src="assets/leader-events-screen.png" title="LeaderID Events Screen">
+<img src="../../assets/leader-events-screen.png" title="LeaderID Events Screen">
 
 ## Mattermost messages :speech_balloon:
 
 Our company uses Mattermost as a corporate messenger. Employees want to display their messages on the TV screen, for this a bot was developed that reads chats to which it is added. If an employee contacts the bot, the bot will add his message to storyes. If a message is marked with [importantMessageReaction](https://github.com/effectivemade/labs-office-elevator/blob/fc7c7a67f7f0009e336dda40d8ad2c57af657b82/tv-app/effecticeTV/app/src/main/java/band/effective/office/tv/domain/botLogic/BotConfig.kt#L6) , then the message will be shown immediately and will break the content being shown. If the message is marked with [deleteMessageReaction](https://github.com/effectivemade/labs-office-elevator/blob/fc7c7a67f7f0009e336dda40d8ad2c57af657b82/tv-app/effecticeTV/app/src/main/java/band/effective/office/tv/domain/botLogic/BotConfig.kt#L7), then the message will be unsubscribed. Also, the bot can be asked to creep the message until a certain day.
 
-<img src="assets/message-in-story.png" title="Message in story">
-<img src="assets/message.png" title="Urgent message">
+<img src="../../assets/message-in-story.png" title="Message in story">
+<img src="../../assets/message.png" title="Urgent message">
 
 ## Photo slide show :sunrise:
 
