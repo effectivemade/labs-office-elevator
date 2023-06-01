@@ -19,7 +19,6 @@ import band.effective.office.tv.ui.theme.robotoFontFamily
 @Composable
 fun ButtonAutoplay(text: String = "", onFocus: () -> Unit = {}, onClick: () -> Unit = {}) {
     var isFocus by remember { mutableStateOf(false) }
-    //TODO(Artem Gruzdev) replace text in str res
     val animatedBackgroundColor by animateColorAsState(
         targetValue = if (isFocus) MaterialTheme.colors.primaryVariant
         else MaterialTheme.colors.secondaryVariant
