@@ -2,18 +2,17 @@ package band.effective.office.tv.screen.photo
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
 import band.effective.office.tv.core.network.entity.Either
+import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
 import band.effective.office.tv.domain.autoplay.AutoplayController
-import band.effective.office.tv.domain.autoplay.model.AutoplayState
 import band.effective.office.tv.domain.autoplay.model.ScreenState
 import band.effective.office.tv.network.UnsafeOkHttpClient
 import band.effective.office.tv.repository.synology.SynologyRepository
 import band.effective.office.tv.screen.navigation.Screen
 import band.effective.office.tv.screen.photo.model.toUIModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import javax.inject.Inject
 
@@ -23,7 +22,7 @@ class PhotoViewModel @Inject constructor(
     private val slideShow: TimerSlideShow,
     @UnsafeOkHttpClient val unsafeOkHttpClient: OkHttpClient,
     private val autoplayController: AutoplayController
-): ViewModel() {
+) : ViewModel() {
 
     private val mutableState = MutableStateFlow(BestPhotoState.Empty)
     val state = mutableState.asStateFlow()
@@ -40,6 +39,20 @@ class PhotoViewModel @Inject constructor(
         viewModelScope.launch {
             repository.auth()
             updatePhoto()
+        }
+        checkAutoplayState()
+    }
+
+    private fun checkAutoplayState() = viewModelScope.launch {
+        autoplayController.state.collect { controllerState ->
+            if (controllerState.screensList.isEmpty()) return@collect
+            if (controllerState.screensList[controllerState.currentScreenNumber] == Screen.Events) {
+                slideShow.startTimer()
+                //TODO(Maksim Mishenko) @Artem Gruzdev add switch to first and last photo
+                mutableState.update { it.copy(isPlay = autoplayController.state.value.screenState.isPlay) }
+            } else {
+                slideShow.stopTimer()
+            }
         }
     }
 
@@ -70,11 +83,19 @@ class PhotoViewModel @Inject constructor(
                     mutableEffect.emit(BestPhotoEffect.ChangePlayState(isPlay))
                 }
             }
-            is BestPhotoEvent.OnRequestSwitchScreen ->{
+            is BestPhotoEvent.OnRequestSwitchScreen -> {
                 slideShow.stopTimer()
-                when(event.request){
-                    NavigateRequests.Forward -> autoplayController.nextScreen(state.value.toScreenModel(true))
-                    NavigateRequests.Back -> autoplayController.prevScreen(state.value.toScreenModel(false))
+                when (event.request) {
+                    NavigateRequests.Forward -> autoplayController.nextScreen(
+                        state.value.toScreenModel(
+                            true
+                        )
+                    )
+                    NavigateRequests.Back -> autoplayController.prevScreen(
+                        state.value.toScreenModel(
+                            false
+                        )
+                    )
                 }
             }
         }
@@ -107,5 +128,7 @@ class PhotoViewModel @Inject constructor(
             }
         }
     }
-    private fun BestPhotoState.toScreenModel(direction: Boolean): ScreenState = ScreenState(isPlay = isPlay, isForwardDirection = direction)
+
+    private fun BestPhotoState.toScreenModel(direction: Boolean): ScreenState =
+        ScreenState(isPlay = isPlay, isForwardDirection = direction)
 }
