@@ -23,7 +23,7 @@ fun NavigationHost(navController: NavHostController) {
             composable(screen.screen.name) { screen.screenFun() }
         }
         composable(Screen.Autoplay.name) { AutoplayScreen() }
-        composable(Screen.AutoplayMenu.name) { AutoplayMenuScreen(navController) }
+        composable(Screen.AutoplayMenu.name) { AutoplayMenuScreen(navController = navController) }
         composable(Screen.MessageScreen.name) { PrimaryMessageScreen() {
 
         }}

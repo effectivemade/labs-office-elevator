@@ -1,14 +1,13 @@
 package band.effective.office.tv.screen.leaderIdEvents
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.core.network.Either
 import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
-import band.effective.office.tv.domain.autoplay.AutoplayableViewModel
-import band.effective.office.tv.domain.autoplay.model.AutoplayState
-import band.effective.office.tv.domain.autoplay.model.NavigateRequests
+import band.effective.office.tv.domain.autoplay.AutoplayController
+import band.effective.office.tv.domain.autoplay.model.ScreenState
 import band.effective.office.tv.repository.leaderId.LeaderIdEventsInfoRepository
+import band.effective.office.tv.screen.navigation.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,36 +19,11 @@ import javax.inject.Inject
 @HiltViewModel
 class LeaderIdEventsViewModel @Inject constructor(
     private val leaderIdEventsInfoRepository: LeaderIdEventsInfoRepository,
-    private val timer: TimerSlideShow
-) : ViewModel(), AutoplayableViewModel {
+    private val timer: TimerSlideShow,
+    private val autoplayController: AutoplayController
+) : ViewModel() {
     private var mutableState = MutableStateFlow(LeaderIdEventsUiState.empty)
-    override val state = mutableState.asStateFlow()
-    override fun switchToFirstItem(prevScreenState: AutoplayState) {
-        Log.e("Autoplay Controller", "$prevScreenState")
-        if (prevScreenState.isPlay)
-            timer.startTimer()
-        mutableState.update { it.copy(curentEvent = 0, isPlay = prevScreenState.isPlay) }
-    }
-
-    override fun switchToLastItem(prevScreenState: AutoplayState) {
-        if (prevScreenState.isPlay)
-            timer.startTimer()
-        mutableState.update {
-            it.copy(
-                curentEvent = it.eventsInfo.size - 1, isPlay = prevScreenState.isPlay
-            )
-        }
-    }
-
-    override fun stopTimer() {
-        timer.stopTimer()
-        mutableState.update { it.copy(isPlay = false) }
-    }
-
-    override fun startTimer() {
-        timer.startTimer()
-        mutableState.update { it.copy(isPlay = true) }
-    }
+    val state = mutableState.asStateFlow()
 
     val finish = GregorianCalendar()
 
@@ -61,18 +35,37 @@ class LeaderIdEventsViewModel @Inject constructor(
                 if (state.value.curentEvent + 1 < state.value.eventsInfo.size) {
                     mutableState.update { it.copy(curentEvent = it.curentEvent + 1) }
                 } else {
-                    mutableState.update { it.copy(curentEvent = 0,navigateRequest = NavigateRequests.Forward) }
+                    timer.stopTimer()
+                    autoplayController.nextScreen(state.value.toScreenState(true))
                 }
             }, isPlay = state.value.isPlay
         )
         if (state.value.isPlay)
             timer.startTimer()
+        checkAutoplayState()
+    }
+
+    private fun checkAutoplayState() = viewModelScope.launch {
+        autoplayController.state.collect { controllerState ->
+            if (controllerState.screensList[controllerState.currentScreenNumber] == Screen.Events) {
+                mutableState.update {
+                    it.copy(
+                        isPlay = autoplayController.state.value.screenState.isPlay,
+                        curentEvent = if (autoplayController.state.value.screenState.isForwardDirection) 0 else it.eventsInfo.size - 1
+                    )
+                }
+                timer.startTimer()
+            } else {
+                timer.stopTimer()
+            }
+        }
     }
 
     fun load() = viewModelScope.launch {
         leaderIdEventsInfoRepository.getEventsInfo(finish).collect { either ->
             when {
                 either is Either.Failure -> mutableState.update {
+                    autoplayController.addError(Screen.Events)
                     it.copy(
                         isLoading = false,
                         isError = true,
@@ -84,7 +77,7 @@ class LeaderIdEventsViewModel @Inject constructor(
                         isLoading = false,
                         isData = true,
                         eventsInfo = it.eventsInfo + either.data,
-                        curentEvent = 0,
+                        curentEvent = if (autoplayController.state.value.screenState.isForwardDirection) 0 else (it.eventsInfo + either.data).size - 1,
                         isPlay = true
                     )
                 }
@@ -111,26 +104,24 @@ class LeaderIdEventsViewModel @Inject constructor(
                 if (state.value.curentEvent + 1 < state.value.eventsInfo.size) {
                     mutableState.update { it.copy(curentEvent = it.curentEvent + 1) }
                 } else {
-                    mutableState.update {
-                        it.copy(
-                            curentEvent = 0,
-                            navigateRequest = NavigateRequests.Forward
-                        )
-                    }
+                    mutableState.update { it.copy(curentEvent = 0) }
+                    autoplayController.nextScreen(state.value.toScreenState(true))
                 }
             }
             is LeaderIdScreenEvents.OnClickPreviousItem -> {
                 if (state.value.curentEvent - 1 >= 0) {
                     mutableState.update { it.copy(curentEvent = it.curentEvent - 1) }
                 } else {
-                    mutableState.update {
-                        it.copy(
-                            curentEvent = it.eventsInfo.size - 1,
-                            navigateRequest = NavigateRequests.Back
-                        )
-                    }
+                    mutableState.update { it.copy(curentEvent = it.eventsInfo.size - 1) }
+                    autoplayController.prevScreen(state.value.toScreenState(false))
                 }
             }
         }
     }
+
+    private fun LeaderIdEventsUiState.toScreenState(direction: Boolean): ScreenState =
+        ScreenState(isPlay = isPlay, isForwardDirection = direction)
 }
+
+
+
