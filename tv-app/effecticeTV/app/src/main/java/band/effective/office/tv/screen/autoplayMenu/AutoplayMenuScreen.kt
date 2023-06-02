@@ -49,6 +49,7 @@ fun AutoplayMenuScreen(viewModel: AutoplayMenuViewModel = hiltViewModel(),navCon
                 }
             })
         ButtonAutoplay(text = stringResource(R.string.autoplay_menu_button), onClick = {
+            viewModel.autoplayController.resetController()
             if (mutableScreenList.isNotEmpty()) {
                 mutableScreenList.forEach { viewModel.autoplayController.registerScreen(it) }
                 navController.navigate(Screen.Autoplay.name)

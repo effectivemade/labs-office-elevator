@@ -84,7 +84,8 @@ class LeaderIdEventsViewModel @Inject constructor(
                 }
                 either is Either.Success -> mutableState.update {
                     it.copy(
-                        eventsInfo = it.eventsInfo + either.data
+                        eventsInfo = it.eventsInfo + either.data,
+                        curentEvent = if (autoplayController.state.value.screenState.isForwardDirection) it.curentEvent else (it.eventsInfo + either.data).size - 1,
                     )
                 }
             }
