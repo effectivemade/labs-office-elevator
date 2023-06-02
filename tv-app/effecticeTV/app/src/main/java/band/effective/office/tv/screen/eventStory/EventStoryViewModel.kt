@@ -55,7 +55,7 @@ class EventStoryViewModel @Inject constructor(
                         currentStoryIndex = if (autoplayController.state.value.screenState.isForwardDirection) 0 else it.eventsInfo.size - 1
                     )
                 }
-                timer.startTimer()
+                if (autoplayController.state.value.screenState.isPlay) timer.startTimer()
             } else {
                 timer.stopTimer()
             }

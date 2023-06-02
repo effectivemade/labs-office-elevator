@@ -47,7 +47,7 @@ class PhotoViewModel @Inject constructor(
         autoplayController.state.collect { controllerState ->
             if (controllerState.screensList.isEmpty()) return@collect
             if (controllerState.screensList[controllerState.currentScreenNumber] == Screen.Events) {
-                slideShow.startTimer()
+                if (autoplayController.state.value.screenState.isPlay) slideShow.startTimer()
                 //TODO(Maksim Mishenko) @Artem Gruzdev add switch to first and last photo
                 mutableState.update { it.copy(isPlay = autoplayController.state.value.screenState.isPlay) }
             } else {

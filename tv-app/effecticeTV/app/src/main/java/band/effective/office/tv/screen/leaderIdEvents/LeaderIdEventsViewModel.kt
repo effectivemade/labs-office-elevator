@@ -55,7 +55,7 @@ class LeaderIdEventsViewModel @Inject constructor(
                         curentEvent = if (autoplayController.state.value.screenState.isForwardDirection) 0 else it.eventsInfo.size - 1
                     )
                 }
-                timer.startTimer()
+                if (autoplayController.state.value.screenState.isPlay) timer.startTimer()
             } else {
                 timer.stopTimer()
             }
@@ -79,7 +79,7 @@ class LeaderIdEventsViewModel @Inject constructor(
                         isData = true,
                         eventsInfo = it.eventsInfo + either.data,
                         curentEvent = if (autoplayController.state.value.screenState.isForwardDirection) 0 else (it.eventsInfo + either.data).size - 1,
-                        isPlay = true
+                        isPlay = autoplayController.state.value.screenState.isPlay
                     )
                 }
                 either is Either.Success -> mutableState.update {
