@@ -10,7 +10,7 @@ annotation class LeaderIdRetrofitClient
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class SynologyRetrofitClient
+annotation class SynologyClient
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
@@ -23,7 +23,7 @@ annotation class UselessFactClient
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class DualingoRetrofitClient
+annotation class DuolingoRetrofitClient
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
