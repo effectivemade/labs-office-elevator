@@ -6,7 +6,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class Emoji(
         @Json(name = "create_at")
-        val createAt: Int,
+        val createAt: Long,
         @Json(name = "creator_id")
         val creatorId: String,
         @Json(name = "delete_at")
@@ -16,5 +16,5 @@ data class Emoji(
         @Json(name = "name")
         val name: String,
         @Json(name = "update_at")
-        val updateAt: Int
+        val updateAt: Long
 )

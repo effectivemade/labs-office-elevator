@@ -11,7 +11,7 @@ data class Post(
         @Json(name = "channel_id")
         val channel_id: String?,
         val delete_at: Long?,
-        val edit_at: Int?,
+        val edit_at: Long?,
         val file_ids: List<String>?,
         val hashtag: String?,
         val message: String?,
