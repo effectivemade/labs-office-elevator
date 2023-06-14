@@ -14,7 +14,7 @@ technologies as little as possible.
 
 ## Project Structure: :dizzy:
 
-[Effective-TV](https://github.com/effectivemade/labs-office-elevator/tree/feature/docs/tv-app/effecticeTV)
+[Effective-TV](https://github.com/effectivemade/labs-office-elevator/tree/effective_tv/tv-app/effecticeTV)
 
 Application for Android TV, which will show various interesting statistics about
 employees, report about interesting events, show important messages pinned by employees in chats in
