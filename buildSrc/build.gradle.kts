@@ -1,23 +1,29 @@
-
 plugins {
     `kotlin-dsl`
 }
 
 repositories {
     mavenLocal()
-    google()
     mavenCentral()
     maven(url = "https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    maven("https://jitpack.io")
+    jcenter()
+    google()
     gradlePluginPortal()
 }
 
 dependencies {
-    implementation("gradle.plugin.com.github.johnrengelman:shadow:7.1.2")
-    implementation(Dependencies.JetBrains.Kotlin.gradlePlugin)
-    implementation(Dependencies.Android.Tools.Build.gradlePlugin)
-    implementation(Dependencies.JetBrains.Kotlin.serializationPlugin)
-    implementation("com.codingfeline.buildkonfig:buildkonfig-gradle-plugin:0.13.3")
-    implementation("org.apache.commons:commons-compress:1.21")
+    implementation(Plugins.Android.implementation)
+    implementation(Plugins.Shadow.implementation) // NOTE(radchenko): generates jar for server builds
+    implementation(Plugins.Kotlin.implementation)
+    implementation(Plugins.Ktor.implementation)
+    implementation(Plugins.ApacheCompress.implementation) // NOTE(radchenko): needs for `ktor` to `docker`
+    implementation(Plugins.MultiplatformCompose.implementation)
+    implementation(Plugins.CocoaPods.implementation)
+    implementation(Plugins.Libres.implementation)
+    implementation(Plugins.BuildConfig.implementation)
+    implementation(Plugins.Serialization.implementation)
+    implementation(Plugins.Parcelize.implementation)
 }
 
 val rootDirProject = file("../")

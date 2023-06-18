@@ -1,11 +1,6 @@
-val ktor_version: String by project
-val kotlin_version: String by project
-val logback_version: String by project
-val google_api: String by project
-
 plugins {
     id("kotlin-server-conventions")
-    id("io.ktor.plugin") version "2.2.4"
+    id(Plugins.Ktor.plugin)
 }
 
 application {
@@ -13,10 +8,10 @@ application {
 }
 
 dependencies {
-    implementation("io.ktor:ktor-client-core:$ktor_version")
-    implementation("io.ktor:ktor-client-cio:$ktor_version")
-    implementation("io.ktor:ktor-client-logging:$ktor_version")
-    implementation("com.google.api-client:google-api-client:$google_api")
+    implementation(Dependencies.Ktor.Client.Core)
+    implementation(Dependencies.Ktor.Client.CIO)
+    implementation(Dependencies.Ktor.Client.CommonLogging)
+    implementation(Dependencies.Google.ApiClient)
 }
 
 ktor {
