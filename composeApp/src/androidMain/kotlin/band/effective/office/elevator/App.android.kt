@@ -2,7 +2,6 @@ package band.effective.office.elevator
 
 import android.app.Application
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import band.effective.office.elevator.di.androidModuleDI

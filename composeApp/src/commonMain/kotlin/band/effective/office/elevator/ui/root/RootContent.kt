@@ -3,7 +3,6 @@ package band.effective.office.elevator.ui.root
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import band.effective.office.elevator.ui.authorization.AuthorizationComponent
 import band.effective.office.elevator.ui.authorization.AuthorizationScreen
 import band.effective.office.elevator.ui.main.MainScreen
 import band.effective.office.elevator.ui.root.store.RootStore

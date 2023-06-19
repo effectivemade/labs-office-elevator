@@ -35,7 +35,7 @@ kotlin {
             export(Dependencies.Decompose.decompose)
             export(Dependencies.Essenty.essenty)
         }
-        pod("GoogleSignIn")
+        pod("GoogleSignIn") {}
     }
 
     sourceSets {
@@ -50,7 +50,6 @@ kotlin {
                 implementation(Dependencies.KotlinxCoroutines.core)
                 api(Dependencies.Ktor.Client.Core)
                 api(Dependencies.Ktor.Client.CommonLogging)
-                api(Dependencies.Ktor.Server.Logback)
                 implementation(Dependencies.ComposeIcons.featherIcons)
                 implementation(Dependencies.KotlinxSerialization.json)
                 implementation(Dependencies.KotlinxDatetime.kotlinxDatetime)
@@ -83,12 +82,14 @@ kotlin {
                 implementation(Dependencies.AndroidX.activityCompose)
                 implementation(Dependencies.Compose.uiTooling)
                 implementation(Dependencies.KotlinxCoroutines.android)
-                implementation(Dependencies.Ktor.Client.Android)
+                api(Dependencies.Ktor.Client.Android)
                 implementation(Dependencies.Google.SignIn)
                 implementation(Dependencies.AndroidX.activityKtx)
 
                 // Koin
                 api(Dependencies.Koin.android)
+
+                api(Dependencies.Ktor.Server.Logback)
             }
         }
 
@@ -133,6 +134,7 @@ android {
     sourceSets["main"].apply {
         manifest.srcFile("src/androidMain/AndroidManifest.xml")
         res.srcDirs("src/androidMain/resources")
+        res.srcDir("build/generated/libres/android/resources")
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -148,12 +150,23 @@ android {
             storeFile = file("${rootDir}/keystore/debug.keystore")
             storePassword = "android"
         }
+        create("release") {
+            keyAlias = System.getenv()["OFFICE_ELEVATOR_RELEASE_ALIAS"]
+            keyPassword = System.getenv()["OFFICE_ELEVATOR_RELEASE_KEY_PASSWORD"]
+            storeFile = file("${rootDir}/keystore/main.keystore")
+            storePassword = System.getenv()["OFFICE_ELEVATOR_RELEASE_STORE_PASSWORD"]
+        }
     }
 
     buildTypes {
         getByName("debug") {
             signingConfig = signingConfigs.getByName("debug")
             isDebuggable = true
+        }
+        getByName("release") {
+            signingConfig = signingConfigs.getByName("release")
+            isDebuggable = false
+            isMinifyEnabled = true
         }
     }
 }

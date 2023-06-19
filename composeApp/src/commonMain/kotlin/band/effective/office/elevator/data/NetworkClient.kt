@@ -19,8 +19,10 @@ class NetworkClient(enableLogging: Boolean) {
 
     val ktor = createHttpEngine(enableLogging).config {
         defaultRequest {
-            host = "localhost"
+            host = "0.0.0.0"
             port = 80
+//            host = "51.250.11.188"
+//            port = 2105
         }
         install(Logging) {
             logger = object : Logger {
@@ -29,7 +31,7 @@ class NetworkClient(enableLogging: Boolean) {
                 }
             }
             logger = Logger.DEFAULT
-            level = LogLevel.HEADERS
+            level = LogLevel.ALL
         }
     }
 
@@ -38,7 +40,15 @@ class NetworkClient(enableLogging: Boolean) {
     ): ApiResponse<T, E> =
         try {
             val response = ktor.request { block() }
-            ApiResponse.Success(response.body())
+
+            when (val code = response.status.value) {
+                in 200..299 -> {
+                    ApiResponse.Success(response.body())
+                }
+
+                else -> ApiResponse.Error.HttpError(code, null)
+            }
+
         } catch (e: ClientRequestException) {
             ApiResponse.Error.HttpError(e.response.status.value, e.errorBody())
         } catch (e: ServerResponseException) {

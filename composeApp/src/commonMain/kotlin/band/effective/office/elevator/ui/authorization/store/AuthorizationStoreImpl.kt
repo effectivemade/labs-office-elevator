@@ -1,6 +1,5 @@
 package band.effective.office.elevator.ui.authorization.store
 
-import band.effective.office.elevator.data.ApiResponse
 import band.effective.office.elevator.domain.GoogleSignIn
 import band.effective.office.elevator.domain.SignInResultCallback
 import band.effective.office.elevator.ui.authorization.store.AuthorizationStore.Intent
@@ -11,7 +10,6 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
-import io.github.aakira.napier.Napier
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

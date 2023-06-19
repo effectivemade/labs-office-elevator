@@ -75,7 +75,9 @@ internal class ElevatorStoreFactory(
                             )
                         )
 
-                        is ApiResponse.Success -> ElevatorStore.Label.ShowSuccess
+                        is ApiResponse.Success -> {
+                            ElevatorStore.Label.ShowSuccess
+                        }
                     }
                 )
                 delay(1000)

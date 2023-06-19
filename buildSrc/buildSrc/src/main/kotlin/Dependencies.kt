@@ -41,7 +41,7 @@ object Dependencies {
 
         object Server {
             const val Netty = "io.ktor:ktor-server-netty-jvm:$ktorVersion"
-            const val Logback = "ch.qos.logback:logback-classic:1.4.4"
+            const val Logback = "ch.qos.logback:logback-classic:1.2.11"
         }
     }
 
