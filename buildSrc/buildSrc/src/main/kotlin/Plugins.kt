@@ -36,7 +36,6 @@ object Plugins {
     }
 
     object CocoaPods {
-        const val implementation = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.20"
         const val plugin = "org.jetbrains.kotlin.native.cocoapods"
     }
     object Libres {
@@ -54,7 +53,6 @@ object Plugins {
         const val plugin = "org.jetbrains.kotlin.plugin.serialization"
     }
     object Parcelize {
-        const val implementation = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.20"
         const val plugin = "org.jetbrains.kotlin.plugin.parcelize"
     }
 }
