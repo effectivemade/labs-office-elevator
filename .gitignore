@@ -1,6 +1,6 @@
 /.idea
 .idea
-keystore/
+mobile/keystore/
 build/
 *.iml
 .gradle

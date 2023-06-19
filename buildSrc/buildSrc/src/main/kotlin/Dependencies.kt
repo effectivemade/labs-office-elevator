@@ -1,137 +1,125 @@
 object Dependencies {
 
-    object DI {
-        const val kodein = "org.kodein.di:kodein-di:7.1.0"
-    }
-
-    object Images {
-        const val kamel = "com.alialbaali.kamel:kamel-image:0.3.0"
-    }
-
-    object JetBrains {
-        object Kotlin {
-            // __KOTLIN_COMPOSE_VERSION__
-            private const val VERSION = "1.8.0"
-            const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$VERSION"
-            const val testCommon = "org.jetbrains.kotlin:kotlin-test-common:$VERSION"
-            const val testJunit = "org.jetbrains.kotlin:kotlin-test-junit:$VERSION"
-            const val testAnnotationsCommon =
-                "org.jetbrains.kotlin:kotlin-test-annotations-common:$VERSION"
-
-            const val dateTime = "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0"
-
-            const val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-core:1.4.0"
-            const val serializationPlugin = "org.jetbrains.kotlin:kotlin-serialization:1.5.31"
-
-            private const val coroutinesVersion = "1.6.4"
-            const val coroutines =
-                "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
-            const val coroutinesAndroid =
-                "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
-            const val coroutinesSwing =
-                "org.jetbrains.kotlinx:kotlinx-coroutines-swing:$coroutinesVersion"
-            const val coroutinesCommon =
-                "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$coroutinesVersion"
-        }
-
-        object Compose {
-            // __LATEST_COMPOSE_RELEASE_VERSION__
-            const val VERSION = "1.3.0"
-            const val gradlePlugin = "org.jetbrains.compose:compose-gradle-plugin:$VERSION"
-            const val runtime = "androidx.compose.runtime:runtime:$VERSION"
-            const val ui = "androidx.compose.ui:ui:$VERSION"
-            const val foundationLayout =
-                "androidx.compose.foundation:foundation-layout:$VERSION"
-            const val material = "androidx.compose.material:material:$VERSION"
-        }
-    }
-
-    object Android {
-        object Tools {
-            object Build {
-                const val gradlePlugin = "com.android.tools.build:gradle:7.3.1"
-            }
-        }
-
-        const val material = "com.google.android.material:material:1.4.0"
-    }
-
-    object Utils {
-        const val UUID = "com.benasher44:uuid:0.3.1"
-    }
-
-    object AndroidX {
-        object AppCompat {
-            const val appCompat = "androidx.appcompat:appcompat:1.4.0"
-            const val fragmentKtx = "androidx.fragment:fragment-ktx:1.2.1"
-        }
-
-        object Activity {
-            const val activityCompose = "androidx.activity:activity-compose:1.3.0-beta02"
-        }
-    }
-
-    object Coroutines {
-        const val Core =
-            "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.CoroutinesVersion}"
-        const val Android =
-            "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.CoroutinesVersion}"
-    }
-
-    object Serialization {
-        const val Json =
-            "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.KotlinSerializationVersion}"
-
+    object Versions {
+        const val activityKtx = "1.7.2"
+        const val kotlin = "1.8.20"
+        const val agp = "7.4.2"
+        const val compose = "1.4.0"
+        const val androidxAppCompat = "1.6.1"
+        const val androidxActivityCompose = "1.7.2"
+        const val composeUiTooling = "1.4.3"
+        const val libres = "1.1.8"
+        const val composeImageLoader = "1.3.1"
+        const val napier = "2.6.1"
+        const val buildConfig = "3.1.0"
+        const val kotlinxCoroutines = "1.7.1"
+        const val ktor = "2.3.1"
+        const val composeIcons = "1.1.0"
+        const val kotlinxSerialization = "1.5.1"
+        const val kotlinxDatetime = "0.4.0"
+        const val googleAuth = "20.5.0"
+        const val decompose = "2.0.0-compose-experimental-beta-01"
+        const val mviKotlin = "3.2.1"
+        const val koin = "3.4.0"
+        const val essenty = "1.1.0"
+        const val logback = "1.2.11"
+        const val shadow = "7.1.2"
     }
 
     object Ktor {
+        const val ktorVersion = "2.3.1"
+
         object Client {
             const val Core =
-                "io.ktor:ktor-client-core:${Versions.ktorVersion}"
-            val contentNegotiation =
-                "io.ktor:ktor-client-content-negotiation:${Versions.ktorVersion}"
-            val commonLogging =
-                "io.ktor:ktor-client-logging:${Versions.ktorVersion}"
-            val androidOKHttp =
-                "io.ktor:ktor-client-okhttp:${Versions.ktorVersion}"
-            val ios = "io.ktor:ktor-client-darwin:${Versions.ktorVersion}"
-            val commonSerialization =
-                "io.ktor:ktor-serialization-kotlinx-json:${Versions.ktorVersion}"
-            val cio = "io.ktor:ktor-client-cio:${Versions.ktorVersion}"
-            val websockets = "io.ktor:ktor-client-websockets:${Versions.ktorVersion}"
+                "io.ktor:ktor-client-core:$ktorVersion"
+            const val CommonLogging =
+                "io.ktor:ktor-client-logging:$ktorVersion"
+            const val CIO = "io.ktor:ktor-client-cio:$ktorVersion"
+            const val Android = "io.ktor:ktor-client-android:${Versions.ktor}"
+            const val Darwin = "io.ktor:ktor-client-darwin:${Versions.ktor}"
+        }
+
+        object Server {
+            const val Netty = "io.ktor:ktor-server-netty-jvm:$ktorVersion"
+            const val Logback = "ch.qos.logback:logback-classic:1.2.11"
         }
     }
 
-    object Koin {
-        const val Core = "io.insert-koin:koin-core:${Versions.koinVersion}"
-        const val Android =
-            "io.insert-koin:koin-android:${Versions.koinVersion}"
-    }
-
-    object MOKO {
-        const val resources_generator =
-            "dev.icerock.moko:resources-generator:${Versions.mokoVersion}"
-        const val resources =
-            "dev.icerock.moko:resources:${Versions.mokoVersion}"
-        const val resources_compose =
-            "dev.icerock.moko:resources-compose:${Versions.mokoVersion}"
-    }
-
-    object Napier {
-        const val logger = "io.github.aakira:napier:${Versions.napier}"
-    }
 
     object Google {
         private const val VERSION = "20.4.0"
         const val SignIn = "com.google.android.gms:play-services-auth:$VERSION"
+        const val ApiClient = "com.google.api-client:google-api-client:2.1.1"
     }
 
-    val asyncImageCompose = "io.github.qdsfdhvh:image-loader:1.2.10"
 
-    object Voyager {
-        private const val VERSION = "1.0.0-rc04"
-        const val navigator = "cafe.adriel.voyager:voyager-navigator:$VERSION"
-        const val tab = "cafe.adriel.voyager:voyager-tab-navigator:$VERSION"
-        const val transition = "cafe.adriel.voyager:voyager-transitions:$VERSION"
+    object AndroidX {
+        const val activityKtx = "androidx.activity:activity-ktx:${Versions.activityKtx}"
+        const val appCompat = "androidx.appcompat:appcompat:${Versions.androidxAppCompat}"
+        const val activityCompose =
+            "androidx.activity:activity-compose:${Versions.androidxActivityCompose}"
+    }
+
+    object Compose {
+        const val uiTooling = "androidx.compose.ui:ui-tooling:${Versions.composeUiTooling}"
+    }
+
+    object Libres {
+        const val libresCompose = "io.github.skeptick.libres:libres-compose:${Versions.libres}"
+    }
+
+    object ImageLoader {
+        const val imageLoader = "io.github.qdsfdhvh:image-loader:${Versions.composeImageLoader}"
+    }
+
+    object Napier {
+        const val napier = "io.github.aakira:napier:${Versions.napier}"
+    }
+
+    object KotlinxCoroutines {
+        const val core =
+            "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.kotlinxCoroutines}"
+        const val android =
+            "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.kotlinxCoroutines}"
+    }
+
+    object ComposeIcons {
+        const val featherIcons = "br.com.devsrsouza.compose.icons:feather:${Versions.composeIcons}"
+    }
+
+    object KotlinxSerialization {
+        const val json =
+            "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.kotlinxSerialization}"
+    }
+
+    object KotlinxDatetime {
+        const val kotlinxDatetime =
+            "org.jetbrains.kotlinx:kotlinx-datetime:${Versions.kotlinxDatetime}"
+    }
+
+    object GoogleAuth {
+        const val googleAuth = "com.google.android.gms:play-services-auth:${Versions.googleAuth}"
+    }
+
+    object Decompose {
+        const val decompose = "com.arkivanov.decompose:decompose:${Versions.decompose}"
+        const val extensions =
+            "com.arkivanov.decompose:extensions-compose-jetbrains:${Versions.decompose}"
+    }
+
+    object MviKotlin {
+        const val mviKotlin = "com.arkivanov.mvikotlin:mvikotlin:${Versions.mviKotlin}"
+        const val mviKotlinMain = "com.arkivanov.mvikotlin:mvikotlin-main:${Versions.mviKotlin}"
+        const val mviKotlinExtensionsCoroutines =
+            "com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines:${Versions.mviKotlin}"
+    }
+
+    object Koin {
+        const val core = "io.insert-koin:koin-core:${Versions.koin}"
+        const val android = "io.insert-koin:koin-android:${Versions.koin}"
+    }
+
+    object Essenty {
+        const val essenty = "com.arkivanov.essenty:lifecycle:${Versions.essenty}"
     }
 }

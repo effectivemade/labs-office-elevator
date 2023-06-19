@@ -34,12 +34,3 @@ kotlin {
     }
 }
 
-// builds the binary and deploys it into your Raspberry PI. Just change your RPI IP address below.
-val deploy by tasks.creating {
-    dependsOn("build")
-    doLast {
-        exec {
-            commandLine("scp", "build/bin/native/debugExecutable/ktgpio-example-app.kexe", "ubuntu@rpi.local:~/Downloads")
-        }
-    }
-}
