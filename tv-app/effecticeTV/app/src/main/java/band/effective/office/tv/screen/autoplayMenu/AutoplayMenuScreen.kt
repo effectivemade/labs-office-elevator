@@ -12,27 +12,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import band.effective.office.tv.R
-import band.effective.office.tv.screen.autoplay.UserSelect
-import band.effective.office.tv.screen.eventStory.EventStoryViewModel
-import band.effective.office.tv.screen.leaderIdEvents.LeaderIdEventsViewModel
 import band.effective.office.tv.screen.menu.component.ButtonAutoplay
 import band.effective.office.tv.screen.menu.component.MenuComponent
 import band.effective.office.tv.screen.menu.component.MenuItemType
-import band.effective.office.tv.screen.message.secondaryMessage.SecondaryMessageViewModel
 import band.effective.office.tv.screen.navigation.Screen
-import band.effective.office.tv.screen.photo.PhotoViewModel
 import band.effective.office.tv.ui.theme.robotoFontFamily
 
 @Composable
-fun AutoplayMenuScreen(navController: NavController) {
-    val pairsScreenVM = listOf(
-        Pair(Screen.Stories, hiltViewModel<EventStoryViewModel>()),
-        Pair(Screen.BestPhoto, hiltViewModel<PhotoViewModel>()),
-        Pair(Screen.Events, hiltViewModel<LeaderIdEventsViewModel>()),
-    )
+fun AutoplayMenuScreen(viewModel: AutoplayMenuViewModel = hiltViewModel(),navController: NavController) {
     var mutableScreenList = mutableListOf<Screen>()
     Column(
         modifier = Modifier.padding(25.dp),
@@ -60,12 +49,9 @@ fun AutoplayMenuScreen(navController: NavController) {
                 }
             })
         ButtonAutoplay(text = stringResource(R.string.autoplay_menu_button), onClick = {
+            viewModel.autoplayController.resetController()
             if (mutableScreenList.isNotEmpty()) {
-                var mutableMap = mutableMapOf<Screen, ViewModel>()
-                pairsScreenVM.forEach {
-                    if (mutableScreenList.contains(it.first)) mutableMap[it.first] = it.second
-                }
-                UserSelect.viewModels = mutableMap
+                mutableScreenList.forEach { viewModel.autoplayController.registerScreen(it) }
                 navController.navigate(Screen.Autoplay.name)
             }
         })

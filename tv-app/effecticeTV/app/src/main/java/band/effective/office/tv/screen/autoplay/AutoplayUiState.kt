@@ -6,18 +6,14 @@ data class AutoplayUiState(
     val isLoading: Boolean,
     val isLoaded: Boolean,
     val isError: Boolean,
-    val screensList: List<Screen>,
-    val errorScreen: Screen?,
-    val currentScreen: Int
+    val currentScreen: Screen
 ) {
     companion object {
         val defaultState = AutoplayUiState(
-            isLoading = false,
+            isLoading = true,
             isLoaded = false,
             isError = false,
-            screensList = listOf(),
-            errorScreen = null,
-            currentScreen = -1
+            currentScreen = Screen.Autoplay
         )
     }
 }
