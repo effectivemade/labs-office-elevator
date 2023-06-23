@@ -1,13 +1,24 @@
 package band.effective.office.tv.screen.autoplayMenu
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -17,11 +28,15 @@ import band.effective.office.tv.R
 import band.effective.office.tv.screen.menu.component.ButtonAutoplay
 import band.effective.office.tv.screen.menu.component.MenuComponent
 import band.effective.office.tv.screen.menu.component.MenuItemType
+import band.effective.office.tv.screen.menu.component.PlayButton
 import band.effective.office.tv.screen.navigation.Screen
 import band.effective.office.tv.ui.theme.robotoFontFamily
 
 @Composable
-fun AutoplayMenuScreen(viewModel: AutoplayMenuViewModel = hiltViewModel(),navController: NavController) {
+fun AutoplayMenuScreen(
+    viewModel: AutoplayMenuViewModel = hiltViewModel(),
+    navController: NavController
+) {
     var mutableScreenList = mutableListOf<Screen>()
     Column(
         modifier = Modifier.padding(25.dp),
@@ -48,12 +63,17 @@ fun AutoplayMenuScreen(viewModel: AutoplayMenuViewModel = hiltViewModel(),navCon
                     mutableScreenList.remove(it.first)
                 }
             })
-        ButtonAutoplay(text = stringResource(R.string.autoplay_menu_button), onClick = {
-            viewModel.autoplayController.resetController()
-            if (mutableScreenList.isNotEmpty()) {
-                mutableScreenList.forEach { viewModel.autoplayController.registerScreen(it) }
-                navController.navigate(Screen.Autoplay.name)
-            }
-        })
+        PlayButton(
+            modifier = Modifier
+                .width(400.dp)
+                .clip(shape = RoundedCornerShape(200.dp)),
+            text = stringResource(id = R.string.autoplay_menu_button),
+            onClick = {
+                viewModel.autoplayController.resetController()
+                if (mutableScreenList.isNotEmpty()) {
+                    mutableScreenList.forEach { viewModel.autoplayController.registerScreen(it) }
+                    navController.navigate(Screen.Autoplay.name)
+                }
+            })
     }
 }

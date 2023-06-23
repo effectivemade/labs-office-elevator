@@ -2,11 +2,14 @@ package band.effective.office.tv.screen.menu
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -17,6 +20,7 @@ import androidx.tv.material3.Text
 import band.effective.office.tv.R
 import band.effective.office.tv.screen.menu.component.ButtonAutoplay
 import band.effective.office.tv.screen.menu.component.MenuComponent
+import band.effective.office.tv.screen.menu.component.PlayButton
 import band.effective.office.tv.screen.menu.component.TimeComponent
 import band.effective.office.tv.screen.navigation.NavigationModel
 import band.effective.office.tv.screen.navigation.Screen
@@ -48,8 +52,12 @@ fun MenuScreen(
                 color = Color.White
             )
             Spacer(Modifier.height(20.dp))
-            ButtonAutoplay(
-                text = stringResource(id = R.string.autoplay_button_text),
+            PlayButton(
+                modifier = Modifier
+                    .height(100.dp)
+                    .width(230.dp)
+                    .clip(shape = RoundedCornerShape(230.dp)),
+                text = stringResource(id = R.string.autoplay_button),
                 onFocus = {
                     coroutineScope.launch { scrollState.animateScrollTo(0) }
                 },

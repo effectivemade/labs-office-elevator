@@ -1,7 +1,9 @@
 <resources>
     <string name="app_name">effective TV</string>
+    <string name="welcome_string">Не знаете, что посмотреть?</string>
     <string name="autoplay_menu_title">Настройки автоплея</string>
-    <string name="autoplay_menu_button">play</string>
+    <string name="autoplay_button">Автоплей</string>
+    <string name="autoplay_menu_button">Запустить автоплей</string>
     <string name="event_screen_title">Events</string>
     <string name="best_photo_screen_title">Photo</string>
     <string name="message_screen_title">Message</string>
@@ -27,6 +29,5 @@
     <string name="duolingo_attribute_name">Профиль Duolingo</string>
     <string name="error_show_photo">Мы пока не поддерживаем этот формат фото, позже все будет ок)</string>
     <string name="photo_title">Best Photo</string>
-    <string name="welcome_string">Not Sure What to Watch?</string>
     <string name="autoplay_button_text">autoplay</string>
 </resources>
