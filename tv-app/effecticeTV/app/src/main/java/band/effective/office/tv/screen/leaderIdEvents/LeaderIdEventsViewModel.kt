@@ -4,9 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.core.network.Either
 import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
-import band.effective.office.tv.domain.autoplay.AutoplayController
-import band.effective.office.tv.domain.autoplay.model.ScreenState
+import band.effective.office.tv.screen.autoplayController.AutoplayController
+import band.effective.office.tv.screen.autoplayController.model.ScreenState
 import band.effective.office.tv.repository.leaderId.LeaderIdEventsInfoRepository
+import band.effective.office.tv.screen.autoplayController.model.AutoplayState
+import band.effective.office.tv.screen.autoplayController.model.OnSwitchCallbacks
 import band.effective.office.tv.screen.navigation.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,24 +44,32 @@ class LeaderIdEventsViewModel @Inject constructor(
         )
         if (state.value.isPlay)
             timer.startTimer()
-        checkAutoplayState()
-    }
 
-    private fun checkAutoplayState() = viewModelScope.launch {
-        autoplayController.state.collect { controllerState ->
-            if (controllerState.screensList.isEmpty()) return@collect
-            if (controllerState.screensList[controllerState.currentScreenNumber] == Screen.Events) {
+        autoplayController.addCallbacks(Screen.Events, object : OnSwitchCallbacks {
+            override fun onForwardSwitch(controllerState: AutoplayState) {
                 mutableState.update {
                     it.copy(
                         isPlay = autoplayController.state.value.screenState.isPlay,
-                        curentEvent = if (autoplayController.state.value.screenState.isForwardDirection) 0 else it.eventsInfo.size - 1
+                        curentEvent = 0
                     )
                 }
                 if (autoplayController.state.value.screenState.isPlay) timer.startTimer()
-            } else {
+            }
+
+            override fun onBackSwitch(controllerState: AutoplayState) {
+                mutableState.update {
+                    it.copy(
+                        isPlay = autoplayController.state.value.screenState.isPlay,
+                        curentEvent = it.eventsInfo.size - 1
+                    )
+                }
+                if (autoplayController.state.value.screenState.isPlay) timer.startTimer()
+            }
+
+            override fun onLeave() {
                 timer.stopTimer()
             }
-        }
+        })
     }
 
     fun load() = viewModelScope.launch {
@@ -73,6 +83,7 @@ class LeaderIdEventsViewModel @Inject constructor(
                         errorText = it.errorText + "${either.error}\n"
                     )
                 }
+
                 either is Either.Success && !state.value.isData -> mutableState.update {
                     it.copy(
                         isLoading = false,
@@ -82,6 +93,7 @@ class LeaderIdEventsViewModel @Inject constructor(
                         isPlay = autoplayController.state.value.screenState.isPlay
                     )
                 }
+
                 either is Either.Success -> mutableState.update {
                     it.copy(
                         eventsInfo = it.eventsInfo + either.data,
@@ -102,6 +114,7 @@ class LeaderIdEventsViewModel @Inject constructor(
                 if (isPlay)
                     timer.startTimer()
             }
+
             is LeaderIdScreenEvents.OnClickNextItem -> {
                 if (state.value.curentEvent + 1 < state.value.eventsInfo.size) {
                     mutableState.update { it.copy(curentEvent = it.curentEvent + 1) }
@@ -110,6 +123,7 @@ class LeaderIdEventsViewModel @Inject constructor(
                     autoplayController.nextScreen(state.value.toScreenState(true))
                 }
             }
+
             is LeaderIdScreenEvents.OnClickPreviousItem -> {
                 if (state.value.curentEvent - 1 >= 0) {
                     mutableState.update { it.copy(curentEvent = it.curentEvent - 1) }

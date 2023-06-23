@@ -1,4 +1,4 @@
-package band.effective.office.tv.domain.autoplay.model
+package band.effective.office.tv.screen.autoplayController.model
 
 import band.effective.office.tv.screen.navigation.Screen
 

@@ -4,12 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.core.network.entity.Either
 import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
-import band.effective.office.tv.domain.autoplay.AutoplayController
-import band.effective.office.tv.domain.autoplay.model.ScreenState
+import band.effective.office.tv.screen.autoplayController.AutoplayController
+import band.effective.office.tv.screen.autoplayController.model.ScreenState
 import band.effective.office.tv.domain.model.message.BotMessage
 import band.effective.office.tv.domain.model.message.MessageQueue
 import band.effective.office.tv.domain.use_cases.EventStoryDataCombinerUseCase
 import band.effective.office.tv.network.MattermostClient
+import band.effective.office.tv.screen.autoplayController.model.AutoplayState
+import band.effective.office.tv.screen.autoplayController.model.OnSwitchCallbacks
 import band.effective.office.tv.screen.eventStory.models.MessageInfo
 import band.effective.office.tv.screen.eventStory.models.StoryModel
 import band.effective.office.tv.screen.navigation.Screen
@@ -42,24 +44,32 @@ class EventStoryViewModel @Inject constructor(
         initTimer()
         startTimer()
         checkMessage()
-        checkAutoplayState()
-    }
 
-    private fun checkAutoplayState() = viewModelScope.launch {
-        autoplayController.state.collect { controllerState ->
-            if (controllerState.screensList.isEmpty()) return@collect
-            if (controllerState.screensList[controllerState.currentScreenNumber] == Screen.Stories) {
+        autoplayController.addCallbacks(Screen.Stories, object : OnSwitchCallbacks{
+            override fun onForwardSwitch(controllerState: AutoplayState) {
                 mutableState.update {
                     it.copy(
                         isPlay = autoplayController.state.value.screenState.isPlay,
-                        currentStoryIndex = if (autoplayController.state.value.screenState.isForwardDirection) 0 else it.eventsInfo.size - 1
+                        currentStoryIndex = 0
                     )
                 }
                 if (autoplayController.state.value.screenState.isPlay) timer.startTimer()
-            } else {
+            }
+
+            override fun onBackSwitch(controllerState: AutoplayState) {
+                mutableState.update {
+                    it.copy(
+                        isPlay = autoplayController.state.value.screenState.isPlay,
+                        currentStoryIndex = it.eventsInfo.size - 1
+                    )
+                }
+                if (autoplayController.state.value.screenState.isPlay) timer.startTimer()
+            }
+
+            override fun onLeave() {
                 timer.stopTimer()
             }
-        }
+        })
     }
 
     private fun checkMessage() = viewModelScope.launch {

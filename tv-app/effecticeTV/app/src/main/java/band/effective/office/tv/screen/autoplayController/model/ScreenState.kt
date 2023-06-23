@@ -1,4 +1,4 @@
-package band.effective.office.tv.domain.autoplay.model
+package band.effective.office.tv.screen.autoplayController.model
 
 data class ScreenState(
     val isPlay: Boolean,

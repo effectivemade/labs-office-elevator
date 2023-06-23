@@ -2,8 +2,8 @@ package band.effective.office.tv.screen.autoplay
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import band.effective.office.tv.domain.autoplay.AutoplayController
-import band.effective.office.tv.domain.autoplay.model.AutoplayState
+import band.effective.office.tv.screen.autoplayController.AutoplayController
+import band.effective.office.tv.screen.autoplayController.model.AutoplayState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,6 +19,7 @@ class AutoplayViewModel @Inject constructor(val autoplayController: AutoplayCont
 
     init {
         load()
+        autoplayController.start(viewModelScope)
     }
 
     fun load() = viewModelScope.launch {

@@ -4,10 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.core.network.entity.Either
 import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
-import band.effective.office.tv.domain.autoplay.AutoplayController
-import band.effective.office.tv.domain.autoplay.model.ScreenState
+import band.effective.office.tv.screen.autoplayController.AutoplayController
+import band.effective.office.tv.screen.autoplayController.model.ScreenState
 import band.effective.office.tv.network.UnsafeOkHttpClient
 import band.effective.office.tv.repository.synology.SynologyRepository
+import band.effective.office.tv.screen.autoplayController.model.AutoplayState
+import band.effective.office.tv.screen.autoplayController.model.OnSwitchCallbacks
 import band.effective.office.tv.screen.navigation.Screen
 import band.effective.office.tv.screen.photo.model.toUIModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -40,20 +42,24 @@ class PhotoViewModel @Inject constructor(
             repository.auth()
             updatePhoto()
         }
-        checkAutoplayState()
-    }
 
-    private fun checkAutoplayState() = viewModelScope.launch {
-        autoplayController.state.collect { controllerState ->
-            if (controllerState.screensList.isEmpty()) return@collect
-            if (controllerState.screensList[controllerState.currentScreenNumber] == Screen.Events) {
+        autoplayController.addCallbacks(screen = Screen.BestPhoto, callbacks = object : OnSwitchCallbacks{
+            override fun onForwardSwitch(controllerState: AutoplayState) {
                 if (autoplayController.state.value.screenState.isPlay) slideShow.startTimer()
                 //TODO(Maksim Mishenko) @Artem Gruzdev add switch to first and last photo
                 mutableState.update { it.copy(isPlay = autoplayController.state.value.screenState.isPlay) }
-            } else {
+            }
+
+            override fun onBackSwitch(controllerState: AutoplayState) {
+                if (autoplayController.state.value.screenState.isPlay) slideShow.startTimer()
+                //TODO(Maksim Mishenko) @Artem Gruzdev add switch to first and last photo
+                mutableState.update { it.copy(isPlay = autoplayController.state.value.screenState.isPlay) }
+            }
+
+            override fun onLeave() {
                 slideShow.stopTimer()
             }
-        }
+        })
     }
 
     fun sendEvent(event: BestPhotoEvent) {
