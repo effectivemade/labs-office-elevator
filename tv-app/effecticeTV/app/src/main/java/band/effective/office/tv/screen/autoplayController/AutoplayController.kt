@@ -24,8 +24,8 @@ class AutoplayController {
 
     private fun checkAutoplayState(scope: CoroutineScope) = scope.launch {
         state.collect { controllerState ->
-            val currentScreen = controllerState.screensList[controllerState.currentScreenNumber]
             if (controllerState.screensList.isEmpty()) return@collect
+            val currentScreen = controllerState.screensList[controllerState.currentScreenNumber]
             if (state.value.screenState.isForwardDirection)
                 callbacksMap[currentScreen]?.onForwardSwitch(state.value)
             else
