@@ -63,7 +63,7 @@ class AutoplayController {
     }
 
     fun nextScreen(screenState: ScreenState) {
-        if (state.value.screensList.isEmpty()) return
+        if (state.value.screensList.size <= 1) return
         val currentScreen = state.value.screensList[state.value.currentScreenNumber]
         callbacksMap[currentScreen]?.onLeave()
         mutableState.update {
@@ -75,7 +75,7 @@ class AutoplayController {
     }
 
     fun prevScreen(screenState: ScreenState) {
-        if (state.value.screensList.isEmpty()) return
+        if (state.value.screensList.size <= 1) return
         val currentScreen = state.value.screensList[state.value.currentScreenNumber]
         callbacksMap[currentScreen]?.onLeave()
         mutableState.update {

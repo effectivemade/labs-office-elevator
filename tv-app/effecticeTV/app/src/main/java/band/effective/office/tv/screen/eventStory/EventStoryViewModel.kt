@@ -42,7 +42,6 @@ class EventStoryViewModel @Inject constructor(
             initDataStory()
         }
         initTimer()
-        startTimer()
         checkMessage()
 
         autoplayController.addCallbacks(Screen.Stories, object : OnSwitchCallbacks{
@@ -108,6 +107,7 @@ class EventStoryViewModel @Inject constructor(
                 }
             }
         }
+        startTimer()
     }
 
     private fun updateStateAsException(error: String) {
