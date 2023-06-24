@@ -78,7 +78,9 @@ private fun EventStoryScreenContent(
             eventsInfo = state.eventsInfo,
             currentStoryIndex = state.currentStoryIndex,
             onImageLoaded = { if (state.isPlay) viewModel.startTimer() },
-            onImageLoading = { viewModel.stopTimer() })
+            onImageLoading = { viewModel.stopTimer() },
+            storyProgress = state.storyProcess
+        )
     }
 
 }

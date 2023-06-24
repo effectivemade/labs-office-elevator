@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.times
 import band.effective.office.tv.ui.theme.IndependentColors
 import band.effective.office.tv.screen.components.ProgressIndicator
 @Composable
-fun StoryIndicator(countStories: Int, currentStoryIndex: Int, modifier: Modifier) {
+fun StoryIndicator(countStories: Int, currentStoryIndex: Int, modifier: Modifier, progress: Float = 1f) {
 
     val screenConfiguration = LocalConfiguration.current
     val screenWidth = screenConfiguration.screenWidthDp.dp
@@ -24,7 +24,8 @@ fun StoryIndicator(countStories: Int, currentStoryIndex: Int, modifier: Modifier
         elementModifier = Modifier.width(indicatorWidth),
         count = countStories, currentIndex = currentStoryIndex,
         elementColor = IndependentColors.StoryActiviteIndicatorGray,
-        currentElementColor = IndependentColors.StoryIndicatorGray
+        currentElementColor = IndependentColors.StoryIndicatorGray,
+        progress = progress
     )
 
 }

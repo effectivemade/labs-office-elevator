@@ -10,7 +10,8 @@ data class LatestEventInfoUiState(
     val isPlay: Boolean,
     val eventsInfo: List<StoryModel>,
     var currentStoryIndex: Int,
-    val keySort: KeySortDuolingoUser = KeySortDuolingoUser.Xp
+    val keySort: KeySortDuolingoUser = KeySortDuolingoUser.Xp,
+    val storyProcess: Float
 ) {
     companion object {
         val empty = LatestEventInfoUiState(
@@ -21,6 +22,7 @@ data class LatestEventInfoUiState(
             isData = false,
             eventsInfo = listOf(),
             currentStoryIndex = -1,
+            storyProcess = 1f
         )
     }
 }

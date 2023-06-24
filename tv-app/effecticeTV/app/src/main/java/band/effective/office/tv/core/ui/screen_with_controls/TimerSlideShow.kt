@@ -1,6 +1,9 @@
 package band.effective.office.tv.core.ui.screen_with_controls
 
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 class TimerSlideShow @Inject constructor() {
@@ -25,31 +28,29 @@ class TimerSlideShow @Inject constructor() {
     fun startTimer() {
         isPlay = true
         timerJob?.cancel()
-        timerJob = scope?.launch(Dispatchers.Default) {
-            while (isActive && isPlay){
-                val startTime = System.currentTimeMillis()
-                var currentTime = System.currentTimeMillis()
-                while (isActive && currentTime - startTime < period * 1000)
-                    currentTime = System.currentTimeMillis()
-                //TODO(Stanislav Radchenko): @Artem Gruzdev improve this code
-                if (isActive && isPlay)
-                    callbackToEnd()
+        timerJob = timerJob()
+    }
+
+    private var mutableProgress = MutableStateFlow(0f)
+    val process = mutableProgress.asStateFlow()
+
+    //TODO(Stanislav Radchenko): @Artem Gruzdev improve this code
+    private fun timerJob() = scope?.launch(Dispatchers.Default) {
+        while (isActive && isPlay) {
+            val startTime = System.currentTimeMillis()
+            var currentTime = System.currentTimeMillis()
+            while (isActive && currentTime - startTime < period * 1000) {
+                mutableProgress.update { (currentTime - startTime).toFloat() / (period * 1000) }
+                currentTime = System.currentTimeMillis()
             }
+            if (isActive && isPlay)
+                callbackToEnd()
         }
     }
 
     fun resetTimer() {
         timerJob?.cancel()
-        timerJob = scope?.launch(Dispatchers.Default) {
-            while (isActive && isPlay){
-                val startTime = System.currentTimeMillis()
-                var currentTime = System.currentTimeMillis()
-                while (isActive && currentTime - startTime < period * 1000)
-                    currentTime = System.currentTimeMillis()
-                if (isActive && isPlay)
-                    callbackToEnd()
-            }
-        }
+        timerJob = timerJob()
     }
 
     fun stopTimer() {

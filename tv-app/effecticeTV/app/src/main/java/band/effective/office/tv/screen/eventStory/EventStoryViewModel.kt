@@ -44,7 +44,7 @@ class EventStoryViewModel @Inject constructor(
         initTimer()
         checkMessage()
 
-        autoplayController.addCallbacks(Screen.Stories, object : OnSwitchCallbacks{
+        autoplayController.addCallbacks(Screen.Stories, object : OnSwitchCallbacks {
             override fun onForwardSwitch(controllerState: AutoplayState) {
                 mutableState.update {
                     it.copy(
@@ -138,9 +138,11 @@ class EventStoryViewModel @Inject constructor(
             is EventStoryScreenEvents.OnClickPlayButton -> {
                 handlePlayState()
             }
+
             is EventStoryScreenEvents.OnClickNextItem -> {
                 playNextStory()
             }
+
             is EventStoryScreenEvents.OnClickPreviousItem -> {
                 playPreviousStory()
             }
@@ -215,6 +217,9 @@ class EventStoryViewModel @Inject constructor(
             },
             isPlay = state.value.isPlay
         )
+        viewModelScope.launch {
+            timer.process.collect { progress -> mutableState.update { it.copy(storyProcess = progress) } }
+        }
     }
 
     private fun BotMessage.toMessageInfo(): MessageInfo = MessageInfo(this)
