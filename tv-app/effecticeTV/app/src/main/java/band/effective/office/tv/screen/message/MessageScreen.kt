@@ -34,7 +34,8 @@ fun MessageScreen(
     onClickPlayButton: () -> Unit,
     onClickNextItemButton: () -> Unit,
     onClickPreviousItemButton: () -> Unit,
-    onClickButton: (() -> Unit)? = null
+    onClickButton: (() -> Unit)? = null,
+    messageProgress: Float
 ) {
     val (contentFocus, playButton) = remember { FocusRequester.createRefs() }
     ScreenWithControlsTemplate(modifier = Modifier
@@ -70,7 +71,9 @@ fun MessageScreen(
                 imageLoader = imageLoader,
                 messagesList = messagesList,
                 currentIndex = currentIndex,
-                onClickButton = onClickButton
+                onClickButton = onClickButton,
+                textColor = textColor,
+                messageProcess = messageProgress
             )
         }
     }

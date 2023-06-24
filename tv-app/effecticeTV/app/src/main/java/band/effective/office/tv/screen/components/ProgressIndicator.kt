@@ -56,7 +56,7 @@ fun ProgressIndicator(
     ) {
         for (index in 0 until count) {
             ProgressBarCell(
-                modifier = elementModifier.clip(RoundedCornerShape(12.dp)).weight(1f),
+                modifier = elementModifier.weight(1f),
                 index = index,
                 current = currentIndex,
                 progress = progress,
@@ -71,5 +71,5 @@ fun ProgressIndicator(
 @Preview
 @Composable
 fun ProgressIndicatorPreview() {
-    ProgressIndicator(count = 10, currentIndex = 1, progress = 0.4f)
+    ProgressIndicator(elementModifier = Modifier.clip(RoundedCornerShape(12.dp)),count = 10, currentIndex = 1, progress = 0.4f)
 }
