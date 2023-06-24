@@ -18,6 +18,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import androidx.tv.material3.Text
 import band.effective.office.tv.R
+import band.effective.office.tv.screen.autoplayMenu.ItemRes
 import band.effective.office.tv.screen.menu.component.ButtonAutoplay
 import band.effective.office.tv.screen.menu.component.MenuComponent
 import band.effective.office.tv.screen.menu.component.PlayButton
@@ -54,8 +55,8 @@ fun MenuScreen(
             Spacer(Modifier.height(20.dp))
             PlayButton(
                 modifier = Modifier
-                    .height(100.dp)
-                    .width(230.dp)
+                    .height(60.dp)
+                    .width(180.dp)
                     .clip(shape = RoundedCornerShape(230.dp)),
                 text = stringResource(id = R.string.autoplay_button),
                 onFocus = {
@@ -64,7 +65,10 @@ fun MenuScreen(
                 onClick = { navController.navigate(Screen.AutoplayMenu.name) })
             Spacer(Modifier.height(20.dp))
             MenuComponent(
-                itemsList = itemsList.map { Pair(it.screen, it.title) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(400.dp),
+                itemsList = itemsList.map { Pair(it.screen, ItemRes(text = it.title)) },
                 onNavigate = { navController.navigate(it.name) })
         }
     }

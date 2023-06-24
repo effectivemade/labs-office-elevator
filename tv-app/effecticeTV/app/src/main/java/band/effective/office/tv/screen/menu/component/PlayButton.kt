@@ -56,7 +56,7 @@ fun PlayButton(
                 modifier = Modifier
                     .alpha(if (it) 1f else 0.5f),
                 fontFamily = robotoFontFamily(),
-                fontSize = 30.sp
+                fontSize = 20.sp
             )
         }
 
