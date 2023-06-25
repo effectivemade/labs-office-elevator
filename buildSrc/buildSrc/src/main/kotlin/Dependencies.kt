@@ -4,7 +4,8 @@ object Dependencies {
         const val activityKtx = "1.7.2"
         const val kotlin = "1.8.20"
         const val agp = "7.4.2"
-        const val compose = "1.4.0"
+        const val composeMultiplatform = "1.4.0"
+        const val compose = "1.4.6"
         const val androidxAppCompat = "1.6.1"
         const val androidxActivityCompose = "1.7.2"
         const val composeUiTooling = "1.4.3"
@@ -24,8 +25,87 @@ object Dependencies {
         const val essenty = "1.1.0"
         const val logback = "1.2.11"
         const val shadow = "7.1.2"
+        const val tvCompose = "1.0.0-alpha04"
+        const val retrofit = "2.9.0"
+        const val moshi = "1.14.0"
+        const val hilt = "2.44"
+        const val hiltNav = "1.0.0"
+        const val navigationCompose = "2.5.3"
+        const val okhttp3 = "4.10.0"
+        const val retrofitMoshi = "2.9.0"
+        const val coil = "2.2.2"
+        const val coilSvg = "2.3.0"
+        const val zxing = "3.5.1" // QR
+        const val notionSDK = "1.8.0"
+
+    }
+    object Coil {
+        const val coil =
+            "io.coil-kt:coil-compose:${Versions.coil}"
+        const val svgDecoder =
+            "io.coil-kt:coil-svg:${Versions.coilSvg}"
     }
 
+    object NotionSDK {
+        const val notion =
+            "com.github.seratch:notion-sdk-jvm-core:${Versions.notionSDK}"
+    }
+
+    object QRCodeGenerator {
+        const val zxing =
+            "com.google.zxing:core:${Versions.zxing}"
+    }
+    object Retrofit {
+        const val retrofit =
+            "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
+
+        const val moshiConverter =
+            "com.squareup.retrofit2:converter-moshi:${Versions.retrofitMoshi}"
+
+    }
+
+    object Okhttp {
+        const val okhttp =
+            "com.squareup.okhttp3:okhttp:${Versions.okhttp3}"
+
+        const val okhttpLoggingIntersepter =
+            "com.squareup.okhttp3:logging-interceptor:${Versions.okhttp3}"
+    }
+
+    object Moshi {
+        const val moshi =
+            "com.squareup.moshi:moshi:${Versions.moshi}"
+
+        const val moshiAdapter =
+            "com.squareup.moshi:moshi-adapters:${Versions.moshi}"
+
+        const val moshiCodegen =
+            "com.squareup.moshi:moshi-kotlin-codegen:${Versions.moshi}"
+    }
+
+    object Hilt {
+        const val hilt =
+            "com.google.dagger:hilt-android:${Versions.hilt}"
+
+        const val hiltNav =
+            "androidx.hilt:hilt-navigation-compose:${Versions.hiltNav}"
+
+        const val hiltCompiller =
+            "com.google.dagger:hilt-compiler:${Versions.hilt}"
+    }
+
+    object TvDeps {
+        const val tvFoundation =
+            "androidx.tv:tv-foundation:${Versions.tvCompose}"
+
+        const val tvMaterial =
+            "androidx.tv:tv-material:${Versions.tvCompose}"
+    }
+
+    object ComposeNavigation {
+        const val navigation =
+            "androidx.navigation:navigation-compose:${Versions.navigationCompose}"
+    }
     object Ktor {
         const val ktorVersion = "2.3.1"
 
@@ -62,6 +142,7 @@ object Dependencies {
 
     object Compose {
         const val uiTooling = "androidx.compose.ui:ui-tooling:${Versions.composeUiTooling}"
+        const val material = "androidx.compose.material:material:${Versions.composeMultiplatform}"
     }
 
     object Libres {

@@ -55,4 +55,11 @@ object Plugins {
     object Parcelize {
         const val plugin = "org.jetbrains.kotlin.plugin.parcelize"
     }
+
+    object Kapt {
+        const val plugin = "org.jetbrains.kotlin.kapt"
+    }
+    object Hilt {
+        const val plugin = "com.google.dagger.hilt.android"
+    }
 }
