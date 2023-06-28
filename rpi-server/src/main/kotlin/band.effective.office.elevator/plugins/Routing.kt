@@ -1,6 +1,6 @@
 package band.effective.office.elevator.plugins
 
-import band.effective.office.common.utils.*
+import band.effective.office.tablet.utils.*
 import band.effective.office.elevator.utils.ElevatorController
 import io.ktor.http.*
 import io.ktor.server.application.*

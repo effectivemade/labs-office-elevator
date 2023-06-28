@@ -1,8 +1,8 @@
 package band.effective.office.elevator.cloud.server.plugins
 
-import band.effective.office.common.utils.HashUtil
-import band.effective.office.common.utils.PropertiesUtil
-import band.effective.office.common.utils.toVerifiableDate
+import band.effective.office.tablet.utils.HashUtil
+import band.effective.office.tablet.utils.PropertiesUtil
+import band.effective.office.tablet.utils.toVerifiableDate
 import band.effective.office.elevator.cloud.server.client.ktorClient
 import band.effective.office.elevator.cloud.server.utils.TokenVerifier
 import io.ktor.client.request.*
