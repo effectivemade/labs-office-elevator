@@ -1,21 +1,19 @@
 package band.effective.office.tablet
 
-import androidx.compose.material.Text
-import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import band.effective.office.tablet.ui.mainScreen.MainComponent
+import band.effective.office.tablet.ui.mainScreen.MainScreen
+import band.effective.office.tablet.ui.root.Root
+import band.effective.office.tablet.ui.root.RootComponent
+import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponent
+import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomScreen
+import com.arkivanov.decompose.ComponentContext
 
 @Composable
-fun App() {
-    var text by remember { mutableStateOf("Hello, World!") }
-    val platformName = getPlatformName()
-
-    Button(onClick = {
-        text = "Hello, ${platformName}"
-    }) {
-        Text(text)
+fun App(componentContext: ComponentContext) {
+    val rootComponent = RootComponent(componentContext)
+    MaterialTheme {
+        Root(rootComponent)
     }
 }

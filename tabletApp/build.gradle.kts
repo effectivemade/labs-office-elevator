@@ -2,6 +2,7 @@ plugins {
     id(Plugins.Android.plugin)
     id(Plugins.MultiplatformCompose.plugin)
     id(Plugins.Kotlin.plugin)
+    id(Plugins.Parcelize.plugin)
 }
 
 android {
@@ -46,6 +47,10 @@ kotlin {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material)
+
+                // Decompose
+                api(Dependencies.Decompose.decompose)
+                api(Dependencies.Decompose.extensions)
             }
         }
         val androidMain by getting {
