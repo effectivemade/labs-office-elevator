@@ -1,12 +1,13 @@
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    id(Plugins.Kotlin.plugin)
-    id(Plugins.MultiplatformCompose.plugin)
-    id(Plugins.CocoaPods.plugin)
-    id(Plugins.Android.plugin)
-    id(Plugins.Libres.plugin)
-    id(Plugins.BuildConfig.plugin)
-    id(Plugins.Serialization.plugin)
-    id(Plugins.Parcelize.plugin)
+    id(libs.plugins.kotlin.get().pluginId)
+    id(libs.plugins.multiplatformCompose.get().pluginId)
+    id(libs.plugins.cocoaPods.get().pluginId)
+    id(libs.plugins.android.get().pluginId)
+    id(libs.plugins.libres.get().pluginId)
+    id(libs.plugins.buildConfig.get().pluginId)
+    id(libs.plugins.serialization.get().pluginId)
+    id(libs.plugins.parcelize.get().pluginId)
 }
 
 kotlin {
@@ -44,29 +45,26 @@ kotlin {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material)
-                implementation(Dependencies.Libres.libresCompose)
-                implementation(Dependencies.ImageLoader.imageLoader)
-                implementation(Dependencies.Napier.napier)
-                implementation(Dependencies.KotlinxCoroutines.core)
-                api(Dependencies.Ktor.Client.Core)
-                api(Dependencies.Ktor.Client.CommonLogging)
-                implementation(Dependencies.ComposeIcons.featherIcons)
-                implementation(Dependencies.KotlinxSerialization.json)
-                implementation(Dependencies.KotlinxDatetime.kotlinxDatetime)
+                implementation(libs.libres.libresCompose)
+                implementation(libs.imageLoader)
+                implementation(libs.napier)
+                implementation(libs.kotlinx.coroutines.core)
+                api(libs.ktor.client.core)
+                api(libs.ktor.client.commonLogging)
+                implementation(libs.compose.icons.featherIcons)
+                implementation(libs.kotlinx.serialization.json)
+                implementation(libs.kotlinx.datetime)
 
                 // MVI Kotlin
-                api(Dependencies.MviKotlin.mviKotlin)
-                api(Dependencies.MviKotlin.mviKotlinMain)
-                api(Dependencies.MviKotlin.mviKotlinExtensionsCoroutines)
+                api(libs.bundles.mviKotlin)
 
                 // Decompose
-                api(Dependencies.Decompose.decompose)
-                api(Dependencies.Decompose.extensions)
+                api(libs.bundles.decompose)
 
                 // Koin
-                api(Dependencies.Koin.core)
+                api(libs.koin.core)
 
-                api(Dependencies.Essenty.essenty)
+                api(libs.essenty.core)
             }
         }
 
@@ -78,18 +76,16 @@ kotlin {
 
         val androidMain by getting {
             dependencies {
-                implementation(Dependencies.AndroidX.appCompat)
-                implementation(Dependencies.AndroidX.activityCompose)
-                implementation(Dependencies.Compose.uiTooling)
-                implementation(Dependencies.KotlinxCoroutines.android)
-                api(Dependencies.Ktor.Client.Android)
-                implementation(Dependencies.Google.SignIn)
-                implementation(Dependencies.AndroidX.activityKtx)
+                //android
+                implementation(libs.bundles.android.core)
+                implementation(libs.google.signin)
 
                 // Koin
-                api(Dependencies.Koin.android)
+                api(libs.koin.android)
 
-                api(Dependencies.Ktor.Server.Logback)
+                //ktor
+                api(libs.ktor.client.android)
+                api(libs.ktor.server.logback)
             }
         }
 

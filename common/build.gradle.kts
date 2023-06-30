@@ -6,5 +6,5 @@ group = "band.effective.office.common"
 version = "unspecified"
 
 dependencies {
-    implementation(Dependencies.Ktor.Server.Netty)
+    implementation(libs.ktor.server.netty)
 }

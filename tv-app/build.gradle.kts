@@ -1,11 +1,12 @@
 import java.util.Properties
 import java.io.FileInputStream
 
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    id(Plugins.Android.plugin)
+    id(libs.plugins.android.get().pluginId)
     kotlin("android")
     kotlin("kapt")
-    id(Plugins.Hilt.plugin) version "2.44" apply true
+    alias(libs.plugins.hilt)
 }
 
 val localProperties = Properties()
@@ -75,45 +76,37 @@ android {
 }
 
 dependencies {
-    implementation(Dependencies.AndroidX.appCompat)
-    implementation(Dependencies.AndroidX.activityCompose)
-    implementation(Dependencies.Compose.material)
-    implementation(Dependencies.Compose.uiTooling)
-    implementation(Dependencies.KotlinxCoroutines.android)
-    implementation(Dependencies.AndroidX.activityKtx)
+    implementation(libs.bundles.android.core)
 
     //for tv
-    implementation(Dependencies.TvDeps.tvFoundation)
-    implementation(Dependencies.TvDeps.tvMaterial)
+    implementation(libs.bundles.android.tv)
 
     //Retrofit
-    implementation(Dependencies.Retrofit.retrofit)
-    implementation(Dependencies.Okhttp.okhttp)
-    implementation(Dependencies.Okhttp.okhttpLoggingIntersepter)
-    implementation(Dependencies.Retrofit.moshiConverter)
+    implementation(libs.bundles.retrofit.core)
+    implementation(libs.retrofit.moshi)
 
     // moshi
-    implementation(Dependencies.Moshi.moshi)
-    implementation(Dependencies.Moshi.moshiAdapter)
-    kapt(Dependencies.Moshi.moshiCodegen)
+    implementation(libs.bundles.moshi.core)
+    kapt(libs.moshi.gen)
 
     //hilt di
-    implementation(Dependencies.Hilt.hilt)
-    implementation(Dependencies.Hilt.hiltNav)
-    kapt(Dependencies.Hilt.hiltCompiller)
+    implementation(libs.hilt)
+    implementation(libs.hilt.nav)
+    kapt(libs.hilt.compiller)
 
     //qr
-    implementation(Dependencies.QRCodeGenerator.zxing)
+    implementation(libs.zxing)
 
     //navigation
-    implementation(Dependencies.ComposeNavigation.navigation)
+    implementation(libs.navigation)
 
     //coil
-    implementation(Dependencies.Coil.coil)
+    implementation(libs.coil)
 
     //notion
-    implementation(Dependencies.NotionSDK.notion)
+    implementation(libs.notion)
 }
 kapt {
     correctErrorTypes = true
 }
+

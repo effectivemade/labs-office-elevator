@@ -13,6 +13,7 @@ repositories {
 }
 
 dependencies {
+    implementation(files(libs.javaClass.superclass.protectionDomain.codeSource.location))
     implementation(Plugins.Android.implementation)
     implementation(Plugins.Shadow.implementation) // NOTE(radchenko): generates jar for server builds
     implementation(Plugins.Kotlin.implementation)

@@ -1,6 +1,7 @@
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     id("kotlin-server-conventions")
-    id(Plugins.Ktor.plugin)
+    id(libs.plugins.ktor.get().pluginId)
 }
 
 application {
@@ -8,10 +9,10 @@ application {
 }
 
 dependencies {
-    implementation(Dependencies.Ktor.Client.Core)
-    implementation(Dependencies.Ktor.Client.CIO)
-    implementation(Dependencies.Ktor.Client.CommonLogging)
-    implementation(Dependencies.Google.ApiClient)
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.cio)
+    implementation(libs.ktor.client.commonLogging)
+    implementation(libs.google.appClient)
 }
 
 ktor {

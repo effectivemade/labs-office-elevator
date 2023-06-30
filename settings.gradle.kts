@@ -1,3 +1,9 @@
+dependencyResolutionManagement {
+    versionCatalogs {
+        create("libs") {
+        }
+    }
+}
 
 rootProject.name = "effective-office"
 include("cloud-server", "rpi-server", "gpio")
