@@ -33,8 +33,7 @@ kotlin {
             baseName = "ComposeApp"
             isStatic = true
 
-            export(Dependencies.Decompose.decompose)
-            export(Dependencies.Essenty.essenty)
+            export(libs.bundles.decompose)
         }
         pod("GoogleSignIn") {}
     }
@@ -98,7 +97,7 @@ kotlin {
             iosArm64Main.dependsOn(this)
             iosSimulatorArm64Main.dependsOn(this)
             dependencies {
-                implementation(Dependencies.Ktor.Client.Darwin)
+                implementation(libs.ktor.client.drawin)
                 implementation(files("iosApp/GoogleAuthorization/GoogleAuthorization/Sources"))
             }
         }

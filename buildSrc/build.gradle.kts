@@ -14,16 +14,15 @@ repositories {
 
 dependencies {
     implementation(files(libs.javaClass.superclass.protectionDomain.codeSource.location))
-    implementation(Plugins.Android.implementation)
-    implementation(Plugins.Shadow.implementation) // NOTE(radchenko): generates jar for server builds
-    implementation(Plugins.Kotlin.implementation)
-    implementation(Plugins.Kotlin.implementation)
-    implementation(Plugins.Ktor.implementation)
-    implementation(Plugins.ApacheCompress.implementation) // NOTE(radchenko): needs for `ktor` to `docker`
-    implementation(Plugins.MultiplatformCompose.implementation)
-    implementation(Plugins.Libres.implementation)
-    implementation(Plugins.BuildConfig.implementation)
-    implementation(Plugins.Serialization.implementation)
+    implementation(libs.plugin.android)
+    implementation(libs.plugin.shadow) // NOTE(radchenko): generates jar for server builds
+    implementation(libs.plugin.kotlin)
+    implementation(libs.plugin.ktor)
+    implementation(libs.plugin.apacheCompress) // NOTE(radchenko): needs for `ktor` to `docker`
+    implementation(libs.plugin.multiplatformCompose)
+    implementation(libs.plugin.libres)
+    implementation(libs.plugin.buildConfig)
+    implementation(libs.plugin.serialization)
 }
 
 val rootDirProject = file("../")
