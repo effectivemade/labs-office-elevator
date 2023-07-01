@@ -1,4 +1,4 @@
-package band.effective.office.tablet.utils
+package band.effective.office.common.utils
 
 import io.ktor.http.fromHttpToGmtDate
 import io.ktor.http.toHttpDate

@@ -1,4 +1,4 @@
-package band.effective.office.tablet.utils
+package band.effective.office.common.utils
 
 object PropertiesUtil {
     fun read(key: String): String? {

@@ -1,10 +1,10 @@
 package band.effective.office.tablet.ui.mainScreen
 
-import band.effective.office.tablet.getPlatformName
+import band.effective.office.tablet.ui.mainScreen.MainScreenEvent
+import band.effective.office.tablet.ui.mainScreen.MainScreenState
 import com.arkivanov.decompose.ComponentContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 
 class MainComponent(
     componentContext: ComponentContext,

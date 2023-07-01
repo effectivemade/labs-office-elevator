@@ -1,6 +1,6 @@
 package band.effective.office.elevator.utils
 
-import band.effective.office.tablet.utils.DateUtils
+import band.effective.office.common.utils.DateUtils
 
 object ElevatorController {
     fun call() {

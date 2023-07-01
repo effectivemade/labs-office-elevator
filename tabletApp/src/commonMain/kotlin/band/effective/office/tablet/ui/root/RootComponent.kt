@@ -1,15 +1,13 @@
 package band.effective.office.tablet.ui.root
 
 import band.effective.office.tablet.ui.mainScreen.MainComponent
-import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponent
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.essenty.parcelable.Parcelable
 import kotlinx.android.parcel.Parcelize
-import kotlinx.coroutines.flow.StateFlow
+import tablet.ui.selectRoomScreen.SelectRoomComponent
 
 class RootComponent(componentContext: ComponentContext) : ComponentContext by componentContext {
 

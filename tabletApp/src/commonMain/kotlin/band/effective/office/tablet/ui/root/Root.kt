@@ -2,8 +2,8 @@ package band.effective.office.tablet.ui.root
 
 import androidx.compose.runtime.Composable
 import band.effective.office.tablet.ui.mainScreen.MainScreen
-import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomScreen
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
+import tablet.ui.selectRoomScreen.SelectRoomScreen
 
 @Composable
 fun Root(component: RootComponent) {

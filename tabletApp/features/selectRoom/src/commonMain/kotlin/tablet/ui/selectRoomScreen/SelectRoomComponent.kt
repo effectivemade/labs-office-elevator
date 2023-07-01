@@ -1,4 +1,4 @@
-package band.effective.office.tablet.ui.selectRoomScreen
+package tablet.ui.selectRoomScreen
 
 import com.arkivanov.decompose.ComponentContext
 
