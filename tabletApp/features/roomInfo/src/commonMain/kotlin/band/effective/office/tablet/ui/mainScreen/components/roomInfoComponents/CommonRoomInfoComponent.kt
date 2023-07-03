@@ -28,7 +28,8 @@ import io.github.skeptick.libres.compose.painterResource
 import io.github.skeptick.libres.images.Image
 
 @Composable
-fun RoomInfoComponent(
+fun CommonRoomInfoComponent(
+    modifier: Modifier = Modifier,
     name: String,
     capacity: Int,
     isHaveTv: Boolean,
@@ -37,10 +38,10 @@ fun RoomInfoComponent(
     backgroundColor: Color
 ) {
     Surface(
-        modifier = Modifier.background(color = backgroundColor).padding(25.dp).fillMaxWidth(),
+        modifier = Modifier.background(color = backgroundColor).fillMaxWidth(),
         color = backgroundColor
     ) {
-        Column {
+        Column(modifier = modifier) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,

@@ -1,6 +1,7 @@
 package band.effective.office.tablet.ui.mainScreen.components.roomInfoComponents
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.features.roomInfo.MainRes
@@ -9,9 +10,15 @@ import java.util.Calendar
 
 @Composable
 fun BusyRoomInfoComponent(
-    name: String, capacity: Int, isHaveTv: Boolean, electricSocketCount: Int, event: EventInfo?
+    modifier: Modifier = Modifier,
+    name: String,
+    capacity: Int,
+    isHaveTv: Boolean,
+    electricSocketCount: Int,
+    event: EventInfo?
 ) {
-    RoomInfoComponent(
+    CommonRoomInfoComponent(
+        modifier = modifier,
         name = name,
         capacity = capacity,
         isHaveTv = isHaveTv,

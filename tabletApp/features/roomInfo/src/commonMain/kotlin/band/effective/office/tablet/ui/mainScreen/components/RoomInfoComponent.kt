@@ -1,6 +1,8 @@
 package band.effective.office.tablet.ui.mainScreen.components
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -18,6 +20,7 @@ fun RoomInfoComponent(modifier: Modifier = Modifier, room: RoomInfo) {
         when {
             room.isFree() -> {
                 FreeRoomInfoComponent(
+                    modifier = Modifier.padding(25.dp),
                     name = room.name,
                     capacity = room.capacity,
                     isHaveTv = room.isHaveTv,
@@ -25,8 +28,10 @@ fun RoomInfoComponent(modifier: Modifier = Modifier, room: RoomInfo) {
                     nextEvent = room.eventList.firstOrNull()
                 )
             }
+
             room.isBusy() -> {
                 BusyRoomInfoComponent(
+                    modifier = Modifier.padding(25.dp),
                     name = room.name,
                     capacity = room.capacity,
                     isHaveTv = room.isHaveTv,
@@ -35,7 +40,8 @@ fun RoomInfoComponent(modifier: Modifier = Modifier, room: RoomInfo) {
                 )
             }
         }
-        RoomEventListComponent(room.eventList)
+        Spacer(modifier = Modifier.height(30.dp))
+        RoomEventListComponent(modifier = Modifier.padding(25.dp), eventsList = room.eventList)
     }
 }
 
