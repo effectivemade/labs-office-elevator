@@ -1,9 +1,23 @@
 package band.effective.office.tablet.ui.mainScreen
 
+import band.effective.office.tablet.domain.model.RoomInfo
+import band.effective.office.tablet.network.RoomInfoRepository
+
 data class MainScreenState(
-    val platform: String
-){
-    companion object{
-        val defaultState = MainScreenState(platform = "world")
+    val isLoad: Boolean,
+    val isData: Boolean,
+    val isError: Boolean,
+    val roomInfo: RoomInfo,
+    val error: String
+) {
+    companion object {
+        val defaultState =
+            MainScreenState(
+                isLoad = true,
+                isData = false,
+                isError = false,
+                roomInfo = RoomInfo.defaultValue,
+                error = ""
+            )
     }
 }
