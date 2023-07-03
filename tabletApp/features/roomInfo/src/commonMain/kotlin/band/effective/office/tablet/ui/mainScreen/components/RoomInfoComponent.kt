@@ -6,18 +6,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.domain.model.RoomInfo
-import band.effective.office.tablet.ui.mainScreen.components.roomInfoComponents.BusyRoomInfoView
-import band.effective.office.tablet.ui.mainScreen.components.roomInfoComponents.DateTimeView
-import band.effective.office.tablet.ui.mainScreen.components.roomInfoComponents.FreeRoomInfoView
-import band.effective.office.tablet.ui.mainScreen.components.roomInfoComponents.RoomEventListView
+import band.effective.office.tablet.ui.mainScreen.components.roomInfoComponents.BusyRoomInfoComponent
+import band.effective.office.tablet.ui.mainScreen.components.roomInfoComponents.DateTimeComponent
+import band.effective.office.tablet.ui.mainScreen.components.roomInfoComponents.FreeRoomInfoComponent
+import band.effective.office.tablet.ui.mainScreen.components.roomInfoComponents.RoomEventListComponent
 
 @Composable
-fun RoomInfoView(modifier: Modifier = Modifier, room: RoomInfo) {
+fun RoomInfoComponent(modifier: Modifier = Modifier, room: RoomInfo) {
     Column(modifier = modifier) {
-        DateTimeView(modifier = Modifier.padding(25.dp))
+        DateTimeComponent(modifier = Modifier.padding(25.dp))
         when {
             room.isFree() -> {
-                FreeRoomInfoView(
+                FreeRoomInfoComponent(
                     name = room.name,
                     capacity = room.capacity,
                     isHaveTv = room.isHaveTv,
@@ -26,7 +26,7 @@ fun RoomInfoView(modifier: Modifier = Modifier, room: RoomInfo) {
                 )
             }
             room.isBusy() -> {
-                BusyRoomInfoView(
+                BusyRoomInfoComponent(
                     name = room.name,
                     capacity = room.capacity,
                     isHaveTv = room.isHaveTv,
@@ -35,7 +35,7 @@ fun RoomInfoView(modifier: Modifier = Modifier, room: RoomInfo) {
                 )
             }
         }
-        RoomEventListView(room.eventList)
+        RoomEventListComponent(room.eventList)
     }
 }
 

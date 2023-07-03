@@ -4,6 +4,6 @@ import androidx.compose.runtime.Composable
 import band.effective.office.tablet.domain.model.EventInfo
 
 @Composable
-fun RoomEventListView(eventsList: List<EventInfo>) {
+fun RoomEventListComponent(eventsList: List<EventInfo>) {
 
 }

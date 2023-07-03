@@ -1,6 +1,5 @@
 package band.effective.office.tablet.ui.mainScreen.components.roomInfoComponents
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
@@ -13,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun DateTimeView(modifier: Modifier = Modifier) {
+fun DateTimeComponent(modifier: Modifier = Modifier) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.Bottom

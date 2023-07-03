@@ -11,14 +11,14 @@ import androidx.compose.ui.graphics.Color
 import band.effective.office.tablet.domain.model.RoomInfo
 
 @Composable
-fun MainScreenView(room: RoomInfo, onSelectOtherRoom: () -> Unit) {
+fun MainScreenComponent(room: RoomInfo, onSelectOtherRoom: () -> Unit) {
     /*NOTE(Maksim Mishenko):
     * infoViewWidth is part of the width occupied by roomInfoView
     * infoViewWidth = infoViewFrame.width / mainScreenFrame.width
     * where infoViewFrame, mainScreenFrame is frames from figma and all width I get from figma*/
     val infoViewWidth = 627f / 1133f
     Row(modifier = Modifier.fillMaxSize().background(color = Color(0xff1E1C1A))) {
-        RoomInfoView(
+        RoomInfoComponent(
             modifier = Modifier.fillMaxHeight().fillMaxWidth(infoViewWidth),
             room = room
         )

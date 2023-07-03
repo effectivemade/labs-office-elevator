@@ -3,7 +3,7 @@ package band.effective.office.tablet.ui.mainScreen
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import band.effective.office.tablet.ui.mainScreen.components.MainScreenView
+import band.effective.office.tablet.ui.mainScreen.components.MainScreenComponent
 
 @Composable
 fun MainScreen(component: MainComponent) {
@@ -12,7 +12,7 @@ fun MainScreen(component: MainComponent) {
         state.isError -> {}
         state.isLoad -> {}
         state.isData -> {
-            MainScreenView(
+            MainScreenComponent(
                 room = state.roomInfo,
                 onSelectOtherRoom = { component.sendEvent(MainScreenEvent.OnCLick) }
             )

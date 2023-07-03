@@ -3,6 +3,7 @@ plugins {
     id(Plugins.MultiplatformCompose.plugin)
     id(Plugins.Kotlin.plugin)
     id(Plugins.Parcelize.plugin)
+    id(Plugins.Libres.plugin)
 }
 
 android {
@@ -46,6 +47,9 @@ kotlin {
                 // Decompose
                 implementation(Dependencies.Decompose.decompose)
                 implementation(Dependencies.Decompose.extensions)
+
+                //Libres
+                implementation(Dependencies.Libres.libresCompose)
 
                 implementation(project(":tabletApp:features:selectRoom"))
                 implementation(project(":tabletApp:features:roomInfo"))
