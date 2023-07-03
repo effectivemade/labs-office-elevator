@@ -1,6 +1,6 @@
 package band.effective.office.elevator.ui.main
 
-import band.effective.office.elevator.ui.elevator.ElevatorComponent
+import band.effective.office.elevator.ui.main_screem_content.MainScreenContentComponent
 import band.effective.office.elevator.ui.profile.ProfileComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
@@ -28,7 +28,7 @@ class MainComponent(
     val childStack: Value<ChildStack<*, Child>> = stack
 
     private fun child(config: Config, componentContext: ComponentContext): Child = when (config) {
-        is Config.Elevator -> Child.Elevator(ElevatorComponent(componentContext, storeFactory))
+        is Config.Elevator -> Child.Elevator(MainScreenContentComponent(componentContext, storeFactory))
         is Config.Profile -> Child.Profile(
             ProfileComponent(
                 componentContext,
@@ -52,7 +52,7 @@ class MainComponent(
     }
 
     sealed class Child {
-        class Elevator(val component: ElevatorComponent) : Child()
+        class Elevator(val component: MainScreenContentComponent) : Child()
         class Profile(val component: ProfileComponent) : Child()
     }
 

@@ -1,10 +1,10 @@
-package band.effective.office.elevator.ui.elevator.store
+package band.effective.office.elevator.ui.main_screem_content.store
 
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.data.ApiResponse
 import band.effective.office.elevator.domain.OfficeElevatorRepository
-import band.effective.office.elevator.ui.elevator.store.ElevatorStore.Intent
-import band.effective.office.elevator.ui.elevator.store.ElevatorStore.State
+import band.effective.office.elevator.ui.main_screem_content.store.ElevatorStore.Intent
+import band.effective.office.elevator.ui.main_screem_content.store.ElevatorStore.State
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory

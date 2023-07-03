@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import band.effective.office.elevator.components.TabNavigationItem
 import band.effective.office.elevator.navigation.ElevatorTab
 import band.effective.office.elevator.navigation.ProfileTab
-import band.effective.office.elevator.ui.elevator.ElevatorScreen
+import band.effective.office.elevator.ui.main_screem_content.MainScreenContent
 import band.effective.office.elevator.ui.profile.ProfileScreen
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.Direction
@@ -37,7 +37,7 @@ fun MainScreen(component: MainComponent) {
                     animation = tabAnimation()
                 ) {
                     when (val child = it.instance) {
-                        is MainComponent.Child.Elevator -> ElevatorScreen(child.component)
+                        is MainComponent.Child.Elevator -> MainScreenContent(child.component)
                         is MainComponent.Child.Profile -> ProfileScreen(child.component)
                     }
                 }

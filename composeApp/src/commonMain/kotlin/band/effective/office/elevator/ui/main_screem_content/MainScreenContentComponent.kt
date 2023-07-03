@@ -1,7 +1,7 @@
-package band.effective.office.elevator.ui.elevator
+package band.effective.office.elevator.ui.main_screem_content
 
-import band.effective.office.elevator.ui.elevator.store.ElevatorStore
-import band.effective.office.elevator.ui.elevator.store.ElevatorStoreFactory
+import band.effective.office.elevator.ui.main_screem_content.store.ElevatorStore
+import band.effective.office.elevator.ui.main_screem_content.store.ElevatorStoreFactory
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -11,7 +11,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
-class ElevatorComponent(componentContext: ComponentContext, storeFactory: StoreFactory) :
+class MainScreenContentComponent(componentContext: ComponentContext, storeFactory: StoreFactory) :
     ComponentContext by componentContext {
 
     private val elevatorStore =

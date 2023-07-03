@@ -4,7 +4,16 @@
     <string name="sign_in_google">Войти в аккаунт Effective</string>
     <string name="something_went_wrong">Что-то пошло не так. Пожалуйста попробуйте еще раз</string>
 
+    <!--Elevator-->
+    <string name="elevator_below">Лифт на 1-м этаже</string>
+    <string name="elevator_goes" >Лифт едет</string>
+    <string name="elevator_raised" >Лифт поднят</string>
+    <string name="elevator_button" >Поднять лифт</string>
+    <string name="elevator_wait" >Подождите...</string>
+    <string name="elevator_ready" > Вызовите лифт через кнопку</string>
+
     <!--Tab titles-->
+    <string name="main">Главная</string>
     <string name="profile">Профиль</string>
     <string name="elevator">Лифт</string>
 

@@ -1,4 +1,4 @@
-package band.effective.office.elevator.ui.elevator.store
+package band.effective.office.elevator.ui.main_screem_content.store
 
 import com.arkivanov.mvikotlin.core.store.Store
 

@@ -4,10 +4,14 @@ import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.os.BuildCompat.PrereleaseSdkCheck
 import band.effective.office.elevator.di.androidModuleDI
 import band.effective.office.elevator.di.appModuleDI
 import band.effective.office.elevator.domain.AppActivityLifecycleObserver
 import band.effective.office.elevator.ui.ContentView
+import band.effective.office.elevator.ui.main_screem_content.Test
 import band.effective.office.elevator.ui.root.RootComponent
 import band.effective.office.elevator.utils.LastOpenActivityProvider
 import com.arkivanov.decompose.defaultComponentContext
@@ -58,4 +62,10 @@ class AppActivity : ComponentActivity() {
             ContentView(rootComponent)
         }
     }
+}
+
+@Preview
+@Composable
+private fun TestPreview() {
+    Test()
 }
