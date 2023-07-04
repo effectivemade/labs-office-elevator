@@ -27,7 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import band.effective.office.elevator.MR
+import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.common.compose.components.GrayText
 import band.effective.office.elevator.lightGray
 import band.effective.office.elevator.ui.profile.store.ProfileStore
@@ -73,7 +73,7 @@ internal fun ProfileScreenContent(
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            Text(text = stringResource(MR.strings.profile), style = MaterialTheme.typography.h3)
+            Text(text = stringResource(MainRes.strings.profile), style = MaterialTheme.typography.h3)
             Spacer(modifier = Modifier.weight(.1f))
             IconButton(onClick = onSignOut) {
                 Row(verticalAlignment = Alignment.CenterVertically) {

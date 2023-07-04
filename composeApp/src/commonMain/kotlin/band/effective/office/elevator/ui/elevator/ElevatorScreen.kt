@@ -17,7 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import band.effective.office.elevator.MR
+import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.ElevatorButton
 import band.effective.office.elevator.successGreen
 import band.effective.office.elevator.ui.elevator.store.ElevatorStore
@@ -60,7 +60,7 @@ private fun SnackBarSuccessMessage(modifier: Modifier, isVisible: Boolean) {
             modifier.padding(16.dp),
             backgroundColor = successGreen
         ) {
-            Text(text = stringResource(MR.strings.elevator_called_successfully))
+            Text(text = stringResource(MainRes.strings.elevator_called_successfully))
         }
     }
 }

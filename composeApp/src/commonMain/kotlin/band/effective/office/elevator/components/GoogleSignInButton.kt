@@ -14,7 +14,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import band.effective.office.elevator.MR
+import band.effective.office.elevator.MainRes
 import dev.icerock.moko.resources.compose.stringResource
 
 
@@ -30,6 +30,6 @@ internal fun GoogleSignInButton(modifier: Modifier, onClick: () -> Unit) {
         )
     ) {
         Spacer(modifier = Modifier.width(8.dp))
-        Text(text = stringResource(MR.strings.sign_in_google), modifier = Modifier.padding(6.dp))
+        Text(text = stringResource(MainRes.strings.sign_in_google), modifier = Modifier.padding(6.dp))
     }
 }

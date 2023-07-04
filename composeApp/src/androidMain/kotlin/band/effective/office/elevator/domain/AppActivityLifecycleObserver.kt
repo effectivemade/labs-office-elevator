@@ -18,7 +18,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import dev.icerock.moko.resources.compose.stringResource
 import io.github.aakira.napier.Napier
-import band.effective.office.elevator.MR
+import band.effective.office.elevator.MainRes
 
 
 class AppActivityLifecycleObserver(

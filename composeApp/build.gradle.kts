@@ -178,6 +178,7 @@ android {
 
 multiplatformResources {
     multiplatformResourcesPackage = "band.effective.office.elevator"
+    multiplatformResourcesClassName = "MainRes"
     multiplatformResourcesVisibility = Public
     iosBaseLocalizationRegion = "ru" // optional, default "en"
 }
