@@ -5,7 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import band.effective.office.tablet.ui.mainScreen.components.MainScreenComponent
+import band.effective.office.tablet.ui.mainScreen.components.MainScreenView
 
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable
@@ -15,10 +15,10 @@ fun MainScreen(component: MainComponent) {
         state.isError -> {}
         state.isLoad -> {}
         state.isData -> {
-            MainScreenComponent(
+            MainScreenView(
                 room = state.roomInfo,
-                onSelectOtherRoom = { component.sendEvent(MainScreenEvent.OnCLick) },
-                mockComponent = component.mockSettingsComponent
+                mockComponent = component.mockSettingsComponent,
+                bookingRoomComponent = component.bookingRoomComponent
             )
         }
     }

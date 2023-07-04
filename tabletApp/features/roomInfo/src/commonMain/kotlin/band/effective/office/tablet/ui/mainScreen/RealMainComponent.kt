@@ -1,6 +1,8 @@
 package band.effective.office.tablet.ui.mainScreen
 
 import band.effective.office.tablet.domain.RoomInteractor
+import band.effective.office.tablet.ui.mainScreen.components.bookingRoomComponents.BookingRoomComponent
+import band.effective.office.tablet.ui.mainScreen.components.bookingRoomComponents.RealBookingRoomComponent
 import band.effective.office.tablet.ui.mainScreen.components.mockComponets.MockSettingsComponent
 import band.effective.office.tablet.ui.mainScreen.components.mockComponets.RealMockSettingsComponent
 import com.arkivanov.decompose.ComponentContext
@@ -26,6 +28,9 @@ class RealMainComponent(
             componentContext = childContext(key = "mock"),
             updateData = { updateData() }
         )
+    override val bookingRoomComponent: BookingRoomComponent = RealBookingRoomComponent(
+        componentContext = childContext(key = "bookingRoom"),
+        onSelectOtherRoom = { onClick() })
 
     init {
         updateData()

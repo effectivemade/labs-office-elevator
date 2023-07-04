@@ -8,17 +8,25 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import band.effective.office.tablet.domain.model.RoomInfo
+import band.effective.office.tablet.ui.mainScreen.components.bookingRoomComponents.BookingRoomComponent
+import band.effective.office.tablet.ui.mainScreen.components.bookingRoomComponents.BookingRoomView
 import band.effective.office.tablet.ui.mainScreen.components.mockComponets.MockSettingView
 import band.effective.office.tablet.ui.mainScreen.components.mockComponets.MockSettingsComponent
 import band.effective.office.tablet.ui.mainScreen.components.roomInfoComponents.RoomInfoComponent
 
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable
-fun MainScreenComponent(room: RoomInfo, onSelectOtherRoom: () -> Unit, mockComponent: MockSettingsComponent) {
+fun MainScreenView(
+    room: RoomInfo,
+    mockComponent: MockSettingsComponent,
+    bookingRoomComponent: BookingRoomComponent
+) {
     /*NOTE(Maksim Mishenko):
     * infoViewWidth is part of the width occupied by roomInfoView
     * infoViewWidth = infoViewFrame.width / mainScreenFrame.width
@@ -29,9 +37,12 @@ fun MainScreenComponent(room: RoomInfo, onSelectOtherRoom: () -> Unit, mockCompo
             modifier = Modifier.fillMaxHeight().fillMaxWidth(infoViewWidth),
             room = room
         )
-        Column {
-            MockSettingView(mockComponent)
-            BookingRoomView(onSelectOtherRoom)
+        Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+            BookingRoomView(
+                modifier = Modifier.fillMaxSize(),
+                bookingRoomComponent = bookingRoomComponent
+            )
+            //MockSettingView(mockComponent)
         }
     }
 }
