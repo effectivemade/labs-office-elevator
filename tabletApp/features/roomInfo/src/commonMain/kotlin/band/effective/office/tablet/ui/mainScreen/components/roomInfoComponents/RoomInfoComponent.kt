@@ -14,12 +14,13 @@ import band.effective.office.tablet.domain.model.RoomInfo
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable
 fun RoomInfoComponent(modifier: Modifier = Modifier, room: RoomInfo) {
+    val paddings = 30.dp
     Column(modifier = modifier) {
-        DateTimeComponent(modifier = Modifier.padding(25.dp))
+        DateTimeComponent(modifier = Modifier.padding(paddings))
         when {
             room.isFree() -> {
                 FreeRoomInfoComponent(
-                    modifier = Modifier.padding(25.dp),
+                    modifier = Modifier.padding(paddings),
                     name = room.name,
                     capacity = room.capacity,
                     isHaveTv = room.isHaveTv,
@@ -30,7 +31,7 @@ fun RoomInfoComponent(modifier: Modifier = Modifier, room: RoomInfo) {
 
             room.isBusy() -> {
                 BusyRoomInfoComponent(
-                    modifier = Modifier.padding(25.dp),
+                    modifier = Modifier.padding(paddings),
                     name = room.name,
                     capacity = room.capacity,
                     isHaveTv = room.isHaveTv,
@@ -40,7 +41,7 @@ fun RoomInfoComponent(modifier: Modifier = Modifier, room: RoomInfo) {
             }
         }
         Spacer(modifier = Modifier.height(30.dp))
-        RoomEventListComponent(modifier = Modifier.padding(25.dp), eventsList = room.eventList)
+        RoomEventListComponent(modifier = Modifier.padding(paddings), eventsList = room.eventList)
     }
 }
 

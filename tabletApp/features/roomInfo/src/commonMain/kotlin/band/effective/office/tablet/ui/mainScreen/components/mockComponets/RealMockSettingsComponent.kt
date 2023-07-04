@@ -21,6 +21,7 @@ class RealMockSettingsComponent(
         reloadData()
     }
 
+    /**Synchronize data in mock controller and in state*/
     private fun reloadData(){
         mutableState.update {
             MockState(

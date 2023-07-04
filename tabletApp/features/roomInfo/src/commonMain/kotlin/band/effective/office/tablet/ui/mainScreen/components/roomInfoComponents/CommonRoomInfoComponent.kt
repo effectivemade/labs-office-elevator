@@ -42,25 +42,18 @@ fun CommonRoomInfoComponent(
         color = backgroundColor
     ) {
         Column(modifier = modifier) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = name,
-                    color = Color(0xFFFAFAFA),
-                    fontSize = 60.sp
-                )
-
-            }
+            Text(
+                text = name,
+                color = Color(0xFFFAFAFA),
+                fontSize = 60.sp
+            )
             Spacer(modifier = Modifier.height(20.dp))
             Text(
                 text = roomOccupancy,
                 color = Color(0xFFFAFAFA),
                 fontSize = 27.sp
             )
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(25.dp))
             Row(modifier = Modifier.padding(horizontal = 10.dp)) {
                 val spaceBetweenProperty = 40.dp
                 RoomPropertyComponent(image = MainRes.image.quantity, text = "$capacity")
@@ -95,6 +88,7 @@ fun CommonRoomInfoComponent(
                     )
                 }
             }
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }

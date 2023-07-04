@@ -15,6 +15,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.domain.model.EventInfo
@@ -52,6 +53,7 @@ fun BusyRoomInfoComponent(
         ){
             Button(
                 modifier = Modifier
+                    .clip(shape = RoundedCornerShape(70.dp))
                     .height(60.dp)
                     .width(150.dp)
                     .background(color = backgroundColor).border(
@@ -61,7 +63,7 @@ fun BusyRoomInfoComponent(
                     ),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = backgroundColor,
-                    contentColor = backgroundColor
+                    contentColor = Color(0xFFFFFFFF)
                 ),
                 onClick = {}) {
                 Text(text = MainRes.string.stop_meeting_button, color = Color(0xFFFAFAFA))

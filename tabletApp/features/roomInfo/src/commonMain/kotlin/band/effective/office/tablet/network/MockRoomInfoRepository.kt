@@ -16,6 +16,7 @@ class MockRoomInfoRepository : RoomInfoRepository, KoinComponent {
 
     private val startCurrentEvent: Calendar
     private val finishCurrentEvent: Calendar
+    /**It's field contain time for mocks, when it is used it needs to be increment, so that different mocks have different times*/
     private val currentTime: Calendar
 
     init {
@@ -27,12 +28,14 @@ class MockRoomInfoRepository : RoomInfoRepository, KoinComponent {
         currentTime = calendar.clone() as Calendar
     }
 
+    /**Reset current time field*/
     private fun updateCurrentTime() {
         val calendar = GregorianCalendar()
         calendar.add(Calendar.MINUTE, 20)
         currentTime.time = calendar.time
     }
 
+    /**Get and increment current time*/
     private fun getTime(): Calendar {
         currentTime.add(Calendar.MINUTE, 30)
         return currentTime.clone() as Calendar

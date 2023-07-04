@@ -7,6 +7,7 @@ import band.effective.office.tablet.network.MockRoomInfoRepository
 import band.effective.office.tablet.network.RoomInfoRepository
 import org.koin.dsl.module
 
+/*NOTE(Maksim Mishenko) write one di module because few dependence now*/
 val commonModule = module {
     single<MockController> { MockController() }
     single<RoomInfoRepository> { MockRoomInfoRepository() }
