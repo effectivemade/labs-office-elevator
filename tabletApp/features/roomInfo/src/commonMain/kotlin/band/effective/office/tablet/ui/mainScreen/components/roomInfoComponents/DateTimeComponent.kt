@@ -1,5 +1,8 @@
 package band.effective.office.tablet.ui.mainScreen.components.roomInfoComponents
 
+import android.os.Build
+import android.widget.TextClock
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
@@ -10,15 +13,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 
+@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable
 fun DateTimeComponent(modifier: Modifier = Modifier) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.Bottom
     ) {
-        Text(text = "17:49", color = Color(0xFFFAFAFA), fontSize = 30.sp)
+        AndroidView(
+            factory = { context ->
+                TextClock(context).apply {
+                    format24Hour = "HH:mm"
+                    format12Hour = "hh:mm a"
+                    textSize = 30f
+                    setTextColor(android.graphics.Color.WHITE)
+                }
+            }
+        )
         Spacer(modifier = Modifier.width(10.dp))
-        Text(text = "28 июня, среда", color = Color(0xFFFAFAFA), fontSize = 25.sp)
+        AndroidView(
+            factory = { context ->
+                TextClock(context).apply {
+                    format24Hour = "d MMMM, EEE"
+                    format12Hour = "d MMMM, EEE"
+                    textSize = 25f
+                    setTextColor(android.graphics.Color.WHITE)
+                }
+            }
+        )
     }
 }
