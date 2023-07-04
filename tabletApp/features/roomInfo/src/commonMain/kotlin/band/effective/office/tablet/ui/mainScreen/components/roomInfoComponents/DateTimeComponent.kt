@@ -36,8 +36,8 @@ fun DateTimeComponent(modifier: Modifier = Modifier) {
         AndroidView(
             factory = { context ->
                 TextClock(context).apply {
-                    format24Hour = "d MMMM, EEE"
-                    format12Hour = "d MMMM, EEE"
+                    format24Hour = "d MMMM, EEEE"
+                    format12Hour = "d MMMM, EEEE"
                     textSize = 25f
                     setTextColor(android.graphics.Color.WHITE)
                 }

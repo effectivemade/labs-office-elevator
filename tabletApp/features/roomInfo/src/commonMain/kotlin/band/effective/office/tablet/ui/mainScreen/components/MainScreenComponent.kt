@@ -1,5 +1,7 @@
 package band.effective.office.tablet.ui.mainScreen.components
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -10,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import band.effective.office.tablet.domain.model.RoomInfo
 
+@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable
 fun MainScreenComponent(room: RoomInfo, onSelectOtherRoom: () -> Unit) {
     /*NOTE(Maksim Mishenko):

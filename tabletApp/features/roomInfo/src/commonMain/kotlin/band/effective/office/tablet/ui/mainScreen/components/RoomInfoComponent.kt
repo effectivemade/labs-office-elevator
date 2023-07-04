@@ -1,5 +1,7 @@
 package band.effective.office.tablet.ui.mainScreen.components
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -13,6 +15,7 @@ import band.effective.office.tablet.ui.mainScreen.components.roomInfoComponents.
 import band.effective.office.tablet.ui.mainScreen.components.roomInfoComponents.FreeRoomInfoComponent
 import band.effective.office.tablet.ui.mainScreen.components.roomInfoComponents.RoomEventListComponent
 
+@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable
 fun RoomInfoComponent(modifier: Modifier = Modifier, room: RoomInfo) {
     Column(modifier = modifier) {
