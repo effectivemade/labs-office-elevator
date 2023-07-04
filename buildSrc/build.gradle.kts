@@ -7,6 +7,7 @@ repositories {
     mavenCentral()
     maven(url = "https://maven.pkg.jetbrains.space/public/p/compose/dev")
     maven("https://jitpack.io")
+    maven(url = "https://dl.bintray.com/icerockdev/moko")
     jcenter()
     google()
     gradlePluginPortal()
@@ -23,6 +24,7 @@ dependencies {
     implementation(Plugins.Libres.implementation)
     implementation(Plugins.BuildConfig.implementation)
     implementation(Plugins.Serialization.implementation)
+    implementation(Plugins.Moko.implementation)
 }
 
 val rootDirProject = file("../")

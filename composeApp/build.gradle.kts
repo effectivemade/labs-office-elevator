@@ -1,3 +1,5 @@
+import dev.icerock.gradle.MRVisibility.Public
+
 plugins {
     id(Plugins.Kotlin.plugin)
     id(Plugins.MultiplatformCompose.plugin)
@@ -7,6 +9,7 @@ plugins {
     id(Plugins.BuildConfig.plugin)
     id(Plugins.Serialization.plugin)
     id(Plugins.Parcelize.plugin)
+    id(Plugins.Moko.plugin)
 }
 
 kotlin {
@@ -67,12 +70,16 @@ kotlin {
                 api(Dependencies.Koin.core)
 
                 api(Dependencies.Essenty.essenty)
+
+                //Moko
+                api(Dependencies.Moko.resourcesCompose)
             }
         }
 
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
+                implementation("dev.icerock.moko:resources-test:0.23.0")
             }
         }
 
@@ -176,8 +183,13 @@ libres {
     generatedClassName = "MainRes" // "Res" by default
     generateNamedArguments = true // false by default
     baseLocaleLanguageCode = "ru" // "en" by default
-    camelCaseNamesForAppleFramework = true // false by default
+    camelCaseNamesForAppleFramework = true
+}
 
+multiplatformResources {
+    multiplatformResourcesPackage = "band.effective.office.elevator"
+    multiplatformResourcesVisibility = Public
+    iosBaseLocalizationRegion = "ru" // optional, default "en"
 }
 
 buildConfig {
