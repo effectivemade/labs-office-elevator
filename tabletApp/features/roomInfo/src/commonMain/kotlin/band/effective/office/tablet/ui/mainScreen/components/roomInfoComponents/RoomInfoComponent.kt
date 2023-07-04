@@ -1,4 +1,4 @@
-package band.effective.office.tablet.ui.mainScreen.components
+package band.effective.office.tablet.ui.mainScreen.components.roomInfoComponents
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -10,10 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.domain.model.RoomInfo
-import band.effective.office.tablet.ui.mainScreen.components.roomInfoComponents.BusyRoomInfoComponent
-import band.effective.office.tablet.ui.mainScreen.components.roomInfoComponents.DateTimeComponent
-import band.effective.office.tablet.ui.mainScreen.components.roomInfoComponents.FreeRoomInfoComponent
-import band.effective.office.tablet.ui.mainScreen.components.roomInfoComponents.RoomEventListComponent
 
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable

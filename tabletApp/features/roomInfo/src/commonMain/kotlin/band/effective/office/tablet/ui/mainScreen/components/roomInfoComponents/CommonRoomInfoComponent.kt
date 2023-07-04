@@ -52,20 +52,7 @@ fun CommonRoomInfoComponent(
                     color = Color(0xFFFAFAFA),
                     fontSize = 60.sp
                 )
-                Button(
-                    modifier = Modifier
-                        .background(color = backgroundColor).border(
-                            width = 3.dp,
-                            color = Color(0xFFFAFAFA),
-                            shape = RoundedCornerShape(20.dp),
-                        ),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = backgroundColor,
-                        contentColor = backgroundColor
-                    ),
-                    onClick = {}) {
-                    Text(text = MainRes.string.stop_meeting_button, color = Color(0xFFFAFAFA))
-                }
+
             }
             Spacer(modifier = Modifier.height(20.dp))
             Text(

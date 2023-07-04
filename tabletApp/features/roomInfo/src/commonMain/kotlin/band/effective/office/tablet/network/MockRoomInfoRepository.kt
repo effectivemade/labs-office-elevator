@@ -1,13 +1,18 @@
 package band.effective.office.tablet.network
 
+import band.effective.office.tablet.domain.MockController
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.util.Calendar
 import java.util.GregorianCalendar
 
-class MockRoomInfoRepository : RoomInfoRepository {
-    private fun isBusy() = false
-    private fun isManyEvent() = false
+class MockRoomInfoRepository : RoomInfoRepository, KoinComponent {
+    private val mockController: MockController by inject()
+    private fun isBusy() = mockController.isBusy
+    private fun isManyEvent() = mockController.isManyEvent
+    private fun isHaveTv() = mockController.isHaveTV
 
     private val startCurrentEvent: Calendar
     private val finishCurrentEvent: Calendar
@@ -22,7 +27,13 @@ class MockRoomInfoRepository : RoomInfoRepository {
         currentTime = calendar.clone() as Calendar
     }
 
-    fun getTime(): Calendar{
+    private fun updateCurrentTime() {
+        val calendar = GregorianCalendar()
+        calendar.add(Calendar.MINUTE, 20)
+        currentTime.time = calendar.time
+    }
+
+    private fun getTime(): Calendar {
         currentTime.add(Calendar.MINUTE, 30)
         return currentTime.clone() as Calendar
     }
@@ -56,13 +67,15 @@ class MockRoomInfoRepository : RoomInfoRepository {
     private fun bigEventList() =
         eventsList() + eventsList() + eventsList() + eventsList() + eventsList()
 
-    override fun getRoomInfo(name: String): RoomInfo =
-        RoomInfo(
+    override fun getRoomInfo(name: String): RoomInfo {
+        updateCurrentTime()
+        return RoomInfo(
             name = "Sirius",
             capacity = 8,
-            isHaveTv = true,
+            isHaveTv = isHaveTv(),
             electricSocketCount = 4,
             eventList = if (isManyEvent()) bigEventList() else eventsList(),
             currentEvent = if (isBusy()) currentEvent() else null
         )
+    }
 }
