@@ -6,4 +6,6 @@ import band.effective.office.tablet.domain.model.RoomInfo
 interface RoomInfoRepository {
     /**Get information about room by room's name*/
     fun getRoomInfo(name: String): RoomInfo
+
+    fun getOrganizers(): List<String>
 }

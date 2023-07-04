@@ -1,5 +1,6 @@
 package band.effective.office.tablet.ui.mainScreen.components.bookingRoomComponents
 
+import band.effective.office.tablet.domain.RoomInteractor
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.childContext
 import com.arkivanov.essenty.lifecycle.Lifecycle
@@ -13,6 +14,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.util.Calendar
 import java.util.GregorianCalendar
 
@@ -20,20 +23,28 @@ class RealBookingRoomComponent(
     private val componentContext: ComponentContext,
     private val onSelectOtherRoom: () -> Unit
 ) :
-    ComponentContext by componentContext, BookingRoomComponent {
+    ComponentContext by componentContext, BookingRoomComponent, KoinComponent {
     private var mutableState = MutableStateFlow(BookingRoomState.default)
     override val state = mutableState.asStateFlow()
 
     override val dateTimeComponent: RealDateTimeComponent =
-        RealDateTimeComponent(childContext("dateTime"), changeDay = { changeDate(it) })
+        RealDateTimeComponent(
+            childContext("dateTime"),
+            changeDay = { changeDate(it) }
+        )
     override val eventLengthComponent: RealEventLengthComponent =
         RealEventLengthComponent(childContext("length"),
             changeLength = { changeLength(it) })
     override val eventOrganizerComponent: RealEventOrganizerComponent =
-        RealEventOrganizerComponent(childContext("organizer"))
+        RealEventOrganizerComponent(
+            childContext("organizer"),
+            onSelectOrganizer = { selectOrganizer(it) })
+
+    private val roomInfoInteractor: RoomInteractor by inject()
 
     init {
         updateSelectTime()
+        mutableState.update { it.copy(organizers = roomInfoInteractor.getOrganizers()) }
     }
 
     override fun sendEvent(event: BookingRoomViewEvent) {
@@ -57,7 +68,7 @@ class RealBookingRoomComponent(
         mutableState.update { it.copy(selectDate = newValue) }
     }
 
-    //TODO
+    //TODO(Maksim Mishenko): delete while(true)
     private fun updateSelectTime() {
         componentCoroutineScope().launch {
             while (true) {
@@ -67,9 +78,13 @@ class RealBookingRoomComponent(
             }
         }
     }
+
+    private fun selectOrganizer(organizer: String) {
+        mutableState.update { it.copy(organizer = organizer) }
+    }
 }
 
-//https://gist.github.com/aartikov/a56cc94bb306e05b7b7927353910da08
+//NOTE(Maksim Mishenko): https://gist.github.com/aartikov/a56cc94bb306e05b7b7927353910da08
 fun ComponentContext.componentCoroutineScope(): CoroutineScope {
     val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 

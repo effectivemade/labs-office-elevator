@@ -5,4 +5,5 @@ import band.effective.office.tablet.network.RoomInfoRepository
 
 class RoomInteractorImpl(private val roomInfoRepository: RoomInfoRepository): RoomInteractor {
     override fun getRoomInfo(name: String): RoomInfo = roomInfoRepository.getRoomInfo(name)
+    override fun getOrganizers(): List<String> = roomInfoRepository.getOrganizers()
 }

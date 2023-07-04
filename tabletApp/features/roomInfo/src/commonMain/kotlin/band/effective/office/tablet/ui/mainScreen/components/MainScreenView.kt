@@ -39,9 +39,9 @@ fun MainScreenView(
             modifier = Modifier.fillMaxHeight().fillMaxWidth(infoViewWidth),
             room = room
         )
-        Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+        Column(modifier = Modifier.fillMaxSize()) {
             BookingRoomView(
-                modifier = Modifier.fillMaxSize().padding(25.dp),
+                modifier = Modifier.background(color = Color(0xFF252322)).fillMaxSize().padding(25.dp),
                 bookingRoomComponent = bookingRoomComponent
             )
             //MockSettingView(mockComponent)

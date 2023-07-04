@@ -16,6 +16,7 @@ class MockRoomInfoRepository : RoomInfoRepository, KoinComponent {
 
     private val startCurrentEvent: Calendar
     private val finishCurrentEvent: Calendar
+
     /**It's field contain time for mocks, when it is used it needs to be increment, so that different mocks have different times*/
     private val currentTime: Calendar
 
@@ -81,4 +82,7 @@ class MockRoomInfoRepository : RoomInfoRepository, KoinComponent {
             currentEvent = if (isBusy()) currentEvent() else null
         )
     }
+
+    override fun getOrganizers(): List<String> =
+        listOf("Ольга Белозерова", "Матвей Авгуль", "Лилия Акентьева")
 }
