@@ -1,6 +1,7 @@
 package band.effective.office.elevator.ui.main_screem_content.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.ui.models.ElevatorState
 import io.github.skeptick.libres.compose.painterResource
 
@@ -43,6 +45,8 @@ fun ElevatorUIComponent(
 
     Column(
         modifier = modifier
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colors.background)
             .padding(horizontal = 24.dp, vertical = 16.dp),
     ) {
         Text(
@@ -61,23 +65,10 @@ fun ElevatorUIComponent(
 
 @Composable
 private fun ActionCall(onClickCallElevator: () -> Unit) {
-    Button(
-        onClick = onClickCallElevator,
-        colors = ButtonDefaults.buttonColors(
-            backgroundColor = MaterialTheme.colors.primary,
-            contentColor = MaterialTheme.colors.background
-        ),
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(48.dp))
-    ) {
-        Text(
-            text = MainRes.string.elevator_button,
-            fontFamily = MaterialTheme.typography.button.fontFamily,
-            fontSize = 15.sp,
-            modifier = Modifier.padding(vertical = 10.dp)
-        )
-    }
+    EffectiveButton(
+        buttonText = MainRes.string.elevator_button,
+        onClick = onClickCallElevator
+    )
 }
 
 @Composable

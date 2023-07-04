@@ -76,8 +76,10 @@ internal val md_theme_dark_scrim = Color(0xFF000000)
 internal val theme_light_primary = Color(0xFFE85B0F)
 internal val theme_light_onPrimary = Color(0xFFFFFFFF)
 
-internal val theme_light_secondary = Color(0xFFC0430E)
+internal val theme_light_secondary = Color(0xFFC2410C)
 internal val theme_light_onSecondary = Color(0xFFFFFFFF)
+
+internal val theme_light_secondary_variant = Color(0xFF6F01FF)
 
 internal val theme_light_tertiary = Color(0xFFDB6242)
 internal val theme_light_onTertiary = Color(0xFFFFFFFF)
@@ -141,3 +143,4 @@ internal val seed = Color(0xFF2C3639)
 // Non Material specified colors
 internal val lightGray = Color(0xFFEBEBEB)
 internal val successGreen = Color(0xFF4BB543)
+internal val text_color_tertiary = Color(0x80000000)

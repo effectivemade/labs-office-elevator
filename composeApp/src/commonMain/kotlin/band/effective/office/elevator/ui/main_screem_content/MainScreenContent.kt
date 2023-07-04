@@ -25,6 +25,8 @@ import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.ElevatorButton
 import band.effective.office.elevator.components.TitlePage
 import band.effective.office.elevator.successGreen
+import band.effective.office.elevator.ui.main_screem_content.components.BookingInformation
+import band.effective.office.elevator.ui.main_screem_content.components.DateSelection
 import band.effective.office.elevator.ui.main_screem_content.components.ElevatorUIComponent
 import band.effective.office.elevator.ui.main_screem_content.store.ElevatorStore
 import band.effective.office.elevator.ui.models.ElevatorState
@@ -114,8 +116,13 @@ fun Test() {
         )
         Spacer(modifier = Modifier.height(24.dp))
         ElevatorUIComponent(
-            elevatorState = ElevatorState.Goes,
+            elevatorState = ElevatorState.Below,
             onClickCallElevator = {}
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+        BookingInformation(
+            reservedSeats = listOf(),
+            onClickBook = {}
         )
     }
 }

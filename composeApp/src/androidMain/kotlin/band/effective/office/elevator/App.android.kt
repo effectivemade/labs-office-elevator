@@ -67,5 +67,7 @@ class AppActivity : ComponentActivity() {
 @Preview
 @Composable
 private fun TestPreview() {
-    Test()
+    AppTheme {
+        Test()
+    }
 }
