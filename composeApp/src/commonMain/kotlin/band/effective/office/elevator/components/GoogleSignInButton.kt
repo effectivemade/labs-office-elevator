@@ -14,8 +14,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import band.effective.office.elevator.MainRes
-import io.github.skeptick.libres.compose.painterResource
+import band.effective.office.elevator.MR
+import dev.icerock.moko.resources.compose.stringResource
+
 
 @Composable
 internal fun GoogleSignInButton(modifier: Modifier, onClick: () -> Unit) {
@@ -28,12 +29,7 @@ internal fun GoogleSignInButton(modifier: Modifier, onClick: () -> Unit) {
             contentColor = MaterialTheme.colors.onSurface
         )
     ) {
-        Image(
-            painterResource(MainRes.image.google_icon),
-            contentDescription = null,
-            modifier = Modifier.size(32.dp)
-        )
         Spacer(modifier = Modifier.width(8.dp))
-        Text(text = MainRes.string.sign_in_google, modifier = Modifier.padding(6.dp))
+        Text(text = stringResource(MR.strings.sign_in_google), modifier = Modifier.padding(6.dp))
     }
 }

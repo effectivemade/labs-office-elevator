@@ -21,7 +21,6 @@ dependencies {
     implementation(Plugins.Ktor.implementation)
     implementation(Plugins.ApacheCompress.implementation) // NOTE(radchenko): needs for `ktor` to `docker`
     implementation(Plugins.MultiplatformCompose.implementation)
-    implementation(Plugins.Libres.implementation)
     implementation(Plugins.BuildConfig.implementation)
     implementation(Plugins.Serialization.implementation)
     implementation(Plugins.Moko.implementation)

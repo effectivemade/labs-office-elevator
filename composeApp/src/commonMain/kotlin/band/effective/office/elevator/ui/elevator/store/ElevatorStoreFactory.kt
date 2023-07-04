@@ -1,7 +1,7 @@
 package band.effective.office.elevator.ui.elevator.store
 
-import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.data.ApiResponse
+import band.effective.office.elevator.MR
 import band.effective.office.elevator.domain.OfficeElevatorRepository
 import band.effective.office.elevator.ui.elevator.store.ElevatorStore.Intent
 import band.effective.office.elevator.ui.elevator.store.ElevatorStore.State
@@ -9,6 +9,7 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
+import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -49,29 +50,29 @@ internal class ElevatorStoreFactory(
             scope.launch {
                 dispatch(Msg.SwitchButton(true))
                 delay(1000)
+                /*
                 publish(
                     when (val result = officeElevatorRepository.call()) {
                         is ApiResponse.Error.HttpError -> ElevatorStore.Label.ShowError(
-                            ElevatorStore.ErrorState(
-                                MainRes.string.server_error.format(result.code.toString())
+                            ElevatorStore.ErrorState(stringResource(MR.strings.server_error).format(result.code.toString())
                             )
                         )
 
                         ApiResponse.Error.NetworkError -> ElevatorStore.Label.ShowError(
                             ElevatorStore.ErrorState(
-                                MainRes.string.network_error
+                                stringResource(MR.strings.network_error)
                             )
                         )
 
                         ApiResponse.Error.SerializationError -> ElevatorStore.Label.ShowError(
                             ElevatorStore.ErrorState(
-                                MainRes.string.developer_error
+                                stringResource(MR.strings.developer_error)
                             )
                         )
 
                         ApiResponse.Error.UnknownError -> ElevatorStore.Label.ShowError(
                             ElevatorStore.ErrorState(
-                                MainRes.string.developer_error
+                                stringResource(MR.strings.developer_error)
                             )
                         )
 
@@ -82,6 +83,7 @@ internal class ElevatorStoreFactory(
                 )
                 delay(1000)
                 dispatch(Msg.SwitchButton(false))
+                 */
             }
         }
     }

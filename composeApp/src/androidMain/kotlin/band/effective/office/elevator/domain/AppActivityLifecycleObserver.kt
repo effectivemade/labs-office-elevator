@@ -7,7 +7,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import band.effective.office.elevator.AppActivity
-import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.OfficeElevatorConfig
 import com.google.android.gms.auth.api.proxy.AuthApiStatusCodes
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -17,7 +16,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes
 import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes.SIGN_IN_CANCELLED
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import dev.icerock.moko.resources.compose.stringResource
 import io.github.aakira.napier.Napier
+import band.effective.office.elevator.MR
 
 
 class AppActivityLifecycleObserver(
@@ -61,16 +62,6 @@ class AppActivityLifecycleObserver(
                     GoogleSignInStatusCodes.getStatusCodeString(e.statusCode)
                 }"
             )
-            val errorMessage = when (e.statusCode) {
-                AuthApiStatusCodes.NETWORK_ERROR -> MainRes.string.network_error
-                AuthApiStatusCodes.DEVELOPER_ERROR -> MainRes.string.developer_error
-                AuthApiStatusCodes.CANCELED -> MainRes.string.cancelled_error
-                AuthApiStatusCodes.INVALID_ACCOUNT -> MainRes.string.invalid_account_error
-                AuthApiStatusCodes.TIMEOUT -> MainRes.string.timout_error
-                SIGN_IN_CANCELLED -> MainRes.string.you_need_to_sign_in
-                else -> MainRes.string.something_went_wrong
-            }
-            callback.onFailure(errorMessage)
         }
     }
 

@@ -5,7 +5,6 @@ plugins {
     id(Plugins.MultiplatformCompose.plugin)
     id(Plugins.CocoaPods.plugin)
     id(Plugins.Android.plugin)
-    id(Plugins.Libres.plugin)
     id(Plugins.BuildConfig.plugin)
     id(Plugins.Serialization.plugin)
     id(Plugins.Parcelize.plugin)
@@ -47,7 +46,6 @@ kotlin {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material)
-                implementation(Dependencies.Libres.libresCompose)
                 implementation(Dependencies.ImageLoader.imageLoader)
                 implementation(Dependencies.Napier.napier)
                 implementation(Dependencies.KotlinxCoroutines.core)
@@ -141,7 +139,6 @@ android {
     sourceSets["main"].apply {
         manifest.srcFile("src/androidMain/AndroidManifest.xml")
         res.srcDirs("src/androidMain/resources")
-        res.srcDir("build/generated/libres/android/resources")
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -178,13 +175,6 @@ android {
     }
 }
 
-libres {
-    // https://github.com/Skeptick/libres#setup
-    generatedClassName = "MainRes" // "Res" by default
-    generateNamedArguments = true // false by default
-    baseLocaleLanguageCode = "ru" // "en" by default
-    camelCaseNamesForAppleFramework = true
-}
 
 multiplatformResources {
     multiplatformResourcesPackage = "band.effective.office.elevator"

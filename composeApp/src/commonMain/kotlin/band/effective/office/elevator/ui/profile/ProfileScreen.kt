@@ -27,13 +27,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.MR
 import band.effective.office.elevator.common.compose.components.GrayText
 import band.effective.office.elevator.lightGray
 import band.effective.office.elevator.ui.profile.store.ProfileStore
 import com.seiko.imageloader.model.ImageRequest
 import com.seiko.imageloader.rememberAsyncImagePainter
-import io.github.skeptick.libres.compose.painterResource
+import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun ProfileScreen(component: ProfileComponent) {
@@ -72,7 +72,8 @@ internal fun ProfileScreenContent(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Profile", style = MaterialTheme.typography.h3)
+
+            Text(text = stringResource(MR.strings.profile), style = MaterialTheme.typography.h3)
             Spacer(modifier = Modifier.weight(.1f))
             IconButton(onClick = onSignOut) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -105,11 +106,7 @@ internal fun ProfileScreenContent(
                         contentDescription = null,
                     )
                 }
-                Image(
-                    modifier = Modifier,
-                    painter = painterResource(MainRes.image.profile_border),
-                    contentDescription = null
-                )
+
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
