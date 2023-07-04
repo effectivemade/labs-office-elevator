@@ -25,7 +25,7 @@ class ProfileComponent(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val state: StateFlow<ProfileStore.State> = profileStore.stateFlow
+    val user: StateFlow<ProfileStore.User> = profileStore.stateFlow
 
     val label: Flow<ProfileStore.Label> = profileStore.labels
 
