@@ -41,7 +41,7 @@ fun EventOrganizerView(
     val selectedItem by component.selectedItem.collectAsState()
     Column(modifier = modifier) {
         Text(
-            text = "организатор",
+            text = MainRes.string.select_organizer_title,
             color = Color(0xFF808080),
             fontSize = 16.sp
         )
@@ -61,7 +61,7 @@ fun EventOrganizerView(
             ) {
                 if (selectedItem.notSelect()) {
                     Text(
-                        text = "Организатор встречи",
+                        text = MainRes.string.selectbox_organizer_title,
                         color = Color(0xFF777777)
                     )
                 } else {

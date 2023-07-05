@@ -20,6 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import band.effective.office.tablet.features.roomInfo.MainRes
 import band.effective.office.tablet.ui.mainScreen.components.bookingRoomComponents.uiComponents.BusyAlertView
 import band.effective.office.tablet.ui.mainScreen.components.bookingRoomComponents.uiComponents.DateTimeView
 import band.effective.office.tablet.ui.mainScreen.components.bookingRoomComponents.uiComponents.EventLengthView
@@ -32,7 +33,7 @@ fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: Booking
         Column(modifier = Modifier.fillMaxSize()) {
             Spacer(modifier = Modifier.height(63.dp))
             Text(
-                text = "Занять",
+                text = MainRes.string.booking_view_title,
                 color = Color(0xFFFAFAFA),
                 fontSize = 36.sp
             )
@@ -75,7 +76,7 @@ fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: Booking
                 ),
                 enabled = !state.isBusy
             ) {
-                Text(text = "Занять Sirius")
+                Text(text = MainRes.string.booking_button_text.format(roomName = state.roomName))
             }
         }
     }

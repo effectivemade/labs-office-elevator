@@ -39,7 +39,11 @@ fun BusyAlertView(modifier: Modifier, event: EventInfo, onClick: () -> Unit) {
             )
             Spacer(Modifier.width(10.dp))
             Text(
-                text = "Время ${event.startTime.time()} — ${event.finishTime.time()} занято · ${event.organizer}",
+                text = MainRes.string.busy_time_string.format(
+                    startTime = event.startTime.time(),
+                    finishTime = event.finishTime.time(),
+                    organizer = event.organizer
+                ),
                 color = Color(0xFFEB4C2A),
                 fontSize = 19.sp
             )
@@ -52,7 +56,7 @@ fun BusyAlertView(modifier: Modifier, event: EventInfo, onClick: () -> Unit) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Смотреть свободные переговорки на это время",
+                    text = MainRes.string.see_free_room,
                     color = Color(0xFFA362F8),
                     fontSize = 19.sp
                 )

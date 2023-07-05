@@ -22,7 +22,8 @@ import java.util.GregorianCalendar
 
 class RealBookingRoomComponent(
     private val componentContext: ComponentContext,
-    private val onSelectOtherRoom: () -> Unit
+    private val onSelectOtherRoom: () -> Unit,
+    roomName: String
 ) :
     ComponentContext by componentContext, BookingRoomComponent, KoinComponent {
     private var mutableState = MutableStateFlow(BookingRoomState.default)
@@ -44,6 +45,7 @@ class RealBookingRoomComponent(
     private val roomInfoInteractor: RoomInteractor by inject()
 
     init {
+        mutableState.update { it.copy(roomName = roomName) }
         updateSelectTime()
         update()
     }
@@ -66,7 +68,7 @@ class RealBookingRoomComponent(
                 organizers = roomInfoInteractor.getOrganizers(),
                 isBusy = roomInfoInteractor.checkRoom("", GregorianCalendar()) != null,
                 busyEvent = roomInfoInteractor.checkRoom("", GregorianCalendar())
-                    ?: EventInfo.emptyEvent
+                    ?: EventInfo.emptyEvent,
             )
         }
     }

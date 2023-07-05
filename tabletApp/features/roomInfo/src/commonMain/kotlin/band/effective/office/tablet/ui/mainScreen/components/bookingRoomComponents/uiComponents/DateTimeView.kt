@@ -28,7 +28,7 @@ import java.util.Calendar
 fun DateTimeView(modifier: Modifier, component: RealDateTimeComponent, selectDate: Calendar) {
     Column(modifier = modifier) {
         Text(
-            text = "когда",
+            text = MainRes.string.select_date_tine_title,
             color = Color(0xFF808080),
             fontSize = 16.sp
         )
@@ -37,7 +37,10 @@ fun DateTimeView(modifier: Modifier, component: RealDateTimeComponent, selectDat
             Button(
                 modifier = Modifier.fillMaxHeight().weight(1f).clip(RoundedCornerShape(15.dp)),
                 onClick = { component.decrementDay() },
-                colors = ButtonDefaults.buttonColors(contentColor = Color(0xFFFFFFFF), backgroundColor = Color(0xFF302D2C))
+                colors = ButtonDefaults.buttonColors(
+                    contentColor = Color(0xFFFFFFFF),
+                    backgroundColor = Color(0xFF302D2C)
+                )
             ) {
                 Text(
                     text = "<",
@@ -49,7 +52,10 @@ fun DateTimeView(modifier: Modifier, component: RealDateTimeComponent, selectDat
             Button(
                 modifier = Modifier.fillMaxHeight().weight(4f).clip(RoundedCornerShape(15.dp)),
                 onClick = { },
-                colors = ButtonDefaults.buttonColors(contentColor = Color(0xFFFFFFFF), backgroundColor = Color(0xFF302D2C))
+                colors = ButtonDefaults.buttonColors(
+                    contentColor = Color(0xFFFFFFFF),
+                    backgroundColor = Color(0xFF302D2C)
+                )
             ) {
                 Text(
                     text = selectDate.dateTime(),
@@ -67,7 +73,10 @@ fun DateTimeView(modifier: Modifier, component: RealDateTimeComponent, selectDat
             Button(
                 modifier = Modifier.fillMaxHeight().weight(1f).clip(RoundedCornerShape(15.dp)),
                 onClick = { component.incrementDay() },
-                colors = ButtonDefaults.buttonColors(contentColor = Color(0xFFFFFFFF), backgroundColor = Color(0xFF302D2C))
+                colors = ButtonDefaults.buttonColors(
+                    contentColor = Color(0xFFFFFFFF),
+                    backgroundColor = Color(0xFF302D2C)
+                )
             ) {
                 Text(
                     text = ">",
@@ -82,4 +91,5 @@ fun DateTimeView(modifier: Modifier, component: RealDateTimeComponent, selectDat
 
 private fun Calendar.time() = CalendarStringConverter.calendarToString(this, "HH:mm")
 private fun Calendar.date() = CalendarStringConverter.calendarToString(this, "dd MMMM")
-private fun Calendar.dateTime() = "${date()} c ${time()}"
+private fun Calendar.dateTime() =
+    MainRes.string.start_date_time.format(time = time(), date = date())

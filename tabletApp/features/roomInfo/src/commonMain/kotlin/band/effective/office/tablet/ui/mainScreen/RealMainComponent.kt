@@ -30,7 +30,9 @@ class RealMainComponent(
         )
     override val bookingRoomComponent: BookingRoomComponent = RealBookingRoomComponent(
         componentContext = childContext(key = "bookingRoom"),
-        onSelectOtherRoom = { onClick() })
+        onSelectOtherRoom = { onClick() },
+        roomName = "Sirius"
+    )
 
     init {
         updateData()

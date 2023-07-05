@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import band.effective.office.tablet.features.roomInfo.MainRes
 import band.effective.office.tablet.ui.mainScreen.components.bookingRoomComponents.RealEventLengthComponent
 
 @Composable
@@ -31,7 +32,7 @@ fun EventLengthView(
     val space = 50.dp
     Column(modifier = modifier) {
         Text(
-            text = "на сколько",
+            text = MainRes.string.select_length_title,
             color = Color(0xFF808080),
             fontSize = 16.sp
         )
@@ -50,14 +51,14 @@ fun EventLengthView(
                 )
             ) {
                 Text(
-                    text = "-30",
+                    text = MainRes.string.minus_date_button_string,
                     color = Color(0xFFFAFAFA),
                     fontSize = 20.sp
                 )
             }
             Spacer(modifier = Modifier.width(space))
             Text(
-                text = "$currentLength мин",
+                text = MainRes.string.current_length_string.format(currentLength.toString()),
                 color = if (isBusy) Color(0xFFA362F8) else Color(0xFFFAFAFA),
                 fontSize = 32.sp
             )
@@ -71,7 +72,7 @@ fun EventLengthView(
                 )
             ) {
                 Text(
-                    text = "+15",
+                    text = MainRes.string.plus_date_button_string,
                     color = Color(0xFFFAFAFA),
                     fontSize = 20.sp
                 )

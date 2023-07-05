@@ -10,7 +10,8 @@ data class BookingRoomState(
     val organizers: List<String>,
     val selectDate: Calendar,
     val isBusy: Boolean,
-    val busyEvent: EventInfo
+    val busyEvent: EventInfo,
+    val roomName: String
 ) {
     companion object {
         val default = BookingRoomState(
@@ -19,7 +20,8 @@ data class BookingRoomState(
             organizers = listOf(),
             selectDate = GregorianCalendar(),
             isBusy = false,
-            busyEvent = EventInfo.emptyEvent
+            busyEvent = EventInfo.emptyEvent,
+            roomName = ""
         )
     }
 }
