@@ -33,7 +33,8 @@ import band.effective.office.elevator.lightGray
 import band.effective.office.elevator.ui.profile.store.ProfileStore
 import com.seiko.imageloader.model.ImageRequest
 import com.seiko.imageloader.rememberAsyncImagePainter
-import io.github.skeptick.libres.compose.painterResource
+import dev.icerock.moko.resources.compose.painterResource
+
 
 @Composable
 fun ProfileScreen(component: ProfileComponent) {
@@ -107,7 +108,7 @@ internal fun ProfileScreenContent(
                 }
                 Image(
                     modifier = Modifier,
-                    painter = painterResource(MainRes.image.profile_border),
+                    painter = painterResource(MainRes.images.profile_border),
                     contentDescription = null
                 )
             }
