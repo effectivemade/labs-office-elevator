@@ -22,6 +22,7 @@ import band.effective.office.elevator.components.GoogleSignInButton
 import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.ui.authorization.store.AuthorizationStore
 import io.github.skeptick.libres.compose.painterResource
+import band.effective.office.elevator.MainRes
 
 
 @Composable
@@ -61,7 +62,7 @@ private fun AuthorizationScreenContent(onEvent: (AuthorizationStore.Intent) -> U
                     modifier = Modifier.size(80.dp)
                 )
                 Text(
-                    text = "effective\noffice",
+                    text = MainRes.string.company_name,
                     letterSpacing = 0.01.em,
                     fontSize = 40.sp,
 //                fontFamily = FontFamily(Font( /* TODO font = museo_cyrl */))

@@ -3,6 +3,8 @@
     <string name="app_name">Office Elevator</string>
     <string name="sign_in_google">Авторизация через Google</string>
     <string name="something_went_wrong">Что-то пошло не так. Пожалуйста попробуйте еще раз</string>
+    <string name="company_name">effective
+        office</string>
 
     <!--Tab titles-->
     <string name="profile">Профиль</string>
