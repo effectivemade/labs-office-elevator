@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import band.effective.office.elevator.theme_light_tertiary_color
 
 @Composable
 fun AuthSubTitle(
@@ -24,7 +25,7 @@ fun AuthSubTitle(
 //    fontFamily FontFamily TODO : Add font
         fontWeight = FontWeight(500),
         textAlign = textAlign,
-        color = Color(0x80000000),
+        color = theme_light_tertiary_color,
         letterSpacing = 0.1.sp
     )
 }

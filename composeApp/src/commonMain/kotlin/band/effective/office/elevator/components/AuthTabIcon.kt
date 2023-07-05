@@ -1,6 +1,5 @@
 package band.effective.office.elevator.components
 
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
@@ -8,6 +7,7 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
+import band.effective.office.elevator.theme_light_tertiary_icon_color
 
 internal val AuthTabIcon : ImageVector
     get() {
@@ -18,7 +18,7 @@ internal val AuthTabIcon : ImageVector
             name = "AuthTabIcon", defaultWidth = 102.0.dp, defaultHeight = 4.0.dp,
             viewportWidth = 102.0f, viewportHeight = 4.0f
         ).apply {
-            path(fill = SolidColor(Color(0xFF000000)), stroke = null, fillAlpha = 0.4f,
+            path(fill = SolidColor(theme_light_tertiary_icon_color), stroke = null, fillAlpha = 0.4f,
                 strokeLineWidth = 0.0f, strokeLineCap = StrokeCap.Butt, strokeLineJoin = StrokeJoin.Miter,
                 strokeLineMiter = 4.0f, pathFillType = PathFillType.NonZero
             ) {
