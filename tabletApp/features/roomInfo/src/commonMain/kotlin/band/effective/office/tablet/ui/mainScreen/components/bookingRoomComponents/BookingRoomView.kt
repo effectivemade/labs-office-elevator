@@ -60,13 +60,13 @@ fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: Booking
                 BusyAlertView(
                     modifier = Modifier.fillMaxWidth(),
                     event = state.busyEvent,
-                    onClick = { bookingRoomComponent.sendEvent(BookingRoomViewEvent.OnBookingOtherOtherRoom) })
+                    onClick = { bookingRoomComponent.sendEvent(BookingRoomViewEvent.OnBookingOtherRoom) })
             }
         }
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
             Button(
                 modifier = Modifier.fillMaxWidth().height(60.dp).clip(RoundedCornerShape(100.dp)),
-                onClick = { bookingRoomComponent.sendEvent(BookingRoomViewEvent.OnBookingOtherOtherRoom) },
+                onClick = { bookingRoomComponent.sendEvent(BookingRoomViewEvent.OnBookingCurrentRoom) },
                 colors = ButtonDefaults.buttonColors(
                     contentColor = Color(0xFFFFFFFF),
                     backgroundColor = Color(0xFFEF7234),

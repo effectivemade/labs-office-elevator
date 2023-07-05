@@ -2,5 +2,5 @@ package band.effective.office.tablet.ui.mainScreen.components.bookingRoomCompone
 
 sealed interface BookingRoomViewEvent{
     object OnBookingCurrentRoom: BookingRoomViewEvent
-    object OnBookingOtherOtherRoom: BookingRoomViewEvent
+    object OnBookingOtherRoom: BookingRoomViewEvent
 }

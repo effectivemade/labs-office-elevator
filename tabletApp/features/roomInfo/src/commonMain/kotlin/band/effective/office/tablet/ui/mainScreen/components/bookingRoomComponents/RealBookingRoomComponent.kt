@@ -56,8 +56,10 @@ class RealBookingRoomComponent(
 
     override fun sendEvent(event: BookingRoomViewEvent) {
         when (event) {
-            is BookingRoomViewEvent.OnBookingCurrentRoom -> {}
-            is BookingRoomViewEvent.OnBookingOtherOtherRoom -> {
+            is BookingRoomViewEvent.OnBookingCurrentRoom -> {
+                onSelectOtherRoom()
+            }
+            is BookingRoomViewEvent.OnBookingOtherRoom -> {
                 onSelectOtherRoom()
             }
         }
