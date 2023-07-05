@@ -1,6 +1,7 @@
 package band.effective.office.tablet.ui.mainScreen.components.bookingRoomComponents
 
 import band.effective.office.tablet.domain.RoomInteractor
+import band.effective.office.tablet.domain.model.EventInfo
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.childContext
 import com.arkivanov.essenty.lifecycle.Lifecycle
@@ -44,7 +45,13 @@ class RealBookingRoomComponent(
 
     init {
         updateSelectTime()
-        mutableState.update { it.copy(organizers = roomInfoInteractor.getOrganizers()) }
+        mutableState.update {
+            it.copy(
+                organizers = roomInfoInteractor.getOrganizers(),
+                isBusy = roomInfoInteractor.checkRoom("", GregorianCalendar()) != null,
+                busyEvent = roomInfoInteractor.checkRoom("", GregorianCalendar()) ?: EventInfo.emptyEvent
+            )
+        }
     }
 
     override fun sendEvent(event: BookingRoomViewEvent) {

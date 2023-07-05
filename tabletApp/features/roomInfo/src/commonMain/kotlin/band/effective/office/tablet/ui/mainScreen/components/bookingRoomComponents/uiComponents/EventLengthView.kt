@@ -25,7 +25,8 @@ import band.effective.office.tablet.ui.mainScreen.components.bookingRoomComponen
 fun EventLengthView(
     modifier: Modifier = Modifier,
     component: RealEventLengthComponent,
-    currentLength: Int
+    currentLength: Int,
+    isBusy: Boolean
 ) {
     val space = 50.dp
     Column(modifier = modifier) {
@@ -43,7 +44,10 @@ fun EventLengthView(
             Button(
                 modifier = Modifier.fillMaxHeight().weight(1f).clip(RoundedCornerShape(15.dp)),
                 onClick = { component.decrement() },
-                colors = ButtonDefaults.buttonColors(contentColor = Color(0xFFFFFFFF), backgroundColor = Color(0xFF302D2C))
+                colors = ButtonDefaults.buttonColors(
+                    contentColor = Color(0xFFFFFFFF),
+                    backgroundColor = Color(0xFF302D2C)
+                )
             ) {
                 Text(
                     text = "-30",
@@ -54,14 +58,17 @@ fun EventLengthView(
             Spacer(modifier = Modifier.width(space))
             Text(
                 text = "$currentLength мин",
-                color = Color(0xFFFAFAFA),
+                color = if (isBusy) Color(0xFFA362F8) else Color(0xFFFAFAFA),
                 fontSize = 32.sp
             )
             Spacer(modifier = Modifier.width(space))
             Button(
                 modifier = Modifier.fillMaxHeight().weight(1f).clip(RoundedCornerShape(15.dp)),
                 onClick = { component.increment() },
-                colors = ButtonDefaults.buttonColors(contentColor = Color(0xFFFFFFFF), backgroundColor = Color(0xFF302D2C))
+                colors = ButtonDefaults.buttonColors(
+                    contentColor = Color(0xFFFFFFFF),
+                    backgroundColor = Color(0xFF302D2C)
+                )
             ) {
                 Text(
                     text = "+15",

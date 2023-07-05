@@ -20,6 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import band.effective.office.tablet.ui.mainScreen.components.bookingRoomComponents.uiComponents.BusyAlertView
 import band.effective.office.tablet.ui.mainScreen.components.bookingRoomComponents.uiComponents.DateTimeView
 import band.effective.office.tablet.ui.mainScreen.components.bookingRoomComponents.uiComponents.EventLengthView
 import band.effective.office.tablet.ui.mainScreen.components.bookingRoomComponents.uiComponents.EventOrganizerView
@@ -45,7 +46,8 @@ fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: Booking
             EventLengthView(
                 modifier = Modifier.fillMaxWidth().height(100.dp),
                 component = bookingRoomComponent.eventLengthComponent,
-                currentLength = state.length
+                currentLength = state.length,
+                isBusy = state.isBusy
             )
             Spacer(modifier = Modifier.height(25.dp))
             EventOrganizerView(
@@ -53,7 +55,13 @@ fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: Booking
                 component = bookingRoomComponent.eventOrganizerComponent,
                 organizers = state.organizers
             )
-            Spacer(modifier = Modifier.height(25.dp))
+            Spacer(modifier = Modifier.height(50.dp))
+            if (state.isBusy) {
+                BusyAlertView(
+                    modifier = Modifier.fillMaxWidth(),
+                    event = state.busyEvent,
+                    onClick = { bookingRoomComponent.sendEvent(BookingRoomViewEvent.OnBookingOtherOtherRoom) })
+            }
         }
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
             Button(
@@ -64,7 +72,8 @@ fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: Booking
                     backgroundColor = Color(0xFFEF7234),
                     disabledBackgroundColor = Color(0xFF342C28),
                     disabledContentColor = Color(0xFF808080)
-                )
+                ),
+                enabled = !state.isBusy
             ) {
                 Text(text = "Занять Sirius")
             }
