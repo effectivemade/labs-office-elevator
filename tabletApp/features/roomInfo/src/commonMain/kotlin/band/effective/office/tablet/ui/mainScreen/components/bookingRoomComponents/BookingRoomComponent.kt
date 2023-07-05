@@ -10,4 +10,5 @@ interface BookingRoomComponent {
     val eventOrganizerComponent: RealEventOrganizerComponent
 
     fun sendEvent(event: BookingRoomViewEvent)
+    fun update()
 }

@@ -44,6 +44,7 @@ class RealMainComponent(
                 roomInfo = interactor.getRoomInfo("sirius")
             )
         }
+        bookingRoomComponent.update()
     }
 
     override fun sendEvent(event: MainScreenEvent) =

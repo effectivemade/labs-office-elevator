@@ -3,6 +3,7 @@ package band.effective.office.tablet.ui.mainScreen.components
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -39,12 +40,12 @@ fun MainScreenView(
             modifier = Modifier.fillMaxHeight().fillMaxWidth(infoViewWidth),
             room = room
         )
-        Column(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize()) {
             BookingRoomView(
                 modifier = Modifier.background(color = Color(0xFF252322)).fillMaxSize().padding(25.dp),
                 bookingRoomComponent = bookingRoomComponent
             )
-            //MockSettingView(mockComponent)
+            MockSettingView(mockComponent)
         }
     }
 }

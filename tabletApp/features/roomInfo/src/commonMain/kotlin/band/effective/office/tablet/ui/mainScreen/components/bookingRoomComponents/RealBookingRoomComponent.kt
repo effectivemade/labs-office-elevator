@@ -45,13 +45,7 @@ class RealBookingRoomComponent(
 
     init {
         updateSelectTime()
-        mutableState.update {
-            it.copy(
-                organizers = roomInfoInteractor.getOrganizers(),
-                isBusy = roomInfoInteractor.checkRoom("", GregorianCalendar()) != null,
-                busyEvent = roomInfoInteractor.checkRoom("", GregorianCalendar()) ?: EventInfo.emptyEvent
-            )
-        }
+        update()
     }
 
     override fun sendEvent(event: BookingRoomViewEvent) {
@@ -59,9 +53,21 @@ class RealBookingRoomComponent(
             is BookingRoomViewEvent.OnBookingCurrentRoom -> {
                 onSelectOtherRoom()
             }
+
             is BookingRoomViewEvent.OnBookingOtherRoom -> {
                 onSelectOtherRoom()
             }
+        }
+    }
+
+    override fun update() {
+        mutableState.update {
+            it.copy(
+                organizers = roomInfoInteractor.getOrganizers(),
+                isBusy = roomInfoInteractor.checkRoom("", GregorianCalendar()) != null,
+                busyEvent = roomInfoInteractor.checkRoom("", GregorianCalendar())
+                    ?: EventInfo.emptyEvent
+            )
         }
     }
 
