@@ -17,6 +17,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -24,7 +26,9 @@ import androidx.compose.ui.unit.sp
 fun PrimaryButton(
     text: String,
     modifier: Modifier = Modifier,
-    cornerValue: Int,
+    cornerValue: Dp,
+    contentTextSize: TextUnit,
+    paddingValues: PaddingValues = PaddingValues(),
     border: BorderStroke? = null,
     elevation: ButtonElevation = ButtonDefaults.elevation(),
     colors: ButtonColors = ButtonDefaults.buttonColors(),
@@ -37,9 +41,9 @@ fun PrimaryButton(
             .then(modifier),
         border = border,
         elevation = elevation,
-        shape = RoundedCornerShape(cornerValue.dp),
+        shape = RoundedCornerShape(cornerValue),
         colors = colors,
-        contentPadding = PaddingValues(all = 10.dp),
+        contentPadding = paddingValues,
         onClick = onButtonClick
     ) {
         Box(
@@ -49,7 +53,7 @@ fun PrimaryButton(
         ) {
             Text(
                 text = text,
-                fontSize = 16.sp,
+                fontSize = contentTextSize,
                 letterSpacing = 0.1.sp,
 //                fontFamily = FontFamily(Font(R.font.roboto),
                 textAlign = TextAlign.Center,
