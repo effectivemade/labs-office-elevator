@@ -67,7 +67,8 @@ fun ElevatorUIComponent(
 private fun ActionCall(onClickCallElevator: () -> Unit) {
     EffectiveButton(
         buttonText = MainRes.string.elevator_button,
-        onClick = onClickCallElevator
+        onClick = onClickCallElevator,
+        modifier = Modifier.fillMaxWidth()
     )
 }
 

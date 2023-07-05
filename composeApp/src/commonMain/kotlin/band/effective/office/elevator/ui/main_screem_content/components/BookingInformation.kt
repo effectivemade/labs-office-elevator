@@ -15,16 +15,22 @@ import band.effective.office.elevator.ui.models.ReservedSeat
 @Composable
 fun BookingInformation(
     reservedSeats: List<ReservedSeat>,
-    onClickBook: () -> Unit
+    onClickBook: () -> Unit,
+    onClickShowMap: () -> Unit,
+    onClickShowOptions: () -> Unit
 ) {
     Column(
         modifier = Modifier
-            .background(MaterialTheme.colors.onBackground)
             .fillMaxSize()
     ) {
         Spacer(modifier = Modifier.height(24.dp))
         DateSelection()
         Spacer(modifier = Modifier.height(24.dp))
-        SeatsReservation(reservedSeats = reservedSeats, onClickBook = onClickBook)
+        SeatsReservation(
+            reservedSeats = reservedSeats,
+            onClickBook = onClickBook,
+            onClickShowMap = onClickShowMap,
+            onClickShowOptions = onClickShowOptions
+        )
     }
 }

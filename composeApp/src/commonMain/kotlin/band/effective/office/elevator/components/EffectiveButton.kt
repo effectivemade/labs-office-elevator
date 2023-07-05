@@ -17,7 +17,8 @@ import band.effective.office.elevator.MainRes
 @Composable
 fun EffectiveButton(
     buttonText: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Button(
         onClick = onClick,
@@ -25,12 +26,11 @@ fun EffectiveButton(
             backgroundColor = MaterialTheme.colors.primary,
             contentColor = MaterialTheme.colors.background
         ),
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = modifier
             .clip(RoundedCornerShape(48.dp))
     ) {
         Text(
-            text = MainRes.string.elevator_button,
+            text = buttonText,
             fontFamily = MaterialTheme.typography.button.fontFamily,
             fontSize = 15.sp,
             modifier = Modifier.padding(vertical = 10.dp)

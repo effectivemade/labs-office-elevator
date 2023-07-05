@@ -1,6 +1,7 @@
 package band.effective.office.elevator.ui.main_screem_content
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -30,6 +31,7 @@ import band.effective.office.elevator.ui.main_screem_content.components.DateSele
 import band.effective.office.elevator.ui.main_screem_content.components.ElevatorUIComponent
 import band.effective.office.elevator.ui.main_screem_content.store.ElevatorStore
 import band.effective.office.elevator.ui.models.ElevatorState
+import band.effective.office.elevator.ui.models.ReservedSeat
 import kotlinx.coroutines.delay
 
 @Composable
@@ -64,7 +66,6 @@ fun MainScreenContent(component: MainScreenContentComponent) {
     }
 
 }
-
 @Composable
 private fun SnackBarErrorMessage(modifier: Modifier, isVisible: Boolean, message: String) {
     AnimatedVisibility(modifier = modifier, visible = isVisible) {
@@ -105,24 +106,51 @@ private fun ElevatorScreenContent(
 
 @Composable
 fun Test() {
-    Column (
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp)
+    Column(
+        modifier = Modifier.fillMaxSize()
     ) {
-        TitlePage(
-            title = MainRes.string.main,
-            modifier = Modifier.padding(top = 60.dp)
-        )
-        Spacer(modifier = Modifier.height(24.dp))
-        ElevatorUIComponent(
-            elevatorState = ElevatorState.Below,
-            onClickCallElevator = {}
-        )
-        Spacer(modifier = Modifier.height(24.dp))
-        BookingInformation(
-            reservedSeats = listOf(),
-            onClickBook = {}
-        )
+        Column (
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+        ) {
+            TitlePage(
+                title = MainRes.string.main,
+                modifier = Modifier.padding(top = 60.dp)
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            ElevatorUIComponent(
+                elevatorState = ElevatorState.Below,
+                onClickCallElevator = {}
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+        Column(
+            modifier = Modifier
+                .background(MaterialTheme.colors.onBackground)
+                .padding(horizontal =  16.dp),
+        ) {
+            BookingInformation(
+                reservedSeats = listOf(
+                    ReservedSeat(
+                        seatName = "Рабочее масто А1",
+                        bookingDay = "Пн, 1 июля",
+                        bookingTime = "12:00 - 14:00"
+                    ),
+                    ReservedSeat(
+                        seatName = "Рабочее масто А1",
+                        bookingDay = "Пн, 1 июля",
+                        bookingTime = "12:00 - 14:00"
+                    ),
+                    ReservedSeat(
+                        seatName = "Рабочее масто А1",
+                        bookingDay = "Пн, 1 июля",
+                        bookingTime = "12:00 - 14:00"
+                    ),
+                ),
+                onClickBook = {},
+                onClickShowMap = {},
+                onClickShowOptions = {}
+            )
+        }
     }
 }

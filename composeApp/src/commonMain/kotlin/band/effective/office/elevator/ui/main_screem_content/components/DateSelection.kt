@@ -23,7 +23,7 @@ fun DateSelection() {
         horizontalArrangement = Arrangement.SpaceAround
     ){
         Text(
-            text = "",
+            text = MainRes.string.nearest_bookings,
             fontSize = 15.sp,
         )
         CalendarTitle()
