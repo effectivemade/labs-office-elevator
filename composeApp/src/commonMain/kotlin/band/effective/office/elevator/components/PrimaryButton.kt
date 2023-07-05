@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 fun PrimaryButton(
     text: String,
     modifier: Modifier = Modifier,
+    cornerValue: Int,
     border: BorderStroke? = null,
     elevation: ButtonElevation = ButtonDefaults.elevation(),
     colors: ButtonColors = ButtonDefaults.buttonColors(),
@@ -36,7 +37,7 @@ fun PrimaryButton(
             .then(modifier),
         border = border,
         elevation = elevation,
-        shape = RoundedCornerShape(40.dp),
+        shape = RoundedCornerShape(cornerValue.dp),
         colors = colors,
         contentPadding = PaddingValues(all = 10.dp),
         onClick = onButtonClick
