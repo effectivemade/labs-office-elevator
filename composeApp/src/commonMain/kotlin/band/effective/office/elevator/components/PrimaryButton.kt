@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ButtonElevation
 import androidx.compose.material.MaterialTheme
@@ -25,6 +26,7 @@ fun PrimaryButton(
     modifier: Modifier = Modifier,
     border: BorderStroke? = null,
     elevation: ButtonElevation = ButtonDefaults.elevation(),
+    colors: ButtonColors = ButtonDefaults.buttonColors(),
     onButtonClick: () -> Unit
 ) {
     Button(
@@ -35,10 +37,7 @@ fun PrimaryButton(
         border = border,
         elevation = elevation,
         shape = RoundedCornerShape(40.dp),
-        colors = ButtonDefaults.buttonColors(
-            backgroundColor = MaterialTheme.colors.primary,
-            contentColor = MaterialTheme.colors.onPrimary
-        ),
+        colors = colors,
         contentPadding = PaddingValues(all = 10.dp),
         onClick = onButtonClick
     ) {
@@ -52,7 +51,6 @@ fun PrimaryButton(
                 fontSize = 16.sp,
                 letterSpacing = 0.1.sp,
 //                fontFamily = FontFamily(Font(R.font.roboto),
-                color = MaterialTheme.colors.onPrimary,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
