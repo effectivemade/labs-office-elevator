@@ -14,7 +14,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.MainRes
 import io.github.skeptick.libres.compose.painterResource
@@ -27,8 +26,8 @@ internal fun GoogleSignInButton(modifier: Modifier, onClick: () -> Unit) {
             .border(2.dp, MaterialTheme.colors.secondary, RoundedCornerShape(40.dp)),
         shape = RoundedCornerShape(40.dp),
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = Color.Transparent,
-            contentColor = Color(0xFFC2410C)
+            backgroundColor = MaterialTheme.colors.background,
+            contentColor = MaterialTheme.colors.secondary
         )
     ) {
         Image(
