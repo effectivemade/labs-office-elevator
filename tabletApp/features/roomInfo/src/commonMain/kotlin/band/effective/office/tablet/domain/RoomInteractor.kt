@@ -9,7 +9,10 @@ interface RoomInteractor {
     /**Get room information by room's name*/
     fun getRoomInfo(name: String): RoomInfo
 
+    /**Get list peoples have rights for booking room*/
     fun getOrganizers(): List<String>
 
+    /**Check opportunity book room
+     * @return Return null if room is free, if room busy then return interfering event*/
     fun checkRoom(name: String, dateTime: Calendar): EventInfo?
 }

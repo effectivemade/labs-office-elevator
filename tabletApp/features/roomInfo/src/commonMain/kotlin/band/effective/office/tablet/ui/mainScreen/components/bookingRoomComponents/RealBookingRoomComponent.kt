@@ -85,7 +85,7 @@ class RealBookingRoomComponent(
         mutableState.update { it.copy(selectDate = newValue) }
     }
 
-    //TODO(Maksim Mishenko): delete while(true)
+    //TODO(Maksim Mishenko): think about while(true)
     private fun updateSelectTime() {
         componentCoroutineScope().launch {
             while (true) {
