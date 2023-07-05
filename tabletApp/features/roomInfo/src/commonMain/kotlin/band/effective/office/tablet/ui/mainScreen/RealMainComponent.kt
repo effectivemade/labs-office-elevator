@@ -15,7 +15,7 @@ import org.koin.core.component.inject
 
 class RealMainComponent(
     componentContext: ComponentContext,
-    private val onClick: () -> Unit
+    private val OnSelectOtherRoomRequest: () -> Unit
 ) : ComponentContext by componentContext, KoinComponent, MainComponent {
 
     private val interactor: RoomInteractor by inject()
@@ -30,7 +30,7 @@ class RealMainComponent(
         )
     override val bookingRoomComponent: BookingRoomComponent = RealBookingRoomComponent(
         componentContext = childContext(key = "bookingRoom"),
-        onSelectOtherRoom = { onClick() },
+        onSelectOtherRoom = { OnSelectOtherRoomRequest() },
         roomName = "Sirius"
     )
 
@@ -52,9 +52,7 @@ class RealMainComponent(
     override fun sendEvent(event: MainScreenEvent) =
         when (event) {
             is MainScreenEvent.OnCLick -> {
-                onClick()
+                OnSelectOtherRoomRequest()
             }
-
-            is MainScreenEvent.OnDoubleTub -> {}
         }
 }

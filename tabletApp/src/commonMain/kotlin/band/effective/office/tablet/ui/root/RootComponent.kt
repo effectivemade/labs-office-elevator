@@ -28,7 +28,7 @@ class RootComponent(componentContext: ComponentContext) : ComponentContext by co
         is Config.Main -> {
             Child.MainChild(RealMainComponent(
                 componentContext =  componentContext,
-                onClick = {
+                OnSelectOtherRoomRequest = {
                     navigation.push(Config.SelectRoom)
                 }
             ))
