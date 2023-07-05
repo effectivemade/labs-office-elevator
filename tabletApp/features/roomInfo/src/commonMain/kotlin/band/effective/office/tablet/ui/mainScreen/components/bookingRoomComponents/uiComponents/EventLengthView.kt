@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -41,7 +42,8 @@ fun EventLengthView(
         ) {
             Button(
                 modifier = Modifier.fillMaxHeight().weight(1f).clip(RoundedCornerShape(15.dp)),
-                onClick = { component.decrement() }
+                onClick = { component.decrement() },
+                colors = ButtonDefaults.buttonColors(contentColor = Color(0xFFFFFFFF), backgroundColor = Color(0xFF302D2C))
             ) {
                 Text(
                     text = "-30",
@@ -58,7 +60,8 @@ fun EventLengthView(
             Spacer(modifier = Modifier.width(space))
             Button(
                 modifier = Modifier.fillMaxHeight().weight(1f).clip(RoundedCornerShape(15.dp)),
-                onClick = { component.increment() }
+                onClick = { component.increment() },
+                colors = ButtonDefaults.buttonColors(contentColor = Color(0xFFFFFFFF), backgroundColor = Color(0xFF302D2C))
             ) {
                 Text(
                     text = "+15",

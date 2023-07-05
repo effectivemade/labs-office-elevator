@@ -1,5 +1,6 @@
 package band.effective.office.tablet.ui.mainScreen.components.bookingRoomComponents.uiComponents
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,8 +18,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import band.effective.office.tablet.features.roomInfo.MainRes
 import band.effective.office.tablet.ui.mainScreen.components.bookingRoomComponents.RealDateTimeComponent
 import band.effective.office.tablet.utils.CalendarStringConverter
+import io.github.skeptick.libres.compose.painterResource
 import java.util.Calendar
 
 @Composable
@@ -32,7 +36,8 @@ fun DateTimeView(modifier: Modifier, component: RealDateTimeComponent, selectDat
         Row(modifier = Modifier.fillMaxSize()) {
             Button(
                 modifier = Modifier.fillMaxHeight().weight(1f).clip(RoundedCornerShape(15.dp)),
-                onClick = { component.decrementDay() }
+                onClick = { component.decrementDay() },
+                colors = ButtonDefaults.buttonColors(contentColor = Color(0xFFFFFFFF), backgroundColor = Color(0xFF302D2C))
             ) {
                 Text(
                     text = "<",
@@ -43,18 +48,26 @@ fun DateTimeView(modifier: Modifier, component: RealDateTimeComponent, selectDat
             Spacer(modifier = Modifier.width(10.dp))
             Button(
                 modifier = Modifier.fillMaxHeight().weight(4f).clip(RoundedCornerShape(15.dp)),
-                onClick = { }
+                onClick = { },
+                colors = ButtonDefaults.buttonColors(contentColor = Color(0xFFFFFFFF), backgroundColor = Color(0xFF302D2C))
             ) {
                 Text(
                     text = selectDate.dateTime(),
                     color = Color(0xFFFAFAFA),
                     fontSize = 20.sp
                 )
+                Spacer(Modifier.width(5.dp))
+                Image(
+                    modifier = Modifier,
+                    painter = painterResource(MainRes.image.calendar),
+                    contentDescription = null
+                )
             }
             Spacer(modifier = Modifier.width(10.dp))
             Button(
                 modifier = Modifier.fillMaxHeight().weight(1f).clip(RoundedCornerShape(15.dp)),
-                onClick = { component.incrementDay() }
+                onClick = { component.incrementDay() },
+                colors = ButtonDefaults.buttonColors(contentColor = Color(0xFFFFFFFF), backgroundColor = Color(0xFF302D2C))
             ) {
                 Text(
                     text = ">",

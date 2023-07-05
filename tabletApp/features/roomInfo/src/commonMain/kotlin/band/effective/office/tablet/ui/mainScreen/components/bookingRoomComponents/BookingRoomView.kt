@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -57,7 +58,14 @@ fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: Booking
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
             Button(
                 modifier = Modifier.fillMaxWidth().height(60.dp).clip(RoundedCornerShape(100.dp)),
-                onClick = { bookingRoomComponent.sendEvent(BookingRoomViewEvent.OnBookingOtherOtherRoom) }) {
+                onClick = { bookingRoomComponent.sendEvent(BookingRoomViewEvent.OnBookingOtherOtherRoom) },
+                colors = ButtonDefaults.buttonColors(
+                    contentColor = Color(0xFFFFFFFF),
+                    backgroundColor = Color(0xFFEF7234),
+                    disabledBackgroundColor = Color(0xFF342C28),
+                    disabledContentColor = Color(0xFF808080)
+                )
+            ) {
                 Text(text = "Занять Sirius")
             }
         }

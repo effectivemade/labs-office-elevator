@@ -2,7 +2,9 @@ package band.effective.office.tablet.ui.mainScreen.components.bookingRoomCompone
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExposedDropdownMenuBox
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -75,19 +78,30 @@ fun EventOrganizerView(
                 )
             }
 
-
             ExposedDropdownMenu(
+                modifier = Modifier
+                    .background(
+                        color = Color(0xFF252322)
+                    ),
                 expanded = expended,
                 onDismissRequest = { component.onExpandedChange() }
             ) {
-                organizers.forEach { organizer ->
-                    DropdownMenuItem(onClick = {
-                        component.onSelectItem(organizer)
-                    }) {
-                        Text(text = organizer)
+                Column(
+                    modifier = Modifier.background(
+                        color = Color(0xFF302D2C),
+                        shape = RoundedCornerShape(15.dp)
+                    )
+                ) {
+                    organizers.forEach { organizer ->
+                        DropdownMenuItem(onClick = {
+                            component.onSelectItem(organizer)
+                        }) {
+                            Text(text = organizer, color = Color(0xFFFAFAFA))
+                        }
                     }
                 }
             }
+
         }
     }
 }
