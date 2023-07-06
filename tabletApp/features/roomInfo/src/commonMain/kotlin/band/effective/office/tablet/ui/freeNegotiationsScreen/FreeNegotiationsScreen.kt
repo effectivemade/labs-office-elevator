@@ -1,4 +1,4 @@
-package band.effective.office.elevator.ui.free_negotiations
+package band.effective.office.elevator.ui.freeNegotiations
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,15 +27,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import band.effective.office.elevator.ui.free_negotiations.components.RoomCard
-import band.effective.office.elevator.ui.free_negotiations.models.RoomCharacteristicsItem
-import band.effective.office.elevator.ui.free_negotiations.models.RoomItem
+import band.effective.office.elevator.ui.freeNegotiations.components.RoomCard
+import band.effective.office.elevator.ui.freeNegotiations.models.RoomCharacteristicsItem
+import band.effective.office.elevator.ui.freeNegotiations.models.RoomItem
 
 
 @Composable
 fun FreeNegotiationsScreen(component: FreeNegotiationsComponent) {
-    FreeNegotiationsContent(date = "5 июля", timeStart = "17:49", timeEnd = "19:00", onClick = {})
-
+    FreeNegotiationsContent(
+        date = "5 июля",
+        timeStart = "17:49",
+        timeEnd = "19:00",
+        onClick = {},
+        component = component,
+    )
 }
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -44,54 +49,9 @@ internal fun FreeNegotiationsContent(
     date: String?,
     timeStart: String?,
     timeEnd: String?,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    component: FreeNegotiationsComponent
 ) {
-    val rooms: List<RoomItem> = listOf(
-        RoomItem(
-            name = "Moon",
-            stuff = listOf(
-                RoomCharacteristicsItem(
-                    icon = Icons.Default.Person,
-                    text = "5"
-                ),
-                RoomCharacteristicsItem(
-                    icon = Icons.Default.Person,
-                    text = "5"
-                ),
-                RoomCharacteristicsItem(
-                    icon = Icons.Default.Person,
-                    text = "5"
-                ),
-                RoomCharacteristicsItem(
-                    icon = Icons.Default.Person,
-                    text = "5"
-                ),
-                RoomCharacteristicsItem(
-                    icon = Icons.Default.Person,
-                    text = "5"
-                )
-            )
-        ),
-        RoomItem(
-            name = "Moon",
-            stuff = listOf(
-                RoomCharacteristicsItem(
-                    icon = Icons.Default.Person,
-                    text = "5"
-                )
-            )
-        ),
-        RoomItem(
-            name = "Moon",
-            stuff = listOf(
-                RoomCharacteristicsItem(
-                    icon = Icons.Default.Person,
-                    text = "5"
-                )
-            )
-        ),
-    )
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -128,7 +88,7 @@ internal fun FreeNegotiationsContent(
             )
         }
         FlowRow(modifier = Modifier.padding(24.dp)) {
-            for (room in rooms) {
+            for (room in component.rooms) {
                 RoomCard(
                     roomItem = room,
                     onClick = {},
