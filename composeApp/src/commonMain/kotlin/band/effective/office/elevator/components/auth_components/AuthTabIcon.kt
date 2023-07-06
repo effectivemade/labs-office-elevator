@@ -1,4 +1,4 @@
-package band.effective.office.elevator.components
+package band.effective.office.elevator.components.auth_components
 
 import androidx.compose.ui.graphics.PathFillType
 import androidx.compose.ui.graphics.SolidColor
