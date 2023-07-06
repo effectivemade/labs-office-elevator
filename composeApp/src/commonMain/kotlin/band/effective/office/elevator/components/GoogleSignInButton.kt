@@ -28,6 +28,13 @@ internal fun GoogleSignInButton(modifier: Modifier, onClick: () -> Unit) {
         colors = ButtonDefaults.buttonColors(
             backgroundColor = MaterialTheme.colors.background,
             contentColor = MaterialTheme.colors.secondary
+        ),
+        elevation = ButtonDefaults.elevation(
+            defaultElevation = 0.dp,
+            pressedElevation = 0.dp,
+            disabledElevation = 0.dp,
+            hoveredElevation = 0.dp,
+            focusedElevation = 0.dp
         )
     ) {
         Image(

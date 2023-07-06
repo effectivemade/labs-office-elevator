@@ -3,8 +3,7 @@
     <string name="app_name">Office Elevator</string>
     <string name="sign_in_google">Sign in to Effective email</string>
     <string name="something_went_wrong">Something went wrong. Please try again</string>
-    <string name="company_name">effective
-        office</string>
+    <string name="company_name">effective\noffice</string>
 
     <!--Tab titles-->
     <string name="profile">Profile</string>
