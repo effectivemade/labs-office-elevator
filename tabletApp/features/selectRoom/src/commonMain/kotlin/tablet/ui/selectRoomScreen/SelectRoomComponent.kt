@@ -1,7 +1,11 @@
 package tablet.ui.selectRoomScreen
 
-import com.arkivanov.decompose.ComponentContext
+import kotlinx.coroutines.flow.StateFlow
+import tablet.domain.model.Booking
 
-class SelectRoomComponent(componentContext: ComponentContext) : ComponentContext by componentContext {
+interface SelectRoomComponent {
+    val state: StateFlow<SelectRoomScreenState>
 
+    fun bookRoom()
+    fun close()
 }
