@@ -1,6 +1,8 @@
 package band.effective.office.tablet.ui.mainScreen
 
 import band.effective.office.tablet.domain.RoomInteractor
+import band.effective.office.tablet.ui.mainScreen.components.bookingRoomComponents.BookingRoomComponent
+import band.effective.office.tablet.ui.mainScreen.components.bookingRoomComponents.RealBookingRoomComponent
 import band.effective.office.tablet.ui.mainScreen.components.mockComponets.MockSettingsComponent
 import band.effective.office.tablet.ui.mainScreen.components.mockComponets.RealMockSettingsComponent
 import com.arkivanov.decompose.ComponentContext
@@ -13,7 +15,7 @@ import org.koin.core.component.inject
 
 class RealMainComponent(
     componentContext: ComponentContext,
-    private val onClick: () -> Unit
+    private val OnSelectOtherRoomRequest: () -> Unit
 ) : ComponentContext by componentContext, KoinComponent, MainComponent {
 
     private val interactor: RoomInteractor by inject()
@@ -26,6 +28,11 @@ class RealMainComponent(
             componentContext = childContext(key = "mock"),
             updateData = { updateData() }
         )
+    override val bookingRoomComponent: BookingRoomComponent = RealBookingRoomComponent(
+        componentContext = childContext(key = "bookingRoom"),
+        onSelectOtherRoom = { OnSelectOtherRoomRequest() },
+        roomName = "Sirius"
+    )
 
     init {
         updateData()
@@ -39,14 +46,13 @@ class RealMainComponent(
                 roomInfo = interactor.getRoomInfo("sirius")
             )
         }
+        bookingRoomComponent.update()
     }
 
     override fun sendEvent(event: MainScreenEvent) =
         when (event) {
             is MainScreenEvent.OnCLick -> {
-                onClick()
+                OnSelectOtherRoomRequest()
             }
-
-            is MainScreenEvent.OnDoubleTub -> {}
         }
 }

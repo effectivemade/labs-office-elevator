@@ -22,21 +22,24 @@ class RealMockSettingsComponent(
     }
 
     /**Synchronize data in mock controller and in state*/
-    private fun reloadData(){
+    private fun reloadData() {
         mutableState.update {
-            MockState(
+            it.copy(
                 isBusy = mockController.isBusy,
                 isManyEvent = mockController.isManyEvent,
-                isHaveTv = mockController.isHaveTV
+                isHaveTv = mockController.isHaveTV,
+                isBusyTime = mockController.isBusyTime
             )
         }
     }
 
     override fun sendEvent(event: MockSettingsEvent) {
-        when(event){
+        when (event) {
             is MockSettingsEvent.OnSwitchBusy -> mockController.isBusy = event.newState
             is MockSettingsEvent.OnSwitchEventCount -> mockController.isManyEvent = event.newState
             is MockSettingsEvent.OnSwitchTv -> mockController.isHaveTV = event.newState
+            is MockSettingsEvent.OnSwitchBusyTime -> mockController.isBusyTime = event.newState
+            is MockSettingsEvent.OnSwitchVisible -> mutableState.update { it.copy(isVisible = !it.isVisible) }
         }
         reloadData()
         updateData()
