@@ -18,6 +18,7 @@ kotlin {
         }
     }
 
+
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -28,7 +29,18 @@ kotlin {
                 // Decompose
                 implementation(Dependencies.Decompose.decompose)
                 implementation(Dependencies.Decompose.extensions)
+
+                //Koin
+                api(Dependencies.Koin.core)
+            }
+        }
+
+        val androidMain by getting {
+            dependencies {
+                //Koin
+                api(Dependencies.Koin.android)
             }
         }
     }
+
 }
