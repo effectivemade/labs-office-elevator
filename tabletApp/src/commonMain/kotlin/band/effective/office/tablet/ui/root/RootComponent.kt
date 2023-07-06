@@ -1,14 +1,14 @@
 package band.effective.office.tablet.ui.root
 
-import band.effective.office.tablet.ui.mainScreen.MainComponent
+import band.effective.office.tablet.ui.freeNegotiationsScreen.FreeNegotiationsComponent
+import band.effective.office.tablet.ui.mainScreen.RealMainComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.essenty.parcelable.Parcelable
 import kotlinx.android.parcel.Parcelize
-import tablet.domain.MockBooking
-import tablet.ui.selectRoomScreen.RealSelectRoomComponent
+import tablet.ui.selectRoomScreen.SelectRoomComponent
 
 class RootComponent(componentContext: ComponentContext) : ComponentContext by componentContext {
 
@@ -27,27 +27,22 @@ class RootComponent(componentContext: ComponentContext) : ComponentContext by co
     ): Child = when (config) {
 
         is Config.Main -> {
-            Child.MainChild(MainComponent(
+            Child.MainChild(RealMainComponent(
                 componentContext =  componentContext,
-                onClick = {
+                OnSelectOtherRoomRequest = {
                     navigation.push(Config.SelectRoom)
                 }
             ))
         }
 
         is Config.SelectRoom -> {
-            Child.SelectRoomChild(
-                RealSelectRoomComponent(
-                    componentContext,
-                    MockBooking.bookingCheckTime15min
-                )
-            )
+            Child.SelectRoomChild(FreeNegotiationsComponent(componentContext))
         }
     }
 
     sealed class Child {
-        data class SelectRoomChild(val component: RealSelectRoomComponent) : Child()
-        data class MainChild(val component: MainComponent) : Child()
+        data class SelectRoomChild(val component: FreeNegotiationsComponent) : Child()
+        data class MainChild(val component: RealMainComponent) : Child()
     }
 
     sealed class Config : Parcelable {
