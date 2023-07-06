@@ -5,7 +5,6 @@ plugins {
     id(Plugins.MultiplatformCompose.plugin)
     id(Plugins.CocoaPods.plugin)
     id(Plugins.Android.plugin)
-    id(Plugins.Libres.plugin)
     id(Plugins.BuildConfig.plugin)
     id(Plugins.Serialization.plugin)
     id(Plugins.Parcelize.plugin)

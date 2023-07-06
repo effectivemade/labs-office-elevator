@@ -24,6 +24,7 @@ dependencies {
     implementation(Plugins.BuildConfig.implementation)
     implementation(Plugins.Serialization.implementation)
     implementation(Plugins.Moko.implementation)
+    implementation(Plugins.Libres.implementation)
 }
 
 val rootDirProject = file("../")
