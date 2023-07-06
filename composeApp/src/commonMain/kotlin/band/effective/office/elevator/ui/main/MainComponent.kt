@@ -1,6 +1,7 @@
 package band.effective.office.elevator.ui.main
 
 import band.effective.office.elevator.ui.elevator.ElevatorComponent
+import band.effective.office.elevator.ui.free_negotiations.FreeNegotiationsComponent
 import band.effective.office.elevator.ui.profile.ProfileComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
@@ -22,7 +23,7 @@ class MainComponent(
     private val navigation = StackNavigation<Config>()
     private val stack = childStack(
         source = navigation,
-        initialStack = { listOf(Config.Elevator) },
+        initialStack = { listOf(Config.FreeNegotiations) },
         childFactory = ::child,
     )
     val childStack: Value<ChildStack<*, Child>> = stack
@@ -36,6 +37,7 @@ class MainComponent(
                 ::profileOutput
             )
         )
+        is Config.FreeNegotiations -> Child.FreeNegotiations(FreeNegotiationsComponent(componentContext, storeFactory))
     }
 
     fun onOutput(output: Output) {
@@ -54,6 +56,7 @@ class MainComponent(
     sealed class Child {
         class Elevator(val component: ElevatorComponent) : Child()
         class Profile(val component: ProfileComponent) : Child()
+        class FreeNegotiations(val component: FreeNegotiationsComponent) : Child()
     }
 
     private sealed interface Config : Parcelable {
@@ -62,6 +65,8 @@ class MainComponent(
 
         @Parcelize
         object Profile : Config
+        @Parcelize
+        object FreeNegotiations : Config
     }
 
     sealed class Output {

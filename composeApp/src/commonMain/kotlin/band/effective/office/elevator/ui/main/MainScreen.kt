@@ -13,6 +13,7 @@ import band.effective.office.elevator.components.TabNavigationItem
 import band.effective.office.elevator.navigation.ElevatorTab
 import band.effective.office.elevator.navigation.ProfileTab
 import band.effective.office.elevator.ui.elevator.ElevatorScreen
+import band.effective.office.elevator.ui.free_negotiations.FreeNegotiationsScreen
 import band.effective.office.elevator.ui.profile.ProfileScreen
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.Direction
@@ -39,6 +40,7 @@ fun MainScreen(component: MainComponent) {
                     when (val child = it.instance) {
                         is MainComponent.Child.Elevator -> ElevatorScreen(child.component)
                         is MainComponent.Child.Profile -> ProfileScreen(child.component)
+                        is MainComponent.Child.FreeNegotiations -> FreeNegotiationsScreen(child.component)
                     }
                 }
             }
@@ -69,6 +71,7 @@ private val MainComponent.Child.index: Int
         when (this) {
             is MainComponent.Child.Elevator -> 0
             is MainComponent.Child.Profile -> 1
+            is MainComponent.Child.FreeNegotiations -> 2
         }
 
 @Composable
