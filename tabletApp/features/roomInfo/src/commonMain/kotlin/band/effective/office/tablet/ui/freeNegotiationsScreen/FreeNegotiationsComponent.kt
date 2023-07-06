@@ -1,16 +1,14 @@
-package band.effective.office.elevator.ui.freeNegotiations
+package band.effective.office.tablet.ui.freeNegotiationsScreen
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
-import band.effective.office.elevator.ui.freeNegotiations.models.RoomCharacteristicsItem
-import band.effective.office.elevator.ui.freeNegotiations.models.RoomItem
+import band.effective.office.tablet.ui.freeNegotiationsScreen.models.RoomCharacteristicsItem
+import band.effective.office.tablet.ui.freeNegotiationsScreen.models.RoomItem
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.mvikotlin.core.store.StoreFactory
 
 
 class FreeNegotiationsComponent(
-    componentContext: ComponentContext,
-    storeFactory: StoreFactory
+    componentContext: ComponentContext
 ) : ComponentContext by componentContext {
     val rooms: List<RoomItem> = listOf(
         RoomItem(

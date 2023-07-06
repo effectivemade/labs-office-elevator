@@ -1,4 +1,4 @@
-package band.effective.office.elevator.ui.freeNegotiations.models
+package band.effective.office.tablet.ui.freeNegotiationsScreen.models
 
 import androidx.compose.ui.graphics.vector.ImageVector
 

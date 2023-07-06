@@ -1,4 +1,4 @@
-package band.effective.office.elevator.ui.freeNegotiations.components
+package band.effective.office.tablet.ui.freeNegotiationsScreen.components
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
