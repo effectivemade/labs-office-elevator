@@ -7,6 +7,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import band.effective.office.elevator.AppActivity
+import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.OfficeElevatorConfig
 import com.google.android.gms.auth.api.proxy.AuthApiStatusCodes
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -16,9 +17,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes
 import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes.SIGN_IN_CANCELLED
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
-import dev.icerock.moko.resources.compose.stringResource
+import dev.icerock.moko.resources.desc.Resource
+import dev.icerock.moko.resources.desc.StringDesc
 import io.github.aakira.napier.Napier
-import band.effective.office.elevator.MainRes
 
 
 class AppActivityLifecycleObserver(
@@ -32,6 +33,7 @@ class AppActivityLifecycleObserver(
         .build()
 
     private val signInClient = GoogleSignIn.getClient(activity, gso)
+    private val activity = activity
 
     private lateinit var launcher: ActivityResultLauncher<Intent>
 
@@ -48,6 +50,7 @@ class AppActivityLifecycleObserver(
         }
     }
 
+
     private fun handleSignInResult(
         task: Task<GoogleSignInAccount>,
         callback: SignInResultCallback
@@ -62,6 +65,16 @@ class AppActivityLifecycleObserver(
                     GoogleSignInStatusCodes.getStatusCodeString(e.statusCode)
                 }"
             )
+            val errorMessage = when (e.statusCode) {
+                AuthApiStatusCodes.NETWORK_ERROR -> StringDesc.Resource(MainRes.strings.network_error).toString(activity.applicationContext)
+                AuthApiStatusCodes.DEVELOPER_ERROR -> StringDesc.Resource(MainRes.strings.developer_error).toString(activity.applicationContext)
+                AuthApiStatusCodes.CANCELED -> StringDesc.Resource(MainRes.strings.cancelled_error).toString(activity.applicationContext)
+                AuthApiStatusCodes.INVALID_ACCOUNT -> StringDesc.Resource(MainRes.strings.invalid_account_error).toString(activity.applicationContext)
+                AuthApiStatusCodes.TIMEOUT -> StringDesc.Resource(MainRes.strings.timout_error).toString(activity.applicationContext)
+                SIGN_IN_CANCELLED -> StringDesc.Resource(MainRes.strings.you_need_to_sign_in).toString(activity.applicationContext)
+                else -> StringDesc.Resource(MainRes.strings.something_went_wrong).toString(activity.applicationContext)
+            }
+            callback.onFailure(errorMessage)
         }
     }
 
@@ -69,8 +82,10 @@ class AppActivityLifecycleObserver(
         this.callback = callback
         launcher.launch(signInClient.signInIntent)
     }
-
     fun signOut() {
         signInClient.signOut()
     }
+
+
+
 }

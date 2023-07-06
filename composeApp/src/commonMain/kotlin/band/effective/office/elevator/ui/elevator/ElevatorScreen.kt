@@ -21,6 +21,7 @@ import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.ElevatorButton
 import band.effective.office.elevator.successGreen
 import band.effective.office.elevator.ui.elevator.store.ElevatorStore
+import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.coroutines.delay
 
@@ -30,11 +31,36 @@ fun ElevatorScreen(component: ElevatorComponent) {
     val state by component.state.collectAsState()
     var isErrorMessageVisible by remember { mutableStateOf(false) }
     var isSuccessMessageVisible by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf(MainRes.strings.something_went_wrong) }
+
+    LaunchedEffect(component) {
+        component.label.collect { label ->
+            when (label) {
+                is ElevatorStore.Label.ShowError -> {
+                    errorMessage = (label.errorState.message ?: MainRes.strings.something_went_wrong) as StringResource
+                    isErrorMessageVisible = true
+                    delay(3000)
+                    isErrorMessageVisible = false
+                }
+
+                ElevatorStore.Label.ShowSuccess -> {
+                    isSuccessMessageVisible = true
+                    delay(3000)
+                    isSuccessMessageVisible = false
+                }
+            }
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         ElevatorScreenContent(
             isButtonActive = state.buttonActive,
             onElevatorButtonClick = component::onEvent
+        )
+        SnackBarErrorMessage(
+            modifier = Modifier.align(Alignment.BottomCenter),
+            isVisible = isErrorMessageVisible,
+            message = stringResource(errorMessage)
         )
         SnackBarSuccessMessage(
             modifier = Modifier.align(Alignment.BottomCenter),

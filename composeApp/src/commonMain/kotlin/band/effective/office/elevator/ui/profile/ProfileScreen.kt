@@ -33,7 +33,8 @@ import band.effective.office.elevator.lightGray
 import band.effective.office.elevator.ui.profile.store.ProfileStore
 import com.seiko.imageloader.model.ImageRequest
 import com.seiko.imageloader.rememberAsyncImagePainter
-import dev.icerock.moko.resources.compose.stringResource
+import dev.icerock.moko.resources.compose.painterResource
+
 
 @Composable
 fun ProfileScreen(component: ProfileComponent) {
@@ -72,8 +73,7 @@ internal fun ProfileScreenContent(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-
-            Text(text = stringResource(MainRes.strings.profile), style = MaterialTheme.typography.h3)
+            Text(text = "Profile", style = MaterialTheme.typography.h3)
             Spacer(modifier = Modifier.weight(.1f))
             IconButton(onClick = onSignOut) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -106,7 +106,11 @@ internal fun ProfileScreenContent(
                         contentDescription = null,
                     )
                 }
-
+                Image(
+                    modifier = Modifier,
+                    painter = painterResource(MainRes.images.profile_border),
+                    contentDescription = null
+                )
             }
         }
         Spacer(modifier = Modifier.height(16.dp))

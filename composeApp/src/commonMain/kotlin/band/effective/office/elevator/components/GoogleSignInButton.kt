@@ -15,8 +15,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.MainRes
+import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
-
 
 @Composable
 internal fun GoogleSignInButton(modifier: Modifier, onClick: () -> Unit) {
@@ -29,6 +29,11 @@ internal fun GoogleSignInButton(modifier: Modifier, onClick: () -> Unit) {
             contentColor = MaterialTheme.colors.onSurface
         )
     ) {
+        Image(
+            painterResource(MainRes.images.google_icon),
+            contentDescription = null,
+            modifier = Modifier.size(32.dp)
+        )
         Spacer(modifier = Modifier.width(8.dp))
         Text(text = stringResource(MainRes.strings.sign_in_google), modifier = Modifier.padding(6.dp))
     }
