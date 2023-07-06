@@ -1,4 +1,4 @@
-package band.effective.office.elevator.ui.freeNegotiations
+package band.effective.office.tablet.ui.freeNegotiationsScreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,7 +19,6 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,9 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import band.effective.office.elevator.ui.freeNegotiations.components.RoomCard
-import band.effective.office.elevator.ui.freeNegotiations.models.RoomCharacteristicsItem
-import band.effective.office.elevator.ui.freeNegotiations.models.RoomItem
+import band.effective.office.tablet.ui.freeNegotiationsScreen.components.RoomCard
 
 
 @Composable
