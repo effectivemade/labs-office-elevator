@@ -1,12 +1,14 @@
+import dev.icerock.gradle.MRVisibility.Public
+
 plugins {
     id(Plugins.Kotlin.plugin)
     id(Plugins.MultiplatformCompose.plugin)
     id(Plugins.CocoaPods.plugin)
     id(Plugins.Android.plugin)
-    id(Plugins.Libres.plugin)
     id(Plugins.BuildConfig.plugin)
     id(Plugins.Serialization.plugin)
     id(Plugins.Parcelize.plugin)
+    id(Plugins.Moko.plugin)
 }
 
 kotlin {
@@ -44,7 +46,6 @@ kotlin {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material)
-                implementation(Dependencies.Libres.libresCompose)
                 implementation(Dependencies.ImageLoader.imageLoader)
                 implementation(Dependencies.Napier.napier)
                 implementation(Dependencies.KotlinxCoroutines.core)
@@ -67,12 +68,16 @@ kotlin {
                 api(Dependencies.Koin.core)
 
                 api(Dependencies.Essenty.essenty)
+
+                //Moko
+                api(Dependencies.Moko.resourcesCompose)
             }
         }
 
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
+                implementation("dev.icerock.moko:resources-test:0.23.0")
             }
         }
 
@@ -134,7 +139,6 @@ android {
     sourceSets["main"].apply {
         manifest.srcFile("src/androidMain/AndroidManifest.xml")
         res.srcDirs("src/androidMain/resources")
-        res.srcDir("build/generated/libres/android/resources")
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -171,13 +175,11 @@ android {
     }
 }
 
-libres {
-    // https://github.com/Skeptick/libres#setup
-    generatedClassName = "MainRes" // "Res" by default
-    generateNamedArguments = true // false by default
-    baseLocaleLanguageCode = "ru" // "en" by default
-    camelCaseNamesForAppleFramework = true // false by default
-
+multiplatformResources {
+    multiplatformResourcesPackage = "band.effective.office.elevator"
+    multiplatformResourcesVisibility = Public
+    multiplatformResourcesClassName = "MainRes"
+    iosBaseLocalizationRegion = "ru" // optional, default "en"
 }
 
 buildConfig {
