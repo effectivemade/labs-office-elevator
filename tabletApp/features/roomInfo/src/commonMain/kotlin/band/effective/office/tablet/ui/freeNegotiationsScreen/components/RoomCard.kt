@@ -1,4 +1,4 @@
-package band.effective.office.elevator.ui.free_negotiations.components
+package band.effective.office.elevator.ui.freeNegotiations.components
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -20,7 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import band.effective.office.elevator.ui.free_negotiations.models.RoomItem
+import band.effective.office.elevator.ui.freeNegotiations.models.RoomItem
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
