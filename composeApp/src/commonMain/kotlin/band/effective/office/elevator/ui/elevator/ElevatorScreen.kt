@@ -21,6 +21,8 @@ import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.ElevatorButton
 import band.effective.office.elevator.successGreen
 import band.effective.office.elevator.ui.elevator.store.ElevatorStore
+import dev.icerock.moko.resources.StringResource
+import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.coroutines.delay
 
 @Composable
@@ -29,13 +31,13 @@ fun ElevatorScreen(component: ElevatorComponent) {
     val state by component.state.collectAsState()
     var isErrorMessageVisible by remember { mutableStateOf(false) }
     var isSuccessMessageVisible by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf(MainRes.string.something_went_wrong) }
+    var errorMessage by remember { mutableStateOf(MainRes.strings.something_went_wrong) }
 
     LaunchedEffect(component) {
         component.label.collect { label ->
             when (label) {
                 is ElevatorStore.Label.ShowError -> {
-                    errorMessage = label.errorState.message ?: MainRes.string.something_went_wrong
+                    errorMessage = (label.errorState.message ?: MainRes.strings.something_went_wrong) as StringResource
                     isErrorMessageVisible = true
                     delay(3000)
                     isErrorMessageVisible = false
@@ -58,7 +60,7 @@ fun ElevatorScreen(component: ElevatorComponent) {
         SnackBarErrorMessage(
             modifier = Modifier.align(Alignment.BottomCenter),
             isVisible = isErrorMessageVisible,
-            message = errorMessage
+            message = stringResource(errorMessage)
         )
         SnackBarSuccessMessage(
             modifier = Modifier.align(Alignment.BottomCenter),
@@ -84,7 +86,7 @@ private fun SnackBarSuccessMessage(modifier: Modifier, isVisible: Boolean) {
             modifier.padding(16.dp),
             backgroundColor = successGreen
         ) {
-            Text(text = MainRes.string.elevator_called_successfully)
+            Text(text = stringResource(MainRes.strings.elevator_called_successfully))
         }
     }
 }
