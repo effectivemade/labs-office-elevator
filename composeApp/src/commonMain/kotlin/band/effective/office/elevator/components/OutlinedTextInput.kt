@@ -37,25 +37,40 @@ import band.effective.office.elevator.theme_light_tertiary_color
 @Composable
 fun OutlinedTextInput(
     hint: String,
-    icon: ImageVector,
+    error: Boolean,
     modifier: Modifier,
+    leadingHolder: @Composable (() -> Color),
     onTextChange: (String) -> Unit
 ) {
     val message = remember { mutableStateOf("") }
+    val hintText = remember { mutableStateOf(hint) }
+
     val closeIcon = remember { mutableStateOf(false) }
-    val color = remember { mutableStateOf(theme_light_tertiary_color) }
-    val isError = remember { mutableStateOf(false) }
 
     val strokeColor = theme_light_primary_stroke
     val unfocusedColor = theme_light_tertiary_color
+    val color = remember { mutableStateOf(theme_light_tertiary_color) }
+    val errorColor =
+        remember { mutableStateOf(Color(0xFFFF3B30)) } /* TODO : Add error color to Colors.kt */
+    val tintColor = remember { mutableStateOf(unfocusedColor) }
+
+    val isError = remember { mutableStateOf(error) }
 
     OutlinedTextField(
         value = message.value,
         onValueChange = {
+//            Printed message
             message.value = it
-            closeIcon.value = it.isNotEmpty()
+
+//            Stroke color
             color.value = strokeColor
-            isError.value = false
+
+//            Close icon
+            closeIcon.value = it.isNotEmpty()
+            tintColor.value = Color.Black
+
+//            Check for hint
+            if (it.isNotEmpty()) hintText.value = hint else hintText.value = ""
         },
         textStyle = TextStyle(
             fontSize = 16.sp,
@@ -64,8 +79,8 @@ fun OutlinedTextInput(
             letterSpacing = 0.1.sp
         ),
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = strokeColor,
-            unfocusedBorderColor = unfocusedColor
+            focusedBorderColor = if (isError.value) errorColor.value else strokeColor,
+            unfocusedBorderColor = if (isError.value) errorColor.value else unfocusedColor
         ),
         placeholder = {
             Text(
@@ -88,7 +103,8 @@ fun OutlinedTextInput(
                 }) {
                     Icon(
                         imageVector = Icons.Outlined.Close,
-                        contentDescription = "clear_text_field"
+                        contentDescription = "clear_text_field",
+                        tint = tintColor.value
                     )
                 }
             }
@@ -100,7 +116,8 @@ fun OutlinedTextInput(
                 horizontalArrangement = Arrangement.Start,
                 modifier = Modifier.padding(horizontal = 16.dp)
             ) {
-                Icon(imageVector = icon, contentDescription = "leading_icon")
+                leadingHolder()
+//                Icon(imageVector = icon, contentDescription = "leading_icon")
                 Spacer(modifier = Modifier.width(16.dp))
                 Box(
                     modifier = Modifier
@@ -108,7 +125,7 @@ fun OutlinedTextInput(
                         .width(2.dp)
                         .clip(RoundedCornerShape(4.dp))
                         .padding(vertical = 4.dp)
-                        .background(color.value)
+                        .background(if (isError.value) errorColor.value else color.value)
                 )
             }
         },
