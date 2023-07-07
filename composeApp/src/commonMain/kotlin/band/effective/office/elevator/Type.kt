@@ -1,16 +1,14 @@
 package band.effective.office.elevator
 
 import androidx.compose.material.Typography
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import dev.icerock.moko.resources.compose.fontFamilyResource
 
 val Typography = Typography(
+//    defaultFontFamily = getDefaultFont(),
 
 //    region:: H
     h4 = TextStyle(
