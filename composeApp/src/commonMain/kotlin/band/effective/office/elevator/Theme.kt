@@ -46,6 +46,7 @@ internal fun AppTheme(
     }
 
     MaterialTheme(
+        typography = Typography,
         colors = colors,
         content = {
             Surface(content = content)
