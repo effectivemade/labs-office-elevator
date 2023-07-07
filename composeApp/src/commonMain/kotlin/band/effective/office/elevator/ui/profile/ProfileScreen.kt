@@ -48,6 +48,7 @@ import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.common.compose.components.GrayText
 import band.effective.office.elevator.lightGray
 import band.effective.office.elevator.ui.profile.store.ProfileStore
+import io.github.skeptick.libres.compose.painterResource
 
 
 @Composable
@@ -103,19 +104,14 @@ internal fun ProfileScreenContent(
                     shape = CircleShape,
                     color = lightGray
                 ) {
-/*
-Image(
-   modifier = Modifier.fillMaxSize().align(Alignment.Center),
-   painter = painter,
-   contentDescription = null,
-)
+                    Image(
+                   modifier = Modifier.fillMaxSize().align(Alignment.Center),
+                   painter = painterResource(MainRes.image.job_icon),
+                   contentDescription = null,
+                )
 
-Image(
-   modifier = Modifier.fillMaxSize().align(Alignment.Center),
-   painter = painterResource(MainRes.image.profilerder),
-   contentDescription = null,
-)
-*/
+
+
 }
 }
 Text("Иванов Иван", style = TextStyle(fontSize =15.sp, fontWeight = FontWeight.Medium, color = Color.Black), modifier = Modifier.padding(top = 12.dp))
