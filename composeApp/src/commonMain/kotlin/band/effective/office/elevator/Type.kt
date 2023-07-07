@@ -66,6 +66,15 @@ val Typography = Typography(
         color = theme_light_secondary_color,
         letterSpacing = 0.1.sp,
     ),
+
+    caption = TextStyle(
+        fontSize = 12.sp,
+        lineHeight = 15.6.sp,
+        fontWeight = FontWeight(500),
+        color = theme_light_tertiary_color,
+        textAlign = TextAlign.Center,
+        letterSpacing = 0.1.sp,
+    ),
 //    endregion
 
 //    region::Button styles
