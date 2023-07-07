@@ -47,6 +47,9 @@ kotlin {
                 implementation(Dependencies.Decompose.decompose)
                 implementation(Dependencies.Decompose.extensions)
 
+                //Libres
+                implementation(Dependencies.Libres.libresCompose)
+
                 implementation(project(":tabletApp:features:selectRoom"))
                 implementation(project(":tabletApp:features:roomInfo"))
             }
