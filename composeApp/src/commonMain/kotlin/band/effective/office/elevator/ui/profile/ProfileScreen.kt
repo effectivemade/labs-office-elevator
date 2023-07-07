@@ -91,7 +91,7 @@ internal fun ProfileScreenContent(
         verticalArrangement = Arrangement.Top){
         Row( verticalAlignment = Alignment.CenterVertically, modifier = Modifier
             .padding(horizontal = 16.dp).fillMaxWidth()) {
-            Text("Профиль", style = TextStyle(fontSize = 20.sp, color = Color.Black, fontWeight = FontWeight.SemiBold))
+            Text(stringResource(MainRes.strings.profile), style = TextStyle(fontSize = 20.sp, color = Color.Black, fontWeight = FontWeight.SemiBold))
             Spacer(modifier = Modifier.weight(.1f))
             OutlinedButton(onClick = onSignOut, shape = RoundedCornerShape(size = 8.dp),border = BorderStroke(1.dp,MaterialTheme.colors.secondary), modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)){
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -101,7 +101,7 @@ internal fun ProfileScreenContent(
                         contentDescription = null,
                         tint =  MaterialTheme.colors.secondary
                     )
-                    Text("Выйти", style = TextStyle(fontSize = 14.sp, color = MaterialTheme.colors.secondary, fontWeight = FontWeight.Normal), modifier = Modifier.padding(start = 8.dp))
+                    Text(stringResource(MainRes.strings.exit), style = TextStyle(fontSize = 14.sp, color = MaterialTheme.colors.secondary, fontWeight = FontWeight.Normal), modifier = Modifier.padding(start = 8.dp))
                 }
             }
         }
