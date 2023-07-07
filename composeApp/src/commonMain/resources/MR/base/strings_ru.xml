@@ -19,4 +19,9 @@
 
     <!-- Success messages -->
     <string name="elevator_called_successfully">Лифт успешно вызван!</string>
+
+    <!-- Profile specifics-->
+    <string name="exit">Выход</string>
+    <string name="phone_number">Телефон</string>
+    <string name="telegram">Telegram</string>
 </resources>

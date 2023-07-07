@@ -21,4 +21,8 @@
     <!-- Success messages -->
     <string name="elevator_called_successfully">Successfully!</string>
 
+    <!-- Profile specifics-->
+    <string name="exit">Exit</string>
+    <string name="phone_number">Phone number</string>
+    <string name="telegram">Telegram</string>
 </resources>
