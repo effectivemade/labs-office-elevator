@@ -5,11 +5,11 @@ import androidx.compose.ui.text.font.FontFamily
 import dev.icerock.moko.resources.compose.fontFamilyResource
 
 @Composable
-fun getFontDefaultFont(): FontFamily {
+internal fun getDefaultFont(): FontFamily {
     return fontFamilyResource(MainRes.fonts.Roboto.regular)
 }
 
 @Composable
-fun getFontPromoFont(): FontFamily {
+internal fun getPromoFont(): FontFamily {
     return fontFamilyResource(MainRes.fonts.Museocyrl.regular)
 }
