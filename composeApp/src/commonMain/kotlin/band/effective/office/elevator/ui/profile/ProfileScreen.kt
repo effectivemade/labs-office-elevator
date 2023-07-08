@@ -2,8 +2,6 @@ package band.effective.office.elevator.ui.profile
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,16 +9,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -28,8 +22,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -40,17 +32,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.MainRes
-import band.effective.office.elevator.common.compose.components.GrayText
 import band.effective.office.elevator.lightGray
 import band.effective.office.elevator.ui.profile.store.ProfileStore
+import com.seiko.imageloader.model.ImageRequest
+import com.seiko.imageloader.rememberAsyncImagePainter
 import dev.icerock.moko.resources.ImageResource
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.painterResource
@@ -74,7 +64,9 @@ fun ProfileScreen(component: ProfileComponent) {
     ProfileScreenContent(
         imageUrl = user.imageUrl,
         username = user.username,
-        email = user.email,
+        post = user.post,
+        telegram  = user.telegram,
+        phone_number = user.phone_number,
         onSignOut = { component.onEvent(ProfileStore.Intent.SignOutClicked) }
     )
 }
@@ -83,10 +75,12 @@ fun ProfileScreen(component: ProfileComponent) {
 internal fun ProfileScreenContent(
     imageUrl: String?,
     username: String?,
-    email: String?,
+    post:String?,
+    telegram:String?,
+    phone_number:String?,
     onSignOut: () -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize().padding(top = 48.dp),
+    Column(modifier = Modifier.fillMaxSize().padding(top = 40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top){
         Row( verticalAlignment = Alignment.CenterVertically, modifier = Modifier
@@ -105,29 +99,40 @@ internal fun ProfileScreenContent(
                 }
             }
         }
-
+        imageUrl?.let { url ->
+            val request = remember(url) {
+                ImageRequest {
+                    data(url)
+                }
+            }
+            val painter = rememberAsyncImagePainter(request)
             Box {
                 Surface(
                     modifier = Modifier.size(88.dp).align(Alignment.Center),
                     shape = CircleShape,
-                    color = lightGray
+                    color = Color(0xFFEBE4FF)
                 ) {
                     Image(
                    modifier = Modifier.fillMaxSize().align(Alignment.Center),
-                   painter = painterResource(MainRes.images.job_icon),
+                   painter = painter,
                    contentDescription = null,
                 )
-}
-}
-Text("Иванов Иван", style = TextStyle(fontSize =15.sp, fontWeight = FontWeight.Medium, color = Color.Black), modifier = Modifier.padding(top = 12.dp))
-Text("Android-разработчик", style = TextStyle(fontSize =15.sp, fontWeight = FontWeight.Medium, color = Color(0x80000000)), modifier = Modifier.padding(top = 8.dp))
+                }
+            }
+        }
+            username?.let {
+                Text(it, style = TextStyle(fontSize =15.sp, fontWeight = FontWeight.Medium, color = Color.Black), modifier = Modifier.padding(top = 12.dp))
+            }
+        post?.let {
+            Text(it, style = TextStyle(fontSize =15.sp, fontWeight = FontWeight.Normal, color = Color(0x80000000)), modifier = Modifier.padding(top = 8.dp))
+        }
 
             var listPrepared by remember { mutableStateOf(false)
             }
             LaunchedEffect(Unit) {
                 withContext(Dispatchers.Default) {
                     optionsList.clear()
-                    prepareOptionsData()
+                    prepareOptionsData(telegram,phone_number)
                     listPrepared = true
                 }
             }
@@ -157,12 +162,14 @@ private fun OptionsItemStyle(item: OptionsData) {
         )
         Text(stringResource(item.title), style = TextStyle(fontSize =15.sp, fontWeight = FontWeight.Normal, color = Color(0x80000000)), modifier = Modifier.padding(start = 12.dp))
         Spacer(modifier = Modifier.weight(.1f))
-        Text("+7-999-999-99-99",style = TextStyle(fontSize =15.sp, fontWeight = FontWeight.Normal, color = Color.Black))
+        item.value?.let{
+            Text(it,style = TextStyle(fontSize =15.sp, fontWeight = FontWeight.Normal, color = Color.Black))
+        }
         IconButton(onClick = {}){
             Icon(
                 painter = painterResource(MainRes.images.next),
                 contentDescription = null,
-                tint = Color(0x80000000)
+                tint = Color(0xFF6F01FF)
             )
         }
     }
@@ -174,13 +181,13 @@ private fun OptionsItemStyle(item: OptionsData) {
 private val optionsList: ArrayList<OptionsData> = ArrayList()
 
 
-private fun prepareOptionsData() {
+private fun prepareOptionsData(telegram: String?, phone_number: String?) {
 
     optionsList.add(
         OptionsData(
             icon = MainRes.images.icon_call,
             title = MainRes.strings.phone_number,
-            value = null,
+            value = telegram,
         )
     )
 
@@ -188,8 +195,8 @@ private fun prepareOptionsData() {
         OptionsData(
             icon = MainRes.images.icon_telegram,
             title = MainRes.strings.telegram,
-            value = null,
+            value = phone_number,
         )
     )
 }
-data class OptionsData(val icon: ImageResource, val title: StringResource, val value: StringResource?)
+data class OptionsData(val icon: ImageResource, val title: StringResource, val value: String?)

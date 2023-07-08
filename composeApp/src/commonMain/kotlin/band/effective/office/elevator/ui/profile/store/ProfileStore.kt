@@ -12,8 +12,8 @@ interface ProfileStore : Store<ProfileStore.Intent, ProfileStore.User, ProfileSt
         val imageUrl: String?,
         val username: String?,
         val post:String?,
-        val email: String?,
-        val phone_number:String?
+        val phone_number:String?,
+        val telegram: String?
     )
 
     sealed interface Label {
