@@ -176,7 +176,7 @@ fun Every_Employee_Card(emp:Employee_card){
 
     }
     if(isExpanded){
-        //Здесь будет навигация на страницу About Employee
+        //Здесь будет навигация на страницу About Employee)
 
     }
 
