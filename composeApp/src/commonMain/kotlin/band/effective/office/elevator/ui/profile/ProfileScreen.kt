@@ -32,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -119,7 +120,8 @@ internal fun ProfileScreenContent(
                 ) {
                     Image(
                    modifier = Modifier.fillMaxSize().align(Alignment.Center),
-                   painter = painter,
+                   painter = painterResource(MainRes.images.job_icon),
+                        contentScale = ContentScale.Inside,
                    contentDescription = null,
                 )
                 }

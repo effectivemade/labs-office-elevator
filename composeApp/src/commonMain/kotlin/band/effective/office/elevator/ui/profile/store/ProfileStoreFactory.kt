@@ -78,9 +78,9 @@ internal class ProfileStoreFactory(
                 is Msg.ProfileData -> User(
                     imageUrl = message.user.photoUrl,
                     username = message.user.name,
-                    telegram = message.user.name,
-                    post = message.user.email,
-                    phone_number = message.user.name,
+                    telegram = null,
+                    post = null,
+                    phone_number = null,
                 )
             }
     }
