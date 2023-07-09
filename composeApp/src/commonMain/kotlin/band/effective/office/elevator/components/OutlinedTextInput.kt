@@ -39,7 +39,7 @@ fun OutlinedTextInput(
     hint: String,
     error: Boolean,
     modifier: Modifier,
-    leadingHolder: @Composable (() -> Color),
+    leadingHolder: @Composable (() -> Unit),
     onTextChange: (String) -> Unit
 ) {
     val message = remember { mutableStateOf("") }
