@@ -24,7 +24,7 @@ internal class ProfileStoreFactory(
     fun create(): ProfileStore =
         object : ProfileStore, Store<Intent, User, Label> by storeFactory.create(
             name = "ProfileStore",
-            initialState = User(imageUrl = null, username = null, telegram = null, post = null, phone_number = null),
+            initialState = User(imageUrl = null, username = null, telegram = null, post = null, phoneNumber = null),
             bootstrapper = coroutineBootstrapper {
                 dispatch(Action.FetchUserInfo)
             },
@@ -80,7 +80,7 @@ internal class ProfileStoreFactory(
                     username = message.user.name,
                     telegram = null,
                     post = null,
-                    phone_number = null,
+                    phoneNumber = null,
                 )
             }
     }

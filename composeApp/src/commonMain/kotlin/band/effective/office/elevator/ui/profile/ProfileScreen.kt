@@ -66,7 +66,7 @@ fun ProfileScreen(component: ProfileComponent) {
         username = user.username,
         post = user.post,
         telegram  = user.telegram,
-        phone_number = user.phone_number,
+        phoneNumber = user.phoneNumber,
         onSignOut = { component.onEvent(ProfileStore.Intent.SignOutClicked) }
     )
 }
@@ -77,7 +77,7 @@ internal fun ProfileScreenContent(
     username: String?,
     post:String?,
     telegram:String?,
-    phone_number:String?,
+    phoneNumber:String?,
     onSignOut: () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize().padding(top = 48.dp),
@@ -90,7 +90,7 @@ internal fun ProfileScreenContent(
             LaunchedEffect(Unit) {
                 withContext(Dispatchers.Default) {
                     optionsList.clear()
-                    prepareOptionsData(telegram,phone_number)
+                    prepareOptionsData(telegram,phoneNumber)
                     listPrepared = true
                 }
             }
@@ -205,7 +205,7 @@ private fun OptionsItemStyle(item: OptionsData) {
 private val optionsList: ArrayList<OptionsData> = ArrayList()
 
 
-private fun prepareOptionsData(telegram: String?, phone_number: String?) {
+private fun prepareOptionsData(telegram: String?, phoneNumber: String?) {
 
     optionsList.add(
         OptionsData(
@@ -219,7 +219,7 @@ private fun prepareOptionsData(telegram: String?, phone_number: String?) {
         OptionsData(
             icon = MainRes.images.icon_telegram,
             title = MainRes.strings.telegram,
-            value = phone_number,
+            value = phoneNumber,
         )
     )
 }
