@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.components.GoogleSignInButton
 import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.ui.authorization.store.AuthorizationStore
+import dev.icerock.moko.resources.desc.StringDesc
 
 
 @Composable
@@ -29,6 +30,7 @@ fun AuthorizationScreen(component: AuthorizationComponent) {
 
     AuthorizationScreenContent(onEvent = component::onEvent)
 }
+
 
 @Composable
 private fun AuthorizationScreenContent(onEvent: (AuthorizationStore.Intent) -> Unit) {
