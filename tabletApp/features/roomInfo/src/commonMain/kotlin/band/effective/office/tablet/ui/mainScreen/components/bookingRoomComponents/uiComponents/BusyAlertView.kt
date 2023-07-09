@@ -25,7 +25,7 @@ import java.util.Calendar
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun BusyAlertView(modifier: Modifier, event: EventInfo, onClick: () -> Unit) {
+fun BusyAlertView(modifier: Modifier, event: band.effective.office.tablet.domain.model.EventInfo, onClick: () -> Unit) {
     Column(modifier = modifier) {
         Row(
             modifier = Modifier.fillMaxWidth(),

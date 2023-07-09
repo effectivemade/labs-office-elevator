@@ -26,7 +26,7 @@ import band.effective.office.tablet.ui.mainScreen.components.roomInfoComponents.
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable
 fun MainScreenView(
-    room: RoomInfo,
+    room: band.effective.office.tablet.domain.model.RoomInfo,
     mockComponent: MockSettingsComponent,
     bookingRoomComponent: BookingRoomComponent
 ) {

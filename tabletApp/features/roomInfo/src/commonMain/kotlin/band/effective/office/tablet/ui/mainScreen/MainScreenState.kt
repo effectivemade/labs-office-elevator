@@ -1,7 +1,7 @@
 package band.effective.office.tablet.ui.mainScreen
 
 import band.effective.office.tablet.domain.model.RoomInfo
-import band.effective.office.tablet.network.RoomInfoRepository
+
 
 data class MainScreenState(
     val isLoad: Boolean,

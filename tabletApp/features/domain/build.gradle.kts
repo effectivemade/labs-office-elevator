@@ -1,6 +1,5 @@
 plugins {
     id(Plugins.AndroidLib.plugin)
-    id(Plugins.MultiplatformCompose.plugin)
     id(Plugins.Kotlin.plugin)
 }
 
@@ -29,6 +28,7 @@ kotlin {
                 // Koin
                 api(Dependencies.Koin.core)
 
+                implementation(project(":tabletApp:features:core"))
                 implementation(project(":tabletApp:features:network"))
             }
         }

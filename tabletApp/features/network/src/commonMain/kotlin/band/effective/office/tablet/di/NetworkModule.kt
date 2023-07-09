@@ -3,5 +3,7 @@ import band.effective.office.tablet.network.api.WorkApi
 import org.koin.dsl.module
 
 val networkModule = module {
-    single<Api> { WorkApi() }
+    val workApi = WorkApi()
+    single<Api> { workApi }
+    single<WorkApi> { workApi }
 }

@@ -1,6 +1,5 @@
 plugins {
     id(Plugins.AndroidLib.plugin)
-    id(Plugins.MultiplatformCompose.plugin)
     id(Plugins.Kotlin.plugin)
 }
 
@@ -29,11 +28,11 @@ kotlin {
                 // Koin
                 api(Dependencies.Koin.core)
 
-                implementation(project(":tabletApp:features:domain"))
+                implementation(project(":tabletApp:features:core"))
             }
         }
         val androidMain by getting {
-            dependencies{
+            dependencies {
                 // Koin
                 api(Dependencies.Koin.android)
             }

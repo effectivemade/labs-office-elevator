@@ -30,7 +30,7 @@ fun BusyRoomInfoComponent(
     capacity: Int,
     isHaveTv: Boolean,
     electricSocketCount: Int,
-    event: EventInfo?
+    event: band.effective.office.tablet.domain.model.EventInfo?
 ) {
     val backgroundColor = Color(0xFFF94C4C)
     Surface {

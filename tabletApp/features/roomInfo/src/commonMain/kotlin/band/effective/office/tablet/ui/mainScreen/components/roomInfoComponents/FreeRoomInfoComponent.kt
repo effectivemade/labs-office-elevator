@@ -15,7 +15,7 @@ fun FreeRoomInfoComponent(
     capacity: Int,
     isHaveTv: Boolean,
     electricSocketCount: Int,
-    nextEvent: EventInfo?
+    nextEvent: band.effective.office.tablet.domain.model.EventInfo?
 ) {
     CommonRoomInfoComponent(
         modifier = modifier,

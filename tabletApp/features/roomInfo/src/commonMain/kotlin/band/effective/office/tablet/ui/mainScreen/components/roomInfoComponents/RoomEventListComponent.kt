@@ -25,7 +25,7 @@ import band.effective.office.tablet.utils.CalendarStringConverter
 import java.util.Calendar
 
 @Composable
-fun RoomEventListComponent(modifier: Modifier = Modifier, eventsList: List<EventInfo>) {
+fun RoomEventListComponent(modifier: Modifier = Modifier, eventsList: List<band.effective.office.tablet.domain.model.EventInfo>) {
     Column(modifier = modifier) {
         Text(
             text = "Занятое время",

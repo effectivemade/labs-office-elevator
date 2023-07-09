@@ -15,7 +15,7 @@ abstract class CurrentEventController(
 ) {
     private lateinit var job: Job
     protected lateinit var scope: CoroutineScope
-    protected var currentEvent: EventInfo? = null
+    protected var currentEvent: band.effective.office.tablet.domain.model.EventInfo? = null
     protected val handlersList: MutableList<() -> Unit> = mutableListOf()
 
     fun start(scope: CoroutineScope) {

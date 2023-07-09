@@ -12,9 +12,11 @@ class UpdateUseCase(
     private val currentEventController: CurrentEventController,
     private val serverUpdateRepository: ServerUpdateRepository
 ) {
-    suspend fun invoke(
+    suspend fun getRoomInfo() = roomInfoUseCase()
+    suspend fun getOrganizersList() = organizersInfoUseCase()
+    suspend operator fun invoke(
         scope: CoroutineScope,
-        roomUpdateHandler: (RoomInfo) -> Unit,
+        roomUpdateHandler: (band.effective.office.tablet.domain.model.RoomInfo) -> Unit,
         organizerUpdateHandler: (List<String>) -> Unit
     ) {
         serverUpdateRepository.subscribeOnUpdates(scope, {
@@ -27,8 +29,8 @@ class UpdateUseCase(
         }
     }
 
-    private fun roomUpdate(scope: CoroutineScope): RoomInfo {
-        var newRoomInfo: RoomInfo? = null
+    private fun roomUpdate(scope: CoroutineScope): band.effective.office.tablet.domain.model.RoomInfo {
+        var newRoomInfo: band.effective.office.tablet.domain.model.RoomInfo? = null
         scope.launch {
             newRoomInfo = roomInfoUseCase()
         }
