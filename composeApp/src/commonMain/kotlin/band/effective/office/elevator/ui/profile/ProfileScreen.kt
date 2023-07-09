@@ -80,7 +80,7 @@ internal fun ProfileScreenContent(
     phone_number:String?,
     onSignOut: () -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize().padding(top = 40.dp),
+    Column(modifier = Modifier.fillMaxSize().padding(top = 48.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top){
         ProfileHeader(onSignOut)
