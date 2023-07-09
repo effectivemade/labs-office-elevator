@@ -65,7 +65,7 @@ fun ProfileScreen(component: ProfileComponent) {
         imageUrl = user.imageUrl,
         username = user.username,
         post = user.post,
-        telegram  = user.telegram,
+        telegram = user.telegram,
         phoneNumber = user.phoneNumber,
         onSignOut = { component.onEvent(ProfileStore.Intent.SignOutClicked) }
     )
@@ -75,35 +75,38 @@ fun ProfileScreen(component: ProfileComponent) {
 internal fun ProfileScreenContent(
     imageUrl: String?,
     username: String?,
-    post:String?,
-    telegram:String?,
-    phoneNumber:String?,
+    post: String?,
+    telegram: String?,
+    phoneNumber: String?,
     onSignOut: () -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize().padding(top = 48.dp),
+    Column(
+        modifier = Modifier.fillMaxSize().padding(top = 48.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top){
+        verticalArrangement = Arrangement.Top
+    ) {
         ProfileHeader(onSignOut)
-        ProfileInfoAboutUser(imageUrl,username,post)
-            var listPrepared by remember { mutableStateOf(false)
+        ProfileInfoAboutUser(imageUrl, username, post)
+        var listPrepared by remember {
+            mutableStateOf(false)
+        }
+        LaunchedEffect(Unit) {
+            withContext(Dispatchers.Default) {
+                optionsList.clear()
+                prepareOptionsData(telegram, phoneNumber)
+                listPrepared = true
             }
-            LaunchedEffect(Unit) {
-                withContext(Dispatchers.Default) {
-                    optionsList.clear()
-                    prepareOptionsData(telegram,phoneNumber)
-                    listPrepared = true
+        }
+        if (listPrepared) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize().padding(top = 24.dp)
+            ) {
+                items(optionsList) { item ->
+                    OptionsItemStyle(item = item)
                 }
             }
-            if (listPrepared) {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize().padding(top = 24.dp)
-                ) {
-                    items(optionsList) { item ->
-                        OptionsItemStyle(item = item)
-                    }
-                }
-            }
+        }
     }
 }
 
@@ -137,37 +140,59 @@ fun ProfileInfoAboutUser(imageUrl: String?, username: String?, post: String?) {
         }
     }
     username?.let {
-        Text(it, style = TextStyle(fontSize =15.sp,
-            fontWeight = FontWeight.Medium, color = Color.Black),
-            modifier = Modifier.padding(top = 12.dp))
+        Text(
+            it, style = TextStyle(
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Medium, color = Color.Black
+            ),
+            modifier = Modifier.padding(top = 12.dp)
+        )
     }
     post?.let {
-        Text(it, style = TextStyle(fontSize =15.sp,
-            fontWeight = FontWeight.Normal, color = Color(0x80000000)),
-            modifier = Modifier.padding(top = 8.dp))
+        Text(
+            it, style = TextStyle(
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Normal, color = Color(0x80000000)
+            ),
+            modifier = Modifier.padding(top = 8.dp)
+        )
     }
 }
 
 @Composable
-private fun ProfileHeader(onSignOut: () -> Unit){
-    Row( verticalAlignment = Alignment.CenterVertically, modifier = Modifier
-        .padding(horizontal = 16.dp).fillMaxWidth()) {
-        Text(stringResource(MainRes.strings.profile),
-            style = TextStyle(fontSize = 20.sp, color = Color.Black, fontWeight = FontWeight.SemiBold))
+private fun ProfileHeader(onSignOut: () -> Unit) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically, modifier = Modifier
+            .padding(horizontal = 16.dp).fillMaxWidth()
+    ) {
+        Text(
+            stringResource(MainRes.strings.profile),
+            style = TextStyle(
+                fontSize = 20.sp,
+                color = Color.Black,
+                fontWeight = FontWeight.SemiBold
+            )
+        )
         Spacer(modifier = Modifier.weight(.1f))
-        OutlinedButton(onClick = onSignOut,
+        OutlinedButton(
+            onClick = onSignOut,
             shape = RoundedCornerShape(size = 8.dp),
-            border = BorderStroke(1.dp,MaterialTheme.colors.secondary),
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)){
+            border = BorderStroke(1.dp, MaterialTheme.colors.secondary),
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+        ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     painter = painterResource(MainRes.images.exit),
                     contentDescription = null,
-                    tint =  MaterialTheme.colors.secondary
+                    tint = MaterialTheme.colors.secondary
                 )
-                Text(stringResource(MainRes.strings.exit),
-                    style = TextStyle(fontSize = 14.sp, color = Color(0xFFC2410C),
-                        fontWeight = FontWeight.Normal), modifier = Modifier.padding(start = 8.dp))
+                Text(
+                    stringResource(MainRes.strings.exit),
+                    style = TextStyle(
+                        fontSize = 14.sp, color = Color(0xFFC2410C),
+                        fontWeight = FontWeight.Normal
+                    ), modifier = Modifier.padding(start = 8.dp)
+                )
             }
         }
     }
@@ -175,21 +200,34 @@ private fun ProfileHeader(onSignOut: () -> Unit){
 
 @Composable
 private fun OptionsItemStyle(item: OptionsData) {
-    Row  (verticalAlignment = Alignment.CenterVertically, modifier = Modifier
-        .padding(horizontal = 16.dp).fillMaxWidth()){
+    Row(
+        verticalAlignment = Alignment.CenterVertically, modifier = Modifier
+            .padding(horizontal = 16.dp).fillMaxWidth()
+    ) {
         Icon(
             painter = painterResource(item.icon),
             contentDescription = null,
             tint = Color(0x80000000)
         )
-        Text(stringResource(item.title), style = TextStyle(fontSize =15.sp,
-            fontWeight = FontWeight.Normal, color = Color(0x80000000)),
-            modifier = Modifier.padding(start = 12.dp))
+        Text(
+            stringResource(item.title), style = TextStyle(
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Normal, color = Color(0x80000000)
+            ),
+            modifier = Modifier.padding(start = 12.dp)
+        )
         Spacer(modifier = Modifier.weight(.1f))
-        item.value?.let{
-            Text(it,style = TextStyle(fontSize =15.sp, fontWeight = FontWeight.Normal, color = Color.Black))
+        item.value?.let {
+            Text(
+                it,
+                style = TextStyle(
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = Color.Black
+                )
+            )
         }
-        IconButton(onClick = {}){
+        IconButton(onClick = {}) {
             Icon(
                 painter = painterResource(MainRes.images.next),
                 contentDescription = null,
@@ -199,7 +237,6 @@ private fun OptionsItemStyle(item: OptionsData) {
     }
     Divider(color = Color(0x80000000), thickness = 1.dp)
 }
-
 
 
 private val optionsList: ArrayList<OptionsData> = ArrayList()
@@ -223,4 +260,5 @@ private fun prepareOptionsData(telegram: String?, phoneNumber: String?) {
         )
     )
 }
+
 data class OptionsData(val icon: ImageResource, val title: StringResource, val value: String?)
