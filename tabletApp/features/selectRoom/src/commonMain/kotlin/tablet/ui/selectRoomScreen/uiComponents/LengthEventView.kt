@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import band.effective.office.tablet.features.selectRoom.MainRes
 import tablet.domain.model.Booking
 import java.util.Calendar
 
@@ -21,8 +22,11 @@ fun LengthEventView(modifier: Modifier, shape: RoundedCornerShape, booking: Book
     val hours = getLengthEvent(booking.eventInfo.startTime, booking.eventInfo.finishTime) / 60
     val minutes = getLengthEvent(booking.eventInfo.startTime, booking.eventInfo.finishTime) % 60
     val lengthEvent: String = when(hours){
-        0 -> "$minutes мин"
-        else -> "${hours}ч ${minutes}мин"
+        0 -> MainRes.string.minutes.format( minutes = minutes.toString())
+        else -> MainRes.string.hours_minutes.format(
+            hours = hours.toString(),
+            minutes = minutes.toString()
+        )
     }
 
     Card(
@@ -45,4 +49,5 @@ fun LengthEventView(modifier: Modifier, shape: RoundedCornerShape, booking: Book
 }
 
 private fun getLengthEvent(start: Calendar, finish: Calendar) =
-    finish.get(Calendar.MINUTE) - start.get(Calendar.MINUTE)
+    (finish.get(Calendar.HOUR) * 60 + finish.get(Calendar.MINUTE)) -
+            (start.get(Calendar.HOUR) * 60 + start.get(Calendar.MINUTE))

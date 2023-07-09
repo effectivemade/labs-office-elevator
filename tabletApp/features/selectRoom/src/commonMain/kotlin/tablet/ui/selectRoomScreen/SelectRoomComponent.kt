@@ -5,7 +5,5 @@ import tablet.domain.model.Booking
 
 interface SelectRoomComponent {
     val state: StateFlow<SelectRoomScreenState>
-
     fun bookRoom()
-    fun close()
 }

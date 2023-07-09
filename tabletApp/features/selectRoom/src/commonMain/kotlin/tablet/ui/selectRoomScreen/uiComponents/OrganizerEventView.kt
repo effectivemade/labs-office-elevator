@@ -11,6 +11,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import tablet.domain.model.Booking
 
@@ -27,7 +28,8 @@ fun OrganizerEventView(modifier: Modifier, shape: RoundedCornerShape, booking: B
                 fontWeight = FontWeight(700),
                 fontSize = 20.sp,
                 fontFamily = FontFamily.SansSerif,
-                color = Color(0xFFFAFAFA)
+                color = Color(0xFFFAFAFA),
+                textAlign = TextAlign.Center
             )
         }
     }

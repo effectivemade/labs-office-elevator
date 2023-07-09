@@ -1,8 +1,6 @@
 package tablet.ui.selectRoomScreen.uiComponents
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -15,10 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import band.effective.office.tablet.features.selectRoom.MainRes
 import tablet.domain.model.Booking
+import tablet.utils.time24
 
 @Composable
 fun BookingButtonView(modifier: Modifier, color: Color, shape: RoundedCornerShape, booking: Booking) {
@@ -34,11 +32,15 @@ fun BookingButtonView(modifier: Modifier, color: Color, shape: RoundedCornerShap
         Box(contentAlignment = Alignment.Center)
         {
             Text(
-                text = "Занять с ${booking.eventInfo.startTime.time24()} до ${booking.eventInfo.finishTime.time24()}",
+                text = MainRes.string.booking_time_button.format(
+                    startTime = booking.eventInfo.startTime.time24(),
+                    finishTime = booking.eventInfo.finishTime.time24()
+                ),
                 fontSize = 20.sp,
                 fontWeight = FontWeight(500),
-                fontFamily = FontFamily.SansSerif,
-                color = Color(0xFFFAFAFA)
+                color = Color(0xFFFAFAFA),
+                letterSpacing = 0.1.sp,
+                fontFamily = FontFamily.SansSerif
             )
         }
     }
