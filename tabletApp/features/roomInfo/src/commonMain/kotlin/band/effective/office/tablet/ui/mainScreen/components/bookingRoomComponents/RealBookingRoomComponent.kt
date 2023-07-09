@@ -1,5 +1,6 @@
 package band.effective.office.tablet.ui.mainScreen.components.bookingRoomComponents
 
+import android.util.Log
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.useCase.CheckBookingUseCase
 import band.effective.office.tablet.domain.useCase.UpdateUseCase
@@ -45,6 +46,20 @@ class RealBookingRoomComponent(
         mutableState.update { it.copy(roomName = roomName) }
         updateSelectTime()
         update()
+        componentCoroutineScope().launch {
+            updateUseCase(scope = componentCoroutineScope(), roomUpdateHandler = {
+                componentContext.componentCoroutineScope().launch {
+                    mutableState.update {
+                        it.copy(
+                            organizers = updateUseCase.getOrganizersList(),
+                            isBusy = !checkBookingUseCase(state.value.toEvent()),
+                            busyEvent = checkBookingUseCase.busyEvent(state.value.toEvent())
+                                ?: EventInfo.emptyEvent,
+                        )
+                    }
+                }
+            }, organizerUpdateHandler = {})
+        }
     }
 
     override fun sendEvent(event: BookingRoomViewEvent) {
@@ -63,9 +78,9 @@ class RealBookingRoomComponent(
         mutableState.update {
             it.copy(
                 organizers = updateUseCase.getOrganizersList(),
-                isBusy = checkBookingUseCase(state.value.toEvent()),
+                isBusy = !checkBookingUseCase(state.value.toEvent()),
                 busyEvent = checkBookingUseCase.busyEvent(state.value.toEvent())
-                    ?: band.effective.office.tablet.domain.model.EventInfo.emptyEvent,
+                    ?: EventInfo.emptyEvent,
             )
         }
     }

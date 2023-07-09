@@ -29,8 +29,7 @@ class RealMainComponent(
 
     override val mockSettingsComponent: MockSettingsComponent =
         RealMockSettingsComponent(
-            componentContext = childContext(key = "mock"),
-            updateData = { /*updateData()*/ }
+            componentContext = childContext(key = "mock")
         )
     override val bookingRoomComponent: BookingRoomComponent = RealBookingRoomComponent(
         componentContext = childContext(key = "bookingRoom"),

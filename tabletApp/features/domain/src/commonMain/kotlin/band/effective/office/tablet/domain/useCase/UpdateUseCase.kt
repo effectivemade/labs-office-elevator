@@ -1,5 +1,6 @@
 package band.effective.office.tablet.domain.useCase
 
+import android.util.Log
 import band.effective.office.tablet.domain.CurrentEventController
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.network.repository.ServerUpdateRepository
@@ -16,7 +17,7 @@ class UpdateUseCase(
     suspend fun getOrganizersList() = organizersInfoUseCase()
     suspend operator fun invoke(
         scope: CoroutineScope,
-        roomUpdateHandler: (band.effective.office.tablet.domain.model.RoomInfo) -> Unit,
+        roomUpdateHandler: (RoomInfo) -> Unit,
         organizerUpdateHandler: (List<String>) -> Unit
     ) {
         serverUpdateRepository.subscribeOnUpdates(scope, {
@@ -29,8 +30,8 @@ class UpdateUseCase(
         }
     }
 
-    private fun roomUpdate(scope: CoroutineScope): band.effective.office.tablet.domain.model.RoomInfo {
-        var newRoomInfo: band.effective.office.tablet.domain.model.RoomInfo? = null
+    private fun roomUpdate(scope: CoroutineScope): RoomInfo {
+        var newRoomInfo: RoomInfo? = null
         scope.launch {
             newRoomInfo = roomInfoUseCase()
         }

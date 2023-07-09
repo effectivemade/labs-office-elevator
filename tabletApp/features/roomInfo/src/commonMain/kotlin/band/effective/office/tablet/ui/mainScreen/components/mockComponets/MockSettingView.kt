@@ -52,12 +52,6 @@ fun MockSettingView(component: MockSettingsComponent) {
                         text = "Есть tv"
                     )
                 }
-
-                Item(
-                    checked = state.isBusyTime,
-                    onCheckedChange = { component.sendEvent(MockSettingsEvent.OnSwitchBusyTime(it)) },
-                    text = "Невожможно забронировть"
-                )
             }
         }
     }

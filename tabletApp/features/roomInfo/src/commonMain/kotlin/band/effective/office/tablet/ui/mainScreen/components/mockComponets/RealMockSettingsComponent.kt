@@ -9,40 +9,32 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class RealMockSettingsComponent(
-    componentContext: ComponentContext,
-    private val updateData: () -> Unit
+    componentContext: ComponentContext
 ) : ComponentContext by componentContext, KoinComponent, MockSettingsComponent {
     private var mutableState = MutableStateFlow(MockState())
     override val state = mutableState.asStateFlow()
 
     private val mockController: MockController by inject()
 
-    init {
-        reloadData()
-    }
-
-    /**Synchronize data in mock controller and in state*/
-    private fun reloadData() {
-        /*mutableState.update {
-            it.copy(
-                isBusy = mockController.isBusy,
-                isManyEvent = mockController.isManyEvent,
-                isHaveTv = mockController.isHaveTV,
-                isBusyTime = mockController.isBusyTime
-            )
-        }*/
-    }
-
     override fun sendEvent(event: MockSettingsEvent) {
-        /*when (event) {
-            is MockSettingsEvent.OnSwitchBusy -> mockController.isBusy = event.newState
-            is MockSettingsEvent.OnSwitchEventCount -> mockController.isManyEvent = event.newState
-            is MockSettingsEvent.OnSwitchTv -> mockController.isHaveTV = event.newState
-            is MockSettingsEvent.OnSwitchBusyTime -> mockController.isBusyTime = event.newState
+        when (event) {
+            is MockSettingsEvent.OnSwitchBusy -> {
+                mockController.changeBusy(event.newState)
+                mutableState.update { it.copy(isBusy = event.newState) }
+            }
+
+            is MockSettingsEvent.OnSwitchEventCount -> {
+                mockController.changeEventCount(event.newState)
+                mutableState.update { it.copy(isManyEvent = event.newState) }
+            }
+
+            is MockSettingsEvent.OnSwitchTv -> {
+                mockController.changeHaveTv(event.newState)
+                mutableState.update { it.copy(isHaveTv = event.newState) }
+            }
+
             is MockSettingsEvent.OnSwitchVisible -> mutableState.update { it.copy(isVisible = !it.isVisible) }
         }
-        reloadData()
-        updateData()*/
     }
 
 }

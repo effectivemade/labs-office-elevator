@@ -13,8 +13,8 @@ class ServerUpdateRepositoryImpl(private val api: Api) : ServerUpdateRepository 
     ) {
         api.subscribeOnWebHock(scope) { event ->
             when (event) {
-                WebServerEvent.OrganizerInfoUpdate -> organizersListUpdateHandler()
-                WebServerEvent.RoomInfoUpdate -> roomInfoUpdateHandler()
+                is WebServerEvent.OrganizerInfoUpdate -> organizersListUpdateHandler()
+                is WebServerEvent.RoomInfoUpdate -> roomInfoUpdateHandler()
             }
         }
     }
