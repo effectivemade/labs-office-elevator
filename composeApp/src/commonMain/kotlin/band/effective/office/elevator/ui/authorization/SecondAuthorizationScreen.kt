@@ -68,7 +68,7 @@ fun SecondAuthScreen(modifier: Modifier) {
 
         if (tabIndex.value == 2) {
             PrimaryButton(
-                text = "Пропустить",
+                text = stringResource(MainRes.strings.skip),
                 modifier = Modifier,
                 cornerValue = 40.dp,
                 contentTextSize = 16.sp,
@@ -87,7 +87,7 @@ fun SecondAuthScreen(modifier: Modifier) {
         Spacer(modifier = Modifier.height(16.dp))
 
         PrimaryButton(
-            text = "Продолжить",
+            text = stringResource(MainRes.strings.`continue`),
             modifier = Modifier,
             cornerValue = 40.dp,
             contentTextSize = 16.sp,
