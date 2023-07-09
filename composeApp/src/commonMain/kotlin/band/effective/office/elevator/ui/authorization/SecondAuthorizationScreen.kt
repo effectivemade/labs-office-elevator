@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ButtonDefaults
@@ -107,17 +106,17 @@ fun Phone() {
 
     Column(modifier = Modifier.fillMaxSize()) {
         AuthTitle(
-            text = "Введите номер",
+            text = stringResource(MainRes.strings.input_number),
             modifier = Modifier.padding(bottom = 7.dp),
             textAlign = TextAlign.Start
         )
         AuthSubTitle(
-            text = "Укажите номер, по которому коллеги смогли бы перевести вам деньги по СБП",
+            text = stringResource(MainRes.strings.select_number),
             modifier = Modifier.padding(bottom = 24.dp),
             textAlign = TextAlign.Start
         )
         OutlinedTextInput(
-            hint = "Номер телефона",
+            hint = stringResource(MainRes.strings.number_hint),
             error = error1.value,
             modifier = Modifier,
             leadingHolder = {
@@ -136,17 +135,17 @@ fun Employee() {
 
     Column(modifier = Modifier.fillMaxSize()) {
         AuthTitle(
-            text = "Заполните профиль",
+            text = stringResource(MainRes.strings.input_profile),
             modifier = Modifier.padding(bottom = 7.dp),
             textAlign = TextAlign.Start
         )
         AuthSubTitle(
-            text = "Это необходимо для того, чтобы сотрудники смогли вас узнать",
+            text = stringResource(MainRes.strings.select_profile),
             modifier = Modifier.padding(bottom = 24.dp),
             textAlign = TextAlign.Start
         )
         OutlinedTextInput(
-            hint = "Фамилия Имя",
+            hint = stringResource(MainRes.strings.profile_hint),
             error = error1.value,
             modifier = Modifier,
             leadingHolder = {
@@ -156,7 +155,7 @@ fun Employee() {
 
             })
         OutlinedTextInput(
-            hint = "Должность",
+            hint = stringResource(MainRes.strings.profile_hint_),
             error = error2.value,
             modifier = Modifier,
             leadingHolder = {
@@ -173,17 +172,17 @@ fun TG() {
     val error1 = remember { mutableStateOf(false) }
     Column(modifier = Modifier.fillMaxSize()) {
         AuthTitle(
-            text = "Укажите контакты",
+            text = stringResource(MainRes.strings.input_employee),
             modifier = Modifier.padding(bottom = 7.dp),
             textAlign = TextAlign.Start
         )
         AuthSubTitle(
-            text = "Это необходимо для того, чтобы коллегам было удобно связаться с вами",
+            text = stringResource(MainRes.strings.select_employee),
             modifier = Modifier.padding(bottom = 24.dp),
             textAlign = TextAlign.Start
         )
         OutlinedTextInput(
-            hint = "Никнейм в Telegram",
+            hint = stringResource(MainRes.strings.employee_hint),
             error = error1.value,
             modifier = Modifier,
             leadingHolder = {
