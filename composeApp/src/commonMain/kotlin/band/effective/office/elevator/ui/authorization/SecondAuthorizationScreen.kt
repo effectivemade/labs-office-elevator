@@ -31,6 +31,10 @@ import band.effective.office.elevator.components.auth_components.AuthSubTitle
 import band.effective.office.elevator.components.auth_components.AuthTabRow
 import band.effective.office.elevator.components.auth_components.AuthTitle
 
+import band.effective.office.elevator.MainRes
+import dev.icerock.moko.resources.compose.painterResource
+import dev.icerock.moko.resources.compose.stringResource
+
 @Composable
 fun SecondAuthScreen(modifier: Modifier) {
     val tabIndex = remember { mutableStateOf(0) }
