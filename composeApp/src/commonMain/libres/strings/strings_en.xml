@@ -8,6 +8,21 @@
     <string name="profile">Profile</string>
     <string name="elevator">Elevator</string>
 
+    <!--Auth strings-->
+    <string name="skip">Skip</string><string name="continue">Continue</string>
+    <string name="input_number">Enter a number</string>
+
+    <string name="select_number">Specify the number through which colleagues could transfer money to you via SBP</string>
+    <string name="number_hint">Phone number</string>
+    <string name="input_profile">Fill out your profile</string>
+    <string name="select_profile">This is necessary for employees to recognize you</string>
+    <string name="profile_hint">Last Name First Name</string>
+    <string name="profile_hint_">Position</string>
+    <string name="input_employee">Provide contacts</string>
+    <string name="select_employee">This is necessary for colleagues to easily contact you</string>
+    <string name="employee_hint">Telegram nickname</string>
+
+
 
     <!--Error messages-->
     <string name="you_need_to_sign_in">You need to sign in for the app to work</string>
