@@ -7,10 +7,8 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.essenty.parcelable.Parcelable
 import kotlinx.android.parcel.Parcelize
-import tablet.domain.model.Booking
-import tablet.domain.model.EventInfo
+import tablet.domain.MockBooking
 import tablet.ui.selectRoomScreen.RealSelectRoomComponent
-import java.util.Calendar
 
 class RootComponent(componentContext: ComponentContext) : ComponentContext by componentContext {
 
@@ -41,15 +39,7 @@ class RootComponent(componentContext: ComponentContext) : ComponentContext by co
             Child.SelectRoomChild(
                 RealSelectRoomComponent(
                     componentContext,
-                    Booking
-                        ("Sirius",
-                        EventInfo
-                            (
-                            Calendar.getInstance(),
-                            Calendar.getInstance(),
-                            "Ольга Белозёрова"
-                        )
-                    )
+                    MockBooking.bookingCheckTime15min
                 )
             )
         }

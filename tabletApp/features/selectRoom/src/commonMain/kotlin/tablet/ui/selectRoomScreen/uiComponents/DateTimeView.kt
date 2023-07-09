@@ -1,8 +1,5 @@
 package tablet.ui.selectRoomScreen.uiComponents
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,18 +10,15 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.LineHeightStyle
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import band.effective.office.tablet.features.selectRoom.MainRes
 import tablet.domain.model.Booking
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
+import tablet.utils.date
+import tablet.utils.time24
 
 @Composable
 fun DateTimeView(modifier: Modifier, shape: RoundedCornerShape, booking: Booking) {
@@ -48,7 +42,10 @@ fun DateTimeView(modifier: Modifier, shape: RoundedCornerShape, booking: Booking
                 Spacer(modifier = Modifier.width(5.dp))
 
                 Text(
-                    text = "с ${booking.eventInfo.startTime.time24()} до ${booking.eventInfo.finishTime.time24()}",
+                    text = MainRes.string.booking_time.format(
+                        startTime = booking.eventInfo.startTime.time24(),
+                        finishTime = booking.eventInfo.finishTime.time24()
+                    ),
                     fontSize = 20.sp,
                     fontWeight = FontWeight(500),
                     fontFamily = FontFamily.SansSerif,
@@ -59,11 +56,3 @@ fun DateTimeView(modifier: Modifier, shape: RoundedCornerShape, booking: Booking
 
     }
 }
-
-private fun Calendar.date() = "${this.get(Calendar.DAY_OF_MONTH)} " +
-        SimpleDateFormat("MMMM", Locale("ru")).format(this.time)
-
-fun Calendar.time24() = SimpleDateFormat(
-    "HH:mm",
-    Locale("ru")
-).format(this.time)
