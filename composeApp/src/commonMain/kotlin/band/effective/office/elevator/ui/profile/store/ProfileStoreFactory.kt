@@ -42,7 +42,7 @@ internal class ProfileStoreFactory(
 
     private inner class ExecutorImpl :
         CoroutineExecutor<Intent, Action, User, Msg, Label>() {
-        override fun executeIntent(intent: Intent, getState: () -> User) {
+        override fun executeIntent(intent: Intent, getUser: () -> User) {
             when (intent) {
                 Intent.SignOutClicked -> doSignOut()
             }
@@ -53,7 +53,7 @@ internal class ProfileStoreFactory(
             publish(Label.OnSignedOut)
         }
 
-        override fun executeAction(action: Action, getState: () -> User) {
+        override fun executeAction(action: Action, getUser: () -> User) {
             when (action) {
                 Action.FetchUserInfo -> fetchUserInfo()
             }
