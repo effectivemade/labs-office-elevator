@@ -93,7 +93,7 @@ internal val theme_light_onSurface = Color(0xFF221B00)
 
 internal val theme_light_primary_color = Color(0xFFFFFFFF)
 internal val theme_light_secondary_color = Color(0xFFC2410C)
-internal val theme_light_tertiary_color = Color(0x00000080)
+internal val theme_light_tertiary_color = Color(0xFF000000)
 
 internal val theme_light_primary_stroke = Color(0xFFF8933F)
 internal val theme_light_secondary_stroke = Color(0x00000066)
