@@ -22,30 +22,42 @@ import band.effective.office.tablet.ui.mainScreen.components.bookingRoomComponen
 import band.effective.office.tablet.ui.mainScreen.components.mockComponets.MockSettingView
 import band.effective.office.tablet.ui.mainScreen.components.mockComponets.MockSettingsComponent
 import band.effective.office.tablet.ui.mainScreen.components.roomInfoComponents.RoomInfoComponent
+import band.effective.office.tablet.ui.selectRoomScreen.RealSelectRoomComponent
+import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomView
 
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable
 fun MainScreenView(
     room: RoomInfo,
+    showBookingModal: Boolean,
     mockComponent: MockSettingsComponent,
-    bookingRoomComponent: BookingRoomComponent
+    bookingRoomComponent: BookingRoomComponent,
+    selectRoomComponent: RealSelectRoomComponent
 ) {
-    /*NOTE(Maksim Mishenko):
+    Box(modifier = Modifier.fillMaxSize()) {
+        /*NOTE(Maksim Mishenko):
     * infoViewWidth is part of the width occupied by roomInfoView
     * infoViewWidth = infoViewFrame.width / mainScreenFrame.width
     * where infoViewFrame, mainScreenFrame is frames from figma and all width I get from figma*/
-    val infoViewWidth = 627f / 1133f
-    Row(modifier = Modifier.fillMaxSize().background(color = Color(0xff1E1C1A))) {
-        RoomInfoComponent(
-            modifier = Modifier.fillMaxHeight().fillMaxWidth(infoViewWidth),
-            room = room
-        )
-        Box(modifier = Modifier.fillMaxSize()) {
-            BookingRoomView(
-                modifier = Modifier.background(color = Color(0xFF252322)).fillMaxSize().padding(25.dp),
-                bookingRoomComponent = bookingRoomComponent
+        val infoViewWidth = 627f / 1133f
+        Row(modifier = Modifier.fillMaxSize().background(color = Color(0xff1E1C1A))) {
+            RoomInfoComponent(
+                modifier = Modifier.fillMaxHeight().fillMaxWidth(infoViewWidth),
+                room = room
             )
-            MockSettingView(mockComponent)
+            Box(modifier = Modifier.fillMaxSize()) {
+                BookingRoomView(
+                    modifier = Modifier.background(color = Color(0xFF252322)).fillMaxSize()
+                        .padding(25.dp),
+                    bookingRoomComponent = bookingRoomComponent
+                )
+                MockSettingView(mockComponent)
+            }
+        }
+        Box(modifier = Modifier.fillMaxSize()) {
+            if (showBookingModal)
+                SelectRoomView(component = selectRoomComponent)
         }
     }
+
 }

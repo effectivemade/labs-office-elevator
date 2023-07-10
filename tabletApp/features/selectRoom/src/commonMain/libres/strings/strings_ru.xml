@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="booking_time_button">Занять c ${startTime} до ${finishTime}</string>
+    <string name="booking_time">с ${startTime} до ${finishTime}</string>
+    <string name="title_booking_dialog">Занять ${nameRoom}?</string>
+    <string name="whenEvent">когда</string>
+    <string name="how_much">на сколько</string>
+    <string name="organizer">организатор</string>
+    <string name="minutes">${minutes} мин</string>
+    <string name="hours_minutes">${hours}ч ${minutes}мин</string>
+</resources>

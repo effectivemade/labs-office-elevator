@@ -2,6 +2,7 @@ package band.effective.office.tablet.ui.mainScreen.components.bookingRoomCompone
 
 import band.effective.office.tablet.domain.RoomInteractor
 import band.effective.office.tablet.domain.model.EventInfo
+import band.effective.office.tablet.ui.mainScreen.MainScreenEvent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.childContext
 import com.arkivanov.essenty.lifecycle.Lifecycle
@@ -22,7 +23,7 @@ import java.util.GregorianCalendar
 
 class RealBookingRoomComponent(
     private val componentContext: ComponentContext,
-    private val onSelectOtherRoom: () -> Unit,
+    private val onBookingRoom: (MainScreenEvent) -> Unit,
     roomName: String
 ) :
     ComponentContext by componentContext, BookingRoomComponent, KoinComponent {
@@ -53,11 +54,11 @@ class RealBookingRoomComponent(
     override fun sendEvent(event: BookingRoomViewEvent) {
         when (event) {
             is BookingRoomViewEvent.OnBookingCurrentRoom -> {
-                onSelectOtherRoom()
+                onBookingRoom(MainScreenEvent.OnBookingCurentRoomRequest)
             }
 
             is BookingRoomViewEvent.OnBookingOtherRoom -> {
-                onSelectOtherRoom()
+                onBookingRoom(MainScreenEvent.OnBookingOtherRoomRequest)
             }
         }
     }

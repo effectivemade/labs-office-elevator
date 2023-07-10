@@ -53,6 +53,8 @@ kotlin {
 
                 implementation(project(":tabletApp:features:selectRoom"))
                 implementation(project(":tabletApp:features:roomInfo"))
+                implementation(project(":tabletApp:features:freeNegotiationsScreen"))
+
             }
         }
         val androidMain by getting {

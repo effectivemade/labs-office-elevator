@@ -1,5 +1,6 @@
 package band.effective.office.tablet.ui.root
 
+import band.effective.office.tablet.ui.freeNegotiationsScreen.FreeNegotiationsComponent
 import band.effective.office.tablet.ui.mainScreen.RealMainComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.StackNavigation
@@ -7,7 +8,6 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.essenty.parcelable.Parcelable
 import kotlinx.android.parcel.Parcelize
-import tablet.ui.selectRoomScreen.SelectRoomComponent
 
 class RootComponent(componentContext: ComponentContext) : ComponentContext by componentContext {
 
@@ -27,7 +27,7 @@ class RootComponent(componentContext: ComponentContext) : ComponentContext by co
 
         is Config.Main -> {
             Child.MainChild(RealMainComponent(
-                componentContext =  componentContext,
+                componentContext = componentContext,
                 OnSelectOtherRoomRequest = {
                     navigation.push(Config.SelectRoom)
                 }
@@ -35,12 +35,12 @@ class RootComponent(componentContext: ComponentContext) : ComponentContext by co
         }
 
         is Config.SelectRoom -> {
-            Child.SelectRoomChild(SelectRoomComponent(componentContext))
+            Child.SelectRoomChild(FreeNegotiationsComponent(componentContext))
         }
     }
 
     sealed class Child {
-        data class SelectRoomChild(val component: SelectRoomComponent) : Child()
+        data class SelectRoomChild(val component: FreeNegotiationsComponent) : Child()
         data class MainChild(val component: RealMainComponent) : Child()
     }
 
