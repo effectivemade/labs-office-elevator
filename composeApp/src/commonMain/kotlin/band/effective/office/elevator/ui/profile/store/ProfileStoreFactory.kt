@@ -62,10 +62,10 @@ internal class ProfileStoreFactory(
         private fun fetchUserInfo() {
             scope.launch {
                 when (val result = signInClient.retrieveAuthorizedUser()) {
-                    is ApiResponse.Error.HttpError -> TODO()
-                    ApiResponse.Error.NetworkError -> TODO()
-                    ApiResponse.Error.SerializationError -> TODO()
-                    ApiResponse.Error.UnknownError -> TODO()
+                    is ApiResponse.Error.HttpError -> {}
+                    ApiResponse.Error.NetworkError -> {}
+                    ApiResponse.Error.SerializationError -> {}
+                    ApiResponse.Error.UnknownError -> {}
                     is ApiResponse.Success -> dispatch(Msg.ProfileData(user = result.body))
                 }
             }

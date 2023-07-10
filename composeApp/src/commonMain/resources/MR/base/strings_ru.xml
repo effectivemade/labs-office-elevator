@@ -6,7 +6,9 @@
 
     <!--Tab titles-->
     <string name="profile">Профиль</string>
-    <string name="elevator">Лифт</string>
+    <string name="main">Главная</string>
+    <string name="booking">Бронирование</string>
+    <string name="employees">Сотрудники</string>
 
     <!--Error messages-->
     <string name="you_need_to_sign_in">Для работы приложения нужно авторизоваться</string>

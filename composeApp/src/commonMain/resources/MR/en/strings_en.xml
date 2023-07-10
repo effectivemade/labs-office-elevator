@@ -6,8 +6,9 @@
 
     <!--Tab titles-->
     <string name="profile">Profile</string>
-    <string name="elevator">Elevator</string>
-
+    <string name="main">Elevator</string>
+    <string name="booking">Booking</string>
+    <string name="employees">Employees</string>
 
     <!--Error messages-->
     <string name="you_need_to_sign_in">You need to sign in for the app to work</string>

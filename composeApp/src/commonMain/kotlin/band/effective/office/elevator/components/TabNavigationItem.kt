@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import band.effective.office.elevator.lightGray
 import band.effective.office.elevator.navigation.Tab
+import band.effective.office.elevator.textGrayColor
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
@@ -17,8 +18,8 @@ internal fun RowScope.TabNavigationItem(
     selected: Boolean,
     onSelect: () -> Unit,
 ) {
-    val selectedColor = MaterialTheme.colors.secondary
-    val unselectedColor = lightGray
+    val selectedColor = MaterialTheme.colors.primary
+    val unselectedColor = textGrayColor
     BottomNavigationItem(
         modifier = Modifier,
         selected = selected,
