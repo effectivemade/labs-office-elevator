@@ -1,9 +1,9 @@
-package band.effective.office.elevator.ui.elevator.store
+package band.effective.office.elevator.ui.main.store
 
 import com.arkivanov.mvikotlin.core.store.Store
 import dev.icerock.moko.resources.StringResource
 
-interface ElevatorStore : Store<ElevatorStore.Intent, ElevatorStore.State, ElevatorStore.Label> {
+interface MainStore : Store<MainStore.Intent, MainStore.State, MainStore.Label> {
 
     sealed interface Intent {
         object OnButtonClicked : Intent

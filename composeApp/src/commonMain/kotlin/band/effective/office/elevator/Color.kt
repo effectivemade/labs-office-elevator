@@ -141,3 +141,4 @@ internal val seed = Color(0xFF2C3639)
 // Non Material specified colors
 internal val lightGray = Color(0xFFEBEBEB)
 internal val successGreen = Color(0xFF4BB543)
+internal val textGrayColor = Color(0x80000000)
