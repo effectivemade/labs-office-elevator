@@ -35,7 +35,5 @@ Pod::Spec.new do |spec|
             SCRIPT
         }
     ]
-    spec.resource_bundles = {
-        'LibresComposeApp' => ['build/generated/libres/apple/resources/images/LibresComposeApp.xcassets']
-    }
+                
 end

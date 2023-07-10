@@ -9,6 +9,8 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
+import dev.icerock.moko.resources.StringResource
+import dev.icerock.moko.resources.format
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -53,25 +55,26 @@ internal class ElevatorStoreFactory(
                     when (val result = officeElevatorRepository.call()) {
                         is ApiResponse.Error.HttpError -> ElevatorStore.Label.ShowError(
                             ElevatorStore.ErrorState(
-                                MainRes.string.server_error.format(result.code.toString())
+                                (MainRes.strings.server_error.format(result.code.toString()))
+                            as StringResource
                             )
                         )
 
                         ApiResponse.Error.NetworkError -> ElevatorStore.Label.ShowError(
                             ElevatorStore.ErrorState(
-                                MainRes.string.network_error
+                                MainRes.strings.network_error
                             )
                         )
 
                         ApiResponse.Error.SerializationError -> ElevatorStore.Label.ShowError(
                             ElevatorStore.ErrorState(
-                                MainRes.string.developer_error
+                                MainRes.strings.developer_error
                             )
                         )
 
                         ApiResponse.Error.UnknownError -> ElevatorStore.Label.ShowError(
                             ElevatorStore.ErrorState(
-                                MainRes.string.developer_error
+                                MainRes.strings.developer_error
                             )
                         )
 
