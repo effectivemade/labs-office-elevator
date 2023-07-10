@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="room_occupancy">Занята c ${startTime} по ${finishTime} · ${organizer}</string>
+    <string name="free_room_occupancy">Свободна до ${time}</string>
+    <string name="stop_meeting_button">Освободить</string>
+    <string name="tv_property">TV</string>
+    <string name="usb_property">USB</string>
+    <string name="electric_socket_property_nominative">Розетка</string>
+    <string name="electric_socket_property_genitive">Розетки</string>
+    <string name="electric_socket_property_plural">Розеток</string>
+    <string name="booking_view_title">Занять</string>
+    <string name="booking_button_text">Занять ${roomName}</string>
+    <string name="busy_time_string">Время ${startTime} — ${finishTime} занято · ${organizer}</string>
+    <string name="see_free_room">Смотреть свободные переговорки на это время</string>
+    <string name="select_date_tine_title">когда</string>
+    <string name="select_length_title">на сколько</string>
+    <string name="select_organizer_title">организатор</string>
+    <string name="start_date_time">${date} c ${time}</string>
+    <string name="minus_date_button_string">-30</string>
+    <string name="plus_date_button_string">+15</string>
+    <string name="current_length_string">${currentLength} мин</string>
+    <string name="selectbox_organizer_title">Организатор встречи</string>
+</resources>

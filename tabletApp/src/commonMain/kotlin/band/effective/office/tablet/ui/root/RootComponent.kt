@@ -1,6 +1,6 @@
 package band.effective.office.tablet.ui.root
 
-import band.effective.office.tablet.ui.mainScreen.MainComponent
+import band.effective.office.tablet.ui.mainScreen.RealMainComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
@@ -27,9 +27,9 @@ class RootComponent(componentContext: ComponentContext) : ComponentContext by co
     ): Child = when (config) {
 
         is Config.Main -> {
-            Child.MainChild(MainComponent(
+            Child.MainChild(RealMainComponent(
                 componentContext =  componentContext,
-                onClick = {
+                OnSelectOtherRoomRequest = {
                     navigation.push(Config.SelectRoom)
                 }
             ))
@@ -46,8 +46,8 @@ class RootComponent(componentContext: ComponentContext) : ComponentContext by co
     }
 
     sealed class Child {
-        data class SelectRoomChild(val component: RealSelectRoomComponent) : Child()
-        data class MainChild(val component: MainComponent) : Child()
+        data class SelectRoomChild(val component: SelectRoomComponent) : Child()
+        data class MainChild(val component: RealMainComponent) : Child()
     }
 
     sealed class Config : Parcelable {

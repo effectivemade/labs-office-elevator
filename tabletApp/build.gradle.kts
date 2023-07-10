@@ -3,6 +3,7 @@ plugins {
     id(Plugins.MultiplatformCompose.plugin)
     id(Plugins.Kotlin.plugin)
     id(Plugins.Parcelize.plugin)
+    id(Plugins.Libres.plugin)
 }
 
 android {

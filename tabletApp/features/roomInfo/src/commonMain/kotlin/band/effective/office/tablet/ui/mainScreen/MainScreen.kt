@@ -1,24 +1,25 @@
 package band.effective.office.tablet.ui.mainScreen
 
-import androidx.compose.material.Button
-import androidx.compose.material.Text
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import band.effective.office.tablet.ui.mainScreen.MainComponent
+import band.effective.office.tablet.ui.mainScreen.components.MainScreenView
 
+@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable
 fun MainScreen(component: MainComponent) {
     val state by component.state.collectAsState()
-    MainScreenView(
-        buttonText = state.platform,
-        onClick = { component.sendEvent(MainScreenEvent.OnCLick) }
-    )
-}
-
-@Composable
-fun MainScreenView(buttonText: String, onClick: () -> Unit) {
-    Button(onClick = { onClick() }) {
-        Text(text = "Hello, $buttonText")
+    when{
+        state.isError -> {}
+        state.isLoad -> {}
+        state.isData -> {
+            MainScreenView(
+                room = state.roomInfo,
+                mockComponent = component.mockSettingsComponent,
+                bookingRoomComponent = component.bookingRoomComponent
+            )
+        }
     }
 }
