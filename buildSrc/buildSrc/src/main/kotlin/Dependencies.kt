@@ -24,6 +24,7 @@ object Dependencies {
         const val essenty = "1.1.0"
         const val logback = "1.2.11"
         const val shadow = "7.1.2"
+        const val moko = "0.23.0"
     }
 
     object Ktor {
@@ -121,5 +122,9 @@ object Dependencies {
 
     object Essenty {
         const val essenty = "com.arkivanov.essenty:lifecycle:${Versions.essenty}"
+    }
+
+    object Moko{
+        const val resourcesCompose = "dev.icerock.moko:resources-compose:${Versions.moko}"
     }
 }
