@@ -12,6 +12,7 @@ private val LightColors = lightColors(
     primary = theme_light_primary,
     onPrimary = theme_light_onPrimary,
     secondary = theme_light_secondary,
+    secondaryVariant = theme_light_secondary_variant,
     onSecondary = theme_light_onSecondary,
     error = theme_light_error,
     onError = theme_light_onError,
