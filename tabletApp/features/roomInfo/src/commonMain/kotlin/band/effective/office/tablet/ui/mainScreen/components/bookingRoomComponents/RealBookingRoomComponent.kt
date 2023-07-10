@@ -1,11 +1,16 @@
 package band.effective.office.tablet.ui.mainScreen.components.bookingRoomComponents
 
+import band.effective.office.tablet.domain.RoomInteractor
 import band.effective.office.tablet.domain.model.EventInfo
-import band.effective.office.tablet.domain.useCase.CheckBookingUseCase
-import band.effective.office.tablet.domain.useCase.UpdateUseCase
-import band.effective.office.tablet.utils.componentCoroutineScope
+import band.effective.office.tablet.ui.mainScreen.MainScreenEvent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.childContext
+import com.arkivanov.essenty.lifecycle.Lifecycle
+import com.arkivanov.essenty.lifecycle.doOnDestroy
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,7 +23,7 @@ import java.util.GregorianCalendar
 
 class RealBookingRoomComponent(
     private val componentContext: ComponentContext,
-    private val onSelectOtherRoom: () -> Unit,
+    private val onBookingRoom: (MainScreenEvent) -> Unit,
     roomName: String
 ) :
     ComponentContext by componentContext, BookingRoomComponent, KoinComponent {
@@ -38,47 +43,32 @@ class RealBookingRoomComponent(
             childContext("organizer"),
             onSelectOrganizer = { selectOrganizer(it) })
 
-    private val updateUseCase: UpdateUseCase by inject()
-    private val checkBookingUseCase: CheckBookingUseCase by inject()
+    private val roomInfoInteractor: RoomInteractor by inject()
 
     init {
         mutableState.update { it.copy(roomName = roomName) }
         updateSelectTime()
         update()
-        componentCoroutineScope().launch {
-            updateUseCase(scope = componentCoroutineScope(), roomUpdateHandler = {
-                componentContext.componentCoroutineScope().launch {
-                    mutableState.update {
-                        it.copy(
-                            organizers = updateUseCase.getOrganizersList(),
-                            isBusy = !checkBookingUseCase(state.value.toEvent()),
-                            busyEvent = checkBookingUseCase.busyEvent(state.value.toEvent())
-                                ?: EventInfo.emptyEvent,
-                        )
-                    }
-                }
-            }, organizerUpdateHandler = {})
-        }
     }
 
     override fun sendEvent(event: BookingRoomViewEvent) {
         when (event) {
             is BookingRoomViewEvent.OnBookingCurrentRoom -> {
-                onSelectOtherRoom()
+                onBookingRoom(MainScreenEvent.OnBookingCurentRoomRequest)
             }
 
             is BookingRoomViewEvent.OnBookingOtherRoom -> {
-                onSelectOtherRoom()
+                onBookingRoom(MainScreenEvent.OnBookingOtherRoomRequest)
             }
         }
     }
 
-    private fun update() = componentCoroutineScope().launch {
+    override fun update() {
         mutableState.update {
             it.copy(
-                organizers = updateUseCase.getOrganizersList(),
-                isBusy = !checkBookingUseCase(state.value.toEvent()),
-                busyEvent = checkBookingUseCase.busyEvent(state.value.toEvent())
+                organizers = roomInfoInteractor.getOrganizers(),
+                isBusy = roomInfoInteractor.checkRoom("", GregorianCalendar()) != null,
+                busyEvent = roomInfoInteractor.checkRoom("", GregorianCalendar())
                     ?: EventInfo.emptyEvent,
             )
         }
@@ -87,7 +77,6 @@ class RealBookingRoomComponent(
     private fun changeLength(delta: Int) {
         if (state.value.length + delta >= 0) {
             mutableState.update { it.copy(length = it.length + delta) }
-            update()
         }
     }
 
@@ -95,7 +84,6 @@ class RealBookingRoomComponent(
         val newValue = state.value.selectDate.clone() as Calendar
         newValue.add(Calendar.DAY_OF_MONTH, day)
         mutableState.update { it.copy(selectDate = newValue) }
-        update()
     }
 
     //TODO(Maksim Mishenko): think about while(true)
@@ -112,14 +100,19 @@ class RealBookingRoomComponent(
     private fun selectOrganizer(organizer: String) {
         mutableState.update { it.copy(organizer = organizer) }
     }
+}
 
-    private fun BookingRoomState.toEvent(): EventInfo {
-        val finishTime = selectDate.clone() as Calendar
-        finishTime.add(Calendar.MINUTE, length)
-        return EventInfo(
-            startTime = selectDate,
-            finishTime = finishTime,
-            organizer = organizer
-        )
+//NOTE(Maksim Mishenko): https://gist.github.com/aartikov/a56cc94bb306e05b7b7927353910da08
+fun ComponentContext.componentCoroutineScope(): CoroutineScope {
+    val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+
+    if (lifecycle.state != Lifecycle.State.DESTROYED) {
+        lifecycle.doOnDestroy {
+            scope.cancel()
+        }
+    } else {
+        scope.cancel()
     }
+
+    return scope
 }

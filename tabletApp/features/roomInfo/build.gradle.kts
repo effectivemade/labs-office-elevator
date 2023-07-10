@@ -42,15 +42,15 @@ kotlin {
                 //Libres
                 implementation(Dependencies.Libres.libresCompose)
 
-                implementation(project(":tabletApp:features:core"))
-                implementation(project(":tabletApp:features:network"))
-                implementation(project(":tabletApp:features:domain"))
+                implementation(project(":tabletApp:features:selectRoom"))
             }
         }
         val androidMain by getting {
-            dependencies {
+            dependencies{
                 // Koin
                 api(Dependencies.Koin.android)
+
+                implementation(project(":tabletApp:features:selectRoom"))
             }
         }
     }

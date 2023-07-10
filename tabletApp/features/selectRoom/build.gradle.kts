@@ -40,6 +40,7 @@ kotlin {
 
                 //Libres
                 implementation(Dependencies.Libres.libresCompose)
+
             }
         }
 

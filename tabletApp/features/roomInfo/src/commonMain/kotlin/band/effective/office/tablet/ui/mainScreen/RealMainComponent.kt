@@ -1,17 +1,17 @@
 package band.effective.office.tablet.ui.mainScreen
 
-import band.effective.office.tablet.domain.useCase.UpdateUseCase
+import band.effective.office.tablet.domain.MockBooking
+import band.effective.office.tablet.domain.RoomInteractor
 import band.effective.office.tablet.ui.mainScreen.components.bookingRoomComponents.BookingRoomComponent
 import band.effective.office.tablet.ui.mainScreen.components.bookingRoomComponents.RealBookingRoomComponent
 import band.effective.office.tablet.ui.mainScreen.components.mockComponets.MockSettingsComponent
 import band.effective.office.tablet.ui.mainScreen.components.mockComponets.RealMockSettingsComponent
-import band.effective.office.tablet.utils.componentCoroutineScope
+import band.effective.office.tablet.ui.selectRoomScreen.RealSelectRoomComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.childContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -20,44 +20,50 @@ class RealMainComponent(
     private val OnSelectOtherRoomRequest: () -> Unit
 ) : ComponentContext by componentContext, KoinComponent, MainComponent {
 
-    private val updateUseCase: UpdateUseCase by inject()
-
-    private val scope = componentContext.componentCoroutineScope()
+    private val interactor: RoomInteractor by inject()
 
     private var mutableState = MutableStateFlow(MainScreenState.defaultState)
     override val state = mutableState.asStateFlow()
 
     override val mockSettingsComponent: MockSettingsComponent =
         RealMockSettingsComponent(
-            componentContext = childContext(key = "mock")
+            componentContext = childContext(key = "mock"),
+            updateData = { updateData() }
         )
     override val bookingRoomComponent: BookingRoomComponent = RealBookingRoomComponent(
         componentContext = childContext(key = "bookingRoom"),
-        onSelectOtherRoom = { OnSelectOtherRoomRequest() },
+        onBookingRoom = { sendEvent(it) },
         roomName = "Sirius"
     )
+    override val selectRoomComponent: RealSelectRoomComponent =
+        RealSelectRoomComponent(
+            componentContext = childContext(key = "bookingCurrentRoom"),
+            booking = MockBooking.bookingCheckTime15min,
+            onCloseRequest = { mutableState.update { it.copy(showBookingModal = false) } }
+        )
 
     init {
         updateData()
     }
 
-    private fun updateData() = scope.launch {
-        updateUseCase(
-            scope = scope,
-            roomUpdateHandler = { roomInfo -> mutableState.update { it.copy(roomInfo = roomInfo) } },
-            organizerUpdateHandler = {})
+    private fun updateData() {
         mutableState.update {
             it.copy(
                 isLoad = false,
                 isData = true,
-                roomInfo = updateUseCase.getRoomInfo()
+                roomInfo = interactor.getRoomInfo("sirius")
             )
         }
+        bookingRoomComponent.update()
     }
 
     override fun sendEvent(event: MainScreenEvent) =
         when (event) {
-            is MainScreenEvent.OnCLick -> {
+            is MainScreenEvent.OnBookingCurentRoomRequest -> {
+                mutableState.update { it.copy(showBookingModal = true) }
+            }
+
+            is MainScreenEvent.OnBookingOtherRoomRequest -> {
                 OnSelectOtherRoomRequest()
             }
         }
