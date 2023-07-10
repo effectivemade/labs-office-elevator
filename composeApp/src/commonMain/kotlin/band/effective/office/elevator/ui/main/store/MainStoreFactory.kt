@@ -27,7 +27,23 @@ internal class MainStoreFactory(
             name = "MainStore",
             initialState = MainStore.State(
                 elevatorState = ElevatorState.Below,
-                reservedSeats = listOf()
+                reservedSeats = listOf(
+                    ReservedSeat(
+                        seatName = "Рабочее масто А1",
+                        bookingDay = "Пн, 1 июля",
+                        bookingTime = "12:00 - 14:00"
+                    ),
+                    ReservedSeat(
+                        seatName = "Рабочее масто А1",
+                        bookingDay = "Пн, 1 июля",
+                        bookingTime = "12:00 - 14:00"
+                    ),
+                    ReservedSeat(
+                        seatName = "Рабочее масто А1",
+                        bookingDay = "Пн, 1 июля",
+                        bookingTime = "12:00 - 14:00"
+                    ),
+                ),
             ),
             executorFactory = ::ExecutorImpl,
             reducer = ReducerImpl
@@ -36,7 +52,6 @@ internal class MainStoreFactory(
     private sealed interface Msg {
         data class UpdateElevatorState(val elevatorState: ElevatorState) : Msg
         data class UpdateSeatsReservation(val reservedSeats: List<ReservedSeat>) : Msg
-
     }
 
     private inner class ExecutorImpl :
@@ -47,7 +62,11 @@ internal class MainStoreFactory(
                     if (getState().elevatorState is ElevatorState.Below)
                         doElevatorCall()
                 }
-                MainStore.Intent.OnClickShowOption -> TODO()
+                MainStore.Intent.OnClickShowOption -> {
+                    scope.launch {
+                        publish(MainStore.Label.ShowOptions)
+                    }
+                }
             }
         }
 

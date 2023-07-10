@@ -68,7 +68,13 @@ fun MainScreen(component: MainComponent) {
             .background(Color.White)
             .fillMaxSize()
     ) {
-        MainScreenContent()
+        MainScreenContent(
+            elevatorState = state.elevatorState,
+            reservedSeats = state.reservedSeats,
+            onClickBook = { component.onOutput(MainComponent.Output.OpenBookingScreen) },
+            onClickShowOptions = { component.onEvent(MainStore.Intent.OnClickShowOption) },
+            onClickShowMap = { component.onOutput(MainComponent.Output.OpenMap) }
+        )
         SnackBarErrorMessage(
             modifier = Modifier.align(Alignment.BottomCenter),
             isVisible = isErrorMessageVisible,
@@ -103,7 +109,13 @@ private fun SnackBarSuccessMessage(modifier: Modifier, isVisible: Boolean) {
 }
 
 @Composable
-fun MainScreenContent() {
+fun MainScreenContent(
+    reservedSeats: List<ReservedSeat>,
+    elevatorState: ElevatorState,
+    onClickBook: () -> Unit,
+    onClickShowMap: () -> Unit,
+    onClickShowOptions: () -> Unit,
+) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -117,7 +129,7 @@ fun MainScreenContent() {
             )
             Spacer(modifier = Modifier.height(24.dp))
             ElevatorUIComponent(
-                elevatorState = ElevatorState.Below,
+                elevatorState = elevatorState,
                 onClickCallElevator = {}
             )
             Spacer(modifier = Modifier.height(24.dp))
@@ -128,26 +140,10 @@ fun MainScreenContent() {
                 .padding(horizontal =  16.dp),
         ) {
             BookingInformation(
-                reservedSeats = listOf(
-                    ReservedSeat(
-                        seatName = "Рабочее масто А1",
-                        bookingDay = "Пн, 1 июля",
-                        bookingTime = "12:00 - 14:00"
-                    ),
-                    ReservedSeat(
-                        seatName = "Рабочее масто А1",
-                        bookingDay = "Пн, 1 июля",
-                        bookingTime = "12:00 - 14:00"
-                    ),
-                    ReservedSeat(
-                        seatName = "Рабочее масто А1",
-                        bookingDay = "Пн, 1 июля",
-                        bookingTime = "12:00 - 14:00"
-                    ),
-                ),
-                onClickBook = {},
-                onClickShowMap = {},
-                onClickShowOptions = {}
+                reservedSeats = reservedSeats,
+                onClickBook = onClickBook,
+                onClickShowMap = onClickShowMap,
+                onClickShowOptions = onClickShowOptions
             )
         }
     }
