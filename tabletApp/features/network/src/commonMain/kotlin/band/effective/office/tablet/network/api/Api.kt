@@ -5,7 +5,7 @@ import band.effective.office.tablet.network.model.WebServerEvent
 import kotlinx.coroutines.CoroutineScope
 
 interface Api {
-    //TODO("change return value")
+    //TODO(Maksim Mishenko): change return value
     suspend fun getRoomInfo(): RoomInfo
     suspend fun getOrganizers(): List<String>
     suspend fun cancelEvent(): Boolean

@@ -1,6 +1,5 @@
 package band.effective.office.tablet.ui.mainScreen.components.bookingRoomComponents
 
-import android.util.Log
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.useCase.CheckBookingUseCase
 import band.effective.office.tablet.domain.useCase.UpdateUseCase

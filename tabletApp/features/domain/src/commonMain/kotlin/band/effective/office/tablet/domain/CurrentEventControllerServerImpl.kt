@@ -6,9 +6,9 @@ import band.effective.office.tablet.network.repository.ServerUpdateRepository
 import kotlinx.coroutines.launch
 
 class CurrentEventControllerServerImpl(
-    private val roomUseCase: RoomInfoUseCase,
-    private val serverUpdateRepository: ServerUpdateRepository,
-    private val cancelRepository: CancelRepository
+    roomUseCase: RoomInfoUseCase,
+    serverUpdateRepository: ServerUpdateRepository,
+    cancelRepository: CancelRepository
 ) : CurrentEventController(roomUseCase, serverUpdateRepository, cancelRepository) {
     override fun update() = scope.launch {}
 }
