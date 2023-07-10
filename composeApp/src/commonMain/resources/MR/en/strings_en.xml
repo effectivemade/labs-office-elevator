@@ -4,9 +4,15 @@
     <string name="sign_in_google">Sign in to Effective email</string>
     <string name="something_went_wrong">Something went wrong. Please try again</string>
 
+    <string name="by_date"> By date </string>
+    <string name="show_map">Show on map</string>
+    <string name="book_a_seat">Book a seat</string>
+    <string name="nearest_bookings">Your upcoming bookings</string>
+    <string name="none_booking_seat">You dont have any bookings yet</string>
+
     <!--Tab titles-->
     <string name="profile">Profile</string>
-    <string name="main">Elevator</string>
+    <string name="main">Main</string>
     <string name="booking">Booking</string>
     <string name="employees">Employees</string>
 

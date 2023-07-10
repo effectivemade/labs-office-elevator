@@ -1,8 +1,12 @@
 package band.effective.office.elevator.ui.main
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Snackbar
@@ -16,11 +20,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.ElevatorButton
+import band.effective.office.elevator.components.TitlePage
 import band.effective.office.elevator.successGreen
+import band.effective.office.elevator.ui.main.components.BookingInformation
+import band.effective.office.elevator.ui.main.components.ElevatorUIComponent
 import band.effective.office.elevator.ui.main.store.MainStore
+import band.effective.office.elevator.ui.models.ElevatorState
+import band.effective.office.elevator.ui.models.ReservedSeat
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.coroutines.delay
@@ -48,14 +58,22 @@ fun MainScreen(component: MainComponent) {
                     delay(3000)
                     isSuccessMessageVisible = false
                 }
+                MainStore.Label.ShowOptions -> {}
             }
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        ElevatorScreenContent(
-            isButtonActive = state.buttonActive,
-            onElevatorButtonClick = component::onEvent
+    Box(
+        modifier = Modifier
+            .background(Color.White)
+            .fillMaxSize()
+    ) {
+        MainScreenContent(
+            elevatorState = state.elevatorState,
+            reservedSeats = state.reservedSeats,
+            onClickBook = { component.onOutput(MainComponent.Output.OpenBookingScreen) },
+            onClickShowOptions = { component.onEvent(MainStore.Intent.OnClickShowOption) },
+            onClickShowMap = { component.onOutput(MainComponent.Output.OpenMap) }
         )
         SnackBarErrorMessage(
             modifier = Modifier.align(Alignment.BottomCenter),
@@ -67,7 +85,6 @@ fun MainScreen(component: MainComponent) {
             isVisible = isSuccessMessageVisible
         )
     }
-
 }
 
 @Composable
@@ -91,19 +108,44 @@ private fun SnackBarSuccessMessage(modifier: Modifier, isVisible: Boolean) {
     }
 }
 
-
 @Composable
-private fun ElevatorScreenContent(
-    isButtonActive: Boolean,
-    onElevatorButtonClick: (MainStore.Intent) -> Unit
+fun MainScreenContent(
+    reservedSeats: List<ReservedSeat>,
+    elevatorState: ElevatorState,
+    onClickBook: () -> Unit,
+    onClickShowMap: () -> Unit,
+    onClickShowOptions: () -> Unit,
 ) {
-    Box(
-        modifier = Modifier.fillMaxSize().padding(16.dp)
+    Column(
+        modifier = Modifier.fillMaxSize()
     ) {
-        ElevatorButton(
-            modifier = Modifier.align(Alignment.Center),
-            isActive = isButtonActive,
-            onButtonClick = { onElevatorButtonClick(MainStore.Intent.OnButtonClicked) }
-        )
+        Column (
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+        ) {
+            TitlePage(
+                title = stringResource(MainRes.strings.main),
+                modifier = Modifier.padding(top = 60.dp)
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            ElevatorUIComponent(
+                elevatorState = elevatorState,
+                onClickCallElevator = {}
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+        Column(
+            modifier = Modifier
+                .background(MaterialTheme.colors.onBackground)
+                .padding(horizontal =  16.dp),
+        ) {
+            BookingInformation(
+                reservedSeats = reservedSeats,
+                onClickBook = onClickBook,
+                onClickShowMap = onClickShowMap,
+                onClickShowOptions = onClickShowOptions
+            )
+        }
     }
 }
+

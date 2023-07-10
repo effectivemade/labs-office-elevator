@@ -3,8 +3,8 @@ package band.effective.office.elevator.ui.main.store
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.data.ApiResponse
 import band.effective.office.elevator.domain.OfficeElevatorRepository
-import band.effective.office.elevator.ui.main.store.MainStore.Intent
-import band.effective.office.elevator.ui.main.store.MainStore.State
+import band.effective.office.elevator.ui.models.ElevatorState
+import band.effective.office.elevator.ui.models.ReservedSeat
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -23,40 +23,63 @@ internal class MainStoreFactory(
     private val officeElevatorRepository: OfficeElevatorRepository by inject()
 
     fun create(): MainStore =
-        object : MainStore, Store<Intent, State, MainStore.Label> by storeFactory.create(
-            name = "ElevatorStore",
-            initialState = State(
-                buttonActive = false,
+        object : MainStore, Store<MainStore.Intent, MainStore.State, MainStore.Label> by storeFactory.create(
+            name = "MainStore",
+            initialState = MainStore.State(
+                elevatorState = ElevatorState.Below,
+                reservedSeats = listOf(
+                    ReservedSeat(
+                        seatName = "Рабочее масто А1",
+                        bookingDay = "Пн, 1 июля",
+                        bookingTime = "12:00 - 14:00"
+                    ),
+                    ReservedSeat(
+                        seatName = "Рабочее масто А1",
+                        bookingDay = "Пн, 1 июля",
+                        bookingTime = "12:00 - 14:00"
+                    ),
+                    ReservedSeat(
+                        seatName = "Рабочее масто А1",
+                        bookingDay = "Пн, 1 июля",
+                        bookingTime = "12:00 - 14:00"
+                    ),
+                ),
             ),
             executorFactory = ::ExecutorImpl,
             reducer = ReducerImpl
         ) {}
 
     private sealed interface Msg {
-        data class SwitchButton(val isActive: Boolean) : Msg
+        data class UpdateElevatorState(val elevatorState: ElevatorState) : Msg
+        data class UpdateSeatsReservation(val reservedSeats: List<ReservedSeat>) : Msg
     }
 
     private inner class ExecutorImpl :
-        CoroutineExecutor<Intent, Nothing, State, Msg, MainStore.Label>() {
-        override fun executeIntent(intent: Intent, getState: () -> State) {
+        CoroutineExecutor<MainStore.Intent, Nothing, MainStore.State, Msg, MainStore.Label>() {
+        override fun executeIntent(intent: MainStore.Intent, getState: () -> MainStore.State) {
             when (intent) {
-                Intent.OnButtonClicked -> {
-                    if (!getState().buttonActive)
+                MainStore.Intent.OnClickCallElevator -> {
+                    if (getState().elevatorState is ElevatorState.Below)
                         doElevatorCall()
+                }
+                MainStore.Intent.OnClickShowOption -> {
+                    scope.launch {
+                        publish(MainStore.Label.ShowOptions)
+                    }
                 }
             }
         }
 
         private fun doElevatorCall() {
             scope.launch {
-                dispatch(Msg.SwitchButton(true))
+                dispatch(Msg.UpdateElevatorState(ElevatorState.Goes))
                 delay(1000)
                 publish(
                     when (val result = officeElevatorRepository.call()) {
                         is ApiResponse.Error.HttpError -> MainStore.Label.ShowError(
                             MainStore.ErrorState(
                                 (MainRes.strings.server_error.format(result.code.toString()))
-                            as StringResource
+                                        as StringResource
                             )
                         )
 
@@ -84,15 +107,15 @@ internal class MainStoreFactory(
                     }
                 )
                 delay(1000)
-                dispatch(Msg.SwitchButton(false))
+                dispatch(Msg.UpdateElevatorState(ElevatorState.Raised))
             }
         }
     }
-
-    private object ReducerImpl : Reducer<State, Msg> {
-        override fun State.reduce(message: Msg): State =
+    private object ReducerImpl : Reducer<MainStore.State, Msg> {
+        override fun MainStore.State.reduce(message: Msg): MainStore.State =
             when (message) {
-                is Msg.SwitchButton -> copy(buttonActive = message.isActive)
+                is Msg.UpdateElevatorState -> copy(elevatorState = message.elevatorState)
+                is Msg.UpdateSeatsReservation -> copy(reservedSeats = message.reservedSeats)
             }
     }
 }

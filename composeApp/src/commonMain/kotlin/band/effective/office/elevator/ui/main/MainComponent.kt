@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 class MainComponent(componentContext: ComponentContext, storeFactory: StoreFactory) :
     ComponentContext by componentContext {
 
-    private val elevatorStore =
+    private val mainStore =
         instanceKeeper.getStore {
             MainStoreFactory(
                 storeFactory = storeFactory,
@@ -22,11 +22,25 @@ class MainComponent(componentContext: ComponentContext, storeFactory: StoreFacto
         }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val state: StateFlow<MainStore.State> = elevatorStore.stateFlow
+    val state: StateFlow<MainStore.State> = mainStore.stateFlow
 
-    val label: Flow<MainStore.Label> = elevatorStore.labels
+    val label: Flow<MainStore.Label> = mainStore.labels
 
     fun onEvent(event: MainStore.Intent) {
-        elevatorStore.accept(event)
+        mainStore.accept(event)
+    }
+
+    fun onOutput(output: Output) {
+        when(output) {
+            is Output.OpenBookingScreen -> TODO()
+            is Output.OpenMap -> TODO()
+        }
+    }
+
+    sealed interface Output {
+        object OpenMap : Output
+
+        object OpenBookingScreen : Output
+
     }
 }
