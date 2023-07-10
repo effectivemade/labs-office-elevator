@@ -11,14 +11,16 @@ import band.effective.office.tablet.ui.mainScreen.components.MainScreenView
 @Composable
 fun MainScreen(component: MainComponent) {
     val state by component.state.collectAsState()
-    when{
+    when {
         state.isError -> {}
         state.isLoad -> {}
         state.isData -> {
             MainScreenView(
                 room = state.roomInfo,
+                showBookingModal = state.showBookingModal,
                 mockComponent = component.mockSettingsComponent,
-                bookingRoomComponent = component.bookingRoomComponent
+                bookingRoomComponent = component.bookingRoomComponent,
+                selectRoomComponent = component.selectRoomComponent
             )
         }
     }

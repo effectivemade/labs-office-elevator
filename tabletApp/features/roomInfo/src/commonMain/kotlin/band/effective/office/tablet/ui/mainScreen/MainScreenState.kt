@@ -8,7 +8,8 @@ data class MainScreenState(
     val isData: Boolean,
     val isError: Boolean,
     val roomInfo: RoomInfo,
-    val error: String
+    val error: String,
+    val showBookingModal: Boolean
 ) {
     companion object {
         val defaultState =
@@ -17,7 +18,8 @@ data class MainScreenState(
                 isData = false,
                 isError = false,
                 roomInfo = RoomInfo.defaultValue,
-                error = ""
+                error = "",
+                showBookingModal = false
             )
     }
 }

@@ -8,8 +8,6 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.essenty.parcelable.Parcelable
 import kotlinx.android.parcel.Parcelize
-import tablet.domain.MockBooking
-import tablet.ui.selectRoomScreen.RealSelectRoomComponent
 
 class RootComponent(componentContext: ComponentContext) : ComponentContext by componentContext {
 
@@ -29,7 +27,7 @@ class RootComponent(componentContext: ComponentContext) : ComponentContext by co
 
         is Config.Main -> {
             Child.MainChild(RealMainComponent(
-                componentContext =  componentContext,
+                componentContext = componentContext,
                 OnSelectOtherRoomRequest = {
                     navigation.push(Config.SelectRoom)
                 }
