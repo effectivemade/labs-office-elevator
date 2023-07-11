@@ -14,9 +14,18 @@
     <string name="employee_soon_in_office">Will be today</string>
     <string name="employee_not_soon_in_office">No reservations</string>
 
+    <string name="by_date"> By date </string>
+    <string name="show_map">Show on map</string>
+    <string name="book_a_seat">Book a seat</string>
+    <string name="nearest_bookings">Your upcoming bookings</string>
+    <string name="none_booking_seat">You dont have any bookings yet</string>
+
     <!--Tab titles-->
     <string name="profile">Profile</string>
     <string name="elevator">Elevator</string>
+    <string name="employees">Employees</string>
+    <string name="main">Main</string>
+    <string name="booking">Booking</string>
     <string name="employees">Employees</string>
 
 
@@ -32,4 +41,8 @@
     <!-- Success messages -->
     <string name="elevator_called_successfully">Successfully!</string>
 
+    <!-- Profile specifics-->
+    <string name="exit">Exit</string>
+    <string name="phone_number">Phone number</string>
+    <string name="telegram">Telegram</string>
 </resources>
