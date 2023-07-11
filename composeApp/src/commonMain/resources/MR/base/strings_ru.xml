@@ -4,6 +4,19 @@
     <string name="sign_in_google">Войти в аккаунт Effective</string>
     <string name="something_went_wrong">Что-то пошло не так. Пожалуйста попробуйте еще раз</string>
 
+    <!--Elevator-->
+    <string name="elevator_below">Лифт на 1-м этаже</string>
+    <string name="elevator_goes" >Лифт едет</string>
+    <string name="elevator_raised" >Лифт поднят</string>
+    <string name="elevator_button" >Поднять лифт</string>
+    <string name="elevator_wait" >Подождите...</string>
+    <string name="elevator_ready" > Вызовите лифт через кнопку</string>
+
+    <string name="by_date"> По дате </string>
+    <string name="show_map">Показать на карте</string>
+    <string name="book_a_seat">Забронировать место</string>
+    <string name="nearest_bookings">Ваши ближайшие брони</string>
+    <string name="none_booking_seat">У вас пока нет бронирований</string>
     <!--Auth strings-->
     <string name="skip">Пропустить</string>
     <string name="continue">Продолжить</string>
@@ -24,7 +37,9 @@
 
     <!--Tab titles-->
     <string name="profile">Профиль</string>
-    <string name="elevator">Лифт</string>
+    <string name="main">Главная</string>
+    <string name="booking">Бронирование</string>
+    <string name="employees">Сотрудники</string>
 
     <!--Error messages-->
     <string name="you_need_to_sign_in">Для работы приложения нужно авторизоваться</string>
@@ -37,4 +52,9 @@
 
     <!-- Success messages -->
     <string name="elevator_called_successfully">Лифт успешно вызван!</string>
+
+    <!-- Profile specifics-->
+    <string name="exit">Выход</string>
+    <string name="phone_number">Телефон</string>
+    <string name="telegram">Telegram</string>
 </resources>

@@ -3,8 +3,7 @@ package band.effective.office.elevator.ui.profile.store
 import band.effective.office.elevator.data.ApiResponse
 import band.effective.office.elevator.domain.GoogleSignIn
 import band.effective.office.elevator.domain.models.GoogleAccount
-import band.effective.office.elevator.ui.profile.store.ProfileStore.Intent
-import band.effective.office.elevator.ui.profile.store.ProfileStore.State
+import band.effective.office.elevator.ui.profile.store.ProfileStore.*
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -23,9 +22,9 @@ internal class ProfileStoreFactory(
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): ProfileStore =
-        object : ProfileStore, Store<Intent, State, ProfileStore.Label> by storeFactory.create(
+        object : ProfileStore, Store<Intent, User, Label> by storeFactory.create(
             name = "ProfileStore",
-            initialState = State(imageUrl = null, username = null, email = null),
+            initialState = User(imageUrl = null, username = null, telegram = null, post = null, phoneNumber = null),
             bootstrapper = coroutineBootstrapper {
                 dispatch(Action.FetchUserInfo)
             },
@@ -42,8 +41,8 @@ internal class ProfileStoreFactory(
     }
 
     private inner class ExecutorImpl :
-        CoroutineExecutor<Intent, Action, State, Msg, ProfileStore.Label>() {
-        override fun executeIntent(intent: Intent, getState: () -> State) {
+        CoroutineExecutor<Intent, Action, User, Msg, Label>() {
+        override fun executeIntent(intent: Intent, getUser: () -> User) {
             when (intent) {
                 Intent.SignOutClicked -> doSignOut()
             }
@@ -51,10 +50,10 @@ internal class ProfileStoreFactory(
 
         private fun doSignOut() {
             signInClient.signOut()
-            publish(ProfileStore.Label.OnSignedOut)
+            publish(Label.OnSignedOut)
         }
 
-        override fun executeAction(action: Action, getState: () -> State) {
+        override fun executeAction(action: Action, getUser: () -> User) {
             when (action) {
                 Action.FetchUserInfo -> fetchUserInfo()
             }
@@ -63,23 +62,25 @@ internal class ProfileStoreFactory(
         private fun fetchUserInfo() {
             scope.launch {
                 when (val result = signInClient.retrieveAuthorizedUser()) {
-                    is ApiResponse.Error.HttpError -> TODO()
-                    ApiResponse.Error.NetworkError -> TODO()
-                    ApiResponse.Error.SerializationError -> TODO()
-                    ApiResponse.Error.UnknownError -> TODO()
+                    is ApiResponse.Error.HttpError -> {}
+                    ApiResponse.Error.NetworkError -> {}
+                    ApiResponse.Error.SerializationError -> {}
+                    ApiResponse.Error.UnknownError -> {}
                     is ApiResponse.Success -> dispatch(Msg.ProfileData(user = result.body))
                 }
             }
         }
     }
 
-    private object ReducerImpl : Reducer<State, Msg> {
-        override fun State.reduce(message: Msg): State =
+    private object ReducerImpl : Reducer<User, Msg> {
+        override fun User.reduce(message: Msg): User =
             when (message) {
-                is Msg.ProfileData -> State(
+                is Msg.ProfileData -> User(
                     imageUrl = message.user.photoUrl,
                     username = message.user.name,
-                    email = message.user.email
+                    telegram = null,
+                    post = null,
+                    phoneNumber = null,
                 )
             }
     }
