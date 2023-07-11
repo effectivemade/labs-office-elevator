@@ -27,7 +27,8 @@ class MainComponent(
     val bookingRoomComponent: BookingRoomComponent = BookingRoomComponent(
         componentContext = childContext(key = "bookingRoom"),
         onCurrentBookingRoom = { mainStore.accept(MainStore.Intent.OnBookingCurrentRoomRequest) },
-        storeFactory = storeFactory
+        storeFactory = storeFactory,
+        onBookingOtherRoom = { OnSelectOtherRoomRequest() }
     )
     val selectRoomComponent: RealSelectRoomComponent =
         RealSelectRoomComponent(

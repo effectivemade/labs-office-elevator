@@ -10,18 +10,15 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
 import java.util.Calendar
 import java.util.GregorianCalendar
 
 class BookingRoomComponent(
     private val componentContext: ComponentContext,
     storeFactory: StoreFactory,
-    private val onCurrentBookingRoom: () -> Unit
+    private val onCurrentBookingRoom: () -> Unit,
+    private val onBookingOtherRoom: () -> Unit
 ) :
     ComponentContext by componentContext {
 
@@ -50,7 +47,7 @@ class BookingRoomComponent(
     }
 
     fun bookingOtherRoom(){
-
+        onBookingOtherRoom()
     }
 
 

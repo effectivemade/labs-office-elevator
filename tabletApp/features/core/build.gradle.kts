@@ -6,9 +6,6 @@ plugins {
 android {
    compileSdk = 33
 }
-dependencies {
-    implementation("androidx.slice:slice-view:1.0.0")
-}
 
 kotlin {
     android {
