@@ -66,24 +66,6 @@ fun SecondAuthScreen(modifier: Modifier) {
             }
         }
 
-        if (tabIndex.value == 2) {
-            PrimaryButton(
-                text = stringResource(MainRes.strings.skip),
-                modifier = Modifier,
-                cornerValue = 40.dp,
-                contentTextSize = 16.sp,
-                paddingValues = PaddingValues(),
-                elevation = elevation,
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = MaterialTheme.colors.background
-                ),
-                border = BorderStroke(width = 2.dp, color = MaterialTheme.colors.secondary),
-                onButtonClick = {
-
-                }
-            )
-        }
-
         Spacer(modifier = Modifier.height(16.dp))
 
         PrimaryButton(
