@@ -17,6 +17,6 @@ interface ProfileEditStore : Store<ProfileEditStore.Intent,ProfileEditStore.User
 
     sealed interface Label {
         object ReturnedInProfile : Label
-        object SavedChange : Intent
+        object SavedChange :  Label
     }
 }

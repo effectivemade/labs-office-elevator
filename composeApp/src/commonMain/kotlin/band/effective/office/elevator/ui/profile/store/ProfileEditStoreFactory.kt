@@ -2,6 +2,7 @@ package band.effective.office.elevator.ui.profile.store
 
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
+import band.effective.office.elevator.ui.profile.store.ProfileEditStore.*
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
@@ -14,20 +15,20 @@ internal class ProfileEditStoreFactory(
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): ProfileEditStore =
         object : ProfileEditStore,
-            Store<ProfileEditStore.Intent, ProfileEditStore.User, ProfileEditStore.Label>
+            Store<Intent, User, Label>
             by storeFactory.create(
                 name = "ProfileEditStore",
-                initialState = ProfileEditStore.User(
+                initialState = User(
                     username = null,
                     telegram = null,
                     post = null,
                     phoneNumber = null
                 ),
                 bootstrapper = coroutineBootstrapper {
-                    dispatch(ProfileEditStoreFactory.Action.FetchUserInfo)
+                    dispatch(Action.FetchUserInfo)
                 },
                 executorFactory = ::ExecutorImpl,
-                reducer = ProfileEditStoreFactory.ReducerImpl
+                reducer = ReducerImpl
             ) {}
 
     private sealed interface Action {
@@ -35,23 +36,24 @@ internal class ProfileEditStoreFactory(
     }
 
     private sealed interface Msg {
-        data class ProfileData(val user: ProfileEditStore.User) : Msg
+        data class ProfileData(val user: User) : Msg
     }
 
     private inner class ExecutorImpl :
-        CoroutineExecutor<ProfileEditStore.Intent,Action, ProfileEditStore.User,Msg, ProfileEditStore.Label>() {
+        CoroutineExecutor<Intent,Action, User,Msg, Label>() {
         override fun executeIntent(
-            intent: ProfileEditStore.Intent,
-            getState: () -> ProfileEditStore.User
+            intent: Intent,
+            getState: () -> User
         ) {
             when (intent) {
-                ProfileEditStore.Intent.BackInProfileClicked -> doReturnProfile()
-                ProfileEditStore.Intent.SaveChangeClicked -> doSaveChange()
-                else -> {}
+                Intent.BackInProfileClicked -> doReturnProfile()
+                Intent.SaveChangeClicked -> doSaveChange()
             }
         }
-
-        override fun executeAction(action: Action, getState: () -> ProfileEditStore.User) {
+        private fun doSaveChange() {
+            publish(Label.SavedChange)
+        }
+        override fun executeAction(action: Action, getState: () -> User) {
             when (action) {
                 Action.FetchUserInfo -> fetchUserInfo()
             }
@@ -61,19 +63,17 @@ internal class ProfileEditStoreFactory(
             TODO("Not yet implemented")
         }
 
-        private fun doSaveChange() {
-            TODO("Not yet implemented")
-        }
+
 
         private fun doReturnProfile() {
-            TODO("Not yet implemented")
+            publish(Label.ReturnedInProfile)
         }
     }
 
-    private object ReducerImpl : Reducer<ProfileEditStore.User, Msg> {
-        override fun ProfileEditStore.User.reduce(message: Msg): ProfileEditStore.User =
+    private object ReducerImpl : Reducer<User, Msg> {
+        override fun User.reduce(message: Msg): User =
             when (message) {
-                is Msg.ProfileData -> ProfileEditStore.User(
+                is Msg.ProfileData -> User(
                     username = null,
                     telegram = null,
                     post = null,
