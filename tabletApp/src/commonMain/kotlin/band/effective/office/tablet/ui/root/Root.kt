@@ -2,6 +2,8 @@ package band.effective.office.tablet.ui.root
 
 import androidx.compose.runtime.Composable
 import band.effective.office.tablet.ui.freeNegotiationsScreen.FreeNegotiationsScreen
+import band.effective.office.tablet.ui.mainScreen.mainScreen.MainScreen
+import band.effective.office.tablet.ui.freeNegotiationsScreen.FreeNegotiationsScreen
 import band.effective.office.tablet.ui.mainScreen.MainScreen
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomScreen

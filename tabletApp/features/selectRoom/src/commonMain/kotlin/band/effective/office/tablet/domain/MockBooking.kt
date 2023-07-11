@@ -5,7 +5,7 @@ import band.effective.office.tablet.domain.model.EventInfo
 import java.util.Calendar
 
 object MockBooking {
-    val bookingCheckTime15min = Booking(
+    val bookingCheckTime15min = band.effective.office.tablet.domain.model.Booking(
         nameRoom = "Sirius",
         eventInfo = EventInfo(
             startTime = setTime(2023, 4, 20, 15, 20),
@@ -14,7 +14,7 @@ object MockBooking {
         )
     )
 
-    val bookingCheckTime1h = Booking(
+    val bookingCheckTime1h = band.effective.office.tablet.domain.model.Booking(
         nameRoom = "Sirius",
         eventInfo = EventInfo(
             startTime = setTime(2023, 11, 11, 15, 20),
@@ -23,7 +23,7 @@ object MockBooking {
         )
     )
 
-    val bookingCheckTime1h15min = Booking(
+    val bookingCheckTime1h15min = band.effective.office.tablet.domain.model.Booking(
         nameRoom = "Sirius",
         eventInfo = EventInfo(
             startTime = setTime(2023, 11, 11, 15, 20),
@@ -32,7 +32,7 @@ object MockBooking {
         )
     )
 
-    val bookingCheckOrganizer = Booking(
+    val bookingCheckOrganizer = band.effective.office.tablet.domain.model.Booking(
         nameRoom = "Sirius",
         eventInfo = EventInfo(
             startTime = setTime(2023, 1, 7, 9, 20),

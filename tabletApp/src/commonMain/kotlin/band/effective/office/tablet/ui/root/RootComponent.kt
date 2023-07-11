@@ -1,15 +1,17 @@
 package band.effective.office.tablet.ui.root
 
 import band.effective.office.tablet.ui.freeNegotiationsScreen.FreeNegotiationsComponent
-import band.effective.office.tablet.ui.mainScreen.RealMainComponent
+import band.effective.office.tablet.ui.mainScreen.mainScreen.MainComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.essenty.parcelable.Parcelable
+import com.arkivanov.mvikotlin.core.store.StoreFactory
 import kotlinx.android.parcel.Parcelize
 
-class RootComponent(componentContext: ComponentContext) : ComponentContext by componentContext {
+class RootComponent(componentContext: ComponentContext, private val storeFactory: StoreFactory) :
+    ComponentContext by componentContext {
 
     private val navigation = StackNavigation<Config>()
 
@@ -26,12 +28,15 @@ class RootComponent(componentContext: ComponentContext) : ComponentContext by co
     ): Child = when (config) {
 
         is Config.Main -> {
-            Child.MainChild(RealMainComponent(
-                componentContext = componentContext,
-                OnSelectOtherRoomRequest = {
-                    navigation.push(Config.SelectRoom)
-                }
-            ))
+            Child.MainChild(
+                MainComponent(
+                    componentContext = componentContext,
+                    OnSelectOtherRoomRequest = {
+                        navigation.push(Config.SelectRoom)
+                    },
+                    storeFactory = storeFactory
+                )
+            )
         }
 
         is Config.SelectRoom -> {
@@ -41,7 +46,7 @@ class RootComponent(componentContext: ComponentContext) : ComponentContext by co
 
     sealed class Child {
         data class SelectRoomChild(val component: FreeNegotiationsComponent) : Child()
-        data class MainChild(val component: RealMainComponent) : Child()
+        data class MainChild(val component: MainComponent) : Child()
     }
 
     sealed class Config : Parcelable {

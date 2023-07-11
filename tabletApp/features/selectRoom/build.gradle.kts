@@ -41,6 +41,7 @@ kotlin {
                 //Libres
                 implementation(Dependencies.Libres.libresCompose)
 
+                implementation(project(":tabletApp:features:core"))
             }
         }
 
