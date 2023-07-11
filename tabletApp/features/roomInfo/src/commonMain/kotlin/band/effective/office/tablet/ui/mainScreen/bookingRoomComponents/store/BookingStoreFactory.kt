@@ -1,6 +1,7 @@
 package band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store
 
 import band.effective.office.tablet.domain.model.EventInfo
+import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.domain.useCase.CheckBookingUseCase
 import band.effective.office.tablet.domain.useCase.UpdateUseCase
 import com.arkivanov.mvikotlin.core.store.Reducer
@@ -40,11 +41,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                             {
                                 launch {
                                     dispatch(
-                                        Action.UpdateEvents(
-                                            !checkBookingUseCase(eventInfo),
-                                            checkBookingUseCase.busyEvent(eventInfo)
-                                                ?: EventInfo.emptyEvent
-                                        )
+                                        Action.UpdateEvents(it)
                                     )
                                 }
 
@@ -64,10 +61,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             val busyEvent: EventInfo
         ) : Action
 
-        data class UpdateEvents(
-            val isBusy: Boolean,
-            val busyEvent: EventInfo
-        ) : Action
+        data class UpdateEvents(val newData: RoomInfo) : Action
     }
 
     private sealed interface Message {
@@ -118,7 +112,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     )
                 }
 
-                is Action.UpdateEvents -> Message.UpdateBusy(action.isBusy, action.busyEvent)
+                is Action.UpdateEvents -> checkBusy(getState())
             }
         }
 
@@ -142,6 +136,15 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     state.length + change,
                     !checkBookingUseCase(event),
                     checkBookingUseCase.busyEvent(event) ?: EventInfo.emptyEvent
+                )
+            )
+        }
+
+        fun checkBusy(state: BookingStore.State) = scope.launch {
+            dispatch(
+                Message.UpdateBusy(
+                    !checkBookingUseCase(state.toEvent()),
+                    checkBookingUseCase.busyEvent(state.toEvent()) ?: EventInfo.emptyEvent
                 )
             )
         }
