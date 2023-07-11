@@ -1,8 +1,8 @@
-package band.effective.office.elevator.ui.profile.store
+package band.effective.office.elevator.ui.profile.editProfile.store
 
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
-import band.effective.office.elevator.ui.profile.store.ProfileEditStore.*
+import band.effective.office.elevator.ui.profile.editProfile.store.ProfileEditStore.*
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
@@ -40,7 +40,7 @@ internal class ProfileEditStoreFactory(
     }
 
     private inner class ExecutorImpl :
-        CoroutineExecutor<Intent,Action, User,Msg, Label>() {
+        CoroutineExecutor<Intent, Action, User, Msg, Label>() {
         override fun executeIntent(
             intent: Intent,
             getState: () -> User

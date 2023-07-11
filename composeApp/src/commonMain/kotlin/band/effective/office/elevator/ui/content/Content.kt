@@ -4,14 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import band.effective.office.elevator.components.TabNavigationItem
-import band.effective.office.elevator.lightGray
 import band.effective.office.elevator.navigation.BookingTab
 import band.effective.office.elevator.navigation.EmployeesTab
 import band.effective.office.elevator.navigation.MainTab
@@ -19,7 +17,7 @@ import band.effective.office.elevator.navigation.ProfileTab
 import band.effective.office.elevator.ui.booking.BookingScreen
 import band.effective.office.elevator.ui.employee.EmployeeScreen
 import band.effective.office.elevator.ui.main.MainScreen
-import band.effective.office.elevator.ui.profile.ProfileScreen
+import band.effective.office.elevator.ui.profile.mainProfile.ProfileScreen
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.Direction
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.StackAnimation

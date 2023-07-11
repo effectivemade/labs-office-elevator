@@ -1,4 +1,4 @@
-package band.effective.office.elevator.ui.profile
+package band.effective.office.elevator.ui.profile.mainProfile
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -38,7 +38,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.MainRes
-import band.effective.office.elevator.ui.profile.store.ProfileStore
+import band.effective.office.elevator.ui.profile.mainProfile.store.ProfileStore
 import com.seiko.imageloader.model.ImageRequest
 import com.seiko.imageloader.rememberAsyncImagePainter
 import dev.icerock.moko.resources.ImageResource

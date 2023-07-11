@@ -1,4 +1,4 @@
-package band.effective.office.elevator.ui.profile.store
+package band.effective.office.elevator.ui.profile.mainProfile.store
 
 import com.arkivanov.mvikotlin.core.store.Store
 

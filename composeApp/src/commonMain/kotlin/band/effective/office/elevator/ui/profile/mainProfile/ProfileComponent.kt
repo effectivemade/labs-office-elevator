@@ -1,7 +1,7 @@
-package band.effective.office.elevator.ui.profile
+package band.effective.office.elevator.ui.profile.mainProfile
 
-import band.effective.office.elevator.ui.profile.store.ProfileStore
-import band.effective.office.elevator.ui.profile.store.ProfileStoreFactory
+import band.effective.office.elevator.ui.profile.mainProfile.store.ProfileStore
+import band.effective.office.elevator.ui.profile.mainProfile.store.ProfileStoreFactory
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory

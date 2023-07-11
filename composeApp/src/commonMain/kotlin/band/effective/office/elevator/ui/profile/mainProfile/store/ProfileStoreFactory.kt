@@ -1,9 +1,9 @@
-package band.effective.office.elevator.ui.profile.store
+package band.effective.office.elevator.ui.profile.mainProfile.store
 
 import band.effective.office.elevator.data.ApiResponse
 import band.effective.office.elevator.domain.GoogleSignIn
 import band.effective.office.elevator.domain.models.GoogleAccount
-import band.effective.office.elevator.ui.profile.store.ProfileStore.*
+import band.effective.office.elevator.ui.profile.mainProfile.store.ProfileStore.*
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
