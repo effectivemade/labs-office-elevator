@@ -38,4 +38,5 @@
     <string name="last_name_and_first_name">Last name and First name</string>
     <string name="post">Post</string>
     <string name="phone_number">Telephone number</string>
+    <string name="save">Save</string>
 </resources>

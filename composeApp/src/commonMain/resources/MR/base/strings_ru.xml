@@ -44,6 +44,6 @@
     <string name="profile_data">Данные профиля</string>
     <string name="last_name_and_first_name">Фамилия и Имя</string>
     <string name="post">Должность</string>
-    <string name="post">Номер телефона</string>
     <string name="phone_number">Номер телефона</string>
+    <string name="save">Сохранить</string>
 </resources>
