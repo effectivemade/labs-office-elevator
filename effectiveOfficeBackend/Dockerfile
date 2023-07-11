@@ -8,3 +8,5 @@ EXPOSE 8080:8080
 WORKDIR /app
 COPY --from=build /home/gradle/src/build/libs/*.jar /app/app.jar
 ENTRYPOINT ["java","-jar","/app/app.jar"]
+# to build: docker build -t effective_office_backend .
+# to run: docker run --rm -p 8080:8080 effective_office_backend
