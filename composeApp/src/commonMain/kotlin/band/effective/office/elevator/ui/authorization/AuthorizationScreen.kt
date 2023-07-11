@@ -21,9 +21,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.GoogleSignInButton
 import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.ui.authorization.store.AuthorizationStore
+import dev.icerock.moko.resources.compose.painterResource
+import dev.icerock.moko.resources.compose.stringResource
 import dev.icerock.moko.resources.desc.StringDesc
 
 
@@ -60,13 +63,13 @@ private fun AuthorizationScreenContent(onEvent: (AuthorizationStore.Intent) -> U
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    painterResource(MainRes.image.effective_logo),
+                    painterResource(MainRes.images.effective_logo),
                     contentDescription = "Effective logo",
                     modifier = Modifier.size(80.dp)
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
-                    text = MainRes.string.company_name,
+                    text = stringResource(MainRes.strings.company_name),
                     letterSpacing = 0.01.em,
                     fontSize = 40.sp,
                     color = Color(0xFF323E48) // TODO: Should add this color to Color.kt
