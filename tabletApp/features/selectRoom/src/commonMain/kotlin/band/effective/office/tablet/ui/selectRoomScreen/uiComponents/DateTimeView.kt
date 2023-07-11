@@ -21,7 +21,7 @@ import band.effective.office.tablet.utils.date
 import band.effective.office.tablet.utils.time24
 
 @Composable
-fun DateTimeView(modifier: Modifier, shape: RoundedCornerShape, booking: Booking) {
+fun DateTimeView(modifier: Modifier, shape: RoundedCornerShape, booking: band.effective.office.tablet.domain.model.Booking) {
     Card(
         shape = shape,
         backgroundColor = Color(0xFF3A3736)

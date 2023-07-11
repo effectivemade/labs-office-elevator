@@ -4,7 +4,6 @@ import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.network.model.WebServerEvent
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch

@@ -7,7 +7,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -16,7 +15,7 @@ import androidx.compose.ui.unit.sp
 import band.effective.office.tablet.domain.model.Booking
 
 @Composable
-fun OrganizerEventView(modifier: Modifier, shape: RoundedCornerShape, booking: Booking) {
+fun OrganizerEventView(modifier: Modifier, shape: RoundedCornerShape, booking: band.effective.office.tablet.domain.model.Booking) {
     Card(
         shape = shape,
         backgroundColor = Color(0xFF3A3736)) {

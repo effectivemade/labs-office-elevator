@@ -10,7 +10,7 @@ import band.effective.office.tablet.domain.model.Booking
 
 class RealSelectRoomComponent(
     componentContext: ComponentContext,
-    val booking: Booking,
+    val booking: band.effective.office.tablet.domain.model.Booking,
     private val onCloseRequest: () -> Unit
 ) : ComponentContext by componentContext, SelectRoomComponent, KoinComponent {
     private val interactor: ISelectRoomInteractor by inject()

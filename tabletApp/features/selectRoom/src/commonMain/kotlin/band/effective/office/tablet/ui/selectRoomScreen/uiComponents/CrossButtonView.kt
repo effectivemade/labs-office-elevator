@@ -1,6 +1,5 @@
 package band.effective.office.tablet.ui.selectRoomScreen.uiComponents
 
-import androidx.compose.foundation.background
 import androidx.compose.material.Icon
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -14,7 +13,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.features.selectRoom.MainRes
-import band.effective.office.tablet.domain.model.Booking
 
 @Composable
 fun CrossButtonView(modifier: Modifier, onDismissRequest:() -> Unit) {

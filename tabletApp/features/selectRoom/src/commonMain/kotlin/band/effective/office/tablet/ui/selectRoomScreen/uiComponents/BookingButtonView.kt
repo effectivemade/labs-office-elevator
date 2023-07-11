@@ -19,7 +19,7 @@ import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.utils.time24
 
 @Composable
-fun BookingButtonView(modifier: Modifier, color: Color, shape: RoundedCornerShape, booking: Booking) {
+fun BookingButtonView(modifier: Modifier, color: Color, shape: RoundedCornerShape, booking: band.effective.office.tablet.domain.model.Booking) {
     val isPressed = remember { mutableStateOf(false) }
     val colorButton =  if(isPressed.value) Color(0xFFED6521) else color
 

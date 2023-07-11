@@ -7,7 +7,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -17,7 +16,7 @@ import band.effective.office.tablet.domain.model.Booking
 import java.util.Calendar
 
 @Composable
-fun LengthEventView(modifier: Modifier, shape: RoundedCornerShape, booking: Booking) {
+fun LengthEventView(modifier: Modifier, shape: RoundedCornerShape, booking: band.effective.office.tablet.domain.model.Booking) {
 
     val hours = getLengthEvent(booking.eventInfo.startTime, booking.eventInfo.finishTime) / 60
     val minutes = getLengthEvent(booking.eventInfo.startTime, booking.eventInfo.finishTime) % 60
