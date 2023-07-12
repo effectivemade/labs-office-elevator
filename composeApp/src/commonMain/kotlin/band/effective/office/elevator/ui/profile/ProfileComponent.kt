@@ -53,9 +53,16 @@ class ProfileComponent(
                 ProfileEditComponent(
                     componentContext,
                     storeFactory,
+                    ::editProfileOutput,
                 )
             )
         }
+
+    private fun editProfileOutput(output: ProfileEditComponent.Output) {
+        when(output){
+            ProfileEditComponent.Output.OpenProfileFlow -> navigation.replaceAll(Config.MainProfile)
+        }
+    }
 
     private fun mainProfileOutput(output: MainProfileComponent.Output) {
         when(output){

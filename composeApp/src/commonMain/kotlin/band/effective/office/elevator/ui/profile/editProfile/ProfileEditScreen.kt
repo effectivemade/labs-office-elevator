@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -30,7 +29,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -47,13 +45,20 @@ import kotlinx.coroutines.withContext
 fun ProfileEditScreen(component: ProfileEditComponent){
     val user by component.user.collectAsState()
 
-
+    LaunchedEffect(component){
+        component.label.collect{label->
+            when(label){
+                ProfileEditStore.Label.ReturnedInProfile ->component.onOutput(ProfileEditComponent.Output.OpenProfileFlow)
+                else-> {}
+            }
+        }
+    }
     ProfileEditScreenContent(
         username = user.username,
         post = user.post,
         telegram = user.telegram,
         phoneNumber = user.phoneNumber
-    )
+    ) { component.onEvent(ProfileEditStore.Intent.BackInProfileClicked) }
 }
 
 @Composable
@@ -61,14 +66,15 @@ private fun ProfileEditScreenContent(
     username: String?,
     post: String?,
     telegram: String?,
-    phoneNumber: String?
+    phoneNumber: String?,
+    onReturnToProfile: () -> Unit
 ) {
     Column (
         modifier = Modifier.fillMaxSize().padding(top = 48.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ){
-        ProfileEditHeader()
+        ProfileEditHeader(onReturnToProfile)
 
         var listPrepared by remember {
             mutableStateOf(false)
@@ -189,12 +195,12 @@ private val fieldsList: ArrayList<FieldsData> = ArrayList()
 private data class FieldsData(val title:StringResource,val icon:ImageResource,val value: String?)
 
 @Composable
-fun ProfileEditHeader() {
+fun ProfileEditHeader(onReturnToProfile: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth()
     ){
-        IconButton(onClick = {}){
+        IconButton(onClick = onReturnToProfile){
             Icon(
                 painter = painterResource(MainRes.images.back_button),
                 contentDescription = null,

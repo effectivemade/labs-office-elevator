@@ -13,7 +13,9 @@ import kotlinx.coroutines.flow.StateFlow
 
 class ProfileEditComponent (
     componentContext: ComponentContext,
-    storeFactory: StoreFactory) : ComponentContext by componentContext {
+    storeFactory: StoreFactory,
+    private val output: (Output) -> Unit
+    ) : ComponentContext by componentContext {
 
             private val profileEditStore = instanceKeeper.getStore {
                     ProfileEditStoreFactory(
@@ -29,6 +31,9 @@ class ProfileEditComponent (
         fun onEvent(event:ProfileEditStore.Intent){
                 profileEditStore.accept(event)
         }
+    fun onOutput(output: Output){
+        output(output)
+    }
 
         sealed interface Output {
                 object OpenProfileFlow:Output
