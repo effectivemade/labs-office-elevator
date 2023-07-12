@@ -4,17 +4,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.OutlinedButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
@@ -33,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.ui.profile.editProfile.store.ProfileEditStore
 import dev.icerock.moko.resources.ImageResource
 import dev.icerock.moko.resources.StringResource
@@ -70,7 +68,7 @@ private fun ProfileEditScreenContent(
     onReturnToProfile: () -> Unit
 ) {
     Column (
-        modifier = Modifier.fillMaxSize().padding(top = 48.dp),
+        modifier = Modifier.fillMaxSize().padding(top = 48.dp).padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ){
@@ -89,46 +87,34 @@ private fun ProfileEditScreenContent(
         }
 
         if(listPrepared){
-            LazyColumn(modifier = Modifier.fillMaxSize().padding(top= 28.dp)){
+            LazyColumn(modifier = Modifier.padding(top= 28.dp)){
                 items(fieldsList){item->
                     FieldsItemStyle(item = item)
                 }
             }
         }
         Spacer(modifier = Modifier.weight(.1f))
-        OutlinedButton(
+        EffectiveButton(
             onClick = {},
-            shape = RoundedCornerShape(40.dp),
-        ){
-            Text(
-                text = stringResource(MainRes.strings.save),
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    color =  Color.White,
-                    fontWeight = FontWeight.Bold
-                ),
-                modifier = Modifier.padding(vertical = 10.dp)
-            )
-        }
+            buttonText = stringResource(MainRes.strings.save),
+            modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
+        )
     }
 }
 
 @Composable
 private fun FieldsItemStyle(item:FieldsData){
-    var itemText by remember { mutableStateOf(item.value) }
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(horizontal = 16.dp).padding(top = 16.dp).fillMaxWidth()
+    var itemText by remember { mutableStateOf("ii") }
+    Column(
+        modifier = Modifier.padding(top = 16.dp).fillMaxWidth()
     ) {
             Text(stringResource(item.title), modifier = Modifier.padding(bottom = 8.dp), style = TextStyle(
                 fontSize = 16.sp,
-                color = Color.Black
-            )
-            )
+                color = Color.Black))
         itemText?.let { it ->
             OutlinedTextField(
                 value = it,
-                modifier = Modifier.padding(vertical = 12.dp, horizontal = 16.dp),
+                modifier = Modifier.fillMaxWidth(),
                 onValueChange = {itemText = it},
                 shape = RoundedCornerShape(12.dp),
                 singleLine = true,
@@ -137,11 +123,10 @@ private fun FieldsItemStyle(item:FieldsData){
 
                 ),
                 leadingIcon = {
-                    Icon(
-                        painter= painterResource(item.icon),
-                        contentDescription = null,
-                    )
-                   Divider(modifier = Modifier.padding(horizontal = 16.dp).fillMaxHeight(), thickness = 1.dp)
+                        Icon(
+                            painter= painterResource(item.icon),
+                            contentDescription = null,
+                        )
                 },
                 trailingIcon = {
                     Icon(
@@ -163,7 +148,7 @@ private fun prepareFieldsData(username: String?, post: String?, telegram: String
 
     fieldsList.add(
         FieldsData(
-            icon = MainRes.images.person_icon,
+            icon = MainRes.images.person_ic,
             title = MainRes.strings.last_name_and_first_name,
             value = username,
         )
@@ -184,7 +169,7 @@ private fun prepareFieldsData(username: String?, post: String?, telegram: String
     )
     fieldsList.add(
         FieldsData(
-            icon = MainRes.images.icon_telegram,
+            icon = MainRes.images.mask_commercial_at,
             title = MainRes.strings.telegram,
             value = telegram,
         )
@@ -198,7 +183,7 @@ private data class FieldsData(val title:StringResource,val icon:ImageResource,va
 fun ProfileEditHeader(onReturnToProfile: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
     ){
         IconButton(onClick = onReturnToProfile){
             Icon(
