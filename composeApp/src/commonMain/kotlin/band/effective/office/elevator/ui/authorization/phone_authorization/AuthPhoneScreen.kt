@@ -46,12 +46,12 @@ fun AuthTab1Screen(component: AuthPhoneComponent) {
         }
     }
 
-    AuthTab1ScreenContent(onEvent = component::onEvent)
+    AuthPhoneScreenContent(onEvent = component::onEvent)
 }
 
 
 @Composable
-private fun AuthTab1ScreenContent(onEvent: (AuthPhoneStore.Intent) -> Unit) {
+private fun AuthPhoneScreenContent(onEvent: (AuthPhoneStore.Intent) -> Unit) {
     val error = remember { mutableStateOf(false) }
     val tabIndex = remember { mutableStateOf(0) }
     val elevation = ButtonDefaults.elevation(
