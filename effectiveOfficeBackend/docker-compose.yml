@@ -11,14 +11,14 @@ services:
       - dev
 
   db_postgres:
-    container_name: postgresForKtorTest
+    container_name: postgresForKtor
     image: postgres:15.2-alpine
     volumes:
       - ./sql/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
     environment:
-      - POSTGRES_DB=usernames
+      - POSTGRES_DB=effectiveOfficeBackendDB
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=test1234567890
     ports:
-      - "5434:5432"
+      - "15432:5432"
     restart: 'no'
