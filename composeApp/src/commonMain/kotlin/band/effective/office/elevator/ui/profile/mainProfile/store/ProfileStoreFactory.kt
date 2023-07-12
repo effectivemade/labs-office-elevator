@@ -45,7 +45,12 @@ internal class ProfileStoreFactory(
         override fun executeIntent(intent: Intent, getUser: () -> User) {
             when (intent) {
                 Intent.SignOutClicked -> doSignOut()
+                Intent.EditProfileClicked -> doTransaction()
             }
+        }
+
+        private fun doTransaction(){
+            publish(Label.OnClickedEdit)
         }
 
         private fun doSignOut() {

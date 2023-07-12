@@ -50,13 +50,14 @@ import kotlinx.coroutines.withContext
 
 
 @Composable
-fun ProfileScreen(component: ProfileComponent) {
+fun ProfileScreen(component: MainProfileComponent) {
     val user by component.user.collectAsState()
 
-    LaunchedEffect(component) {
+    LaunchedEffect(component){
         component.label.collect { label ->
-            when (label) {
-                ProfileStore.Label.OnSignedOut -> component.onOutput(ProfileComponent.Output.OpenAuthorizationFlow)
+            when(label){
+                ProfileStore.Label.OnSignedOut -> component.onOutput(MainProfileComponent.Output.OpenAuthorizationFlow)
+                ProfileStore.Label.OnClickedEdit -> component.onOutput(MainProfileComponent.Output.OpenEditProfile)
             }
         }
     }
@@ -67,7 +68,8 @@ fun ProfileScreen(component: ProfileComponent) {
         post = user.post,
         telegram = user.telegram,
         phoneNumber = user.phoneNumber,
-        onSignOut = { component.onEvent(ProfileStore.Intent.SignOutClicked) }
+        onSignOut = { component.onEvent(ProfileStore.Intent.SignOutClicked) },
+        onEditProfile = {component.onEvent(ProfileStore.Intent.EditProfileClicked)}
     )
 }
 
@@ -78,7 +80,8 @@ internal fun ProfileScreenContent(
     post: String?,
     telegram: String?,
     phoneNumber: String?,
-    onSignOut: () -> Unit
+    onSignOut: () -> Unit,
+    onEditProfile: ()-> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize().padding(top = 48.dp),
@@ -103,7 +106,7 @@ internal fun ProfileScreenContent(
                     .fillMaxSize().padding(top = 24.dp)
             ) {
                 items(optionsList) { item ->
-                    OptionsItemStyle(item = item)
+                    OptionsItemStyle(item = item, onEditProfile)
                 }
             }
         }
@@ -199,7 +202,7 @@ private fun ProfileHeader(onSignOut: () -> Unit) {
 }
 
 @Composable
-private fun OptionsItemStyle(item: OptionsData) {
+private fun OptionsItemStyle(item: OptionsData, onEditProfile: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier
             .padding(horizontal = 16.dp).fillMaxWidth()
@@ -227,7 +230,7 @@ private fun OptionsItemStyle(item: OptionsData) {
                 )
             )
         }
-        IconButton(onClick = {}) {
+        IconButton(onClick = onEditProfile) {
             Icon(
                 painter = painterResource(MainRes.images.next),
                 contentDescription = null,

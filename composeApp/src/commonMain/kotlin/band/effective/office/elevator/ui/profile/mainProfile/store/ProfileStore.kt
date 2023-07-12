@@ -6,6 +6,7 @@ interface ProfileStore : Store<ProfileStore.Intent, ProfileStore.User, ProfileSt
 
     sealed interface Intent {
         object SignOutClicked : Intent
+        object EditProfileClicked : Intent
     }
 
     data class User(
@@ -18,5 +19,6 @@ interface ProfileStore : Store<ProfileStore.Intent, ProfileStore.User, ProfileSt
 
     sealed interface Label {
         object OnSignedOut : Label
+        object OnClickedEdit: Label
     }
 }

@@ -11,7 +11,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
-class ProfileComponent(
+class MainProfileComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
     private val output: (Output) -> Unit
@@ -33,12 +33,13 @@ class ProfileComponent(
         profileStore.accept(event)
     }
 
-    fun onOutput(output: Output) {
+    fun onOutput(output: Output){
         output(output)
     }
 
     sealed interface Output {
         object OpenAuthorizationFlow : Output
+        object OpenEditProfile: Output
     }
 
 }

@@ -3,7 +3,7 @@ package band.effective.office.elevator.ui.content
 import band.effective.office.elevator.ui.booking.BookingComponent
 import band.effective.office.elevator.ui.employee.EmployeeComponent
 import band.effective.office.elevator.ui.main.MainComponent
-import band.effective.office.elevator.ui.profile.mainProfile.ProfileComponent
+import band.effective.office.elevator.ui.profile.ProfileComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
@@ -35,7 +35,7 @@ class ContentComponent(
             ProfileComponent(
                 componentContext,
                 storeFactory,
-                ::profileOutput
+                openAuthorizationFlow
             )
         )
         is Config.Booking -> Child.Booking(BookingComponent(componentContext, storeFactory))
@@ -51,11 +51,6 @@ class ContentComponent(
         }
     }
 
-    private fun profileOutput(output: ProfileComponent.Output) {
-        when (output) {
-            ProfileComponent.Output.OpenAuthorizationFlow -> openAuthorizationFlow()
-        }
-    }
 
     sealed class Child {
         class Main(val component: MainComponent) : Child()

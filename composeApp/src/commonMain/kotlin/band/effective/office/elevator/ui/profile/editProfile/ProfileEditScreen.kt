@@ -48,15 +48,6 @@ fun ProfileEditScreen(component: ProfileEditComponent){
     val user by component.user.collectAsState()
 
 
-    LaunchedEffect(component){
-        component.label.collect{ label->
-            when(label){
-                ProfileEditStore.Label.ReturnedInProfile -> component.onOutput(ProfileEditComponent.Output.OpenProfileFlow)
-                ProfileEditStore.Label.SavedChange -> {}
-            }
-        }
-    }
-
     ProfileEditScreenContent(
         username = user.username,
         post = user.post,
