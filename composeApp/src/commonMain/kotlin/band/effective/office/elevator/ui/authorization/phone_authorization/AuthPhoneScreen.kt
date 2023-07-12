@@ -40,7 +40,7 @@ fun AuthTab1Screen(component: AuthPhoneComponent) {
             when (label) {
                 is AuthPhoneStore.Label.AuthPhoneFailure -> showToast(label.message)
                 is AuthPhoneStore.Label.AuthPhoneSuccess -> component.onOutput(
-                    AuthPhoneComponent.Output.OpenTab2Screen
+                    AuthPhoneComponent.Output.OpenAuthProfileScreen
                 )
             }
         }

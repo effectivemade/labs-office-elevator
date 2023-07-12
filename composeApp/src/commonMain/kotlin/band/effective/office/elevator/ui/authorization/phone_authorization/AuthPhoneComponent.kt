@@ -1,7 +1,7 @@
 package band.effective.office.elevator.ui.authorization.phone_authorization
 
 import band.effective.office.elevator.ui.authorization.phone_authorization.store.AuthPhoneStore
-import band.effective.office.elevator.ui.authorization.phone_authorization.store.AuthTab1StoreFactory
+import band.effective.office.elevator.ui.authorization.phone_authorization.store.AuthPhoneStoreFactory
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -16,7 +16,7 @@ class AuthPhoneComponent(
 
     private val authTab1Store =
         instanceKeeper.getStore {
-            AuthTab1StoreFactory(
+            AuthPhoneStoreFactory(
                 storeFactory = storeFactory
             ).create()
         }
@@ -33,6 +33,6 @@ class AuthPhoneComponent(
     }
 
     sealed class Output {
-        object OpenTab2Screen : Output()
+        object OpenAuthProfileScreen : Output()
     }
 }
