@@ -1,0 +1,23 @@
+version: "3"
+services:
+  app:
+    container_name: effectiveOfficeBackend
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db_postgres
+
+  db_postgres:
+    container_name: postgresForKtorTest
+    image: postgres:15.2-alpine
+    volumes:
+      - ./sql/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    environment:
+      - POSTGRES_DB=usernames
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=test1234567890
+    ports:
+      - "5438:5432"
+
+    restart: 'no'
