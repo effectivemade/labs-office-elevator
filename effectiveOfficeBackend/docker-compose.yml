@@ -18,6 +18,6 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=test1234567890
     ports:
-      - "5438:5432"
+      - "5434:5432"
 
     restart: 'no'
