@@ -33,7 +33,7 @@ import band.effective.office.elevator.ui.authorization.phone_authorization.store
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
-fun AuthTab1Screen(component: AuthPhoneComponent) {
+fun AuthPhoneScreen(component: AuthPhoneComponent) {
 
     LaunchedEffect(component) {
         component.label.collect { label ->
