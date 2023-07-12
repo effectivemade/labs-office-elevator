@@ -5,7 +5,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 
 @Composable
-fun SelectRoomScreen(component: RealSelectRoomComponent){
+fun SelectRoomScreen(component: SelectRoomComponentImpl){
     val state by component.state.collectAsState()
 
     when{

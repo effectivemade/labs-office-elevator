@@ -13,13 +13,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import band.effective.office.tablet.features.selectRoom.MainRes
@@ -30,9 +28,11 @@ import band.effective.office.tablet.ui.selectRoomScreen.uiComponents.LengthEvent
 import band.effective.office.tablet.ui.selectRoomScreen.uiComponents.OrganizerEventView
 import band.effective.office.tablet.ui.selectRoomScreen.uiComponents.Title
 import band.effective.office.tablet.ui.selectRoomScreen.uiComponents.TitleFieldView
+import band.effective.office.tablet.ui.theme.CustomDarkColors
+import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 
 @Composable
-fun CheckButton(component: RealSelectRoomComponent) {
+fun CheckButton(component: SelectRoomComponentImpl) {
     val showDialog = remember { mutableStateOf(false) }
     Button(
         onClick = { showDialog.value = true }
@@ -49,10 +49,10 @@ fun CheckButton(component: RealSelectRoomComponent) {
 
 @Composable
 fun SelectRoomView(
-    component: RealSelectRoomComponent
+    component: SelectRoomComponentImpl
 ) {
     // val showDialog = remember { mutableStateOf(true) }
-    val modifier = Modifier.background(Color(0xFF3A3736))
+    val modifier = Modifier.background(LocalCustomColorsPalette.current.mountainBackground)
     val shape = RoundedCornerShape(16)
 
     Dialog(
@@ -63,7 +63,7 @@ fun SelectRoomView(
             modifier = Modifier
                 .size(575.dp, 510.dp)
                 .clip(RoundedCornerShape(5))
-                .background(Color(0xFF302D2C)),
+                .background(LocalCustomColorsPalette.current.elevationBackground),
         ) {
             Column(
                 modifier = Modifier.matchParentSize(),
@@ -92,7 +92,6 @@ fun SelectRoomView(
                 Spacer(modifier = Modifier.height(40.dp))
                 BookingButtonView(
                     modifier = Modifier.height(64.dp).width(415.dp),
-                    color = Color(0xFFEF7234),
                     shape = RoundedCornerShape(40),
                     booking = component.booking
                 )
@@ -106,7 +105,7 @@ fun SelectRoomView(
 fun RowInfoLengthAndOrganizer(
     modifier: Modifier,
     shape: RoundedCornerShape,
-    component: RealSelectRoomComponent
+    component: SelectRoomComponentImpl
 ) {
     Row {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {

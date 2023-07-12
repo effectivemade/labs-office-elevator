@@ -54,3 +54,10 @@ val header7 = TextStyle(
     lineHeight = 18.sp * 1.5f,
     letterSpacing = 18.sp * 0.02f
 )
+val header8 = TextStyle(
+    fontFamily = FontFamily.Default,
+    fontWeight = FontWeight.Medium,
+    fontSize = 16.sp,
+    lineHeight = 16.sp * 1.5f,
+    letterSpacing = 16.sp * 0.02f
+)

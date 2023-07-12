@@ -6,7 +6,7 @@ import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStoreFactory
 import band.effective.office.tablet.ui.mainScreen.mockComponets.MockSettingsComponent
 import band.effective.office.tablet.ui.mainScreen.mockComponets.RealMockSettingsComponent
-import band.effective.office.tablet.ui.selectRoomScreen.RealSelectRoomComponent
+import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponentImpl
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.childContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
@@ -30,8 +30,8 @@ class MainComponent(
         storeFactory = storeFactory,
         onBookingOtherRoom = { OnSelectOtherRoomRequest() }
     )
-    val selectRoomComponent: RealSelectRoomComponent =
-        RealSelectRoomComponent(
+    val selectRoomComponent: SelectRoomComponentImpl =
+        SelectRoomComponentImpl(
             componentContext = childContext(key = "bookingCurrentRoom"),
             booking = MockBooking.bookingCheckTime15min,
             onCloseRequest = { mainStore.accept(MainStore.Intent.CloseModal) }

@@ -3,6 +3,7 @@ package band.effective.office.tablet.ui.selectRoomScreen.uiComponents
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -14,6 +15,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import band.effective.office.tablet.features.selectRoom.MainRes
 import band.effective.office.tablet.domain.model.Booking
+import band.effective.office.tablet.ui.theme.CustomDarkColors
+import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import java.util.Calendar
 
 @Composable
@@ -31,7 +34,7 @@ fun LengthEventView(modifier: Modifier, shape: RoundedCornerShape, booking: Book
 
     Card(
         shape = shape,
-        backgroundColor = Color(0xFF3A3736)
+        backgroundColor = LocalCustomColorsPalette.current.mountainBackground
     ) {
         Box(
             modifier = modifier,
@@ -39,10 +42,8 @@ fun LengthEventView(modifier: Modifier, shape: RoundedCornerShape, booking: Book
         ) {
             Text(
                 text = lengthEvent,
-                fontSize = 20.sp,
-                fontWeight = FontWeight(700),
-                fontFamily = FontFamily.SansSerif,
-                color = Color(0xFFFAFAFA)
+                style = MaterialTheme.typography.h6,
+                color = LocalCustomColorsPalette.current.primaryTextAndIcon
             )
         }
     }

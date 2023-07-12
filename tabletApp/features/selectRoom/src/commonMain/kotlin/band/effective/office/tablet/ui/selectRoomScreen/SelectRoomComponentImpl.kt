@@ -5,15 +5,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import band.effective.office.tablet.domain.ISelectRoomInteractor
+import band.effective.office.tablet.domain.SelectRoomInteractor
 import band.effective.office.tablet.domain.model.Booking
 
-class RealSelectRoomComponent(
+class SelectRoomComponentImpl(
     componentContext: ComponentContext,
     val booking: Booking,
     private val onCloseRequest: () -> Unit
 ) : ComponentContext by componentContext, SelectRoomComponent, KoinComponent {
-    private val interactor: ISelectRoomInteractor by inject()
+    private val interactor: SelectRoomInteractor by inject()
 
     private var _state = MutableStateFlow(SelectRoomScreenState.defaultState)
     override val state = _state.asStateFlow()
