@@ -12,6 +12,8 @@ interface AuthTab1Store :
     class State
 
     sealed interface Label {
+        data class AuthTab1Success(val phone: String) : Label
 
+        data class AuthTab1Failure(val message: String) : Label
     }
 }
