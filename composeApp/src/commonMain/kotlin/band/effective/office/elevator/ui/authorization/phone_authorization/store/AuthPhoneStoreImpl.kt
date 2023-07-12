@@ -1,7 +1,7 @@
 package band.effective.office.elevator.ui.authorization.phone_authorization.store
 
-import band.effective.office.elevator.domain.PhoneSignIn
-import band.effective.office.elevator.domain.PhoneSignInResult
+import band.effective.office.elevator.domain.phone_domain.PhoneSignIn
+import band.effective.office.elevator.domain.phone_domain.PhoneSignInResult
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
