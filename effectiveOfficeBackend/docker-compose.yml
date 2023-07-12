@@ -7,6 +7,8 @@ services:
       - "8080:8080"
     depends_on:
       - db_postgres
+    profiles:
+      - dev
 
   db_postgres:
     container_name: postgresForKtorTest
@@ -19,5 +21,4 @@ services:
       - POSTGRES_PASSWORD=test1234567890
     ports:
       - "5434:5432"
-
     restart: 'no'
