@@ -1,14 +1,14 @@
-package band.effective.office.elevator.ui.authorization.screen_2
+package band.effective.office.elevator.ui.authorization.phone_authorization
 
-import band.effective.office.elevator.ui.authorization.screen_2.store.AuthTab1Store
-import band.effective.office.elevator.ui.authorization.screen_2.store.AuthTab1StoreFactory
+import band.effective.office.elevator.ui.authorization.phone_authorization.store.AuthPhoneStore
+import band.effective.office.elevator.ui.authorization.phone_authorization.store.AuthTab1StoreFactory
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import kotlinx.coroutines.flow.Flow
 
-class AuthTab1Component(
+class AuthPhoneComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
     private val output: (Output) -> Unit
@@ -21,10 +21,10 @@ class AuthTab1Component(
             ).create()
         }
 
-    val label: Flow<AuthTab1Store.Label> = authTab1Store.labels
+    val label: Flow<AuthPhoneStore.Label> = authTab1Store.labels
 
 
-    fun onEvent(event: AuthTab1Store.Intent) {
+    fun onEvent(event: AuthPhoneStore.Intent) {
         authTab1Store.accept(event)
     }
 

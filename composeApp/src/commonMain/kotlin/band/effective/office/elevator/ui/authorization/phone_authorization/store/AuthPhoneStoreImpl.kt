@@ -1,9 +1,7 @@
-package band.effective.office.elevator.ui.authorization.screen_2.store
+package band.effective.office.elevator.ui.authorization.phone_authorization.store
 
 import band.effective.office.elevator.domain.PhoneSignIn
 import band.effective.office.elevator.domain.PhoneSignInResult
-import band.effective.office.elevator.domain.SignInResultCallback
-import band.effective.office.elevator.ui.authorization.store.AuthorizationStore
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
@@ -12,18 +10,18 @@ import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-internal class AuthTab1StoreFactory(
+internal class AuthPhoneStoreFactory(
     private val storeFactory: StoreFactory
 ) : KoinComponent {
 
     private val signInClient: PhoneSignIn by inject()
 
     @OptIn(ExperimentalMviKotlinApi::class)
-    fun create(): AuthTab1Store =
-        object : AuthTab1Store,
-            Store<AuthTab1Store.Intent, AuthTab1Store.State, AuthTab1Store.Label> by storeFactory.create(
+    fun create(): AuthPhoneStore =
+        object : AuthPhoneStore,
+            Store<AuthPhoneStore.Intent, AuthPhoneStore.State, AuthPhoneStore.Label> by storeFactory.create(
                 name = "Authorization Tab 1 Store",
-                initialState = AuthTab1Store.State(),
+                initialState = AuthPhoneStore.State(),
                 bootstrapper = coroutineBootstrapper {
 
                 },
@@ -36,24 +34,24 @@ internal class AuthTab1StoreFactory(
 
 
     private inner class ExecutorImpl :
-        CoroutineExecutor<AuthTab1Store.Intent, Action, AuthTab1Store.State, Nothing, AuthTab1Store.Label>() {
+        CoroutineExecutor<AuthPhoneStore.Intent, Action, AuthPhoneStore.State, Nothing, AuthPhoneStore.Label>() {
         override fun executeIntent(
-            intent: AuthTab1Store.Intent,
-            getState: () -> AuthTab1Store.State
+            intent: AuthPhoneStore.Intent,
+            getState: () -> AuthPhoneStore.State
         ) {
             when (intent) {
-                AuthTab1Store.Intent.ContinueButtonClicked -> startAuthTab2()
+                AuthPhoneStore.Intent.ContinueButtonClicked -> startPhoneAuthorization()
             }
         }
 
-        private fun startAuthTab2() {
+        private fun startPhoneAuthorization() {
             signInClient.signIn(object : PhoneSignInResult {
                 override fun onSuccess(phone: String) {
-                    publish(AuthTab1Store.Label.AuthTab1Success(phone))
+                    publish(AuthPhoneStore.Label.AuthPhoneSuccess(phone))
                 }
 
                 override fun onFailure(message: String) {
-                    publish(AuthTab1Store.Label.AuthTab1Failure(message))
+                    publish(AuthPhoneStore.Label.AuthPhoneFailure(message))
                 }
             })
         }

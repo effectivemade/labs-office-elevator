@@ -1,4 +1,4 @@
-package band.effective.office.elevator.ui.authorization.screen_2
+package band.effective.office.elevator.ui.authorization.phone_authorization
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,18 +29,18 @@ import band.effective.office.elevator.components.auth_components.AuthSubTitle
 import band.effective.office.elevator.components.auth_components.AuthTabRow
 import band.effective.office.elevator.components.auth_components.AuthTitle
 import band.effective.office.elevator.expects.showToast
-import band.effective.office.elevator.ui.authorization.screen_2.store.AuthTab1Store
+import band.effective.office.elevator.ui.authorization.phone_authorization.store.AuthPhoneStore
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
-fun AuthTab1Screen(component: AuthTab1Component) {
+fun AuthTab1Screen(component: AuthPhoneComponent) {
 
     LaunchedEffect(component) {
         component.label.collect { label ->
             when (label) {
-                is AuthTab1Store.Label.AuthTab1Failure -> showToast(label.message)
-                is AuthTab1Store.Label.AuthTab1Success -> component.onOutput(
-                    AuthTab1Component.Output.OpenTab2Screen
+                is AuthPhoneStore.Label.AuthPhoneFailure -> showToast(label.message)
+                is AuthPhoneStore.Label.AuthPhoneSuccess -> component.onOutput(
+                    AuthPhoneComponent.Output.OpenTab2Screen
                 )
             }
         }
@@ -51,7 +51,7 @@ fun AuthTab1Screen(component: AuthTab1Component) {
 
 
 @Composable
-private fun AuthTab1ScreenContent(onEvent: (AuthTab1Store.Intent) -> Unit) {
+private fun AuthTab1ScreenContent(onEvent: (AuthPhoneStore.Intent) -> Unit) {
     val error = remember { mutableStateOf(false) }
     val tabIndex = remember { mutableStateOf(0) }
     val elevation = ButtonDefaults.elevation(
@@ -111,7 +111,7 @@ private fun AuthTab1ScreenContent(onEvent: (AuthTab1Store.Intent) -> Unit) {
             ),
             border = null,
             onButtonClick = {
-                onEvent(AuthTab1Store.Intent.ContinueButtonClicked)
+                onEvent(AuthPhoneStore.Intent.ContinueButtonClicked)
             }
         )
     }
