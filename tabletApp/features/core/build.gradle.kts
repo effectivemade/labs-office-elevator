@@ -1,4 +1,7 @@
+import Dependencies.Versions.compose
+
 plugins {
+    id(Plugins.MultiplatformCompose.plugin)
     id(Plugins.AndroidLib.plugin)
     id(Plugins.Kotlin.plugin)
 }
@@ -19,6 +22,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
+                implementation(compose.material)
             }
         }
     }

@@ -8,11 +8,11 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 
 private val darkColors = darkColors(
-    primary = md_theme_dark_primary,
-    secondary = md_theme_dark_secondary,
-    background = md_theme_dark_background,
-    surface = md_theme_dark_surface,
-    onError = md_theme_dark_onError,
+    primary = band.effective.office.tablet.ui.theme.md_theme_dark_primary,
+    secondary = band.effective.office.tablet.ui.theme.md_theme_dark_secondary,
+    background = band.effective.office.tablet.ui.theme.md_theme_dark_background,
+    surface = band.effective.office.tablet.ui.theme.md_theme_dark_surface,
+    onError = band.effective.office.tablet.ui.theme.md_theme_dark_onError,
 )
 
 object CustomDarkColors {
@@ -30,11 +30,11 @@ object CustomDarkColors {
 }
 
 private val lightColors = lightColors(
-    primary = md_theme_light_primary,
-    secondary = md_theme_light_secondary,
-    background = md_theme_light_background,
-    surface = md_theme_light_surface,
-    onError = md_theme_light_onError,
+    primary = band.effective.office.tablet.ui.theme.md_theme_light_primary,
+    secondary = band.effective.office.tablet.ui.theme.md_theme_light_secondary,
+    background = band.effective.office.tablet.ui.theme.md_theme_light_background,
+    surface = band.effective.office.tablet.ui.theme.md_theme_light_surface,
+    onError = band.effective.office.tablet.ui.theme.md_theme_light_onError,
 )
 
 object CustomLightColors {
