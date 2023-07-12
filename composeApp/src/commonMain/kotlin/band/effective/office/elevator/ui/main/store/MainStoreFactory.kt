@@ -5,6 +5,7 @@ import band.effective.office.elevator.data.ApiResponse
 import band.effective.office.elevator.domain.OfficeElevatorRepository
 import band.effective.office.elevator.ui.models.ElevatorState
 import band.effective.office.elevator.ui.models.ReservedSeat
+import band.effective.office.elevator.utils.getCurrentDate
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -13,6 +14,10 @@ import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.format
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -44,6 +49,7 @@ internal class MainStoreFactory(
                         bookingTime = "12:00 - 14:00"
                     ),
                 ),
+                currentDate = getCurrentDate()
             ),
             executorFactory = ::ExecutorImpl,
             reducer = ReducerImpl
@@ -52,6 +58,8 @@ internal class MainStoreFactory(
     private sealed interface Msg {
         data class UpdateElevatorState(val elevatorState: ElevatorState) : Msg
         data class UpdateSeatsReservation(val reservedSeats: List<ReservedSeat>) : Msg
+
+        data class UpdateCurrentDate(val date: LocalDate?) : Msg
     }
 
     private inner class ExecutorImpl :
@@ -65,6 +73,22 @@ internal class MainStoreFactory(
                 MainStore.Intent.OnClickShowOption -> {
                     scope.launch {
                         publish(MainStore.Label.ShowOptions)
+                    }
+                }
+                MainStore.Intent.OnClickCloseCalendar -> {
+                    scope.launch {
+                        publish(MainStore.Label.CloseCalendar)
+                    }
+                }
+                MainStore.Intent.OnClickOpenCalendar -> {
+                    scope.launch {
+                        publish(MainStore.Label.OpenCalendar)
+                    }
+                }
+                is MainStore.Intent.OnClickApplyDate -> {
+                    scope.launch {
+                        dispatch(Msg.UpdateCurrentDate(intent.date))
+                        publish(MainStore.Label.CloseCalendar)
                     }
                 }
             }
@@ -116,6 +140,10 @@ internal class MainStoreFactory(
             when (message) {
                 is Msg.UpdateElevatorState -> copy(elevatorState = message.elevatorState)
                 is Msg.UpdateSeatsReservation -> copy(reservedSeats = message.reservedSeats)
+                is Msg.UpdateCurrentDate -> {
+                    if (message.date == null) this
+                    else copy(currentDate = message.date)
+                }
             }
     }
 }

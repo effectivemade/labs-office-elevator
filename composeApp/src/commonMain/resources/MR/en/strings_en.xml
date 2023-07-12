@@ -10,6 +10,9 @@
     <string name="nearest_bookings">Your upcoming bookings</string>
     <string name="none_booking_seat">You dont have any bookings yet</string>
 
+    <string name="cansel">Cansel</string>
+    <string name="ok">Ok</string>
+
     <!--Tab titles-->
     <string name="profile">Profile</string>
     <string name="main">Main</string>
