@@ -5,19 +5,30 @@ import liquibase.Liquibase
 import liquibase.database.DatabaseFactory
 import liquibase.database.jvm.JdbcConnection
 import liquibase.resource.ClassLoaderResourceAccessor
+import office.effective.config
 import java.sql.DriverManager
 
 fun Application.configureMigration() {
+    val url: String = config.propertyOrNull("database.url")
+        ?.getString() ?: "jdbc:postgresql://localhost:15432/effectiveOfficeBackendDB"
+    val username: String = config.propertyOrNull("database.username")?.getString() ?: "postgres"
+    val password: String = config.propertyOrNull("database.password")?.getString() ?: "test1234567890"
+
+    val changelogFile: String = config.propertyOrNull("liquibase.changelogFile")
+        ?.getString() ?: "changelog/changelog.yaml"
+    val defaultSchemaName: String = config.propertyOrNull("liquibase.defaultSchemaName")
+        ?.getString() ?: "public"
+
     environment.monitor.subscribe(ApplicationStarted) {
         val connection = DriverManager.getConnection(
-            "jdbc:postgresql://localhost:15432/effectiveOfficeBackendDB",
-            "postgres",
-            "test1234567890"
+            url,
+            username,
+            password
         )
         val databaseConnection = JdbcConnection(connection)
         val database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(databaseConnection)
-        database.defaultSchemaName = "public"
-        val liquibase = Liquibase("changelog/changelog.yaml", ClassLoaderResourceAccessor(),
+        database.defaultSchemaName = defaultSchemaName
+        val liquibase = Liquibase(changelogFile, ClassLoaderResourceAccessor(),
             database)
         liquibase.update("")
         liquibase.database.close()
