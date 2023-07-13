@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.ui.theme.CustomDarkColors
 
@@ -26,7 +27,10 @@ fun RoomCharacteristics(icon: ImageVector, text: String) {
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = text,
-            style = MaterialTheme.typography.subtitle1.copy(color = CustomDarkColors.primaryTextAndIcon)
+            style = MaterialTheme.typography.subtitle1.copy(
+                color = CustomDarkColors.primaryTextAndIcon,
+                fontWeight = FontWeight.Medium
+            )
         )
     }
 }

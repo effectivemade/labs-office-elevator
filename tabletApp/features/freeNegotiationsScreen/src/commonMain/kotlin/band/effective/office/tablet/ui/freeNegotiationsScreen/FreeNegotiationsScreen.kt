@@ -18,12 +18,14 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import band.effective.office.tablet.features.freeNegotiationsScreen.MainRes
 import band.effective.office.tablet.ui.freeNegotiationsScreen.components.RoomCard
 import band.effective.office.tablet.ui.theme.CustomDarkColors
 
@@ -59,16 +61,16 @@ internal fun FreeNegotiationsContent(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(100.dp)
+                .height(130.dp)
                 .background(CustomDarkColors.surface),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.Start
         ) {
-            Spacer(modifier = Modifier.height(60.dp))
+            Spacer(modifier = Modifier.height(22.dp))
             IconButton(onClick = { onClick() }) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(modifier = Modifier.padding(bottom = 22.dp)) {
                     Icon(
-                        Icons.Filled.ArrowBack,
+                        imageVector = ImageVector.vectorResource(MainRes.image.arrow_to_left),
                         contentDescription = null,
                         tint = CustomDarkColors.iconAndText
                     )
@@ -76,18 +78,28 @@ internal fun FreeNegotiationsContent(
             }
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-                text = "Занять $date с $timeStart до $timeEnd",
-                style = MaterialTheme.typography.h6.copy(color = CustomDarkColors.iconAndText)
+                modifier = Modifier.padding(bottom = 22.dp),
+                text = "${MainRes.string.occupy} $date ${MainRes.string.with} " +
+                        " $timeStart ${MainRes.string.before}  $timeEnd",
+                style = MaterialTheme.typography.h6.copy(
+                    color = CustomDarkColors.iconAndText,
+                    fontWeight = FontWeight.Medium
+                )
             )
         }
-        FlowRow(modifier = Modifier.padding(24.dp), horizontalArrangement = Arrangement.Center) {
-            for (room in component.rooms) {
-                RoomCard(
-                    roomItem = room,
-                    onClick = {},
-                    modifier = Modifier.fillMaxWidth(0.3F)
-                )
-                Spacer(modifier = Modifier.width(24.dp))
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+            FlowRow(
+                modifier = Modifier.padding(26.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                for (room in component.rooms) {
+                    RoomCard(
+                        roomItem = room,
+                        onClick = {},
+                        modifier = Modifier.fillMaxWidth(0.32F)
+                    )
+                    Spacer(modifier = Modifier.width(24.dp))
+                }
             }
         }
     }
