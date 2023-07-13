@@ -16,6 +16,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.koin.core.component.KoinComponent
@@ -32,23 +33,7 @@ internal class MainStoreFactory(
             name = "MainStore",
             initialState = MainStore.State(
                 elevatorState = ElevatorState.Below,
-                reservedSeats = listOf(
-                    ReservedSeat(
-                        seatName = "Рабочее масто А1",
-                        bookingDay = "Пн, 1 июля",
-                        bookingTime = "12:00 - 14:00"
-                    ),
-                    ReservedSeat(
-                        seatName = "Рабочее масто А1",
-                        bookingDay = "Пн, 1 июля",
-                        bookingTime = "12:00 - 14:00"
-                    ),
-                    ReservedSeat(
-                        seatName = "Рабочее масто А1",
-                        bookingDay = "Пн, 1 июля",
-                        bookingTime = "12:00 - 14:00"
-                    ),
-                ),
+                reservedSeats = listOf(),
                 currentDate = getCurrentDate()
             ),
             executorFactory = ::ExecutorImpl,
@@ -142,8 +127,32 @@ internal class MainStoreFactory(
                 is Msg.UpdateSeatsReservation -> copy(reservedSeats = message.reservedSeats)
                 is Msg.UpdateCurrentDate -> {
                     if (message.date == null) this
-                    else copy(currentDate = message.date)
+                    else {
+                        val reservedSeats = mokValue.filter { it.bookingDate == message.date }
+                        copy(currentDate = message.date, reservedSeats = reservedSeats)
+                    }
                 }
             }
     }
 }
+
+private val mokValue = listOf(
+    ReservedSeat(
+        seatName = "Рабочее масто А2",
+        bookingDay = "Пн, 1 июля",
+        bookingTime = "12:00 - 14:00",
+        bookingDate = LocalDate(month = Month.JULY, year = 2023, dayOfMonth = 16)
+    ),
+    ReservedSeat(
+        seatName = "Рабочее масто А1",
+        bookingDay = "Пн, 1 июля",
+        bookingTime = "12:00 - 14:00",
+        bookingDate = LocalDate(month = Month.JULY, year = 2023, dayOfMonth = 17)
+    ),
+    ReservedSeat(
+        seatName = "Рабочее масто А3",
+        bookingDay = "Пн, 1 июля",
+        bookingTime = "12:00 - 14:00",
+        bookingDate = LocalDate(month = Month.JULY, year = 2023, dayOfMonth = 18)
+    ),
+)

@@ -81,7 +81,9 @@ fun MainScreen(component: MainComponent) {
         )
         if (showModalCalendar) {
             ModalCalendar(
-                modifier = Modifier.align(Alignment.Center),
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .align(Alignment.Center),
                 onClickCansel = { component.onEvent(MainStore.Intent.OnClickCloseCalendar) },
                 onClickOk = { component.onEvent(MainStore.Intent.OnClickApplyDate(it)) },
                 currentDate = state.currentDate
@@ -122,6 +124,7 @@ private fun SnackBarSuccessMessage(modifier: Modifier, isVisible: Boolean) {
 
 @Composable
 fun MainScreenContent(
+    modifier: Modifier = Modifier,
     reservedSeats: List<ReservedSeat>,
     elevatorState: ElevatorState,
     onClickBook: () -> Unit,
@@ -130,7 +133,7 @@ fun MainScreenContent(
     onClickOpenCalendar: () -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize()
     ) {
         Column (
             modifier = Modifier
