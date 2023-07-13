@@ -5,7 +5,9 @@ import io.ktor.server.application.*
 import io.ktor.server.config.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import office.effective.di.databaseDiModule
 import office.effective.plugins.*
+import org.koin.ktor.plugin.Koin
 
 
 val config = HoconApplicationConfig(ConfigFactory.load())
@@ -22,4 +24,7 @@ fun Application.module() {
     configureSerialization()
     configureSecurity()
     configureRouting()
+    install(Koin) {
+        modules(databaseDiModule)
+    }
 }
