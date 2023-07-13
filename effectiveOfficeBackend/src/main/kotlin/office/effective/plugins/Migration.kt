@@ -15,7 +15,7 @@ fun Application.configureMigration() {
     val password: String = config.propertyOrNull("database.password")?.getString() ?: "test1234567890"
 
     val changelogFile: String = config.propertyOrNull("liquibase.changelogFile")
-        ?.getString() ?: "changelog/changelog.yaml"
+        ?.getString() ?: "changelog/changelog-master.yaml"
     val defaultSchemaName: String = config.propertyOrNull("liquibase.defaultSchemaName")
         ?.getString() ?: "public"
 
