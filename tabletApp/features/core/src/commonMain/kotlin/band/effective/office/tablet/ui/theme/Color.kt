@@ -18,6 +18,8 @@ internal val md_theme_dark_secondaryTextAndIcon = Color(0xFF7F7F7F)
 internal val md_theme_dark_tertiaryTextAndIcon = Color(0xFF777777)
 internal val md_theme_dark_pressedPrimaryButton = Color(0xFFEC6521)
 internal val md_theme_dark_disabledPrimaryButton = Color(0xFF342C28)
+internal val md_theme_dark_iconAndText = Color(0xFFFA362F8)
+internal val md_theme_dark_primaryCard = Color(0xFFF3A3736)
 
 
 internal val md_theme_light_primary = Color(0xFFE55A0F)
