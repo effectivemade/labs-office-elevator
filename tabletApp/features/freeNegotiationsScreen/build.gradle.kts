@@ -8,6 +8,9 @@ plugins {
 android {
    compileSdk = 33
 }
+dependencies {
+    implementation(project(mapOf("path" to ":tabletApp:features:core")))
+}
 
 kotlin {
     android {
