@@ -114,7 +114,7 @@ private fun AuthProfileScreenContent(onEvent: (AuthProfileStore.Intent) -> Unit)
         Spacer(modifier = Modifier.height(16.dp))
 
         PrimaryButton(
-            text = stringResource(MainRes.strings.`continue`),
+            text = stringResource(MainRes.strings._continue),
             modifier = Modifier,
             cornerValue = 40.dp,
             contentTextSize = 16.sp,

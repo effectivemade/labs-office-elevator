@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.authorization.phone_authorization.store
 
+import band.effective.office.elevator.ui.models.User
 import com.arkivanov.mvikotlin.core.store.Store
 
 interface AuthPhoneStore :
@@ -9,7 +10,7 @@ interface AuthPhoneStore :
         object ContinueButtonClicked : Intent
     }
 
-    class State
+    class State (val user: User, val currentTabIndex: Int)
 
     sealed interface Label {
         data class AuthPhoneSuccess(val phone: String) : Label

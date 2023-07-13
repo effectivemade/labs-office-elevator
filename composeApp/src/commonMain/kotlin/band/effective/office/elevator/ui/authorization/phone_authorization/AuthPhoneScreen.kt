@@ -33,7 +33,7 @@ import band.effective.office.elevator.ui.authorization.phone_authorization.store
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
-fun AuthPhoneScreen(component: AuthPhoneComponent) {
+fun AuthPhoneScreen(component: AuthPhoneComponent, ) {
 
     LaunchedEffect(component) {
         component.label.collect { label ->
@@ -100,7 +100,7 @@ private fun AuthPhoneScreenContent(onEvent: (AuthPhoneStore.Intent) -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
 
         PrimaryButton(
-            text = stringResource(MainRes.strings.`continue`),
+            text = stringResource(MainRes.strings._continue),
             modifier = Modifier,
             cornerValue = 40.dp,
             contentTextSize = 16.sp,

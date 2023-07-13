@@ -11,7 +11,8 @@ import kotlinx.coroutines.flow.Flow
 class AuthPhoneComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
-    private val output: (Output) -> Unit
+    private val output: (Output) -> Unit,
+    phone: String,
 ) : ComponentContext by componentContext {
 
     private val authTab1Store =
@@ -34,5 +35,7 @@ class AuthPhoneComponent(
 
     sealed class Output {
         object OpenAuthProfileScreen : Output()
+
     }
+
 }

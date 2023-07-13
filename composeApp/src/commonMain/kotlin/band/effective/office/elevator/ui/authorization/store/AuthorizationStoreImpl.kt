@@ -26,7 +26,7 @@ internal class AuthorizationStoreFactory(
             name = "AuthorizationStore",
             initialState = State(),
             bootstrapper = coroutineBootstrapper {
-                launch { dispatch(Action.CheckUserAlreadySigned) }
+//                launch { dispatch(Action.CheckUserAlreadySigned) }
             },
             executorFactory = ::ExecutorImpl,
         ) {}
@@ -39,7 +39,9 @@ internal class AuthorizationStoreFactory(
     private inner class ExecutorImpl : CoroutineExecutor<Intent, Action, State, Nothing, Label>() {
         override fun executeIntent(intent: Intent, getState: () -> State) {
             when (intent) {
-                Intent.SignInButtonClicked -> startAuthorization()
+//                Intent.SignInButtonClicked -> startAuthorization()
+//                Intent.Skip ->
+                else -> {}
             }
         }
 

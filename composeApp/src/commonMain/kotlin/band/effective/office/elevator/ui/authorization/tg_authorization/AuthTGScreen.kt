@@ -13,10 +13,11 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -29,14 +30,32 @@ import band.effective.office.elevator.components.PrimaryButton
 import band.effective.office.elevator.components.auth_components.AuthSubTitle
 import band.effective.office.elevator.components.auth_components.AuthTabRow
 import band.effective.office.elevator.components.auth_components.AuthTitle
+import band.effective.office.elevator.expects.showToast
+import band.effective.office.elevator.ui.authorization.profile_authorization.store.AuthProfileStore
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
-fun TGSignInUI(component: TGSignInComponent) {
+fun AuthProfileScreen(component: AuthTGComponent) {
 
-    val nick by component.nick.collectAsState()
-    val inProgress by component.inProgress.collectAsState()
+    LaunchedEffect(component) {
+        component.label.collect { label ->
+            when (label) {
+                is AuthProfileStore.Label.AuthProfileFailure -> showToast(label.message)
+                AuthProfileStore.Label.AuthProfileSuccess -> component.onOutput(
+                    AuthTGComponent.Output.OpenMainScreen
+                )
+            }
+        }
+    }
 
+    AuthProfileScreenContent(onEvent = component::onEvent)
+}
+
+
+@Composable
+private fun AuthProfileScreenContent(onEvent: (AuthProfileStore.Intent) -> Unit) {
+    val error1 = remember { mutableStateOf(false) }
+    val tabIndex = remember { mutableStateOf(2) }
     val elevation = ButtonDefaults.elevation(
         defaultElevation = 0.dp,
         pressedElevation = 0.dp,
@@ -49,39 +68,41 @@ fun TGSignInUI(component: TGSignInComponent) {
         modifier = Modifier.fillMaxSize().padding(all = 16.dp),
         verticalArrangement = Arrangement.SpaceAround
     ) {
-
         IconButton(modifier = Modifier.padding(all = 16.dp), onClick = {
 
         }) {
             Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "image_back")
         }
 
-        AuthTabRow(2)
+        AuthTabRow(tabIndex.value)
 
-        AuthTitle(
-            text = stringResource(MainRes.strings.input_employee),
-            modifier = Modifier.padding(bottom = 7.dp),
-            textAlign = TextAlign.Start
-        )
-        AuthSubTitle(
-            text = stringResource(MainRes.strings.select_employee),
-            modifier = Modifier.padding(bottom = 24.dp),
-            textAlign = TextAlign.Start
-        )
-        OutlinedTextInput(
-            hint = stringResource(MainRes.strings.employee_hint),
-            error = false,
-            modifier = Modifier,
-            leadingHolder = {
-                Icon(imageVector = Icons.Default.Send, contentDescription = "send")
-            },
-            onTextChange = component::onNickChanged
-        )
+        Column(modifier = Modifier.fillMaxSize()) {
+            AuthTitle(
+                text = stringResource(MainRes.strings.input_employee),
+                modifier = Modifier.padding(bottom = 7.dp),
+                textAlign = TextAlign.Start
+            )
+            AuthSubTitle(
+                text = stringResource(MainRes.strings.select_employee),
+                modifier = Modifier.padding(bottom = 24.dp),
+                textAlign = TextAlign.Start
+            )
+            OutlinedTextInput(
+                hint = stringResource(MainRes.strings.employee_hint),
+                error = error1.value,
+                modifier = Modifier,
+                leadingHolder = {
+                    Icon(imageVector = Icons.Default.Send, contentDescription = "send")
+                },
+                onTextChange = {
+
+                })
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         PrimaryButton(
-            text = stringResource(MainRes.strings.`continue`),
+            text = stringResource(MainRes.strings._continue),
             modifier = Modifier,
             cornerValue = 40.dp,
             contentTextSize = 16.sp,
@@ -91,7 +112,9 @@ fun TGSignInUI(component: TGSignInComponent) {
                 backgroundColor = MaterialTheme.colors.primary
             ),
             border = null,
-            onButtonClick = component::onTGSignInClick
+            onButtonClick = {
+                onEvent(AuthProfileStore.Intent.ContinueButtonClicked)
+            }
         )
     }
 }

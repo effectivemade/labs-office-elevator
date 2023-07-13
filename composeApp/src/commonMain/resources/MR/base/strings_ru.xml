@@ -19,7 +19,7 @@
     <string name="none_booking_seat">У вас пока нет бронирований</string>
     <!--Auth strings-->
     <string name="skip">Пропустить</string>
-    <string name="continue">Продолжить</string>
+    <string name="_continue">Продолжить</string>
 
     <string name="input_number">Введите номер</string>
     <string name="select_number">Укажите номер, по которому коллеги смогли бы перевести вам деньги по СБП</string>

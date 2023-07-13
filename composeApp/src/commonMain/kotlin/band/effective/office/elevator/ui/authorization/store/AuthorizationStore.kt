@@ -10,11 +10,14 @@ interface AuthorizationStore :
 
     sealed interface Intent {
         object SignInButtonClicked : Intent
+        object Skip : Intent
     }
 
     class State
 
     sealed interface Label {
+
+        object Skip : Label
         object AuthorizationSuccess : Label
 
         data class AuthorizationFailure(val message: String) : Label

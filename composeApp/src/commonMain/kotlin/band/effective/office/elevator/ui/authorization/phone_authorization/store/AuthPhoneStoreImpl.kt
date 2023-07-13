@@ -2,6 +2,7 @@ package band.effective.office.elevator.ui.authorization.phone_authorization.stor
 
 import band.effective.office.elevator.domain.phone_domain.PhoneSignIn
 import band.effective.office.elevator.domain.phone_domain.PhoneSignInResult
+import band.effective.office.elevator.ui.models.User
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
@@ -21,7 +22,7 @@ internal class AuthPhoneStoreFactory(
         object : AuthPhoneStore,
             Store<AuthPhoneStore.Intent, AuthPhoneStore.State, AuthPhoneStore.Label> by storeFactory.create(
                 name = "Authorization Tab 1 Store",
-                initialState = AuthPhoneStore.State(),
+                initialState = AuthPhoneStore.State(user = User ("name", "post", "986875756", "@tg_nick"), currentTabIndex = 0),
                 bootstrapper = coroutineBootstrapper {
 
                 },

@@ -2,6 +2,7 @@ package band.effective.office.elevator.ui.authorization.profile_authorization.st
 
 import band.effective.office.elevator.domain.profile_domain.ProfileSignIn
 import band.effective.office.elevator.domain.profile_domain.ProfileSignInResult
+import band.effective.office.elevator.ui.models.User
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
@@ -21,7 +22,7 @@ internal class AuthProfileStoreFactory(
         object : AuthProfileStore,
             Store<AuthProfileStore.Intent, AuthProfileStore.State, AuthProfileStore.Label> by storeFactory.create(
                 name = "Authorization Tab 2 Store",
-                initialState = AuthProfileStore.State(),
+                initialState = AuthProfileStore.State(user = User ("name", "post", "986875756", "@tg_nick"), currentTabIndex = 1),
                 bootstrapper = coroutineBootstrapper {
 
                 },

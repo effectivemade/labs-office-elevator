@@ -15,7 +15,8 @@
     <string name="elevator">Elevator</string>
 
     <!--Auth strings-->
-    <string name="skip">Skip</string><string name="continue">Continue</string>
+    <string name="skip">Skip</string>
+    <string name="_continue">Continue</string>
     <string name="input_number">Enter a number</string>
 
     <string name="select_number">Specify the number through which colleagues could transfer money to you via SBP</string>

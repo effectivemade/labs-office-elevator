@@ -1,4 +1,4 @@
-package band.effective.office.elevator.ui.authorization.profile_authorization
+package band.effective.office.elevator.ui.authorization.tg_authorization
 
 import band.effective.office.elevator.ui.authorization.profile_authorization.store.AuthProfileStore
 import band.effective.office.elevator.ui.authorization.profile_authorization.store.AuthProfileStoreFactory
@@ -8,12 +8,11 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import kotlinx.coroutines.flow.Flow
 
-class AuthProfileComponent(
+class AuthTGComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
     private val output: (Output) -> Unit,
-    name: String,
-    post: String
+    nick: String
 ) : ComponentContext by componentContext {
 
     private val authProfileStore =
@@ -35,6 +34,6 @@ class AuthProfileComponent(
     }
 
     sealed class Output {
-        object OpenAuthTGScreen : Output()
+        object OpenMainScreen : Output()
     }
 }

@@ -82,9 +82,11 @@ class RootComponent internal constructor(
 
 
     private fun onAuthorizationOutput(output: AuthorizationComponent.Output) {
-        when (output) {
-            AuthorizationComponent.Output.OpenMainScreen -> navigation.replaceAll(Config.Content)
-        }
+//        when (output) {
+//            AuthorizationComponent.Output.OpenPhoneScreen -> navigation.replaceAll(Config.Content)
+//            AuthorizationComponent.Output.OpenProfileScreen -> TODO()
+//            AuthorizationComponent.Output.OpenTGScreen -> TODO()
+//        }
     }
 
     fun onOutput(output: Output) {

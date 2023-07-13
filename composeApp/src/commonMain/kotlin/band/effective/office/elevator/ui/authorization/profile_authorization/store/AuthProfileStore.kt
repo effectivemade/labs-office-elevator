@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.authorization.profile_authorization.store
 
+import band.effective.office.elevator.ui.models.User
 import com.arkivanov.mvikotlin.core.store.Store
 
 interface AuthProfileStore :
@@ -9,7 +10,7 @@ interface AuthProfileStore :
         object ContinueButtonClicked : Intent
     }
 
-    class State
+    class State(val user: User, val currentTabIndex: Int)
 
     sealed interface Label {
         object AuthProfileSuccess : Label
