@@ -2,6 +2,7 @@ package band.effective.office.elevator.ui.profile.mainProfile
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -138,8 +139,7 @@ fun ProfileInfoAboutUser(imageUrl: String?, username: String?, post: String?, on
                     contentDescription = null,
                 )
             }
-            Button(onClick = onEditProfile,
-                shape = CircleShape,
+            IconButton(onClick = onEditProfile,
                 modifier = Modifier.size(24.dp).align(Alignment.TopEnd)){
                 Image(
                     painter = painterResource(MainRes.images.edit_profile_image),
