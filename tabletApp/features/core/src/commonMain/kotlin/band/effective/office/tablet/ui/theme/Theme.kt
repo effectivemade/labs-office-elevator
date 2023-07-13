@@ -22,6 +22,7 @@ object CustomDarkColors {
     val freeStatus = md_theme_dark_freeStatus
     val background = md_theme_dark_background
     val surface = md_theme_dark_surface
+    val primary = md_theme_dark_primary
     val primaryCard = md_theme_dark_primaryCard
     val iconAndText = md_theme_dark_iconAndText
     val onSuccess = md_theme_dark_onSuccess

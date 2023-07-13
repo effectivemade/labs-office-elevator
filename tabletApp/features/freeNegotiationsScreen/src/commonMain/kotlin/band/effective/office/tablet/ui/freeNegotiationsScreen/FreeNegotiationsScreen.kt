@@ -16,17 +16,16 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import band.effective.office.tablet.ui.freeNegotiationsScreen.components.RoomCard
+import band.effective.office.tablet.ui.theme.CustomDarkColors
 
 
 @Composable
@@ -52,7 +51,7 @@ internal fun FreeNegotiationsContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0XFF1E1C1A))
+            .background(CustomDarkColors.background)
             .verticalScroll(
                 rememberScrollState()
             )
@@ -61,7 +60,7 @@ internal fun FreeNegotiationsContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(100.dp)
-                .background(Color(0xFFF252322)),
+                .background(CustomDarkColors.surface),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
@@ -71,20 +70,17 @@ internal fun FreeNegotiationsContent(
                     Icon(
                         Icons.Filled.ArrowBack,
                         contentDescription = null,
-                        tint = Color(0xFFFA362F8)
+                        tint = CustomDarkColors.iconAndText
                     )
                 }
             }
             Spacer(modifier = Modifier.width(4.dp))
             Text(
                 text = "Занять $date с $timeStart до $timeEnd",
-                style = TextStyle(
-                    color = Color(0xFFFA362F8),
-                    fontSize = 20.sp
-                )
+                style = MaterialTheme.typography.h6.copy(color = CustomDarkColors.iconAndText)
             )
         }
-        FlowRow(modifier = Modifier.padding(24.dp)) {
+        FlowRow(modifier = Modifier.padding(24.dp), horizontalArrangement = Arrangement.Center) {
             for (room in component.rooms) {
                 RoomCard(
                     roomItem = room,
