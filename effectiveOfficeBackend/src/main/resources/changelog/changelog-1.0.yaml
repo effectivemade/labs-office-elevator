@@ -11,7 +11,7 @@ databaseChangeLog:
                   type: uuid
                   constraints:
                     primaryKey: true
-                    constraintName: pk_utilities
+                    primaryKeyName: pk_utilities
               - column:
                   name: name
                   type: varchar(255)
@@ -35,7 +35,7 @@ databaseChangeLog:
                   type: uuid
                   constraints:
                     primaryKey: true
-                    constraintName: pk_workspaces
+                    primaryKeyName: pk_workspaces
               - column:
                   name: name
                   type: varchar(255)
