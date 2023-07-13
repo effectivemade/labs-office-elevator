@@ -1,6 +1,5 @@
 package band.effective.office.elevator.components
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -10,9 +9,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import band.effective.office.elevator.MainRes
 
 @Composable
 fun EffectiveButton(
@@ -24,7 +23,7 @@ fun EffectiveButton(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
             backgroundColor = MaterialTheme.colors.primary,
-            contentColor = MaterialTheme.colors.background
+            contentColor = Color.White
         ),
         modifier = modifier
             .clip(RoundedCornerShape(48.dp))
@@ -32,6 +31,7 @@ fun EffectiveButton(
         Text(
             text = buttonText,
             fontFamily = MaterialTheme.typography.button.fontFamily,
+            style = MaterialTheme.typography.button,
             fontSize = 15.sp,
             modifier = Modifier.padding(vertical = 10.dp)
         )

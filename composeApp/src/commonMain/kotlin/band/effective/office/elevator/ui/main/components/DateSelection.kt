@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -36,7 +37,9 @@ fun DateSelection(onClickOpenCalendar: () -> Unit) {
 @Composable
 fun CalendarTitle(onClickOpenCalendar: () -> Unit) {
     Row (
-        modifier = Modifier.clickable { onClickOpenCalendar() }
+        modifier = Modifier
+            .clickable { onClickOpenCalendar() },
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
             painter = painterResource(MainRes.images.material_calendar_ic),
