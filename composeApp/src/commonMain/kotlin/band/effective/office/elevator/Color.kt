@@ -97,7 +97,7 @@ internal val theme_light_onSurface = Color(0xFF221B00)
 
 internal val theme_light_primary_color = Color(0xFFFFFFFF)
 internal val theme_light_secondary_color = Color(0xFFC2410C)
-internal val theme_light_tertiary_color = Color(0x00000080)
+internal val theme_light_tertiary_color = Color(0xFF000000)
 
 internal val theme_light_primary_stroke = Color(0xFFF8933F)
 internal val theme_light_secondary_stroke = Color(0x00000066)
@@ -208,5 +208,12 @@ internal val seed = Color(0xFF2C3639)
 
 // Non Material specified colors
 internal val lightGray = Color(0xFFEBEBEB)
+internal val textInBorderGray = Color (0xFF808080)
+internal val borderGray = Color (0xFF666666)
 internal val successGreen = Color(0xFF4BB543)
+
+internal val borderGreen = Color(0xFF34C759)
+internal val textInBorderPurple = Color(0xFF5800CB)
+internal val borderPurple = Color(0xFF6F01FF)
 internal val textGrayColor = Color(0x80000000)
+
