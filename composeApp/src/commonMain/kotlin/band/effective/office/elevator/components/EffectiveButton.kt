@@ -31,8 +31,7 @@ fun EffectiveButton(
     ) {
         Text(
             text = buttonText,
-            fontFamily = MaterialTheme.typography.button.fontFamily,
-            fontSize = 15.sp,
+            style = MaterialTheme.typography.button,
             modifier = Modifier.padding(vertical = 10.dp)
         )
     }
