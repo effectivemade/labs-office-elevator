@@ -44,7 +44,7 @@ fun FreeNegotiationsScreen(component: FreeNegotiationsComponent) {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun FreeNegotiationsContent(
-    date: String?,
+    date: String,
     timeStart: String?,
     timeEnd: String?,
     onClick: () -> Unit,
