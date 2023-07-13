@@ -45,8 +45,8 @@ fun FreeNegotiationsScreen(component: FreeNegotiationsComponent) {
 @Composable
 internal fun FreeNegotiationsContent(
     date: String,
-    timeStart: String?,
-    timeEnd: String?,
+    timeStart: String,
+    timeEnd: String,
     onClick: () -> Unit,
     component: FreeNegotiationsComponent
 ) {
