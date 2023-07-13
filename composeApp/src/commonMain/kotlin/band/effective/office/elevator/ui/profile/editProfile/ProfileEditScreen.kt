@@ -52,7 +52,7 @@ fun ProfileEditScreen(component: ProfileEditComponent){
         }
     }
     ProfileEditScreenContent(
-        username = user.username,
+        userName = user.userName,
         post = user.post,
         telegram = user.telegram,
         phoneNumber = user.phoneNumber
@@ -61,7 +61,7 @@ fun ProfileEditScreen(component: ProfileEditComponent){
 
 @Composable
 private fun ProfileEditScreenContent(
-    username: String?,
+    userName: String?,
     post: String?,
     telegram: String?,
     phoneNumber: String?,
@@ -81,7 +81,7 @@ private fun ProfileEditScreenContent(
         LaunchedEffect(Unit){
             withContext(Dispatchers.Default){
                 fieldsList.clear()
-                prepareFieldsData(username,post,telegram,phoneNumber)
+                prepareFieldsData("Петров Иван","Android-разработчик","petrov","89654561232")
                 listPrepared = true
             }
         }
@@ -104,7 +104,7 @@ private fun ProfileEditScreenContent(
 
 @Composable
 private fun FieldsItemStyle(item:FieldsData){
-    var itemText by remember { mutableStateOf("ii") }
+    var itemText by remember { mutableStateOf(item.value) }
     Column(
         modifier = Modifier.padding(top = 16.dp).fillMaxWidth()
     ) {
@@ -176,7 +176,7 @@ private fun prepareFieldsData(username: String?, post: String?, telegram: String
     )
 }
 
-private val fieldsList: ArrayList<FieldsData> = ArrayList()
+private val fieldsList: ArrayList<FieldsData> = ArrayList() //TODO("Added in fun ProfileEditScreenContent")
 private data class FieldsData(val title:StringResource,val icon:ImageResource,val value: String?)
 
 @Composable

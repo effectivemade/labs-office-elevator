@@ -19,7 +19,7 @@ internal class ProfileEditStoreFactory(
             by storeFactory.create(
                 name = "ProfileEditStore",
                 initialState = User(
-                    username = null,
+                    userName = null,
                     telegram = null,
                     post = null,
                     phoneNumber = null
@@ -73,7 +73,7 @@ internal class ProfileEditStoreFactory(
         override fun User.reduce(message: Msg): User =
             when (message) {
                 is Msg.ProfileData -> User(
-                    username = null,
+                    userName = null,
                     telegram = null,
                     post = null,
                     phoneNumber = null,

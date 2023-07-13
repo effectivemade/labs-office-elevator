@@ -9,7 +9,7 @@ interface ProfileEditStore : Store<ProfileEditStore.Intent, ProfileEditStore.Use
     }
 
     data class User(
-        val username: String?,
+        val userName: String?,
         val post:String?,
         val phoneNumber:String?,
         val telegram: String?

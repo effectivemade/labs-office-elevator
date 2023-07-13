@@ -25,8 +25,7 @@ import kotlinx.coroutines.flow.StateFlow
 class ProfileComponent(
     componentContext: ComponentContext,
     private val storeFactory: StoreFactory,
-    private val openAuthorizationFlow: () -> Unit
-) :
+    private val openAuthorizationFlow: () -> Unit) :
     ComponentContext by componentContext {
 
     private val navigation = StackNavigation<Config>()
@@ -70,7 +69,6 @@ class ProfileComponent(
             MainProfileComponent.Output.OpenEditProfile -> navigation.bringToFront(Config.EditProfile)
         }
     }
-
 
     sealed class Child{
         class MainProfileChild(val component: MainProfileComponent) : Child()

@@ -9,12 +9,15 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -89,7 +92,7 @@ internal fun ProfileScreenContent(
         verticalArrangement = Arrangement.Top
     ) {
         ProfileHeader(onSignOut)
-        ProfileInfoAboutUser(imageUrl, username, post)
+        ProfileInfoAboutUser(imageUrl, username, post, onEditProfile)
         var listPrepared by remember {
             mutableStateOf(false)
         }
@@ -114,7 +117,7 @@ internal fun ProfileScreenContent(
 }
 
 @Composable
-fun ProfileInfoAboutUser(imageUrl: String?, username: String?, post: String?) {
+fun ProfileInfoAboutUser(imageUrl: String?, username: String?, post: String?, onEditProfile: ()-> Unit) {
     imageUrl?.let { url ->
         val request = remember(url) {
             ImageRequest {
@@ -135,11 +138,15 @@ fun ProfileInfoAboutUser(imageUrl: String?, username: String?, post: String?) {
                     contentDescription = null,
                 )
             }
-            Image(
-                modifier = Modifier.size(24.dp).align(Alignment.TopEnd),
-                painter = painterResource(MainRes.images.edit_profile_image),
-                contentDescription = null,
-            )
+            Button(onClick = onEditProfile,
+                shape = CircleShape,
+                modifier = Modifier.size(24.dp).align(Alignment.TopEnd)){
+                Image(
+                    painter = painterResource(MainRes.images.edit_profile_image),
+                    contentDescription = null,
+                    contentScale = ContentScale.Fit
+                )
+            }
         }
     }
     username?.let {

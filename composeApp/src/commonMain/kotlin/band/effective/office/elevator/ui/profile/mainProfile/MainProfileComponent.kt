@@ -14,8 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 class MainProfileComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
-    private val output: (Output) -> Unit
-) :
+    private val output: (Output) -> Unit) :
     ComponentContext by componentContext {
 
     private val profileStore = instanceKeeper.getStore {
@@ -28,15 +27,12 @@ class MainProfileComponent(
     val user: StateFlow<ProfileStore.User> = profileStore.stateFlow
 
     val label: Flow<ProfileStore.Label> = profileStore.labels
-
     fun onEvent(event: ProfileStore.Intent) {
         profileStore.accept(event)
     }
-
     fun onOutput(output: Output){
         output(output)
     }
-
     sealed interface Output {
         object OpenAuthorizationFlow : Output
         object OpenEditProfile: Output
