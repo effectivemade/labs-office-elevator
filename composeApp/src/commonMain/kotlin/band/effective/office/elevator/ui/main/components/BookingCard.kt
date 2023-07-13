@@ -68,6 +68,7 @@ fun BookingCard(
                 Text(
                     text = stringResource(MainRes.strings.show_map),
                     fontSize = 15.sp,
+                    style = MaterialTheme.typography.button,
                     modifier = Modifier.padding(horizontal = 8.dp)
                 )
             }

@@ -27,6 +27,10 @@
     <string name="book_a_seat">Забронировать место</string>
     <string name="nearest_bookings">Ваши ближайшие брони</string>
     <string name="none_booking_seat">У вас пока нет бронирований</string>
+
+    <string name="cansel">Отмена</string>
+    <string name="ok">Ок</string>
+
     <!--Tab titles-->
     <string name="profile">Профиль</string>
     <string name="elevator">Лифт</string>
