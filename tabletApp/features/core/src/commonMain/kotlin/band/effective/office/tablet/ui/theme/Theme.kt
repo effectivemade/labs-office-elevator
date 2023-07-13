@@ -20,6 +20,10 @@ object CustomDarkColors {
     val mountainBackground = md_theme_dark_mountainBackground
     val busyStatus = md_theme_dark_busyStatus
     val freeStatus = md_theme_dark_freeStatus
+    val background = md_theme_dark_background
+    val surface = md_theme_dark_surface
+    val primaryCard = md_theme_dark_primaryCard
+    val iconAndText = md_theme_dark_iconAndText
     val onSuccess = md_theme_dark_onSuccess
     val secondaryButton = md_theme_dark_secondaryButton
     val primaryTextAndIcon = md_theme_dark_primaryTextAndIcon
