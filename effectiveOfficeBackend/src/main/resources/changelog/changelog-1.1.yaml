@@ -50,6 +50,7 @@ databaseChangeLog:
               - column:
                   name: role
                   type: varchar(255)
+                  remarks: "I. e. Android-developer"
               - column:
                   name: avatar_url
                   type: varchar(255)
@@ -100,6 +101,7 @@ databaseChangeLog:
               - column:
                   name: value
                   type: varchar(255)
+                  remarks: "For telegram is, for example, user tag @user"
         - addPrimaryKey:
             tableName: users_integrations
             columnNames: integration_id, user_id

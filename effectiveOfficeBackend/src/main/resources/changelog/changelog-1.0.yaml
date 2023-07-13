@@ -39,6 +39,7 @@ databaseChangeLog:
               - column:
                   name: name
                   type: varchar(255)
+                  remarks: "Meeting, Regular, etc."
 
   - changeSet:
       id: create-workspaces-table
@@ -84,6 +85,7 @@ databaseChangeLog:
               - column:
                   name: count
                   type: int
+                  remarks: "> 0"
                   constraints:
                     nullable: false
         - addPrimaryKey:

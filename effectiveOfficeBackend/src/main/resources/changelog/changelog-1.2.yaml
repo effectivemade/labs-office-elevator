@@ -15,6 +15,7 @@ databaseChangeLog:
               - column:
                   name: id
                   type: uuid
+                  remarks: "Using to refer existing booking without additional business logic"
                   constraints:
                     primaryKey: true
                     primaryKeyName: pk_workspace_booking
