@@ -19,18 +19,15 @@ fun Application.configureMigration() {
     val defaultSchemaName: String = config.propertyOrNull("liquibase.defaultSchemaName")
         ?.getString() ?: "public"
 
-    environment.monitor.subscribe(ApplicationStarted) {
-        val connection = DriverManager.getConnection(
-            url,
-            username,
-            password
-        )
-        val databaseConnection = JdbcConnection(connection)
-        val database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(databaseConnection)
-        database.defaultSchemaName = defaultSchemaName
-        val liquibase = Liquibase(changelogFile, ClassLoaderResourceAccessor(),
-            database)
-        liquibase.update("")
-        liquibase.database.close()
-    }
+    val connection = DriverManager.getConnection(
+        url,
+        username,
+        password
+    )
+    val databaseConnection = JdbcConnection(connection)
+    val database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(databaseConnection)
+    database.defaultSchemaName = defaultSchemaName
+    val liquibase = Liquibase(changelogFile, ClassLoaderResourceAccessor(), database)
+    liquibase.update("")
+    liquibase.database.close()
 }
