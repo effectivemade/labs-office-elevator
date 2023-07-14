@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,7 +28,6 @@ import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.ui.authorization.store.AuthorizationStore
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
-import dev.icerock.moko.resources.desc.StringDesc
 
 
 @Composable
@@ -72,8 +72,8 @@ private fun AuthorizationScreenContent(onEvent: (AuthorizationStore.Intent) -> U
                     text = stringResource(MainRes.strings.company_name),
                     letterSpacing = 0.01.em,
                     fontSize = 40.sp,
-                    color = Color(0xFF323E48) // TODO: Should add this color to Color.kt
-//                fontFamily = FontFamily(Font( /* TODO font = museo_cyrl */))
+                    color = Color(0xFF323E48), // TODO: Should add this color to Color.kt
+                    style = MaterialTheme.typography.h4
                 )
             }
 

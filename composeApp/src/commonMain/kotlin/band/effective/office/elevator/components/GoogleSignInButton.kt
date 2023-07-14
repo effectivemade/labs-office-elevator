@@ -44,6 +44,10 @@ internal fun GoogleSignInButton(modifier: Modifier, onClick: () -> Unit) {
             modifier = Modifier.size(32.dp)
         )
         Spacer(modifier = Modifier.width(8.dp))
-        Text(text = stringResource(MainRes.strings.sign_in_google), modifier = Modifier.padding(6.dp))
+        Text(
+            text = stringResource(MainRes.strings.sign_in_google),
+            modifier = Modifier.padding(6.dp),
+            style = MaterialTheme.typography.button
+        )
     }
 }
