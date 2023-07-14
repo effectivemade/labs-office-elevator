@@ -54,8 +54,7 @@ fun PrimaryButton(
             Text(
                 text = text,
                 fontSize = contentTextSize,
-                letterSpacing = 0.1.sp,
-//                fontFamily = FontFamily(Font(R.font.roboto),
+                style = MaterialTheme.typography.button,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
