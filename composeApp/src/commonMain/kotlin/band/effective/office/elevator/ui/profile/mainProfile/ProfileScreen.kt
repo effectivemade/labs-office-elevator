@@ -1,4 +1,4 @@
-package band.effective.office.elevator.ui.profile
+package band.effective.office.elevator.ui.profile.mainProfile
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -9,12 +9,15 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -38,7 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.MainRes
-import band.effective.office.elevator.ui.profile.store.ProfileStore
+import band.effective.office.elevator.ui.profile.mainProfile.store.ProfileStore
 import com.seiko.imageloader.model.ImageRequest
 import com.seiko.imageloader.rememberAsyncImagePainter
 import dev.icerock.moko.resources.ImageResource
@@ -50,13 +53,14 @@ import kotlinx.coroutines.withContext
 
 
 @Composable
-fun ProfileScreen(component: ProfileComponent) {
+fun ProfileScreen(component: MainProfileComponent) {
     val user by component.user.collectAsState()
 
-    LaunchedEffect(component) {
+    LaunchedEffect(component){
         component.label.collect { label ->
-            when (label) {
-                ProfileStore.Label.OnSignedOut -> component.onOutput(ProfileComponent.Output.OpenAuthorizationFlow)
+            when(label){
+                ProfileStore.Label.OnSignedOut -> component.onOutput(MainProfileComponent.Output.OpenAuthorizationFlow)
+                ProfileStore.Label.OnClickedEdit -> component.onOutput(MainProfileComponent.Output.OpenEditProfile)
             }
         }
     }
@@ -67,7 +71,8 @@ fun ProfileScreen(component: ProfileComponent) {
         post = user.post,
         telegram = user.telegram,
         phoneNumber = user.phoneNumber,
-        onSignOut = { component.onEvent(ProfileStore.Intent.SignOutClicked) }
+        onSignOut = { component.onEvent(ProfileStore.Intent.SignOutClicked) },
+        onEditProfile = {component.onEvent(ProfileStore.Intent.EditProfileClicked)}
     )
 }
 
@@ -78,7 +83,8 @@ internal fun ProfileScreenContent(
     post: String?,
     telegram: String?,
     phoneNumber: String?,
-    onSignOut: () -> Unit
+    onSignOut: () -> Unit,
+    onEditProfile: ()-> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize().padding(top = 48.dp),
@@ -86,7 +92,7 @@ internal fun ProfileScreenContent(
         verticalArrangement = Arrangement.Top
     ) {
         ProfileHeader(onSignOut)
-        ProfileInfoAboutUser(imageUrl, username, post)
+        ProfileInfoAboutUser(imageUrl, username, post, onEditProfile)
         var listPrepared by remember {
             mutableStateOf(false)
         }
@@ -103,7 +109,7 @@ internal fun ProfileScreenContent(
                     .fillMaxSize().padding(top = 24.dp)
             ) {
                 items(optionsList) { item ->
-                    OptionsItemStyle(item = item)
+                    OptionsItemStyle(item = item, onEditProfile)
                 }
             }
         }
@@ -111,7 +117,7 @@ internal fun ProfileScreenContent(
 }
 
 @Composable
-fun ProfileInfoAboutUser(imageUrl: String?, username: String?, post: String?) {
+fun ProfileInfoAboutUser(imageUrl: String?, username: String?, post: String?, onEditProfile: ()-> Unit) {
     imageUrl?.let { url ->
         val request = remember(url) {
             ImageRequest {
@@ -132,11 +138,15 @@ fun ProfileInfoAboutUser(imageUrl: String?, username: String?, post: String?) {
                     contentDescription = null,
                 )
             }
-            Image(
-                modifier = Modifier.size(24.dp).align(Alignment.TopEnd),
-                painter = painterResource(MainRes.images.edit_profile_image),
-                contentDescription = null,
-            )
+            Button(onClick = onEditProfile,
+                shape = CircleShape,
+                modifier = Modifier.size(24.dp).align(Alignment.TopEnd)){
+                Image(
+                    painter = painterResource(MainRes.images.edit_profile_image),
+                    contentDescription = null,
+                    contentScale = ContentScale.Fit
+                )
+            }
         }
     }
     username?.let {
@@ -199,7 +209,7 @@ private fun ProfileHeader(onSignOut: () -> Unit) {
 }
 
 @Composable
-private fun OptionsItemStyle(item: OptionsData) {
+private fun OptionsItemStyle(item: OptionsData, onEditProfile: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier
             .padding(horizontal = 16.dp).fillMaxWidth()
@@ -227,7 +237,7 @@ private fun OptionsItemStyle(item: OptionsData) {
                 )
             )
         }
-        IconButton(onClick = {}) {
+        IconButton(onClick = onEditProfile) {
             Icon(
                 painter = painterResource(MainRes.images.next),
                 contentDescription = null,

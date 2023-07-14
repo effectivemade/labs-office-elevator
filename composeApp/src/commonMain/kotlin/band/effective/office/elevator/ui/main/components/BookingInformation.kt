@@ -17,14 +17,15 @@ fun BookingInformation(
     reservedSeats: List<ReservedSeat>,
     onClickBook: () -> Unit,
     onClickShowMap: () -> Unit,
-    onClickShowOptions: () -> Unit
+    onClickShowOptions: () -> Unit,
+    onClickOpenCalendar: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
     ) {
         Spacer(modifier = Modifier.height(24.dp))
-        DateSelection()
+        DateSelection(onClickOpenCalendar = onClickOpenCalendar)
         Spacer(modifier = Modifier.height(24.dp))
         SeatsReservation(
             reservedSeats = reservedSeats,
