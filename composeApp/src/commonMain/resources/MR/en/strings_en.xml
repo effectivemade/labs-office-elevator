@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Office Elevator</string>
+    <string name="sign_in_google">Sign in to Effective email</string>
+    <string name="something_went_wrong">Something went wrong. Please try again</string>
+    <string name="employee_1">Ivanov Ivan</string>
+    <string name="employee_2">Smirnov Andrey</string>
+    <string name="employee_3">Vasilyev Vasiliy</string>
+    <string name="search_employee">Search employee</string>
+    <string name="employee_post_1">Android-developer</string>
+    <string name="employee_post_2">UI/UX Designer</string>
+    <string name="employee_post_3">HR</string>
+    <string name="employee_in_office">In office</string>
+    <string name="employee_soon_in_office">Will be today</string>
+    <string name="employee_not_soon_in_office">No reservations</string>
+
+    <string name="by_date"> By date </string>
+    <string name="show_map">Show on map</string>
+    <string name="book_a_seat">Book a seat</string>
+    <string name="nearest_bookings">Your upcoming bookings</string>
+    <string name="none_booking_seat">You dont have any bookings yet</string>
+
+    <string name="cansel">Cansel</string>
+    <string name="ok">Ok</string>
+
+    <!--Tab titles-->
+    <string name="profile">Profile</string>
+    <string name="main">Main</string>
+    <string name="booking">Booking</string>
+    <string name="employees">Employees</string>
+
+    <string name="elevator_below">Elevator on the 1st floor</string>
+    <string name="elevator_goes" >The elevator is coming</string>
+    <string name="elevator_raised" >The elevator is up</string>
+    <string name="elevator_button" >Lift the elevator</string>
+    <string name="elevator_wait" >Wait...</string>
+    <string name="elevator_ready" >Call the elevator via the button</string>
+
+    <!--Error messages-->
+    <string name="you_need_to_sign_in">You need to sign in for the app to work</string>
+    <string name="network_error">Network connection error</string>
+    <string name="developer_error">The developer seems to have broken something. Report the problem</string>
+    <string name="cancelled_error">You canceled the operation. Try again</string>
+    <string name="invalid_account_error">You are using the wrong account</string>
+    <string name="timout_error">Request time is up. Try again</string>
+    <string name="server_error">Server error ${code}</string>
+
+    <!-- Success messages -->
+    <string name="elevator_called_successfully">Successfully!</string>
+
+    <!-- Profile specifics-->
+    <string name="exit">Exit</string>
+    <string name="phone">Phone number</string>
+    <string name="telegram">Telegram</string>
+
+    <!-- Edit Profile-->
+    <string name="profile_data">Profile Data</string>
+    <string name="last_name_and_first_name">Last name and First name</string>
+    <string name="post">Post</string>
+    <string name="phone_number">Telephone number</string>
+    <string name="save">Save</string>
+</resources>
