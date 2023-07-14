@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.MainRes
-import band.effective.office.elevator.components.ElevatorButton
+import band.effective.office.elevator.components.ModalCalendar
 import band.effective.office.elevator.components.TitlePage
 import band.effective.office.elevator.successGreen
 import band.effective.office.elevator.ui.main.components.BookingInformation
@@ -42,6 +42,7 @@ fun MainScreen(component: MainComponent) {
     var isErrorMessageVisible by remember { mutableStateOf(false) }
     var isSuccessMessageVisible by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf(MainRes.strings.something_went_wrong) }
+    var showModalCalendar by remember { mutableStateOf(false) }
 
     LaunchedEffect(component) {
         component.label.collect { label ->
@@ -59,6 +60,8 @@ fun MainScreen(component: MainComponent) {
                     isSuccessMessageVisible = false
                 }
                 MainStore.Label.ShowOptions -> {}
+                MainStore.Label.OpenCalendar -> showModalCalendar = true
+                MainStore.Label.CloseCalendar -> showModalCalendar = false
             }
         }
     }
@@ -73,8 +76,19 @@ fun MainScreen(component: MainComponent) {
             reservedSeats = state.reservedSeats,
             onClickBook = { component.onOutput(MainComponent.Output.OpenBookingScreen) },
             onClickShowOptions = { component.onEvent(MainStore.Intent.OnClickShowOption) },
-            onClickShowMap = { component.onOutput(MainComponent.Output.OpenMap) }
+            onClickShowMap = { component.onOutput(MainComponent.Output.OpenMap) },
+            onClickOpenCalendar = { component.onEvent(MainStore.Intent.OnClickOpenCalendar) }
         )
+        if (showModalCalendar) {
+            ModalCalendar(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .align(Alignment.Center),
+                onClickCansel = { component.onEvent(MainStore.Intent.OnClickCloseCalendar) },
+                onClickOk = { component.onEvent(MainStore.Intent.OnClickApplyDate(it)) },
+                currentDate = state.currentDate
+            )
+        }
         SnackBarErrorMessage(
             modifier = Modifier.align(Alignment.BottomCenter),
             isVisible = isErrorMessageVisible,
@@ -110,14 +124,16 @@ private fun SnackBarSuccessMessage(modifier: Modifier, isVisible: Boolean) {
 
 @Composable
 fun MainScreenContent(
+    modifier: Modifier = Modifier,
     reservedSeats: List<ReservedSeat>,
     elevatorState: ElevatorState,
     onClickBook: () -> Unit,
     onClickShowMap: () -> Unit,
     onClickShowOptions: () -> Unit,
+    onClickOpenCalendar: () -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize()
     ) {
         Column (
             modifier = Modifier
@@ -143,7 +159,8 @@ fun MainScreenContent(
                 reservedSeats = reservedSeats,
                 onClickBook = onClickBook,
                 onClickShowMap = onClickShowMap,
-                onClickShowOptions = onClickShowOptions
+                onClickShowOptions = onClickShowOptions,
+                onClickOpenCalendar = onClickOpenCalendar
             )
         }
     }

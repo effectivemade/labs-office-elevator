@@ -25,6 +25,7 @@ object Dependencies {
         const val logback = "1.2.11"
         const val shadow = "7.1.2"
         const val moko = "0.23.0"
+        const val calendar = "1.0.4"
     }
 
     object Ktor {
@@ -126,5 +127,12 @@ object Dependencies {
 
     object Moko{
         const val resourcesCompose = "dev.icerock.moko:resources-compose:${Versions.moko}"
+    }
+
+    object Calendar{
+        const val composeBasic = "io.github.epicarchitect:calendar-compose-basis:${Versions.calendar}"
+        const val composeRanges = "io.github.epicarchitect:calendar-compose-ranges:${Versions.calendar}"
+        const val composePager = "io.github.epicarchitect:calendar-compose-pager:${Versions.calendar}"
+        const val composeDatePicker = "io.github.epicarchitect:calendar-compose-datepicker:${Versions.calendar}"
     }
 }
