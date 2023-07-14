@@ -6,7 +6,7 @@ import org.ktorm.database.Database
 
 val databaseDiModule = module {
     //info about db connection.
-    single<Database>(named("postgresdb")) {
+    single<Database> {
         Database.connect(
             url = "jdbc:postgresql://localhost:15432/effectiveOfficeBackendDB",
             driver = "org.postgresql.Driver",
