@@ -46,6 +46,11 @@ dependencies {
     implementation("org.ktorm:ktorm-support-postgresql:$ktorm_version")
     implementation("org.postgresql:postgresql:$postgresql_driver_version")
     implementation("io.ktor:ktor-server-auth:$ktor_version")
+    implementation("com.google.api-client:google-api-client:1.32.1")
+    implementation("io.ktor:ktor-server-sessions:$ktor_version")
+    implementation("io.ktor:ktor-client-cio-jvm:2.3.2")
+    implementation("io.ktor:ktor-client-core-jvm:2.3.2")
+    implementation("io.ktor:ktor-client-apache-jvm:2.3.2")
 
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
