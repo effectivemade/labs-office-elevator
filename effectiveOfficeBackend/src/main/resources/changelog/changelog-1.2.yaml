@@ -9,9 +9,13 @@ databaseChangeLog:
               - column:
                   name: owner_id
                   type: uuid
+                  constraints:
+                    nullable: false
               - column:
                   name: workspace_id
                   type: uuid
+                  constraints:
+                    nullable: false
               - column:
                   name: id
                   type: uuid
@@ -20,11 +24,15 @@ databaseChangeLog:
                     primaryKey: true
                     primaryKeyName: pk_workspace_booking
               - column:
-                  name: begin
+                  name: begin_booking
                   type: timestamp
+                  constraints:
+                    nullable: false
               - column:
-                  name: end
+                  name: end_booking
                   type: timestamp
+                  constraints:
+                    nullable: false
         - addForeignKeyConstraint:
             baseTableName: workspace_booking
             baseColumnNames: owner_id
