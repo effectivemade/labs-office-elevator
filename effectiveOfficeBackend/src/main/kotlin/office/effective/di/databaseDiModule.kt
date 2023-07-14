@@ -3,9 +3,9 @@ package office.effective.di
 import org.koin.dsl.module
 import org.ktorm.database.Database
 
-val databaseDiModule = module {
+val databaseDiModule = module(createdAtStart = true) {
     //info about db connection.
-    single<Database>(createdAtStart = true) {
+    single<Database> {
         Database.connect(
             url = "jdbc:postgresql://localhost:15432/effectiveOfficeBackendDB",
             driver = "org.postgresql.Driver",
