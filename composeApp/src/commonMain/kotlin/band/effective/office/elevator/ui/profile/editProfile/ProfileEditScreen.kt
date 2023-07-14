@@ -81,7 +81,7 @@ private fun ProfileEditScreenContent(
         LaunchedEffect(Unit){
             withContext(Dispatchers.Default){
                 fieldsList.clear()
-                prepareFieldsData("Петров Иван","Android-разработчик","petrov","89654561232")
+                prepareFieldsData("Петров Иван","Android-разработчик","petrov","9654561232")
                 listPrepared = true
             }
         }
