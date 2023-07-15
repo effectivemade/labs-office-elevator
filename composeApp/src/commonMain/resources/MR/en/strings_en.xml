@@ -23,6 +23,9 @@
     <string name="cansel">Cansel</string>
     <string name="ok">Ok</string>
 
+    <!-- Buttons -->
+    <string name="_continue">Continue</string>
+
     <!--Tab titles-->
     <string name="profile">Profile</string>
     <string name="main">Main</string>

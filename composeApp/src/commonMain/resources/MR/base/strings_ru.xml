@@ -38,6 +38,9 @@
     <string name="booking">Бронирование</string>
     <string name="employees">Сотрудники</string>
 
+    <!-- Buttons -->
+    <string name="_continue">Продолжить</string>
+
     <!--Error messages-->
     <string name="you_need_to_sign_in">Для работы приложения нужно авторизоваться</string>
     <string name="network_error">Проблема с интернет соединением</string>
