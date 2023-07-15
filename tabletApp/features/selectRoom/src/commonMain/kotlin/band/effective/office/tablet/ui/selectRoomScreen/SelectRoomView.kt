@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -21,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import band.effective.office.tablet.features.selectRoom.MainRes
+import band.effective.office.tablet.ui.selectRoomScreen.successBooking.SuccessSelectRoomView
 import band.effective.office.tablet.ui.selectRoomScreen.uiComponents.BookingButtonView
 import band.effective.office.tablet.ui.selectRoomScreen.uiComponents.CrossButtonView
 import band.effective.office.tablet.ui.selectRoomScreen.uiComponents.DateTimeView
@@ -30,35 +32,19 @@ import band.effective.office.tablet.ui.selectRoomScreen.uiComponents.Title
 import band.effective.office.tablet.ui.selectRoomScreen.uiComponents.TitleFieldView
 import band.effective.office.tablet.ui.theme.CustomDarkColors
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
-
-@Composable
-fun CheckButton(component: SelectRoomComponentImpl) {
-    val showDialog = remember { mutableStateOf(false) }
-    Button(
-        onClick = { showDialog.value = true }
-    ) {
-        Text(
-            text = "check",
-        )
-    }
-
-    if (showDialog.value) {
-        SelectRoomView(component)
-    }
-}
+import band.effective.office.tablet.utils.time24
 
 @Composable
 fun SelectRoomView(
     component: SelectRoomComponentImpl
 ) {
-    // val showDialog = remember { mutableStateOf(true) }
     val modifier = Modifier.background(LocalCustomColorsPalette.current.mountainBackground)
     val shape = RoundedCornerShape(16)
 
-    Dialog(
-        onDismissRequest = { component.close() }
-    )
-    {
+  //  Dialog(
+    //    onDismissRequest = { component.close() }
+   // )
+    //{
         Box(
             modifier = Modifier
                 .size(575.dp, 510.dp)
@@ -93,12 +79,18 @@ fun SelectRoomView(
                 BookingButtonView(
                     modifier = Modifier.height(64.dp).width(415.dp),
                     shape = RoundedCornerShape(40),
-                    booking = component.booking
+                    text = MainRes.string.booking_time_button.format(
+                        startTime = component.booking.eventInfo.startTime.time24(),
+                        finishTime = component.booking.eventInfo.finishTime.time24()
+                    ),
+                    onClick = {
+                      component.bookRoom()
+                    }
                 )
                 Spacer(modifier = Modifier.height(80.dp))
             }
         }
-    }
+  //  }
 }
 
 @Composable

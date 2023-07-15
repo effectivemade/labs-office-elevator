@@ -15,15 +15,21 @@ class SelectRoomComponentImpl(
 ) : ComponentContext by componentContext, SelectRoomComponent, KoinComponent {
     private val interactor: SelectRoomInteractor by inject()
 
-    private var _state = MutableStateFlow(SelectRoomScreenState.defaultState)
-    override val state = _state.asStateFlow()
+    private var mutableState = MutableStateFlow(SelectRoomScreenState.defaultState)
+    override val state = mutableState.asStateFlow()
 
 
     override fun bookRoom() {
+        mutableState.value = mutableState.value.copy(isData = false)
+    }
+
+    private fun defaultState(){
+        mutableState.value = SelectRoomScreenState.defaultState
     }
 
     fun close() {
         onCloseRequest()
+        defaultState()
     }
 
 }

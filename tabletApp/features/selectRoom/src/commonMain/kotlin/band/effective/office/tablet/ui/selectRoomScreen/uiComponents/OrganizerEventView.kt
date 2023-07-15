@@ -1,5 +1,6 @@
 package band.effective.office.tablet.ui.selectRoomScreen.uiComponents
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -29,6 +30,7 @@ fun OrganizerEventView(modifier: Modifier, shape: RoundedCornerShape, booking: B
             Text(
                 text = booking.eventInfo.organizer,
                 style = MaterialTheme.typography.h6,
+                fontFamily = FontFamily.SansSerif,
                 color = LocalCustomColorsPalette.current.primaryTextAndIcon,
                 textAlign = TextAlign.Center
             )

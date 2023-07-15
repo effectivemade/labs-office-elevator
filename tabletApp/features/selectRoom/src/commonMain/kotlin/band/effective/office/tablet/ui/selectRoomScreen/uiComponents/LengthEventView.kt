@@ -43,6 +43,7 @@ fun LengthEventView(modifier: Modifier, shape: RoundedCornerShape, booking: Book
             Text(
                 text = lengthEvent,
                 style = MaterialTheme.typography.h6,
+                fontFamily = FontFamily.SansSerif,
                 color = LocalCustomColorsPalette.current.primaryTextAndIcon
             )
         }

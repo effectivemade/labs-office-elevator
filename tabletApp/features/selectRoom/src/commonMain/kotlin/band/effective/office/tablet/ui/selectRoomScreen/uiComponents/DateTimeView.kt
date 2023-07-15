@@ -11,6 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.features.selectRoom.MainRes
@@ -34,6 +35,7 @@ fun DateTimeView(modifier: Modifier, shape: RoundedCornerShape, booking: Booking
                 Text(
                     text = booking.eventInfo.startTime.date(),
                     style = MaterialTheme.typography.h6,
+                    fontFamily = FontFamily.SansSerif,
                     color = MaterialTheme.colors.secondary
                 )
 
@@ -45,6 +47,7 @@ fun DateTimeView(modifier: Modifier, shape: RoundedCornerShape, booking: Booking
                         finishTime = booking.eventInfo.finishTime.time24()
                     ),
                     style = MaterialTheme.typography.h6,
+                    fontFamily = FontFamily.SansSerif,
                     color = LocalCustomColorsPalette.current.primaryTextAndIcon
                 )
             }

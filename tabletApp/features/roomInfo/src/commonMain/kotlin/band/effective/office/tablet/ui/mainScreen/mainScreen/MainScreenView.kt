@@ -20,7 +20,7 @@ import band.effective.office.tablet.ui.mainScreen.mockComponets.MockSettingView
 import band.effective.office.tablet.ui.mainScreen.mockComponets.MockSettingsComponent
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.RoomInfoComponent
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponentImpl
-import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomView
+import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomScreen
 
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable
@@ -53,7 +53,8 @@ fun MainScreenView(
         }
         Box(modifier = Modifier.fillMaxSize()) {
             if (showBookingModal)
-                SelectRoomView(component = selectRoomComponent)
+               //selectRoomComponent.defaultState()
+                SelectRoomScreen(component = selectRoomComponent)
         }
     }
 

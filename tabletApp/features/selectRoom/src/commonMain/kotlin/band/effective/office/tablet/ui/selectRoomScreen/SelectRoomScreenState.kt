@@ -1,10 +1,10 @@
 package band.effective.office.tablet.ui.selectRoomScreen
 
 data class SelectRoomScreenState(
-    val isLoad: Boolean,
-    val isData: Boolean,
-    val isError: Boolean,
-    val error: String
+    var isLoad: Boolean,
+    var isData: Boolean,
+    var isError: Boolean,
+    var error: String
 ){
     companion object {
         val defaultState =

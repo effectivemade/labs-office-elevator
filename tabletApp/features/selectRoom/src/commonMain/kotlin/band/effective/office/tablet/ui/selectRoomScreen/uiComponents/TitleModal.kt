@@ -5,6 +5,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.features.selectRoom.MainRes
@@ -21,6 +22,7 @@ fun Title(component: SelectRoomComponentImpl){
         ),
         style = MaterialTheme.typography.h4,
         color = LocalCustomColorsPalette.current.primaryTextAndIcon,
+        fontFamily = FontFamily.SansSerif,
         textAlign = TextAlign.Center
     )
 }

@@ -23,7 +23,7 @@ import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.utils.time24
 
 @Composable
-fun BookingButtonView(modifier: Modifier, shape: RoundedCornerShape, booking: Booking) {
+fun BookingButtonView(modifier: Modifier, shape: RoundedCornerShape, text: String, onClick:() -> Unit) {
     val isPressed = remember { mutableStateOf(false) }
     val colorButton =  if(isPressed.value)
         LocalCustomColorsPalette.current.pressedPrimaryButton else MaterialTheme.colors.primary
@@ -32,16 +32,17 @@ fun BookingButtonView(modifier: Modifier, shape: RoundedCornerShape, booking: Bo
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(colorButton),
         shape = shape,
-        onClick = { isPressed.value = !isPressed.value}
+        onClick = {
+            isPressed.value = !isPressed.value
+            onClick()
+        }
     ) {
         Box(contentAlignment = Alignment.Center)
         {
             Text(
-                text = MainRes.string.booking_time_button.format(
-                    startTime = booking.eventInfo.startTime.time24(),
-                    finishTime = booking.eventInfo.finishTime.time24()
-                ),
+                text = text,
                 style = MaterialTheme.typography.h6,
+                fontFamily = FontFamily.SansSerif,
                 color = when(LocalCustomColorsPalette.current) {
                     CustomDarkColors -> LocalCustomColorsPalette.current.primaryTextAndIcon
                     else -> MaterialTheme.colors.background
