@@ -15,9 +15,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.ui.authorization.components.AuthSubTitle
+import band.effective.office.elevator.ui.authorization.components.AuthTitle
 import band.effective.office.elevator.ui.authorization.store.AuthorizationStore
 import dev.icerock.moko.resources.compose.stringResource
 
@@ -44,6 +47,28 @@ private fun AuthorizationPhoneComponent(onEvent: (AuthorizationStore.Intent) -> 
         AuthTabRow(0)
 
         Column(modifier = Modifier.fillMaxSize()) {
+
+            AuthTitle(
+                text = stringResource(MainRes.strings.input_number),
+                modifier = Modifier.padding(bottom = 7.dp),
+                textAlign = TextAlign.Start
+            )
+            AuthSubTitle(
+                text = stringResource(MainRes.strings.select_number),
+                modifier = Modifier.padding(bottom = 24.dp),
+                textAlign = TextAlign.Start
+            )
+
+            OutlinedTextInput(
+                hint = stringResource(MainRes.strings.number_hint),
+                error = error1.value,
+                modifier = Modifier,
+                leadingHolder = {
+                    Text(text = "+7")
+                },
+                onTextChange = {
+
+                })
 
         }
 
