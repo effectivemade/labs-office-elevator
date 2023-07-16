@@ -16,8 +16,12 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
 import office.effective.common.utils.UserSession
-import office.effective.plugins.*
-
+import office.effective.di.databaseDiModule
+import office.effective.plugins.configureMigration
+import office.effective.plugins.configureRouting
+import office.effective.plugins.configureSecurity
+import office.effective.plugins.configureSerialization
+import org.koin.ktor.plugin.Koin
 
 val config = HoconApplicationConfig(ConfigFactory.load())
 
@@ -26,13 +30,14 @@ val hostId: String = config.propertyOrNull("ktor.deployment.host")?.getString() 
 fun main() {
     embeddedServer(factory = Netty, port = portNumber, host = hostId, module = Application::module)
         .start(wait = true)
-
 }
 
 fun Application.module() {
+    configureMigration()
     configureSerialization()
     configureSecurity()
     configureRouting()
+
     install(Sessions) {
         // TODO: Cookies
         header<UserSession>("user_session")
@@ -53,5 +58,8 @@ fun Application.module() {
             }
             client = HttpClient(Apache)
         }
+    }
+    install(Koin) {
+        modules(databaseDiModule)
     }
 }

@@ -4,11 +4,14 @@ val logback_version: String by project
 val koin_version: String by project
 val ktorm_version: String by project
 val postgresql_driver_version: String by project
+val snakeyaml_version: String by project
+val liquibase_version: String by project
 
 plugins {
     kotlin("jvm") version "1.8.22"
     id("io.ktor.plugin") version "2.3.2"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.8.22"
+    id("org.liquibase.gradle") version "2.2.0"
 }
 
 group = "office.effective"
@@ -51,6 +54,12 @@ dependencies {
     implementation("io.ktor:ktor-client-cio-jvm:2.3.2")
     implementation("io.ktor:ktor-client-core-jvm:2.3.2")
     implementation("io.ktor:ktor-client-apache-jvm:2.3.2")
+    implementation("org.liquibase:liquibase-core:$liquibase_version")
+
+    liquibaseRuntime("org.liquibase:liquibase-core:$liquibase_version")
+    liquibaseRuntime("org.postgresql:postgresql:$postgresql_driver_version")
+    liquibaseRuntime("org.yaml:snakeyaml:$snakeyaml_version")
+    liquibaseRuntime("ch.qos.logback:logback-classic:$logback_version")
 
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
