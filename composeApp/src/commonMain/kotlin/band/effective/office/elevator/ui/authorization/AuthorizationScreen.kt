@@ -22,7 +22,7 @@ fun AuthorizationScreen(component: AuthorizationComponent) {
             when (label) {
                 is AuthorizationStore.Label.AuthorizationFailure -> showToast(label.message)
                 AuthorizationStore.Label.AuthorizationSuccess -> component.onOutput(
-                    AuthorizationComponent.Output.OpenMainScreen
+                    AuthorizationComponent.Output.OpenAuthorizationPhoneScreen
                 )
             }
         }
