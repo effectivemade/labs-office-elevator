@@ -1,6 +1,6 @@
-package band.effective.office.elevator.ui.authorization.authorizationphone_page
+package band.effective.office.elevator.ui.authorization.authorization_phone.store
 
-import band.effective.office.elevator.ui.authorization.authorizationphone_page.AuthorizationPhoneStore.*
+import band.effective.office.elevator.ui.authorization.authorization_phone.store.AuthorizationPhoneStore.*
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -18,7 +18,7 @@ internal class AuthorizationPhoneStoreFactory(private val storeFactory: StoreFac
                 name = "Authorization phone",
                 initialState = State(),
                 bootstrapper = BootstrapperImpl(),
-                executorFactory = ::ExecutorImpl,
+                executorFactory = AuthorizationPhoneStoreFactory::ExecutorImpl,
                 reducer = ReducerImpl
             ) {
         }

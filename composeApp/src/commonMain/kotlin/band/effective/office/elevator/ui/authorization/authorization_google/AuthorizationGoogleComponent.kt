@@ -1,14 +1,14 @@
-package band.effective.office.elevator.ui.authorization
+package band.effective.office.elevator.ui.authorization.authorization_google
 
-import band.effective.office.elevator.ui.authorization.store.AuthorizationStore
-import band.effective.office.elevator.ui.authorization.store.AuthorizationStoreFactory
+import band.effective.office.elevator.ui.authorization.authorization_google.store.AuthorizationGoogleStore
+import band.effective.office.elevator.ui.authorization.authorization_google.store.AuthorizationGoogleStoreFactory
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import kotlinx.coroutines.flow.Flow
 
-class AuthorizationComponent(
+class AuthorizationGoogleComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
     private val output: (Output) -> Unit
@@ -16,15 +16,15 @@ class AuthorizationComponent(
 
     private val authorizationStore =
         instanceKeeper.getStore {
-            AuthorizationStoreFactory(
+            AuthorizationGoogleStoreFactory(
                 storeFactory = storeFactory
             ).create()
         }
 
-    val label: Flow<AuthorizationStore.Label> = authorizationStore.labels
+    val label: Flow<AuthorizationGoogleStore.Label> = authorizationStore.labels
 
 
-    fun onEvent(event: AuthorizationStore.Intent) {
+    fun onEvent(event: AuthorizationGoogleStore.Intent) {
         authorizationStore.accept(event)
     }
 

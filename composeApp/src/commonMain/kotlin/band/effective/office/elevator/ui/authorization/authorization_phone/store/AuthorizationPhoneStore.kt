@@ -1,4 +1,4 @@
-package band.effective.office.elevator.ui.authorization.authorizationphone_page
+package band.effective.office.elevator.ui.authorization.authorization_phone.store
 
 import com.arkivanov.mvikotlin.core.store.Store
 

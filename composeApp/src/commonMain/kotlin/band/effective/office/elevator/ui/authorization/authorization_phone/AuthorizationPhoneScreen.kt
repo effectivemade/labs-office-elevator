@@ -1,15 +1,13 @@
-package band.effective.office.elevator.ui.authorization.authorizationphone_page
+package band.effective.office.elevator.ui.authorization.authorization_phone
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -25,7 +23,6 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.Divider
@@ -47,7 +44,7 @@ import band.effective.office.elevator.components.PrimaryButton
 import band.effective.office.elevator.getDefaultFont
 import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.theme_light_primary_stroke
-import band.effective.office.elevator.theme_light_tertiary_color
+import band.effective.office.elevator.ui.authorization.authorization_phone.store.AuthorizationPhoneStore
 import band.effective.office.elevator.ui.authorization.components.AuthSubTitle
 import band.effective.office.elevator.ui.authorization.components.AuthTabRow
 import band.effective.office.elevator.ui.authorization.components.AuthTitle

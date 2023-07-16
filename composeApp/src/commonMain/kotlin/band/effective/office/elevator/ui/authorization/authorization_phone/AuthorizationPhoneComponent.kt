@@ -1,5 +1,7 @@
-package band.effective.office.elevator.ui.authorization.authorizationphone_page
+package band.effective.office.elevator.ui.authorization.authorization_phone
 
+import band.effective.office.elevator.ui.authorization.authorization_phone.store.AuthorizationPhoneStore
+import band.effective.office.elevator.ui.authorization.authorization_phone.store.AuthorizationPhoneStoreFactory
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory

@@ -1,10 +1,10 @@
-package band.effective.office.elevator.ui.authorization.store
+package band.effective.office.elevator.ui.authorization.authorization_google.store
 
 import band.effective.office.elevator.domain.GoogleSignIn
 import band.effective.office.elevator.domain.SignInResultCallback
-import band.effective.office.elevator.ui.authorization.store.AuthorizationStore.Intent
-import band.effective.office.elevator.ui.authorization.store.AuthorizationStore.Label
-import band.effective.office.elevator.ui.authorization.store.AuthorizationStore.State
+import band.effective.office.elevator.ui.authorization.authorization_google.store.AuthorizationGoogleStore.Intent
+import band.effective.office.elevator.ui.authorization.authorization_google.store.AuthorizationGoogleStore.Label
+import band.effective.office.elevator.ui.authorization.authorization_google.store.AuthorizationGoogleStore.State
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
@@ -14,15 +14,15 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-internal class AuthorizationStoreFactory(
+internal class AuthorizationGoogleStoreFactory(
     private val storeFactory: StoreFactory
 ) : KoinComponent {
 
     private val signInClient: GoogleSignIn by inject<GoogleSignIn>()
 
     @OptIn(ExperimentalMviKotlinApi::class)
-    fun create(): AuthorizationStore =
-        object : AuthorizationStore, Store<Intent, State, Label> by storeFactory.create(
+    fun create(): AuthorizationGoogleStore =
+        object : AuthorizationGoogleStore, Store<Intent, State, Label> by storeFactory.create(
             name = "AuthorizationStore",
             initialState = State(),
             bootstrapper = coroutineBootstrapper {

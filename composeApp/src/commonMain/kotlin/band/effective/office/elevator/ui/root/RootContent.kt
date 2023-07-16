@@ -3,8 +3,8 @@ package band.effective.office.elevator.ui.root
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import band.effective.office.elevator.ui.authorization.AuthorizationScreen
-import band.effective.office.elevator.ui.authorization.authorizationphone_page.AuthorizationPhoneScreen
+import band.effective.office.elevator.ui.authorization.authorization_google.AuthorizationGoogleScreen
+import band.effective.office.elevator.ui.authorization.authorization_phone.AuthorizationPhoneScreen
 import band.effective.office.elevator.ui.content.Content
 import band.effective.office.elevator.ui.root.store.RootStore
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
@@ -34,7 +34,7 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
         animation = stackAnimation(fade() + scale()),
     ) {
         when (val child = it.instance) {
-            is RootComponent.Child.AuthorizationChild -> AuthorizationScreen(child.component)
+            is RootComponent.Child.AuthorizationChild -> AuthorizationGoogleScreen(child.component)
             is RootComponent.Child.ContentChild -> Content(child.component)
             RootComponent.Child.Undefined -> {
                 // Wait until fetch Google account if user signed in previously
