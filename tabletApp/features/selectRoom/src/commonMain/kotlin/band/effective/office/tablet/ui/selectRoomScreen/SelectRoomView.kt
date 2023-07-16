@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.features.selectRoom.MainRes
 import band.effective.office.tablet.ui.selectRoomScreen.successBooking.SuccessSelectRoomView
 import band.effective.office.tablet.ui.selectRoomScreen.uiComponents.BookingButtonView
@@ -36,68 +37,65 @@ import band.effective.office.tablet.utils.time24
 
 @Composable
 fun SelectRoomView(
-    component: SelectRoomComponentImpl
+    booking: Booking,
+    close: () -> Unit,
+    bookRoom: () -> Unit
 ) {
     val modifier = Modifier.background(LocalCustomColorsPalette.current.mountainBackground)
     val shape = RoundedCornerShape(16)
 
-  //  Dialog(
-    //    onDismissRequest = { component.close() }
-   // )
-    //{
-        Box(
-            modifier = Modifier
-                .size(575.dp, 510.dp)
-                .clip(RoundedCornerShape(5))
-                .background(LocalCustomColorsPalette.current.elevationBackground),
+    Box(
+        modifier = Modifier
+            .size(575.dp, 510.dp)
+            .clip(RoundedCornerShape(5))
+            .background(LocalCustomColorsPalette.current.elevationBackground),
+    ) {
+        Column(
+            modifier = Modifier.matchParentSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Column(
-                modifier = Modifier.matchParentSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Spacer(modifier = Modifier.height(30.dp))
-                CrossButtonView(
-                    Modifier.width(575.dp),
-                    onDismissRequest = { component.close() }
-                )
-                Title(component)
-                Spacer(modifier = Modifier.height(24.dp))
-                TitleFieldView(
-                    modifier = Modifier.width(415.dp),
-                    title = MainRes.string.whenEvent
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                DateTimeView(
-                    modifier = modifier.height(64.dp).width(415.dp),
-                    shape = shape,
-                    booking = component.booking
-                )
-                Spacer(modifier = Modifier.height(24.dp))
-                RowInfoLengthAndOrganizer(modifier, shape, component)
-                Spacer(modifier = Modifier.height(40.dp))
-                BookingButtonView(
-                    modifier = Modifier.height(64.dp).width(415.dp),
-                    shape = RoundedCornerShape(40),
-                    text = MainRes.string.booking_time_button.format(
-                        startTime = component.booking.eventInfo.startTime.time24(),
-                        finishTime = component.booking.eventInfo.finishTime.time24()
-                    ),
-                    onClick = {
-                      component.bookRoom()
-                    }
-                )
-                Spacer(modifier = Modifier.height(80.dp))
-            }
+            Spacer(modifier = Modifier.height(30.dp))
+            CrossButtonView(
+                Modifier.width(575.dp),
+                onDismissRequest = { close() }
+            )
+            Title(booking)
+            Spacer(modifier = Modifier.height(24.dp))
+            TitleFieldView(
+                modifier = Modifier.width(415.dp),
+                title = MainRes.string.whenEvent
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            DateTimeView(
+                modifier = modifier.height(64.dp).width(415.dp),
+                shape = shape,
+                booking = booking
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            RowInfoLengthAndOrganizer(modifier, shape, booking)
+            Spacer(modifier = Modifier.height(40.dp))
+            BookingButtonView(
+                modifier = Modifier.height(64.dp).width(415.dp),
+                shape = RoundedCornerShape(40),
+                text = MainRes.string.booking_time_button.format(
+                    startTime = booking.eventInfo.startTime.time24(),
+                    finishTime = booking.eventInfo.finishTime.time24()
+                ),
+                onClick = {
+                    bookRoom()
+                }
+            )
+            Spacer(modifier = Modifier.height(80.dp))
         }
-  //  }
+    }
 }
 
 @Composable
 fun RowInfoLengthAndOrganizer(
     modifier: Modifier,
     shape: RoundedCornerShape,
-    component: SelectRoomComponentImpl
+    booking: Booking
 ) {
     Row {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -108,7 +106,7 @@ fun RowInfoLengthAndOrganizer(
             LengthEventView(
                 modifier = modifier.height(64.dp).width(156.dp),
                 shape = shape,
-                booking = component.booking
+                booking = booking
             )
         }
         Spacer(modifier = Modifier.width(16.dp))
@@ -120,7 +118,7 @@ fun RowInfoLengthAndOrganizer(
             OrganizerEventView(
                 modifier = modifier.height(64.dp).width(243.dp),
                 shape = shape,
-                booking = component.booking
+                booking = booking
             )
         }
     }

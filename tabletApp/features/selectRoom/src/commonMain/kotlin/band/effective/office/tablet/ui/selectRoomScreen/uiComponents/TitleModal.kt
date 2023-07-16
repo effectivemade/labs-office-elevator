@@ -8,17 +8,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.features.selectRoom.MainRes
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponentImpl
 import band.effective.office.tablet.ui.theme.CustomDarkColors
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 
 @Composable
-fun Title(component: SelectRoomComponentImpl){
+fun Title(booking: Booking){
     Text(
         modifier = Modifier.width(415.dp),
         text = MainRes.string.title_booking_dialog.format(
-            nameRoom = component.booking.nameRoom
+            nameRoom = booking.nameRoom
         ),
         style = MaterialTheme.typography.h4,
         color = LocalCustomColorsPalette.current.primaryTextAndIcon,

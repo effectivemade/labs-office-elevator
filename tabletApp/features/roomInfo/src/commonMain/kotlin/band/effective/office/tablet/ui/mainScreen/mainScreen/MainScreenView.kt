@@ -53,7 +53,6 @@ fun MainScreenView(
         }
         Box(modifier = Modifier.fillMaxSize()) {
             if (showBookingModal)
-               //selectRoomComponent.defaultState()
                 SelectRoomScreen(component = selectRoomComponent)
         }
     }

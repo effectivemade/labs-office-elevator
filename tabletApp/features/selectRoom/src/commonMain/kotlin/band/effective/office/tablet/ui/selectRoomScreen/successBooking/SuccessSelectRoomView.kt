@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.features.selectRoom.MainRes
 import band.effective.office.tablet.ui.selectRoomScreen.RowInfoLengthAndOrganizer
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponentImpl
@@ -32,47 +33,43 @@ import band.effective.office.tablet.utils.time24
 
 @Composable
 fun SuccessSelectRoomView(
-    component: SelectRoomComponentImpl
+    booking: Booking,
+    close: () -> Unit
 ) {
-   // Dialog(
-     //   onDismissRequest = { component.close() }
-   // )
-   // {
-        Box(
-            modifier = Modifier
-                .size(551.dp, 510.dp)
-                .clip(RoundedCornerShape(5))
-                .background(LocalCustomColorsPalette.current.elevationBackground),
+    Box(
+        modifier = Modifier
+            .size(551.dp, 510.dp)
+            .clip(RoundedCornerShape(5))
+            .background(LocalCustomColorsPalette.current.elevationBackground),
+    ) {
+        Column(
+            modifier = Modifier.matchParentSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Column(
-                modifier = Modifier.matchParentSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Spacer(modifier = Modifier.height(30.dp))
-                CrossButtonView(
-                    Modifier.width(551.dp),
-                    onDismissRequest = { component.close() }
-                )
-                Spacer(modifier = Modifier.height(2.dp))
-                IconSuccess()
-                Spacer(modifier = Modifier.height(24.dp))
-                SuccessText(modifier = Modifier.width(227.dp), nameRoom = component.booking.nameRoom)
-                Spacer(modifier = Modifier.height(60.dp))
-                DateTimeView(modifier = Modifier.width(391.dp), booking = component.booking)
-                Spacer(modifier = Modifier.height(20.dp))
-                OrganizerEventView(booking = component.booking)
-                Spacer(modifier = Modifier.height(60.dp))
-                BookingButtonView(
-                    modifier = Modifier.height(64.dp).width(415.dp),
-                    shape = RoundedCornerShape(40),
-                    text = MainRes.string.on_main,
-                    onClick = {
-                        component.close()
-                    }
-                )
-                Spacer(modifier = Modifier.height(80.dp))
-            }
+            Spacer(modifier = Modifier.height(30.dp))
+            CrossButtonView(
+                Modifier.width(551.dp),
+                onDismissRequest = { close() }
+            )
+            Spacer(modifier = Modifier.height(2.dp))
+            IconSuccess()
+            Spacer(modifier = Modifier.height(24.dp))
+            SuccessText(modifier = Modifier.width(227.dp), nameRoom = booking.nameRoom)
+            Spacer(modifier = Modifier.height(60.dp))
+            DateTimeView(modifier = Modifier.width(391.dp), booking = booking)
+            Spacer(modifier = Modifier.height(20.dp))
+            OrganizerEventView(booking = booking)
+            Spacer(modifier = Modifier.height(60.dp))
+            BookingButtonView(
+                modifier = Modifier.height(64.dp).width(415.dp),
+                shape = RoundedCornerShape(40),
+                text = MainRes.string.on_main,
+                onClick = {
+                    close()
+                }
+            )
+            Spacer(modifier = Modifier.height(80.dp))
         }
-  //  }
+    }
 }

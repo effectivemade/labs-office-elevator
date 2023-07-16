@@ -3,8 +3,6 @@ package band.effective.office.tablet.ui.selectRoomScreen
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.window.Dialog
 import band.effective.office.tablet.ui.selectRoomScreen.successBooking.SuccessSelectRoomView
 
@@ -19,7 +17,11 @@ fun SelectRoomScreen(component: SelectRoomComponentImpl){
         println("AGAIN")
         when {
             state.isData -> {
-                SelectRoomView(component)
+                SelectRoomView(
+                    component.booking,
+                    { component.close() },
+                    { component.bookRoom() }
+                )
             }
 
             state.isLoad -> {
@@ -33,7 +35,9 @@ fun SelectRoomScreen(component: SelectRoomComponentImpl){
             }
 
             else -> {
-                SuccessSelectRoomView(component)
+                SuccessSelectRoomView(
+                    component.booking
+                ) { component.close() }
             }
         }
     }
