@@ -8,11 +8,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
@@ -24,6 +27,8 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -39,6 +44,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.PrimaryButton
+import band.effective.office.elevator.getDefaultFont
+import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.theme_light_primary_stroke
 import band.effective.office.elevator.theme_light_tertiary_color
 import band.effective.office.elevator.ui.authorization.components.AuthSubTitle
@@ -76,8 +83,8 @@ private fun AuthorizationPhoneComponent(onEvent: (AuthorizationPhoneStore.Intent
     val closeIcon = remember { mutableStateOf(false) }
 
     val strokeColor = theme_light_primary_stroke
-    val unfocusedColor = theme_light_tertiary_color
-    val color = remember { mutableStateOf(theme_light_tertiary_color) }
+    val unfocusedColor = textGrayColor
+    val color = remember { mutableStateOf(unfocusedColor) }
     val errorColor =
         remember { mutableStateOf(Color(0xFFFF3B30)) } /* TODO : Add error color to Colors.kt */
     val tintColor = remember { mutableStateOf(unfocusedColor) }
@@ -86,26 +93,44 @@ private fun AuthorizationPhoneComponent(onEvent: (AuthorizationPhoneStore.Intent
 //    endregion
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(all = 16.dp),
-        verticalArrangement = Arrangement.SpaceAround
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.Top,
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .padding(
+                horizontal = 16.dp,
+                vertical = 48.dp
+            ),
     ) {
         IconButton(
-            modifier = Modifier.padding(all = 16.dp),
+            modifier = Modifier.size(size = 48.dp),
             onClick = {
                 onEvent(AuthorizationPhoneStore.Intent.BackButtonClicked)
             }) {
-            Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "image_back")
+            Icon(
+                imageVector = Icons.Rounded.ArrowBack,
+                tint = Color.Black,
+                contentDescription = "image_back"
+            )
         }
+
+        Spacer(modifier = Modifier.height(8.dp))
 
         AuthTabRow(0)
 
-        Column(modifier = Modifier.fillMaxSize()) {
-
+        Column(
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+        ) {
             AuthTitle(
                 text = stringResource(MainRes.strings.input_number),
                 modifier = Modifier.padding(bottom = 7.dp),
                 textAlign = TextAlign.Start
             )
+
             AuthSubTitle(
                 text = stringResource(MainRes.strings.select_number),
                 modifier = Modifier.padding(bottom = 24.dp),
@@ -137,9 +162,16 @@ private fun AuthorizationPhoneComponent(onEvent: (AuthorizationPhoneStore.Intent
                 ),
                 placeholder = {
                     Text(
-                        text = "+7",
+                        text = stringResource(MainRes.strings.number_hint),
                         color = unfocusedColor,
-                        style = MaterialTheme.typography.body1,
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            lineHeight = 20.8.sp,
+                            fontFamily = getDefaultFont(),
+                            fontWeight = FontWeight(500),
+                            color = unfocusedColor,
+                            letterSpacing = 0.1.sp,
+                        ),
                         lineHeight = 20.8.sp
                     )
                 },
@@ -165,20 +197,32 @@ private fun AuthorizationPhoneComponent(onEvent: (AuthorizationPhoneStore.Intent
                         horizontalArrangement = Arrangement.Start,
                         modifier = Modifier.padding(horizontal = 16.dp)
                     ) {
-                        Text(text = "+7")
+                        Text(
+                            text = "+7",
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                                lineHeight = 20.8.sp,
+                                fontFamily = getDefaultFont(),
+                                fontWeight = FontWeight(500),
+                                color = unfocusedColor,
+                                letterSpacing = 0.1.sp,
+                            )
+                        )
                         Spacer(modifier = Modifier.width(16.dp))
-                        Box(
+
+                        Divider(
                             modifier = Modifier
                                 .height(28.dp)
                                 .width(2.dp)
                                 .clip(RoundedCornerShape(4.dp))
                                 .padding(vertical = 4.dp)
-                                .background(if (isError.value) errorColor.value else color.value)
+                                .background(if (isError.value) errorColor.value else unfocusedColor)
                         )
                     }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
+                    .wrapContentHeight()
                     .clickable(
                         enabled = true,
                         onClick = {
@@ -187,24 +231,22 @@ private fun AuthorizationPhoneComponent(onEvent: (AuthorizationPhoneStore.Intent
                     )
             )
 
+            Spacer(modifier = Modifier.height(16.dp))
+
+            PrimaryButton(
+                text = stringResource(MainRes.strings._continue),
+                cornerValue = 40.dp,
+                contentTextSize = 16.sp,
+                paddingValues = PaddingValues(all = 10.dp),
+                elevation = elevation,
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = MaterialTheme.colors.primary
+                ),
+                border = null,
+                onButtonClick = {
+                    onEvent(AuthorizationPhoneStore.Intent.ContinueButtonClicked)
+                }
+            )
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        PrimaryButton(
-            text = stringResource(MainRes.strings._continue),
-            modifier = Modifier,
-            cornerValue = 40.dp,
-            contentTextSize = 16.sp,
-            paddingValues = PaddingValues(),
-            elevation = elevation,
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = MaterialTheme.colors.primary
-            ),
-            border = null,
-            onButtonClick = {
-                onEvent(AuthorizationPhoneStore.Intent.ContinueButtonClicked)
-            }
-        )
     }
 }

@@ -33,7 +33,6 @@ fun PrimaryButton(
     Button(
         modifier = Modifier
             .fillMaxWidth()
-            .wrapContentHeight()
             .then(modifier),
         border = border,
         elevation = elevation,

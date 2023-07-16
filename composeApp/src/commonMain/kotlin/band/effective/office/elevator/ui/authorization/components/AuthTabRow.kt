@@ -30,13 +30,14 @@ fun AuthTabRow(selectedIndex: Int) {
                 color = Color.Transparent
             )
         },
+        backgroundColor = Color.Transparent,
         contentColor = Color.Transparent,
         modifier = Modifier
             .background(Color.Transparent)
             .clickable(enabled = false, onClick = {})
     ) {
         tabs.forEachIndexed { index, s ->
-            AuthTabItem(i.value == index)
+            AuthTabItem(i.value == index, index)
         }
     }
 }
