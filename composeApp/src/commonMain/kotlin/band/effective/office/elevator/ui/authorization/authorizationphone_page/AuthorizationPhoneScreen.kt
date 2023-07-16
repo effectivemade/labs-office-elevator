@@ -46,6 +46,7 @@ import band.effective.office.elevator.ui.authorization.components.AuthTitle
 import dev.icerock.moko.resources.compose.stringResource
 
 
+
 @Composable
 private fun AuthorizationPhoneComponent(onEvent: (AuthorizationPhoneStore.Intent) -> Unit) {
 //    region::Variables
