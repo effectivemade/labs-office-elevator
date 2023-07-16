@@ -43,11 +43,11 @@ import band.effective.office.elevator.theme_light_tertiary_color
 import band.effective.office.elevator.ui.authorization.components.AuthSubTitle
 import band.effective.office.elevator.ui.authorization.components.AuthTabRow
 import band.effective.office.elevator.ui.authorization.components.AuthTitle
-import band.effective.office.elevator.ui.authorization.store.AuthorizationStore
 import dev.icerock.moko.resources.compose.stringResource
 
+
 @Composable
-private fun AuthorizationPhoneComponent(onEvent: (AuthorizationStore.Intent) -> Unit) {
+private fun AuthorizationPhoneComponent(onEvent: (AuthorizationPhoneStore.Intent) -> Unit) {
 //    region::Variables
     val elevation = ButtonDefaults.elevation(
         defaultElevation = 0.dp,
@@ -74,9 +74,11 @@ private fun AuthorizationPhoneComponent(onEvent: (AuthorizationStore.Intent) -> 
         modifier = Modifier.fillMaxSize().padding(all = 16.dp),
         verticalArrangement = Arrangement.SpaceAround
     ) {
-        IconButton(modifier = Modifier.padding(all = 16.dp), onClick = {
-
-        }) {
+        IconButton(
+            modifier = Modifier.padding(all = 16.dp),
+            onClick = {
+                onEvent(AuthorizationPhoneStore.Intent.BackButtonClicked)
+            }) {
             Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "image_back")
         }
 
@@ -120,14 +122,10 @@ private fun AuthorizationPhoneComponent(onEvent: (AuthorizationStore.Intent) -> 
                 ),
                 placeholder = {
                     Text(
-                        text = "+7", style = TextStyle(
-                            fontSize = 16.sp,
-                            lineHeight = 20.8.sp,
-//                fontFamily = FontFamily(Font(R.font.roboto)), TODO : Add fonts to res
-                            fontWeight = FontWeight(500),
-                            color = unfocusedColor,
-                            letterSpacing = 0.1.sp,
-                        )
+                        text = "+7",
+                        color = unfocusedColor,
+                        style = MaterialTheme.typography.body1,
+                        lineHeight = 20.8.sp
                     )
                 },
                 isError = isError.value,
@@ -190,7 +188,7 @@ private fun AuthorizationPhoneComponent(onEvent: (AuthorizationStore.Intent) -> 
             ),
             border = null,
             onButtonClick = {
-
+                onEvent(AuthorizationPhoneStore.Intent.ContinueButtonClicked)
             }
         )
     }
