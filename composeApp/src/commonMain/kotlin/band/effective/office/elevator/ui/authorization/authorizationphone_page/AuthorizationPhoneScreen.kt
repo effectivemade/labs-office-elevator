@@ -151,7 +151,7 @@ private fun AuthorizationPhoneComponent(onEvent: (AuthorizationStore.Intent) -> 
                         horizontalArrangement = Arrangement.Start,
                         modifier = Modifier.padding(horizontal = 16.dp)
                     ) {
-                        leadingHolder()
+                        Text(text = "+7")
 //                Icon(imageVector = icon, contentDescription = "leading_icon")
                         Spacer(modifier = Modifier.width(16.dp))
                         Box(
