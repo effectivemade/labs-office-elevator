@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import band.effective.office.elevator.ui.authorization.AuthorizationScreen
+import band.effective.office.elevator.ui.authorization.authorizationphone_page.AuthorizationPhoneScreen
 import band.effective.office.elevator.ui.content.Content
 import band.effective.office.elevator.ui.root.store.RootStore
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
@@ -38,6 +39,9 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
             RootComponent.Child.Undefined -> {
                 // Wait until fetch Google account if user signed in previously
             }
+//            region::Authorization tabs
+            is RootComponent.Child.AuthorizationPhoneChild -> AuthorizationPhoneScreen(child.component)
+//            endregion
         }
     }
 }

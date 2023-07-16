@@ -47,7 +47,7 @@ import band.effective.office.elevator.ui.authorization.components.AuthTitle
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
-fun AuthorizationScreen(component: AuthorizationPhoneComponent) {
+fun AuthorizationPhoneScreen(component: AuthorizationPhoneComponent) {
 
     LaunchedEffect(component) {
         component.label.collect { label ->
