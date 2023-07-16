@@ -33,7 +33,8 @@ class AuthorizationComponent(
     }
 
     sealed class Output {
-        object OpenMainScreen : Output()
+        object OpenAuthorizationPhoneScreen : Output()
+//        object OpenMainScreen : Output()
     }
 
 }
