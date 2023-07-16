@@ -25,6 +25,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -45,7 +46,20 @@ import band.effective.office.elevator.ui.authorization.components.AuthTabRow
 import band.effective.office.elevator.ui.authorization.components.AuthTitle
 import dev.icerock.moko.resources.compose.stringResource
 
+@Composable
+fun AuthorizationScreen(component: AuthorizationPhoneComponent) {
 
+    LaunchedEffect(component) {
+        component.label.collect { label ->
+            when (label) {
+                AuthorizationPhoneStore.Label.AuthorizationPhoneFailure -> TODO()
+                AuthorizationPhoneStore.Label.AuthorizationPhoneSuccess -> TODO()
+            }
+        }
+    }
+
+    AuthorizationPhoneComponent(onEvent = component::onEvent)
+}
 
 @Composable
 private fun AuthorizationPhoneComponent(onEvent: (AuthorizationPhoneStore.Intent) -> Unit) {
