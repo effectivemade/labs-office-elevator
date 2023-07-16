@@ -37,6 +37,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.components.PrimaryButton
 import band.effective.office.elevator.theme_light_primary_stroke
 import band.effective.office.elevator.theme_light_tertiary_color
 import band.effective.office.elevator.ui.authorization.components.AuthSubTitle
@@ -152,7 +153,6 @@ private fun AuthorizationPhoneComponent(onEvent: (AuthorizationStore.Intent) -> 
                         modifier = Modifier.padding(horizontal = 16.dp)
                     ) {
                         Text(text = "+7")
-//                Icon(imageVector = icon, contentDescription = "leading_icon")
                         Spacer(modifier = Modifier.width(16.dp))
                         Box(
                             modifier = Modifier
