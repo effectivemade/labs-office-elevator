@@ -48,7 +48,6 @@ import band.effective.office.elevator.ui.authorization.authorization_phone.store
 import band.effective.office.elevator.ui.authorization.components.AuthSubTitle
 import band.effective.office.elevator.ui.authorization.components.AuthTabRow
 import band.effective.office.elevator.ui.authorization.components.AuthTitle
-import band.effective.office.elevator.ui.profile.editProfile.ProfileEditComponent
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
