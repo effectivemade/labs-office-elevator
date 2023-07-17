@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -41,43 +42,44 @@ fun SelectRoomView(
     close: () -> Unit,
     bookRoom: () -> Unit
 ) {
-    val modifier = Modifier.background(LocalCustomColorsPalette.current.mountainBackground)
-    val shape = RoundedCornerShape(16)
+    val shape = RoundedCornerShape(24)
+    val modifier = Modifier
+        .clip(shape)
+        .background(LocalCustomColorsPalette.current.mountainBackground)
 
     Box(
         modifier = Modifier
-            .size(575.dp, 510.dp)
-            .clip(RoundedCornerShape(5))
+            .size(575.dp, 530.dp)
+            .clip(RoundedCornerShape(3))
             .background(LocalCustomColorsPalette.current.elevationBackground),
     ) {
         Column(
-            modifier = Modifier.matchParentSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            modifier = Modifier
+                .matchParentSize()
+                .padding(top = 30.dp, bottom = 80.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(30.dp))
             CrossButtonView(
                 Modifier.width(575.dp),
                 onDismissRequest = { close() }
             )
             Title(booking)
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             TitleFieldView(
                 modifier = Modifier.width(415.dp),
                 title = MainRes.string.whenEvent
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             DateTimeView(
                 modifier = modifier.height(64.dp).width(415.dp),
-                shape = shape,
                 booking = booking
             )
-            Spacer(modifier = Modifier.height(24.dp))
-            RowInfoLengthAndOrganizer(modifier, shape, booking)
+            Spacer(modifier = Modifier.height(16.dp))
+            RowInfoLengthAndOrganizer(modifier, booking)
             Spacer(modifier = Modifier.height(40.dp))
             BookingButtonView(
                 modifier = Modifier.height(64.dp).width(415.dp),
-                shape = RoundedCornerShape(40),
+                shape = RoundedCornerShape(100),
                 text = MainRes.string.booking_time_button.format(
                     startTime = booking.eventInfo.startTime.time24(),
                     finishTime = booking.eventInfo.finishTime.time24()
@@ -86,7 +88,6 @@ fun SelectRoomView(
                     bookRoom()
                 }
             )
-            Spacer(modifier = Modifier.height(80.dp))
         }
     }
 }
@@ -94,30 +95,27 @@ fun SelectRoomView(
 @Composable
 fun RowInfoLengthAndOrganizer(
     modifier: Modifier,
-    shape: RoundedCornerShape,
     booking: Booking
 ) {
     Row {
-        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             TitleFieldView(
                 modifier = Modifier.width(156.dp),
                 title = MainRes.string.how_much
             )
             LengthEventView(
                 modifier = modifier.height(64.dp).width(156.dp),
-                shape = shape,
                 booking = booking
             )
         }
         Spacer(modifier = Modifier.width(16.dp))
-        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             TitleFieldView(
                 modifier = Modifier.width(243.dp),
                 title = MainRes.string.organizer
             )
             OrganizerEventView(
                 modifier = modifier.height(64.dp).width(243.dp),
-                shape = shape,
                 booking = booking
             )
         }

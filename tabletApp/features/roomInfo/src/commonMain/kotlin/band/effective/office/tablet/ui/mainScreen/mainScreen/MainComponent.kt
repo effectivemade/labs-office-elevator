@@ -34,6 +34,7 @@ class MainComponent(
         SelectRoomComponentImpl(
             componentContext = childContext(key = "bookingCurrentRoom"),
             booking = MockBooking.bookingCheckTime15min,
+            storeFactory = storeFactory,
             onCloseRequest = { mainStore.accept(MainStore.Intent.CloseModal) }
         )
 

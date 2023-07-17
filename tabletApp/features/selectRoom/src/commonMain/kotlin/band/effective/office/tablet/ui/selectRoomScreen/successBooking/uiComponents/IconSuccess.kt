@@ -25,7 +25,7 @@ fun IconSuccess() {
         Icon(
             imageVector = ImageVector.vectorResource(MainRes.image.check),
             contentDescription = "Check",
-            modifier = Modifier.size(64.dp),
+            modifier = Modifier.size(60.dp),
             tint = LocalCustomColorsPalette.current.onSuccess
         )
     }

@@ -20,20 +20,17 @@ import band.effective.office.tablet.ui.theme.CustomDarkColors
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 
 @Composable
-fun OrganizerEventView(modifier: Modifier, shape: RoundedCornerShape, booking: Booking) {
-    Card(
-        shape = shape,
-        backgroundColor = LocalCustomColorsPalette.current.mountainBackground) {
-        Box(
-            modifier = modifier,
-            contentAlignment = Alignment.Center) {
-            Text(
-                text = booking.eventInfo.organizer,
-                style = MaterialTheme.typography.h6,
-                fontFamily = FontFamily.SansSerif,
-                color = LocalCustomColorsPalette.current.primaryTextAndIcon,
-                textAlign = TextAlign.Center
-            )
-        }
+fun OrganizerEventView(modifier: Modifier, booking: Booking) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = booking.eventInfo.organizer,
+            style = MaterialTheme.typography.h6,
+            fontFamily = FontFamily.SansSerif,
+            color = LocalCustomColorsPalette.current.primaryTextAndIcon,
+            textAlign = TextAlign.Center
+        )
     }
 }

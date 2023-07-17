@@ -1,5 +1,6 @@
 package band.effective.office.tablet.ui.selectRoomScreen
 
+/*
 data class SelectRoomScreenState(
     var isLoad: Boolean,
     var isData: Boolean,
@@ -15,4 +16,4 @@ data class SelectRoomScreenState(
                 error = ""
             )
     }
-}
+}*/
