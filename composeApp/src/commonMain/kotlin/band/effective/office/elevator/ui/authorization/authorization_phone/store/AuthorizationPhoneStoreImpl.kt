@@ -49,11 +49,15 @@ internal class AuthorizationPhoneStoreFactory(private val storeFactory: StoreFac
             when (intent) {
                 Intent.BackButtonClicked -> back()
 //                Intent.ContinueButtonClicked -> openProfileAuthorization()
-                Intent.ContinueButtonClicked -> validatePhoneNumber(State().phoneNumber)
+                Intent.ContinueButtonClicked -> validatePhoneNumber(
+                    getState().phoneNumber,
+                    getState().isError
+                )
+
                 is Intent.PhoneNumberChanged -> TODO()
             }
 
-        private fun validatePhoneNumber(phoneNumber: String) {
+        private fun validatePhoneNumber(phoneNumber: String, isError: Boolean) {
             if (phoneNumber.length == 9) {
                 publish(AuthorizationPhoneStore.Label.AuthorizationPhoneSuccess)
             } else {

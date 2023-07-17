@@ -68,7 +68,11 @@ fun AuthorizationPhoneScreen(component: AuthorizationPhoneComponent) {
     LaunchedEffect(component) {
         component.label.collect { label ->
             when (label) {
-                AuthorizationPhoneStore.Label.AuthorizationPhoneFailure -> showToast("Неверный формат номера телефона")
+                AuthorizationPhoneStore.Label.AuthorizationPhoneFailure -> {
+                    state.isError = true
+                    showToast("Неверный формат номера телефона")
+                }
+
                 AuthorizationPhoneStore.Label.AuthorizationPhoneSuccess -> component.onOutput(
                     AuthorizationPhoneComponent.Output.OpenProfileScreen
                 )
@@ -81,11 +85,14 @@ fun AuthorizationPhoneScreen(component: AuthorizationPhoneComponent) {
         }
     }
 
-    AuthorizationPhoneComponent(onEvent = component::onEvent)
+    AuthorizationPhoneComponent(onEvent = component::onEvent, state)
 }
 
 @Composable
-private fun AuthorizationPhoneComponent(onEvent: (AuthorizationPhoneStore.Intent) -> Unit) {
+private fun AuthorizationPhoneComponent(
+    onEvent: (AuthorizationPhoneStore.Intent) -> Unit,
+    state: AuthorizationPhoneStore.State
+) {
 //    region::Variables
     val elevation = ButtonDefaults.elevation(
         defaultElevation = 0.dp,
@@ -98,7 +105,6 @@ private fun AuthorizationPhoneComponent(onEvent: (AuthorizationPhoneStore.Intent
     val message = remember { mutableStateOf("") }
     val closeIcon = remember { mutableStateOf(false) }
 //    val focusRequester = remember { FocusRequester() }
-    val isError = remember { mutableStateOf(false) }
     val focusColor = remember { mutableStateOf(textGrayColor) }
 //    endregion
 
@@ -150,10 +156,8 @@ private fun AuthorizationPhoneComponent(onEvent: (AuthorizationPhoneStore.Intent
             OutlinedTextField(
                 value = message.value,
                 onValueChange = {
-//            Printed message
                     message.value = it
-
-//            Close icon
+                    state.phoneNumber = it
                     closeIcon.value = it.isNotEmpty()
                 },
                 textStyle = MaterialTheme.typography.body1,
@@ -172,7 +176,7 @@ private fun AuthorizationPhoneComponent(onEvent: (AuthorizationPhoneStore.Intent
                         lineHeight = 20.8.sp
                     )
                 },
-                isError = isError.value,
+                isError = state.isError,
                 singleLine = true,
                 trailingIcon = {
                     if (closeIcon.value) {
@@ -196,13 +200,7 @@ private fun AuthorizationPhoneComponent(onEvent: (AuthorizationPhoneStore.Intent
                     ) {
                         Text(
                             text = "+7",
-                            style = TextStyle(
-                                fontSize = 16.sp,
-                                lineHeight = 20.8.sp,
-                                fontFamily = getDefaultFont(),
-                                fontWeight = FontWeight(500),
-                                letterSpacing = 0.1.sp,
-                            )
+                            style = MaterialTheme.typography.body1
                         )
 
                         Spacer(modifier = Modifier.width(16.dp))

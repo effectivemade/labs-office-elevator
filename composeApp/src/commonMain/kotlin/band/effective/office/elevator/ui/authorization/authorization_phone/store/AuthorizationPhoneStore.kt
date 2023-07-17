@@ -12,10 +12,10 @@ interface AuthorizationPhoneStore :
     }
 
     data class State(
-        val phoneNumber: String = "+7",
-        val isValidPhoneNumber: Boolean = false,
-        val isLoading: Boolean = false,
-        val isError: Boolean = false
+        var phoneNumber: String = "",
+        var isValidPhoneNumber: Boolean = false,
+        var isLoading: Boolean = false,
+        var isError: Boolean = false
     )
 
     sealed interface Label {
