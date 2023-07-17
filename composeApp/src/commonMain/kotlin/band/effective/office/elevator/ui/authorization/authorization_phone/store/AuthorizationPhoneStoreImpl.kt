@@ -50,15 +50,14 @@ internal class AuthorizationPhoneStoreFactory(private val storeFactory: StoreFac
                 Intent.BackButtonClicked -> back()
 //                Intent.ContinueButtonClicked -> openProfileAuthorization()
                 Intent.ContinueButtonClicked -> validatePhoneNumber(
-                    getState().phoneNumber,
-                    getState().isError
+                    getState().phoneNumber
                 )
 
                 is Intent.PhoneNumberChanged -> TODO()
             }
 
-        private fun validatePhoneNumber(phoneNumber: String, isError: Boolean) {
-            if (phoneNumber.length == 9) {
+        private fun validatePhoneNumber(phoneNumber: String) {
+            if (phoneNumber.length == 12) {
                 publish(AuthorizationPhoneStore.Label.AuthorizationPhoneSuccess)
             } else {
                 publish(AuthorizationPhoneStore.Label.AuthorizationPhoneFailure)
