@@ -1,7 +1,6 @@
 package band.effective.office.elevator.ui.root
 
-import band.effective.office.elevator.ui.authorization.authorization_google.AuthorizationGoogleComponent
-import band.effective.office.elevator.ui.authorization.authorization_phone.AuthorizationPhoneComponent
+import band.effective.office.elevator.ui.authorization.AuthorizationComponent
 import band.effective.office.elevator.ui.content.ContentComponent
 import band.effective.office.elevator.ui.root.store.RootStore
 import band.effective.office.elevator.ui.root.store.RootStoreImplFactory
@@ -23,10 +22,7 @@ import kotlinx.coroutines.flow.Flow
 class RootComponent internal constructor(
     componentContext: ComponentContext,
     private val storeFactory: DefaultStoreFactory,
-    private val authorization: (ComponentContext, (AuthorizationGoogleComponent.Output) -> Unit) -> AuthorizationGoogleComponent,
-//    region::Authorization tabs
-    private val authorizationPhone: (ComponentContext, (AuthorizationPhoneComponent.Output) -> Unit) -> AuthorizationPhoneComponent,
-//    endregion
+    private val authorization: (ComponentContext, () -> Unit) -> AuthorizationComponent,
     private val content: (ComponentContext, () -> Unit) -> ContentComponent,
 ) : ComponentContext by componentContext {
 
@@ -58,7 +54,11 @@ class RootComponent internal constructor(
         componentContext,
         storeFactory,
         authorization = { childContext, output ->
-            AuthorizationGoogleComponent(childContext, storeFactory, output)
+            AuthorizationComponent(
+                childContext,
+                storeFactory,
+                openAuthorizationFlow = output
+            )
         },
         content = { childContext, onSignOut ->
             ContentComponent(
@@ -67,24 +67,14 @@ class RootComponent internal constructor(
                 openAuthorizationFlow = onSignOut
             )
         },
-//        region::Authorization tabs
-        authorizationPhone = { childContext, output ->
-            AuthorizationPhoneComponent(
-                childContext,
-                storeFactory,
-                output
-            )
-        }
-//        endregion
-        )
+    )
 
     private fun child(config: Config, componentContext: ComponentContext): Child =
         when (config) {
             is Config.Authorization -> Child.AuthorizationChild(
                 authorization(
-                    componentContext,
-                    ::onAuthorizationOutput
-                )
+                    componentContext
+                ) { navigation.replaceAll(Config.Authorization) }
             )
 
             is Config.Content -> Child.ContentChild(content(componentContext) {
@@ -92,53 +82,12 @@ class RootComponent internal constructor(
             })
 
             Config.Undefined -> Child.Undefined
-
-//            region::Authorization tabs
-            is Config.AuthorizationPhone -> Child.AuthorizationPhoneChild(
-                authorizationPhone(
-                    componentContext,
-                    ::onAuthorizationPhoneOutput
-                )
-            )
-//            endregion
         }
-
-
-    private fun onAuthorizationOutput(output: AuthorizationGoogleComponent.Output) {
-        when (output) {
-//            AuthorizationComponent.Output.OpenMainScreen -> navigation.replaceAll(Config.Content)
-//            region::Authorization tabs
-            AuthorizationGoogleComponent.Output.OpenAuthorizationPhoneScreen -> navigation.replaceAll(
-                Config.AuthorizationPhone
-            )
-//            endregion
-            else -> {}
-        }
-    }
-
-//    region::Authorization tabs
-    private fun onAuthorizationPhoneOutput(output: AuthorizationPhoneComponent.Output) {
-        when (output) {
-//            AuthorizationComponent.Output.OpenMainScreen -> navigation.replaceAll(Config.Content)
-//            region::Authorization tabs
-            AuthorizationPhoneComponent.Output.OpenProfileScreen -> navigation.replaceAll(
-                Config.AuthorizationPhone
-//            TODO()
-            )
-//            endregion
-            else -> {}
-        }
-    }
-
-//    endregion
 
     fun onOutput(output: Output) {
         when (output) {
             Output.OpenContent -> navigation.replaceAll(Config.Content)
             Output.OpenAuthorizationFlow -> navigation.replaceAll(Config.Authorization)
-//            region::Authorization tabs
-            Output.OpenAuthorizationPhone -> navigation.replaceAll(Config.AuthorizationPhone)
-//            endregion
             else -> {}
         }
     }
@@ -146,19 +95,11 @@ class RootComponent internal constructor(
     sealed interface Output {
         object OpenContent : Output
         object OpenAuthorizationFlow : Output
-
-//        region::Authorization tabs
-        object OpenAuthorizationPhone : Output
-//        endregion
     }
 
     sealed class Child {
         object Undefined : Child()
-        class AuthorizationChild(val component: AuthorizationGoogleComponent) : Child()
-
-//        region::Authorization tabs
-        class AuthorizationPhoneChild(val component: AuthorizationPhoneComponent) : Child()
-//        endregion
+        class AuthorizationChild(val component: AuthorizationComponent) : Child()
         class ContentChild(val component: ContentComponent) : Child()
     }
 
@@ -171,10 +112,5 @@ class RootComponent internal constructor(
 
         @Parcelize
         object Content : Config()
-
-//        region::Authorization tabs
-        @Parcelize
-        object AuthorizationPhone : Config()
-//        endregion
     }
 }

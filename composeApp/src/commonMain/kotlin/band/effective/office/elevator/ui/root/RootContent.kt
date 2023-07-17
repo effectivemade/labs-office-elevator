@@ -39,9 +39,6 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
             RootComponent.Child.Undefined -> {
                 // Wait until fetch Google account if user signed in previously
             }
-//            region::Authorization tabs
-            is RootComponent.Child.AuthorizationPhoneChild -> AuthorizationPhoneScreen(child.component)
-//            endregion
         }
     }
 }
