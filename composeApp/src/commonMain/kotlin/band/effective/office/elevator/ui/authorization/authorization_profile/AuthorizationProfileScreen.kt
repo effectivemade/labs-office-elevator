@@ -166,8 +166,7 @@ fun AuthorizationProfileComponent(onEvent: (AuthorizationProfileStore.Intent) ->
                             fontWeight = FontWeight(500),
                             letterSpacing = 0.1.sp,
                             color = textGrayColor
-                        ),
-                        lineHeight = 20.8.sp
+                        )
                     )
                 },
                 isError = isError1.value,

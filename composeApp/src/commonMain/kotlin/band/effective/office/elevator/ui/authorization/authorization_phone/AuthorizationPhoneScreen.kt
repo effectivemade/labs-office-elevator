@@ -200,7 +200,14 @@ private fun AuthorizationPhoneComponent(
                     ) {
                         Text(
                             text = "+7",
-                            style = MaterialTheme.typography.body1
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                                lineHeight = 20.8.sp,
+                                fontFamily = getDefaultFont(),
+                                fontWeight = FontWeight(500),
+                                letterSpacing = 0.1.sp,
+                                color = textGrayColor
+                            )
                         )
 
                         Spacer(modifier = Modifier.width(16.dp))
