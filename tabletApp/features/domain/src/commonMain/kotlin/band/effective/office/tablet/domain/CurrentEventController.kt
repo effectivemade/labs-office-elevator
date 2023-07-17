@@ -3,14 +3,12 @@ package band.effective.office.tablet.domain
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.useCase.RoomInfoUseCase
 import band.effective.office.tablet.network.repository.CancelRepository
-import band.effective.office.tablet.network.repository.ServerUpdateRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 abstract class CurrentEventController(
     private val roomUseCase: RoomInfoUseCase,
-    private val serverUpdateRepository: ServerUpdateRepository,
     private val cancelRepository: CancelRepository
 ) {
     private lateinit var job: Job
@@ -21,7 +19,7 @@ abstract class CurrentEventController(
     fun start(scope: CoroutineScope) {
         this.scope = scope
         job = update()
-        scope.launch { serverUpdateRepository.subscribeOnUpdates(scope, { onServerUpdate() }, {}) }
+        roomUseCase.subscribe(scope) { onServerUpdate() }
     }
 
     private fun cancelCurrentEvent() {
