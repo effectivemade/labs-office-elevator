@@ -234,7 +234,7 @@ fun AuthorizationProfileComponent(onEvent: (AuthorizationProfileStore.Intent) ->
                 colors = OutlinedTextColorsSetup(),
                 placeholder = {
                     Text(
-                        text = stringResource(MainRes.strings.number_hint),
+                        text = stringResource(MainRes.strings.profile_hint_),
                         style = TextStyle(
                             fontSize = 16.sp,
                             lineHeight = 20.8.sp,
