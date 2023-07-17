@@ -1,6 +1,8 @@
 package band.effective.office.elevator.ui.authorization.authorization_phone.store
 
 import band.effective.office.elevator.ui.authorization.authorization_phone.store.AuthorizationPhoneStore.*
+import band.effective.office.elevator.ui.profile.editProfile.store.ProfileEditStore
+import band.effective.office.elevator.ui.profile.editProfile.store.ProfileEditStoreFactory
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -49,9 +51,17 @@ internal class AuthorizationPhoneStoreFactory(private val storeFactory: StoreFac
     private class ExecutorImpl : CoroutineExecutor<Intent, Action, State, Nothing, Label>() {
         override fun executeIntent(intent: Intent, getState: () -> State) =
             when (intent) {
-                Intent.BackButtonClicked -> TODO()
-                Intent.ContinueButtonClicked -> TODO()
+                Intent.BackButtonClicked -> back()
+                Intent.ContinueButtonClicked -> openProfileAuthorization()
                 is Intent.PhoneNumberChanged -> TODO()
             }
+
+        private fun openProfileAuthorization() {
+            publish(AuthorizationPhoneStore.Label.OpenProfileAuthorization)
+        }
+
+        private fun back(){
+            publish(AuthorizationPhoneStore.Label.ReturnInGoogleAuthorization)
+        }
     }
 }

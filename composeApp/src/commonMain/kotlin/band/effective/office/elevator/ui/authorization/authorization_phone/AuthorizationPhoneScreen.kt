@@ -48,6 +48,7 @@ import band.effective.office.elevator.ui.authorization.authorization_phone.store
 import band.effective.office.elevator.ui.authorization.components.AuthSubTitle
 import band.effective.office.elevator.ui.authorization.components.AuthTabRow
 import band.effective.office.elevator.ui.authorization.components.AuthTitle
+import band.effective.office.elevator.ui.profile.editProfile.ProfileEditComponent
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
@@ -58,6 +59,12 @@ fun AuthorizationPhoneScreen(component: AuthorizationPhoneComponent) {
             when (label) {
                 AuthorizationPhoneStore.Label.AuthorizationPhoneFailure -> TODO()
                 AuthorizationPhoneStore.Label.AuthorizationPhoneSuccess -> TODO()
+                AuthorizationPhoneStore.Label.OpenProfileAuthorization -> component.onOutput(
+                    AuthorizationPhoneComponent.Output.OpenProfileScreen
+                )
+                AuthorizationPhoneStore.Label.ReturnInGoogleAuthorization -> component.onOutput(
+                    AuthorizationPhoneComponent.Output.OpenGoogleScreen
+                )
             }
         }
     }

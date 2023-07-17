@@ -22,5 +22,9 @@ interface AuthorizationPhoneStore :
         object AuthorizationPhoneSuccess : Label
 
         object AuthorizationPhoneFailure : Label
+
+        object ReturnInGoogleAuthorization : Label
+
+        object OpenProfileAuthorization : Label
     }
 }

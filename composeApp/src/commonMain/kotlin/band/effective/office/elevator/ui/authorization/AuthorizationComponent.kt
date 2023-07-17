@@ -2,9 +2,11 @@ package band.effective.office.elevator.ui.authorization
 
 import band.effective.office.elevator.ui.authorization.authorization_google.AuthorizationGoogleComponent
 import band.effective.office.elevator.ui.authorization.authorization_phone.AuthorizationPhoneComponent
+import band.effective.office.elevator.ui.profile.ProfileComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.replaceAll
 import com.arkivanov.decompose.value.Value
@@ -52,7 +54,7 @@ class AuthorizationComponent(
             )
         }
 
-//    region::Output
+    //    region::Output
     private fun googleAuthOutput(output: AuthorizationGoogleComponent.Output) {
         when (output) {
             AuthorizationGoogleComponent.Output.OpenAuthorizationPhoneScreen -> navigation.replaceAll(
@@ -64,8 +66,13 @@ class AuthorizationComponent(
     }
 
     private fun phoneAuthOutput(output: AuthorizationPhoneComponent.Output) {
-        when (output){
-            AuthorizationPhoneComponent.Output.OpenProfileScreen -> TODO()
+        when (output) {
+            AuthorizationPhoneComponent.Output.OpenProfileScreen -> navigation.bringToFront(
+                AuthorizationComponent.Config.PhoneAuth
+            )
+            AuthorizationPhoneComponent.Output.OpenGoogleScreen -> navigation.bringToFront(
+                AuthorizationComponent.Config.GoogleAuth
+            )
         }
     }
 //    endregion

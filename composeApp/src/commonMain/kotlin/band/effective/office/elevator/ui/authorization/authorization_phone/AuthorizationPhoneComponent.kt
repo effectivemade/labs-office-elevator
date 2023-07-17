@@ -2,11 +2,15 @@ package band.effective.office.elevator.ui.authorization.authorization_phone
 
 import band.effective.office.elevator.ui.authorization.authorization_phone.store.AuthorizationPhoneStore
 import band.effective.office.elevator.ui.authorization.authorization_phone.store.AuthorizationPhoneStoreFactory
+import band.effective.office.elevator.ui.profile.editProfile.store.ProfileEditStore
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
+import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 class AuthorizationPhoneComponent(
     componentContext: ComponentContext,
@@ -21,6 +25,9 @@ class AuthorizationPhoneComponent(
             ).create()
         }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val user: StateFlow<AuthorizationPhoneStore.State> = authorizationPhoneStore.stateFlow
+
     val label: Flow<AuthorizationPhoneStore.Label> = authorizationPhoneStore.labels
 
     fun onEvent(event: AuthorizationPhoneStore.Intent) {
@@ -33,5 +40,7 @@ class AuthorizationPhoneComponent(
 
     sealed class Output {
         object OpenProfileScreen : Output()
+
+        object OpenGoogleScreen : Output()
     }
 }
