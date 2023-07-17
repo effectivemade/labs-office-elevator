@@ -3,6 +3,7 @@
     <string name="app_name">Office Elevator</string>
     <string name="sign_in_google">Sign in to Effective email</string>
     <string name="something_went_wrong">Something went wrong. Please try again</string>
+    <string name="company_name">effective\noffice</string>
     <string name="employee_1">Ivanov Ivan</string>
     <string name="employee_2">Smirnov Andrey</string>
     <string name="employee_3">Vasilyev Vasiliy</string>

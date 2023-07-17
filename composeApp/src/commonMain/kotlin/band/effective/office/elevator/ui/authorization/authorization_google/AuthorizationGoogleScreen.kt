@@ -18,11 +18,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
-import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.companyColor
 import band.effective.office.elevator.components.GoogleSignInButton
 import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.ui.authorization.authorization_google.store.AuthorizationGoogleStore
@@ -70,16 +68,14 @@ private fun AuthorizationGoogleScreenContent(onEvent: (AuthorizationGoogleStore.
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
                     text = stringResource(MainRes.strings.company_name),
-                    letterSpacing = 0.01.em,
-                    fontSize = 40.sp,
-                    color = Color(0xFF323E48), // TODO: Should add this color to Color.kt
+                    color = companyColor,
                     style = MaterialTheme.typography.h4
                 )
             }
 
             GoogleSignInButton(
-                modifier = Modifier,//.align(alignment = Alignment.Center), MARK: removed align
-                onClick = { onEvent(AuthorizationStore.Intent.SignInButtonClicked) })
+                modifier = Modifier,
+                onClick = { onEvent(AuthorizationGoogleStore.Intent.SignInButtonClicked) })
         }
     }
 }
