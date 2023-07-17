@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.OutlinedTextColorsSetup
 import band.effective.office.elevator.components.PrimaryButton
-import band.effective.office.elevator.components.PhoneMaskTransformation
+import band.effective.office.elevator.ui.models.PhoneMaskTransformation
 import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.getDefaultFont
 import band.effective.office.elevator.textGrayColor

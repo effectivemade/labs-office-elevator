@@ -1,6 +1,7 @@
 package band.effective.office.elevator.ui.authorization.authorization_phone.store
 
 import band.effective.office.elevator.ui.authorization.authorization_phone.store.AuthorizationPhoneStore.*
+import band.effective.office.elevator.ui.models.PhoneValidator
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -49,24 +50,15 @@ internal class AuthorizationPhoneStoreFactory(private val storeFactory: StoreFac
             when (intent) {
                 Intent.BackButtonClicked -> back()
 //                Intent.ContinueButtonClicked -> openProfileAuthorization()
-                Intent.ContinueButtonClicked -> validatePhoneNumber(
-                    getState().phoneNumber
-                )
+                Intent.ContinueButtonClicked -> {
+                    if (PhoneValidator.validatePhoneNumber(getState().phoneNumber))
+                        publish(AuthorizationPhoneStore.Label.AuthorizationPhoneSuccess)
+                    else
+                        publish(AuthorizationPhoneStore.Label.AuthorizationPhoneFailure)
+                }
 
                 is Intent.PhoneNumberChanged -> TODO()
             }
-
-        private fun validatePhoneNumber(phoneNumber: String) {
-            if (phoneNumber.length == 12) {
-                publish(AuthorizationPhoneStore.Label.AuthorizationPhoneSuccess)
-            } else {
-                publish(AuthorizationPhoneStore.Label.AuthorizationPhoneFailure)
-            }
-        }
-
-        private fun openProfileAuthorization() {
-            publish(AuthorizationPhoneStore.Label.OpenProfileAuthorization)
-        }
 
         private fun back() {
             publish(AuthorizationPhoneStore.Label.ReturnInGoogleAuthorization)
