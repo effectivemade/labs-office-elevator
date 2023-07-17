@@ -33,7 +33,7 @@ Our project is open-source, so we welcome quality contributions! To make your co
 
 The best way to start helping with project development is to do a fork of our project, then make changes and make a pull-request to the to the appropriate branch to which your contribution relates.
 
-<img src="../../assets/git-flow-image.png"> 
+<img src="/assets/git-flow-image.png"> 
 
 ### Rules on commit messages' content
 
