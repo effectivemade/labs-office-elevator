@@ -26,7 +26,7 @@ class AuthorizationPhoneComponent(
         }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val user: StateFlow<AuthorizationPhoneStore.State> = authorizationPhoneStore.stateFlow
+    val phone: StateFlow<AuthorizationPhoneStore.State> = authorizationPhoneStore.stateFlow
 
     val label: Flow<AuthorizationPhoneStore.Label> = authorizationPhoneStore.labels
 

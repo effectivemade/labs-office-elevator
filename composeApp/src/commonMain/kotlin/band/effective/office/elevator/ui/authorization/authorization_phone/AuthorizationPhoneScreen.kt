@@ -30,6 +30,8 @@ import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -48,6 +50,7 @@ import band.effective.office.elevator.ExtendedTheme
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.OutlinedTextColorsSetup
 import band.effective.office.elevator.components.PrimaryButton
+import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.getDefaultFont
 import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.theme_light_primary_stroke
@@ -60,15 +63,17 @@ import dev.icerock.moko.resources.compose.stringResource
 @Composable
 fun AuthorizationPhoneScreen(component: AuthorizationPhoneComponent) {
 
+    val state by component.phone.collectAsState()
+
     LaunchedEffect(component) {
         component.label.collect { label ->
             when (label) {
-                AuthorizationPhoneStore.Label.AuthorizationPhoneFailure -> TODO()
-                AuthorizationPhoneStore.Label.AuthorizationPhoneSuccess -> TODO()
-                AuthorizationPhoneStore.Label.OpenProfileAuthorization -> component.onOutput(
+                AuthorizationPhoneStore.Label.AuthorizationPhoneFailure -> showToast("Неверный формат номера телефона")
+                AuthorizationPhoneStore.Label.AuthorizationPhoneSuccess -> component.onOutput(
                     AuthorizationPhoneComponent.Output.OpenProfileScreen
                 )
 
+                AuthorizationPhoneStore.Label.OpenProfileAuthorization -> TODO()
                 AuthorizationPhoneStore.Label.ReturnInGoogleAuthorization -> component.onOutput(
                     AuthorizationPhoneComponent.Output.OpenGoogleScreen
                 )
