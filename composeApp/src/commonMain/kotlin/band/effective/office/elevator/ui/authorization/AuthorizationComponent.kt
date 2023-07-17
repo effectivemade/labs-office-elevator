@@ -3,6 +3,7 @@ package band.effective.office.elevator.ui.authorization
 import band.effective.office.elevator.ui.authorization.authorization_google.AuthorizationGoogleComponent
 import band.effective.office.elevator.ui.authorization.authorization_phone.AuthorizationPhoneComponent
 import band.effective.office.elevator.ui.authorization.authorization_profile.AuthorizationProfileComponent
+import band.effective.office.elevator.ui.authorization.authorization_telegram.AuthorizationTelegramComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
@@ -53,16 +54,23 @@ class AuthorizationComponent(
                 )
             )
 
-            Config.ProfileAuth -> Child.ProfileAuthChild(
+            is Config.ProfileAuth -> Child.ProfileAuthChild(
                 AuthorizationProfileComponent(
                     componentContext,
                     storeFactory,
                     ::profileAuthOutput
                 )
             )
+
+            is Config.TelegramAuth -> Child.TelegramAuthChild(
+                AuthorizationTelegramComponent(
+                    componentContext,
+                    storeFactory,
+                    ::telegramAuthOutput
+                )
+            )
         }
 
-    //    region::Output
     private fun googleAuthOutput(output: AuthorizationGoogleComponent.Output) {
         when (output) {
             AuthorizationGoogleComponent.Output.OpenAuthorizationPhoneScreen -> navigation.replaceAll(
@@ -78,6 +86,7 @@ class AuthorizationComponent(
             AuthorizationPhoneComponent.Output.OpenProfileScreen -> navigation.bringToFront(
                 AuthorizationComponent.Config.ProfileAuth
             )
+
             AuthorizationPhoneComponent.Output.OpenGoogleScreen -> navigation.bringToFront(
                 AuthorizationComponent.Config.GoogleAuth
             )
@@ -89,15 +98,28 @@ class AuthorizationComponent(
             AuthorizationProfileComponent.Output.OpenPhoneScreen -> navigation.bringToFront(
                 Config.PhoneAuth
             )
-            AuthorizationProfileComponent.Output.OpenTGScreen -> TODO()
+
+            AuthorizationProfileComponent.Output.OpenTGScreen -> navigation.bringToFront(
+                Config.TelegramAuth
+            )
         }
     }
-//    endregion
+
+    private fun telegramAuthOutput(output: AuthorizationTelegramComponent.Output) {
+        when (output) {
+            AuthorizationTelegramComponent.Output.OpenProfileScreen -> navigation.bringToFront(
+                Config.ProfileAuth
+            )
+
+            AuthorizationTelegramComponent.Output.OpenMainScreen -> TODO()
+        }
+    }
 
     sealed class Child {
         class GoogleAuthChild(val component: AuthorizationGoogleComponent) : Child()
         class PhoneAuthChild(val component: AuthorizationPhoneComponent) : Child()
         class ProfileAuthChild(val component: AuthorizationProfileComponent) : Child()
+        class TelegramAuthChild(val component: AuthorizationTelegramComponent) : Child()
     }
 
     sealed class Config : Parcelable {
@@ -109,5 +131,8 @@ class AuthorizationComponent(
 
         @Parcelize
         object ProfileAuth : Config()
+
+        @Parcelize
+        object TelegramAuth : Config()
     }
 }
