@@ -59,7 +59,7 @@ data class employeeCard(val name: StringResource, val post: StringResource, val 
 @Composable
 fun EmployeeScreen(component: EmployeeComponent) {
 
-    val employeesData= EmployeesData.employeesCardData
+    val employeesData= EmployeesData.employeesCardData//state
     val employeesCount=employeesData.count()
     val employeesInOfficeCount=0
     val userMessageState=remember{ mutableStateOf("") }
@@ -253,6 +253,23 @@ object EmployeesData{
             MainRes.strings.employee_3,
             MainRes.strings.employee_post_3,
             MainRes.strings.employee_not_soon_in_office,
+            MainRes.images.logo_default)
+    )
+    val showedEmployeesCardData = listOf(
+        employeeCard(
+            MainRes.strings.employee_2,
+            MainRes.strings.employee_post_2,
+            MainRes.strings.employee_soon_in_office,
+            MainRes.images.logo_default),
+        employeeCard(
+            MainRes.strings.employee_3,
+            MainRes.strings.employee_post_3,
+            MainRes.strings.employee_not_soon_in_office,
+            MainRes.images.logo_default),
+        employeeCard(
+            MainRes.strings.employee_1,
+            MainRes.strings.employee_post_1,
+            MainRes.strings.employee_in_office,
             MainRes.images.logo_default)
     )
 }
