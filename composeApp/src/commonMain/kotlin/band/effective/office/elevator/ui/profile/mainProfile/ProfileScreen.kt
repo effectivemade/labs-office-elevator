@@ -148,7 +148,7 @@ fun ProfileInfoAboutUser(imageUrl: String?, username: String?, post: String?, on
 private fun ProfileHeader(onSignOut: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier
-            .padding(horizontal = 16.dp).fillMaxWidth().padding(top = 48.dp)
+            .padding(horizontal = 16.dp).fillMaxWidth().padding(top = 40.dp)
     ) {
         TitlePage(
             stringResource(MainRes.strings.profile)

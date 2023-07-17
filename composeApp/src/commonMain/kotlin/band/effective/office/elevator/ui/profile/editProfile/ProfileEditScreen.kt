@@ -78,7 +78,7 @@ private fun ProfileEditScreenContent(
 ) {
     val fieldsList =  prepareFieldsData("Петров Иван","Android-разработчик","petrov","9654561232")
     Column (
-        modifier = Modifier.fillMaxSize().background(Color.White).padding(top = 48.dp).padding(horizontal = 16.dp),
+        modifier = Modifier.fillMaxSize().background(Color.White).padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ){
@@ -193,7 +193,7 @@ private fun prepareFieldsData(username: String?, post: String?, telegram: String
 fun ProfileEditHeader(onReturnToProfile: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth().padding(top = 40.dp)
     ){
         IconButton(onClick = onReturnToProfile){
             Icon(
