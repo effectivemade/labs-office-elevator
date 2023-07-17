@@ -10,6 +10,7 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -27,26 +28,30 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 name = "MainStore",
                 initialState = BookingStore.State.default,
                 bootstrapper = coroutineBootstrapper {
-                    launch() {
-                        val eventInfo = EventInfo.emptyEvent
-                        dispatch(
-                            Action.Init(
-                                updateUseCase.getOrganizersList(),
-                                !checkBookingUseCase(eventInfo),
-                                checkBookingUseCase.busyEvent(eventInfo) ?: EventInfo.emptyEvent
+                    launch(Dispatchers.IO) {
+                        val busyEvent = checkBookingUseCase(EventInfo.emptyEvent)
+                        launch(Dispatchers.Main) {
+                            dispatch(
+                                Action.Init(
+                                    organizers = updateUseCase.getOrganizersList(),
+                                    isBusy = busyEvent != null,
+                                    busyEvent = busyEvent ?: EventInfo.emptyEvent
+                                )
                             )
-                        )
-                        dispatch(Action.UpdateOrganizers(updateUseCase.getOrganizersList()))
-                        updateUseCase(this,
-                            {
-                                launch {
-                                    dispatch(
-                                        Action.UpdateEvents(it)
-                                    )
-                                }
+                            dispatch(Action.UpdateOrganizers(updateUseCase.getOrganizersList()))
+                            updateUseCase(scope = this,
+                                 {
+                                    launch(Dispatchers.Main) {
+                                        dispatch(Action.UpdateEvents(it))
+                                    }
 
-                            },
-                            { dispatch(Action.UpdateOrganizers(it)) })
+                                },
+                                {
+                                    launch(Dispatchers.Main) {
+                                        dispatch(Action.UpdateOrganizers(it))
+                                    }
+                                })
+                        }
                     }
                 },
                 executorFactory = ::ExecutorImpl,
@@ -118,33 +123,36 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
         fun changeDate(state: BookingStore.State, changeDay: Int) = scope.launch() {
             val event = state.copy(selectDate = state.selectDate.dayUpdate(changeDay)).toEvent()
+            val busyEvent = checkBookingUseCase(event)
             dispatch(
                 Message.ChangeEvent(
                     event.startTime,
                     state.length,
-                    !checkBookingUseCase(event),
-                    checkBookingUseCase.busyEvent(event) ?: EventInfo.emptyEvent
+                    busyEvent != null,
+                    busyEvent ?: EventInfo.emptyEvent
                 )
             )
         }
 
         fun changeLength(state: BookingStore.State, change: Int) = scope.launch() {
             val event = state.copy(length = state.length + change).toEvent()
+            val busyEvent = checkBookingUseCase(event)
             dispatch(
                 Message.ChangeEvent(
                     event.startTime,
                     state.length + change,
-                    !checkBookingUseCase(event),
-                    checkBookingUseCase.busyEvent(event) ?: EventInfo.emptyEvent
+                    busyEvent != null,
+                    busyEvent ?: EventInfo.emptyEvent
                 )
             )
         }
 
         fun checkBusy(state: BookingStore.State) = scope.launch {
+            val busyEvent = checkBookingUseCase(state.toEvent())
             dispatch(
                 Message.UpdateBusy(
-                    !checkBookingUseCase(state.toEvent()),
-                    checkBookingUseCase.busyEvent(state.toEvent()) ?: EventInfo.emptyEvent
+                    busyEvent != null,
+                    busyEvent ?: EventInfo.emptyEvent
                 )
             )
         }

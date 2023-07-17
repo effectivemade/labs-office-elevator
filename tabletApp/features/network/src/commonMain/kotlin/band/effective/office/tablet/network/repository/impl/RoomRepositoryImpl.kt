@@ -13,20 +13,14 @@ import kotlinx.coroutines.launch
 
 class RoomRepositoryImpl(private val api: Api) : RoomRepository {
     private val roomInfo: MutableStateFlow<RoomInfo> = MutableStateFlow(RoomInfo.defaultValue)
-    private var scope: CoroutineScope? = null
     override suspend fun getRoomInfo() = api.getRoomInfo()
-    override fun subscribeOnUpdates(handler: (RoomInfo) -> Unit) =
-        scope?.launch(Dispatchers.IO) {
+    override fun subscribeOnUpdates(scope: CoroutineScope, handler: (RoomInfo) -> Unit) =
+        scope.launch(Dispatchers.IO) {
+            roomInfo.update { getRoomInfo() }
+            api.subscribeOnWebHock(this) {
+                if (it is WebServerEvent.RoomInfoUpdate)
+                    launch(Dispatchers.IO) { roomInfo.update { getRoomInfo() } }
+            }
             roomInfo.collect { handler(it) }
         }
-
-    override fun init(scope: CoroutineScope) {
-        this.scope = scope
-        scope.launch(Dispatchers.IO) { roomInfo.update { getRoomInfo() } }
-        api.subscribeOnWebHock(scope) {
-            if (it is WebServerEvent.RoomInfoUpdate)
-                scope.launch(Dispatchers.IO) { roomInfo.update { getRoomInfo() } }
-        }
-
-    }
 }

@@ -6,6 +6,5 @@ import kotlinx.coroutines.Job
 
 interface RoomRepository {
     suspend fun getRoomInfo(): RoomInfo
-    fun subscribeOnUpdates(handler: (RoomInfo) -> Unit): Job?
-    fun init(scope: CoroutineScope)
+    fun subscribeOnUpdates(scope: CoroutineScope, handler: (RoomInfo) -> Unit): Job
 }

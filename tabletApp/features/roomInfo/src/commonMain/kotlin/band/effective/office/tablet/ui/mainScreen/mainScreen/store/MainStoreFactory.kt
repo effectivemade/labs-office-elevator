@@ -29,12 +29,8 @@ class MainStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
                         updateUseCase(
                             scope = this,
                             roomUpdateHandler = { roomInfo ->
-                                launch(Dispatchers.Main) {
-                                    dispatch(
-                                        Action.UpdateRoomInfo(
-                                            roomInfo
-                                        )
-                                    )
+                                launch(Dispatchers.Main.immediate) {
+                                    dispatch(Action.UpdateRoomInfo(roomInfo))
                                 }
 
                             },
