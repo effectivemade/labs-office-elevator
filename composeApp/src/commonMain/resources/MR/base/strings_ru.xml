@@ -65,6 +65,7 @@
     <string name="invalid_account_error">Вы используете неправильный аккаунт</string>
     <string name="timout_error">Время вышло. Попробуйте снова</string>
     <string name="server_error">Ошибка сервера ${code}</string>
+    <string name="number_format_error">Неверный формат номера телефона</string>
 
     <!-- Success messages -->
     <string name="elevator_called_successfully">Лифт успешно вызван!</string>

@@ -60,13 +60,14 @@ import dev.icerock.moko.resources.compose.stringResource
 fun AuthorizationPhoneScreen(component: AuthorizationPhoneComponent) {
 
     val state by component.phone.collectAsState()
+    val errorMessage = stringResource(MainRes.strings.number_format_error)
 
     LaunchedEffect(component) {
         component.label.collect { label ->
             when (label) {
                 AuthorizationPhoneStore.Label.AuthorizationPhoneFailure -> {
                     state.isError = true
-                    showToast("Неверный формат номера телефона")
+                    showToast(errorMessage)
                 }
 
                 AuthorizationPhoneStore.Label.AuthorizationPhoneSuccess -> component.onOutput(

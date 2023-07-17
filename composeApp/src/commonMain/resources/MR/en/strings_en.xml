@@ -60,6 +60,7 @@
     <string name="invalid_account_error">You are using the wrong account</string>
     <string name="timout_error">Request time is up. Try again</string>
     <string name="server_error">Server error ${code}</string>
+    <string name="number_format_error">Invalid phone number format</string>
 
     <!-- Success messages -->
     <string name="elevator_called_successfully">Successfully!</string>
