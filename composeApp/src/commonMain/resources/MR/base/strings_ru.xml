@@ -32,12 +32,8 @@
     <string name="employee_hint">Никнейм в Telegram</string>
 
     <!--Elevator-->
-    <string name="elevator_below">Лифт на 1-м этаже</string>
-    <string name="elevator_goes" >Лифт едет</string>
-    <string name="elevator_raised" >Лифт поднят</string>
-    <string name="elevator_button" >Поднять лифт</string>
-    <string name="elevator_wait" >Подождите...</string>
-    <string name="elevator_ready" > Вызовите лифт через кнопку</string>
+    <string name="elevator" >Лифт</string>
+    <string name="elevator_button" >Поднять</string>
 
     <string name="by_date"> По дате </string>
     <string name="show_map">Показать на карте</string>

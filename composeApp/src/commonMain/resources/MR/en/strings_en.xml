@@ -46,12 +46,8 @@
     <string name="booking">Booking</string>
     <string name="employees">Employees</string>
 
-    <string name="elevator_below">Elevator on the 1st floor</string>
-    <string name="elevator_goes" >The elevator is coming</string>
-    <string name="elevator_raised" >The elevator is up</string>
-    <string name="elevator_button" >Lift the elevator</string>
-    <string name="elevator_wait" >Wait...</string>
-    <string name="elevator_ready" >Call the elevator via the button</string>
+    <string name="elevator">Elevator</string>
+    <string name="elevator_button" >Lift</string>
 
     <!--Error messages-->
     <string name="you_need_to_sign_in">You need to sign in for the app to work</string>

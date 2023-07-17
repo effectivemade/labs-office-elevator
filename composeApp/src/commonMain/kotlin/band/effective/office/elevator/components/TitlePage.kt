@@ -12,8 +12,7 @@ fun TitlePage(title: String, modifier: Modifier = Modifier) {
     Text(
         text = title,
         modifier = modifier,
-        fontSize =  20.sp, //TODO (Gruzdev) поменять на MaterialTheme.typography.h1.fontSize,
-        fontFamily = MaterialTheme.typography.h1.fontFamily,
+        style = MaterialTheme.typography.h6,
         color = Color.Black // TODO(Gruzdev) поменять на цвет из темы
     )
 }
