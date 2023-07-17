@@ -72,7 +72,6 @@ fun MainScreen(component: MainComponent) {
             .fillMaxSize()
     ) {
         MainScreenContent(
-            elevatorState = state.elevatorState,
             reservedSeats = state.reservedSeats,
             onClickBook = { component.onOutput(MainComponent.Output.OpenBookingScreen) },
             onClickShowOptions = { component.onEvent(MainStore.Intent.OnClickShowOption) },
@@ -126,7 +125,6 @@ private fun SnackBarSuccessMessage(modifier: Modifier, isVisible: Boolean) {
 fun MainScreenContent(
     modifier: Modifier = Modifier,
     reservedSeats: List<ReservedSeat>,
-    elevatorState: ElevatorState,
     onClickBook: () -> Unit,
     onClickShowMap: () -> Unit,
     onClickShowOptions: () -> Unit,
@@ -143,12 +141,11 @@ fun MainScreenContent(
                 title = stringResource(MainRes.strings.main),
                 modifier = Modifier.padding(top = 60.dp)
             )
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             ElevatorUIComponent(
-                elevatorState = elevatorState,
                 onClickCallElevator = {}
             )
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
         }
         Column(
             modifier = Modifier
