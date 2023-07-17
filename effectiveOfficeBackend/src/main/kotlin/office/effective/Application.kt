@@ -6,6 +6,7 @@ import io.ktor.server.config.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import office.effective.di.databaseDiModule
+import office.effective.features.workspace.config.workspaceDiModule
 import office.effective.plugins.configureMigration
 import office.effective.plugins.configureRouting
 import office.effective.plugins.configureSecurity
@@ -28,5 +29,6 @@ fun Application.module() {
     configureRouting()
     install(Koin) {
         modules(databaseDiModule)
+        modules(workspaceDiModule)
     }
 }
