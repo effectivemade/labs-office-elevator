@@ -1,4 +1,4 @@
-package band.effective.office.elevator.components
+package band.effective.office.elevator.ui.models
 
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.OffsetMapping
