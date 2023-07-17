@@ -2,7 +2,7 @@ package band.effective.office.elevator.ui.authorization
 
 import band.effective.office.elevator.ui.authorization.authorization_google.AuthorizationGoogleComponent
 import band.effective.office.elevator.ui.authorization.authorization_phone.AuthorizationPhoneComponent
-import band.effective.office.elevator.ui.profile.ProfileComponent
+import band.effective.office.elevator.ui.authorization.authorization_profile.AuthorizationProfileComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
@@ -37,7 +37,7 @@ class AuthorizationComponent(
         componentContext: ComponentContext
     ): AuthorizationComponent.Child =
         when (config) {
-            is AuthorizationComponent.Config.GoogleAuth -> AuthorizationComponent.Child.GoogleAuthChild(
+            is Config.GoogleAuth -> Child.GoogleAuthChild(
                 AuthorizationGoogleComponent(
                     componentContext,
                     storeFactory,
@@ -45,11 +45,19 @@ class AuthorizationComponent(
                 )
             )
 
-            is AuthorizationComponent.Config.PhoneAuth -> AuthorizationComponent.Child.PhoneAuthChild(
+            is Config.PhoneAuth -> Child.PhoneAuthChild(
                 AuthorizationPhoneComponent(
                     componentContext,
                     storeFactory,
                     ::phoneAuthOutput
+                )
+            )
+
+            Config.ProfileAuth -> Child.ProfileAuthChild(
+                AuthorizationProfileComponent(
+                    componentContext,
+                    storeFactory,
+                    ::profileAuthOutput
                 )
             )
         }
@@ -68,11 +76,20 @@ class AuthorizationComponent(
     private fun phoneAuthOutput(output: AuthorizationPhoneComponent.Output) {
         when (output) {
             AuthorizationPhoneComponent.Output.OpenProfileScreen -> navigation.bringToFront(
-                AuthorizationComponent.Config.PhoneAuth
+                AuthorizationComponent.Config.ProfileAuth
             )
             AuthorizationPhoneComponent.Output.OpenGoogleScreen -> navigation.bringToFront(
                 AuthorizationComponent.Config.GoogleAuth
             )
+        }
+    }
+
+    private fun profileAuthOutput(output: AuthorizationProfileComponent.Output) {
+        when (output) {
+            AuthorizationProfileComponent.Output.OpenPhoneScreen -> navigation.bringToFront(
+                Config.PhoneAuth
+            )
+            AuthorizationProfileComponent.Output.OpenTGScreen -> TODO()
         }
     }
 //    endregion
@@ -80,6 +97,7 @@ class AuthorizationComponent(
     sealed class Child {
         class GoogleAuthChild(val component: AuthorizationGoogleComponent) : Child()
         class PhoneAuthChild(val component: AuthorizationPhoneComponent) : Child()
+        class ProfileAuthChild(val component: AuthorizationProfileComponent) : Child()
     }
 
     sealed class Config : Parcelable {
@@ -88,5 +106,8 @@ class AuthorizationComponent(
 
         @Parcelize
         object PhoneAuth : Config()
+
+        @Parcelize
+        object ProfileAuth : Config()
     }
 }
