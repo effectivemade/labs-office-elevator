@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.profile.editProfile
 
+import band.effective.office.elevator.ui.models.User
 import band.effective.office.elevator.ui.profile.editProfile.store.ProfileEditStore
 import band.effective.office.elevator.ui.profile.editProfile.store.ProfileEditStoreFactory
 import com.arkivanov.decompose.ComponentContext
@@ -24,7 +25,7 @@ class ProfileEditComponent (
             }
 
         @OptIn(ExperimentalMviKotlinApi::class)
-        val user: StateFlow<ProfileEditStore.User> = profileEditStore.stateFlow
+        val user: StateFlow<User> = profileEditStore.stateFlow
 
         val label: Flow<ProfileEditStore.Label> = profileEditStore.labels
 

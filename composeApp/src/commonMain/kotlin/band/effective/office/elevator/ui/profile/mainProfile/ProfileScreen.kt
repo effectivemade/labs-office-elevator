@@ -60,7 +60,7 @@ fun ProfileScreen(component: MainProfileComponent) {
 
     ProfileScreenContent(
         imageUrl = user.imageUrl,
-        username = user.username,
+        userName = user.userName,
         post = user.post,
         telegram = user.telegram,
         phoneNumber = user.phoneNumber,
@@ -72,7 +72,7 @@ fun ProfileScreen(component: MainProfileComponent) {
 @Composable
 internal fun ProfileScreenContent(
     imageUrl: String?,
-    username: String?,
+    userName: String?,
     post: String?,
     telegram: String?,
     phoneNumber: String?,
@@ -84,7 +84,7 @@ internal fun ProfileScreenContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top) {
         ProfileHeader(onSignOut)
-        ProfileInfoAboutUser(imageUrl, username, post, onEditProfile)
+        ProfileInfoAboutUser(imageUrl, userName, post, onEditProfile)
         LazyColumn(modifier = Modifier.fillMaxSize().padding(top = 24.dp))
         {
             items(fieldsList){item ->
@@ -95,7 +95,7 @@ internal fun ProfileScreenContent(
 }
 
 @Composable
-fun ProfileInfoAboutUser(imageUrl: String?, username: String?, post: String?, onEditProfile: ()-> Unit) {
+fun ProfileInfoAboutUser(imageUrl: String?, userName: String?, post: String?, onEditProfile: ()-> Unit) {
     imageUrl?.let { url ->
         val request = remember(url) {
             ImageRequest {
@@ -126,7 +126,7 @@ fun ProfileInfoAboutUser(imageUrl: String?, username: String?, post: String?, on
             }
         }
     }
-    username?.let {
+    userName?.let {
         Text(
             it,
             style = MaterialTheme.typography.subtitle1,

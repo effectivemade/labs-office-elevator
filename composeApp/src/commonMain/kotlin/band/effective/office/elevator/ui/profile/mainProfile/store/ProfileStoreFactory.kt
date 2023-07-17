@@ -3,6 +3,7 @@ package band.effective.office.elevator.ui.profile.mainProfile.store
 import band.effective.office.elevator.data.ApiResponse
 import band.effective.office.elevator.domain.GoogleSignIn
 import band.effective.office.elevator.domain.models.GoogleAccount
+import band.effective.office.elevator.ui.models.User
 import band.effective.office.elevator.ui.profile.mainProfile.store.ProfileStore.*
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
@@ -24,7 +25,7 @@ internal class ProfileStoreFactory(
     fun create(): ProfileStore =
         object : ProfileStore, Store<Intent, User, Label> by storeFactory.create(
             name = "ProfileStore",
-            initialState = User(imageUrl = null, username = null, telegram = null, post = null, phoneNumber = null),
+            initialState = User(imageUrl = null, userName = null, telegram = null, post = null, phoneNumber = null),
             bootstrapper = coroutineBootstrapper {
                 dispatch(Action.FetchUserInfo)
             },
@@ -42,7 +43,7 @@ internal class ProfileStoreFactory(
 
     private inner class ExecutorImpl :
         CoroutineExecutor<Intent, Action, User, Msg, Label>() {
-        override fun executeIntent(intent: Intent, getUser: () -> User) {
+        override fun executeIntent(intent: Intent, getState: () -> User) {
             when (intent) {
                 Intent.SignOutClicked -> doSignOut()
                 Intent.EditProfileClicked -> doTransaction()
@@ -58,7 +59,7 @@ internal class ProfileStoreFactory(
             publish(Label.OnSignedOut)
         }
 
-        override fun executeAction(action: Action, getUser: () -> User) {
+        override fun executeAction(action: Action, getState: () -> User) {
             when (action) {
                 Action.FetchUserInfo -> fetchUserInfo()
             }
@@ -82,7 +83,7 @@ internal class ProfileStoreFactory(
             when (message) {
                 is Msg.ProfileData -> User(
                     imageUrl = message.user.photoUrl,
-                    username = message.user.name,
+                    userName = message.user.name,
                     telegram = null,
                     post = null,
                     phoneNumber = null,

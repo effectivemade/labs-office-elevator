@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.profile.editProfile.store
 
+import band.effective.office.elevator.ui.models.User
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import band.effective.office.elevator.ui.profile.editProfile.store.ProfileEditStore.*
@@ -22,7 +23,8 @@ internal class ProfileEditStoreFactory(
                     userName = null,
                     telegram = null,
                     post = null,
-                    phoneNumber = null
+                    phoneNumber = null,
+                    imageUrl = null
                 ),
                 bootstrapper = coroutineBootstrapper {
                     dispatch(Action.FetchUserInfo)
@@ -78,6 +80,7 @@ internal class ProfileEditStoreFactory(
                     telegram = null,
                     post = null,
                     phoneNumber = null,
+                    imageUrl = null
                 )
             }
     }
