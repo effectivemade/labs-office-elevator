@@ -17,6 +17,7 @@ import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
 import office.effective.common.utils.UserSession
 import office.effective.di.databaseDiModule
+import office.effective.feature.auth.di.authDIModule
 import office.effective.plugins.configureMigration
 import office.effective.plugins.configureRouting
 import office.effective.plugins.configureSecurity
@@ -60,6 +61,6 @@ fun Application.module() {
         }
     }
     install(Koin) {
-        modules(databaseDiModule)
+        modules(databaseDiModule, authDIModule)
     }
 }
