@@ -70,9 +70,11 @@ fun AuthorizationTelegramScreen(component: AuthorizationTelegramComponent) {
                     showToast(errorMessage)
                 }
                 AuthorizationTelegramStore.Label.AuthorizationTelegramSuccess -> component.onOutput(
-                    AuthorizationTelegramComponent.Output.OpenMainScreen
+                    AuthorizationTelegramComponent.Output.OpenContentFlow
                 )
-                AuthorizationTelegramStore.Label.OpenMainScreen -> TODO()
+                AuthorizationTelegramStore.Label.OpenMainScreen -> component.onOutput(
+                    AuthorizationTelegramComponent.Output.OpenContentFlow
+                )
                 AuthorizationTelegramStore.Label.ReturnInProfileAuthorization -> component.onOutput(
                     AuthorizationTelegramComponent.Output.OpenProfileScreen
                 )
@@ -125,7 +127,7 @@ private fun AuthorizationTelegramComponent(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        AuthTabRow(0)
+        AuthTabRow(2)
 
         Column(
             verticalArrangement = Arrangement.Center,

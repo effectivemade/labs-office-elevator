@@ -18,7 +18,7 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 class AuthorizationComponent(
     componentContext: ComponentContext,
     private val storeFactory: StoreFactory,
-    private val openAuthorizationFlow: () -> Unit
+    private val openContentFlow: () -> Unit
 ) :
     ComponentContext by componentContext {
 
@@ -111,7 +111,7 @@ class AuthorizationComponent(
                 Config.ProfileAuth
             )
 
-            AuthorizationTelegramComponent.Output.OpenMainScreen -> TODO()
+            AuthorizationTelegramComponent.Output.OpenContentFlow -> openContentFlow()
         }
     }
 

@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 class AuthorizationTelegramComponent(
     componentContext: ComponentContext,
     private val storeFactory: StoreFactory,
-    private val output: (AuthorizationTelegramComponent.Output) -> Unit
+    private val output: (Output) -> Unit
 ) : ComponentContext by componentContext {
 
     private val authorizationTelegramStore =
@@ -38,7 +38,7 @@ class AuthorizationTelegramComponent(
     }
 
     sealed class Output {
-        object OpenMainScreen : Output()
+        object OpenContentFlow : Output()
 
         object OpenProfileScreen : Output()
     }

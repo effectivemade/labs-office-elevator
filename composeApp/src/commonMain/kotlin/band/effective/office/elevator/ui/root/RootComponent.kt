@@ -57,7 +57,7 @@ class RootComponent internal constructor(
             AuthorizationComponent(
                 childContext,
                 storeFactory,
-                openAuthorizationFlow = output
+                openContentFlow = output
             )
         },
         content = { childContext, onSignOut ->
@@ -71,11 +71,9 @@ class RootComponent internal constructor(
 
     private fun child(config: Config, componentContext: ComponentContext): Child =
         when (config) {
-            is Config.Authorization -> Child.AuthorizationChild(
-                authorization(
-                    componentContext
-                ) { navigation.replaceAll(Config.Authorization) }
-            )
+            is Config.Authorization -> Child.AuthorizationChild(authorization(componentContext){
+                navigation.replaceAll(Config.Content)
+            })
 
             is Config.Content -> Child.ContentChild(content(componentContext) {
                 navigation.replaceAll(Config.Authorization)
