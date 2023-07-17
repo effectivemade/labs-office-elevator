@@ -25,4 +25,9 @@ fun OutlinedTextColorsSetup() = TextFieldDefaults.outlinedTextFieldColors(
 //                    region::Leading icon
     disabledLeadingIconColor = textGrayColor,
 //                    endregion
+
+//                    region::Cursor colors
+    cursorColor = theme_light_primary_stroke,
+    errorCursorColor = ExtendedTheme.colors.error
+//                    endregion
 )
