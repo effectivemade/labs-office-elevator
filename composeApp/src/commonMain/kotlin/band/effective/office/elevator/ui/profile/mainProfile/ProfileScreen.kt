@@ -10,15 +10,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -30,28 +27,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.borderPurple
+import band.effective.office.elevator.components.TitlePage
+import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.ui.models.FieldsData
 import band.effective.office.elevator.ui.profile.mainProfile.store.ProfileStore
 import com.seiko.imageloader.model.ImageRequest
 import com.seiko.imageloader.rememberAsyncImagePainter
-import dev.icerock.moko.resources.ImageResource
-import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 
 @Composable
@@ -87,30 +78,17 @@ internal fun ProfileScreenContent(
     phoneNumber: String?,
     onSignOut: () -> Unit,
     onEditProfile: ()-> Unit) {
+    val fieldsList = prepareFieldsData(telegram, phoneNumber)
     Column(
-        modifier = Modifier.fillMaxSize().padding(top = 48.dp),
+        modifier = Modifier.fillMaxSize().background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top) {
         ProfileHeader(onSignOut)
         ProfileInfoAboutUser(imageUrl, username, post, onEditProfile)
-        var listPrepared by remember {
-            mutableStateOf(false)
-        }
-        LaunchedEffect(Unit) {
-            withContext(Dispatchers.Default) {
-                fieldsList.clear()
-                prepareOptionsData(telegram, phoneNumber)
-                listPrepared = true
-            }
-        }
-        if (listPrepared) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize().padding(top = 24.dp)
-            ) {
-                items(fieldsList) { item ->
-                    OptionsItemStyle(item = item, onEditProfile)
-                }
+        LazyColumn(modifier = Modifier.fillMaxSize().padding(top = 24.dp))
+        {
+            items(fieldsList){item ->
+                FieldsItemStyle(item = item,onEditProfile)
             }
         }
     }
@@ -150,19 +128,17 @@ fun ProfileInfoAboutUser(imageUrl: String?, username: String?, post: String?, on
     }
     username?.let {
         Text(
-            it, style = TextStyle(
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Medium, color = Color.Black
-            ),
+            it,
+            style = MaterialTheme.typography.subtitle1,
+            color = Color.Black,
             modifier = Modifier.padding(top = 12.dp)
         )
     }
     post?.let {
         Text(
-            it, style = TextStyle(
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Normal, color = Color(0x80000000)
-            ),
+            it,
+            style = MaterialTheme.typography.subtitle1,
+            color = textGrayColor,
             modifier = Modifier.padding(top = 8.dp)
         )
     }
@@ -172,15 +148,10 @@ fun ProfileInfoAboutUser(imageUrl: String?, username: String?, post: String?, on
 private fun ProfileHeader(onSignOut: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier
-            .padding(horizontal = 16.dp).fillMaxWidth()
+            .padding(horizontal = 16.dp).fillMaxWidth().padding(top = 48.dp)
     ) {
-        Text(
-            stringResource(MainRes.strings.profile),
-            style = TextStyle(
-                fontSize = 20.sp,
-                color = Color.Black,
-                fontWeight = FontWeight.SemiBold
-            )
+        TitlePage(
+            stringResource(MainRes.strings.profile)
         )
         Spacer(modifier = Modifier.weight(.1f))
         OutlinedButton(
@@ -197,10 +168,8 @@ private fun ProfileHeader(onSignOut: () -> Unit) {
                 )
                 Text(
                     stringResource(MainRes.strings.exit),
-                    style = TextStyle(
-                        fontSize = 14.sp, color = Color(0xFFC2410C),
-                        fontWeight = FontWeight.Normal
-                    ), modifier = Modifier.padding(start = 8.dp)
+                    style = MaterialTheme.typography.body2,
+                    modifier = Modifier.padding(start = 8.dp)
                 )
             }
         }
@@ -208,7 +177,7 @@ private fun ProfileHeader(onSignOut: () -> Unit) {
 }
 
 @Composable
-private fun OptionsItemStyle(item: FieldsData, onEditProfile: () -> Unit) {
+private fun FieldsItemStyle(item: FieldsData, onEditProfile: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier
             .padding(horizontal = 16.dp).fillMaxWidth()
@@ -216,42 +185,39 @@ private fun OptionsItemStyle(item: FieldsData, onEditProfile: () -> Unit) {
         Icon(
             painter = painterResource(item.icon),
             contentDescription = null,
-            tint = Color(0x80000000)
+            tint = textGrayColor
         )
         Text(
-            stringResource(item.title), style = TextStyle(
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Normal, color = Color(0x80000000)
-            ),
+            stringResource(item.title),
+            style = MaterialTheme.typography.subtitle1,
+            color = textGrayColor,
             modifier = Modifier.padding(start = 12.dp)
         )
         Spacer(modifier = Modifier.weight(.1f))
         item.value?.let {
             Text(
                 it,
-                style = TextStyle(
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Normal,
-                    color = Color.Black
-                )
+                style = MaterialTheme.typography.subtitle1,
+                color = Color.Black
             )
         }
         IconButton(onClick = onEditProfile) {
             Icon(
                 painter = painterResource(MainRes.images.next),
                 contentDescription = null,
-                tint = Color(0xFF6F01FF)
+                tint = borderPurple
             )
         }
     }
-    Divider(color = Color(0x80000000), thickness = 1.dp)
+    Divider(color = textGrayColor, thickness = 1.dp)
 }
 
 
-private val fieldsList: ArrayList<FieldsData> = ArrayList()
 
 
-private fun prepareOptionsData(telegram: String?, phoneNumber: String?) {
+private fun prepareFieldsData(telegram: String?, phoneNumber: String?) : MutableList<FieldsData>{
+
+    val fieldsList = mutableListOf<FieldsData>()
 
     fieldsList.add(
         FieldsData(
@@ -268,4 +234,5 @@ private fun prepareOptionsData(telegram: String?, phoneNumber: String?) {
             value = phoneNumber,
         )
     )
+    return fieldsList
 }

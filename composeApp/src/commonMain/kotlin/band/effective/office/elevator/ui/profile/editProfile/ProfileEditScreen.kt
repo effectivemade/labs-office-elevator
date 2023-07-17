@@ -1,17 +1,22 @@
 package band.effective.office.elevator.ui.profile.editProfile
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
@@ -24,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -31,6 +37,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
+import band.effective.office.elevator.components.TitlePage
+import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.ui.models.FieldsData
 import band.effective.office.elevator.ui.profile.editProfile.store.ProfileEditStore
 import dev.icerock.moko.resources.ImageResource
@@ -68,30 +76,16 @@ private fun ProfileEditScreenContent(
     phoneNumber: String?,
     onReturnToProfile: () -> Unit
 ) {
+    val fieldsList =  prepareFieldsData("Петров Иван","Android-разработчик","petrov","9654561232")
     Column (
-        modifier = Modifier.fillMaxSize().padding(top = 48.dp).padding(horizontal = 16.dp),
+        modifier = Modifier.fillMaxSize().background(Color.White).padding(top = 48.dp).padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ){
         ProfileEditHeader(onReturnToProfile)
-
-        var listPrepared by remember {
-            mutableStateOf(false)
-        }
-
-        LaunchedEffect(Unit){
-            withContext(Dispatchers.Default){
-                fieldsList.clear()
-                prepareFieldsData("Петров Иван","Android-разработчик","petrov","9654561232")
-                listPrepared = true
-            }
-        }
-
-        if(listPrepared){
-            LazyColumn(modifier = Modifier.padding(top= 28.dp)){
-                items(fieldsList){item->
-                    FieldsItemStyle(item = item)
-                }
+        LazyColumn(modifier = Modifier.padding(top= 28.dp)){
+            items(fieldsList){item->
+                FieldsItemStyle(item = item)
             }
         }
         Spacer(modifier = Modifier.weight(.1f))
@@ -109,9 +103,12 @@ private fun FieldsItemStyle(item:FieldsData){
     Column(
         modifier = Modifier.padding(top = 16.dp).fillMaxWidth()
     ) {
-            Text(stringResource(item.title), modifier = Modifier.padding(bottom = 8.dp), style = TextStyle(
-                fontSize = 16.sp,
-                color = Color.Black))
+            Text(
+                stringResource(item.title),
+                modifier = Modifier.padding(bottom = 8.dp),
+                style = MaterialTheme.typography.body1,
+                color = Color.Black
+            )
         itemText?.let { it ->
             OutlinedTextField(
                 value = it,
@@ -121,13 +118,25 @@ private fun FieldsItemStyle(item:FieldsData){
                 singleLine = true,
                 textStyle = TextStyle(
                     fontSize = 16.sp,
-
                 ),
                 leadingIcon = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Start,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    ) {
                         Icon(
                             painter= painterResource(item.icon),
                             contentDescription = null,
                         )
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Divider(
+                            modifier = Modifier
+                                .height(28.dp)
+                                .width(2.dp)
+                                .clip(RoundedCornerShape(4.dp))
+                        )
+                    }
                 },
                 trailingIcon = {
                     Icon(
@@ -136,7 +145,7 @@ private fun FieldsItemStyle(item:FieldsData){
                     )
                 },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
-                    textColor = Color(0x80000000),
+                    textColor = textGrayColor,
                     leadingIconColor = Color(0x66000000),
                     trailingIconColor = Color(0x66000000)
                 )
@@ -145,7 +154,9 @@ private fun FieldsItemStyle(item:FieldsData){
     }
 }
 
-private fun prepareFieldsData(username: String?, post: String?, telegram: String?, phoneNumber: String?) {
+private fun prepareFieldsData(username: String?, post: String?, telegram: String?, phoneNumber: String?) : MutableList<FieldsData> {
+
+    val fieldsList = mutableListOf<FieldsData>()
 
     fieldsList.add(
         FieldsData(
@@ -175,10 +186,8 @@ private fun prepareFieldsData(username: String?, post: String?, telegram: String
             value = telegram,
         )
     )
+    return fieldsList
 }
-
-private val fieldsList: ArrayList<FieldsData> = ArrayList() //TODO("Added in fun ProfileEditScreenContent")
-
 
 @Composable
 fun ProfileEditHeader(onReturnToProfile: () -> Unit) {
@@ -193,12 +202,8 @@ fun ProfileEditHeader(onReturnToProfile: () -> Unit) {
                 tint = Color.Black
             )
         }
-        Text(
-            text = stringResource(MainRes.strings.profile_data),
-            style = TextStyle(
-                fontSize = 20.sp, color = Color.Black,
-                fontWeight = FontWeight.Bold
-            ),
+        TitlePage(
+            title = stringResource(MainRes.strings.profile_data),
             modifier = Modifier.padding(start = 16.dp)
         )
     }
