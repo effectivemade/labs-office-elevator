@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.root
 
+import band.effective.office.elevator.data.database.DBSource
 import band.effective.office.elevator.ui.authorization.AuthorizationComponent
 import band.effective.office.elevator.ui.content.ContentComponent
 import band.effective.office.elevator.ui.root.store.RootStore
@@ -18,6 +19,7 @@ import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.Flow
+import org.koin.core.component.inject
 
 class RootComponent internal constructor(
     componentContext: ComponentContext,
