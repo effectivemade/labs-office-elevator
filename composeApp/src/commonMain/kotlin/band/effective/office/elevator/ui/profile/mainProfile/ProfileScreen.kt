@@ -42,6 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.ui.models.FieldsData
 import band.effective.office.elevator.ui.profile.mainProfile.store.ProfileStore
 import com.seiko.imageloader.model.ImageRequest
 import com.seiko.imageloader.rememberAsyncImagePainter
@@ -85,13 +86,11 @@ internal fun ProfileScreenContent(
     telegram: String?,
     phoneNumber: String?,
     onSignOut: () -> Unit,
-    onEditProfile: ()-> Unit
-) {
+    onEditProfile: ()-> Unit) {
     Column(
         modifier = Modifier.fillMaxSize().padding(top = 48.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
-    ) {
+        verticalArrangement = Arrangement.Top) {
         ProfileHeader(onSignOut)
         ProfileInfoAboutUser(imageUrl, username, post, onEditProfile)
         var listPrepared by remember {
@@ -99,7 +98,7 @@ internal fun ProfileScreenContent(
         }
         LaunchedEffect(Unit) {
             withContext(Dispatchers.Default) {
-                optionsList.clear()
+                fieldsList.clear()
                 prepareOptionsData(telegram, phoneNumber)
                 listPrepared = true
             }
@@ -109,7 +108,7 @@ internal fun ProfileScreenContent(
                 modifier = Modifier
                     .fillMaxSize().padding(top = 24.dp)
             ) {
-                items(optionsList) { item ->
+                items(fieldsList) { item ->
                     OptionsItemStyle(item = item, onEditProfile)
                 }
             }
@@ -209,7 +208,7 @@ private fun ProfileHeader(onSignOut: () -> Unit) {
 }
 
 @Composable
-private fun OptionsItemStyle(item: OptionsData, onEditProfile: () -> Unit) {
+private fun OptionsItemStyle(item: FieldsData, onEditProfile: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier
             .padding(horizontal = 16.dp).fillMaxWidth()
@@ -249,26 +248,24 @@ private fun OptionsItemStyle(item: OptionsData, onEditProfile: () -> Unit) {
 }
 
 
-private val optionsList: ArrayList<OptionsData> = ArrayList()
+private val fieldsList: ArrayList<FieldsData> = ArrayList()
 
 
 private fun prepareOptionsData(telegram: String?, phoneNumber: String?) {
 
-    optionsList.add(
-        OptionsData(
+    fieldsList.add(
+        FieldsData(
             icon = MainRes.images.icon_call,
             title = MainRes.strings.phone_number,
             value = telegram,
         )
     )
 
-    optionsList.add(
-        OptionsData(
+    fieldsList.add(
+        FieldsData(
             icon = MainRes.images.icon_telegram,
             title = MainRes.strings.telegram,
             value = phoneNumber,
         )
     )
 }
-
-data class OptionsData(val icon: ImageResource, val title: StringResource, val value: String?)

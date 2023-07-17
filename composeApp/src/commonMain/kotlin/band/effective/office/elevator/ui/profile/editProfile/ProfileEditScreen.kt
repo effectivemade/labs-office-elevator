@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
+import band.effective.office.elevator.ui.models.FieldsData
 import band.effective.office.elevator.ui.profile.editProfile.store.ProfileEditStore
 import dev.icerock.moko.resources.ImageResource
 import dev.icerock.moko.resources.StringResource
@@ -177,7 +178,7 @@ private fun prepareFieldsData(username: String?, post: String?, telegram: String
 }
 
 private val fieldsList: ArrayList<FieldsData> = ArrayList() //TODO("Added in fun ProfileEditScreenContent")
-private data class FieldsData(val title:StringResource,val icon:ImageResource,val value: String?)
+
 
 @Composable
 fun ProfileEditHeader(onReturnToProfile: () -> Unit) {
