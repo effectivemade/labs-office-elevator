@@ -13,10 +13,10 @@ interface AuthorizationProfileStore :
     }
 
     data class State(
-        val name: String = "Фамилия Имя",
-        val post: String = "Android developer",
-        val isLoading: Boolean = false,
-        val isError: Boolean = false
+        var name: String = "Фамилия Имя",
+        var post: String = "Android developer",
+        var isLoading: Boolean = false,
+        var isError: Boolean = false
     )
 
     sealed interface Label {

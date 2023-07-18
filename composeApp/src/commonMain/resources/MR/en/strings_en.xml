@@ -58,6 +58,8 @@
     <string name="timout_error">Request time is up. Try again</string>
     <string name="server_error">Server error ${code}</string>
     <string name="number_format_error">Invalid phone number format</string>
+    <string name="profile_format_error">Enter your profile</string>
+    <string name="telegram_format_error">Specify nickname in telegram</string>
 
     <!-- Success messages -->
     <string name="elevator_called_successfully">Successfully!</string>

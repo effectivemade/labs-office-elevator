@@ -31,6 +31,8 @@ import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -46,6 +48,7 @@ import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.OutlinedTextColorsSetup
 import band.effective.office.elevator.components.PrimaryButton
+import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.getDefaultFont
 import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.theme_light_primary_stroke
@@ -59,11 +62,21 @@ import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun AuthorizationProfileScreen(component: AuthorizationProfileComponent) {
+
+    val state by component.user.collectAsState()
+    val errorMessage = stringResource(MainRes.strings.profile_format_error)
+
     LaunchedEffect(component) {
         component.label.collect { label ->
             when (label) {
-                AuthorizationProfileStore.Label.AuthorizationProfileFailure -> TODO()
-                AuthorizationProfileStore.Label.AuthorizationProfileSuccess -> TODO()
+                AuthorizationProfileStore.Label.AuthorizationProfileFailure -> {
+                    showToast(errorMessage)
+                }
+
+                AuthorizationProfileStore.Label.AuthorizationProfileSuccess -> component.onOutput(
+                    AuthorizationProfileComponent.Output.OpenTGScreen
+                )
+
                 AuthorizationProfileStore.Label.OpenTGAuthorization -> component.onOutput(
                     AuthorizationProfileComponent.Output.OpenTGScreen
                 )
@@ -75,11 +88,14 @@ fun AuthorizationProfileScreen(component: AuthorizationProfileComponent) {
         }
     }
 
-    AuthorizationProfileComponent(onEvent = component::onEvent)
+    AuthorizationProfileComponent(onEvent = component::onEvent, state)
 }
 
 @Composable
-fun AuthorizationProfileComponent(onEvent: (AuthorizationProfileStore.Intent) -> Unit) {
+fun AuthorizationProfileComponent(
+    onEvent: (AuthorizationProfileStore.Intent) -> Unit,
+    state: AuthorizationProfileStore.State
+) {
 //    region::Variables
     val isError1 = remember { mutableStateOf(false) }
     val isError2 = remember { mutableStateOf(false) }
@@ -152,6 +168,7 @@ fun AuthorizationProfileComponent(onEvent: (AuthorizationProfileStore.Intent) ->
                 value = name.value,
                 onValueChange = {
                     name.value = it
+                    state.name = it
                     closeIcon1.value = it.isNotEmpty()
                 },
                 textStyle = MaterialTheme.typography.body1,
@@ -228,6 +245,7 @@ fun AuthorizationProfileComponent(onEvent: (AuthorizationProfileStore.Intent) ->
                 value = post.value,
                 onValueChange = {
                     post.value = it
+                    state.post = it
                     closeIcon2.value = it.isNotEmpty()
                 },
                 textStyle = MaterialTheme.typography.body1,

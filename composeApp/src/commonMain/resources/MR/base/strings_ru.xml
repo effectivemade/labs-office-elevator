@@ -63,6 +63,8 @@
     <string name="timout_error">Время вышло. Попробуйте снова</string>
     <string name="server_error">Ошибка сервера ${code}</string>
     <string name="number_format_error">Неверный формат номера телефона</string>
+    <string name="profile_format_error">Заполните профиль</string>
+    <string name="telegram_format_error">Укажите ник в телеграмме</string>
 
     <!-- Success messages -->
     <string name="elevator_called_successfully">Лифт успешно вызван!</string>

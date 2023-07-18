@@ -60,7 +60,7 @@ import dev.icerock.moko.resources.compose.stringResource
 fun AuthorizationTelegramScreen(component: AuthorizationTelegramComponent) {
 
     val state by component.nick.collectAsState()
-    val errorMessage = stringResource(MainRes.strings.number_format_error)
+    val errorMessage = stringResource(MainRes.strings.telegram_format_error)
 
     LaunchedEffect(component) {
         component.label.collect { label ->
