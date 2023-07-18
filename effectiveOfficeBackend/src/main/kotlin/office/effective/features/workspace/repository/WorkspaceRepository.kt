@@ -1,7 +1,9 @@
 package office.effective.features.workspace.repository
 
+import office.effective.common.exception.WorkspaceNotFoundException
 import office.effective.common.exception.WorkspaceTagNotFoundException
 import office.effective.features.workspace.converters.WorkspaceConverter
+import office.effective.model.Utility
 import office.effective.model.Workspace
 import org.koin.java.KoinJavaComponent.inject
 import org.ktorm.database.Database
@@ -19,6 +21,13 @@ class WorkspaceRepository {
     fun findById(workspaceId: UUID): Workspace? {
         val entity: WorkspaceEntity? = database.workspaces.find { it.id eq workspaceId }
         return entity?.let { converter.entityToModel(it) }
+    }
+
+    /**
+     * Returns whether a workspace with the given id exists
+     */
+    fun existsById(workspaceId: UUID): Boolean {
+        return database.workspaces.count { it.id eq workspaceId } > 0
     }
 
     /**
@@ -49,6 +58,28 @@ class WorkspaceRepository {
             database.workspaces.add(converter.modelToEntity(workspace, tagEntity))
             return workspace;
         }
+    }
+
+    /**
+     * Returns all workspace utilities by workspace id
+     *
+     * Throws WorkspaceNotFoundException if workspace with given id doesn't exist in the database
+     */
+    fun findUtilitiesByWorkspaceId(workspaceId: UUID): List<Utility> {
+        if (!existsById(workspaceId)) {
+            throw WorkspaceNotFoundException("Workspace with id $workspaceId not found")
+        }
+        val modelList = database
+            .from(WorkspaceUtilities)
+            .innerJoin(right = Utilities, on = WorkspaceUtilities.utilityId eq Utilities.id)
+            .select()
+            .where { WorkspaceUtilities.workspaceId eq workspaceId }
+            .map { row ->
+                converter.utilityEntityToModel(
+                    Utilities.createEntity(row), row[WorkspaceUtilities.count]?:0
+                )
+            }
+        return modelList
     }
 
     /**

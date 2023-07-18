@@ -1,7 +1,9 @@
 package office.effective.features.workspace.converters
 
+import office.effective.features.workspace.repository.UtilityEntity
 import office.effective.features.workspace.repository.WorkspaceEntity
 import office.effective.features.workspace.repository.WorkspaceTagEntity
+import office.effective.model.Utility
 import office.effective.model.Workspace
 import java.lang.IllegalArgumentException
 import java.util.UUID
@@ -27,5 +29,12 @@ class WorkspaceConverter {
             name = model.name
             tag = tagEntity
         }
+    }
+
+    /**
+     * Converts UtilityEntity to Utility with given count
+     */
+    fun utilityEntityToModel(entity: UtilityEntity, count: Int): Utility {
+        return Utility(entity.id, entity.name, entity.iconUrl, count)
     }
 }
