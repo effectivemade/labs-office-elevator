@@ -195,7 +195,7 @@ private fun AuthorizationPhoneComponent(
                         modifier = Modifier.padding(horizontal = 16.dp)
                     ) {
                         Text(
-                            text = "+7",
+                            text = stringResource(MainRes.strings.phone_plus_seven),
                             style = TextStyle(
                                 fontSize = 16.sp,
                                 lineHeight = 20.8.sp,
