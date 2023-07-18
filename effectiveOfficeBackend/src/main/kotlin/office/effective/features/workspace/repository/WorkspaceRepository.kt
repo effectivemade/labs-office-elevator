@@ -1,12 +1,12 @@
 package office.effective.features.workspace.repository
 
+import office.effective.common.exception.WorkspaceTagNotFoundException
 import office.effective.features.workspace.converters.WorkspaceConverter
 import office.effective.model.Workspace
 import org.koin.java.KoinJavaComponent.inject
 import org.ktorm.database.Database
-import org.ktorm.dsl.eq
-import org.ktorm.entity.add
-import org.ktorm.entity.find
+import org.ktorm.dsl.*
+import org.ktorm.entity.*
 import java.util.UUID
 
 class WorkspaceRepository {
@@ -15,6 +15,20 @@ class WorkspaceRepository {
 
     fun findById(workspaceId: UUID): Workspace? {
         val entity: WorkspaceEntity? = database.workspaces.find { it.id eq workspaceId }
-        return entity?.let { converter.EntityToModel(it) }
+        return entity?.let { converter.entityToModel(it) }
+    }
+
+    fun findAllByTag(tag: String): List<Workspace> {
+        val tagEntity: WorkspaceTagEntity? = database.workspaceTags.find { it.name eq tag }
+        if (tagEntity == null) {
+            throw WorkspaceTagNotFoundException("Workspace tag $tag not found")
+        } else {
+            val entityList = database.workspaces.filter { it.tagId eq tagEntity.id }.toList()
+            return entityList.map { converter.entityToModel(it) }
+        }
+    }
+
+    fun deleteById(workspaceId: UUID) {
+        database.workspaces.removeIf { it.id eq workspaceId }
     }
 }

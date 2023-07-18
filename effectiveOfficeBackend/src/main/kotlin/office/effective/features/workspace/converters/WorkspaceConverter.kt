@@ -4,8 +4,8 @@ import office.effective.features.workspace.repository.WorkspaceEntity
 import office.effective.model.Workspace
 
 class WorkspaceConverter {
-    fun EntityToModel(entity: WorkspaceEntity): Workspace {
-        return Workspace(entity.id, entity.name, entity.tag.id)
+    fun entityToModel(entity: WorkspaceEntity): Workspace {
+        return Workspace(entity.id, entity.name, entity.tag.name)
     }
     /*fun ModelToEntity(model: Workspace): WorkspaceEntity {
         return WorkspaceEntity {
