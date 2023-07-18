@@ -16,9 +16,6 @@ fun OrganizerEventView(booking: Booking) {
     Text(
         text = booking.eventInfo.organizer,
         style = MaterialTheme.typography.h5,
-        fontFamily = FontFamily.SansSerif,
-        color = LocalCustomColorsPalette.current.primaryTextAndIcon,
-        fontWeight = FontWeight(500)
-        //textAlign = TextAlign.Center
+        color = LocalCustomColorsPalette.current.primaryTextAndIcon
     )
 }

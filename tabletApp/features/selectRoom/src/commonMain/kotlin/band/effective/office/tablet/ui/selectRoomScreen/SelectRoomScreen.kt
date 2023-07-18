@@ -7,26 +7,26 @@ import androidx.compose.ui.window.Dialog
 import band.effective.office.tablet.ui.selectRoomScreen.successBooking.SuccessSelectRoomView
 
 @Composable
-fun SelectRoomScreen(component: SelectRoomComponentImpl){
+fun SelectRoomScreen(component: SelectRoomComponent){
     val state by component.state.collectAsState()
 
     Dialog(
         onDismissRequest = { component.close() }
     )
     {
-        println("AGAIN")
         when {
             state.isData -> {
                 SelectRoomView(
-                    component.booking,
+                    component.onBooking(),
                     { component.close() },
                     { component.bookRoom() }
                 )
             }
 
-            state.isLoad -> {
-                /* (Margarita Djinjolia)
-            not in design */
+            state.isSuccess -> {
+                SuccessSelectRoomView(
+                    component.onBooking()
+                ) { component.close() }
             }
 
             state.isError -> {
@@ -35,9 +35,8 @@ fun SelectRoomScreen(component: SelectRoomComponentImpl){
             }
 
             else -> {
-                SuccessSelectRoomView(
-                    component.booking
-                ) { component.close() }
+                /* (Margarita Djinjolia)
+            no load in design */
             }
         }
     }

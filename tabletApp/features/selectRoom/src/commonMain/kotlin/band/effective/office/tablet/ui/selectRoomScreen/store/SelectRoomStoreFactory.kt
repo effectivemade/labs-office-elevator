@@ -38,7 +38,7 @@ class SelectRoomStoreFactory(private val storeFactory: StoreFactory) : KoinCompo
     private object ReducerImpl : Reducer<SelectRoomStore.State, Message> {
         override fun SelectRoomStore.State.reduce(message: Message): SelectRoomStore.State =
             when (message) {
-                is Message.BookingRoom -> copy(isData = false)
+                is Message.BookingRoom -> copy(isData = false, isSuccess = true)
                 is Message.CloseModal -> SelectRoomStore.State.defaultState
             }
     }

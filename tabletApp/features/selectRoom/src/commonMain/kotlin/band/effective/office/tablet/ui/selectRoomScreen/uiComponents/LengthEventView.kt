@@ -40,7 +40,6 @@ fun LengthEventView(modifier: Modifier, booking: Booking) {
         Text(
             text = lengthEvent,
             style = MaterialTheme.typography.h6,
-            fontFamily = FontFamily.SansSerif,
             color = LocalCustomColorsPalette.current.primaryTextAndIcon
         )
     }

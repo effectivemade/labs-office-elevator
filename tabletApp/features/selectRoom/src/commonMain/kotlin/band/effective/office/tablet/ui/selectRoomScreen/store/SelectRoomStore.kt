@@ -10,16 +10,16 @@ interface SelectRoomStore: Store<SelectRoomStore.Intent, SelectRoomStore.State, 
     }
 
     data class State(
-        var isLoad: Boolean,
         var isData: Boolean,
+        var isSuccess: Boolean,
         var isError: Boolean,
         var error: String
     ) {
         companion object {
             val defaultState =
                 State(
-                    isLoad = false,
                     isData = true,
+                    isSuccess = false,
                     isError = false,
                     error = ""
                 )

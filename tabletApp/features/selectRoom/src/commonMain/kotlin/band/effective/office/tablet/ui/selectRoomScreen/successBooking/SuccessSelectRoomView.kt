@@ -38,7 +38,7 @@ fun SuccessSelectRoomView(
         Column(
             modifier = Modifier
                 .matchParentSize()
-                .padding(top = 30.dp, bottom = 80.dp),
+                .padding(top = 35.dp, bottom = 80.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             CrossButtonView(
@@ -49,13 +49,13 @@ fun SuccessSelectRoomView(
             IconSuccess()
             Spacer(modifier = Modifier.height(24.dp))
             SuccessText(modifier = Modifier.width(227.dp), nameRoom = booking.nameRoom)
-            Spacer(modifier = Modifier.height(60.dp))
+            Spacer(modifier = Modifier.height(50.dp))
             DateTimeView(modifier = Modifier.width(391.dp), booking = booking)
             Spacer(modifier = Modifier.height(12.dp))
             OrganizerEventView(booking = booking)
             Spacer(modifier = Modifier.height(60.dp))
             BookingButtonView(
-                modifier = Modifier.height(64.dp).width(395.dp),
+                modifier = Modifier.height(70.dp).width(395.dp),
                 shape = RoundedCornerShape(100),
                 text = MainRes.string.on_main,
                 onClick = {

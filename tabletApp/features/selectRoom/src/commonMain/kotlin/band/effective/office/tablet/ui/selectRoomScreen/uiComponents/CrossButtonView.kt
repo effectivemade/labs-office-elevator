@@ -23,7 +23,7 @@ import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 fun CrossButtonView(modifier: Modifier, onDismissRequest:() -> Unit) {
 
     Box(
-        modifier = modifier.padding(end = 54.dp),
+        modifier = modifier.padding(end = 42.dp),
         contentAlignment = Alignment.CenterEnd
     ) {
         IconButton(

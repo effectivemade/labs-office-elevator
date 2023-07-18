@@ -22,6 +22,7 @@ import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.ui.theme.CustomDarkColors
 import band.effective.office.tablet.ui.theme.CustomLightColors
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
+import band.effective.office.tablet.ui.theme.h6_button
 import band.effective.office.tablet.utils.time24
 
 @Composable
@@ -44,13 +45,12 @@ fun BookingButtonView(modifier: Modifier, shape: RoundedCornerShape, text: Strin
         {
             Text(
                 text = text,
-                style = MaterialTheme.typography.h6,
-                fontFamily = FontFamily.SansSerif,
+                style = MaterialTheme.typography.h6_button,
                 color = when(LocalCustomColorsPalette.current) {
                     CustomDarkColors -> LocalCustomColorsPalette.current.primaryTextAndIcon
                     else -> MaterialTheme.colors.background
                 },
-                letterSpacing = 0.1.sp
+              //  letterSpacing = 0.1.sp
             )
         }
     }

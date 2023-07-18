@@ -31,8 +31,6 @@ fun DateTimeView(modifier: Modifier, booking: Booking) {
                 finishTime = booking.eventInfo.finishTime.time24()
             ),
             style = MaterialTheme.typography.h5,
-            fontFamily = FontFamily.SansSerif,
-            fontWeight = FontWeight(500),
             color = LocalCustomColorsPalette.current.primaryTextAndIcon
         )
     }

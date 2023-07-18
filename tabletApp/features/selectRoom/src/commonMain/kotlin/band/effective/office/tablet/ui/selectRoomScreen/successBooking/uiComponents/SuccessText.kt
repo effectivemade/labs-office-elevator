@@ -25,8 +25,6 @@ fun SuccessText(modifier: Modifier, nameRoom: String) {
                 nameRoom = nameRoom
             ),
             style = MaterialTheme.typography.h4,
-            fontWeight = FontWeight(500),
-            fontFamily = FontFamily.SansSerif,
             color = LocalCustomColorsPalette.current.onSuccess
         )
     }

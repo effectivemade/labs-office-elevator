@@ -116,6 +116,8 @@ fun AppTheme(
     }
 }
 
+val Typography.h6_button: TextStyle
+    get() = header6_button
 val Typography.h7: TextStyle
     get() = header7
 

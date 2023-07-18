@@ -28,7 +28,6 @@ fun OrganizerEventView(modifier: Modifier, booking: Booking) {
         Text(
             text = booking.eventInfo.organizer,
             style = MaterialTheme.typography.h6,
-            fontFamily = FontFamily.SansSerif,
             color = LocalCustomColorsPalette.current.primaryTextAndIcon,
             textAlign = TextAlign.Center
         )

@@ -15,15 +15,14 @@ import band.effective.office.tablet.ui.theme.CustomDarkColors
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 
 @Composable
-fun Title(booking: Booking){
+fun Title(modifier: Modifier, booking: Booking){
     Text(
-        modifier = Modifier.width(415.dp),
+        modifier = modifier,
         text = MainRes.string.title_booking_dialog.format(
             nameRoom = booking.nameRoom
         ),
         style = MaterialTheme.typography.h4,
         color = LocalCustomColorsPalette.current.primaryTextAndIcon,
-        fontFamily = FontFamily.SansSerif,
         textAlign = TextAlign.Center
     )
 }

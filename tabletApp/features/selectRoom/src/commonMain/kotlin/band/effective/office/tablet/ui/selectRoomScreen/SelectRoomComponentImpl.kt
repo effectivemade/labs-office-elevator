@@ -16,26 +16,29 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 class SelectRoomComponentImpl(
     componentContext: ComponentContext,
-    val booking: Booking,
     storeFactory: StoreFactory,
+    val onBookingRoom: () -> Booking,
     private val onCloseRequest: () -> Unit
 ) : ComponentContext by componentContext, SelectRoomComponent, KoinComponent {
-   // private val interactor: SelectRoomInteractor by inject()
 
     private val bookingStore = instanceKeeper.getStore {
         SelectRoomStoreFactory(storeFactory).create()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val state = bookingStore.stateFlow
+    override val state = bookingStore.stateFlow
 
     override fun bookRoom() {
         bookingStore.accept(SelectRoomStore.Intent.BookingRoom)
     }
 
-    fun close() {
+    override fun close() {
         onCloseRequest()
         bookingStore.accept(SelectRoomStore.Intent.CloseModal)
+    }
+
+    override fun onBooking(): Booking{
+        return onBookingRoom()
     }
 
 }

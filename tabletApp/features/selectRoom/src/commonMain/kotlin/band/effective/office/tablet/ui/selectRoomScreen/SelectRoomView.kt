@@ -49,21 +49,24 @@ fun SelectRoomView(
 
     Box(
         modifier = Modifier
-            .size(575.dp, 530.dp)
+            .size(575.dp, 525.dp)
             .clip(RoundedCornerShape(3))
             .background(LocalCustomColorsPalette.current.elevationBackground),
     ) {
         Column(
             modifier = Modifier
                 .matchParentSize()
-                .padding(top = 30.dp, bottom = 80.dp),
+                .padding(top = 35.dp, bottom = 80.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             CrossButtonView(
                 Modifier.width(575.dp),
                 onDismissRequest = { close() }
             )
-            Title(booking)
+            Title(
+                Modifier.width(415.dp),
+                booking
+            )
             Spacer(modifier = Modifier.height(16.dp))
             TitleFieldView(
                 modifier = Modifier.width(415.dp),
