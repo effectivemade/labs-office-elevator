@@ -11,6 +11,11 @@ object Plugins {
         const val plugin = "com.android.application"
     }
 
+    object AndroidLib{
+        const val implementation = "com.android.tools.build:gradle:7.3.1"
+        const val plugin = "com.android.library"
+    }
+
     object Shadow {
         const val implementation = "gradle.plugin.com.github.johnrengelman:shadow:7.1.2"
         const val plugin = "com.github.johnrengelman.shadow"
