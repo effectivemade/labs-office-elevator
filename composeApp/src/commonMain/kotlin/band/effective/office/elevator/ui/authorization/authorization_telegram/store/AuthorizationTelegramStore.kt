@@ -12,7 +12,7 @@ interface AuthorizationTelegramStore :
     }
 
     data class State(
-        var name: String = "Никнейм в телеграм",
+        var nick: String = "Никнейм в телеграм",
         var isLoading: Boolean = false,
         var isError: Boolean = false
     )

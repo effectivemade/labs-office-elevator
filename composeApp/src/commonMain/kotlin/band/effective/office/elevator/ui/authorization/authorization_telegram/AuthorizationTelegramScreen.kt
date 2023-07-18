@@ -151,7 +151,7 @@ private fun AuthorizationTelegramComponent(
                 value = message.value,
                 onValueChange = {
                     message.value = it
-                    state.name = it
+                    state.nick = it
                     closeIcon.value = it.isNotEmpty()
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),

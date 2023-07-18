@@ -2,6 +2,7 @@ package band.effective.office.elevator.ui.authorization.authorization_profile
 
 import band.effective.office.elevator.ui.authorization.authorization_profile.store.AuthorizationProfileStore
 import band.effective.office.elevator.ui.authorization.authorization_profile.store.AuthorizationProfileStoreFactory
+import band.effective.office.elevator.ui.models.validator.Validator
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -14,13 +15,15 @@ import kotlinx.coroutines.flow.StateFlow
 class AuthorizationProfileComponent(
     componentContext: ComponentContext,
     private val storeFactory: StoreFactory,
+    private val validator: Validator,
     private val output: (AuthorizationProfileComponent.Output) -> Unit
 ) : ComponentContext by componentContext {
 
     private val authorizationProfileStore =
         instanceKeeper.getStore {
             AuthorizationProfileStoreFactory(
-                storeFactory = storeFactory
+                storeFactory = storeFactory,
+                validator
             ).create()
         }
 

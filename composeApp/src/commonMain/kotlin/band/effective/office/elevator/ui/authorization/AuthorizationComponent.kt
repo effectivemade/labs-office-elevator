@@ -4,6 +4,7 @@ import band.effective.office.elevator.ui.authorization.authorization_google.Auth
 import band.effective.office.elevator.ui.authorization.authorization_phone.AuthorizationPhoneComponent
 import band.effective.office.elevator.ui.authorization.authorization_profile.AuthorizationProfileComponent
 import band.effective.office.elevator.ui.authorization.authorization_telegram.AuthorizationTelegramComponent
+import band.effective.office.elevator.ui.models.validator.Validator
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
@@ -22,6 +23,7 @@ class AuthorizationComponent(
 ) :
     ComponentContext by componentContext {
 
+    private val validator: Validator = Validator()
     private val navigation = StackNavigation<AuthorizationComponent.Config>()
 
     private val stack = childStack(
@@ -50,6 +52,7 @@ class AuthorizationComponent(
                 AuthorizationPhoneComponent(
                     componentContext,
                     storeFactory,
+                    validator,
                     ::phoneAuthOutput
                 )
             )
@@ -58,6 +61,7 @@ class AuthorizationComponent(
                 AuthorizationProfileComponent(
                     componentContext,
                     storeFactory,
+                    validator,
                     ::profileAuthOutput
                 )
             )
@@ -66,6 +70,7 @@ class AuthorizationComponent(
                 AuthorizationTelegramComponent(
                     componentContext,
                     storeFactory,
+                    validator,
                     ::telegramAuthOutput
                 )
             )

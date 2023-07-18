@@ -2,6 +2,7 @@ package band.effective.office.elevator.ui.authorization.authorization_telegram
 
 import band.effective.office.elevator.ui.authorization.authorization_telegram.store.AuthorizationTelegramStore
 import band.effective.office.elevator.ui.authorization.authorization_telegram.store.AuthorizationTelegramStoreFactory
+import band.effective.office.elevator.ui.models.validator.Validator
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -14,13 +15,15 @@ import kotlinx.coroutines.flow.StateFlow
 class AuthorizationTelegramComponent(
     componentContext: ComponentContext,
     private val storeFactory: StoreFactory,
+    private val validator: Validator,
     private val output: (Output) -> Unit
 ) : ComponentContext by componentContext {
 
     private val authorizationTelegramStore =
         instanceKeeper.getStore {
             AuthorizationTelegramStoreFactory(
-                storeFactory = storeFactory
+                storeFactory = storeFactory,
+                validator
             ).create()
         }
 

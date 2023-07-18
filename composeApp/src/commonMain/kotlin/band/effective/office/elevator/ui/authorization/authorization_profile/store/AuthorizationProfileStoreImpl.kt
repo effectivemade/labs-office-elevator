@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.authorization.authorization_profile.store
 
+import band.effective.office.elevator.ui.models.validator.Validator
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -8,7 +9,10 @@ import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
-class AuthorizationProfileStoreFactory(private val storeFactory: StoreFactory) :
+class AuthorizationProfileStoreFactory(
+    private val storeFactory: StoreFactory,
+    private val validator: Validator
+) :
     KoinComponent {
 
     fun create(): AuthorizationProfileStore =
@@ -17,7 +21,7 @@ class AuthorizationProfileStoreFactory(private val storeFactory: StoreFactory) :
                 name = "Authorization profile",
                 initialState = AuthorizationProfileStore.State(),
                 bootstrapper = BootstrapperImpl(),
-                executorFactory = AuthorizationProfileStoreFactory::ExecutorImpl,
+                executorFactory = ::ExecutorImpl,
                 reducer = ReducerImpl
             ) {
         }
@@ -45,20 +49,36 @@ class AuthorizationProfileStoreFactory(private val storeFactory: StoreFactory) :
             }
     }
 
-    private class ExecutorImpl : CoroutineExecutor<AuthorizationProfileStore.Intent, Action, AuthorizationProfileStore.State, Nothing, AuthorizationProfileStore.Label>() {
-        override fun executeIntent(intent: AuthorizationProfileStore.Intent, getState: () -> AuthorizationProfileStore.State) =
+    private inner class ExecutorImpl :
+        CoroutineExecutor<AuthorizationProfileStore.Intent, Action, AuthorizationProfileStore.State, Nothing, AuthorizationProfileStore.Label>() {
+        override fun executeIntent(
+            intent: AuthorizationProfileStore.Intent,
+            getState: () -> AuthorizationProfileStore.State
+        ) =
             when (intent) {
                 AuthorizationProfileStore.Intent.BackButtonClicked -> back()
-                AuthorizationProfileStore.Intent.ContinueButtonClicked -> openTGAuthorization()
+                AuthorizationProfileStore.Intent.ContinueButtonClicked -> checkUserdata(
+                    getState().name,
+                    getState().post
+                )
+
                 is AuthorizationProfileStore.Intent.PostChanged -> TODO()
                 is AuthorizationProfileStore.Intent.NameChanged -> TODO()
             }
+
+        private fun checkUserdata(name: String, post: String) {
+            if (validator.checkName(name) && validator.checkPost(post)) {
+                publish(AuthorizationProfileStore.Label.AuthorizationProfileSuccess)
+            } else {
+                publish(AuthorizationProfileStore.Label.AuthorizationProfileFailure)
+            }
+        }
 
         private fun openTGAuthorization() {
             publish(AuthorizationProfileStore.Label.OpenTGAuthorization)
         }
 
-        private fun back(){
+        private fun back() {
             publish(AuthorizationProfileStore.Label.ReturnInPhoneAuthorization)
         }
     }
