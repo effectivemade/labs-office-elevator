@@ -1,5 +1,7 @@
 package band.effective.office.tablet.ui.mainScreen.bookingRoomComponents
 
+import band.effective.office.tablet.domain.model.Booking
+import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store.BookingStore
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store.BookingStoreFactory
 import band.effective.office.tablet.utils.componentCoroutineScope
@@ -48,6 +50,20 @@ class BookingRoomComponent(
 
     fun bookingOtherRoom(){
         onBookingOtherRoom()
+    }
+
+    fun getBooking(): Booking{
+        val finishDate = state.value.selectDate.clone() as Calendar
+        finishDate.add(Calendar.MINUTE, state.value.length)
+
+        return Booking(
+            state.value.roomName,
+            EventInfo(
+                state.value.selectDate,
+                finishDate,
+                state.value.organizer
+            )
+        )
     }
 
 
