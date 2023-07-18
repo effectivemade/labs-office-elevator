@@ -28,6 +28,16 @@ class WorkspaceRepository {
         }
     }
 
+    fun save(workspace: Workspace): Workspace {
+        val tagEntity: WorkspaceTagEntity? = database.workspaceTags.find { it.name eq workspace.tag }
+        if (tagEntity == null) {
+            throw WorkspaceTagNotFoundException("Workspace tag ${workspace.tag} not found")
+        } else {
+            database.workspaces.add(converter.modelToEntity(workspace, tagEntity))
+            return workspace;
+        }
+    }
+
     fun deleteById(workspaceId: UUID) {
         database.workspaces.removeIf { it.id eq workspaceId }
     }
