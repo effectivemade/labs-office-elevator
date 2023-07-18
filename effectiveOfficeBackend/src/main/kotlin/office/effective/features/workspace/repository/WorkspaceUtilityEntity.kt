@@ -1,0 +1,24 @@
+package office.effective.features.workspace.repository
+
+import org.ktorm.database.Database
+import org.ktorm.entity.Entity
+import org.ktorm.entity.sequenceOf
+import org.ktorm.schema.Table
+import org.ktorm.schema.int
+import org.ktorm.schema.uuid
+import org.ktorm.schema.varchar
+
+interface WorkspaceUtilityEntity: Entity<WorkspaceUtilityEntity> {
+    companion object : Entity.Factory<WorkspaceUtilityEntity>()
+    var utility: UtilityEntity
+    var workspace: WorkspaceEntity
+    var count: Int
+}
+
+object WorkspaceUtilities: Table<WorkspaceUtilityEntity>("workspace_utilities") {
+    val utilityId = uuid("utility_id").references(Utilities) { it.utility }
+    val workspaceId = varchar("workspace_id").references(Workspaces) { it.workspace }
+    val count = int("count").bindTo { it.count }
+}
+
+val Database.workspaceUtilities get() = this.sequenceOf(WorkspaceUtilities)
