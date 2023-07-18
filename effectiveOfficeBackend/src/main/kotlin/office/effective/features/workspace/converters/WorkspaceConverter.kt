@@ -6,9 +6,17 @@ import office.effective.model.Workspace
 import java.lang.IllegalArgumentException
 
 class WorkspaceConverter {
+    /**
+     * Converts WorkspaceEntity to Workspace
+     */
     fun entityToModel(entity: WorkspaceEntity): Workspace {
         return Workspace(entity.id, entity.name, entity.tag.name)
     }
+    /**
+     * Converts Workspace and WorkspaceTagEntity to WorkspaceEntity
+     *
+     * Throws IllegalArgumentException if model.tag is not equal to tagEntity.name
+     */
     fun modelToEntity(model: Workspace, tagEntity: WorkspaceTagEntity): WorkspaceEntity {
         if(tagEntity.name != model.tag) {
             throw IllegalArgumentException("model.tag=${model.tag} is not equal to tagEntity.name=${tagEntity.name}")
