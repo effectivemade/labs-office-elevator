@@ -46,7 +46,6 @@ class WorkspaceRepository {
         if (tagEntity == null) {
             throw WorkspaceTagNotFoundException("Workspace tag ${workspace.tag} not found")
         } else {
-            workspace.id = UUID.randomUUID()
             database.workspaces.add(converter.modelToEntity(workspace, tagEntity))
             return workspace;
         }
