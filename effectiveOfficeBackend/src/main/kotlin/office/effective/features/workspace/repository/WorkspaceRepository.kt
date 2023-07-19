@@ -10,6 +10,7 @@ import org.koin.java.KoinJavaComponent.inject
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
 import org.ktorm.entity.*
+import org.ktorm.support.postgresql.insertOrUpdate
 import java.util.UUID
 
 class WorkspaceRepository {
@@ -81,6 +82,14 @@ class WorkspaceRepository {
         }
     }
 
+    /**
+     * Adds utility to workspace by their id.
+     * If the utility has already been added to the workspace, the count value will be overwritten
+     *
+     * Throws WorkspaceNotFoundException if workspace with given id doesn't exist in the database
+     *
+     * Throws UtilityNotFoundException if utility with given id doesn't exist in the database
+     */
     fun addUtilityToWorkspace(utilityId: UUID, workspaceId: UUID, count: UInt) {
         if (!workspaceExistsById(workspaceId)) {
             throw WorkspaceNotFoundException("Workspace with id $workspaceId not found")
@@ -88,10 +97,13 @@ class WorkspaceRepository {
         if (!utilityExistsById(utilityId)) {
             throw UtilityNotFoundException("Utility with id $utilityId not found")
         }
-        database.insert(WorkspaceUtilities) {
+        database.insertOrUpdate(WorkspaceUtilities) {
             set(it.workspaceId, workspaceId)
             set(it.utilityId, utilityId)
             set(it.count, count.toInt())
+            onConflict {
+                set(it.count, count.toInt())
+            }
         }
     }
 

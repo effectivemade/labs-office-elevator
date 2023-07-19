@@ -15,8 +15,8 @@ interface WorkspaceUtilityEntity: Entity<WorkspaceUtilityEntity> {
 }
 
 object WorkspaceUtilities: Table<WorkspaceUtilityEntity>("workspace_utilities") {
-    val utilityId = uuid("utility_id").references(Utilities) { it.utility }
-    val workspaceId = uuid("workspace_id").references(Workspaces) { it.workspace }
+    val utilityId = uuid("utility_id").primaryKey().references(Utilities) { it.utility }
+    val workspaceId = uuid("workspace_id").primaryKey().references(Workspaces) { it.workspace }
     val count = int("count").bindTo { it.count }
 }
 
