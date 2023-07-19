@@ -12,7 +12,7 @@ class PhoneMaskTransformation : VisualTransformation {
 
     private fun maskFilter(text: AnnotatedString): TransformedText {
 
-        // 000 000 00-00
+        // 000-000-00-00
         val trimmed = if (text.text.length >= 10) text.text.substring(0..9) else text.text
         var out = ""
 

@@ -64,7 +64,6 @@ fun AuthorizationPhoneScreen(component: AuthorizationPhoneComponent) {
         component.label.collect { label ->
             when (label) {
                 AuthorizationPhoneStore.Label.AuthorizationPhoneFailure -> {
-//                    state.isErrorPhoneNumber = true
                     showToast(errorMessage)
                 }
 
@@ -150,11 +149,15 @@ private fun AuthorizationPhoneComponent(
                     if (it.isNotEmpty()) {
                         closeIcon.value = true
                         leadingColor.value = Color.Black
+                        borderColor.value = theme_light_primary_stroke
                     } else {
+                        borderColor.value = textGrayColor
                         closeIcon.value = false
                         leadingColor.value = textGrayColor
                     }
-                    onEvent(AuthorizationPhoneStore.Intent.PhoneNumberChanged(phoneNumber = it))
+                    onEvent(
+                        AuthorizationPhoneStore.Intent.PhoneNumberChanged(phoneNumber = it)
+                    )
                 },
                 visualTransformation = PhoneMaskTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -172,7 +175,9 @@ private fun AuthorizationPhoneComponent(
                 trailingIcon = {
                     if (closeIcon.value) {
                         IconButton(onClick = {
-                            onEvent(AuthorizationPhoneStore.Intent.PhoneNumberChanged(phoneNumber = ""))
+                            onEvent(
+                                AuthorizationPhoneStore.Intent.PhoneNumberChanged(phoneNumber = "")
+                            )
                             closeIcon.value = false
                             leadingColor.value = textGrayColor
                         }) {

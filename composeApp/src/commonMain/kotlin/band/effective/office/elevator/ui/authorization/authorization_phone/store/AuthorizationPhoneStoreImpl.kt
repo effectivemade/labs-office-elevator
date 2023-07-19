@@ -29,7 +29,10 @@ internal class AuthorizationPhoneStoreFactory(
     }
 
     sealed interface Msg {
-        data class Data(val phoneNumber: String, val isErrorPhoneNumber: Boolean) : Msg
+        data class Data(
+            val phoneNumber: String,
+            val isErrorPhoneNumber: Boolean,
+        ) : Msg
     }
 
     private object ReducerImpl : Reducer<AuthorizationPhoneStore.State, Msg> {
@@ -48,12 +51,14 @@ internal class AuthorizationPhoneStoreFactory(
             when (intent) {
                 Intent.BackButtonClicked -> back()
                 Intent.ContinueButtonClicked -> checkPhoneNumber(getState().phoneNumber)
-                is Intent.PhoneNumberChanged -> dispatch(
-                    AuthorizationPhoneStoreFactory.Msg.Data(
-                        phoneNumber = intent.phoneNumber,
-                        isErrorPhoneNumber = !isErrorPhoneNumber(intent.phoneNumber)
+                is Intent.PhoneNumberChanged ->
+                    dispatch(
+                        Msg.Data(
+                            phoneNumber = intent.phoneNumber,
+                            isErrorPhoneNumber = !isErrorPhoneNumber(intent.phoneNumber),
+                        )
                     )
-                )
+
             }
 
         private fun isErrorPhoneNumber(phoneNumber: String) = validator.checkPhone(phoneNumber)
