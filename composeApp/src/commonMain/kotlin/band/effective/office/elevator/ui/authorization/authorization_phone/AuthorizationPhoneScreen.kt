@@ -42,6 +42,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import band.effective.office.elevator.ExtendedTheme
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.OutlinedTextColorsSetup
 import band.effective.office.elevator.components.PrimaryButton
@@ -74,7 +75,6 @@ fun AuthorizationPhoneScreen(component: AuthorizationPhoneComponent) {
                     AuthorizationPhoneComponent.Output.OpenProfileScreen
                 )
 
-                AuthorizationPhoneStore.Label.OpenProfileAuthorization -> TODO()
                 AuthorizationPhoneStore.Label.ReturnInGoogleAuthorization -> component.onOutput(
                     AuthorizationPhoneComponent.Output.OpenGoogleScreen
                 )
@@ -120,7 +120,7 @@ private fun AuthorizationPhoneComponent(
             Icon(
                 imageVector = Icons.Rounded.ArrowBack,
                 tint = Color.Black,
-                contentDescription = "image_back"
+                contentDescription = "back screen arrow"
             )
         }
 
@@ -159,15 +159,8 @@ private fun AuthorizationPhoneComponent(
                 placeholder = {
                     Text(
                         text = stringResource(MainRes.strings.number_hint),
-                        style = TextStyle(
-                            fontSize = 16.sp,
-                            lineHeight = 20.8.sp,
-                            fontFamily = getDefaultFont(),
-                            fontWeight = FontWeight(500),
-                            letterSpacing = 0.1.sp,
-                            color = textGrayColor
-                        ),
-                        lineHeight = 20.8.sp
+                        style = MaterialTheme.typography.button,
+                        color = textGrayColor
                     )
                 },
                 isError = state.isErrorPhoneNumber,
@@ -180,7 +173,7 @@ private fun AuthorizationPhoneComponent(
                         }) {
                             Icon(
                                 imageVector = Icons.Outlined.Close,
-                                contentDescription = "clear_text_field",
+                                contentDescription = "clear text field",
                             )
                         }
                     }
@@ -194,14 +187,8 @@ private fun AuthorizationPhoneComponent(
                     ) {
                         Text(
                             text = stringResource(MainRes.strings.phone_plus_seven),
-                            style = TextStyle(
-                                fontSize = 16.sp,
-                                lineHeight = 20.8.sp,
-                                fontFamily = getDefaultFont(),
-                                fontWeight = FontWeight(500),
-                                letterSpacing = 0.1.sp,
-                                color = textGrayColor
-                            )
+                            style = MaterialTheme.typography.button,
+                            color = textGrayColor
                         )
 
                         Spacer(modifier = Modifier.width(16.dp))
@@ -211,8 +198,8 @@ private fun AuthorizationPhoneComponent(
                                 .height(28.dp)
                                 .width(2.dp)
                                 .clip(RoundedCornerShape(4.dp))
-                                .padding(vertical = 4.dp)
-                                .background(focusColor.value)
+                                .background(if (state.isErrorPhoneNumber) ExtendedTheme.colors.error else focusColor.value)
+                                .padding(vertical = 14.dp)
                         )
                     }
                 },

@@ -18,7 +18,7 @@ class PhoneMaskTransformation : VisualTransformation {
 
         for (i in trimmed.indices) {
             out += trimmed[i]
-            if (i == 2 || i == 5) out += " "
+            if (i == 2 || i == 5) out += "-"
             if (i == 7) out += "-"
         }
 
