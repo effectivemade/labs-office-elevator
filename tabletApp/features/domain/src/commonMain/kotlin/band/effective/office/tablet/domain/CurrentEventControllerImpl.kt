@@ -2,26 +2,25 @@ package band.effective.office.tablet.domain
 
 import band.effective.office.tablet.domain.useCase.RoomInfoUseCase
 import band.effective.office.tablet.network.repository.CancelRepository
-import band.effective.office.tablet.network.repository.ServerUpdateRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.GregorianCalendar
 
+/**Controller implementation following for current event*/
 class CurrentEventControllerImpl(
     private val roomUseCase: RoomInfoUseCase,
-    private val serverUpdateRepository: ServerUpdateRepository,
     private val cancelRepository: CancelRepository
-) : CurrentEventController(roomUseCase, serverUpdateRepository, cancelRepository) {
+) : CurrentEventController(roomUseCase, cancelRepository) {
     override fun update() = scope.launch {
         while (true) {
-            val roomInfo = roomUseCase()
+            val roomInfo = roomUseCase() //get actual room info
             val nextEventTime =
-                roomInfo.currentEvent?.finishTime ?: roomInfo.eventList.firstOrNull()?.startTime
-            if (nextEventTime != null) {
-                val timeToUpdate = nextEventTime.time.time - GregorianCalendar().time.time
-                delay(timeToUpdate)
-                currentEvent = roomUseCase().currentEvent
-                handlersList.forEach { it() }
+                roomInfo.currentEvent?.finishTime ?: roomInfo.eventList.firstOrNull()?.startTime // get next update time
+            if (nextEventTime != null) { // check new event exist
+                val timeToUpdate = nextEventTime.time.time - GregorianCalendar().time.time // calc time to next update
+                delay(timeToUpdate) // wait for update
+                currentEvent = roomUseCase().currentEvent // update info
+                handlersList.forEach { it() } // call handlers
             }
         }
     }

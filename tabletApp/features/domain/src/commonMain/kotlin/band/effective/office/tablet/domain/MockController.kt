@@ -4,7 +4,7 @@ import band.effective.office.tablet.network.api.WorkApi
 import kotlinx.coroutines.flow.update
 
 class MockController(
-    val workApi: WorkApi
+    private val workApi: WorkApi
 ){
     fun changeBusy(newValue: Boolean){
         workApi.changeBusy(newValue)
