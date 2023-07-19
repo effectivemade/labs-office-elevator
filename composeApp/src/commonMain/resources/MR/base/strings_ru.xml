@@ -61,4 +61,5 @@
     <!-- Employee -->
     <string name="about_the_employee">О сотруднике</string>
     <string name="upcoming_bookings">Ближайшие бронирования</string>
+    <string name="transfer">Перевод</string>
 </resources>

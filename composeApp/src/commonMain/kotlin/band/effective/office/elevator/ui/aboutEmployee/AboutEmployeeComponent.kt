@@ -14,8 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 class AboutEmployeeComponent(
     componentContext: ComponentContext,
-    storeFactory: StoreFactory,
-    private val output: (Output) -> Unit) :
+    storeFactory: StoreFactory) :
     ComponentContext by componentContext {
 
     private val aboutEmployeeStore = instanceKeeper.getStore {

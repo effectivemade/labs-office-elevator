@@ -59,4 +59,5 @@
     <!-- Employee -->
     <string name="about_the_employee">About the employee</string>
     <string name="upcoming_bookings">Upcoming bookings</string>
+    <string name="transfer">Transfer</string>
 </resources>
