@@ -14,8 +14,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,13 +27,15 @@ import band.effective.office.tablet.ui.theme.header4
 import band.effective.office.tablet.ui.theme.header6
 
 @Composable
-fun FreeSelectRoomView(component: RealSelectRoomComponent) {
+fun FreeSelectRoomView(component: RealFreeSelectRoomComponent) {
     val shape = RoundedCornerShape(50)
-    val isPressed = remember { mutableStateOf(false) }
-    val colorButton =  if(isPressed.value) CustomDarkColors.disabledPrimaryButton else CustomDarkColors.pressedPrimaryButton
+    val colorButton =  if(!component.state.collectAsState().value.isPressed) CustomDarkColors.disabledPrimaryButton else CustomDarkColors.pressedPrimaryButton
 
     Dialog(
-    onDismissRequest = { component.close() }
+    onDismissRequest = {
+        component.close()
+        component.onButtonClicked()
+    }
     ) {
         Box(
            modifier = Modifier
@@ -51,7 +52,10 @@ fun FreeSelectRoomView(component: RealSelectRoomComponent) {
                Spacer(modifier = Modifier.height(30.dp))
                CrossButtonView(
                    Modifier.width(518.dp),
-                   onDismissRequest = { component.close() }
+                   onDismissRequest = {
+                       component.close()
+                       component.onButtonClicked()
+                   }
                )
                Spacer(modifier = Modifier.height(30.dp))
                Box(
@@ -70,9 +74,8 @@ fun FreeSelectRoomView(component: RealSelectRoomComponent) {
                    colors = ButtonDefaults.buttonColors(colorButton),
                    shape = shape,
                    onClick = {
-                       //TODO
-                       isPressed.value = !isPressed.value
                        component.close()
+                       component.onButtonClicked()
                    }
                ) {
                    Box(contentAlignment = Alignment.Center)

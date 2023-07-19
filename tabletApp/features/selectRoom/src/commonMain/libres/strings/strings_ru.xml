@@ -8,4 +8,6 @@
     <string name="organizer">организатор</string>
     <string name="minutes">${minutes} мин</string>
     <string name="hours_minutes">${hours}ч ${minutes}мин</string>
+    <string name="free_select_room">Освободить переговорку?</string>
+    <string name="free_select_room_button">Освободить</string>
 </resources>

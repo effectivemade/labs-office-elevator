@@ -19,7 +19,8 @@ fun MainScreen(component: MainComponent) {
                 showBookingModal = state.showBookingModal,
                 mockComponent = component.mockSettingsComponent,
                 bookingRoomComponent = component.bookingRoomComponent,
-                selectRoomComponent = component.selectRoomComponent
+                selectRoomComponent = component.selectRoomComponent,
+                freeSelectRoomComponent = component.freeSelectRoomComponent
             )
         }
     }
