@@ -18,6 +18,7 @@ internal val md_theme_dark_secondaryTextAndIcon = Color(0xFF7F7F7F)
 internal val md_theme_dark_tertiaryTextAndIcon = Color(0xFF777777)
 internal val md_theme_dark_pressedPrimaryButton = Color(0xFFEC6521)
 internal val md_theme_dark_disabledPrimaryButton = Color(0xFF342C28)
+internal val md_theme_dark_parameterTitle = Color(0xFF808080)
 
 
 internal val md_theme_light_primary = Color(0xFFE55A0F)
@@ -36,3 +37,11 @@ internal val md_theme_light_secondaryTextAndIcon = Color(0xFF747474)
 internal val md_theme_light_tertiaryTextAndIcon = Color(0xFF979797)
 internal val md_theme_light_pressedPrimaryButton = Color(0xFFED6F2F)
 internal val md_theme_light_disabledPrimaryButton = Color(0xFFD1C9C5)
+
+
+val alertColor = Color(0xFFD23514)
+
+object ScrollBarColor{
+    val background = Color(0xFF4D4D4D)
+    val pistonColor = Color(0xFF808080)
+}

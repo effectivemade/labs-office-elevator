@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.features.roomInfo.MainRes
+import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.utils.CalendarStringConverter
 import java.util.Calendar
 
@@ -32,7 +34,7 @@ fun BusyRoomInfoComponent(
     electricSocketCount: Int,
     event: EventInfo?
 ) {
-    val backgroundColor = Color(0xFFF94C4C)
+    val backgroundColor = LocalCustomColorsPalette.current.busyStatus
     Surface {
         CommonRoomInfoComponent(
             modifier = modifier,
@@ -50,7 +52,7 @@ fun BusyRoomInfoComponent(
         Box(
             modifier = modifier.fillMaxWidth(),
             contentAlignment = Alignment.TopEnd
-        ){
+        ) {
             Button(
                 modifier = Modifier
                     .clip(shape = RoundedCornerShape(70.dp))
@@ -58,15 +60,14 @@ fun BusyRoomInfoComponent(
                     .width(150.dp)
                     .background(color = backgroundColor).border(
                         width = 3.dp,
-                        color = Color(0xFFFAFAFA),
+                        color = MaterialTheme.colors.onPrimary,
                         shape = RoundedCornerShape(70.dp),
                     ),
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = backgroundColor,
-                    contentColor = Color(0xFFFFFFFF)
+                    backgroundColor = backgroundColor
                 ),
                 onClick = {}) {
-                Text(text = MainRes.string.stop_meeting_button, color = Color(0xFFFAFAFA))
+                Text(text = MainRes.string.stop_meeting_button)
             }
         }
     }

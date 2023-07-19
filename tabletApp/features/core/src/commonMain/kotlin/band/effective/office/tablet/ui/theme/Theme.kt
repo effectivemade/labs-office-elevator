@@ -18,6 +18,7 @@ private val darkColors = darkColors(
     background = md_theme_dark_background,
     surface = md_theme_dark_surface,
     onError = md_theme_dark_onError,
+    onPrimary = md_theme_light_elevationBackground
 )
 
 val CustomDarkColors = CustomColorsPalette(
@@ -31,7 +32,8 @@ val CustomDarkColors = CustomColorsPalette(
     secondaryTextAndIcon = md_theme_dark_secondaryTextAndIcon,
     tertiaryTextAndIcon = md_theme_dark_tertiaryTextAndIcon,
     pressedPrimaryButton = md_theme_dark_pressedPrimaryButton,
-    disabledPrimaryButton = md_theme_dark_disabledPrimaryButton
+    disabledPrimaryButton = md_theme_dark_disabledPrimaryButton,
+    parameterTitle = md_theme_dark_parameterTitle
 )
 
 private val lightColors = lightColors(
@@ -53,7 +55,8 @@ val CustomLightColors = CustomColorsPalette(
     secondaryTextAndIcon = md_theme_light_secondaryTextAndIcon,
     tertiaryTextAndIcon = md_theme_light_tertiaryTextAndIcon,
     pressedPrimaryButton = md_theme_light_pressedPrimaryButton,
-    disabledPrimaryButton = md_theme_light_disabledPrimaryButton
+    disabledPrimaryButton = md_theme_light_disabledPrimaryButton,
+    parameterTitle = md_theme_dark_parameterTitle
 )
 
 data class CustomColorsPalette (
@@ -68,6 +71,7 @@ data class CustomColorsPalette (
     val tertiaryTextAndIcon: Color = Color.Unspecified,
     val pressedPrimaryButton: Color = Color.Unspecified,
     val disabledPrimaryButton: Color = Color.Unspecified,
+    val parameterTitle: Color = Color.Unspecified,
 )
 
 val LocalCustomColorsPalette = staticCompositionLocalOf { CustomColorsPalette() }

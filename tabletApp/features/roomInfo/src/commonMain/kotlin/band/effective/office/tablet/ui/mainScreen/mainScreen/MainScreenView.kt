@@ -37,14 +37,14 @@ fun MainScreenView(
     * infoViewWidth = infoViewFrame.width / mainScreenFrame.width
     * where infoViewFrame, mainScreenFrame is frames from figma and all width I get from figma*/
         val infoViewWidth = 627f / 1133f
-        Row(modifier = Modifier.fillMaxSize().background(color = Color(0xff1E1C1A))) {
+        Row(modifier = Modifier.fillMaxSize()) {
             RoomInfoComponent(
                 modifier = Modifier.fillMaxHeight().fillMaxWidth(infoViewWidth),
                 room = room
             )
             Box(modifier = Modifier.fillMaxSize()) {
                 BookingRoomView(
-                    modifier = Modifier.background(color = Color(0xFF252322)).fillMaxSize()
+                    modifier = Modifier.fillMaxSize()
                         .padding(25.dp),
                     bookingRoomComponent = bookingRoomComponent
                 )
