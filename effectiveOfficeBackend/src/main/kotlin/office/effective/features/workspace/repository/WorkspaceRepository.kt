@@ -2,7 +2,7 @@ package office.effective.features.workspace.repository
 
 import office.effective.common.exception.WorkspaceNotFoundException
 import office.effective.common.exception.WorkspaceTagNotFoundException
-import office.effective.features.workspace.converters.WorkspaceConverter
+import office.effective.features.workspace.converters.WorkspaceRepositoryConverter
 import office.effective.model.Utility
 import office.effective.model.Workspace
 import org.koin.java.KoinJavaComponent.inject
@@ -13,21 +13,46 @@ import java.util.UUID
 
 class WorkspaceRepository {
     private val database by inject<Database>(clazz = Database::class.java)
-    private val converter by inject<WorkspaceConverter>(clazz = WorkspaceConverter::class.java)
-
-    /**
-     * Retrieves a workspace model by its id
-     */
-    fun findById(workspaceId: UUID): Workspace? {
-        val entity: WorkspaceEntity? = database.workspaces.find { it.id eq workspaceId }
-        return entity?.let { converter.entityToModel(it) }
-    }
+    private val converter by inject<WorkspaceRepositoryConverter>(
+        clazz = WorkspaceRepositoryConverter::class.java
+    )
 
     /**
      * Returns whether a workspace with the given id exists
      */
     fun existsById(workspaceId: UUID): Boolean {
         return database.workspaces.count { it.id eq workspaceId } > 0
+    }
+
+    /**
+     * Returns all workspace utilities by workspace id
+     *
+     * Throws WorkspaceNotFoundException if workspace with given id doesn't exist in the database
+     */
+    private fun findUtilitiesByWorkspaceId(workspaceId: UUID): List<Utility> {
+        if (!existsById(workspaceId)) {
+            throw WorkspaceNotFoundException("Workspace with id $workspaceId not found")
+        }
+        val modelList = database
+            .from(WorkspaceUtilities)
+            .innerJoin(right = Utilities, on = WorkspaceUtilities.utilityId eq Utilities.id)
+            .select()
+            .where { WorkspaceUtilities.workspaceId eq workspaceId }
+            .map { row ->
+                converter.utilityEntityToModel(
+                    Utilities.createEntity(row), row[WorkspaceUtilities.count]?:0
+                )
+            }
+        return modelList
+    }
+
+    /**
+     * Retrieves a workspace model by its id
+     */
+    fun findById(workspaceId: UUID): Workspace? {
+        val entity: WorkspaceEntity? = database.workspaces.find { it.id eq workspaceId }
+        val utilities: List<Utility> = findUtilitiesByWorkspaceId(workspaceId)
+        return entity?.let { converter.entityToModel(it, utilities) }
     }
 
     /**
@@ -41,7 +66,10 @@ class WorkspaceRepository {
             throw WorkspaceTagNotFoundException("Workspace tag $tag not found")
         } else {
             val entityList = database.workspaces.filter { it.tagId eq tagEntity.id }.toList()
-            return entityList.map { converter.entityToModel(it) }
+            return entityList.map {
+                val utilities: List<Utility> = findUtilitiesByWorkspaceId(it.id)
+                converter.entityToModel(it, utilities)
+            }
         }
     }
 
@@ -58,28 +86,6 @@ class WorkspaceRepository {
             database.workspaces.add(converter.modelToEntity(workspace, tagEntity))
             return workspace;
         }
-    }
-
-    /**
-     * Returns all workspace utilities by workspace id
-     *
-     * Throws WorkspaceNotFoundException if workspace with given id doesn't exist in the database
-     */
-    fun findUtilitiesByWorkspaceId(workspaceId: UUID): List<Utility> {
-        if (!existsById(workspaceId)) {
-            throw WorkspaceNotFoundException("Workspace with id $workspaceId not found")
-        }
-        val modelList = database
-            .from(WorkspaceUtilities)
-            .innerJoin(right = Utilities, on = WorkspaceUtilities.utilityId eq Utilities.id)
-            .select()
-            .where { WorkspaceUtilities.workspaceId eq workspaceId }
-            .map { row ->
-                converter.utilityEntityToModel(
-                    Utilities.createEntity(row), row[WorkspaceUtilities.count]?:0
-                )
-            }
-        return modelList
     }
 
     /**

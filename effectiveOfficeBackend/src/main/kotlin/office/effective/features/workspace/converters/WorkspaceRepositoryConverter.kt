@@ -8,12 +8,12 @@ import office.effective.model.Workspace
 import java.lang.IllegalArgumentException
 import java.util.UUID
 
-class WorkspaceConverter {
+class WorkspaceRepositoryConverter {
     /**
      * Converts WorkspaceEntity to Workspace
      */
-    fun entityToModel(entity: WorkspaceEntity): Workspace {
-        return Workspace(entity.id, entity.name, entity.tag.name)
+    fun entityToModel(entity: WorkspaceEntity, utilities: List<Utility>): Workspace {
+        return Workspace(entity.id, entity.name, entity.tag.name, utilities)
     }
     /**
      * Converts Workspace and WorkspaceTagEntity to WorkspaceEntity with random UUID
