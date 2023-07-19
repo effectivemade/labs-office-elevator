@@ -13,7 +13,7 @@ interface AuthorizationPhoneStore :
 
     data class State(
         var phoneNumber: String = "",
-        var isValidPhoneNumber: Boolean = false,
+        var isErrorPhoneNumber: Boolean = false,
         var isLoading: Boolean = false,
         var isError: Boolean = false
     )

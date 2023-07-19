@@ -66,7 +66,7 @@ fun AuthorizationPhoneScreen(component: AuthorizationPhoneComponent) {
         component.label.collect { label ->
             when (label) {
                 AuthorizationPhoneStore.Label.AuthorizationPhoneFailure -> {
-                    state.isError = true
+//                    state.isErrorPhoneNumber = true
                     showToast(errorMessage)
                 }
 
@@ -98,7 +98,6 @@ private fun AuthorizationPhoneComponent(
         focusedElevation = 0.dp
     )
 
-    val message = remember { mutableStateOf("") }
     val closeIcon = remember { mutableStateOf(false) }
     val focusColor = remember { mutableStateOf(textGrayColor) }
 
@@ -148,11 +147,10 @@ private fun AuthorizationPhoneComponent(
             )
 
             OutlinedTextField(
-                value = message.value,
+                value = state.phoneNumber,
                 onValueChange = {
-                    message.value = it
-                    state.phoneNumber = it
                     closeIcon.value = it.isNotEmpty()
+                    onEvent(AuthorizationPhoneStore.Intent.PhoneNumberChanged(phoneNumber = it))
                 },
                 visualTransformation = PhoneMaskTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -172,13 +170,12 @@ private fun AuthorizationPhoneComponent(
                         lineHeight = 20.8.sp
                     )
                 },
-                isError = state.isError,
+                isError = state.isErrorPhoneNumber,
                 singleLine = true,
                 trailingIcon = {
                     if (closeIcon.value) {
                         IconButton(onClick = {
-                            message.value = ""
-                            state.phoneNumber = ""
+                            onEvent(AuthorizationPhoneStore.Intent.PhoneNumberChanged(phoneNumber = ""))
                             closeIcon.value = false
                         }) {
                             Icon(
