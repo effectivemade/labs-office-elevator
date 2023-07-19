@@ -36,8 +36,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -48,7 +46,6 @@ import band.effective.office.elevator.components.OutlinedTextColorsSetup
 import band.effective.office.elevator.components.PrimaryButton
 import band.effective.office.elevator.ui.models.PhoneMaskTransformation
 import band.effective.office.elevator.expects.showToast
-import band.effective.office.elevator.getDefaultFont
 import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.theme_light_primary_stroke
 import band.effective.office.elevator.ui.authorization.authorization_phone.store.AuthorizationPhoneStore
@@ -99,7 +96,8 @@ private fun AuthorizationPhoneComponent(
     )
 
     val closeIcon = remember { mutableStateOf(false) }
-    val focusColor = remember { mutableStateOf(textGrayColor) }
+    val borderColor = remember { mutableStateOf(textGrayColor) }
+    val leadingColor = remember { mutableStateOf(textGrayColor) }
 
     Column(
         horizontalAlignment = Alignment.Start,
@@ -149,7 +147,13 @@ private fun AuthorizationPhoneComponent(
             OutlinedTextField(
                 value = state.phoneNumber,
                 onValueChange = {
-                    closeIcon.value = it.isNotEmpty()
+                    if (it.isNotEmpty()) {
+                        closeIcon.value = true
+                        leadingColor.value = Color.Black
+                    } else {
+                        closeIcon.value = false
+                        leadingColor.value = textGrayColor
+                    }
                     onEvent(AuthorizationPhoneStore.Intent.PhoneNumberChanged(phoneNumber = it))
                 },
                 visualTransformation = PhoneMaskTransformation(),
@@ -170,6 +174,7 @@ private fun AuthorizationPhoneComponent(
                         IconButton(onClick = {
                             onEvent(AuthorizationPhoneStore.Intent.PhoneNumberChanged(phoneNumber = ""))
                             closeIcon.value = false
+                            leadingColor.value = textGrayColor
                         }) {
                             Icon(
                                 imageVector = Icons.Outlined.Close,
@@ -188,17 +193,17 @@ private fun AuthorizationPhoneComponent(
                         Text(
                             text = stringResource(MainRes.strings.phone_plus_seven),
                             style = MaterialTheme.typography.button,
-                            color = textGrayColor
+                            color = leadingColor.value
                         )
 
                         Spacer(modifier = Modifier.width(16.dp))
 
                         Divider(
                             modifier = Modifier
-                                .height(28.dp)
+                                .height(20.dp)
                                 .width(2.dp)
                                 .clip(RoundedCornerShape(4.dp))
-                                .background(if (state.isErrorPhoneNumber) ExtendedTheme.colors.error else focusColor.value)
+                                .background(if (state.isErrorPhoneNumber) ExtendedTheme.colors.error else borderColor.value)
                                 .padding(vertical = 14.dp)
                         )
                     }
@@ -208,9 +213,10 @@ private fun AuthorizationPhoneComponent(
                     .wrapContentHeight()
                     .onFocusChanged {
                         if (it.isFocused) {
-                            focusColor.value = theme_light_primary_stroke
+                            borderColor.value = theme_light_primary_stroke
                         } else {
-                            focusColor.value = textGrayColor
+                            borderColor.value = textGrayColor
+                            leadingColor.value = textGrayColor
                         }
                     }
             )
