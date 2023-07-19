@@ -47,6 +47,7 @@ kotlin {
                 api(Dependencies.MviKotlin.mviKotlinExtensionsCoroutines)
 
                 implementation(project(":tabletApp:features:core"))
+                implementation(project(":tabletApp:features:domain"))
             }
         }
 

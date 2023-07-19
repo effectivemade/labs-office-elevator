@@ -37,8 +37,8 @@ class SelectRoomComponentImpl(
         bookingStore.accept(SelectRoomStore.Intent.CloseModal)
     }
 
-    override fun onBooking(): Booking{
-        return onBookingRoom()
+    override fun onBooking() {
+        bookingStore.accept(SelectRoomStore.Intent.SetBooking(onBookingRoom()))
     }
 
 }

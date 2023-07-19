@@ -9,5 +9,5 @@ interface SelectRoomComponent {
     val state: StateFlow<SelectRoomStore.State>
     fun bookRoom()
     fun close()
-    fun onBooking(): Booking
+    fun onBooking()
 }

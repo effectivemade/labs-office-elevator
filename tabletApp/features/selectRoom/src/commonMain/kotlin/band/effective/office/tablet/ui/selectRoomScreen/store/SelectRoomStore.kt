@@ -1,5 +1,6 @@
 package band.effective.office.tablet.ui.selectRoomScreen.store
 
+import band.effective.office.tablet.domain.model.Booking
 import com.arkivanov.mvikotlin.core.store.Store
 
 interface SelectRoomStore: Store<SelectRoomStore.Intent, SelectRoomStore.State, Nothing> {
@@ -7,13 +8,15 @@ interface SelectRoomStore: Store<SelectRoomStore.Intent, SelectRoomStore.State, 
     sealed interface Intent {
         object BookingRoom : Intent
         object CloseModal : Intent
+        data class SetBooking(val booking: Booking): Intent
     }
 
     data class State(
         var isData: Boolean,
         var isSuccess: Boolean,
         var isError: Boolean,
-        var error: String
+        var error: String,
+        val booking: Booking
     ) {
         companion object {
             val defaultState =
@@ -21,7 +24,8 @@ interface SelectRoomStore: Store<SelectRoomStore.Intent, SelectRoomStore.State, 
                     isData = true,
                     isSuccess = false,
                     isError = false,
-                    error = ""
+                    error = "",
+                    booking = Booking.default
                 )
         }
     }

@@ -45,14 +45,16 @@ class BookingRoomComponent(
             onSelectOrganizer = { bookingStore.accept(BookingStore.Intent.OnChangeOrganizer(it)) })
 
     fun bookingCurrentRoom() {
-        onCurrentBookingRoom()
+        if (state.value.isCorrect()) {
+            onCurrentBookingRoom()
+        }
     }
 
-    fun bookingOtherRoom(){
+    fun bookingOtherRoom() {
         onBookingOtherRoom()
     }
 
-    fun getBooking(): Booking{
+    fun getBooking(): Booking {
         val finishDate = state.value.selectDate.clone() as Calendar
         finishDate.add(Calendar.MINUTE, state.value.length)
 
