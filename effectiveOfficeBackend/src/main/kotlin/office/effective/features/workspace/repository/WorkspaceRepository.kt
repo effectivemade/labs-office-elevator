@@ -1,5 +1,6 @@
 package office.effective.features.workspace.repository
 
+import office.effective.common.exception.UtilityNotFoundException
 import office.effective.common.exception.WorkspaceNotFoundException
 import office.effective.common.exception.WorkspaceTagNotFoundException
 import office.effective.features.workspace.converters.WorkspaceRepositoryConverter
@@ -20,8 +21,15 @@ class WorkspaceRepository {
     /**
      * Returns whether a workspace with the given id exists
      */
-    fun existsById(workspaceId: UUID): Boolean {
+    fun workspaceExistsById(workspaceId: UUID): Boolean {
         return database.workspaces.count { it.id eq workspaceId } > 0
+    }
+
+    /**
+     * Returns whether a utility with the given id exists
+     */
+    fun utilityExistsById(utilityId: UUID): Boolean {
+        return database.utilities.count { it.id eq utilityId } > 0
     }
 
     /**
@@ -30,7 +38,7 @@ class WorkspaceRepository {
      * Throws WorkspaceNotFoundException if workspace with given id doesn't exist in the database
      */
     private fun findUtilitiesByWorkspaceId(workspaceId: UUID): List<Utility> {
-        if (!existsById(workspaceId)) {
+        if (!workspaceExistsById(workspaceId)) {
             throw WorkspaceNotFoundException("Workspace with id $workspaceId not found")
         }
         val modelList = database
@@ -73,17 +81,36 @@ class WorkspaceRepository {
         }
     }
 
+    fun addUtilityToWorkspace(utilityId: UUID, workspaceId: UUID, count: UInt) {
+        if (!workspaceExistsById(workspaceId)) {
+            throw WorkspaceNotFoundException("Workspace with id $workspaceId not found")
+        }
+        if (!utilityExistsById(utilityId)) {
+            throw UtilityNotFoundException("Utility with id $utilityId not found")
+        }
+        database.insert(WorkspaceUtilities) {
+            set(it.workspaceId, workspaceId)
+            set(it.utilityId, utilityId)
+            set(it.count, count.toInt())
+        }
+    }
+
     /**
      * Saves a given workspace. If given model will have id, it will be ignored. Use the returned model for further operations
      *
      * Throws WorkspaceTagNotFoundException if tag doesn't exist in the database
      */
+    @Deprecated("API does not involve saving workspace entities")
     fun save(workspace: Workspace): Workspace {
         val tagEntity: WorkspaceTagEntity? = database.workspaceTags.find { it.name eq workspace.tag }
         if (tagEntity == null) {
             throw WorkspaceTagNotFoundException("Workspace tag ${workspace.tag} not found")
         } else {
-            database.workspaces.add(converter.modelToEntity(workspace, tagEntity))
+            val entity = converter.modelToEntity(workspace, tagEntity);
+            database.workspaces.add(entity)
+            for (utility in workspace.utilities) {
+                addUtilityToWorkspace(utility.id, entity.id, utility.count.toUInt())
+            }
             return workspace;
         }
     }
@@ -93,6 +120,7 @@ class WorkspaceRepository {
      *
      * If the workspace is not found in the database it is silently ignored
      */
+    @Deprecated("API does not involve deleting workspace entities")
     fun deleteById(workspaceId: UUID) {
         database.workspaces.removeIf { it.id eq workspaceId }
     }
