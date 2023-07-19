@@ -153,6 +153,7 @@ private fun AuthorizationPhoneComponent(
                     message.value = it
                     state.phoneNumber = it
                     closeIcon.value = it.isNotEmpty()
+                    AuthorizationPhoneStore.Msg.Data(state = state)
                 },
                 visualTransformation = PhoneMaskTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -178,6 +179,7 @@ private fun AuthorizationPhoneComponent(
                     if (closeIcon.value) {
                         IconButton(onClick = {
                             message.value = ""
+                            state.phoneNumber = ""
                             closeIcon.value = false
                         }) {
                             Icon(
