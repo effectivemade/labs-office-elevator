@@ -57,4 +57,8 @@
     <string name="post">Должность</string>
     <string name="phone_number">Номер телефона</string>
     <string name="save">Сохранить</string>
+
+    <!-- Employee -->
+    <string name="about_the_employee">О сотруднике</string>
+    <string name="upcoming_bookings">Ближайшие бронирования</string>
 </resources>
