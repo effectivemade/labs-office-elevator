@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -23,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.tablet.features.roomInfo.MainRes
+import band.effective.office.tablet.ui.theme.h8
 import band.effective.office.tablet.utils.getCorrectDeclension
 import io.github.skeptick.libres.compose.painterResource
 import io.github.skeptick.libres.images.Image
@@ -44,14 +46,12 @@ fun CommonRoomInfoComponent(
         Column(modifier = modifier) {
             Text(
                 text = name,
-                color = Color(0xFFFAFAFA),
-                fontSize = 60.sp
+                style = MaterialTheme.typography.h1
             )
             Spacer(modifier = Modifier.height(20.dp))
             Text(
                 text = roomOccupancy,
-                color = Color(0xFFFAFAFA),
-                fontSize = 27.sp
+                style = MaterialTheme.typography.h5
             )
             Spacer(modifier = Modifier.height(25.dp))
             Row(modifier = Modifier.padding(horizontal = 10.dp)) {
@@ -105,6 +105,6 @@ fun RoomPropertyComponent(image: Image, text: String) {
             contentDescription = null
         )
         Spacer(modifier = Modifier.width(8.dp))
-        Text(text = text, color = Color(0xFFFAFAFA), fontSize = 16.sp)
+        Text(text = text, style = MaterialTheme.typography.h8)
     }
 }

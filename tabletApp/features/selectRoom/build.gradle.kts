@@ -41,7 +41,13 @@ kotlin {
                 //Libres
                 implementation(Dependencies.Libres.libresCompose)
 
+                // MVI Kotlin
+                api(Dependencies.MviKotlin.mviKotlin)
+                api(Dependencies.MviKotlin.mviKotlinMain)
+                api(Dependencies.MviKotlin.mviKotlinExtensionsCoroutines)
+
                 implementation(project(":tabletApp:features:core"))
+                implementation(project(":tabletApp:features:domain"))
             }
         }
 

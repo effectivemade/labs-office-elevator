@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -35,7 +36,7 @@ fun BusyRoomInfoComponent(
     event: EventInfo?,
     component: RealFreeSelectRoomComponent
 ) {
-    val backgroundColor = Color(0xFFF94C4C)
+    val backgroundColor = LocalCustomColorsPalette.current.busyStatus
     Surface {
         CommonRoomInfoComponent(
             modifier = modifier,
@@ -53,7 +54,7 @@ fun BusyRoomInfoComponent(
         Box(
             modifier = modifier.fillMaxWidth(),
             contentAlignment = Alignment.TopEnd
-        ){
+        ) {
             Button(
                 modifier = Modifier
                     .clip(shape = RoundedCornerShape(70.dp))
@@ -61,12 +62,11 @@ fun BusyRoomInfoComponent(
                     .width(150.dp)
                     .background(color = backgroundColor).border(
                         width = 3.dp,
-                        color = Color(0xFFFAFAFA),
+                        color = MaterialTheme.colors.onPrimary,
                         shape = RoundedCornerShape(70.dp),
                     ),
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = backgroundColor,
-                    contentColor = Color(0xFFFFFFFF)
+                    backgroundColor = backgroundColor
                 ),
                 onClick = {
                     component.onButtonClicked()

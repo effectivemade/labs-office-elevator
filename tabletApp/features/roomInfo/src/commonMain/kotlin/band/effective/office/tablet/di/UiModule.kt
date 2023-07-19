@@ -7,7 +7,7 @@ import band.effective.office.tablet.domain.useCase.UpdateUseCase
 import org.koin.dsl.module
 
 val uiModule = module {
-    single<UpdateUseCase> { UpdateUseCase(get(), get(), get(), get()) }
+    single<UpdateUseCase> { UpdateUseCase(get(), get(), get()) }
     single<CheckBookingUseCase> { CheckBookingUseCase(get()) }
     single<MockController> { MockController(get()) }
 }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -21,6 +22,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.tablet.domain.model.EventInfo
+import band.effective.office.tablet.features.roomInfo.MainRes
+import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
+import band.effective.office.tablet.ui.theme.ScrollBarColor
+import band.effective.office.tablet.ui.theme.h7
 import band.effective.office.tablet.utils.CalendarStringConverter
 import java.util.Calendar
 
@@ -28,9 +33,9 @@ import java.util.Calendar
 fun RoomEventListComponent(modifier: Modifier = Modifier, eventsList: List<EventInfo>) {
     Column(modifier = modifier) {
         Text(
-            text = "Занятое время",
-            fontSize = 17.sp,
-            color = Color(0xFF808080)
+            text = MainRes.string.select_organizer_title,
+            style = MaterialTheme.typography.h7,
+            color = LocalCustomColorsPalette.current.parameterTitle
         )
         Row {
             val lazyListState: LazyListState = rememberLazyListState()
@@ -43,13 +48,12 @@ fun RoomEventListComponent(modifier: Modifier = Modifier, eventsList: List<Event
                     Row {
                         Text(
                             text = "${event.startTime.time()} - ${event.finishTime.time()}",
-                            fontSize = 18.sp,
-                            color = Color(0xFFFAFAFA)
+                            style = MaterialTheme.typography.h7,
                         )
                         Text(
                             text = " · ${event.organizer}",
-                            fontSize = 18.sp,
-                            color = Color(0xFF808080)
+                            style = MaterialTheme.typography.h7,
+                            color = LocalCustomColorsPalette.current.parameterTitle
                         )
                     }
                 }
@@ -80,13 +84,13 @@ fun Modifier.simpleVerticalScrollbar(
 
         if (scrollbarHeight != size.height) {
             drawRoundRect(
-                color = Color(0xFF4D4D4D),
+                color = ScrollBarColor.background,
                 topLeft = Offset(this.size.width - width.toPx(), 0f),
                 size = Size(width.toPx(), size.height),
                 cornerRadius = cornerRadius
             )
             drawRoundRect(
-                color = Color(0xFF808080),
+                color = ScrollBarColor.pistonColor,
                 topLeft = Offset(this.size.width - width.toPx(), scrollbarOffsetY),
                 size = Size(width.toPx(), scrollbarHeight),
                 cornerRadius = cornerRadius

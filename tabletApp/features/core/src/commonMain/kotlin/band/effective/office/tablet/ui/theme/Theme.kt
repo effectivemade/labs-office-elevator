@@ -3,65 +3,127 @@ package band.effective.office.tablet.ui.theme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.Typography
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 
 private val darkColors = darkColors(
-    primary = band.effective.office.tablet.ui.theme.md_theme_dark_primary,
-    secondary = band.effective.office.tablet.ui.theme.md_theme_dark_secondary,
-    background = band.effective.office.tablet.ui.theme.md_theme_dark_background,
-    surface = band.effective.office.tablet.ui.theme.md_theme_dark_surface,
-    onError = band.effective.office.tablet.ui.theme.md_theme_dark_onError,
+    primary = md_theme_dark_primary,
+    secondary = md_theme_dark_secondary,
+    background = md_theme_dark_background,
+    surface = md_theme_dark_surface,
+    onError = md_theme_dark_onError,
+    onPrimary = md_theme_light_elevationBackground
 )
 
-object CustomDarkColors {
-    val elevationBackground = md_theme_dark_elevationBackground
-    val mountainBackground = md_theme_dark_mountainBackground
-    val busyStatus = md_theme_dark_busyStatus
-    val freeStatus = md_theme_dark_freeStatus
-    val onSuccess = md_theme_dark_onSuccess
-    val secondaryButton = md_theme_dark_secondaryButton
-    val primaryTextAndIcon = md_theme_dark_primaryTextAndIcon
-    val secondaryTextAndIcon = md_theme_dark_secondaryTextAndIcon
-    val tertiaryTextAndIcon = md_theme_dark_tertiaryTextAndIcon
-    val pressedPrimaryButton = md_theme_dark_pressedPrimaryButton
-    val disabledPrimaryButton = md_theme_dark_disabledPrimaryButton
-}
+val CustomDarkColors = CustomColorsPalette(
+    elevationBackground = md_theme_dark_elevationBackground,
+    mountainBackground = md_theme_dark_mountainBackground,
+    busyStatus = md_theme_dark_busyStatus,
+    freeStatus = md_theme_dark_freeStatus,
+    onSuccess = md_theme_dark_onSuccess,
+    secondaryButton = md_theme_dark_secondaryButton,
+    primaryTextAndIcon = md_theme_dark_primaryTextAndIcon,
+    secondaryTextAndIcon = md_theme_dark_secondaryTextAndIcon,
+    tertiaryTextAndIcon = md_theme_dark_tertiaryTextAndIcon,
+    pressedPrimaryButton = md_theme_dark_pressedPrimaryButton,
+    disabledPrimaryButton = md_theme_dark_disabledPrimaryButton,
+    parameterTitle = md_theme_dark_parameterTitle
+)
 
 private val lightColors = lightColors(
-    primary = band.effective.office.tablet.ui.theme.md_theme_light_primary,
-    secondary = band.effective.office.tablet.ui.theme.md_theme_light_secondary,
-    background = band.effective.office.tablet.ui.theme.md_theme_light_background,
-    surface = band.effective.office.tablet.ui.theme.md_theme_light_surface,
-    onError = band.effective.office.tablet.ui.theme.md_theme_light_onError,
+    primary = md_theme_light_primary,
+    secondary = md_theme_light_secondary,
+    background = md_theme_light_background,
+    surface = md_theme_light_surface,
+    onError = md_theme_light_onError,
 )
 
-object CustomLightColors {
-    val elevationBackground = md_theme_light_elevationBackground
-    val mountainBackground = md_theme_light_mountainBackground
-    val busyStatus = md_theme_light_busyStatus
-    val freeStatus = md_theme_light_freeStatus
-    val onSuccess = md_theme_light_onSuccess
-    val secondaryButton = md_theme_light_secondaryButton
-    val primaryTextAndIcon = md_theme_light_primaryTextAndIcon
-    val secondaryTextAndIcon = md_theme_light_secondaryTextAndIcon
-    val tertiaryTextAndIcon = md_theme_light_tertiaryTextAndIcon
-    val pressedPrimaryButton = md_theme_light_pressedPrimaryButton
-    val disabledPrimaryButton = md_theme_light_disabledPrimaryButton
-}
+val CustomLightColors = CustomColorsPalette(
+    elevationBackground = md_theme_light_elevationBackground,
+    mountainBackground = md_theme_light_mountainBackground,
+    busyStatus = md_theme_light_busyStatus,
+    freeStatus = md_theme_light_freeStatus,
+    onSuccess = md_theme_light_onSuccess,
+    secondaryButton = md_theme_light_secondaryButton,
+    primaryTextAndIcon = md_theme_light_primaryTextAndIcon,
+    secondaryTextAndIcon = md_theme_light_secondaryTextAndIcon,
+    tertiaryTextAndIcon = md_theme_light_tertiaryTextAndIcon,
+    pressedPrimaryButton = md_theme_light_pressedPrimaryButton,
+    disabledPrimaryButton = md_theme_light_disabledPrimaryButton,
+    parameterTitle = md_theme_dark_parameterTitle
+)
+
+data class CustomColorsPalette (
+    val elevationBackground: Color = Color.Unspecified,
+    val mountainBackground: Color = Color.Unspecified,
+    val busyStatus: Color = Color.Unspecified,
+    val freeStatus: Color = Color.Unspecified,
+    val onSuccess: Color = Color.Unspecified,
+    val secondaryButton: Color = Color.Unspecified,
+    val primaryTextAndIcon: Color = Color.Unspecified,
+    val secondaryTextAndIcon: Color = Color.Unspecified,
+    val tertiaryTextAndIcon: Color = Color.Unspecified,
+    val pressedPrimaryButton: Color = Color.Unspecified,
+    val disabledPrimaryButton: Color = Color.Unspecified,
+    val parameterTitle: Color = Color.Unspecified,
+)
+
+val LocalCustomColorsPalette = staticCompositionLocalOf { CustomColorsPalette() }
 
 @Composable
-internal fun AppTheme(
+fun AppTheme(
     useDarkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colors = darkColors
+    val colors = if (!useDarkTheme) {
+        lightColors
+    } else {
+        darkColors
+    }
 
-    MaterialTheme(
-        colors = colors,
-        content = {
-            Surface (content = content)
-        }
+    val customColorsPalette = if (!useDarkTheme) {
+        CustomLightColors
+    } else {
+        CustomDarkColors
+    }
+
+    //val colors = darkColors
+    //val customColorsPalette = CustomDarkColors
+
+    val typography = Typography(
+        h1 = header1,
+        h2 = header2,
+        h3 = header3,
+        h4 = header4,
+        h5 = header5,
+        h6 = header6
     )
+
+    /* (Margarita Djinjolia)
+    https://stackoverflow.com/questions/75544931/jetpack-compose-add-custom-dark-light-colors */
+    CompositionLocalProvider(
+        LocalCustomColorsPalette provides customColorsPalette
+    ) {
+        MaterialTheme(
+            colors = colors,
+            typography = typography,
+            content = {
+                Surface(content = content)
+            }
+        )
+    }
 }
+
+val Typography.h6_button: TextStyle
+    get() = header6_button
+val Typography.h7: TextStyle
+    get() = header7
+
+val Typography.h8: TextStyle
+    get() = header8

@@ -47,5 +47,5 @@ fun RoomInfoComponent(modifier: Modifier = Modifier, room: RoomInfo, component: 
     }
 }
 
-private fun band.effective.office.tablet.domain.model.RoomInfo.isFree() = currentEvent == null
-private fun band.effective.office.tablet.domain.model.RoomInfo.isBusy() = currentEvent != null
+private fun RoomInfo.isFree() = currentEvent == null
+private fun RoomInfo.isBusy() = currentEvent != null

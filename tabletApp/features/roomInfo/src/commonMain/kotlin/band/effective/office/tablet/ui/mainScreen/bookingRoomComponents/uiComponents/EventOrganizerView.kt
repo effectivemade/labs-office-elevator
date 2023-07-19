@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExposedDropdownMenuBox
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +29,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.tablet.features.roomInfo.MainRes
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.RealEventOrganizerComponent
+import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
+import band.effective.office.tablet.ui.theme.h8
 import io.github.skeptick.libres.compose.painterResource
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -42,8 +45,8 @@ fun EventOrganizerView(
     Column(modifier = modifier) {
         Text(
             text = MainRes.string.select_organizer_title,
-            color = Color(0xFF808080),
-            fontSize = 16.sp
+            color = LocalCustomColorsPalette.current.parameterTitle,
+            style = MaterialTheme.typography.h8
         )
         Spacer(modifier = Modifier.height(10.dp))
         ExposedDropdownMenuBox(
@@ -62,12 +65,11 @@ fun EventOrganizerView(
                 if (selectedItem.notSelect()) {
                     Text(
                         text = MainRes.string.selectbox_organizer_title,
-                        color = Color(0xFF777777)
+                        color = LocalCustomColorsPalette.current.tertiaryTextAndIcon
                     )
                 } else {
                     Text(
-                        text = selectedItem,
-                        color = Color(0xFFFAFAFA)
+                        text = selectedItem
                     )
                 }
 
@@ -81,14 +83,14 @@ fun EventOrganizerView(
             ExposedDropdownMenu(
                 modifier = Modifier
                     .background(
-                        color = Color(0xFF252322)
+                        color = MaterialTheme.colors.surface
                     ),
                 expanded = expended,
                 onDismissRequest = { component.onExpandedChange() }
             ) {
                 Column(
                     modifier = Modifier.background(
-                        color = Color(0xFF302D2C),
+                        color = LocalCustomColorsPalette.current.elevationBackground,
                         shape = RoundedCornerShape(15.dp)
                     )
                 ) {
@@ -96,7 +98,7 @@ fun EventOrganizerView(
                         DropdownMenuItem(onClick = {
                             component.onSelectItem(organizer)
                         }) {
-                            Text(text = organizer, color = Color(0xFFFAFAFA))
+                            Text(text = organizer)
                         }
                     }
                 }
