@@ -53,15 +53,14 @@ import band.effective.office.elevator.theme_light_primary_color
 import band.effective.office.elevator.theme_light_tertiary_color
 import band.effective.office.elevator.ui.employee.store.EmployeeStore
 import dev.icerock.moko.resources.ImageResource
-import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 
 data class EmployeeCard(
-    val name: StringResource,
-    val post: StringResource,
-    val state: StringResource,
-    val logo: ImageResource
+    val name: String,
+    val post: String,
+    val state: String,
+    val logoUrl: ImageResource//TODO() Переделать в URL
 )
 
 @Composable
@@ -70,7 +69,7 @@ fun EmployeeScreen(component: EmployeeComponent) {
     val employState by component.employState.collectAsState()
     val employeesData = employState.changeShowedEmployeeCards//state
     val employeesCount = employeesData.count()
-    val employeesInOfficeCount = 1
+    val employeesInOfficeCount = employeesData.filter{it.state=="In office"}.count()
     val userMessageState = remember { mutableStateOf("") }
 
 
@@ -97,7 +96,7 @@ fun EmployeeScreenContent(
     employeesInOfficeCount: Int,
     userMessageState: MutableState<String>,
     onCardClick: () -> Unit,
-    onTextFieldUpdate: (it:String) -> Unit
+    onTextFieldUpdate: (String) -> Unit
 ) {
 
     Column {
@@ -162,7 +161,7 @@ fun EmployeeScreenContent(
                 .padding(horizontal = 20.dp, vertical = 25.dp)
         ) {
             LazyColumn(
-                //TODO() Зюзин, надо доработать вёрстку экрана (оптимизировать компоненты)
+                //TODO() Зюзин: надо доработать вёрстку экрана (оптимизировать компоненты)
                 modifier = Modifier.fillMaxSize()
             ) {
                 item {
@@ -207,11 +206,11 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
     var isExpanded by remember { mutableStateOf(false) }
     val stateColorBorder: Color
     val stateColorText: Color
-    if (emp.state == MainRes.strings.employee_in_office) {
+    if (emp.state == "In office") {
         stateColorBorder = borderGreen
         stateColorText = borderGreen
     } else {
-        if (emp.state == MainRes.strings.employee_soon_in_office) {
+        if (emp.state == "Will be today") {
             stateColorBorder = borderPurple
             stateColorText = textInBorderPurple
         } else {
@@ -221,7 +220,7 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
 
     }
     if (isExpanded) {
-        onCardClick
+        onCardClick()
     }
 
     Surface(
@@ -235,7 +234,7 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
     ) {
         Row(modifier = Modifier.padding(6.dp, 10.dp)) {
             Image(
-                painter = painterResource(emp.logo),
+                painter = painterResource(emp.logoUrl),
                 contentDescription = "Employee logo",
                 modifier = Modifier
                     .clip(CircleShape)
@@ -243,7 +242,7 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
             )
             Column(modifier = Modifier.padding(15.dp, 0.dp)) {
                 Text(
-                    text = stringResource(emp.name),
+                    text = emp.name,
                     fontSize = 16.sp,
                     fontWeight = FontWeight(500),
                     color = theme_light_tertiary_color
@@ -251,7 +250,7 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
 
                 Spacer(modifier = Modifier.padding(0.dp, 4.dp))
                 Text(
-                    text = stringResource(emp.post),
+                    text = emp.post,
                     fontSize = 16.sp,
                     fontWeight = FontWeight(400),
                     color = textInBorderGray
@@ -266,7 +265,7 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
                     elevation = ButtonDefaults.elevation(0.dp, 2.dp, 0.dp)
                 ) {
                     Text(
-                        text = "•   " + stringResource(emp.state),
+                        text = "•   " + emp.state,
                         fontSize = 16.sp,
                         fontWeight = FontWeight(400),
                         color = stateColorText
@@ -277,51 +276,45 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
     }
 }
 
-fun UpdateShowedEmployeesCard(): List<EmployeeCard> {//нужна инфа о состоянии строки TextFieldа
-    val allEmployeesCards = EmployeesData.employeesCardData
-    var showedEmployeesCards = EmployeesData.showedEmployeesCardData
-
-    return showedEmployeesCards
-}
 
 object EmployeesData {
     val employeesCardData = listOf(
         EmployeeCard(
-            MainRes.strings.employee_1,
-            MainRes.strings.employee_post_1,
-            MainRes.strings.employee_in_office,
+            "Ivanov Ivan",
+            "Android-developer",
+            "In office",
             MainRes.images.logo_default
         ),
         EmployeeCard(
-            MainRes.strings.employee_2,
-            MainRes.strings.employee_post_2,
-            MainRes.strings.employee_soon_in_office,
+            "Smirnov Andrey",
+            "UI/UX Designer",
+            "Will be today",
             MainRes.images.logo_default
         ),
         EmployeeCard(
-            MainRes.strings.employee_3,
-            MainRes.strings.employee_post_3,
-            MainRes.strings.employee_not_soon_in_office,
+            "Vasiliev Vasiliy",
+            "HR",
+            "No bookings",
             MainRes.images.logo_default
         )
     )
     val showedEmployeesCardData = listOf(
         EmployeeCard(
-            MainRes.strings.employee_2,
-            MainRes.strings.employee_post_2,
-            MainRes.strings.employee_soon_in_office,
+            "Смирнов Андрей",
+            "UI/UX Designer",
+            "Будет сегодня",
             MainRes.images.logo_default
         ),
         EmployeeCard(
-            MainRes.strings.employee_3,
-            MainRes.strings.employee_post_3,
-            MainRes.strings.employee_not_soon_in_office,
+            "Васильев Василий",
+            "HR",
+            "Нет бронирований",
             MainRes.images.logo_default
         ),
         EmployeeCard(
-            MainRes.strings.employee_1,
-            MainRes.strings.employee_post_1,
-            MainRes.strings.employee_in_office,
+            "Иванов Иван",
+            "Android-developer",
+            "В офисе",
             MainRes.images.logo_default
         )
     )

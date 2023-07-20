@@ -3,16 +3,8 @@
     <string name="app_name">Office Elevator</string>
     <string name="sign_in_google">Войти в аккаунт Effective</string>
     <string name="something_went_wrong">Что-то пошло не так. Пожалуйста попробуйте еще раз</string>
-    <string name="employee_1">Иванов Иван</string>
-    <string name="employee_2">Смирнов Андрей</string>
-    <string name="employee_3">Васильев Василий</string>
     <string name="search_employee">Поиск сотрудника</string>
-    <string name="employee_post_1">Android-developer</string>
-    <string name="employee_post_2">UI/UX Designer</string>
-    <string name="employee_post_3">HR</string>
     <string name="employee_in_office">В офисе</string>
-    <string name="employee_soon_in_office">Будет сегодня</string>
-    <string name="employee_not_soon_in_office">Нет бронирований</string>
 
     <!--Elevator-->
     <string name="elevator_below">Лифт на 1-м этаже</string>
