@@ -1,7 +1,7 @@
-package band.effective.office.elevator.ui.employee
+package band.effective.office.elevator.ui.employee.allEmployee
 
-import band.effective.office.elevator.ui.employee.store.EmployeeStore
-import band.effective.office.elevator.ui.employee.store.EmployeeStoreFactory
+import band.effective.office.elevator.ui.employee.allEmployee.store.EmployeeStore
+import band.effective.office.elevator.ui.employee.allEmployee.store.EmployeeStoreFactory
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -13,7 +13,8 @@ import kotlinx.coroutines.flow.StateFlow
 
 class EmployeeComponent(
     componentContext: ComponentContext,
-    storeFactory: StoreFactory//private val
+    storeFactory: StoreFactory,
+    private val output: (Output) -> Unit
 ): ComponentContext by componentContext {
     private val employeeStore=
         instanceKeeper.getStore {
@@ -26,15 +27,12 @@ class EmployeeComponent(
     val employState: StateFlow<EmployeeStore.State> = employeeStore.stateFlow
     val employLabel: Flow<EmployeeStore.Label> = employeeStore.labels
 
-    fun onEvent(event:EmployeeStore.Intent){
+    fun onEvent(event: EmployeeStore.Intent){
         employeeStore.accept(event)
     }
 
-    fun onOutput(output:Output){
-        when(output){
-            is Output.OpenProfileScreen -> TODO()
-            is Output.OpenNewListOfEmployees -> TODO()//unused
-        }
+    fun onOutput(output: Output){
+        output(output)
     }
 
 

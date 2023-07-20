@@ -51,7 +51,8 @@ import band.effective.office.elevator.theme_light_background
 import band.effective.office.elevator.theme_light_onBackground
 import band.effective.office.elevator.theme_light_primary_color
 import band.effective.office.elevator.theme_light_tertiary_color
-import band.effective.office.elevator.ui.employee.store.EmployeeStore
+import band.effective.office.elevator.ui.employee.allEmployee.EmployeeComponent
+import band.effective.office.elevator.ui.employee.allEmployee.store.EmployeeStore
 import dev.icerock.moko.resources.ImageResource
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource

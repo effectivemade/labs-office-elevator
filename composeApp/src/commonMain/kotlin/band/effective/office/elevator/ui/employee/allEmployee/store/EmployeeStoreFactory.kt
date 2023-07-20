@@ -1,4 +1,5 @@
-package band.effective.office.elevator.ui.employee.store
+package band.effective.office.elevator.ui.employee.allEmployee.store
+
 
 import band.effective.office.elevator.ui.employee.EmployeeCard
 import band.effective.office.elevator.ui.employee.EmployeesData
@@ -10,11 +11,12 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
 internal class EmployeeStoreFactory(private val storeFactory: StoreFactory):KoinComponent{
-    fun create(): EmployeeStore=
+    fun create(): EmployeeStore =
         object: EmployeeStore, Store<EmployeeStore.Intent, EmployeeStore.State, EmployeeStore.Label> by storeFactory.create(
             name="EmployeeStore",
             initialState = EmployeeStore.State(
-                changeShowedEmployeeCards = EmployeesData.employeesCardData),
+                changeShowedEmployeeCards = EmployeesData.employeesCardData
+            ),
             executorFactory = ::ExecutorImpl,
             reducer = ReducerIMPL
 
@@ -44,7 +46,7 @@ internal class EmployeeStoreFactory(private val storeFactory: StoreFactory):Koin
     }
 
     private object ReducerIMPL: Reducer<EmployeeStore.State, Msg> {
-        override fun EmployeeStore.State.reduce(msg:Msg): EmployeeStore.State =
+        override fun EmployeeStore.State.reduce(msg: Msg): EmployeeStore.State =
             when(msg){
                 is Msg.UpdateEmployees -> copy(
                     changeShowedEmployeeCards = changeEmployeeShowedList(msg.query)
