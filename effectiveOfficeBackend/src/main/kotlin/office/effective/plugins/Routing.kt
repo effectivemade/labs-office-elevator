@@ -1,8 +1,11 @@
 package office.effective.plugins
 
-import io.ktor.server.routing.*
-import io.ktor.server.response.*
+import authRoutingFun
+import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.plugins.statuspages.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import office.effective.features.workspace.routes.workspaceRouting
 
 fun Application.configureRouting() {
@@ -10,6 +13,8 @@ fun Application.configureRouting() {
         get("/") {
             call.respondText("Hello World!")
         }
+        authRoutingFun()
         workspaceRouting()
     }
+
 }
