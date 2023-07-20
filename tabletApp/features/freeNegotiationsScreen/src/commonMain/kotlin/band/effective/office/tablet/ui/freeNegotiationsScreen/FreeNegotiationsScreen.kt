@@ -16,18 +16,17 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import band.effective.office.tablet.features.freeNegotiationsScreen.MainRes
+import androidx.compose.ui.unit.sp
 import band.effective.office.tablet.ui.freeNegotiationsScreen.components.RoomCard
-import band.effective.office.tablet.ui.theme.CustomDarkColors
 
 
 @Composable
@@ -44,16 +43,16 @@ fun FreeNegotiationsScreen(component: FreeNegotiationsComponent) {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun FreeNegotiationsContent(
-    date: String,
-    timeStart: String,
-    timeEnd: String,
+    date: String?,
+    timeStart: String?,
+    timeEnd: String?,
     onClick: () -> Unit,
     component: FreeNegotiationsComponent
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(CustomDarkColors.background)
+            .background(Color(0XFF1E1C1A))
             .verticalScroll(
                 rememberScrollState()
             )
@@ -61,45 +60,38 @@ internal fun FreeNegotiationsContent(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(130.dp)
-                .background(CustomDarkColors.surface),
-            verticalAlignment = Alignment.Bottom,
+                .height(100.dp)
+                .background(Color(0xFFF252322)),
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
-            Spacer(modifier = Modifier.height(22.dp))
+            Spacer(modifier = Modifier.height(60.dp))
             IconButton(onClick = { onClick() }) {
-                Row(modifier = Modifier.padding(bottom = 22.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        imageVector = ImageVector.vectorResource(MainRes.image.arrow_to_left),
+                        Icons.Filled.ArrowBack,
                         contentDescription = null,
-                        tint = CustomDarkColors.iconAndText
+                        tint = Color(0xFFFA362F8)
                     )
                 }
             }
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-                modifier = Modifier.padding(bottom = 22.dp),
-                text = "${MainRes.string.occupy} $date ${MainRes.string.with} " +
-                        " $timeStart ${MainRes.string.before}  $timeEnd",
-                style = MaterialTheme.typography.h6.copy(
-                    color = CustomDarkColors.iconAndText,
-                    fontWeight = FontWeight.Medium
+                text = "Занять $date с $timeStart до $timeEnd",
+                style = TextStyle(
+                    color = Color(0xFFFA362F8),
+                    fontSize = 20.sp
                 )
             )
         }
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-            FlowRow(
-                modifier = Modifier.padding(26.dp),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                for (room in component.rooms) {
-                    RoomCard(
-                        roomItem = room,
-                        onClick = {},
-                        modifier = Modifier.fillMaxWidth(0.32F)
-                    )
-                    Spacer(modifier = Modifier.width(24.dp))
-                }
+        FlowRow(modifier = Modifier.padding(24.dp)) {
+            for (room in component.rooms) {
+                RoomCard(
+                    roomItem = room,
+                    onClick = {},
+                    modifier = Modifier.fillMaxWidth(0.3F)
+                )
+                Spacer(modifier = Modifier.width(24.dp))
             }
         }
     }
