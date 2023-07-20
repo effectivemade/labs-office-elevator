@@ -11,7 +11,6 @@ import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStoreFact
 import band.effective.office.tablet.ui.mainScreen.mockComponets.MockSettingsComponent
 import band.effective.office.tablet.ui.mainScreen.mockComponets.RealMockSettingsComponent
 import band.effective.office.tablet.ui.selectRoomScreen.RealFreeSelectRoomComponent
-import band.effective.office.tablet.ui.selectRoomScreen.RealSelectRoomComponent
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponentImpl
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.childContext

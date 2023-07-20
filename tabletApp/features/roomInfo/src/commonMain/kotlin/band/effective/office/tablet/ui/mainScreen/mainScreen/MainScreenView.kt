@@ -20,7 +20,7 @@ import band.effective.office.tablet.ui.mainScreen.mockComponets.MockSettingView
 import band.effective.office.tablet.ui.mainScreen.mockComponets.MockSettingsComponent
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.RoomInfoComponent
 import band.effective.office.tablet.ui.selectRoomScreen.RealFreeSelectRoomComponent
-import band.effective.office.tablet.ui.selectRoomScreen.RealSelectRoomComponent
+import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponent
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomView
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponentImpl
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomScreen
@@ -32,7 +32,7 @@ fun MainScreenView(
     showBookingModal: Boolean,
     mockComponent: MockSettingsComponent,
     bookingRoomComponent: BookingRoomComponent,
-    selectRoomComponent: RealSelectRoomComponent,
+    selectRoomComponent: SelectRoomComponent,
     freeSelectRoomComponent: RealFreeSelectRoomComponent
 ) {
     Box(modifier = Modifier.fillMaxSize()) {

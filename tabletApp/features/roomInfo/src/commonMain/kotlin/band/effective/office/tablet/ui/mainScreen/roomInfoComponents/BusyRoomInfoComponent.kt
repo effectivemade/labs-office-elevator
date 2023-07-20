@@ -23,6 +23,7 @@ import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.features.roomInfo.MainRes
 import band.effective.office.tablet.ui.selectRoomScreen.FreeSelectRoomView
 import band.effective.office.tablet.ui.selectRoomScreen.RealFreeSelectRoomComponent
+import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.utils.CalendarStringConverter
 import java.util.Calendar
 
