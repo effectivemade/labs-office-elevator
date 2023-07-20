@@ -56,6 +56,7 @@ import dev.icerock.moko.resources.ImageResource
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 
+
 data class EmployeeCard(
     val name: String,
     val post: String,
@@ -103,6 +104,7 @@ fun EmployeeScreenContent(
         Box(
             modifier = Modifier
                 .background(theme_light_primary_color)///Themeeee!
+
                 .fillMaxWidth()
         ) {
             Column {
@@ -151,6 +153,7 @@ fun EmployeeScreenContent(
                     shape = RoundedCornerShape(32.dp)
 
                 )
+
                 //padding настроить!
             }
         }
@@ -162,6 +165,7 @@ fun EmployeeScreenContent(
         ) {
             LazyColumn(
                 //TODO() Зюзин: надо доработать вёрстку экрана (оптимизировать компоненты)
+
                 modifier = Modifier.fillMaxSize()
             ) {
                 item {
@@ -196,12 +200,11 @@ fun EmployeeScreenContent(
 
             }
         }
-
-
     }
 }
 
 @Composable
+
 fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
     var isExpanded by remember { mutableStateOf(false) }
     val stateColorBorder: Color
@@ -211,6 +214,7 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
         stateColorText = borderGreen
     } else {
         if (emp.state == "Will be today") {
+
             stateColorBorder = borderPurple
             stateColorText = textInBorderPurple
         } else {

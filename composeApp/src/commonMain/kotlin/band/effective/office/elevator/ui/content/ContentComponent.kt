@@ -35,7 +35,7 @@ class ContentComponent(
             ProfileComponent(
                 componentContext,
                 storeFactory,
-                ::profileOutput
+                openAuthorizationFlow
             )
         )
         is Config.Booking -> Child.Booking(BookingComponent(componentContext, storeFactory))
@@ -51,11 +51,6 @@ class ContentComponent(
         }
     }
 
-    private fun profileOutput(output: ProfileComponent.Output) {
-        when (output) {
-            ProfileComponent.Output.OpenAuthorizationFlow -> openAuthorizationFlow()
-        }
-    }
 
     sealed class Child {
         class Main(val component: MainComponent) : Child()

@@ -46,6 +46,7 @@ kotlin {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material)
+                implementation(compose.material3)
                 implementation(compose.materialIconsExtended)
                 implementation(Dependencies.ImageLoader.imageLoader)
                 implementation(Dependencies.Napier.napier)
@@ -72,6 +73,8 @@ kotlin {
 
                 //Moko
                 api(Dependencies.Moko.resourcesCompose)
+
+                implementation(Dependencies.Calendar.composeDatePicker)
             }
         }
 
