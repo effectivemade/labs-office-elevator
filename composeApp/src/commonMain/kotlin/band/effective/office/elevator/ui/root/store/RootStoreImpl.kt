@@ -20,7 +20,6 @@ internal class RootStoreImplFactory(
 ) : KoinComponent {
 
     private val signInClient: GoogleSignIn by inject<GoogleSignIn>()
-    private val dbSource: DBSource by inject()
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): RootStore =
@@ -29,9 +28,6 @@ internal class RootStoreImplFactory(
             initialState = State(),
             bootstrapper = coroutineBootstrapper {
                 launch { dispatch(Action.CheckUserAlreadySigned) }
-                launch(Dispatchers.IO) {
-                  println (dbSource.getProfileName())
-                }
             },
             executorFactory = ::ExecutorImpl
         ) {}
