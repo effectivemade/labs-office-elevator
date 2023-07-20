@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.Flow
 class RootComponent internal constructor(
     componentContext: ComponentContext,
     private val storeFactory: DefaultStoreFactory,
-    private val authorization: (ComponentContext, (AuthorizationComponent.Output) -> Unit) -> AuthorizationComponent,
+    private val authorization: (ComponentContext, () -> Unit) -> AuthorizationComponent,
     private val content: (ComponentContext, () -> Unit) -> ContentComponent,
 ) : ComponentContext by componentContext {
 
@@ -54,7 +54,11 @@ class RootComponent internal constructor(
         componentContext,
         storeFactory,
         authorization = { childContext, output ->
-            AuthorizationComponent(childContext, storeFactory, output)
+            AuthorizationComponent(
+                childContext,
+                storeFactory,
+                openContentFlow = output
+            )
         },
         content = { childContext, onSignOut ->
             ContentComponent(
@@ -62,16 +66,14 @@ class RootComponent internal constructor(
                 storeFactory,
                 openAuthorizationFlow = onSignOut
             )
-        })
+        },
+    )
 
     private fun child(config: Config, componentContext: ComponentContext): Child =
         when (config) {
-            is Config.Authorization -> Child.AuthorizationChild(
-                authorization(
-                    componentContext,
-                    ::onAuthorizationOutput
-                )
-            )
+            is Config.Authorization -> Child.AuthorizationChild(authorization(componentContext){
+                navigation.replaceAll(Config.Content)
+            })
 
             is Config.Content -> Child.ContentChild(content(componentContext) {
                 navigation.replaceAll(Config.Authorization)
@@ -80,17 +82,11 @@ class RootComponent internal constructor(
             Config.Undefined -> Child.Undefined
         }
 
-
-    private fun onAuthorizationOutput(output: AuthorizationComponent.Output) {
-        when (output) {
-            AuthorizationComponent.Output.OpenMainScreen -> navigation.replaceAll(Config.Content)
-        }
-    }
-
     fun onOutput(output: Output) {
         when (output) {
             Output.OpenContent -> navigation.replaceAll(Config.Content)
             Output.OpenAuthorizationFlow -> navigation.replaceAll(Config.Authorization)
+            else -> {}
         }
     }
 
