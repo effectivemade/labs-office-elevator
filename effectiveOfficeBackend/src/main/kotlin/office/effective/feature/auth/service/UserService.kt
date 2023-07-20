@@ -4,7 +4,6 @@ import office.effective.feature.auth.ITokenVerifier
 import office.effective.feature.auth.converters.UserDTOModelConverter
 import office.effective.feature.auth.dto.UserDTO
 import office.effective.feature.auth.repository.UserRepository
-import office.effective.model.UserModel
 import org.koin.core.context.GlobalContext
 import java.util.*
 
@@ -30,7 +29,8 @@ class UserService() : IUserService {
     }
 
     override fun alterUser(user: UserDTO, token: String): UserDTO {
-        TODO("Not yet implemented")
+        val model = repository.updateUser(converterDTO.dTOToModel(user))
+        return converterDTO.modelToDTO(model)
     }
 
     override fun getUserByToken(tokenStr: String): UserDTO {
