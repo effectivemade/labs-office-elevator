@@ -3,7 +3,7 @@
     <string name="app_name">Office Elevator</string>
     <string name="sign_in_google">Авторизация через Google</string>
     <string name="something_went_wrong">Что-то пошло не так. Пожалуйста попробуйте еще раз</string>
-
+    <string name="company_name">effective\noffice</string>
     <string name="search_employee">Поиск сотрудника</string>
     <string name="employee_in_office">В офисе</string>
 
@@ -24,6 +24,7 @@
     <string name="employee_hint">Никнейм в Telegram</string>
     <string name="phone_plus_seven">+7</string>
     <string name="telegram_symbol">@</string>
+
 
     <!--Elevator-->
     <string name="elevator" >Лифт</string>

@@ -16,7 +16,6 @@ import band.effective.office.elevator.navigation.MainTab
 import band.effective.office.elevator.navigation.ProfileTab
 import band.effective.office.elevator.ui.booking.BookingScreen
 import band.effective.office.elevator.ui.employee.Employee
-import band.effective.office.elevator.ui.employee.allEmployee.EmployeeScreen
 import band.effective.office.elevator.ui.main.MainScreen
 import band.effective.office.elevator.ui.profile.Profile
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
