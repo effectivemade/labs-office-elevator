@@ -11,6 +11,8 @@ import java.util.UUID
 class WorkspaceRepositoryConverter {
     /**
      * Converts WorkspaceEntity to Workspace
+     *
+     * @author Daniil Zavyalov
      */
     fun entityToModel(entity: WorkspaceEntity, utilities: List<Utility>): Workspace {
         return Workspace(entity.id, entity.name, entity.tag.name, utilities)
@@ -19,6 +21,8 @@ class WorkspaceRepositoryConverter {
      * Converts Workspace and WorkspaceTagEntity to WorkspaceEntity with random UUID
      *
      * Throws IllegalArgumentException if model.tag is not equal to tagEntity.name
+     *
+     * @author Daniil Zavyalov
      */
     fun modelToEntity(model: Workspace, tagEntity: WorkspaceTagEntity): WorkspaceEntity {
         if(tagEntity.name != model.tag) {
@@ -33,6 +37,8 @@ class WorkspaceRepositoryConverter {
 
     /**
      * Converts UtilityEntity to Utility with given count
+     *
+     * @author Daniil Zavyalov
      */
     fun utilityEntityToModel(entity: UtilityEntity, count: Int): Utility {
         return Utility(entity.id, entity.name, entity.iconUrl, count)

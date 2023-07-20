@@ -21,6 +21,8 @@ class WorkspaceRepository {
 
     /**
      * Returns whether a workspace with the given id exists
+     *
+     * @author Daniil Zavyalov
      */
     fun workspaceExistsById(workspaceId: UUID): Boolean {
         return database.workspaces.count { it.id eq workspaceId } > 0
@@ -28,6 +30,8 @@ class WorkspaceRepository {
 
     /**
      * Returns whether a utility with the given id exists
+     *
+     * @author Daniil Zavyalov
      */
     fun utilityExistsById(utilityId: UUID): Boolean {
         return database.utilities.count { it.id eq utilityId } > 0
@@ -37,6 +41,8 @@ class WorkspaceRepository {
      * Returns all workspace utilities by workspace id
      *
      * Throws WorkspaceNotFoundException if workspace with given id doesn't exist in the database
+     *
+     * @author Daniil Zavyalov
      */
     private fun findUtilitiesByWorkspaceId(workspaceId: UUID): List<Utility> {
         if (!workspaceExistsById(workspaceId)) {
@@ -57,6 +63,8 @@ class WorkspaceRepository {
 
     /**
      * Retrieves a workspace model by its id
+     *
+     * @author Daniil Zavyalov
      */
     fun findById(workspaceId: UUID): Workspace? {
         val entity: WorkspaceEntity? = database.workspaces.find { it.id eq workspaceId }
@@ -68,17 +76,17 @@ class WorkspaceRepository {
      * Returns all workspaces with the given tag
      *
      * Throws WorkspaceTagNotFoundException if tag doesn't exist in the database
+     *
+     * @author Daniil Zavyalov
      */
     fun findAllByTag(tag: String): List<Workspace> {
-        val tagEntity: WorkspaceTagEntity? = database.workspaceTags.find { it.name eq tag }
-        if (tagEntity == null) {
-            throw WorkspaceTagNotFoundException("Workspace tag $tag not found")
-        } else {
-            val entityList = database.workspaces.filter { it.tagId eq tagEntity.id }.toList()
-            return entityList.map {
-                val utilities: List<Utility> = findUtilitiesByWorkspaceId(it.id)
+        val tagEntity: WorkspaceTagEntity = database.workspaceTags.find { it.name eq tag }
+            ?: throw WorkspaceTagNotFoundException("Workspace tag $tag not found")
+
+        val entityList = database.workspaces.filter { it.tagId eq tagEntity.id }.toList()
+        return entityList.map {
+            val utilities: List<Utility> = findUtilitiesByWorkspaceId(it.id)
                 converter.entityToModel(it, utilities)
-            }
         }
     }
 
@@ -89,6 +97,8 @@ class WorkspaceRepository {
      * Throws WorkspaceNotFoundException if workspace with given id doesn't exist in the database
      *
      * Throws UtilityNotFoundException if utility with given id doesn't exist in the database
+     *
+     * @author Daniil Zavyalov
      */
     fun addUtilityToWorkspace(utilityId: UUID, workspaceId: UUID, count: UInt) {
         if (!workspaceExistsById(workspaceId)) {
@@ -111,26 +121,28 @@ class WorkspaceRepository {
      * Saves a given workspace. If given model will have id, it will be ignored. Use the returned model for further operations
      *
      * Throws WorkspaceTagNotFoundException if tag doesn't exist in the database
+     *
+     * @author Daniil Zavyalov
      */
     @Deprecated("API does not involve saving workspace entities")
     fun save(workspace: Workspace): Workspace {
-        val tagEntity: WorkspaceTagEntity? = database.workspaceTags.find { it.name eq workspace.tag }
-        if (tagEntity == null) {
-            throw WorkspaceTagNotFoundException("Workspace tag ${workspace.tag} not found")
-        } else {
-            val entity = converter.modelToEntity(workspace, tagEntity);
-            database.workspaces.add(entity)
-            for (utility in workspace.utilities) {
-                addUtilityToWorkspace(utility.id, entity.id, utility.count.toUInt())
-            }
-            return workspace;
+        val tagEntity: WorkspaceTagEntity = database.workspaceTags.find { it.name eq workspace.tag }
+            ?: throw WorkspaceTagNotFoundException("Workspace tag ${workspace.tag} not found")
+
+        val entity = converter.modelToEntity(workspace, tagEntity);
+        database.workspaces.add(entity)
+        for (utility in workspace.utilities) {
+            addUtilityToWorkspace(utility.id, entity.id, utility.count.toUInt())
         }
+        return workspace;
     }
 
     /**
      * Deletes the workspace with the given id
      *
      * If the workspace is not found in the database it is silently ignored
+     *
+     * @author Daniil Zavyalov
      */
     @Deprecated("API does not involve deleting workspace entities")
     fun deleteById(workspaceId: UUID) {
