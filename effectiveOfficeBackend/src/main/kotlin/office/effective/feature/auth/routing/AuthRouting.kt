@@ -15,40 +15,7 @@ import org.koin.core.context.GlobalContext
 fun Route.authRoutingFun() {
     val service: IUserService = GlobalContext.get().get()
     val verifier: ITokenVerifier = GlobalContext.get().get()
-    authenticate("auth-oauth-google") {
-        get("/login") {
 
-        }
-
-    }
-    get("/callback") {
-        try {
-//
-            val principal: OAuthAccessTokenResponse.OAuth2? = call.principal()
-            println("================================================================")
-            println(principal?.accessToken)
-            println("================================================================")
-
-        } catch (ex: Exception) {
-
-            var trace: String = ex.message ?: "There are no message.\n";
-            ex.stackTrace.forEach { trace += it.toString() + "\n" }
-            trace += "\n"
-            trace += ex.cause
-            call.respond(trace)
-
-        }
-
-        val token: String = call.receiveText()
-        val userEmail = verifier.isCorrectToken(token)
-        call.respondText(userEmail)
-        call.respondRedirect("http://localhost:8080/callback")
-    }
-
-    get("/users/login") {
-        val tokenStr = call.request.header("id_token") ?: call.response.status(HttpStatusCode.Forbidden)
-        val userDTO: UserDTO = service.getUserByToken(tokenStr as String)
-    }
     get("/usersTest/{email}") {
         val repo: UserRepository = GlobalContext.get().get()
         val model =
