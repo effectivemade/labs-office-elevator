@@ -8,9 +8,6 @@
     <string name="employee_2">Smirnov Andrey</string>
     <string name="employee_3">Vasilyev Vasiliy</string>
     <string name="search_employee">Search employee</string>
-    <string name="employee_post_1">Android-developer</string>
-    <string name="employee_post_2">UI/UX Designer</string>
-    <string name="employee_post_3">HR</string>
     <string name="employee_in_office">In office</string>
     <string name="employee_soon_in_office">Will be today</string>
     <string name="employee_not_soon_in_office">No reservations</string>
