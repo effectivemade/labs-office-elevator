@@ -11,18 +11,11 @@ import io.ktor.server.auth.*
 import io.ktor.server.config.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import io.ktor.server.plugins.contentnegotiation.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
-import io.ktor.server.sessions.*
-import office.effective.common.utils.UserSession
-import office.effective.di.databaseDiModule
-import office.effective.feature.auth.di.authDIModule
 import office.effective.plugins.configureMigration
 import office.effective.plugins.configureRouting
 import office.effective.plugins.configureSecurity
 import office.effective.plugins.configureSerialization
-import org.koin.ktor.plugin.Koin
+import office.effective.plugins.*
 
 val config = HoconApplicationConfig(ConfigFactory.load())
 
@@ -34,9 +27,7 @@ fun main() {
 }
 
 fun Application.module() {
-    install(Koin) {
-        modules(databaseDiModule, authDIModule)
-    }
+    configureDI()
     install(Authentication) {
         oauth("auth-oauth-google") {
             urlProvider = { "http://localhost:8080/callback" }
@@ -59,6 +50,4 @@ fun Application.module() {
     configureSerialization()
     configureSecurity()
     configureRouting()
-
-
 }

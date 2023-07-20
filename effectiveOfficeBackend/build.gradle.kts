@@ -6,6 +6,7 @@ val ktorm_version: String by project
 val postgresql_driver_version: String by project
 val snakeyaml_version: String by project
 val liquibase_version: String by project
+val mockito_version: String by project
 
 plugins {
     kotlin("jvm") version "1.8.22"
@@ -63,4 +64,7 @@ dependencies {
 
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+    testImplementation("org.mockito:mockito-core:$mockito_version")
+    testImplementation("org.mockito:mockito-inline:$mockito_version")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:$mockito_version")
 }
