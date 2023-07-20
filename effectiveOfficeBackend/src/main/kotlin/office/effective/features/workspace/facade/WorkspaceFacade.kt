@@ -6,12 +6,13 @@ import office.effective.features.workspace.converters.WorkspaceFacadeConverter
 import office.effective.features.workspace.dto.WorkspaceDTO
 import office.effective.features.workspace.service.WorkspaceService
 import office.effective.model.Workspace
+import org.koin.core.context.GlobalContext
 import java.lang.IllegalArgumentException
 import java.util.UUID
 
 class WorkspaceFacade {
-    private val service = WorkspaceService()
-    private val converter = WorkspaceFacadeConverter()
+    private val service: WorkspaceService = GlobalContext.get().get()
+    private val converter: WorkspaceFacadeConverter = GlobalContext.get().get()
 
     fun findById(id: String): WorkspaceDTO {
         val uuid: UUID

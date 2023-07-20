@@ -6,6 +6,7 @@ import office.effective.common.exception.WorkspaceTagNotFoundException
 import office.effective.features.workspace.converters.WorkspaceRepositoryConverter
 import office.effective.model.Utility
 import office.effective.model.Workspace
+import org.koin.core.context.GlobalContext
 import org.koin.java.KoinJavaComponent.inject
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
@@ -14,10 +15,8 @@ import org.ktorm.support.postgresql.insertOrUpdate
 import java.util.UUID
 
 class WorkspaceRepository {
-    private val database by inject<Database>(clazz = Database::class.java)
-    private val converter by inject<WorkspaceRepositoryConverter>(
-        clazz = WorkspaceRepositoryConverter::class.java
-    )
+    private val database: Database = GlobalContext.get().get()
+    private val converter: WorkspaceRepositoryConverter = GlobalContext.get().get()
 
     /**
      * Returns whether a workspace with the given id exists

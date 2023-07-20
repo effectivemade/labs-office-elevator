@@ -5,10 +5,11 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import office.effective.features.workspace.facade.WorkspaceFacade
+import org.koin.core.context.GlobalContext
 
 fun Route.workspaceRouting() {
     route("/workspace") {
-        val facade = WorkspaceFacade()
+        val facade: WorkspaceFacade = GlobalContext.get().get()
 
         get("{id?}") {
             val id: String = call.parameters["id"]
