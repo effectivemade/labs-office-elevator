@@ -47,7 +47,7 @@ class MainComponent(
     val freeSelectRoomComponent: RealFreeSelectRoomComponent =
         RealFreeSelectRoomComponent(
             componentContext = childContext(key = "freeSelectRoom"),
-            onCloseRequest = { mainStore.accept(MainStore.Intent.CloseModal) }
+            onCloseRequest = { closeAllModal() }
         )
 
     private val mainStore = instanceKeeper.getStore {
@@ -58,4 +58,16 @@ class MainComponent(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val state = mainStore.stateFlow
+
+    fun closeAllModal(){
+        mainStore.accept(MainStore.Intent.CloseModal)
+    }
+
+    fun openFreeRoomModal(){
+        mainStore.accept(MainStore.Intent.OnOpenFreeRoomModal)
+    }
+
+    fun onFreeRoom(){
+        mainStore.accept(MainStore.Intent.OnFreeRoomIntent)
+    }
 }

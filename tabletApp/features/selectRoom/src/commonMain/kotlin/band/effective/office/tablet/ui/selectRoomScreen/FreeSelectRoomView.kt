@@ -15,6 +15,7 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,67 +28,62 @@ import band.effective.office.tablet.ui.theme.header4
 import band.effective.office.tablet.ui.theme.header6
 
 @Composable
-fun FreeSelectRoomView(component: RealFreeSelectRoomComponent) {
+fun FreeSelectRoomView(onCloseRequest: () -> Unit, onFreeRoomRequest: () -> Unit) {
     val shape = RoundedCornerShape(50)
-    val colorButton =  if(!component.state.collectAsState().value.isPressed) CustomDarkColors.disabledPrimaryButton else CustomDarkColors.pressedPrimaryButton
-
     Dialog(
-    onDismissRequest = {
-        component.close()
-        component.onButtonClicked()
-    }
+        onDismissRequest = {
+            onCloseRequest()
+        }
     ) {
         Box(
-           modifier = Modifier
-               .size(518.dp, 304.dp)
-               .clip(RoundedCornerShape(5))
-               .background(CustomDarkColors.elevationBackground),
+            modifier = Modifier
+                .size(518.dp, 304.dp)
+                .clip(RoundedCornerShape(5))
+                .background(CustomDarkColors.elevationBackground),
         ) {
 
-           Column(
-               modifier = Modifier.matchParentSize(),
-               horizontalAlignment = Alignment.CenterHorizontally,
-               verticalArrangement = Arrangement.Top
-           ) {
-               Spacer(modifier = Modifier.height(30.dp))
-               CrossButtonView(
-                   Modifier.width(518.dp),
-                   onDismissRequest = {
-                       component.close()
-                       component.onButtonClicked()
-                   }
-               )
-               Spacer(modifier = Modifier.height(30.dp))
-               Box(
-                   modifier = Modifier.padding(0.dp),
-                   contentAlignment = Alignment.CenterStart
-               ) {
-                   Text(
-                       text = MainRes.string.free_select_room,
-                       style = header4,
-                       color = CustomDarkColors.primaryTextAndIcon
-                   )
-               }
-               Spacer(modifier = Modifier.height(30.dp))
-               Button(
-                   modifier = Modifier.size(290.dp, 64.dp),
-                   colors = ButtonDefaults.buttonColors(colorButton),
-                   shape = shape,
-                   onClick = {
-                       component.close()
-                       component.onButtonClicked()
-                   }
-               ) {
-                   Box(contentAlignment = Alignment.Center)
-                   {
-                       Text(
-                           text = MainRes.string.free_select_room_button,
-                           style = header6,
-                           color = CustomDarkColors.primaryTextAndIcon,
-                       )
-                   }
-               }
-           }
+            Column(
+                modifier = Modifier.matchParentSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top
+            ) {
+                Spacer(modifier = Modifier.height(30.dp))
+                CrossButtonView(
+                    Modifier.width(518.dp),
+                    onDismissRequest = {
+                        onCloseRequest()
+                    }
+                )
+                Spacer(modifier = Modifier.height(30.dp))
+                Box(
+                    modifier = Modifier.padding(0.dp),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    Text(
+                        text = MainRes.string.free_select_room,
+                        style = header4,
+                        color = CustomDarkColors.primaryTextAndIcon
+                    )
+                }
+                Spacer(modifier = Modifier.height(30.dp))
+                Button(
+                    modifier = Modifier.size(290.dp, 64.dp),
+                    colors = ButtonDefaults.buttonColors(CustomDarkColors.pressedPrimaryButton),
+                    shape = shape,
+                    onClick = {
+                        onFreeRoomRequest()
+                    }
+                ) {
+                    Box(contentAlignment = Alignment.Center)
+                    {
+                        Text(
+                            text = MainRes.string.free_select_room_button,
+                            style = header6,
+                            color = CustomDarkColors.primaryTextAndIcon,
+                        )
+                    }
+                }
+            }
         }
     }
 }

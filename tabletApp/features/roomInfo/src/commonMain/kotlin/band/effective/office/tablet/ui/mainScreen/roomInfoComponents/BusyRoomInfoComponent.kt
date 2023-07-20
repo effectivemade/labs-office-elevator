@@ -35,7 +35,7 @@ fun BusyRoomInfoComponent(
     isHaveTv: Boolean,
     electricSocketCount: Int,
     event: EventInfo?,
-    component: RealFreeSelectRoomComponent
+    onButtonClick: () -> Unit
 ) {
     val backgroundColor = LocalCustomColorsPalette.current.busyStatus
     Surface {
@@ -70,13 +70,10 @@ fun BusyRoomInfoComponent(
                     backgroundColor = backgroundColor
                 ),
                 onClick = {
-                    component.onButtonClicked()
+                    onButtonClick()
                 }) {
                 Text(text = MainRes.string.stop_meeting_button, color = Color(0xFFFAFAFA))
             }
-        }
-        if (component.state.collectAsState().value.isPressed) {
-            FreeSelectRoomView(component)
         }
     }
 }

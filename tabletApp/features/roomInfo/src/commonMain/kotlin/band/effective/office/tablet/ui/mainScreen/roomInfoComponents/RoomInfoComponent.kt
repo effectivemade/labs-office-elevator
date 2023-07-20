@@ -14,7 +14,11 @@ import band.effective.office.tablet.ui.selectRoomScreen.RealFreeSelectRoomCompon
 
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable
-fun RoomInfoComponent(modifier: Modifier = Modifier, room: RoomInfo, component: RealFreeSelectRoomComponent) {
+fun RoomInfoComponent(
+    modifier: Modifier = Modifier,
+    room: RoomInfo,
+    onOpenModalRequest: () -> Unit
+) {
     val paddings = 30.dp
     Column(modifier = modifier) {
         DateTimeComponent(modifier = Modifier.padding(paddings))
@@ -38,7 +42,7 @@ fun RoomInfoComponent(modifier: Modifier = Modifier, room: RoomInfo, component: 
                     isHaveTv = room.isHaveTv,
                     electricSocketCount = room.electricSocketCount,
                     event = room.currentEvent,
-                    component = component
+                    onButtonClick = { onOpenModalRequest() }
                 )
             }
         }

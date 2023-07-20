@@ -7,7 +7,9 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, Nothing> {
     sealed interface Intent {
         object OnBookingCurrentRoomRequest : Intent
         object OnBookingOtherRoomRequest : Intent
-        object CloseModal: Intent
+        object OnOpenFreeRoomModal : Intent
+        object OnFreeRoomIntent : Intent
+        object CloseModal : Intent
     }
 
     data class State(
@@ -16,7 +18,8 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, Nothing> {
         val isError: Boolean,
         val roomInfo: RoomInfo,
         val error: String,
-        val showBookingModal: Boolean
+        val showBookingModal: Boolean,
+        val showFreeModal: Boolean
     ) {
         companion object {
             val defaultState =
@@ -26,7 +29,8 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, Nothing> {
                     isError = false,
                     roomInfo = RoomInfo.defaultValue,
                     error = "",
-                    showBookingModal = false
+                    showBookingModal = false,
+                    showFreeModal = false
                 )
         }
     }

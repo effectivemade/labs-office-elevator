@@ -24,7 +24,8 @@ class WorkApi : Api {
     }
 
     override suspend fun cancelEvent(): Boolean {
-        return false
+        mutableRoomInfo.update { it.copy(currentEvent = null) }
+        return true
     }
 
     override suspend fun bookingRoom(
