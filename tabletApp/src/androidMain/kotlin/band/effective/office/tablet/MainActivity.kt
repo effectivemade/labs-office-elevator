@@ -3,6 +3,7 @@ package band.effective.office.tablet
 import android.app.ActivityOptions
 import android.app.admin.DevicePolicyManager
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -19,16 +20,26 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val context = this
+        val dpm = context.getSystemService(Context.DEVICE_POLICY_SERVICE)
+                as DevicePolicyManager
+        val adminName = AdminReceiver.getComponentName(context)
+
+        val intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN).apply {
+            putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, adminName)
+            putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
+                "")
+        }
+        startActivityForResult(intent, 1)
+
+
 
         val KIOSK_PACKAGE = "band.effective.office.tablet"
 
 
 // ...
 
-        val context = this
-        val dpm = context.getSystemService(Context.DEVICE_POLICY_SERVICE)
-                as DevicePolicyManager
-        val adminName = AdminReceiver.getComponentName(context)
+
         val a = dpm.isDeviceOwnerApp(KIOSK_PACKAGE)
         val b = dpm.isDeviceOwnerApp(adminName.packageName)
         val APP_PACKAGES = arrayOf(adminName.packageName, KIOSK_PACKAGE)
@@ -42,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         val packageManager = context.packageManager
         val launchIntent = packageManager.getLaunchIntentForPackage(KIOSK_PACKAGE)
         if (launchIntent != null) {
-      //      context.startActivity(launchIntent, options.toBundle())
+            context.startActivity(launchIntent, options.toBundle())
         }
 
 

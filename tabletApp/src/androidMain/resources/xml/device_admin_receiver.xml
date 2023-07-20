@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
  Copyright 2016 Google Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,13 +15,20 @@
 -->
 
 
-
 <device-admin>
     <uses-policies>
-        <disable-keyguard-features/>
-        <!-- <disable-keyguard-features/>
-         <reset-password />
-         <wipe-data />
-         <expire-password />-->
+        <limit-password />
+        <watch-login />
+        <reset-password />
+        <force-lock />
+        <wipe-data />
+        <expire-password />
+        <encrypted-storage />
+        <disable-camera />
+        <disable-keyguard-features />
+        <reset-password />
+        <wipe-data />
+        <expire-password />
+        <set-global-proxy />
     </uses-policies>
 </device-admin>

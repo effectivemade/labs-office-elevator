@@ -11,4 +11,5 @@ class AdminReceiver : DeviceAdminReceiver() {
             return ComponentName(context.applicationContext, AdminReceiver::class.java)
         }
     }
+    
 }
