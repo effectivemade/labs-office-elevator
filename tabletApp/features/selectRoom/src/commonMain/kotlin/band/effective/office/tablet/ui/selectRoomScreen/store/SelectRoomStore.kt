@@ -12,10 +12,10 @@ interface SelectRoomStore: Store<SelectRoomStore.Intent, SelectRoomStore.State, 
     }
 
     data class State(
-        var isData: Boolean,
-        var isSuccess: Boolean,
-        var isError: Boolean,
-        var error: String,
+        val isData: Boolean,
+        val isSuccess: Boolean,
+        val isError: Boolean,
+        val error: String,
         val booking: Booking
     ) {
         companion object {
