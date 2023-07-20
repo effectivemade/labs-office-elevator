@@ -15,6 +15,7 @@ import org.koin.core.context.GlobalContext
 
 fun Route.authRoutingFun() {
     val service: IUserService = GlobalContext.get().get()
+    val verifier: ITokenVerifier = GlobalContext.get().get()
     authenticate("auth-oauth-google") {
         get("/login") {
 
@@ -22,43 +23,48 @@ fun Route.authRoutingFun() {
         get("/callback") {
             try {
 
-
-//        val redirects = mutableMapOf<String, String>()
                 val principal: OAuthAccessTokenResponse.OAuth2? = call.principal()
-//                val a: OpenID
-//                call.sessions.set(UserSession(principal!!.state!!, principal.accessToken))
                 println("================================================================")
                 println(principal?.accessToken)
                 println("================================================================")
-//            val token = call.request.header("user_session") ?: call.response.status(HttpStatusCode.Forbidden)
-//            val googleToken: GoogleIdToken? = verifier.isCorrectToken(token as String)
-//            googleToken ?: call.response.status(HttpStatusCode.Forbidden)
-//            call.sessions.set(UserSession(token, googleToken?.payload?.email))
 
-                //TODO: call a service/percistance for this user
             } catch (ex: Exception) {
+
                 var trace: String = ex.message ?: "There are no message.\n";
                 ex.stackTrace.forEach { trace += it.toString() + "\n" }
                 trace += "\n"
                 trace += ex.cause
                 call.respond(trace)
-            }
-            //Get the idToken:
 
-            //Use the id token:
-            val verifier: ITokenVerifier = GlobalContext.get().get()
+            }
+
             val token: String = call.receiveText()
             val userEmail = verifier.isCorrectToken(token)
             call.respondText(userEmail)
-//        val redirect = redirects[principal.state!!]
-//        call.respondRedirect(redirect!!)
             call.respondRedirect("http://localhost:8080/callback")
         }
     }
-    get("/user/login") {
+    get("/users/login") {
         val tokenStr = call.request.header("id_token") ?: call.response.status(HttpStatusCode.Forbidden)
         val userDTO: UserDTO = service.getUserByToken(tokenStr as String)
 //
+    }
+    get("/users") {
+        var tagStr = call.request.queryParameters["tag"] ?: call.response.status(HttpStatusCode.BadRequest)
+        val tokenStr = call.request.header("id_token") ?: call.response.status(HttpStatusCode.Forbidden)
+        val users: Set<UserDTO>? = service.getUsersByTag(tagStr as String, tokenStr as String)
+        call.respond(users ?: "no such users")
+    }
+    get("/users/{user_id}") {
+        val userId = call.parameters["user_id"] ?: call.response.status(HttpStatusCode.BadRequest)
+        val tokenStr = call.request.header("id_token") ?: call.response.status(HttpStatusCode.Forbidden)
+        val user = service.getUserById(userId as String, tokenStr as String)
+        call.respond(user ?: "No such user. Suggestion: bad id")
+    }
+    put("/users/{user_id}") {
+        val user: UserDTO = call.receive<UserDTO>()
+        val tokenStr = call.request.header("id_token") ?: call.response.status(HttpStatusCode.Forbidden)
+        call.respond(service.alterUser(user, tokenStr as String))
     }
 
 }
