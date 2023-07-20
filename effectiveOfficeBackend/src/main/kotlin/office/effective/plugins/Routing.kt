@@ -9,11 +9,6 @@ import io.ktor.server.routing.*
 import office.effective.features.workspace.routes.workspaceRouting
 
 fun Application.configureRouting() {
-    install(StatusPages) {
-        exception<Throwable> { call, cause ->
-            call.respondText(text = "500: $cause", status = HttpStatusCode.InternalServerError)
-        }
-    }
     routing {
         get("/") {
             call.respondText("Hello World!")
