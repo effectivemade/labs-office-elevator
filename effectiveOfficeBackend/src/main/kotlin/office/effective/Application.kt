@@ -34,16 +34,10 @@ fun main() {
 }
 
 fun Application.module() {
-    configureMigration()
-    configureSerialization()
-    configureSecurity()
-    configureRouting()
-
-    install(Sessions) {
-        // TODO: Cookies
-        header<UserSession>("user_session")
+    install(Koin) {
+        modules(databaseDiModule, authDIModule)
     }
-    authentication {
+    install(Authentication) {
         oauth("auth-oauth-google") {
             urlProvider = { "http://localhost:8080/callback" }
             providerLookup = {
@@ -51,16 +45,20 @@ fun Application.module() {
                     name = "google",
                     authorizeUrl = "https://accounts.google.com/o/oauth2/auth",
                     accessTokenUrl = "https://accounts.google.com/o/oauth2/token",
-                    requestMethod = HttpMethod.Post,
+                    requestMethod = HttpMethod.Get,
                     clientId = "27867488691-gc95ln5jad3i84dcmu3dd9ls1s4hvm9c.apps.googleusercontent.com", /*System.getenv("GOOGLE_CLIENT_ID")*/
                     clientSecret = "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",//System.getenv("GOOGLE_CLIENT_SECRET"),
-                    defaultScopes = listOf("https://www.googleapis.com/auth/userinfo.profile")
+                    defaultScopes = listOf("https://www.googleapis.com/auth/userinfo.profile", "email"),
+                    extraAuthParameters = listOf("access_type" to "offline")
                 )
             }
             client = HttpClient(Apache)
         }
     }
-    install(Koin) {
-        modules(databaseDiModule, authDIModule)
-    }
+    configureMigration()
+    configureSerialization()
+    configureSecurity()
+    configureRouting()
+
+
 }
