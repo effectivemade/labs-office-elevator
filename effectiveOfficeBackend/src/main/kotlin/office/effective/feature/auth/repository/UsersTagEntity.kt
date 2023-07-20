@@ -19,7 +19,7 @@ interface UsersTagEntity : Entity<UsersTagEntity> {
 
 object UsersTags : Table<UsersTagEntity>("users_tags") {
     val id = uuid("id").primaryKey().bindTo { it.id }
-    val name = varchar("name").bindTo { it.name }.isNotNull()
+    val name = varchar("name").bindTo { it.name }
 }
 
 val Database.users_tags get() = this.sequenceOf(UsersTags)
