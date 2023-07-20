@@ -29,9 +29,12 @@ internal class AuthorizationPhoneStoreFactory(
     }
 
     sealed interface Msg {
+        data class Error(
+            val error: Boolean
+        ) : Msg
+
         data class Data(
             val phoneNumber: String,
-            val isErrorPhoneNumber: Boolean,
         ) : Msg
     }
 
@@ -40,7 +43,10 @@ internal class AuthorizationPhoneStoreFactory(
             when (msg) {
                 is Msg.Data -> copy(
                     phoneNumber = msg.phoneNumber,
-                    isErrorPhoneNumber = msg.isErrorPhoneNumber
+                )
+
+                is Msg.Error -> copy(
+                    isErrorPhoneNumber = msg.error
                 )
             }
     }
@@ -54,19 +60,26 @@ internal class AuthorizationPhoneStoreFactory(
                 is Intent.PhoneNumberChanged ->
                     dispatch(
                         Msg.Data(
-                            phoneNumber = intent.phoneNumber,
-                            isErrorPhoneNumber = !isErrorPhoneNumber(intent.phoneNumber),
+                            phoneNumber = intent.phoneNumber
                         )
                     )
 
             }
 
-        private fun isErrorPhoneNumber(phoneNumber: String) = validator.checkPhone(phoneNumber)
-
         private fun checkPhoneNumber(phoneNumber: String) {
             if (validator.checkPhone(phoneNumber)) {
                 publish(AuthorizationPhoneStore.Label.AuthorizationPhoneSuccess)
+                dispatch(
+                    AuthorizationPhoneStoreFactory.Msg.Error(
+                        error = false
+                    )
+                )
             } else {
+                dispatch(
+                    AuthorizationPhoneStoreFactory.Msg.Error(
+                        error = true
+                    )
+                )
                 publish(AuthorizationPhoneStore.Label.AuthorizationPhoneFailure)
             }
         }
