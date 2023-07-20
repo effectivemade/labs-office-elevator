@@ -1,13 +1,10 @@
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.server.sessions.*
 
-import office.effective.common.utils.UserSession
 import office.effective.feature.auth.ITokenVerifier
 import office.effective.feature.auth.converters.UserDTOModelConverter
 import office.effective.feature.auth.dto.UserDTO
@@ -74,7 +71,7 @@ fun Route.authRoutingFun() {
     put("/users/alter/{user_id}") {
         val user: UserDTO = call.receive<UserDTO>()
         val tokenStr = call.request.header("id_token") ?: call.response.status(HttpStatusCode.Forbidden)
-        call.respond(service.alterUser(user, tokenStr as String))
+        call.respond(service.updateUser(user, tokenStr as String))
     }
 
 }

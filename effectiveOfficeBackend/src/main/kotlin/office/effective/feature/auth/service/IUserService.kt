@@ -6,6 +6,6 @@ import office.effective.model.UserModel
 interface IUserService {
     fun getUsersByTag(tagStr: String, token: String): Set<UserDTO>?;
     fun getUserById(userIdStr: String, token: String): UserDTO;
-    fun alterUser(user: UserDTO, token: String): UserDTO;
+    fun updateUser(user: UserDTO, token: String): UserDTO;
     fun getUserByToken(tokenStr: String): UserDTO;
 }

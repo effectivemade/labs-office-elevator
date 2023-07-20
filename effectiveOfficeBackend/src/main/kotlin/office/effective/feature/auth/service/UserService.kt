@@ -28,7 +28,7 @@ class UserService() : IUserService {
         )
     }
 
-    override fun alterUser(user: UserDTO, token: String): UserDTO {
+    override fun updateUser(user: UserDTO, token: String): UserDTO {
         val model = repository.updateUser(converterDTO.dTOToModel(user))
         return converterDTO.modelToDTO(model)
     }
