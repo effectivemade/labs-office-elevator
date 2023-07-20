@@ -37,8 +37,8 @@ fun Application.module() {
                     authorizeUrl = "https://accounts.google.com/o/oauth2/auth",
                     accessTokenUrl = "https://accounts.google.com/o/oauth2/token",
                     requestMethod = HttpMethod.Get,
-                    clientId = "27867488691-gc95ln5jad3i84dcmu3dd9ls1s4hvm9c.apps.googleusercontent.com", /*System.getenv("GOOGLE_CLIENT_ID")*/
-                    clientSecret = "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",//System.getenv("GOOGLE_CLIENT_SECRET"),
+                    clientId = System.getenv("GOOGLE_CLIENT_ID"),
+                    clientSecret = System.getenv("GOOGLE_CLIENT_SECRET"),
                     defaultScopes = listOf("https://www.googleapis.com/auth/userinfo.profile", "email"),
                     extraAuthParameters = listOf("access_type" to "offline")
                 )
