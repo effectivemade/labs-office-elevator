@@ -10,7 +10,7 @@ data class UserModel(var fullName: String) {
     var active: Boolean = false;
     var role: String? = null;
     var avatarURL: String? = null;
-    var integrations: List<IntegrationModel>? = null
+    var integrations: Set<IntegrationModel>? = null
 
     constructor(
         _fullName: String,
@@ -19,7 +19,7 @@ data class UserModel(var fullName: String) {
         _active: Boolean,
         _role: String?,
         _avatarURL: String?,
-        _integrations: List<IntegrationModel>?
+        _integrations: Set<IntegrationModel>?
     ) : this(_fullName) {
         this.id = _id;
         this.tag = _tag;
