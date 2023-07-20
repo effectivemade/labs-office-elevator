@@ -86,4 +86,21 @@ class UserRepository {
         return UserTagModel(tag.id, tag.name)
     }
 
+    fun updateUser(model: UserModel): UserModel {
+        model.id ?: throw UserNotFoundException("No id in the model")
+        if (!existsById(model.id!!)) {
+            throw UserNotFoundException("User ${model.fullName} with id:${model.id} does not exists")
+        }
+        val entity = converter.modelToEntity(model)
+        db.update(Users) {
+            set(it.id, entity.id)
+            set(it.tagId, entity.tag.id)
+            set(it.fullName, entity.fullName)
+            set(it.active, entity.active)
+            set(it.avatarURL, entity.avatarURL)
+            set(it.role, entity.role)
+        }
+        return findById(model.id!!)
+    }
+
 }
