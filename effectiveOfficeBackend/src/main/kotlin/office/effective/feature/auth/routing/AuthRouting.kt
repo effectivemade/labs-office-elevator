@@ -9,7 +9,9 @@ import io.ktor.server.sessions.*
 
 import office.effective.common.utils.UserSession
 import office.effective.feature.auth.ITokenVerifier
+import office.effective.feature.auth.converters.UserDTOModelConverter
 import office.effective.feature.auth.dto.UserDTO
+import office.effective.feature.auth.repository.UserRepository
 import office.effective.feature.auth.service.IUserService
 import org.koin.core.context.GlobalContext
 
@@ -20,33 +22,42 @@ fun Route.authRoutingFun() {
         get("/login") {
 
         }
-        get("/callback") {
-            try {
 
-                val principal: OAuthAccessTokenResponse.OAuth2? = call.principal()
-                println("================================================================")
-                println(principal?.accessToken)
-                println("================================================================")
-
-            } catch (ex: Exception) {
-
-                var trace: String = ex.message ?: "There are no message.\n";
-                ex.stackTrace.forEach { trace += it.toString() + "\n" }
-                trace += "\n"
-                trace += ex.cause
-                call.respond(trace)
-
-            }
-
-            val token: String = call.receiveText()
-            val userEmail = verifier.isCorrectToken(token)
-            call.respondText(userEmail)
-            call.respondRedirect("http://localhost:8080/callback")
-        }
     }
+    get("/callback") {
+        try {
+//
+            val principal: OAuthAccessTokenResponse.OAuth2? = call.principal()
+            println("================================================================")
+            println(principal?.accessToken)
+            println("================================================================")
+
+        } catch (ex: Exception) {
+
+            var trace: String = ex.message ?: "There are no message.\n";
+            ex.stackTrace.forEach { trace += it.toString() + "\n" }
+            trace += "\n"
+            trace += ex.cause
+            call.respond(trace)
+
+        }
+
+        val token: String = call.receiveText()
+        val userEmail = verifier.isCorrectToken(token)
+        call.respondText(userEmail)
+        call.respondRedirect("http://localhost:8080/callback")
+    }
+
     get("/users/login") {
         val tokenStr = call.request.header("id_token") ?: call.response.status(HttpStatusCode.Forbidden)
         val userDTO: UserDTO = service.getUserByToken(tokenStr as String)
+    }
+    get("/usersTest/{email}") {
+        val repo: UserRepository = GlobalContext.get().get()
+        val model =
+            repo.findByEmail((call.parameters["email"] ?: call.response.status(HttpStatusCode.BadRequest)) as String)
+        val converterDTO = UserDTOModelConverter()
+        call.respond(converterDTO.modelToDTO(model))
     }
     get("/users") {
         var tagStr = call.request.queryParameters["tag"] ?: call.response.status(HttpStatusCode.BadRequest)
@@ -60,7 +71,7 @@ fun Route.authRoutingFun() {
         val user = service.getUserById(userId as String, tokenStr as String)
         call.respond(user ?: "No such user. Suggestion: bad id")
     }
-    put("/users/{user_id}") {
+    put("/users/alter/{user_id}") {
         val user: UserDTO = call.receive<UserDTO>()
         val tokenStr = call.request.header("id_token") ?: call.response.status(HttpStatusCode.Forbidden)
         call.respond(service.alterUser(user, tokenStr as String))
