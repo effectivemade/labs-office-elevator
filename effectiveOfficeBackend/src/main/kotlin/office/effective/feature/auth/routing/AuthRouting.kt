@@ -47,7 +47,6 @@ fun Route.authRoutingFun() {
     get("/users/login") {
         val tokenStr = call.request.header("id_token") ?: call.response.status(HttpStatusCode.Forbidden)
         val userDTO: UserDTO = service.getUserByToken(tokenStr as String)
-//
     }
     get("/users") {
         var tagStr = call.request.queryParameters["tag"] ?: call.response.status(HttpStatusCode.BadRequest)
