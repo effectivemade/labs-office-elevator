@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -19,13 +20,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.features.roomInfo.MainRes
+import band.effective.office.tablet.ui.theme.alertColor
 import band.effective.office.tablet.utils.CalendarStringConverter
 import io.github.skeptick.libres.compose.painterResource
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun BusyAlertView(modifier: Modifier, event: band.effective.office.tablet.domain.model.EventInfo, onClick: () -> Unit) {
+fun BusyAlertView(modifier: Modifier, event: EventInfo, onClick: () -> Unit) {
     Column(modifier = modifier) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -44,12 +46,12 @@ fun BusyAlertView(modifier: Modifier, event: band.effective.office.tablet.domain
                     finishTime = event.finishTime.time(),
                     organizer = event.organizer
                 ),
-                color = Color(0xFFEB4C2A),
-                fontSize = 19.sp
+                color = alertColor,
+                style = MaterialTheme.typography.h6
             )
         }
         Spacer(modifier = Modifier.height(30.dp))
-        Surface(color = Color(0xFF252322), onClick = { onClick() }) {
+        Surface(color = MaterialTheme.colors.surface, onClick = { onClick() }) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End,
@@ -57,8 +59,8 @@ fun BusyAlertView(modifier: Modifier, event: band.effective.office.tablet.domain
             ) {
                 Text(
                     text = MainRes.string.see_free_room,
-                    color = Color(0xFFA362F8),
-                    fontSize = 19.sp
+                    color = MaterialTheme.colors.secondary,
+                    style = MaterialTheme.typography.h6
                 )
                 Image(
                     modifier = Modifier,

@@ -17,9 +17,13 @@ fun MainScreen(component: MainComponent) {
             MainScreenView(
                 room = state.roomInfo,
                 showBookingModal = state.showBookingModal,
+                showFreeRoomModal = state.showFreeModal,
                 mockComponent = component.mockSettingsComponent,
                 bookingRoomComponent = component.bookingRoomComponent,
-                selectRoomComponent = component.selectRoomComponent
+                selectRoomComponent = component.selectRoomComponent,
+                onCloseFreeModalRequest = { component.closeAllModal() },
+                onOpenFreeModalRequest = { component.openFreeRoomModal() },
+                onFreeRoomRequest = { component.onFreeRoom() }
             )
         }
     }

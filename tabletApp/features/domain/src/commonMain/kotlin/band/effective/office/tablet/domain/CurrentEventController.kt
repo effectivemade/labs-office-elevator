@@ -3,14 +3,13 @@ package band.effective.office.tablet.domain
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.useCase.RoomInfoUseCase
 import band.effective.office.tablet.network.repository.CancelRepository
-import band.effective.office.tablet.network.repository.ServerUpdateRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
+/**Class for control start/finish event in room*/
 abstract class CurrentEventController(
     private val roomUseCase: RoomInfoUseCase,
-    private val serverUpdateRepository: ServerUpdateRepository,
     private val cancelRepository: CancelRepository
 ) {
     private lateinit var job: Job
@@ -18,13 +17,15 @@ abstract class CurrentEventController(
     protected var currentEvent: EventInfo? = null
     protected val handlersList: MutableList<() -> Unit> = mutableListOf()
 
+    /**Prepare controller for async work*/
     fun start(scope: CoroutineScope) {
         this.scope = scope
         job = update()
-        scope.launch { serverUpdateRepository.subscribeOnUpdates(scope, { onServerUpdate() }, {}) }
+        roomUseCase.subscribe(scope) { onServerUpdate() }
     }
 
-    private fun cancelCurrentEvent() {
+    /**Finish current event*/
+    fun cancelCurrentEvent() {
         scope.launch {
             if (cancelRepository.cancelEvent()) {
                 onServerUpdate()
@@ -32,6 +33,7 @@ abstract class CurrentEventController(
         }
     }
 
+    /**Reloading current event state change handler*/
     private fun onServerUpdate() {
         scope.launch {
             job.cancel()
@@ -40,9 +42,11 @@ abstract class CurrentEventController(
         }
     }
 
+    /**subscribe on current event updates*/
     fun subscribe(onEvent: () -> Unit) {
         handlersList.add(onEvent)
     }
 
+    /**Update current event*/
     protected abstract fun update(): Job
 }

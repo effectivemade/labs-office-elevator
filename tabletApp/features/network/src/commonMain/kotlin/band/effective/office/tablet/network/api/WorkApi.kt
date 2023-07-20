@@ -24,11 +24,39 @@ class WorkApi : Api {
     }
 
     override suspend fun cancelEvent(): Boolean {
-        return false
+        mutableRoomInfo.update { it.copy(currentEvent = null) }
+        return true
     }
 
-    override suspend fun bookingRoom(): Boolean {
-        return false
+    override suspend fun bookingRoom(
+        begin: Calendar,
+        end: Calendar,
+        owner: String,
+    ): Boolean {
+        if (begin <= GregorianCalendar() && GregorianCalendar() <= end) {
+            mutableRoomInfo.update {
+                it.copy(
+                    currentEvent = EventInfo(
+                        startTime = begin,
+                        finishTime = end,
+                        organizer = owner
+                    )
+                )
+            }
+        } else {
+            mutableRoomInfo.update { roomInfo ->
+                roomInfo.copy(
+                    eventList = (roomInfo
+                        .eventList + EventInfo(
+                        startTime = begin,
+                        finishTime = end,
+                        organizer = owner
+                    )).sortedBy { it.startTime }
+                )
+            }
+        }
+
+        return true
     }
 
     override fun subscribeOnWebHock(

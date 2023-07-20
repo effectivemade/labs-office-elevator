@@ -1,5 +1,6 @@
 package band.effective.office.tablet.ui.mainScreen.mainScreen.store
 
+import band.effective.office.tablet.domain.CurrentEventController
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.domain.useCase.UpdateUseCase
 import com.arkivanov.mvikotlin.core.store.Reducer
@@ -16,6 +17,7 @@ import org.koin.core.component.inject
 class MainStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
 
     private val updateUseCase: UpdateUseCase by inject()
+    private val currentEventController: CurrentEventController by inject()
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): MainStore =
@@ -29,11 +31,10 @@ class MainStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
                         updateUseCase(
                             scope = this,
                             roomUpdateHandler = { roomInfo ->
-                                dispatch(
-                                    Action.UpdateRoomInfo(
-                                        roomInfo
-                                    )
-                                )
+                                launch(Dispatchers.Main.immediate) {
+                                    dispatch(Action.UpdateRoomInfo(roomInfo))
+                                }
+
                             },
                             organizerUpdateHandler = {})
                     }
@@ -51,6 +52,9 @@ class MainStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
         object BookingCurrentRoom : Message
         object BookingOtherRoom : Message
         object CloseModal : Message
+        object OpenFreeModal : Message
+        object StartFreeRoom : Message
+        object FinishFreeRoom : Message
     }
 
     private inner class ExecutorImpl() :
@@ -60,6 +64,8 @@ class MainStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
                 is MainStore.Intent.OnBookingCurrentRoomRequest -> dispatch(Message.BookingCurrentRoom)
                 is MainStore.Intent.OnBookingOtherRoomRequest -> dispatch(Message.BookingOtherRoom)
                 is MainStore.Intent.CloseModal -> dispatch(Message.CloseModal)
+                is MainStore.Intent.OnFreeRoomIntent -> freeRoom()
+                is MainStore.Intent.OnOpenFreeRoomModal -> dispatch(Message.OpenFreeModal)
             }
         }
 
@@ -67,6 +73,12 @@ class MainStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
             when (action) {
                 is Action.UpdateRoomInfo -> dispatch(Message.UpdateRoomInfo(action.roomInfo))
             }
+        }
+
+        private fun freeRoom() = scope.launch {
+            dispatch(Message.StartFreeRoom)
+            currentEventController.cancelCurrentEvent()
+            dispatch(Message.FinishFreeRoom)
         }
     }
 
@@ -81,7 +93,10 @@ class MainStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
                     isLoad = false
                 )
 
-                is Message.CloseModal -> copy(showBookingModal = false)
+                is Message.CloseModal -> copy(showBookingModal = false, showFreeModal = false)
+                is Message.OpenFreeModal -> copy(showFreeModal = true)
+                is Message.FinishFreeRoom -> copy(showFreeModal = false)
+                is Message.StartFreeRoom -> copy()
             }
     }
 }

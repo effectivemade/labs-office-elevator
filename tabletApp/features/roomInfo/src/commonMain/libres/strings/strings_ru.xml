@@ -20,4 +20,5 @@
     <string name="plus_date_button_string">+15</string>
     <string name="current_length_string">${currentLength} мин</string>
     <string name="selectbox_organizer_title">Организатор встречи</string>
+    <string name="event_list_title">Занятое время</string>
 </resources>
