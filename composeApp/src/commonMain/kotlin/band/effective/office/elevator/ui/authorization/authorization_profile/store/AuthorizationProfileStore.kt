@@ -13,10 +13,12 @@ interface AuthorizationProfileStore :
     }
 
     data class State(
-        var name: String = "Фамилия Имя",
-        var post: String = "Android developer",
+        var name: String = "",
+        var post: String = "",
         var isLoading: Boolean = false,
-        var isError: Boolean = false
+        var isError: Boolean = false,
+        var isErrorName: Boolean = false,
+        var isErrorPost: Boolean = false
     )
 
     sealed interface Label {
@@ -25,7 +27,5 @@ interface AuthorizationProfileStore :
         object AuthorizationProfileFailure : Label
 
         object ReturnInPhoneAuthorization : Label
-
-        object OpenTGAuthorization : Label
     }
 }

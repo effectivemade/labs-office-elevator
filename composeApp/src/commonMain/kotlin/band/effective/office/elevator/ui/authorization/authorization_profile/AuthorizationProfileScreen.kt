@@ -28,6 +28,8 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Person
+import androidx.compose.material.icons.rounded.Work
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -45,6 +47,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import band.effective.office.elevator.ExtendedTheme
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.OutlinedTextColorsSetup
 import band.effective.office.elevator.components.PrimaryButton
@@ -77,10 +80,6 @@ fun AuthorizationProfileScreen(component: AuthorizationProfileComponent) {
                     AuthorizationProfileComponent.Output.OpenTGScreen
                 )
 
-                AuthorizationProfileStore.Label.OpenTGAuthorization -> component.onOutput(
-                    AuthorizationProfileComponent.Output.OpenTGScreen
-                )
-
                 AuthorizationProfileStore.Label.ReturnInPhoneAuthorization -> component.onOutput(
                     AuthorizationProfileComponent.Output.OpenPhoneScreen
                 )
@@ -96,17 +95,14 @@ fun AuthorizationProfileComponent(
     onEvent: (AuthorizationProfileStore.Intent) -> Unit,
     state: AuthorizationProfileStore.State
 ) {
-//    region::Variables
-    val isError1 = remember { mutableStateOf(false) }
-    val isError2 = remember { mutableStateOf(false) }
-    val name = remember { mutableStateOf("") }
-    val post = remember { mutableStateOf("") }
-
-    val focusColor1 = remember { mutableStateOf(textGrayColor) }
-    val focusColor2 = remember { mutableStateOf(textGrayColor) }
 
     val closeIcon1 = remember { mutableStateOf(false) }
+    val borderColor1 = remember { mutableStateOf(textGrayColor) }
+    val leadingColor1 = remember { mutableStateOf(textGrayColor) }
+
     val closeIcon2 = remember { mutableStateOf(false) }
+    val borderColor2 = remember { mutableStateOf(textGrayColor) }
+    val leadingColor2 = remember { mutableStateOf(textGrayColor) }
 
     val elevation = ButtonDefaults.elevation(
         defaultElevation = 0.dp,
@@ -115,7 +111,6 @@ fun AuthorizationProfileComponent(
         hoveredElevation = 0.dp,
         focusedElevation = 0.dp
     )
-//    endregion
 
     Column(
         horizontalAlignment = Alignment.Start,
@@ -162,41 +157,43 @@ fun AuthorizationProfileComponent(
                 textAlign = TextAlign.Start
             )
 
-//            region::Input area
 //            NAME
             OutlinedTextField(
-                value = name.value,
+                value = state.name,
                 onValueChange = {
-                    name.value = it
-                    state.name = it
-                    closeIcon1.value = it.isNotEmpty()
+                    if (it.isNotEmpty()) {
+                        closeIcon1.value = true
+                        leadingColor1.value = Color.Black
+                        borderColor1.value = theme_light_primary_stroke
+                    } else {
+                        borderColor1.value = textGrayColor
+                        closeIcon1.value = false
+                        leadingColor1.value = textGrayColor
+                    }
+
+                    onEvent(AuthorizationProfileStore.Intent.NameChanged(name = it))
                 },
                 textStyle = MaterialTheme.typography.body1,
                 colors = OutlinedTextColorsSetup(),
                 placeholder = {
                     Text(
                         text = stringResource(MainRes.strings.profile_hint),
-                        style = TextStyle(
-                            fontSize = 16.sp,
-                            lineHeight = 20.8.sp,
-                            fontFamily = getDefaultFont(),
-                            fontWeight = FontWeight(500),
-                            letterSpacing = 0.1.sp,
-                            color = textGrayColor
-                        )
+                        style = MaterialTheme.typography.button,
+                        color = textGrayColor
                     )
                 },
-                isError = isError1.value,
+                isError = state.isErrorName,
                 singleLine = true,
                 trailingIcon = {
                     if (closeIcon1.value) {
                         IconButton(onClick = {
-                            name.value = ""
                             closeIcon1.value = false
+                            leadingColor1.value = textGrayColor
+                            onEvent(AuthorizationProfileStore.Intent.NameChanged(name = ""))
                         }) {
                             Icon(
                                 imageVector = Icons.Outlined.Close,
-                                contentDescription = "clear_text_field",
+                                contentDescription = "clear text field",
                             )
                         }
                     }
@@ -209,31 +206,32 @@ fun AuthorizationProfileComponent(
                         modifier = Modifier.padding(horizontal = 16.dp)
                     ) {
                         Icon(
-                            painterResource(MainRes.images.ic_person),
-                            contentDescription = "name_icon"
+                            imageVector = Icons.Rounded.Person,
+                            contentDescription = "name icon",
+                            tint = leadingColor1.value
                         )
 
                         Spacer(modifier = Modifier.width(16.dp))
 
                         Divider(
                             modifier = Modifier
-                                .height(28.dp)
+                                .height(20.dp)
                                 .width(2.dp)
                                 .clip(RoundedCornerShape(4.dp))
-                                .padding(vertical = 4.dp)
-                                .background(focusColor1.value)
+                                .background(if (state.isErrorName) ExtendedTheme.colors.error else borderColor1.value)
+                                .padding(vertical = 14.dp)
                         )
                     }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
-//                    .focusRequester(focusRequester)
                     .onFocusChanged {
                         if (it.isFocused) {
-                            focusColor1.value = theme_light_primary_stroke
+                            borderColor1.value = theme_light_primary_stroke
                         } else {
-                            focusColor1.value = textGrayColor
+                            borderColor1.value = textGrayColor
+                            leadingColor1.value = textGrayColor
                         }
                     }
             )
@@ -242,39 +240,41 @@ fun AuthorizationProfileComponent(
 
 //            POST
             OutlinedTextField(
-                value = post.value,
+                value = state.post,
                 onValueChange = {
-                    post.value = it
-                    state.post = it
-                    closeIcon2.value = it.isNotEmpty()
+                    if (it.isNotEmpty()) {
+                        closeIcon2.value = true
+                        leadingColor2.value = Color.Black
+                        borderColor2.value = theme_light_primary_stroke
+                    } else {
+                        borderColor2.value = textGrayColor
+                        closeIcon2.value = false
+                        leadingColor2.value = textGrayColor
+                    }
+
+                    onEvent(AuthorizationProfileStore.Intent.PostChanged(post = it))
                 },
                 textStyle = MaterialTheme.typography.body1,
                 colors = OutlinedTextColorsSetup(),
                 placeholder = {
                     Text(
                         text = stringResource(MainRes.strings.profile_hint_),
-                        style = TextStyle(
-                            fontSize = 16.sp,
-                            lineHeight = 20.8.sp,
-                            fontFamily = getDefaultFont(),
-                            fontWeight = FontWeight(500),
-                            letterSpacing = 0.1.sp,
-                            color = textGrayColor
-                        ),
-                        lineHeight = 20.8.sp
+                        style = MaterialTheme.typography.button,
+                        color = textGrayColor
                     )
                 },
-                isError = isError2.value,
+                isError = state.isErrorPost,
                 singleLine = true,
                 trailingIcon = {
                     if (closeIcon2.value) {
                         IconButton(onClick = {
-                            post.value = ""
                             closeIcon2.value = false
+                            leadingColor2.value = textGrayColor
+                            onEvent(AuthorizationProfileStore.Intent.PostChanged(post = ""))
                         }) {
                             Icon(
                                 imageVector = Icons.Outlined.Close,
-                                contentDescription = "clear_text_field",
+                                contentDescription = "clear text field with post text",
                             )
                         }
                     }
@@ -287,31 +287,32 @@ fun AuthorizationProfileComponent(
                         modifier = Modifier.padding(horizontal = 16.dp)
                     ) {
                         Icon(
-                            painterResource(MainRes.images.ic_bag),
-                            contentDescription = "post_icon"
+                            imageVector = Icons.Rounded.Work,
+                            contentDescription = "post icon",
+                            tint = leadingColor2.value
                         )
 
                         Spacer(modifier = Modifier.width(16.dp))
 
                         Divider(
                             modifier = Modifier
-                                .height(28.dp)
+                                .height(20.dp)
                                 .width(2.dp)
                                 .clip(RoundedCornerShape(4.dp))
-                                .padding(vertical = 4.dp)
-                                .background(focusColor2.value)
+                                .background(if (state.isErrorPost) ExtendedTheme.colors.error else borderColor2.value)
+                                .padding(vertical = 14.dp)
                         )
                     }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
-//                    .focusRequester(focusRequester)
                     .onFocusChanged {
                         if (it.isFocused) {
-                            focusColor2.value = theme_light_primary_stroke
+                            borderColor2.value = theme_light_primary_stroke
                         } else {
-                            focusColor2.value = textGrayColor
+                            borderColor2.value = textGrayColor
+                            leadingColor2.value = textGrayColor
                         }
                     }
             )
@@ -332,7 +333,6 @@ fun AuthorizationProfileComponent(
                     onEvent(AuthorizationProfileStore.Intent.ContinueButtonClicked)
                 }
             )
-//            endregion
         }
     }
 }

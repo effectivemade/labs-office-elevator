@@ -4,9 +4,7 @@ import band.effective.office.elevator.ui.models.validator.Validator
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
-import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
 class AuthorizationProfileStoreFactory(
@@ -20,18 +18,21 @@ class AuthorizationProfileStoreFactory(
             Store<AuthorizationProfileStore.Intent, AuthorizationProfileStore.State, AuthorizationProfileStore.Label> by storeFactory.create(
                 name = "Authorization profile",
                 initialState = AuthorizationProfileStore.State(),
-                bootstrapper = BootstrapperImpl(),
                 executorFactory = ::ExecutorImpl,
                 reducer = ReducerImpl
             ) {
         }
 
-    private class BootstrapperImpl : CoroutineBootstrapper<Action>() {
-        override fun invoke() {
-            scope.launch {
+    private sealed interface Msg {
+        data class NameData(
+            var name: String,
+            var isNameError: Boolean
+        ) : Msg
 
-            }
-        }
+        data class PostData(
+            var post: String,
+            var isPostError: Boolean
+        ) : Msg
     }
 
     private sealed interface Action {
@@ -39,18 +40,23 @@ class AuthorizationProfileStoreFactory(
     }
 
     private object ReducerImpl :
-        Reducer<AuthorizationProfileStore.State, AuthorizationProfileStore.Intent> {
-        override fun AuthorizationProfileStore.State.reduce(msg: AuthorizationProfileStore.Intent): AuthorizationProfileStore.State =
+        Reducer<AuthorizationProfileStore.State, AuthorizationProfileStoreFactory.Msg> {
+        override fun AuthorizationProfileStore.State.reduce(msg: AuthorizationProfileStoreFactory.Msg): AuthorizationProfileStore.State =
             when (msg) {
-                AuthorizationProfileStore.Intent.BackButtonClicked -> TODO()
-                AuthorizationProfileStore.Intent.ContinueButtonClicked -> TODO()
-                is AuthorizationProfileStore.Intent.NameChanged -> TODO()
-                is AuthorizationProfileStore.Intent.PostChanged -> TODO()
+                is Msg.NameData -> copy(
+                    name = msg.name,
+                    isErrorName = msg.isNameError
+                )
+
+                is Msg.PostData -> copy(
+                    post = msg.post,
+                    isErrorPost = msg.isPostError
+                )
             }
     }
 
     private inner class ExecutorImpl :
-        CoroutineExecutor<AuthorizationProfileStore.Intent, Action, AuthorizationProfileStore.State, Nothing, AuthorizationProfileStore.Label>() {
+        CoroutineExecutor<AuthorizationProfileStore.Intent, Action, AuthorizationProfileStore.State, AuthorizationProfileStoreFactory.Msg, AuthorizationProfileStore.Label>() {
         override fun executeIntent(
             intent: AuthorizationProfileStore.Intent,
             getState: () -> AuthorizationProfileStore.State
@@ -62,20 +68,29 @@ class AuthorizationProfileStoreFactory(
                     getState().post
                 )
 
-                is AuthorizationProfileStore.Intent.PostChanged -> TODO()
-                is AuthorizationProfileStore.Intent.NameChanged -> TODO()
+                is AuthorizationProfileStore.Intent.PostChanged -> with(intent.post) {
+                    dispatch(
+                        AuthorizationProfileStoreFactory.Msg.PostData(
+                            post = this,
+                            isPostError = validator.checkPost(this)
+                        )
+                    )
+                }
+
+                is AuthorizationProfileStore.Intent.NameChanged -> dispatch(
+                    AuthorizationProfileStoreFactory.Msg.NameData(
+                        name = intent.name,
+                        isNameError = validator.checkName(intent.name)
+                    )
+                )
             }
 
         private fun checkUserdata(name: String, post: String) {
-            if (validator.checkName(name) && validator.checkPost(post)) {
+            if (!validator.checkName(name) && !validator.checkPost(post)) {
                 publish(AuthorizationProfileStore.Label.AuthorizationProfileSuccess)
             } else {
                 publish(AuthorizationProfileStore.Label.AuthorizationProfileFailure)
             }
-        }
-
-        private fun openTGAuthorization() {
-            publish(AuthorizationProfileStore.Label.OpenTGAuthorization)
         }
 
         private fun back() {
