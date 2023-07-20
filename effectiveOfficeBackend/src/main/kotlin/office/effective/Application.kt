@@ -47,7 +47,9 @@ fun Application.module() {
         }
     }
     configureMigration()
+    configureDI()
     configureSerialization()
     configureSecurity()
     configureRouting()
+    configureExceptionHandling()
 }
