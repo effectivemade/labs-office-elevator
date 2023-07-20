@@ -12,6 +12,8 @@
     <string name="employee_soon_in_office">Will be today</string>
     <string name="employee_not_soon_in_office">No reservations</string>
 
+    <string name="company_name">Effective</string>
+
     <!--Auth strings-->
     <string name="_continue">Continue</string>
     <string name="input_number">Enter number</string>
