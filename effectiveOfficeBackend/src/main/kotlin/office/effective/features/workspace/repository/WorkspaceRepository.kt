@@ -1,22 +1,16 @@
 package office.effective.features.workspace.repository
 
-import office.effective.common.exception.UtilityNotFoundException
-import office.effective.common.exception.WorkspaceNotFoundException
-import office.effective.common.exception.WorkspaceTagNotFoundException
+import office.effective.common.exception.InstanceNotFoundException
 import office.effective.features.workspace.converters.WorkspaceRepositoryConverter
 import office.effective.model.Utility
 import office.effective.model.Workspace
-import org.koin.core.context.GlobalContext
-import org.koin.java.KoinJavaComponent.inject
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
 import org.ktorm.entity.*
 import org.ktorm.support.postgresql.insertOrUpdate
 import java.util.UUID
 
-class WorkspaceRepository {
-    private val database: Database = GlobalContext.get().get()
-    private val converter: WorkspaceRepositoryConverter = GlobalContext.get().get()
+class WorkspaceRepository(private val database: Database, private val converter: WorkspaceRepositoryConverter) {
 
     /**
      * Returns whether a workspace with the given id exists
@@ -45,7 +39,7 @@ class WorkspaceRepository {
      */
     private fun findUtilitiesByWorkspaceId(workspaceId: UUID): List<Utility> {
         if (!workspaceExistsById(workspaceId)) {
-            throw WorkspaceNotFoundException("Workspace with id $workspaceId not found")
+            throw InstanceNotFoundException(WorkspaceEntity::class, "Workspace with id $workspaceId not found", workspaceId)
         }
         val modelList = database
             .from(WorkspaceUtilities)
@@ -80,7 +74,7 @@ class WorkspaceRepository {
      */
     fun findAllByTag(tag: String): List<Workspace> {
         val tagEntity: WorkspaceTagEntity = database.workspaceTags.find { it.name eq tag }
-            ?: throw WorkspaceTagNotFoundException("Workspace tag $tag not found")
+            ?: throw InstanceNotFoundException(WorkspaceTagEntity::class, "Workspace tag $tag not found")
 
         val entityList = database.workspaces.filter { it.tagId eq tagEntity.id }.toList()
         return entityList.map {
@@ -102,10 +96,10 @@ class WorkspaceRepository {
     @Deprecated("API does not involve adding utility to workspaces")
     fun addUtilityToWorkspace(utilityId: UUID, workspaceId: UUID, count: UInt) {
         if (!workspaceExistsById(workspaceId)) {
-            throw WorkspaceNotFoundException("Workspace with id $workspaceId not found")
+            throw InstanceNotFoundException(WorkspaceEntity::class, "Workspace with id $workspaceId not found", workspaceId)
         }
         if (!utilityExistsById(utilityId)) {
-            throw UtilityNotFoundException("Utility with id $utilityId not found")
+            throw InstanceNotFoundException(UtilityEntity::class, "Utility with id $utilityId not found", utilityId)
         }
         database.insertOrUpdate(WorkspaceUtilities) {
             set(it.workspaceId, workspaceId)
@@ -127,7 +121,7 @@ class WorkspaceRepository {
     @Deprecated("API does not involve saving workspace entities")
     fun save(workspace: Workspace): Workspace {
         val tagEntity: WorkspaceTagEntity = database.workspaceTags.find { it.name eq workspace.tag }
-            ?: throw WorkspaceTagNotFoundException("Workspace tag ${workspace.tag} not found")
+            ?: throw InstanceNotFoundException(WorkspaceTagEntity::class, "Workspace tag ${workspace.tag} not found")
 
         val entity = converter.modelToEntity(workspace, tagEntity);
         database.workspaces.add(entity)

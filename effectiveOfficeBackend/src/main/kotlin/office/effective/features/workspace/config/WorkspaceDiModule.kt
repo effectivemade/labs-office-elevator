@@ -9,8 +9,8 @@ import org.koin.dsl.module
 
 val workspaceDiModule = module(createdAtStart = true) {
     single { WorkspaceRepositoryConverter() }
-    single { WorkspaceRepository() }
-    single { WorkspaceService() }
+    single { WorkspaceRepository(get(), get()) }
+    single { WorkspaceService(get()) }
     single { WorkspaceFacadeConverter() }
-    single { WorkspaceFacade() }
+    single { WorkspaceFacade(get(), get()) }
 }
