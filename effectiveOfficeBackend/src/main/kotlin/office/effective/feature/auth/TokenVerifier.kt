@@ -19,23 +19,14 @@ class TokenVerifier : ITokenVerifier {
         var userMail: String? = null
         val token: GoogleIdToken? = verifier.verify(tokenString)
 
-        if (token != null) {
-            val payload: GoogleIdToken.Payload = token.payload
+        val payload = token?.payload ?: throw Exception("Token cannot be verified")
+        val emailVerified: Boolean = payload.emailVerified
+        val hostedDomain = payload.hostedDomain
 
-            val emailVerified: Boolean = payload.emailVerified
-            val hostedDomain = payload.hostedDomain
-
-            if ((acceptableMailDomain == hostedDomain) && emailVerified) {
-                userMail = payload.email
-            }
-
-        } else {
-            throw Exception("Token cannot be verified")
+        if ((acceptableMailDomain == hostedDomain) && emailVerified) {
+            userMail = payload.email
         }
-        if (userMail.isNullOrBlank()) {
-            throw Exception("Token cannot be verified")
-        }
-        return userMail
+        return userMail ?: throw Exception("Token wasn't verified")
     }
 
 }
