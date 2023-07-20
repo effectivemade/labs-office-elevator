@@ -217,3 +217,5 @@ internal val textInBorderPurple = Color(0xFF5800CB)
 internal val borderPurple = Color(0xFF6F01FF)
 internal val textGrayColor = Color(0x80000000)
 
+internal val companyColor = Color(0xFF323E48)
+

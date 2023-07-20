@@ -1,4 +1,4 @@
-package band.effective.office.elevator.ui.employee.allEmployee
+package band.effective.office.elevator.ui.employee
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
@@ -51,10 +51,11 @@ import band.effective.office.elevator.theme_light_background
 import band.effective.office.elevator.theme_light_onBackground
 import band.effective.office.elevator.theme_light_primary_color
 import band.effective.office.elevator.theme_light_tertiary_color
-import band.effective.office.elevator.ui.employee.allEmployee.store.EmployeeStore
+import band.effective.office.elevator.ui.employee.store.EmployeeStore
 import dev.icerock.moko.resources.ImageResource
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
+
 
 data class EmployeeCard(
     val name: String,
@@ -103,6 +104,7 @@ fun EmployeeScreenContent(
         Box(
             modifier = Modifier
                 .background(theme_light_primary_color)///Themeeee!
+
                 .fillMaxWidth()
         ) {
             Column {
@@ -151,6 +153,7 @@ fun EmployeeScreenContent(
                     shape = RoundedCornerShape(32.dp)
 
                 )
+
                 //padding настроить!
             }
         }
@@ -162,6 +165,7 @@ fun EmployeeScreenContent(
         ) {
             LazyColumn(
                 //TODO() Зюзин: надо доработать вёрстку экрана (оптимизировать компоненты)
+
                 modifier = Modifier.fillMaxSize()
             ) {
                 item {
@@ -196,12 +200,11 @@ fun EmployeeScreenContent(
 
             }
         }
-
-
     }
 }
 
 @Composable
+
 fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
     var isExpanded by remember { mutableStateOf(false) }
     val stateColorBorder: Color
@@ -211,6 +214,7 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
         stateColorText = borderGreen
     } else {
         if (emp.state == "Will be today") {
+
             stateColorBorder = borderPurple
             stateColorText = textInBorderPurple
         } else {
