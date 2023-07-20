@@ -12,7 +12,8 @@ interface AuthorizationTelegramStore :
     }
 
     data class State(
-        var nick: String = "Никнейм в телеграм",
+        var nick: String = "",
+        var isErrorNick: Boolean = false,
         var isLoading: Boolean = false,
         var isError: Boolean = false
     )
@@ -23,7 +24,5 @@ interface AuthorizationTelegramStore :
         object AuthorizationTelegramFailure : Label
 
         object ReturnInProfileAuthorization : Label
-
-        object OpenMainScreen : Label
     }
 }

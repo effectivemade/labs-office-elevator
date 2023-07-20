@@ -1,15 +1,11 @@
 package band.effective.office.elevator.ui.authorization.authorization_telegram.store
 
 import band.effective.office.elevator.ui.models.validator.Validator
-import band.effective.office.elevator.ui.models.validator.ValidatorMethods
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
-import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 class AuthorizationTelegramStoreFactory(
     private val storeFactory: StoreFactory,
@@ -22,18 +18,16 @@ class AuthorizationTelegramStoreFactory(
             Store<AuthorizationTelegramStore.Intent, AuthorizationTelegramStore.State, AuthorizationTelegramStore.Label> by storeFactory.create(
                 name = "Authorization telegram",
                 initialState = AuthorizationTelegramStore.State(),
-                bootstrapper = BootstrapperImpl(),
                 executorFactory = ::ExecutorImpl,
                 reducer = ReducerImpl
             ) {
         }
 
-    private class BootstrapperImpl : CoroutineBootstrapper<Action>() {
-        override fun invoke() {
-            scope.launch {
-
-            }
-        }
+    sealed interface Msg {
+        data class Data(
+            val nickName: String,
+            val isErrorNickName: Boolean,
+        ) : Msg
     }
 
     private sealed interface Action {
@@ -41,17 +35,18 @@ class AuthorizationTelegramStoreFactory(
     }
 
     private object ReducerImpl :
-        Reducer<AuthorizationTelegramStore.State, AuthorizationTelegramStore.Intent> {
-        override fun AuthorizationTelegramStore.State.reduce(msg: AuthorizationTelegramStore.Intent): AuthorizationTelegramStore.State =
+        Reducer<AuthorizationTelegramStore.State, AuthorizationTelegramStoreFactory.Msg> {
+        override fun AuthorizationTelegramStore.State.reduce(msg: AuthorizationTelegramStoreFactory.Msg): AuthorizationTelegramStore.State =
             when (msg) {
-                AuthorizationTelegramStore.Intent.BackButtonClicked -> TODO()
-                AuthorizationTelegramStore.Intent.ContinueButtonClicked -> TODO()
-                is AuthorizationTelegramStore.Intent.NickChanged -> TODO()
+                is Msg.Data -> copy(
+                    nick = msg.nickName,
+                    isErrorNick = msg.isErrorNickName
+                )
             }
     }
 
     private inner class ExecutorImpl :
-        CoroutineExecutor<AuthorizationTelegramStore.Intent, Action, AuthorizationTelegramStore.State, Nothing, AuthorizationTelegramStore.Label>() {
+        CoroutineExecutor<AuthorizationTelegramStore.Intent, Action, AuthorizationTelegramStore.State, AuthorizationTelegramStoreFactory.Msg, AuthorizationTelegramStore.Label>() {
         override fun executeIntent(
             intent: AuthorizationTelegramStore.Intent,
             getState: () -> AuthorizationTelegramStore.State
@@ -62,8 +57,15 @@ class AuthorizationTelegramStoreFactory(
                     getState().nick
                 )
 
-                is AuthorizationTelegramStore.Intent.NickChanged -> TODO()
+                is AuthorizationTelegramStore.Intent.NickChanged -> dispatch(
+                    Msg.Data(
+                        nickName = intent.name,
+                        isErrorNickName = !isErrorNickName(intent.name)
+                    )
+                )
             }
+
+        private fun isErrorNickName(nickname: String) = validator.checkTelegramNick(nickname)
 
         private fun checkTelegramNick(telegramNick: String) {
             if (validator.checkTelegramNick(telegramNick))
@@ -71,10 +73,6 @@ class AuthorizationTelegramStoreFactory(
             else
                 publish(AuthorizationTelegramStore.Label.AuthorizationTelegramFailure)
 
-        }
-
-        private fun openMainScreen() {
-            publish(AuthorizationTelegramStore.Label.OpenMainScreen)
         }
 
         private fun back() {

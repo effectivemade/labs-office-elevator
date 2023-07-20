@@ -36,17 +36,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import band.effective.office.elevator.ExtendedTheme
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.OutlinedTextColorsSetup
 import band.effective.office.elevator.components.PrimaryButton
 import band.effective.office.elevator.expects.showToast
-import band.effective.office.elevator.getDefaultFont
 import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.theme_light_primary_stroke
 import band.effective.office.elevator.ui.authorization.authorization_telegram.store.AuthorizationTelegramStore
@@ -66,15 +64,13 @@ fun AuthorizationTelegramScreen(component: AuthorizationTelegramComponent) {
         component.label.collect { label ->
             when (label) {
                 AuthorizationTelegramStore.Label.AuthorizationTelegramFailure -> {
-                    state.isError = true
                     showToast(errorMessage)
                 }
+
                 AuthorizationTelegramStore.Label.AuthorizationTelegramSuccess -> component.onOutput(
                     AuthorizationTelegramComponent.Output.OpenContentFlow
                 )
-                AuthorizationTelegramStore.Label.OpenMainScreen -> component.onOutput(
-                    AuthorizationTelegramComponent.Output.OpenContentFlow
-                )
+
                 AuthorizationTelegramStore.Label.ReturnInProfileAuthorization -> component.onOutput(
                     AuthorizationTelegramComponent.Output.OpenProfileScreen
                 )
@@ -98,9 +94,9 @@ private fun AuthorizationTelegramComponent(
         focusedElevation = 0.dp
     )
 
-    val message = remember { mutableStateOf("") }
     val closeIcon = remember { mutableStateOf(false) }
-    val focusColor = remember { mutableStateOf(textGrayColor) }
+    val borderColor = remember { mutableStateOf(textGrayColor) }
+    val leadingColor = remember { mutableStateOf(textGrayColor) }
 
     Column(
         horizontalAlignment = Alignment.Start,
@@ -121,7 +117,7 @@ private fun AuthorizationTelegramComponent(
             Icon(
                 imageVector = Icons.Rounded.ArrowBack,
                 tint = Color.Black,
-                contentDescription = "image_back"
+                contentDescription = "back screen arrow"
             )
         }
 
@@ -148,11 +144,18 @@ private fun AuthorizationTelegramComponent(
             )
 
             OutlinedTextField(
-                value = message.value,
+                value = state.nick,
                 onValueChange = {
-                    message.value = it
-                    state.nick = it
-                    closeIcon.value = it.isNotEmpty()
+                    if (it.isNotEmpty()) {
+                        closeIcon.value = true
+                        leadingColor.value = Color.Black
+                        borderColor.value = theme_light_primary_stroke
+                    } else {
+                        borderColor.value = textGrayColor
+                        closeIcon.value = false
+                        leadingColor.value = textGrayColor
+                    }
+                    onEvent(AuthorizationTelegramStore.Intent.NickChanged(name = it))
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                 textStyle = MaterialTheme.typography.body1,
@@ -160,28 +163,24 @@ private fun AuthorizationTelegramComponent(
                 placeholder = {
                     Text(
                         text = stringResource(MainRes.strings.employee_hint),
-                        style = TextStyle(
-                            fontSize = 16.sp,
-                            lineHeight = 20.8.sp,
-                            fontFamily = getDefaultFont(),
-                            fontWeight = FontWeight(500),
-                            letterSpacing = 0.1.sp,
-                            color = textGrayColor
-                        ),
-                        lineHeight = 20.8.sp
+                        color = textGrayColor,
+                        style = MaterialTheme.typography.button
                     )
                 },
-                isError = state.isError,
+                isError = state.isErrorNick,
                 singleLine = true,
                 trailingIcon = {
                     if (closeIcon.value) {
                         IconButton(onClick = {
-                            message.value = ""
+                            onEvent(
+                                AuthorizationTelegramStore.Intent.NickChanged(name = "")
+                            )
                             closeIcon.value = false
+                            leadingColor.value = textGrayColor
                         }) {
                             Icon(
                                 imageVector = Icons.Outlined.Close,
-                                contentDescription = "clear_text_field",
+                                contentDescription = "clear text field",
                             )
                         }
                     }
@@ -194,26 +193,20 @@ private fun AuthorizationTelegramComponent(
                         modifier = Modifier.padding(horizontal = 16.dp)
                     ) {
                         Text(
-                            text = "@",
-                            style = TextStyle(
-                                fontSize = 16.sp,
-                                lineHeight = 20.8.sp,
-                                fontFamily = getDefaultFont(),
-                                fontWeight = FontWeight(500),
-                                letterSpacing = 0.1.sp,
-                                color = textGrayColor
-                            )
+                            text = stringResource(MainRes.strings.telegram_symbol),
+                            style = MaterialTheme.typography.button,
+                            color = leadingColor.value
                         )
 
                         Spacer(modifier = Modifier.width(16.dp))
 
                         Divider(
                             modifier = Modifier
-                                .height(28.dp)
+                                .height(20.dp)
                                 .width(2.dp)
                                 .clip(RoundedCornerShape(4.dp))
-                                .padding(vertical = 4.dp)
-                                .background(focusColor.value)
+                                .background(if (state.isErrorNick) ExtendedTheme.colors.error else borderColor.value)
+                                .padding(vertical = 14.dp)
                         )
                     }
                 },
@@ -222,9 +215,10 @@ private fun AuthorizationTelegramComponent(
                     .wrapContentHeight()
                     .onFocusChanged {
                         if (it.isFocused) {
-                            focusColor.value = theme_light_primary_stroke
+                            borderColor.value = theme_light_primary_stroke
                         } else {
-                            focusColor.value = textGrayColor
+                            borderColor.value = textGrayColor
+                            leadingColor.value = textGrayColor
                         }
                     }
             )

@@ -31,6 +31,7 @@
     <string name="select_employee">Это необходимо для того, чтобы коллегам было удобно связаться с вами</string>
     <string name="employee_hint">Никнейм в Telegram</string>
     <string name="phone_plus_seven">+7</string>
+    <string name="telegram_symbol">@</string>
 
     <!--Elevator-->
     <string name="elevator" >Лифт</string>

@@ -61,6 +61,7 @@
     <string name="profile_format_error">Enter your profile</string>
     <string name="telegram_format_error">Specify nickname in telegram</string>
     <string name="phone_plus_seven">+7</string>
+    <string name="telegram_symbol">@</string>
 
     <!-- Success messages -->
     <string name="elevator_called_successfully">Successfully!</string>
