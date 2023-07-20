@@ -7,6 +7,7 @@ import office.effective.common.exception.UserTagNotFoundException
 import office.effective.feature.auth.converters.UserModelEntityConverter
 import office.effective.model.IntegrationModel
 import office.effective.model.UserModel
+import office.effective.model.UserTagModel
 import org.koin.core.context.GlobalContext
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
@@ -78,6 +79,11 @@ class UserRepository {
             )
         }
         return modelsSet;
+    }
+
+    fun findTagByName(tagName: String): UserTagModel {
+        val tag = db.users_tags.find { it.name eq tagName } ?: throw UserTagNotFoundException("Wrong tag name")
+        return UserTagModel(tag.id, tag.name)
     }
 
 }
