@@ -4,7 +4,7 @@ import java.util.*
 
 data class IntegrationModel(var name: String, var valueStr: String) {
     var id: UUID? = null
-    var iconUrl: String? = null
+    var iconUrl: String = ""
 
     constructor(
         _id: UUID,
