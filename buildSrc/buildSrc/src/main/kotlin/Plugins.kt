@@ -7,7 +7,7 @@
 object Plugins {
 
     object Android {
-        const val implementation = "com.android.tools.build:gradle:7.3.1"
+        const val implementation = "com.android.tools.build:gradle:7.4.2"
         const val plugin = "com.android.application"
     }
 
@@ -59,5 +59,10 @@ object Plugins {
     }
     object Parcelize {
         const val plugin = "org.jetbrains.kotlin.plugin.parcelize"
+    }
+
+    object Moko{
+        const val implementation = "dev.icerock.moko:resources-generator:0.23.0"
+        const val plugin = "dev.icerock.mobile.multiplatform-resources"
     }
 }

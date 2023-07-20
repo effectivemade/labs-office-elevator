@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,14 +14,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import band.effective.office.tablet.features.freeNegotiationsScreen.MainRes
 import band.effective.office.tablet.ui.freeNegotiationsScreen.models.RoomItem
+import band.effective.office.tablet.ui.theme.CustomDarkColors
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -34,27 +37,32 @@ fun RoomCard(
             modifier = Modifier
                 .fillMaxWidth().height(288.dp),
             shape = RoundedCornerShape(16.dp),
-            backgroundColor = Color(0xFFF3A3736)
+            backgroundColor = CustomDarkColors.primaryCard
         ) {
             Column(modifier = Modifier.padding(16.dp).fillMaxWidth()) {
                 Text(
                     text = roomItem.name,
-                    style = TextStyle(
-                        color = Color.White,
-                        fontSize = 48.sp
+                    style = MaterialTheme.typography.h2.copy(
+                        Color.White,
+                        fontWeight = FontWeight.Medium
                     )
                 )
                 Spacer(modifier = Modifier.height(28.dp))
-                FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier.padding(horizontal = 32.dp, vertical = 28.dp),
-                    maxItemsInEachRow = 2
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    for (stuff in roomItem.stuff) {
-                        RoomCharacteristics(
-                            icon = stuff.icon,
-                            text = stuff.text
-                        )
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        modifier = Modifier.padding(horizontal = 32.dp, vertical = 28.dp),
+                        maxItemsInEachRow = 2
+                    ) {
+                        for (stuff in roomItem.stuff) {
+                            RoomCharacteristics(
+                                icon = stuff.icon,
+                                text = stuff.text
+                            )
+                        }
                     }
                 }
                 Spacer(modifier = Modifier.height(50.dp))
@@ -64,20 +72,18 @@ fun RoomCard(
         Button(
             onClick = { onClick() },
             modifier = Modifier
-                .border(2.dp, shape = RoundedCornerShape(40.dp), color = Color(0xFFFEF7234))
-                .fillMaxWidth(),
+                .border(2.dp, shape = RoundedCornerShape(40.dp), color = CustomDarkColors.primary)
+                .fillMaxWidth().height(64.dp),
             shape = RoundedCornerShape(40.dp),
             colors = ButtonDefaults.buttonColors(
-                backgroundColor = Color(
-                    0xFFFF1E1C1A
-                )
+                backgroundColor = CustomDarkColors.background
             )
         ) {
             Text(
-                text = "Занять ${roomItem.name}",
-                style = TextStyle(
-                    color = Color(0xFFFEF7234),
-                    fontSize = 18.sp
+                text = "${MainRes.string.occupy} ${roomItem.name}",
+                style = MaterialTheme.typography.subtitle1.copy(
+                    color = CustomDarkColors.primary,
+                    fontWeight = FontWeight.Medium
                 )
             )
         }
