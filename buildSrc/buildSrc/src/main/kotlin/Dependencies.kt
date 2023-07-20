@@ -26,6 +26,7 @@ object Dependencies {
         const val shadow = "7.1.2"
         const val moko = "0.23.0"
         const val calendar = "1.0.4"
+        const val mokoGeo = "0.6.0"
     }
 
     object Ktor {
@@ -127,6 +128,8 @@ object Dependencies {
 
     object Moko{
         const val resourcesCompose = "dev.icerock.moko:resources-compose:${Versions.moko}"
+        const val geo = "dev.icerock.moko:geo:${Versions.mokoGeo}"
+        const val geoCompose = "dev.icerock.moko:geo-compose:${Versions.mokoGeo}"
     }
 
     object Calendar{

@@ -73,6 +73,8 @@ kotlin {
 
                 //Moko
                 api(Dependencies.Moko.resourcesCompose)
+                implementation(Dependencies.Moko.geo)
+                implementation(Dependencies.Moko.geoCompose)
 
                 implementation(Dependencies.Calendar.composeDatePicker)
             }
