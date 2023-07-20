@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import band.effective.office.tablet.ui.theme.CustomDarkColors
+import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 
 @Composable
 fun RoomCharacteristics(icon: ImageVector, text: String) {
@@ -21,14 +21,14 @@ fun RoomCharacteristics(icon: ImageVector, text: String) {
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = CustomDarkColors.primaryTextAndIcon,
+            tint = LocalCustomColorsPalette.current.primaryTextAndIcon,
             modifier = Modifier.size(30.dp)
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = text,
             style = MaterialTheme.typography.subtitle1.copy(
-                color = CustomDarkColors.primaryTextAndIcon,
+                color = LocalCustomColorsPalette.current.primaryTextAndIcon,
                 fontWeight = FontWeight.Medium
             )
         )

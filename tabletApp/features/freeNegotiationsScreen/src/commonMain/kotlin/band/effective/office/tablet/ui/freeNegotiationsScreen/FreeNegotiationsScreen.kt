@@ -27,7 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.features.freeNegotiationsScreen.MainRes
 import band.effective.office.tablet.ui.freeNegotiationsScreen.components.RoomCard
-import band.effective.office.tablet.ui.theme.CustomDarkColors
+import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 
 
 @Composable
@@ -53,7 +53,7 @@ internal fun FreeNegotiationsContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(CustomDarkColors.background)
+            .background(MaterialTheme.colors.background)
             .verticalScroll(
                 rememberScrollState()
             )
@@ -62,7 +62,7 @@ internal fun FreeNegotiationsContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(130.dp)
-                .background(CustomDarkColors.surface),
+                .background(MaterialTheme.colors.surface),
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.Start
         ) {
@@ -72,7 +72,7 @@ internal fun FreeNegotiationsContent(
                     Icon(
                         imageVector = ImageVector.vectorResource(MainRes.image.arrow_to_left),
                         contentDescription = null,
-                        tint = CustomDarkColors.iconAndText
+                        tint = LocalCustomColorsPalette.current.primaryTextAndIcon
                     )
                 }
             }
@@ -82,7 +82,7 @@ internal fun FreeNegotiationsContent(
                 text = "${MainRes.string.occupy} $date ${MainRes.string.with} " +
                         " $timeStart ${MainRes.string.before}  $timeEnd",
                 style = MaterialTheme.typography.h6.copy(
-                    color = CustomDarkColors.iconAndText,
+                    color = LocalCustomColorsPalette.current.primaryTextAndIcon,
                     fontWeight = FontWeight.Medium
                 )
             )

@@ -23,7 +23,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.features.freeNegotiationsScreen.MainRes
 import band.effective.office.tablet.ui.freeNegotiationsScreen.models.RoomItem
-import band.effective.office.tablet.ui.theme.CustomDarkColors
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -37,7 +36,7 @@ fun RoomCard(
             modifier = Modifier
                 .fillMaxWidth().height(288.dp),
             shape = RoundedCornerShape(16.dp),
-            backgroundColor = CustomDarkColors.primaryCard
+            backgroundColor = MaterialTheme.colors.background
         ) {
             Column(modifier = Modifier.padding(16.dp).fillMaxWidth()) {
                 Text(
@@ -72,17 +71,17 @@ fun RoomCard(
         Button(
             onClick = { onClick() },
             modifier = Modifier
-                .border(2.dp, shape = RoundedCornerShape(40.dp), color = CustomDarkColors.primary)
+                .border(2.dp, shape = RoundedCornerShape(40.dp), color = MaterialTheme.colors.primary)
                 .fillMaxWidth().height(64.dp),
             shape = RoundedCornerShape(40.dp),
             colors = ButtonDefaults.buttonColors(
-                backgroundColor = CustomDarkColors.background
+                backgroundColor = MaterialTheme.colors.background
             )
         ) {
             Text(
                 text = "${MainRes.string.occupy} ${roomItem.name}",
                 style = MaterialTheme.typography.subtitle1.copy(
-                    color = CustomDarkColors.primary,
+                    color = MaterialTheme.colors.primary,
                     fontWeight = FontWeight.Medium
                 )
             )
