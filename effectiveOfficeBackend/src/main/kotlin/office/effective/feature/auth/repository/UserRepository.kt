@@ -30,7 +30,7 @@ class UserRepository {
         val tagEntity =
             db.users_tags.find { it.id eq userEnt.tag.id } ?: throw UserTagNotFoundException("DB sync error")
 
-        val userModel = converter.EntityToModel(userEnt)
+        val userModel = converter.EntityToModel(userEnt, null)
         userModel.integrations = integrations
         userModel.tag = tagEntity
 
@@ -42,7 +42,7 @@ class UserRepository {
         val ents = db.users.filter { it.tagId eq tagId }.toSet()
         var models: MutableSet<UserModel> = mutableSetOf<UserModel>()
         ents.forEach {
-            val user = converter.EntityToModel(it)
+            val user = converter.EntityToModel(it, null)
             user.integrations = findSetOfIntegrationsByUser(user.id!!)
             models.add(user)
 

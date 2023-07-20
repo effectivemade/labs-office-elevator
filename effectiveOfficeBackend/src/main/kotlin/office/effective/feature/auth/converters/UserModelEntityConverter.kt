@@ -1,6 +1,7 @@
 package office.effective.feature.auth.converters
 
 import office.effective.feature.auth.repository.UserEntity
+import office.effective.model.IntegrationModel
 import office.effective.model.UserModel
 
 class UserModelEntityConverter {
@@ -14,14 +15,17 @@ class UserModelEntityConverter {
         return res
     }
 
-    fun EntityToModel(userEntity: UserEntity): UserModel {
-        var res = UserModel(userEntity.fullName)
-        res.id = userEntity.id
-        res.tag = userEntity.tag
-        res.active = userEntity.active
-        res.role = userEntity.role
-        res.avatarURL = userEntity.avatarURL
-        return res
+    fun EntityToModel(userEntity: UserEntity, integrations: Set<IntegrationModel>?): UserModel {
+
+        return UserModel(
+            userEntity.fullName,
+            id = userEntity.id,
+            tag = userEntity.tag,
+            active = userEntity.active,
+            role = userEntity.role,
+            avatarURL = userEntity.avatarURL,
+            integrations = integrations
+        )
 
     }
 }
