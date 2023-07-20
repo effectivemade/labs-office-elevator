@@ -18,8 +18,9 @@ fun main() {
 
 fun Application.module() {
     configureMigration()
+    configureDI()
     configureSerialization()
     configureSecurity()
     configureRouting()
-    configureDI()
+    configureExceptionHandling()
 }
