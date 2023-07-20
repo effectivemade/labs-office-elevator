@@ -4,8 +4,8 @@ import office.effective.feature.auth.dto.UserDTO
 import office.effective.model.UserModel
 
 interface IUserService {
-    fun getUsersByTag(): Set<UserDTO>;
-    fun getUserById(): UserDTO;
-    fun alterUser(): UserDTO;
+    fun getUsersByTag(tagStr: String): Set<UserDTO>?;
+    fun getUserById(userIdStr: String): UserDTO;
+    fun alterUser(user: UserDTO): UserDTO;
     fun getUserByToken(tokenStr: String): UserDTO;
 }
