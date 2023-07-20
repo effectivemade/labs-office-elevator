@@ -71,10 +71,10 @@ class UserRepository {
             val integrationEntity = findIntegrationById(it.integrationId.id!!)
             modelsSet.add(
                 IntegrationModel(
-                    _id = integrationEntity.id!!,
-                    _name = integrationEntity.name,
-                    _valueStr = it.valueStr,
-                    _iconUrl = integrationEntity.iconUrl
+                    id = integrationEntity.id!!,
+                    name = integrationEntity.name,
+                    valueStr = it.valueStr,
+                    iconUrl = integrationEntity.iconUrl
                 )
             )
         }

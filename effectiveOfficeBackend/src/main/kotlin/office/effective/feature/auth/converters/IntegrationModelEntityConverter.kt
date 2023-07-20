@@ -14,10 +14,10 @@ class IntegrationModelEntityConverter {
 
     fun entityToModel(integrationEntity: IntegrationEntity, valueStr: String): IntegrationModel {
         return IntegrationModel(
-            _id = integrationEntity.id!!,
-            _iconUrl = integrationEntity.iconUrl,
-            _name = integrationEntity.name,
-            _valueStr = valueStr
+            id = integrationEntity.id!!,
+            iconUrl = integrationEntity.iconUrl,
+            name = integrationEntity.name,
+            valueStr = valueStr
         )
     }
 }
