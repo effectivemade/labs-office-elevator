@@ -99,6 +99,7 @@ class WorkspaceRepository {
      *
      * @author Daniil Zavyalov
      */
+    @Deprecated("API does not involve adding utility to workspaces")
     fun addUtilityToWorkspace(utilityId: UUID, workspaceId: UUID, count: UInt) {
         if (!workspaceExistsById(workspaceId)) {
             throw WorkspaceNotFoundException("Workspace with id $workspaceId not found")
