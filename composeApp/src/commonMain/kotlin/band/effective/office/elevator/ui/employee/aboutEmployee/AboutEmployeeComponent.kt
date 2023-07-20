@@ -1,20 +1,21 @@
-package band.effective.office.elevator.ui.aboutEmployee
+package band.effective.office.elevator.ui.employee.aboutEmployee
 
-import band.effective.office.elevator.ui.aboutEmployee.store.AboutEmployeeStore
-import band.effective.office.elevator.ui.aboutEmployee.store.AboutEmployeeStoreFactory
+import band.effective.office.elevator.ui.employee.aboutEmployee.store.AboutEmployeeStore
+import band.effective.office.elevator.ui.employee.aboutEmployee.store.AboutEmployeeStoreFactory
+import band.effective.office.elevator.ui.employee.allEmployee.EmployeeComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 
 class AboutEmployeeComponent(
     componentContext: ComponentContext,
-    storeFactory: StoreFactory) :
+    storeFactory: StoreFactory,
+    private val output: (Output) -> Unit
+) :
     ComponentContext by componentContext {
 
     private val aboutEmployeeStore = instanceKeeper.getStore {
@@ -30,12 +31,11 @@ class AboutEmployeeComponent(
         aboutEmployeeStore.accept(event)
     }
     fun onOutput(output: Output){
-        when(output) {
-            is Output.OpenMap -> TODO()
-        }
+        output(output)
     }
     sealed interface Output {
         object OpenMap : Output
+        object OpenAllEmployee : Output
     }
 
 }

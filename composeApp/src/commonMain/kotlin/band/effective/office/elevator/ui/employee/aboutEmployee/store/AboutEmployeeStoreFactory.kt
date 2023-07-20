@@ -1,6 +1,6 @@
-package band.effective.office.elevator.ui.aboutEmployee.store
+package band.effective.office.elevator.ui.employee.aboutEmployee.store
 
-import band.effective.office.elevator.ui.aboutEmployee.store.AboutEmployeeStore.*
+import band.effective.office.elevator.ui.employee.aboutEmployee.store.AboutEmployeeStore.*
 import band.effective.office.elevator.ui.models.ReservedSeat
 import band.effective.office.elevator.ui.models.User
 import com.arkivanov.mvikotlin.core.store.Reducer
@@ -9,6 +9,8 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.Month
 import org.koin.core.component.KoinComponent
 
 class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory): KoinComponent {
@@ -18,8 +20,8 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory): KoinCom
         object : AboutEmployeeStore, Store<Intent,State,Nothing> by storeFactory.create(
             name = "AboutEmployeeStore",
             initialState = State(
-                User(imageUrl = null, userName = null, telegram = null, post = null, phoneNumber = null, email = null),
-                reservedSeats = listOf()
+                mokValueUser,
+                reservedSeats = mokValue
             ),
             bootstrapper = coroutineBootstrapper {
                 dispatch(Action.FetchUserInfo)
@@ -31,8 +33,11 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory): KoinCom
     private object ReducerImpl : Reducer<State, Msg> {
         override fun State.reduce(msg: Msg): State =
             when (msg) {
-                is Msg.ProfileData -> copy(user = msg.user)
-                is Msg.UpdateSeatsReservation -> copy(reservedSeats = msg.reservedSeats)
+                is Msg.ProfileData -> copy(user = mokValueUser)
+                is Msg.UpdateSeatsReservation ->{
+                    val reservedSeats = mokValue
+                    copy(reservedSeats = reservedSeats)
+                }
             }
     }
 
@@ -66,3 +71,19 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory): KoinCom
         }
     }
 }
+
+private val mokValueUser = User("1","Ivanov Ivan", "Android-developer","67","@ivanov","employee@effective.com")
+private val mokValue = listOf(
+    ReservedSeat(
+        seatName = "Рабочее масто А2",
+        bookingDay = "Пн, 1 июля",
+        bookingTime = "12:00 - 14:00",
+        bookingDate = LocalDate(month = Month.JULY, year = 2023, dayOfMonth = 16)
+    ),
+    ReservedSeat(
+        seatName = "Переговорная Sun",
+        bookingDay = "Вт, 2 июля",
+        bookingTime = "14:00 - 16:00",
+        bookingDate = LocalDate(month = Month.JULY, year = 2023, dayOfMonth = 17)
+    ),
+)

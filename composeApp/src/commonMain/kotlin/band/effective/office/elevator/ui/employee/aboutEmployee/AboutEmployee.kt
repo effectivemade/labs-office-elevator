@@ -1,15 +1,13 @@
-package band.effective.office.elevator.ui.aboutEmployee
+package band.effective.office.elevator.ui.employee.aboutEmployee
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -32,16 +30,12 @@ import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveOutlinedButton
 import band.effective.office.elevator.components.InfoAboutUserUIComponent
 import band.effective.office.elevator.components.TitlePage
-import band.effective.office.elevator.ui.aboutEmployee.components.BookingCardUser
-import band.effective.office.elevator.ui.aboutEmployee.components.ContactUserUIComponent
-import band.effective.office.elevator.ui.aboutEmployee.store.AboutEmployeeStore
-import band.effective.office.elevator.ui.main.components.BookingCard
-import band.effective.office.elevator.ui.main.components.BookingInformation
-import band.effective.office.elevator.ui.main.components.SeatsReservation
+import band.effective.office.elevator.ui.employee.aboutEmployee.components.BookingCardUser
+import band.effective.office.elevator.ui.employee.aboutEmployee.components.ContactUserUIComponent
+import band.effective.office.elevator.ui.employee.aboutEmployee.store.AboutEmployeeStore
 import band.effective.office.elevator.ui.models.ReservedSeat
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
-import kotlinx.datetime.LocalDate
 
 @Composable
 fun AboutEmployee (component: AboutEmployeeComponent){
@@ -58,6 +52,7 @@ fun AboutEmployee (component: AboutEmployeeComponent){
         onClickOpenPhone = { component.onEvent(AboutEmployeeStore.Intent.TelephoneClicked) },
         onClickOpenTelegram = { component.onEvent(AboutEmployeeStore.Intent.TelegramClicked) },
         onClickOpenSpb = { component.onEvent(AboutEmployeeStore.Intent.TransferMoneyClicked) },
+        onClickBack = {component.onOutput(AboutEmployeeComponent.Output.OpenAllEmployee)}
     )
 }
 
@@ -69,6 +64,7 @@ private fun AboutEmployeeContent(
     telegram: String?,
     email: String?,
     reservedSeats: List<ReservedSeat>,
+    onClickBack: () -> Unit,
     onClickOpenMap: () ->Unit,
     onClickOpenPhone: () ->Unit,
     onClickOpenTelegram: () ->Unit,
@@ -81,7 +77,7 @@ private fun AboutEmployeeContent(
             verticalArrangement = Arrangement.Top
         ){
             Row ( verticalAlignment = Alignment.CenterVertically,horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()) {
-                IconButton(onClick = {}){
+                IconButton(onClick = onClickBack){
                     Icon(
                         painter = painterResource(MainRes.images.back_button),
                         contentDescription = null,

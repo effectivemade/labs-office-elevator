@@ -1,6 +1,6 @@
-package band.effective.office.elevator.ui.aboutEmployee.store
+package band.effective.office.elevator.ui.employee.aboutEmployee.store
 
-import band.effective.office.elevator.ui.aboutEmployee.store.AboutEmployeeStore.*
+import band.effective.office.elevator.ui.employee.aboutEmployee.store.AboutEmployeeStore.*
 import band.effective.office.elevator.ui.models.ReservedSeat
 import band.effective.office.elevator.ui.models.User
 import com.arkivanov.mvikotlin.core.store.Store

@@ -1,4 +1,4 @@
-package band.effective.office.elevator.ui.aboutEmployee.components
+package band.effective.office.elevator.ui.employee.aboutEmployee.components
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
