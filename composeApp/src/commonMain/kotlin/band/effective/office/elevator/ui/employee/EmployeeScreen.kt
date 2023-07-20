@@ -82,12 +82,12 @@ fun EmployeeScreen(component: EmployeeComponent) {
         }
     }
     EmployeeScreenContent(
-        employeesData,
-        employeesCount,
-        employeesInOfficeCount,
-        userMessageState,
-        onCardClick = {component.onEvent(EmployeeStore.Intent.OnClickOnEmployee)},
-        onTextFieldUpdate = {component.onEvent(EmployeeStore.Intent.OnTextFieldUpdate)})
+        employeesData = employeesData,
+        employeesCount = employeesCount,
+        employeesInOfficeCount = employeesInOfficeCount,
+        userMessageState = userMessageState,
+        onCardClick = { component.onEvent(EmployeeStore.Intent.OnClickOnEmployee) },
+        onTextFieldUpdate = { component.onEvent(EmployeeStore.Intent.OnTextFieldUpdate(it)) })
 }
 
 @Composable
@@ -97,7 +97,8 @@ fun EmployeeScreenContent(
     employeesInOfficeCount: Int,
     userMessageState: MutableState<String>,
     onCardClick: () -> Unit,
-    onTextFieldUpdate: () -> Unit){
+    onTextFieldUpdate: (it:String) -> Unit
+) {
 
     Column {
         Box(
@@ -116,7 +117,7 @@ fun EmployeeScreenContent(
                 TextField(
                     value = userMessageState.value, onValueChange = {
                         userMessageState.value = it
-                        onTextFieldUpdate
+                        onTextFieldUpdate(it)
                     }, modifier = Modifier
                         .fillMaxWidth()
                         .height(70.dp)
@@ -158,9 +159,10 @@ fun EmployeeScreenContent(
             modifier = Modifier
                 .background(theme_light_onBackground)
                 .fillMaxSize()
-                .padding(horizontal = 20.dp, vertical =  25.dp)
+                .padding(horizontal = 20.dp, vertical = 25.dp)
         ) {
             LazyColumn(
+                //TODO() Зюзин, надо доработать вёрстку экрана (оптимизировать компоненты)
                 modifier = Modifier.fillMaxSize()
             ) {
                 item {
@@ -222,7 +224,8 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
         onCardClick
     }
 
-    Surface(shape = RoundedCornerShape(12.dp),
+    Surface(
+        shape = RoundedCornerShape(12.dp),
         modifier = Modifier
             .fillMaxSize()
             .padding(5.dp)
@@ -274,9 +277,9 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
     }
 }
 
-fun UpdateShowedEmployeesCard():List<EmployeeCard>{//нужна инфа о состоянии строки TextFieldа
-    val allEmployeesCards=EmployeesData.employeesCardData
-    var showedEmployeesCards=allEmployeesCards
+fun UpdateShowedEmployeesCard(): List<EmployeeCard> {//нужна инфа о состоянии строки TextFieldа
+    val allEmployeesCards = EmployeesData.employeesCardData
+    var showedEmployeesCards = EmployeesData.showedEmployeesCardData
 
     return showedEmployeesCards
 }
@@ -307,16 +310,19 @@ object EmployeesData {
             MainRes.strings.employee_2,
             MainRes.strings.employee_post_2,
             MainRes.strings.employee_soon_in_office,
-            MainRes.images.logo_default),
+            MainRes.images.logo_default
+        ),
         EmployeeCard(
             MainRes.strings.employee_3,
             MainRes.strings.employee_post_3,
             MainRes.strings.employee_not_soon_in_office,
-            MainRes.images.logo_default),
+            MainRes.images.logo_default
+        ),
         EmployeeCard(
             MainRes.strings.employee_1,
             MainRes.strings.employee_post_1,
             MainRes.strings.employee_in_office,
-            MainRes.images.logo_default)
+            MainRes.images.logo_default
+        )
     )
 }

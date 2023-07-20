@@ -22,15 +22,15 @@ internal class EmployeeStoreFactory(private val storeFactory: StoreFactory):Koin
 
         }
     private sealed interface Msg{
-        data class UpdateEmployees(val userMessageState:List<EmployeeCard>): Msg
+        data class UpdateEmployees(val query: String): Msg
     }
     private inner class ExecutorImpl :
         CoroutineExecutor<EmployeeStore.Intent, Nothing, EmployeeStore.State, Msg, EmployeeStore.Label>() {
         override fun executeIntent(intent: EmployeeStore.Intent, getState: () -> EmployeeStore.State) {
             when (intent) {
-                EmployeeStore.Intent.OnTextFieldUpdate -> {
+                is EmployeeStore.Intent.OnTextFieldUpdate -> {
                     scope.launch {
-                        dispatch(Msg.UpdateEmployees(userMessageState = getState().changeShowedEmployeeCards))
+                        dispatch(Msg.UpdateEmployees(query = intent.query))
                     }
                 }
                 EmployeeStore.Intent.OnClickOnEmployee ->{
@@ -43,12 +43,18 @@ internal class EmployeeStoreFactory(private val storeFactory: StoreFactory):Koin
         }
     }
 
-
     private object ReducerIMPL: Reducer<EmployeeStore.State, Msg> {
         override fun EmployeeStore.State.reduce(msg:Msg): EmployeeStore.State =
             when(msg){
-                is Msg.UpdateEmployees -> copy(msg.userMessageState)
+                is Msg.UpdateEmployees -> copy(
+                    changeShowedEmployeeCards = changeEmployeeShowedList(msg.query)
+                )
             }
 
+        private fun changeEmployeeShowedList(query: String): List<EmployeeCard> {
+
+
+            return listOf()
+        }
     }
 }

@@ -5,7 +5,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 
 interface EmployeeStore: Store<EmployeeStore.Intent, EmployeeStore.State, EmployeeStore.Label> {
     sealed interface Intent{
-        object OnTextFieldUpdate:Intent
+        data class OnTextFieldUpdate(val query: String):Intent
         object OnClickOnEmployee:Intent
     }
 

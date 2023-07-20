@@ -33,7 +33,7 @@ class EmployeeComponent(
     fun onOutput(output:Output){
         when(output){
             is Output.OpenProfileScreen -> TODO()
-            is Output.OpenNewListOfEmployees -> TODO()//not connected
+            is Output.OpenNewListOfEmployees -> TODO()//unused
         }
     }
 
