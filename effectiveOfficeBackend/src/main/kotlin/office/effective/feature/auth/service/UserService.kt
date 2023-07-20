@@ -14,7 +14,10 @@ class UserService() : IUserService {
     private val repository: UserRepository = GlobalContext.get().get()
 
     override fun getUsersByTag(tagStr: String, token: String): Set<UserDTO>? {
-        TODO("Not yet implemented")
+        val models = repository.findByTag(repository.findTagByName(tagStr).id)
+        val dtos: MutableSet<UserDTO> = mutableSetOf()
+        models.forEach { dtos.add(converterDTO.modelToDTO(it)) }
+        return dtos.toSet()
     }
 
     override fun getUserById(userIdStr: String, token: String): UserDTO {
