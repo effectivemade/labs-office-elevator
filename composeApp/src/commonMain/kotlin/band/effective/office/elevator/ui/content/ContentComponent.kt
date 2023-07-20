@@ -1,9 +1,11 @@
 package band.effective.office.elevator.ui.content
 
 import band.effective.office.elevator.ui.booking.BookingComponent
+import band.effective.office.elevator.ui.content.store.ContentStoreFactory
 import band.effective.office.elevator.ui.employee.EmployeeComponent
 import band.effective.office.elevator.ui.main.MainComponent
 import band.effective.office.elevator.ui.profile.ProfileComponent
+import band.effective.office.elevator.ui.root.store.RootStoreImplFactory
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
@@ -12,6 +14,7 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
+import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 
 class ContentComponent(
@@ -28,6 +31,13 @@ class ContentComponent(
         childFactory = ::child,
     )
     val childStack: Value<ChildStack<*, Child>> = stack
+
+    private val contentStore =
+        instanceKeeper.getStore {
+            ContentStoreFactory(
+                storeFactory = storeFactory
+            ).create()
+        }
 
     private fun child(config: Config, componentContext: ComponentContext): Child = when (config) {
         is Config.MainScreen -> Child.Main(MainComponent(componentContext, storeFactory))
