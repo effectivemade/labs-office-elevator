@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,6 +26,9 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,31 +51,61 @@ import band.effective.office.elevator.theme_light_background
 import band.effective.office.elevator.theme_light_onBackground
 import band.effective.office.elevator.theme_light_primary_color
 import band.effective.office.elevator.theme_light_tertiary_color
+import band.effective.office.elevator.ui.employee.allEmployee.EmployeeComponent
+import band.effective.office.elevator.ui.employee.allEmployee.store.EmployeeStore
 import dev.icerock.moko.resources.ImageResource
-import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 
-data class employeeCard(
-    val name: StringResource,
-    val post: StringResource,
-    val state: StringResource,
-    val logo: ImageResource
+
+data class EmployeeCard(
+    val name: String,
+    val post: String,
+    val state: String,
+    val logoUrl: ImageResource//TODO() Переделать в URL
 )
 
 @Composable
 fun EmployeeScreen(component: EmployeeComponent) {
 
-    val employeesData = EmployeesData.employeesCardData
+    val employState by component.employState.collectAsState()
+    val employeesData = employState.changeShowedEmployeeCards//state
     val employeesCount = employeesData.count()
-    val employeesInOfficeCount = 1
+    val employeesInOfficeCount = employeesData.filter{it.state=="In office"}.count()
     val userMessageState = remember { mutableStateOf("") }
 
+
+    LaunchedEffect(component) {
+        component.employLabel.collect { label ->
+            when (label) {
+                EmployeeStore.Label.ShowProfileScreen -> component.onOutput(EmployeeComponent.Output.OpenProfileScreen)
+            }
+        }
+    }
+    EmployeeScreenContent(
+        employeesData = employeesData,
+        employeesCount = employeesCount,
+        employeesInOfficeCount = employeesInOfficeCount,
+        userMessageState = userMessageState,
+        onCardClick = { component.onEvent(EmployeeStore.Intent.OnClickOnEmployee) },
+        onTextFieldUpdate = { component.onEvent(EmployeeStore.Intent.OnTextFieldUpdate(it)) })
+}
+
+@Composable
+fun EmployeeScreenContent(
+    employeesData: List<EmployeeCard>,
+    employeesCount: Int,
+    employeesInOfficeCount: Int,
+    userMessageState: MutableState<String>,
+    onCardClick: () -> Unit,
+    onTextFieldUpdate: (String) -> Unit
+) {
 
     Column {
         Box(
             modifier = Modifier
-                .background(theme_light_primary_color)
+                .background(theme_light_primary_color)///Themeeee!
+
                 .fillMaxWidth()
         ) {
             Column {
@@ -87,6 +119,7 @@ fun EmployeeScreen(component: EmployeeComponent) {
                 TextField(
                     value = userMessageState.value, onValueChange = {
                         userMessageState.value = it
+                        onTextFieldUpdate(it)
                     }, modifier = Modifier
                         .fillMaxWidth()
                         .height(70.dp)
@@ -106,7 +139,7 @@ fun EmployeeScreen(component: EmployeeComponent) {
                         Text(
                             text = stringResource(MainRes.strings.search_employee),
                             fontSize = 16.sp,
-                            fontWeight = FontWeight(500),
+                            fontWeight = FontWeight(500),//Style. maththeme
                             color = textInBorderGray
                         )
                     },
@@ -121,16 +154,19 @@ fun EmployeeScreen(component: EmployeeComponent) {
                     shape = RoundedCornerShape(32.dp)
 
                 )
-                Spacer(modifier = Modifier.height(0.dp))
+
+                //padding настроить!
             }
         }
         Box(
             modifier = Modifier
                 .background(theme_light_onBackground)
                 .fillMaxSize()
-                .padding(horizontal = 20.dp, vertical =  25.dp)
+                .padding(horizontal = 20.dp, vertical = 25.dp)
         ) {
             LazyColumn(
+                //TODO() Зюзин: надо доработать вёрстку экрана (оптимизировать компоненты)
+
                 modifier = Modifier.fillMaxSize()
             ) {
                 item {
@@ -159,7 +195,7 @@ fun EmployeeScreen(component: EmployeeComponent) {
                     }
                 }
                 items(employeesData) { employee_Data ->
-                    EveryEmployeeCard(emp = employee_Data)
+                    EveryEmployeeCard(emp = employee_Data, onCardClick)
 
                 }
 
@@ -169,15 +205,17 @@ fun EmployeeScreen(component: EmployeeComponent) {
 }
 
 @Composable
-fun EveryEmployeeCard(emp: employeeCard) {
+
+fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
     var isExpanded by remember { mutableStateOf(false) }
     val stateColorBorder: Color
     val stateColorText: Color
-    if (emp.state == MainRes.strings.employee_in_office) {
+    if (emp.state == "In office") {
         stateColorBorder = borderGreen
         stateColorText = borderGreen
     } else {
-        if (emp.state == MainRes.strings.employee_soon_in_office) {
+        if (emp.state == "Will be today") {
+
             stateColorBorder = borderPurple
             stateColorText = textInBorderPurple
         } else {
@@ -187,11 +225,11 @@ fun EveryEmployeeCard(emp: employeeCard) {
 
     }
     if (isExpanded) {
-        //Здесь будет навигация на страницу About Employee)
-
+        onCardClick()
     }
 
-    Surface(shape = RoundedCornerShape(12.dp),
+    Surface(
+        shape = RoundedCornerShape(12.dp),
         modifier = Modifier
             .fillMaxSize()
             .padding(5.dp)
@@ -201,7 +239,7 @@ fun EveryEmployeeCard(emp: employeeCard) {
     ) {
         Row(modifier = Modifier.padding(6.dp, 10.dp)) {
             Image(
-                painter = painterResource(emp.logo),
+                painter = painterResource(emp.logoUrl),
                 contentDescription = "Employee logo",
                 modifier = Modifier
                     .clip(CircleShape)
@@ -209,7 +247,7 @@ fun EveryEmployeeCard(emp: employeeCard) {
             )
             Column(modifier = Modifier.padding(15.dp, 0.dp)) {
                 Text(
-                    text = stringResource(emp.name),
+                    text = emp.name,
                     fontSize = 16.sp,
                     fontWeight = FontWeight(500),
                     color = theme_light_tertiary_color
@@ -217,7 +255,7 @@ fun EveryEmployeeCard(emp: employeeCard) {
 
                 Spacer(modifier = Modifier.padding(0.dp, 4.dp))
                 Text(
-                    text = stringResource(emp.post),
+                    text = emp.post,
                     fontSize = 16.sp,
                     fontWeight = FontWeight(400),
                     color = textInBorderGray
@@ -232,7 +270,7 @@ fun EveryEmployeeCard(emp: employeeCard) {
                     elevation = ButtonDefaults.elevation(0.dp, 2.dp, 0.dp)
                 ) {
                     Text(
-                        text = "•   " + stringResource(emp.state),
+                        text = "•   " + emp.state,
                         fontSize = 16.sp,
                         fontWeight = FontWeight(400),
                         color = stateColorText
@@ -243,24 +281,45 @@ fun EveryEmployeeCard(emp: employeeCard) {
     }
 }
 
+
 object EmployeesData {
     val employeesCardData = listOf(
-        employeeCard(
-            MainRes.strings.employee_1,
-            MainRes.strings.employee_post_1,
-            MainRes.strings.employee_in_office,
+        EmployeeCard(
+            "Ivanov Ivan",
+            "Android-developer",
+            "In office",
             MainRes.images.logo_default
         ),
-        employeeCard(
-            MainRes.strings.employee_2,
-            MainRes.strings.employee_post_2,
-            MainRes.strings.employee_soon_in_office,
+        EmployeeCard(
+            "Smirnov Andrey",
+            "UI/UX Designer",
+            "Will be today",
             MainRes.images.logo_default
         ),
-        employeeCard(
-            MainRes.strings.employee_3,
-            MainRes.strings.employee_post_3,
-            MainRes.strings.employee_not_soon_in_office,
+        EmployeeCard(
+            "Vasiliev Vasiliy",
+            "HR",
+            "No bookings",
+            MainRes.images.logo_default
+        )
+    )
+    val showedEmployeesCardData = listOf(
+        EmployeeCard(
+            "Смирнов Андрей",
+            "UI/UX Designer",
+            "Будет сегодня",
+            MainRes.images.logo_default
+        ),
+        EmployeeCard(
+            "Васильев Василий",
+            "HR",
+            "Нет бронирований",
+            MainRes.images.logo_default
+        ),
+        EmployeeCard(
+            "Иванов Иван",
+            "Android-developer",
+            "В офисе",
             MainRes.images.logo_default
         )
     )

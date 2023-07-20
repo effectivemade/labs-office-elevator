@@ -1,26 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Office Elevator</string>
-    <string name="sign_in_google">Войти в аккаунт Effective</string>
+    <string name="sign_in_google">Авторизация через Google</string>
     <string name="something_went_wrong">Что-то пошло не так. Пожалуйста попробуйте еще раз</string>
-    <string name="employee_1">Иванов Иван</string>
-    <string name="employee_2">Смирнов Андрей</string>
-    <string name="employee_3">Васильев Василий</string>
+    <string name="company_name">effective\noffice</string>
     <string name="search_employee">Поиск сотрудника</string>
-    <string name="employee_post_1">Android-developer</string>
-    <string name="employee_post_2">UI/UX Designer</string>
-    <string name="employee_post_3">HR</string>
     <string name="employee_in_office">В офисе</string>
-    <string name="employee_soon_in_office">Будет сегодня</string>
-    <string name="employee_not_soon_in_office">Нет бронирований</string>
+
+    <!--Auth strings-->
+    <string name="_continue">Продолжить</string>
+    <string name="company_name">Effective</string>
+
+    <string name="input_number">Введите номер</string>
+    <string name="select_number">Укажите номер, по которому коллеги смогли бы перевести вам деньги по СБП</string>
+    <string name="number_hint">Номер телефона</string>
+
+    <string name="input_profile">Заполните профиль</string>
+    <string name="select_profile">Это необходимо для того, чтобы сотрудники смогли вас узнать</string>
+    <string name="profile_hint">Фамилия Имя</string>
+    <string name="profile_hint_">Должность</string>
+
+    <string name="input_employee">Укажите контакты</string>
+    <string name="select_employee">Это необходимо для того, чтобы коллегам было удобно связаться с вами</string>
+    <string name="employee_hint">Никнейм в Telegram</string>
+    <string name="phone_plus_seven">+7</string>
+    <string name="telegram_symbol">@</string>
+
 
     <!--Elevator-->
-    <string name="elevator_below">Лифт на 1-м этаже</string>
-    <string name="elevator_goes" >Лифт едет</string>
-    <string name="elevator_raised" >Лифт поднят</string>
-    <string name="elevator_button" >Поднять лифт</string>
-    <string name="elevator_wait" >Подождите...</string>
-    <string name="elevator_ready" > Вызовите лифт через кнопку</string>
+    <string name="elevator" >Лифт</string>
+    <string name="elevator_button" >Поднять</string>
 
     <string name="by_date"> По дате </string>
     <string name="show_map">Показать на карте</string>
@@ -38,6 +47,9 @@
     <string name="booking">Бронирование</string>
     <string name="employees">Сотрудники</string>
 
+    <!-- Buttons -->
+    <string name="_continue">Продолжить</string>
+
     <!--Error messages-->
     <string name="you_need_to_sign_in">Для работы приложения нужно авторизоваться</string>
     <string name="network_error">Проблема с интернет соединением</string>
@@ -46,6 +58,9 @@
     <string name="invalid_account_error">Вы используете неправильный аккаунт</string>
     <string name="timout_error">Время вышло. Попробуйте снова</string>
     <string name="server_error">Ошибка сервера ${code}</string>
+    <string name="number_format_error">Неверный формат номера телефона</string>
+    <string name="profile_format_error">Заполните профиль</string>
+    <string name="telegram_format_error">Укажите ник в телеграмме</string>
 
     <!-- Success messages -->
     <string name="elevator_called_successfully">Лифт успешно вызван!</string>
@@ -61,4 +76,9 @@
     <string name="post">Должность</string>
     <string name="phone_number">Номер телефона</string>
     <string name="save">Сохранить</string>
+
+    <!-- Employee -->
+    <string name="about_the_employee">О сотруднике</string>
+    <string name="upcoming_bookings">Ближайшие бронирования</string>
+    <string name="transfer">Перевод</string>
 </resources>

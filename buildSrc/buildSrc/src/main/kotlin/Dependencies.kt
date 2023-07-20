@@ -26,6 +26,7 @@ object Dependencies {
         const val shadow = "7.1.2"
         const val moko = "0.23.0"
         const val calendar = "1.0.4"
+        const val sqlDelight = "2.0.0-rc02"
     }
 
     object Ktor {
@@ -134,5 +135,10 @@ object Dependencies {
         const val composeRanges = "io.github.epicarchitect:calendar-compose-ranges:${Versions.calendar}"
         const val composePager = "io.github.epicarchitect:calendar-compose-pager:${Versions.calendar}"
         const val composeDatePicker = "io.github.epicarchitect:calendar-compose-datepicker:${Versions.calendar}"
+    }
+
+    object SqlDelight {
+        const val nativeDriver = "app.cash.sqldelight:native-driver:${Versions.sqlDelight}"
+        const val androidDriver = "app.cash.sqldelight:android-driver:${Versions.sqlDelight}"
     }
 }
