@@ -27,6 +27,7 @@ fun main() {
 }
 
 fun Application.module() {
+    configureMigration()
     configureDI()
     install(Authentication) {
         oauth("auth-oauth-google") {
@@ -46,8 +47,6 @@ fun Application.module() {
             client = HttpClient(Apache)
         }
     }
-    configureMigration()
-    configureDI()
     configureSerialization()
     configureSecurity()
     configureRouting()
