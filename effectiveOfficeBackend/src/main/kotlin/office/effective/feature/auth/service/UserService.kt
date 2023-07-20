@@ -6,6 +6,7 @@ import office.effective.feature.auth.dto.UserDTO
 import office.effective.feature.auth.repository.UserRepository
 import office.effective.model.UserModel
 import org.koin.core.context.GlobalContext
+import java.util.*
 
 class UserService() : IUserService {
 
@@ -21,7 +22,11 @@ class UserService() : IUserService {
     }
 
     override fun getUserById(userIdStr: String, token: String): UserDTO {
-        TODO("Not yet implemented")
+        return converterDTO.modelToDTO(
+            repository.findById(
+                UUID.fromString(userIdStr)
+            )
+        )
     }
 
     override fun alterUser(user: UserDTO, token: String): UserDTO {
