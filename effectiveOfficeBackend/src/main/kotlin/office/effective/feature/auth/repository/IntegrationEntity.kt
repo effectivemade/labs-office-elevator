@@ -12,7 +12,7 @@ import java.util.UUID
 interface IntegrationEntity : Entity<IntegrationEntity> {
     companion object : Entity.Factory<IntegrationEntity>()
 
-    var id: UUID
+    var id: UUID?
     var name: String
     var iconUrl: String
 }
