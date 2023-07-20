@@ -13,7 +13,7 @@ class UserService() : IUserService {
     private val converterDTO: UserDTOModelConverter = GlobalContext.get().get()
     private val repository: UserRepository = GlobalContext.get().get()
 
-    override fun getUsersByTag(): UserDTO {
+    override fun getUsersByTag(): Set<UserDTO> {
         TODO("Not yet implemented")
     }
 
