@@ -36,6 +36,9 @@
     <string name="cansel">Cansel</string>
     <string name="ok">Ok</string>
 
+    <!--Main Screen-->
+    <string name="filter">Filters</string>
+
     <!-- Buttons -->
     <string name="_continue">Continue</string>
 
