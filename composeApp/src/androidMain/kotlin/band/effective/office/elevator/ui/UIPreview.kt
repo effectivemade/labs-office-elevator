@@ -5,6 +5,6 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Preview
 @Composable
-fun EmployeesScreenPreview(){
+fun EmployeesScreenPreview() {
     //EmployeeScreen()
 }

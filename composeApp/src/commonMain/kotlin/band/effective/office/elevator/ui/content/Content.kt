@@ -15,10 +15,9 @@ import band.effective.office.elevator.navigation.EmployeesTab
 import band.effective.office.elevator.navigation.MainTab
 import band.effective.office.elevator.navigation.ProfileTab
 import band.effective.office.elevator.ui.booking.BookingScreen
-import band.effective.office.elevator.ui.employee.EmployeeScreen
+import band.effective.office.elevator.ui.employee.Employee
 import band.effective.office.elevator.ui.main.MainScreen
 import band.effective.office.elevator.ui.profile.Profile
-import band.effective.office.elevator.ui.profile.mainProfile.ProfileScreen
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.Direction
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.StackAnimation
@@ -27,8 +26,6 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.isEn
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
-import com.arkivanov.decompose.router.children.children
-import com.arkivanov.decompose.router.stack.childStack
 
 @Composable
 fun Content (component: ContentComponent) {
@@ -47,7 +44,7 @@ fun Content (component: ContentComponent) {
                         is ContentComponent.Child.Main -> MainScreen(child.component)
                         is ContentComponent.Child.Profile -> Profile(child.component)
                         is ContentComponent.Child.Booking -> BookingScreen(child.component)
-                        is ContentComponent.Child.Employee -> EmployeeScreen(child.component)
+                        is ContentComponent.Child.Employee -> Employee(child.component)
                     }
                 }
             }
