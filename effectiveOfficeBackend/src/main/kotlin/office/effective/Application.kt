@@ -3,9 +3,7 @@ package office.effective
 import com.typesafe.config.ConfigFactory
 import io.ktor.client.*
 import io.ktor.client.engine.apache.*
-import io.ktor.client.engine.cio.*
 import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.config.*
@@ -13,7 +11,6 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import office.effective.plugins.configureMigration
 import office.effective.plugins.configureRouting
-import office.effective.plugins.configureSecurity
 import office.effective.plugins.configureSerialization
 import office.effective.plugins.*
 
@@ -48,7 +45,6 @@ fun Application.module() {
         }
     }
     configureSerialization()
-    configureSecurity()
     configureRouting()
     configureExceptionHandling()
 }
