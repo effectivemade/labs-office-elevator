@@ -1,4 +1,4 @@
-package office.effective.feature.auth.dto
+package office.effective.features.auth.dto
 
 import kotlinx.serialization.Serializable
 

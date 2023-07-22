@@ -1,15 +1,14 @@
 import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-import office.effective.feature.auth.ITokenVerifier
-import office.effective.feature.auth.converters.UserDTOModelConverter
-import office.effective.feature.auth.dto.UserDTO
-import office.effective.feature.auth.repository.UserRepository
-import office.effective.feature.auth.service.IUserService
+import office.effective.features.auth.ITokenVerifier
+import office.effective.features.auth.converters.UserDTOModelConverter
+import office.effective.features.auth.dto.UserDTO
+import office.effective.features.auth.repository.UserRepository
+import office.effective.features.auth.service.IUserService
 import org.koin.core.context.GlobalContext
 
 fun Route.authRoutingFun() {

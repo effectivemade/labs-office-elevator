@@ -1,9 +1,9 @@
-package office.effective.feature.auth.service
+package office.effective.features.auth.service
 
-import office.effective.feature.auth.ITokenVerifier
-import office.effective.feature.auth.converters.UserDTOModelConverter
-import office.effective.feature.auth.dto.UserDTO
-import office.effective.feature.auth.repository.UserRepository
+import office.effective.features.auth.ITokenVerifier
+import office.effective.features.auth.converters.UserDTOModelConverter
+import office.effective.features.auth.dto.UserDTO
+import office.effective.features.auth.repository.UserRepository
 import org.koin.core.context.GlobalContext
 import java.util.*
 

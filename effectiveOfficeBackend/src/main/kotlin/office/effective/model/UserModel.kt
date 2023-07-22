@@ -1,6 +1,6 @@
 package office.effective.model
 
-import office.effective.feature.auth.repository.UsersTagEntity
+import office.effective.features.auth.repository.UsersTagEntity
 import java.util.*
 
 data class UserModel(

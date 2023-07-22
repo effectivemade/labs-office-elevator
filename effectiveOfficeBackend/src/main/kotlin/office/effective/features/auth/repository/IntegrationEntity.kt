@@ -1,6 +1,5 @@
-package office.effective.feature.auth.repository
+package office.effective.features.auth.repository
 
-import office.effective.feature.auth.repository.Users.bindTo
 import org.ktorm.database.Database
 import org.ktorm.entity.Entity
 import org.ktorm.entity.sequenceOf
