@@ -29,10 +29,9 @@ class UserService() : IUserService {
     }
 
     override fun updateUser(user: UserDTO, token: String): UserDTO {
-//        TODO fix update user inside repository
-//        val model = repository.updateUser(converterDTO.dTOToModel(user))
-//        return converterDTO.modelToDTO(model)
-        return user
+        val model = repository.updateUser(converterDTO.dTOToModel(user))
+        return converterDTO.modelToDTO(model)
+//        return user
     }
 
     override fun getUserByToken(tokenStr: String): UserDTO {
