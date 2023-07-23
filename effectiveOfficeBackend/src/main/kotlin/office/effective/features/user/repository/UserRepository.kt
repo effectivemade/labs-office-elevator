@@ -87,5 +87,32 @@ class UserRepository {
         return UserTagModel(tag.id, tag.name)
     }
 
+    fun updateUser(model: UserModel): UserModel {
+        model.id ?: throw UserNotFoundException("No id in the model")
+        if (!existsById(model.id!!)) {
+            throw UserNotFoundException("User ${model.fullName} with id:${model.id} does not exists")
+        }
+        var ent = db.users.find { it.id eq model.id!! }
+        ent?.tag = model.tag
+        ent?.fullName = model.fullName
+        ent?.active = model.active
+        ent?.avatarURL = model.avatarURL
+        ent?.role = model.role
+        ent?.flushChanges()
+        //todo integrations
+        return findById(model.id!!)
+    }
+
+    fun findTagByUserOrNull(userId: UUID): UsersTagEntity? {
+        if (!existsById(userId)) return null
+        val ent = findById(userId)
+        return ent.tag
+    }
+
+    fun findSetOfIntegrationsByUserOrNull(userId: UUID): Set<IntegrationModel>? {
+        if (!existsById(userId)) return null
+        return findSetOfIntegrationsByUser(userId)
+    }
+
 
 }
