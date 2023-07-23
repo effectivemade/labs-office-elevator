@@ -1,10 +1,10 @@
-package office.effective.features.auth.repository
+package office.effective.features.user.repository
 
 import office.effective.common.exception.IntegrationNotFoundException
 import office.effective.common.exception.UserIntegrationNotFoundException
 import office.effective.common.exception.UserNotFoundException
 import office.effective.common.exception.UserTagNotFoundException
-import office.effective.features.auth.converters.UserModelEntityConverter
+import office.effective.features.user.converters.UserModelEntityConverter
 import office.effective.model.IntegrationModel
 import office.effective.model.UserModel
 import office.effective.model.UserTagModel
@@ -51,8 +51,9 @@ class UserRepository {
     }
 
     fun findByEmail(email: String): UserModel {
-        val integrationUserEntity: UserIntegrationEntity = db.usersinegrations.find { UsersIntegrations.valueStr eq email }
-            ?: throw UserIntegrationNotFoundException("not such email");
+        val integrationUserEntity: UserIntegrationEntity =
+            db.usersinegrations.find { UsersIntegrations.valueStr eq email }
+                ?: throw UserIntegrationNotFoundException("not such email");
         return findById(integrationUserEntity.userId.id)
     }
 

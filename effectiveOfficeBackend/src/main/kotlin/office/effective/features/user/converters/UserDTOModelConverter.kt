@@ -1,7 +1,7 @@
-package office.effective.features.auth.converters
+package office.effective.features.user.converters
 
-import office.effective.features.auth.dto.UserDTO
-import office.effective.features.auth.repository.UsersTagEntity
+import office.effective.features.user.dto.UserDTO
+import office.effective.features.user.repository.UsersTagEntity
 import office.effective.model.UserModel
 import java.util.UUID
 
