@@ -1,7 +1,6 @@
-package office.effective.feature.auth.repository
+package office.effective.features.user.repository
 
 import org.ktorm.database.Database
-import org.ktorm.dsl.isNotNull
 import org.ktorm.entity.Entity
 import org.ktorm.entity.sequenceOf
 import org.ktorm.schema.Table

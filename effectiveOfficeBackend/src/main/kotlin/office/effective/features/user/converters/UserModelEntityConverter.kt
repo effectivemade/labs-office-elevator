@@ -1,6 +1,6 @@
-package office.effective.feature.auth.converters
+package office.effective.features.user.converters
 
-import office.effective.feature.auth.repository.UserEntity
+import office.effective.features.user.repository.UserEntity
 import office.effective.model.IntegrationModel
 import office.effective.model.UserModel
 

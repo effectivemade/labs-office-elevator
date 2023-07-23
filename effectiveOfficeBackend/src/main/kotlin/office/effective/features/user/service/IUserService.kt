@@ -1,7 +1,6 @@
-package office.effective.feature.auth.service
+package office.effective.features.user.service
 
-import office.effective.feature.auth.dto.UserDTO
-import office.effective.model.UserModel
+import office.effective.features.user.dto.UserDTO
 
 interface IUserService {
     fun getUsersByTag(tagStr: String, token: String): Set<UserDTO>?;

@@ -1,4 +1,4 @@
-package office.effective.feature.auth.repository
+package office.effective.features.user.repository
 
 import org.ktorm.database.Database
 import org.ktorm.entity.Entity
@@ -6,7 +6,6 @@ import org.ktorm.entity.sequenceOf
 import org.ktorm.schema.Table
 import org.ktorm.schema.uuid
 import org.ktorm.schema.varchar
-import java.util.UUID
 
 interface UserIntegrationEntity : Entity<UserIntegrationEntity> {
     var userId: UserEntity
