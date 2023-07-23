@@ -20,15 +20,15 @@ class UserRepository {
 
 
     fun existsById(userId: UUID): Boolean {
-        return db.users.count { Users.id eq userId } > 0
+        return db.users.count { it.id eq userId } > 0
     }
 
     fun findById(userId: UUID): UserModel {
         val userEnt: UserEntity =
-            db.users.find { Users.id eq userId } ?: throw UserNotFoundException("DB sync error")
+            db.users.find { it.id eq userId } ?: throw UserNotFoundException("DB sync error")
         val integrations = findSetOfIntegrationsByUser(userEnt.id!!)
         val tagEntity =
-            db.users_tags.find { UsersTags.id eq userEnt.tag.id } ?: throw UserTagNotFoundException("DB sync error")
+            db.users_tags.find { it.id eq userEnt.tag.id } ?: throw UserTagNotFoundException("DB sync error")
 
         val userModel = converter.EntityToModel(userEnt, null)
         userModel.integrations = integrations
@@ -52,20 +52,20 @@ class UserRepository {
 
     fun findByEmail(email: String): UserModel {
         val integrationUserEntity: UserIntegrationEntity =
-            db.usersinegrations.find { UsersIntegrations.valueStr eq email }
+            db.usersinegrations.find { it.valueStr eq email }
                 ?: throw UserIntegrationNotFoundException("not such email");
         return findById(integrationUserEntity.userId.id)
     }
 
     fun findIntegrationById(id: UUID): IntegrationEntity {
-        return db.integrations.find { Integrations.id eq id }
+        return db.integrations.find { it.id eq id }
             ?: throw IntegrationNotFoundException("There are no integration with such id")
     }
 
     fun findSetOfIntegrationsByUser(userId: UUID): MutableSet<IntegrationModel> {
 
         val usersIntegrationsSet: Set<UserIntegrationEntity> =
-            db.usersinegrations.filter { UsersIntegrations.userId eq userId }.toSet()
+            db.usersinegrations.filter { it.userId eq userId }.toSet()
         var modelsSet: MutableSet<IntegrationModel> = mutableSetOf()
 
         usersIntegrationsSet.forEach {
@@ -83,7 +83,7 @@ class UserRepository {
     }
 
     fun findTagByName(tagName: String): UserTagModel {
-        val tag = db.users_tags.find { UsersTags.name eq tagName } ?: throw UserTagNotFoundException("Wrong tag name")
+        val tag = db.users_tags.find { it.name eq tagName } ?: throw UserTagNotFoundException("Wrong tag name")
         return UserTagModel(tag.id, tag.name)
     }
 
