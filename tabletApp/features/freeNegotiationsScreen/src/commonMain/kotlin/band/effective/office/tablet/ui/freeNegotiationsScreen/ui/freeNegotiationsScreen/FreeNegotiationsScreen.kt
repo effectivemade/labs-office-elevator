@@ -1,4 +1,4 @@
-package band.effective.office.tablet.ui.freeNegotiationsScreen
+package band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -26,7 +26,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.features.freeNegotiationsScreen.MainRes
-import band.effective.office.tablet.ui.freeNegotiationsScreen.components.RoomCard
+import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.uiComponents.RoomCard
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 
 

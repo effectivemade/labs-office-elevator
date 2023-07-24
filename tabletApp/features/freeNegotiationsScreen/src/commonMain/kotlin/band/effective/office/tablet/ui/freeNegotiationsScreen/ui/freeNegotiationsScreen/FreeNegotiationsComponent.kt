@@ -1,4 +1,4 @@
-package band.effective.office.tablet.ui.freeNegotiationsScreen
+package band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person

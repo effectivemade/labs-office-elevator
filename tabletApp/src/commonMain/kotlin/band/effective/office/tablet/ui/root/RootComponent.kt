@@ -1,6 +1,6 @@
 package band.effective.office.tablet.ui.root
 
-import band.effective.office.tablet.ui.freeNegotiationsScreen.FreeNegotiationsComponent
+import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.FreeNegotiationsComponent
 import band.effective.office.tablet.ui.mainScreen.mainScreen.MainComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.StackNavigation
