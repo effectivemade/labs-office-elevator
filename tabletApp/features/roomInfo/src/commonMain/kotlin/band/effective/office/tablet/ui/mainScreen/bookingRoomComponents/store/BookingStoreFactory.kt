@@ -73,14 +73,16 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
     private sealed interface Message {
         data class ChangeEvent(
             val selectDate: Calendar,
-            val length: Int,
-            val isBusy: Boolean,
-            val busyEvent: EventInfo
+            val length: Int
         ) : Message
+
+        data class NotCorrectEvent(val busyEvent: EventInfo) : Message
 
         data class ChangeOrganizer(val newOrganizer: String) : Message
         object BookingCurrentRoom : Message
         object BookingOtherRoom : Message
+        object OrganizerError : Message
+
         data class UpdateOrganizers(val organizers: List<String>) : Message
         data class UpdateBusy(
             val isBusy: Boolean,
@@ -95,13 +97,38 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             getState: () -> BookingStore.State
         ) {
             when (intent) {
-                is BookingStore.Intent.OnBookingCurrentRoom -> dispatch(Message.BookingCurrentRoom)
-                is BookingStore.Intent.OnBookingOtherRoom -> dispatch(Message.BookingOtherRoom)
+                is BookingStore.Intent.OnBookingCurrentRoom -> booking(
+                    isCurrentRoom = true,
+                    state = getState(),
+                    booking = { intent.bookingRoom() }
+                )
+
+                is BookingStore.Intent.OnBookingOtherRoom -> booking(
+                    isCurrentRoom = false,
+                    state = getState(),
+                    booking = {}
+                )
+
                 is BookingStore.Intent.OnChangeDate -> changeDate(getState(), intent.changeInDay)
                 is BookingStore.Intent.OnChangeLength -> changeLength(getState(), intent.change)
                 is BookingStore.Intent.OnChangeOrganizer -> dispatch(Message.ChangeOrganizer(intent.newOrganizer))
             }
         }
+
+        fun booking(isCurrentRoom: Boolean, state: BookingStore.State, booking: () -> Unit) =
+            scope.launch {
+                val busyEvent = checkBookingUseCase(state.toEvent())
+                when {
+                    !state.isCorrectOrganizer() -> dispatch(Message.OrganizerError)
+                    busyEvent != null -> dispatch(Message.NotCorrectEvent(busyEvent))
+                    isCurrentRoom -> {
+                        booking()
+                        dispatch(Message.BookingCurrentRoom)
+                    }
+
+                    else -> dispatch(Message.BookingOtherRoom)
+                }
+            }
 
         override fun executeAction(action: Action, getState: () -> BookingStore.State) {
             when (action) {
@@ -111,9 +138,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     dispatch(
                         Message.ChangeEvent(
                             selectDate = defaultEvent.startTime,
-                            length = BookingStore.State.default.length,
-                            isBusy = action.isBusy,
-                            busyEvent = action.busyEvent
+                            length = BookingStore.State.default.length
                         )
                     )
                 }
@@ -123,28 +148,20 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         }
 
         fun changeDate(state: BookingStore.State, changeDay: Int) = scope.launch() {
-            val event = state.copy(selectDate = state.selectDate.dayUpdate(changeDay)).toEvent()
-            val busyEvent = checkBookingUseCase(event)
             dispatch(
                 Message.ChangeEvent(
-                    selectDate = event.startTime,
-                    length = state.length,
-                    isBusy = busyEvent != null,
-                    busyEvent = busyEvent ?: EventInfo.emptyEvent
+                    selectDate = state.selectDate.apply { add(Calendar.DAY_OF_MONTH, changeDay) },
+                    length = state.length
                 )
             )
         }
 
         fun changeLength(state: BookingStore.State, change: Int) = scope.launch() {
-            val event = state.copy(length = state.length + change).toEvent()
-            if (event.startTime >= event.finishTime) return@launch
-            val busyEvent = checkBookingUseCase(event)
+            if (state.length + change <= 0) return@launch
             dispatch(
                 Message.ChangeEvent(
-                    selectDate = event.startTime,
-                    length = state.length + change,
-                    isBusy = busyEvent != null,
-                    busyEvent = busyEvent ?: EventInfo.emptyEvent
+                    selectDate = state.selectDate,
+                    length = state.length + change
                 )
             )
         }
@@ -177,21 +194,19 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is Message.BookingOtherRoom -> copy()
                 is Message.ChangeEvent -> copy(
                     selectDate = msg.selectDate,
-                    length = msg.length,
-                    isBusy = msg.isBusy,
-                    busyEvent = msg.busyEvent
+                    length = msg.length
                 )
 
-                is Message.ChangeOrganizer -> copy(organizer = msg.newOrganizer)
+                is Message.ChangeOrganizer -> copy(
+                    organizer = msg.newOrganizer,
+                    isOrganizerError = false
+                )
+
                 is Message.UpdateOrganizers -> copy(organizers = msg.organizers)
                 is Message.UpdateBusy -> copy(isBusy = msg.isBusy, busyEvent = msg.busyEvent)
+                is Message.NotCorrectEvent -> copy(isBusy = true, busyEvent = msg.busyEvent)
+                is Message.OrganizerError -> copy(isOrganizerError = true)
             }
 
-    }
-
-    private fun Calendar.dayUpdate(changeDay: Int): Calendar {
-        val result = clone() as Calendar
-        result.add(Calendar.DAY_OF_MONTH, changeDay)
-        return result
     }
 }

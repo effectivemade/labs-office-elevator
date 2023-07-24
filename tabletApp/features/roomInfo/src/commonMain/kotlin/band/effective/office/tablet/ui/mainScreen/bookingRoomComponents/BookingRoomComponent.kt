@@ -45,9 +45,7 @@ class BookingRoomComponent(
             onSelectOrganizer = { bookingStore.accept(BookingStore.Intent.OnChangeOrganizer(it)) })
 
     fun bookingCurrentRoom() {
-        if (state.value.isCorrect()) {
-            onCurrentBookingRoom()
-        }
+        bookingStore.accept(BookingStore.Intent.OnBookingCurrentRoom { onCurrentBookingRoom() })
     }
 
     fun bookingOtherRoom() {

@@ -56,7 +56,7 @@ fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: Booking
                 currentLength = state.length,
                 isBusy = state.isBusy
             )
-            if (!state.isCorrectDate() || !state.isCorrectLength() || state.isBusy) {
+            if (state.isBusy) {
                 Spacer(Modifier.height(10.dp))
                 Alert(modifier = Modifier.fillMaxWidth(), text = MainRes.string.no_correct_time)
             }
@@ -66,7 +66,7 @@ fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: Booking
                 component = bookingRoomComponent.eventOrganizerComponent,
                 organizers = state.organizers
             )
-            if (!state.isCorrectOrganizer()) {
+            if (state.isOrganizerError) {
                 Spacer(Modifier.height(10.dp))
                 Alert(
                     modifier = Modifier.fillMaxWidth(),
@@ -84,10 +84,10 @@ fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: Booking
                 Button(
                     modifier = Modifier.fillMaxWidth().height(60.dp)
                         .clip(RoundedCornerShape(100.dp)).border(
-                        width = 3.dp,
-                        shape = RoundedCornerShape(100.dp),
-                        color = MaterialTheme.colors.onPrimary
-                    ),
+                            width = 3.dp,
+                            shape = RoundedCornerShape(100.dp),
+                            color = MaterialTheme.colors.onPrimary
+                        ),
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     onClick = { bookingRoomComponent.bookingOtherRoom() }
                 ) {
@@ -97,8 +97,7 @@ fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: Booking
             }
             Button(
                 modifier = Modifier.fillMaxWidth().height(60.dp).clip(RoundedCornerShape(100.dp)),
-                onClick = { bookingRoomComponent.bookingCurrentRoom() },
-                enabled = !state.isBusy
+                onClick = { bookingRoomComponent.bookingCurrentRoom() }
             ) {
                 Text(text = MainRes.string.booking_button_text.format(roomName = state.roomName))
             }
