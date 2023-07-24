@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,7 +40,7 @@ fun MainScreenView(
     onCloseFreeModalRequest: () -> Unit,
     onFreeRoomRequest: () -> Unit,
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colors.background)) {
         /*NOTE(Maksim Mishenko):
     * infoViewWidth is part of the width occupied by roomInfoView
     * infoViewWidth = infoViewFrame.width / mainScreenFrame.width
@@ -53,7 +54,7 @@ fun MainScreenView(
             )
             Box(modifier = Modifier.fillMaxSize()) {
                 BookingRoomView(
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.background(color = MaterialTheme.colors.surface).fillMaxSize()
                         .padding(25.dp),
                     bookingRoomComponent = bookingRoomComponent
                 )

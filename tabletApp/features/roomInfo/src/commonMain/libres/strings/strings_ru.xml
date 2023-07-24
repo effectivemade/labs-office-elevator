@@ -11,7 +11,7 @@
     <string name="booking_view_title">Занять</string>
     <string name="booking_button_text">Занять ${roomName}</string>
     <string name="busy_time_string">Время ${startTime} — ${finishTime} занято · ${organizer}</string>
-    <string name="see_free_room">Смотреть свободные переговорки на это время</string>
+    <string name="see_free_room">Смотреть другие переговорки ></string>
     <string name="select_date_tine_title">когда</string>
     <string name="select_length_title">на сколько</string>
     <string name="select_organizer_title">организатор</string>
@@ -21,6 +21,6 @@
     <string name="current_length_string">${currentLength} мин</string>
     <string name="selectbox_organizer_title">Организатор встречи</string>
     <string name="event_list_title">Занятое время</string>
-    <string name="no_select_organizer_alert">В это время будет другая бронь</string>
-    <string name="no_correct_time">Выберите организатора</string>
+    <string name="no_select_organizer_alert">Выберите организатора</string>
+    <string name="no_correct_time">В это время будет другая бронь</string>
 </resources>

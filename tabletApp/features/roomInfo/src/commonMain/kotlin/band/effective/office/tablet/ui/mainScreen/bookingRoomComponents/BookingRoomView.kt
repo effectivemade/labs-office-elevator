@@ -1,5 +1,7 @@
 package band.effective.office.tablet.ui.mainScreen.bookingRoomComponents
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -53,7 +55,7 @@ fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: Booking
                 currentLength = state.length,
                 isBusy = state.isBusy
             )
-            if (!state.isCorrectDate() || !state.isCorrectLength()) {
+            if (!state.isCorrectDate() || !state.isCorrectLength() || state.isBusy) {
                 Spacer(Modifier.height(10.dp))
                 Alert(modifier = Modifier.fillMaxWidth(), text = MainRes.string.no_correct_time)
             }
@@ -77,14 +79,21 @@ fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: Booking
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Bottom
         ) {
-            Button(
-                modifier = Modifier.fillMaxWidth().height(60.dp).clip(RoundedCornerShape(100.dp)),
-                onClick = { bookingRoomComponent.bookingCurrentRoom() },
-                enabled = !state.isBusy
-            ) {
-                Text(text = MainRes.string.booking_button_text.format(roomName = state.roomName))
+            if (state.isBusy) {
+                Button(
+                    modifier = Modifier.fillMaxWidth().height(60.dp)
+                        .clip(RoundedCornerShape(100.dp)).border(
+                        width = 3.dp,
+                        shape = RoundedCornerShape(100.dp),
+                        color = Color.White
+                    ),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+                    onClick = { bookingRoomComponent.bookingOtherRoom() }
+                ) {
+                    Text(text = MainRes.string.see_free_room)
+                }
+                Spacer(Modifier.height(10.dp))
             }
-            Spacer(Modifier.height(10.dp))
             Button(
                 modifier = Modifier.fillMaxWidth().height(60.dp).clip(RoundedCornerShape(100.dp)),
                 onClick = { bookingRoomComponent.bookingCurrentRoom() },
