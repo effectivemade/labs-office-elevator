@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -24,7 +24,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -32,10 +31,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.ExtendedTheme
+import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.components.PrimaryButton
 import band.effective.office.elevator.getDefaultFont
+import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun BottomDialog(modifier: Modifier, title: String) {
+    val elevation = ButtonDefaults.elevation(
+        defaultElevation = 0.dp,
+        pressedElevation = 0.dp,
+        disabledElevation = 0.dp,
+        hoveredElevation = 0.dp,
+        focusedElevation = 0.dp
+    )
+
     Column(
         modifier = Modifier
             .background(Color.White)
@@ -68,7 +78,7 @@ fun BottomDialog(modifier: Modifier, title: String) {
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "Рабочее место",
+                        text = stringResource(MainRes.strings.working_place),
                         color = ExtendedTheme.colors.purple_heart_800,
                         style = MaterialTheme.typography.body2,
                         modifier = Modifier.fillMaxWidth()
@@ -97,7 +107,7 @@ fun BottomDialog(modifier: Modifier, title: String) {
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "Переговорка",
+                        text = stringResource(MainRes.strings.meeting_room),
                         color = ExtendedTheme.colors.purple_heart_800,
                         style = MaterialTheme.typography.body2,
                     )
@@ -112,6 +122,7 @@ fun BottomDialog(modifier: Modifier, title: String) {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
+
             OutlinedButton(
                 onClick = {
 
@@ -122,7 +133,7 @@ fun BottomDialog(modifier: Modifier, title: String) {
             )
             {
                 Text(
-                    text = "Сбросить",
+                    text = stringResource(MainRes.strings.reset_filter),
                     style = TextStyle(
                         fontSize = 15.sp,
                         lineHeight = 19.5.sp,
@@ -137,32 +148,21 @@ fun BottomDialog(modifier: Modifier, title: String) {
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            Button(
-                onClick = {
-
-                },
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = ExtendedTheme.colors.trinidad_700,
-                    contentColor = Color.White
-                ),
+            PrimaryButton(
+                text = stringResource(MainRes.strings.ok),
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(8.dp)
+                contentTextSize = 15.sp,
+                cornerValue = 8.dp,
+                paddingValues = PaddingValues(all = 8.dp),
+                elevation = elevation,
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = MaterialTheme.colors.primary
+                ),
+                border = null,
+                onButtonClick = {
+
+                }
             )
-            {
-                Text(
-                    text = "Ок",
-                    modifier = Modifier.fillMaxWidth(),
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        lineHeight = 19.5.sp,
-                        fontFamily = getDefaultFont(),
-                        fontWeight = FontWeight(500),
-                        color = Color.White,
-                        textAlign = TextAlign.Center,
-                        letterSpacing = 0.1.sp,
-                    )
-                )
-            }
         }
     }
 }

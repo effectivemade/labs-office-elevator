@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.BottomSheetScaffoldState
 import androidx.compose.material.BottomSheetState
@@ -157,8 +158,14 @@ fun MainScreenContent(
     onClickOpenBottomDialog: () -> Unit
 ) {
     BottomSheetScaffold(
+        sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
         scaffoldState = bottomSheetState,
-        sheetContent = { BottomDialog(Modifier, "Фильтры по категории") },
+        sheetContent = {
+            BottomDialog(
+                Modifier,
+                stringResource(MainRes.strings.filter_by_category)
+            )
+        },
         sheetPeekHeight = 0.dp
     ) {
         Column(

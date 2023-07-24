@@ -33,6 +33,11 @@
     <string name="nearest_bookings">Your\nupcoming\nbookings</string>
     <string name="none_booking_seat">You dont have any bookings yet</string>
 
+    <string name="filter_by_category">Filter by category</string>
+    <string name="working_place">Working Place</string>
+    <string name="meeting_room">Meeting Room</string>
+    <string name="reset_filter">Reset</string>
+
     <string name="cansel">Cansel</string>
     <string name="ok">Ok</string>
 
