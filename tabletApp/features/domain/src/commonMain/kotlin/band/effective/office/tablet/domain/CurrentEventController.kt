@@ -5,6 +5,8 @@ import band.effective.office.tablet.domain.useCase.RoomInfoUseCase
 import band.effective.office.tablet.network.repository.CancelRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 /**Class for control start/finish event in room*/
@@ -16,6 +18,8 @@ abstract class CurrentEventController(
     protected lateinit var scope: CoroutineScope
     protected var currentEvent: EventInfo? = null
     protected val handlersList: MutableList<() -> Unit> = mutableListOf()
+    protected var mutableTimeToUpdate = MutableStateFlow(-1L)
+    val timeToUpdate = mutableTimeToUpdate.asStateFlow()
 
     /**Prepare controller for async work*/
     fun start(scope: CoroutineScope) {

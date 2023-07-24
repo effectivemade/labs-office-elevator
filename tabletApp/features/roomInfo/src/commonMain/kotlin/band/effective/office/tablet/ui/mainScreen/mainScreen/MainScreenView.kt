@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingRoomComponent
@@ -21,10 +20,7 @@ import band.effective.office.tablet.ui.mainScreen.mockComponets.MockSettingView
 import band.effective.office.tablet.ui.mainScreen.mockComponets.MockSettingsComponent
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.RoomInfoComponent
 import band.effective.office.tablet.ui.selectRoomScreen.FreeSelectRoomView
-import band.effective.office.tablet.ui.selectRoomScreen.RealFreeSelectRoomComponent
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponent
-import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomView
-import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponentImpl
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomScreen
 
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -39,6 +35,7 @@ fun MainScreenView(
     onOpenFreeModalRequest: () -> Unit,
     onCloseFreeModalRequest: () -> Unit,
     onFreeRoomRequest: () -> Unit,
+    timeToNextEvent: Int
 ) {
     Box(modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colors.background)) {
         /*NOTE(Maksim Mishenko):
@@ -50,7 +47,8 @@ fun MainScreenView(
             RoomInfoComponent(
                 modifier = Modifier.fillMaxHeight().fillMaxWidth(infoViewWidth),
                 room = room,
-                onOpenModalRequest = { onOpenFreeModalRequest() }
+                onOpenModalRequest = { onOpenFreeModalRequest() },
+                timeToNextEvent = timeToNextEvent
             )
             Box(modifier = Modifier.fillMaxSize()) {
                 BookingRoomView(

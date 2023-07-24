@@ -26,6 +26,15 @@ class MainStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
                 name = "MainStore",
                 initialState = MainStore.State.defaultState,
                 bootstrapper = coroutineBootstrapper {
+                    launch {
+                        currentEventController.timeToUpdate.collect {
+                            dispatch(
+                                Action.UpdateChangeEventTime(
+                                    (it / 60000).toInt()
+                                )
+                            )
+                        }
+                    }
                     launch() {
                         dispatch(Action.UpdateRoomInfo(updateUseCase.getRoomInfo()))
                         updateUseCase(
@@ -45,6 +54,7 @@ class MainStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
 
     private sealed interface Action {
         data class UpdateRoomInfo(val roomInfo: RoomInfo) : Action
+        data class UpdateChangeEventTime(val newValue: Int) : Action
     }
 
     private sealed interface Message {
@@ -55,6 +65,7 @@ class MainStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
         object OpenFreeModal : Message
         object StartFreeRoom : Message
         object FinishFreeRoom : Message
+        data class UpdateChangeEventTime(val newValue: Int) : Message
     }
 
     private inner class ExecutorImpl() :
@@ -72,6 +83,7 @@ class MainStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
         override fun executeAction(action: Action, getState: () -> MainStore.State) {
             when (action) {
                 is Action.UpdateRoomInfo -> dispatch(Message.UpdateRoomInfo(action.roomInfo))
+                is Action.UpdateChangeEventTime -> dispatch(Message.UpdateChangeEventTime(action.newValue))
             }
         }
 
@@ -97,6 +109,7 @@ class MainStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
                 is Message.OpenFreeModal -> copy(showFreeModal = true)
                 is Message.FinishFreeRoom -> copy(showFreeModal = false)
                 is Message.StartFreeRoom -> copy()
+                is Message.UpdateChangeEventTime -> copy(changeEventTime = message.newValue)
             }
     }
 }

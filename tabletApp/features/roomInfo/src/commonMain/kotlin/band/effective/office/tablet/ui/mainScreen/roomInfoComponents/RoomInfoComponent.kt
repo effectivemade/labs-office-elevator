@@ -10,14 +10,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.domain.model.RoomInfo
-import band.effective.office.tablet.ui.selectRoomScreen.RealFreeSelectRoomComponent
 
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable
 fun RoomInfoComponent(
     modifier: Modifier = Modifier,
     room: RoomInfo,
-    onOpenModalRequest: () -> Unit
+    onOpenModalRequest: () -> Unit,
+    timeToNextEvent: Int
 ) {
     val paddings = 30.dp
     Column(modifier = modifier) {
@@ -30,7 +30,8 @@ fun RoomInfoComponent(
                     capacity = room.capacity,
                     isHaveTv = room.isHaveTv,
                     electricSocketCount = room.electricSocketCount,
-                    nextEvent = room.eventList.firstOrNull()
+                    nextEvent = room.eventList.firstOrNull(),
+                    timeToNextEvent = timeToNextEvent
                 )
             }
 

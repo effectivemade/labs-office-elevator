@@ -23,7 +23,8 @@ fun MainScreen(component: MainComponent) {
                 selectRoomComponent = component.selectRoomComponent,
                 onCloseFreeModalRequest = { component.closeAllModal() },
                 onOpenFreeModalRequest = { component.openFreeRoomModal() },
-                onFreeRoomRequest = { component.onFreeRoom() }
+                onFreeRoomRequest = { component.onFreeRoom() },
+                timeToNextEvent = state.changeEventTime
             )
         }
     }

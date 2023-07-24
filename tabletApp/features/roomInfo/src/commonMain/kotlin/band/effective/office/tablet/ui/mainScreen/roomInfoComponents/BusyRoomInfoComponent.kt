@@ -13,7 +13,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,8 +20,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.features.roomInfo.MainRes
-import band.effective.office.tablet.ui.selectRoomScreen.FreeSelectRoomView
-import band.effective.office.tablet.ui.selectRoomScreen.RealFreeSelectRoomComponent
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.utils.CalendarStringConverter
 import java.util.Calendar
@@ -45,13 +42,16 @@ fun BusyRoomInfoComponent(
             capacity = capacity,
             isHaveTv = isHaveTv,
             electricSocketCount = electricSocketCount,
-            roomOccupancy = MainRes.string.room_occupancy.format(
-                startTime = event?.startTime?.time() ?: "",
-                finishTime = event?.finishTime?.time() ?: "",
-                organizer = event?.organizer ?: ""
-            ),
             backgroundColor = backgroundColor
-        )
+        ){
+            Text(
+                text = MainRes.string.room_occupancy.format(
+                    finishTime = event?.finishTime?.time() ?: "",
+                    organizer = event?.organizer ?: ""
+                ),
+                style = MaterialTheme.typography.h5
+            )
+        }
         Box(
             modifier = modifier.fillMaxWidth(),
             contentAlignment = Alignment.TopEnd

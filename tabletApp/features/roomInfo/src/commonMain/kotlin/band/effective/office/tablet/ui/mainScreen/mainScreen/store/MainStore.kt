@@ -19,7 +19,8 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, Nothing> {
         val roomInfo: RoomInfo,
         val error: String,
         val showBookingModal: Boolean,
-        val showFreeModal: Boolean
+        val showFreeModal: Boolean,
+        val changeEventTime: Int
     ) {
         companion object {
             val defaultState =
@@ -30,7 +31,8 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, Nothing> {
                     roomInfo = RoomInfo.defaultValue,
                     error = "",
                     showBookingModal = false,
-                    showFreeModal = false
+                    showFreeModal = false,
+                    changeEventTime = 0
                 )
         }
     }
