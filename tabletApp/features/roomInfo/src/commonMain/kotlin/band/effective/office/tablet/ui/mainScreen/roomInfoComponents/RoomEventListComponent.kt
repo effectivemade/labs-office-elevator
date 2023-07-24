@@ -35,7 +35,7 @@ fun RoomEventListComponent(modifier: Modifier = Modifier, eventsList: List<Event
         Text(
             text = MainRes.string.select_organizer_title,
             style = MaterialTheme.typography.h7,
-            color = LocalCustomColorsPalette.current.parameterTitle
+            color = LocalCustomColorsPalette.current.secondaryTextAndIcon
         )
         Row {
             val lazyListState: LazyListState = rememberLazyListState()
@@ -49,11 +49,12 @@ fun RoomEventListComponent(modifier: Modifier = Modifier, eventsList: List<Event
                         Text(
                             text = "${event.startTime.time()} - ${event.finishTime.time()}",
                             style = MaterialTheme.typography.h7,
+                            color = LocalCustomColorsPalette.current.primaryTextAndIcon
                         )
                         Text(
                             text = " · ${event.organizer}",
                             style = MaterialTheme.typography.h7,
-                            color = LocalCustomColorsPalette.current.parameterTitle
+                            color = LocalCustomColorsPalette.current.secondaryTextAndIcon
                         )
                     }
                 }
