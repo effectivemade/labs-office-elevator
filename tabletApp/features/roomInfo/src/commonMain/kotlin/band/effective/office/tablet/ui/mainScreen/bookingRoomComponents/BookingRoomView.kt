@@ -31,6 +31,7 @@ import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiCompon
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.DateTimeView
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.EventLengthView
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.EventOrganizerView
+import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 
 @Composable
 fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: BookingRoomComponent) {
@@ -85,7 +86,7 @@ fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: Booking
                         .clip(RoundedCornerShape(100.dp)).border(
                         width = 3.dp,
                         shape = RoundedCornerShape(100.dp),
-                        color = Color.White
+                        color = MaterialTheme.colors.onPrimary
                     ),
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     onClick = { bookingRoomComponent.bookingOtherRoom() }

@@ -31,7 +31,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, Nothing>
 
         companion object {
             val default = State(
-                length = 0,
+                length = 30,
                 organizer = "",
                 organizers = listOf(),
                 selectDate = GregorianCalendar(),

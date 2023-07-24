@@ -4,6 +4,7 @@ import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.domain.useCase.CheckBookingUseCase
 import band.effective.office.tablet.domain.useCase.UpdateUseCase
+import band.effective.office.tablet.ui.selectRoomScreen.store.SelectRoomStore
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -40,7 +41,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                             )
                             dispatch(Action.UpdateOrganizers(updateUseCase.getOrganizersList()))
                             updateUseCase(scope = this,
-                                 {
+                                {
                                     launch(Dispatchers.Main) {
                                         dispatch(Action.UpdateEvents(it))
                                     }
@@ -110,7 +111,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     dispatch(
                         Message.ChangeEvent(
                             selectDate = defaultEvent.startTime,
-                            length = 0,
+                            length = BookingStore.State.default.length,
                             isBusy = action.isBusy,
                             busyEvent = action.busyEvent
                         )
@@ -136,6 +137,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
         fun changeLength(state: BookingStore.State, change: Int) = scope.launch() {
             val event = state.copy(length = state.length + change).toEvent()
+            if (event.startTime >= event.finishTime) return@launch
             val busyEvent = checkBookingUseCase(event)
             dispatch(
                 Message.ChangeEvent(

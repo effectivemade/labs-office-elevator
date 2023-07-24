@@ -57,15 +57,16 @@ fun EventLengthView(
             }
             Spacer(modifier = Modifier.width(space))
             Text(
-                text = MainRes.string.current_length_string.format(currentLength.toString()),
-                color = if (isBusy) MaterialTheme.colors.secondary else MaterialTheme.colors.onPrimary,
+                text = currentLength.getLengthString(),
+                color = MaterialTheme.colors.onPrimary,
                 style = MaterialTheme.typography.h4
             )
             Spacer(modifier = Modifier.width(space))
             Button(
                 modifier = Modifier.fillMaxHeight().weight(1f).clip(RoundedCornerShape(15.dp)),
                 onClick = {
-                    component.increment() },
+                    component.increment()
+                },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = LocalCustomColorsPalette.current.elevationBackground
                 )
@@ -78,4 +79,14 @@ fun EventLengthView(
         }
     }
 
+}
+
+private fun Int.getLengthString(): String {
+    val hours = this / 60
+    val minutes = this % 60
+    return when {
+        hours == 0 -> "$minutes${MainRes.string.short_minuets}"
+        minutes == 0 -> "$hours${MainRes.string.short_hours}"
+        else -> "$hours${MainRes.string.short_hours} $minutes${MainRes.string.short_minuets}"
+    }
 }
