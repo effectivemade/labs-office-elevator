@@ -7,8 +7,7 @@ import com.google.api.client.json.gson.GsonFactory
 
 class TokenVerifier : ITokenVerifier {
 
-    private val webClient =
-        "27867488691-gc95ln5jad3i84dcmu3dd9ls1s4hvm9c.apps.googleusercontent.com"
+    private val webClient = System.getenv("GOOGLE_CLIENT_ID")
 
     private val verifier: GoogleIdTokenVerifier =
         GoogleIdTokenVerifier.Builder(NetHttpTransport(), GsonFactory()).setAudience(listOf(webClient)).build()
