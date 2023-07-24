@@ -23,17 +23,11 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, Nothing>
         val busyEvent: EventInfo,
         val roomName: String
     ) {
-        fun isCorrect() = validateLength() && validateOrganizer() && validateDate()
+        fun isCorrect() = isCorrectOrganizer() && isCorrectLength() && isCorrectDate()
 
-        private fun validateDate(): Boolean {
-            val date = selectDate.clone() as Calendar
-            date.add(Calendar.SECOND, 59)
-            return date > GregorianCalendar()
-        }
-
-        private fun validateLength() = length > 0
-
-        private fun validateOrganizer() = organizer != ""
+        fun isCorrectOrganizer() = BookingInfoValidator.validateOrganizer(organizer)
+        fun isCorrectLength() = BookingInfoValidator.validateLength(length)
+        fun isCorrectDate() = BookingInfoValidator.validateDate(selectDate)
 
         companion object {
             val default = State(
@@ -46,5 +40,17 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, Nothing>
                 roomName = "Sirius"
             )
         }
+    }
+
+    object BookingInfoValidator {
+        fun validateDate(date: Calendar): Boolean {
+            val date = date.clone() as Calendar
+            date.add(Calendar.SECOND, 59)
+            return date > GregorianCalendar()
+        }
+
+        fun validateLength(length: Int) = length > 0
+
+        fun validateOrganizer(organizer: String) = organizer != ""
     }
 }

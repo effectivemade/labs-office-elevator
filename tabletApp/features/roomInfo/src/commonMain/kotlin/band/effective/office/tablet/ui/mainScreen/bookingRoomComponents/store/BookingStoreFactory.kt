@@ -126,10 +126,10 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             val busyEvent = checkBookingUseCase(event)
             dispatch(
                 Message.ChangeEvent(
-                    event.startTime,
-                    state.length,
-                    busyEvent != null,
-                    busyEvent ?: EventInfo.emptyEvent
+                    selectDate = event.startTime,
+                    length = state.length,
+                    isBusy = busyEvent != null,
+                    busyEvent = busyEvent ?: EventInfo.emptyEvent
                 )
             )
         }
@@ -139,10 +139,10 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             val busyEvent = checkBookingUseCase(event)
             dispatch(
                 Message.ChangeEvent(
-                    event.startTime,
-                    state.length + change,
-                    busyEvent != null,
-                    busyEvent ?: EventInfo.emptyEvent
+                    selectDate = event.startTime,
+                    length = state.length + change,
+                    isBusy = busyEvent != null,
+                    busyEvent = busyEvent ?: EventInfo.emptyEvent
                 )
             )
         }
@@ -151,8 +151,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             val busyEvent = checkBookingUseCase(state.toEvent())
             dispatch(
                 Message.UpdateBusy(
-                    busyEvent != null,
-                    busyEvent ?: EventInfo.emptyEvent
+                    isBusy = busyEvent != null,
+                    busyEvent = busyEvent ?: EventInfo.emptyEvent
                 )
             )
         }

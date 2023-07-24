@@ -21,4 +21,6 @@
     <string name="current_length_string">${currentLength} мин</string>
     <string name="selectbox_organizer_title">Организатор встречи</string>
     <string name="event_list_title">Занятое время</string>
+    <string name="no_select_organizer_alert">В это время будет другая бронь</string>
+    <string name="no_correct_time">Выберите организатора</string>
 </resources>
