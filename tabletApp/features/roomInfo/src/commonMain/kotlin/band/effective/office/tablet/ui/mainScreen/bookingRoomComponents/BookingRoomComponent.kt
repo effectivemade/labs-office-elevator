@@ -61,9 +61,9 @@ class BookingRoomComponent(
         return Booking(
             state.value.roomName,
             EventInfo(
-                state.value.selectDate,
-                finishDate,
-                state.value.organizer
+                startTime = state.value.selectDate,
+                finishTime = finishDate,
+                organizer = state.value.organizer
             )
         )
     }
