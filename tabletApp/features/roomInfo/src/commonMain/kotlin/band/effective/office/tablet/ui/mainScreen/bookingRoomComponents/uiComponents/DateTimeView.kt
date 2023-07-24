@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.tablet.features.roomInfo.MainRes
@@ -32,7 +33,7 @@ fun DateTimeView(modifier: Modifier, component: RealDateTimeComponent, selectDat
     Column(modifier = modifier) {
         Text(
             text = MainRes.string.select_date_tine_title,
-            color = LocalCustomColorsPalette.current.parameterTitle,
+            color = LocalCustomColorsPalette.current.secondaryTextAndIcon,
             style = MaterialTheme.typography.h8
         )
         Spacer(modifier = Modifier.height(10.dp))
@@ -60,13 +61,15 @@ fun DateTimeView(modifier: Modifier, component: RealDateTimeComponent, selectDat
             ) {
                 Text(
                     text = selectDate.dateTime(),
-                    style = MaterialTheme.typography.h6
+                    style = MaterialTheme.typography.h6,
+                    color = LocalCustomColorsPalette.current.primaryTextAndIcon
                 )
                 Spacer(Modifier.width(5.dp))
                 Image(
                     modifier = Modifier,
                     painter = painterResource(MainRes.image.calendar),
-                    contentDescription = null
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(color = LocalCustomColorsPalette.current.primaryTextAndIcon)
                 )
             }
             Spacer(modifier = Modifier.width(10.dp))

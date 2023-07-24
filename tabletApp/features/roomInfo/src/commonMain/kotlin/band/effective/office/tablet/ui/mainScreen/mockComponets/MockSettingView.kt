@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -18,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -25,7 +27,7 @@ fun MockSettingView(component: MockSettingsComponent) {
     val state by component.state.collectAsState()
     Surface(
         modifier = Modifier.fillMaxWidth().height(100.dp),
-        color = Color(0xFF252322),
+        color = MaterialTheme.colors.surface,
         onClick = { component.sendEvent(MockSettingsEvent.OnSwitchVisible) }) {
         if (state.isVisible) {
             Column {
@@ -66,8 +68,8 @@ private fun Item(checked: Boolean, onCheckedChange: (Boolean) -> Unit, text: Str
         Checkbox(
             checked = checked,
             onCheckedChange = { onCheckedChange(it) },
-            colors = CheckboxDefaults.colors(uncheckedColor = Color.White),
+            colors = CheckboxDefaults.colors(uncheckedColor = LocalCustomColorsPalette.current.primaryTextAndIcon),
         )
-        Text(text = text, color = Color.White)
+        Text(text = text, color = LocalCustomColorsPalette.current.primaryTextAndIcon)
     }
 }

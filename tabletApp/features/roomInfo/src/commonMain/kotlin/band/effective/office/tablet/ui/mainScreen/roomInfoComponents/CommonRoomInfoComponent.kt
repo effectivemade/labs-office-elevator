@@ -21,10 +21,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.tablet.features.roomInfo.MainRes
 import band.effective.office.tablet.ui.theme.h8
+import band.effective.office.tablet.ui.theme.roomInfoColor
 import band.effective.office.tablet.utils.getCorrectDeclension
 import io.github.skeptick.libres.compose.painterResource
 import io.github.skeptick.libres.images.Image
@@ -39,6 +41,7 @@ fun CommonRoomInfoComponent(
     roomOccupancy: String,
     backgroundColor: Color
 ) {
+    val infoColor = roomInfoColor
     Surface(
         modifier = Modifier.background(color = backgroundColor).fillMaxWidth(),
         color = backgroundColor
@@ -46,22 +49,25 @@ fun CommonRoomInfoComponent(
         Column(modifier = modifier) {
             Text(
                 text = name,
-                style = MaterialTheme.typography.h1
+                style = MaterialTheme.typography.h1,
+                color = infoColor
             )
             Spacer(modifier = Modifier.height(20.dp))
             Text(
                 text = roomOccupancy,
-                style = MaterialTheme.typography.h5
+                style = MaterialTheme.typography.h5,
+                color = infoColor
             )
             Spacer(modifier = Modifier.height(25.dp))
             Row(modifier = Modifier.padding(horizontal = 10.dp)) {
                 val spaceBetweenProperty = 40.dp
-                RoomPropertyComponent(image = MainRes.image.quantity, text = "$capacity")
+                RoomPropertyComponent(image = MainRes.image.quantity, text = "$capacity", color = infoColor)
                 if (isHaveTv) {
                     Spacer(modifier = Modifier.width(spaceBetweenProperty))
                     RoomPropertyComponent(
                         image = MainRes.image.tv,
-                        text = MainRes.string.tv_property
+                        text = MainRes.string.tv_property,
+                        color = infoColor
                     )
                 }
                 //NOTE(Maksim Mishenko): designers have not fully defined all the properties, a condition will appear in if
@@ -70,7 +76,8 @@ fun CommonRoomInfoComponent(
                     Spacer(modifier = Modifier.width(spaceBetweenProperty))
                     RoomPropertyComponent(
                         image = MainRes.image.usb,
-                        text = MainRes.string.usb_property
+                        text = MainRes.string.usb_property,
+                        color = infoColor
                     )
                 }
                 if (electricSocketCount > 0) {
@@ -84,7 +91,8 @@ fun CommonRoomInfoComponent(
                                 genitive = MainRes.string.electric_socket_property_genitive,
                                 genitivePlural = MainRes.string.electric_socket_property_plural
                             )
-                        }"
+                        }",
+                        color = infoColor
                     )
                 }
             }
@@ -94,7 +102,7 @@ fun CommonRoomInfoComponent(
 }
 
 @Composable
-fun RoomPropertyComponent(image: Image, text: String) {
+fun RoomPropertyComponent(image: Image, text: String, color: Color) {
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
@@ -102,9 +110,10 @@ fun RoomPropertyComponent(image: Image, text: String) {
         Image(
             modifier = Modifier,
             painter = painterResource(image),
-            contentDescription = null
+            contentDescription = null,
+            colorFilter = ColorFilter.tint(color)
         )
         Spacer(modifier = Modifier.width(8.dp))
-        Text(text = text, style = MaterialTheme.typography.h8)
+        Text(text = text, style = MaterialTheme.typography.h8, color = color)
     }
 }

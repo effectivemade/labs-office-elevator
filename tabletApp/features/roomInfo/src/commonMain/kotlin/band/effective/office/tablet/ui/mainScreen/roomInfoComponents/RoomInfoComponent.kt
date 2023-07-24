@@ -2,10 +2,12 @@ package band.effective.office.tablet.ui.mainScreen.roomInfoComponents
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -20,7 +22,7 @@ fun RoomInfoComponent(
     onOpenModalRequest: () -> Unit
 ) {
     val paddings = 30.dp
-    Column(modifier = modifier) {
+    Column(modifier = modifier.background(MaterialTheme.colors.background)) {
         DateTimeComponent(modifier = Modifier.padding(paddings))
         when {
             room.isFree() -> {

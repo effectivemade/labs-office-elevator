@@ -2,6 +2,8 @@ package band.effective.office.tablet.ui.mainScreen.roomInfoComponents
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,6 +16,9 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,6 +29,8 @@ import band.effective.office.tablet.features.roomInfo.MainRes
 import band.effective.office.tablet.ui.selectRoomScreen.FreeSelectRoomView
 import band.effective.office.tablet.ui.selectRoomScreen.RealFreeSelectRoomComponent
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
+import band.effective.office.tablet.ui.theme.roomInfoColor
+import band.effective.office.tablet.ui.theme.textButton
 import band.effective.office.tablet.utils.CalendarStringConverter
 import java.util.Calendar
 
@@ -38,6 +45,12 @@ fun BusyRoomInfoComponent(
     onButtonClick: () -> Unit
 ) {
     val backgroundColor = LocalCustomColorsPalette.current.busyStatus
+
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val colorButton =  if(isPressed) roomInfoColor else backgroundColor
+    val colorTextButton = if(isPressed) backgroundColor else roomInfoColor
+
     Surface {
         CommonRoomInfoComponent(
             modifier = modifier,
@@ -63,16 +76,17 @@ fun BusyRoomInfoComponent(
                     .width(150.dp)
                     .background(color = backgroundColor).border(
                         width = 3.dp,
-                        color = MaterialTheme.colors.onPrimary,
+                        color = roomInfoColor,
                         shape = RoundedCornerShape(70.dp),
                     ),
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = backgroundColor
+                    backgroundColor = colorButton
                 ),
+                interactionSource = interactionSource,
                 onClick = {
                     onButtonClick()
                 }) {
-                Text(text = MainRes.string.stop_meeting_button, color = Color(0xFFFAFAFA))
+                Text(text = MainRes.string.stop_meeting_button, color = colorTextButton)
             }
         }
     }

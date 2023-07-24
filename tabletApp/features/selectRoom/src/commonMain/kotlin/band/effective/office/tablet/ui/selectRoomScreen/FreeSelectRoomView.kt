@@ -12,10 +12,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,12 +27,19 @@ import androidx.compose.ui.window.Dialog
 import band.effective.office.tablet.features.selectRoom.MainRes
 import band.effective.office.tablet.ui.selectRoomScreen.uiComponents.CrossButtonView
 import band.effective.office.tablet.ui.theme.CustomDarkColors
+import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.header4
 import band.effective.office.tablet.ui.theme.header6
+import band.effective.office.tablet.ui.theme.textButton
 
 @Composable
 fun FreeSelectRoomView(onCloseRequest: () -> Unit, onFreeRoomRequest: () -> Unit) {
     val shape = RoundedCornerShape(50)
+
+    val isPressed = remember { mutableStateOf(false) }
+    val colorButton =  if(isPressed.value)
+        LocalCustomColorsPalette.current.pressedPrimaryButton else MaterialTheme.colors.primary
+
     Dialog(
         onDismissRequest = {
             onCloseRequest()
@@ -39,7 +49,7 @@ fun FreeSelectRoomView(onCloseRequest: () -> Unit, onFreeRoomRequest: () -> Unit
             modifier = Modifier
                 .size(518.dp, 304.dp)
                 .clip(RoundedCornerShape(5))
-                .background(CustomDarkColors.elevationBackground),
+                .background(LocalCustomColorsPalette.current.elevationBackground),
         ) {
 
             Column(
@@ -61,16 +71,17 @@ fun FreeSelectRoomView(onCloseRequest: () -> Unit, onFreeRoomRequest: () -> Unit
                 ) {
                     Text(
                         text = MainRes.string.free_select_room,
-                        style = header4,
-                        color = CustomDarkColors.primaryTextAndIcon
+                        style = MaterialTheme.typography.h4,
+                        color = LocalCustomColorsPalette.current.primaryTextAndIcon
                     )
                 }
                 Spacer(modifier = Modifier.height(30.dp))
                 Button(
                     modifier = Modifier.size(290.dp, 64.dp),
-                    colors = ButtonDefaults.buttonColors(CustomDarkColors.pressedPrimaryButton),
+                    colors = ButtonDefaults.buttonColors(colorButton),
                     shape = shape,
                     onClick = {
+                        isPressed.value = !isPressed.value
                         onFreeRoomRequest()
                     }
                 ) {
@@ -78,8 +89,8 @@ fun FreeSelectRoomView(onCloseRequest: () -> Unit, onFreeRoomRequest: () -> Unit
                     {
                         Text(
                             text = MainRes.string.free_select_room_button,
-                            style = header6,
-                            color = CustomDarkColors.primaryTextAndIcon,
+                            style = MaterialTheme.typography.h6,
+                            color = textButton,
                         )
                     }
                 }
