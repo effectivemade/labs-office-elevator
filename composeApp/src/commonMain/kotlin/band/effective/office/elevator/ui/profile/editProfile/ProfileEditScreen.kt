@@ -32,7 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.MainRes
@@ -51,7 +50,7 @@ fun ProfileEditScreen(component: ProfileEditComponent){
     LaunchedEffect(component){
         component.label.collect{label->
             when(label){
-                ProfileEditStore.Label.ReturnedInProfile ->component.onOutput(ProfileEditComponent.Output.OpenProfileFlow)
+                ProfileEditStore.Label.ReturnedInProfile ->component.onOutput(ProfileEditComponent.Output.NavigationBack)
                 else-> {}
             }
         }
@@ -72,7 +71,7 @@ private fun ProfileEditScreenContent(
     phoneNumber: String?,
     onReturnToProfile: () -> Unit
 ) {
-    val fieldsList =  prepareFieldsData("Петров Иван","Android-разработчик","petrov","9654561232")
+    val fieldsList =  prepareFieldsData(userName,post,telegram,phoneNumber)
     Column (
         modifier = Modifier.fillMaxSize().background(Color.White).padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,

@@ -1,6 +1,7 @@
 package band.effective.office.elevator.ui.profile.mainProfile
 
 import band.effective.office.elevator.ui.models.User
+import band.effective.office.elevator.ui.profile.editProfile.ProfileEditComponent
 import band.effective.office.elevator.ui.profile.mainProfile.store.ProfileStore
 import band.effective.office.elevator.ui.profile.mainProfile.store.ProfileStoreFactory
 import com.arkivanov.decompose.ComponentContext
@@ -36,7 +37,7 @@ class MainProfileComponent(
     }
     sealed interface Output {
         object OpenAuthorizationFlow : Output
-        object OpenEditProfile: Output
+        data class NavigateToEdit(val userEdit: User): Output
     }
 
 }

@@ -7,11 +7,9 @@ interface ProfileStore : Store<ProfileStore.Intent, User, ProfileStore.Label> {
 
     sealed interface Intent {
         object SignOutClicked : Intent
-        object EditProfileClicked : Intent
     }
 
     sealed interface Label {
         object OnSignedOut : Label
-        object OnClickedEdit: Label
     }
 }

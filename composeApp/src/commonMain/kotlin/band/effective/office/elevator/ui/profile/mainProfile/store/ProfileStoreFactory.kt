@@ -25,7 +25,7 @@ internal class ProfileStoreFactory(
     fun create(): ProfileStore =
         object : ProfileStore, Store<Intent, User, Label> by storeFactory.create(
             name = "ProfileStore",
-            initialState = User(imageUrl = null, userName = null, telegram = null, post = null, phoneNumber = null),
+            initialState = User(null,null,null,null,null,null),
             bootstrapper = coroutineBootstrapper {
                 dispatch(Action.FetchUserInfo)
             },
@@ -38,7 +38,7 @@ internal class ProfileStoreFactory(
     }
 
     private sealed interface Msg {
-        data class ProfileData(val user: GoogleAccount) : Msg
+        data class ProfileData(val user: User) : Msg
     }
 
     private inner class ExecutorImpl :
@@ -46,13 +46,9 @@ internal class ProfileStoreFactory(
         override fun executeIntent(intent: Intent, getState: () -> User) {
             when (intent) {
                 Intent.SignOutClicked -> doSignOut()
-                Intent.EditProfileClicked -> doTransaction()
             }
         }
 
-        private fun doTransaction(){
-            publish(Label.OnClickedEdit)
-        }
 
         private fun doSignOut() {
             signInClient.signOut()
@@ -72,8 +68,9 @@ internal class ProfileStoreFactory(
                     ApiResponse.Error.NetworkError -> {}
                     ApiResponse.Error.SerializationError -> {}
                     ApiResponse.Error.UnknownError -> {}
-                    is ApiResponse.Success -> dispatch(Msg.ProfileData(user = result.body))
+                    is ApiResponse.Success ->{}
                 }
+                dispatch(Msg.ProfileData(user = mokValueUser))
             }
         }
     }
@@ -82,12 +79,15 @@ internal class ProfileStoreFactory(
         override fun User.reduce(message: Msg): User =
             when (message) {
                 is Msg.ProfileData -> User(
-                    imageUrl = message.user.photoUrl,
-                    userName = message.user.name,
-                    telegram = null,
-                    post = null,
-                    phoneNumber = null,
+                    imageUrl = message.user.imageUrl,
+                    userName = message.user.userName,
+                    telegram = message.user.telegram,
+                    post = message.user.post,
+                    phoneNumber = message.user.phoneNumber,
+                    email = message.user.email
                 )
             }
     }
+
 }
+private val mokValueUser = User("1","Ivanov Ivan", "Android-developer","67","@ivanov","employee@effective.com")

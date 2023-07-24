@@ -53,7 +53,6 @@ fun ProfileScreen(component: MainProfileComponent) {
         component.label.collect { label ->
             when(label){
                 ProfileStore.Label.OnSignedOut -> component.onOutput(MainProfileComponent.Output.OpenAuthorizationFlow)
-                ProfileStore.Label.OnClickedEdit -> component.onOutput(MainProfileComponent.Output.OpenEditProfile)
             }
         }
     }
@@ -65,7 +64,7 @@ fun ProfileScreen(component: MainProfileComponent) {
         telegram = user.telegram,
         phoneNumber = user.phoneNumber,
         onSignOut = { component.onEvent(ProfileStore.Intent.SignOutClicked) },
-        onEditProfile = {component.onEvent(ProfileStore.Intent.EditProfileClicked)}
+        onEditProfile = {component.onOutput(MainProfileComponent.Output.NavigateToEdit(user))}
     )
 }
 

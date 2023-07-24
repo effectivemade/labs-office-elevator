@@ -8,10 +8,12 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
+import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
 internal class ProfileEditStoreFactory(
-    private val storeFactory: StoreFactory
+    private val storeFactory: StoreFactory,
+    private  val user:User
 ) : KoinComponent {
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): ProfileEditStore =
@@ -24,7 +26,8 @@ internal class ProfileEditStoreFactory(
                     telegram = null,
                     post = null,
                     phoneNumber = null,
-                    imageUrl = null
+                    imageUrl = null,
+                    email = null
                 ),
                 bootstrapper = coroutineBootstrapper {
                     dispatch(Action.FetchUserInfo)
@@ -62,10 +65,10 @@ internal class ProfileEditStoreFactory(
         }
 
         private fun fetchUserInfo() {
-
+            scope.launch {
+                dispatch(Msg.ProfileData(user = user))
+            }
         }
-
-
 
         private fun doReturnProfile() {
             publish(Label.ReturnedInProfile)
@@ -76,11 +79,12 @@ internal class ProfileEditStoreFactory(
         override fun User.reduce(message: Msg): User =
             when (message) {
                 is Msg.ProfileData -> User(
-                    userName = null,
-                    telegram = null,
-                    post = null,
-                    phoneNumber = null,
-                    imageUrl = null
+                    userName = message.user.userName,
+                    telegram = message.user.telegram,
+                    post = message.user.post,
+                    phoneNumber = message.user.phoneNumber,
+                    imageUrl = message.user.imageUrl,
+                    email = message.user.email
                 )
             }
     }
