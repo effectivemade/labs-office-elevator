@@ -5,7 +5,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -49,7 +48,7 @@ import band.effective.office.elevator.textInBorderGray
 import band.effective.office.elevator.textInBorderPurple
 import band.effective.office.elevator.theme_light_background
 import band.effective.office.elevator.theme_light_onBackground
-import band.effective.office.elevator.theme_light_primary_color
+import band.effective.office.elevator.theme_light_onPrimary
 import band.effective.office.elevator.theme_light_tertiary_color
 import band.effective.office.elevator.ui.employee.store.EmployeeStore
 import dev.icerock.moko.resources.ImageResource
@@ -101,17 +100,14 @@ fun EmployeeScreenContent(
 ) {
 
     Column {
-        Box(
-            modifier = Modifier
-                .background(theme_light_primary_color)///Themeeee!
-
-                .fillMaxWidth()
-        ) {
-            Column {
+        Column (modifier = Modifier
+            .background(theme_light_onPrimary)
+            .padding(0.dp,0.dp,0.dp,15.dp)
+            .fillMaxWidth()){
                 Text(
                     text = stringResource(MainRes.strings.employees),
                     fontSize = 20.sp,
-                    fontWeight = FontWeight(600),
+                    fontWeight = FontWeight(600),//?
                     color = theme_light_tertiary_color,
                     modifier = Modifier.padding(20.dp, 55.dp, 15.dp, 25.dp)
                 )
@@ -153,51 +149,42 @@ fun EmployeeScreenContent(
                     shape = RoundedCornerShape(32.dp)
 
                 )
-
-                //padding настроить!
-            }
         }
-        Box(
+        Column(
             modifier = Modifier
                 .background(theme_light_onBackground)
                 .fillMaxSize()
-                .padding(horizontal = 20.dp, vertical = 25.dp)
+                .padding(20.dp,25.dp,20.dp,0.dp)
         ) {
-            LazyColumn(
-                //TODO() Зюзин: надо доработать вёрстку экрана (оптимизировать компоненты)
+            Row(modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 25.dp).fillMaxWidth()) {
+                Text(
+                    text = stringResource(MainRes.strings.employees) + " ",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight(500),
+                    color = theme_light_tertiary_color//???
+                )
+                Text(
+                    text = "($employeesCount)",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight(400),
+                    color = textInBorderPurple
+                )
+                Text(
+                    text = stringResource(MainRes.strings.employee_in_office)
+                            + ": $employeesInOfficeCount",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight(400),
+                    color = textInBorderPurple,
+                    textAlign = TextAlign.End,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
-                modifier = Modifier.fillMaxSize()
-            ) {
-                item {
-                    Row(modifier = Modifier.padding(5.dp, 0.dp, 0.dp, 15.dp).fillMaxWidth()) {
-                        Text(
-                            text = stringResource(MainRes.strings.employees) + " ",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight(500),
-                            color = theme_light_tertiary_color
-                        )
-                        Text(
-                            text = "($employeesCount)",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight(400),
-                            color = textInBorderPurple
-                        )
-                        Text(
-                            text = stringResource(MainRes.strings.employee_in_office)
-                                    + ": $employeesInOfficeCount",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight(400),
-                            color = textInBorderPurple,
-                            textAlign = TextAlign.End,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                }
+            LazyColumn{
                 items(employeesData) { employee_Data ->
                     EveryEmployeeCard(emp = employee_Data, onCardClick)
 
                 }
-
             }
         }
     }
@@ -231,12 +218,12 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier
             .fillMaxSize()
-            .padding(5.dp)
+            .padding(0.dp,0.dp,0.dp,15.dp)
             .animateContentSize()
             .clickable { isExpanded = !isExpanded },
-        color = theme_light_primary_color
+        color = theme_light_onPrimary
     ) {
-        Row(modifier = Modifier.padding(6.dp, 10.dp)) {
+        Row(modifier = Modifier.padding(6.dp, 15.dp)) {
             Image(
                 painter = painterResource(emp.logoUrl),
                 contentDescription = "Employee logo",
@@ -262,7 +249,7 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
                 Spacer(modifier = Modifier.padding(0.dp, 8.dp))
                 Button(
                     onClick = { isExpanded = !isExpanded },
-                    colors = ButtonDefaults.buttonColors(theme_light_primary_color),
+                    colors = ButtonDefaults.buttonColors(theme_light_onPrimary),
                     modifier = Modifier
                         .border(1.dp, stateColorBorder, RoundedCornerShape(12.dp)),
                     shape = RoundedCornerShape(12.dp),
