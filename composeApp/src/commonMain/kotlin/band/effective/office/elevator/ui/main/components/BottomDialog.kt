@@ -40,7 +40,6 @@ fun BottomDialog(modifier: Modifier, title: String) {
         modifier = Modifier
             .background(Color.White)
             .padding(vertical = 24.dp, horizontal = 16.dp)
-            .clip(shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
             .fillMaxWidth()
             .then(other = modifier)
     ) {

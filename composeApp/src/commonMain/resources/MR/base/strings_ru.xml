@@ -37,7 +37,7 @@
     <string name="by_date"> По дате </string>
     <string name="show_map">Показать на карте</string>
     <string name="book_a_seat">Забронировать место</string>
-    <string name="nearest_bookings">Ваши ближайшие брони</string>
+    <string name="nearest_bookings">Ваши\nближайшие\nброни</string>
     <string name="none_booking_seat">У вас пока нет бронирований</string>
 
     <string name="cansel">Отмена</string>
