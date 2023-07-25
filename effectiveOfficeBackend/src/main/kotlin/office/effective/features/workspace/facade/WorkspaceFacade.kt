@@ -21,10 +21,6 @@ class WorkspaceFacade(private val service: WorkspaceService,
         } catch (ex: IllegalArgumentException) {
             throw ValidationException("Provided id is not UUID: " + ex.message)
         }
-        val sum = {
-            service.findById(uuid)
-        }
-        sum()
 
         val workspace: Workspace = transactionManager.useTransaction({ service.findById(uuid) })
             ?: throw InstanceNotFoundException(Workspace::class, "Workspace with id $id not found", uuid)
