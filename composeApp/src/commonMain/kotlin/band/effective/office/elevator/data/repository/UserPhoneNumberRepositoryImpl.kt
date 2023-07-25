@@ -4,7 +4,7 @@ import band.effective.office.elevator.domain.models.UserPhoneNumber
 import band.effective.office.elevator.domain.repository.UserPhoneNumberRepository
 
 class UserPhoneNumberRepositoryImpl : UserPhoneNumberRepository {
-    override fun registerUserByPhoneNumber(): Boolean {
+    override fun callUserPhoneNumber(): Boolean {
         TODO("Not yet implemented")
     }
 
