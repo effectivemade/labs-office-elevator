@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.authorization.authorization_phone.store
 
+import band.effective.office.elevator.domain.repository.UserPhoneNumberRepository
 import band.effective.office.elevator.ui.authorization.authorization_phone.store.AuthorizationPhoneStore.*
 import band.effective.office.elevator.ui.models.validator.Validator
 import com.arkivanov.mvikotlin.core.store.Reducer
@@ -7,12 +8,14 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 internal class AuthorizationPhoneStoreFactory(
     private val storeFactory: StoreFactory,
     private val validator: Validator
-) :
-    KoinComponent {
+) : KoinComponent {
+
+    private val userPhoneRep: UserPhoneNumberRepository by inject()
 
     fun create(): AuthorizationPhoneStore =
         object : AuthorizationPhoneStore,
