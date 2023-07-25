@@ -295,7 +295,7 @@ object EmployeesData {
             "Ivanov Ivan",
             "Android-developer",
             "In office",
-            "https://www.kasandbox.org/programming-images/avatars/leaf-green.png"
+            "https://wampi.ru/image/R9C6OC7"
         ),
         EmployeeCard(
             "Smirnov Andrey",
