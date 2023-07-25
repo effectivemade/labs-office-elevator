@@ -36,10 +36,6 @@ fun Route.authRoutingFun() {
                 call.respond(trace)
 
             }
-
-            val token: String = call.receiveText()
-            val userEmail = verifier.isCorrectToken(token)
-            call.respondText(userEmail)
             call.respondRedirect("http://localhost:8080/callback")
         }
     }
