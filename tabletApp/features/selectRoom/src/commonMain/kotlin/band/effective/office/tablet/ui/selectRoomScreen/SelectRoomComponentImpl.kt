@@ -1,11 +1,7 @@
 package band.effective.office.tablet.ui.selectRoomScreen
 
 import com.arkivanov.decompose.ComponentContext
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
-import band.effective.office.tablet.domain.SelectRoomInteractor
 import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.ui.selectRoomScreen.store.SelectRoomStore
 import band.effective.office.tablet.ui.selectRoomScreen.store.SelectRoomStoreFactory
@@ -28,17 +24,19 @@ class SelectRoomComponentImpl(
     @OptIn(ExperimentalCoroutinesApi::class)
     override val state = bookingStore.stateFlow
 
-    override fun bookRoom() {
-        bookingStore.accept(SelectRoomStore.Intent.BookingRoom)
-    }
-
-    override fun close() {
-        onCloseRequest()
-        bookingStore.accept(SelectRoomStore.Intent.CloseModal)
-    }
-
-    override fun onBooking() {
-        bookingStore.accept(SelectRoomStore.Intent.SetBooking(onBookingRoom()))
+    override fun onIntent(intent: SelectRoomStore.Intent){
+        when (intent) {
+            is SelectRoomStore.Intent.BookingRoom -> {
+                bookingStore.accept(intent)
+            }
+            is SelectRoomStore.Intent.CloseModal -> {
+                onCloseRequest()
+                bookingStore.accept(intent)
+            }
+            is SelectRoomStore.Intent.SetBooking -> {
+                bookingStore.accept(intent.copy(booking = onBookingRoom()))
+            }
+        }
     }
 
 }
