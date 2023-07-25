@@ -4,6 +4,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
+import office.effective.config
 
 class TokenVerifier : ITokenVerifier {
 
@@ -12,7 +13,8 @@ class TokenVerifier : ITokenVerifier {
     private val verifier: GoogleIdTokenVerifier =
         GoogleIdTokenVerifier.Builder(NetHttpTransport(), GsonFactory()).setAudience(listOf(webClient)).build()
 
-    private val acceptableMailDomain: String = "effective.band"
+    private val acceptableMailDomain: String =
+        config.propertyOrNull("auth.user.emailDomain ")?.getString() ?: "effective.band"
 
     override fun isCorrectToken(tokenString: String): String {
         var userMail: String? = null
