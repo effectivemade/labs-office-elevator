@@ -1,7 +1,8 @@
 package band.effective.office.elevator.ui.content
 
 import band.effective.office.elevator.ui.booking.BookingComponent
-import band.effective.office.elevator.ui.employee.EmployeeComponent
+import band.effective.office.elevator.ui.employee.FullEmployeeComponent
+import band.effective.office.elevator.ui.employee.allEmployee.EmployeeComponent
 import band.effective.office.elevator.ui.main.MainComponent
 import band.effective.office.elevator.ui.profile.ProfileComponent
 import com.arkivanov.decompose.ComponentContext
@@ -39,7 +40,7 @@ class ContentComponent(
             )
         )
         is Config.Booking -> Child.Booking(BookingComponent(componentContext, storeFactory))
-        is Config.Employee -> Child.Employee(EmployeeComponent(componentContext, storeFactory))
+        is Config.Employee -> Child.Employee(FullEmployeeComponent(componentContext, storeFactory))
     }
 
     fun onOutput(output: Output) {
@@ -59,7 +60,7 @@ class ContentComponent(
 
         class Booking(val component: BookingComponent): Child()
 
-        class Employee(val component: EmployeeComponent): Child()
+        class Employee(val component: FullEmployeeComponent): Child()
     }
 
     private sealed interface Config : Parcelable {

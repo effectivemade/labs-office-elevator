@@ -8,6 +8,8 @@
     <string name="search_employee">Search employee</string>
     <string name="employee_in_office">In office</string>
 
+    <string name="company_name">Effective</string>
+
     <!--Auth strings-->
     <string name="_continue">Continue</string>
     <string name="input_number">Enter number</string>
@@ -70,4 +72,9 @@
     <string name="post">Post</string>
     <string name="phone_number">Telephone number</string>
     <string name="save">Save</string>
+
+    <!-- Employee -->
+    <string name="about_the_employee">About the employee</string>
+    <string name="upcoming_bookings">Upcoming bookings</string>
+    <string name="transfer">Transfer</string>
 </resources>
