@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
@@ -25,6 +26,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
@@ -51,7 +53,10 @@ import band.effective.office.elevator.theme_light_onBackground
 import band.effective.office.elevator.theme_light_onPrimary
 import band.effective.office.elevator.theme_light_tertiary_color
 import band.effective.office.elevator.ui.employee.store.EmployeeStore
-import dev.icerock.moko.resources.ImageResource
+import band.effective.office.elevator.utils.generateImageLoader
+import com.seiko.imageloader.LocalImageLoader
+import com.seiko.imageloader.model.ImageRequest
+import com.seiko.imageloader.rememberAsyncImagePainter
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 
@@ -60,18 +65,19 @@ data class EmployeeCard(
     val name: String,
     val post: String,
     val state: String,
-    val logoUrl: ImageResource//TODO() Переделать в URL
+    val logoUrl: String
 )
 
 @Composable
 fun EmployeeScreen(component: EmployeeComponent) {
 
     val employState by component.employState.collectAsState()
-    val employeesData = employState.changeShowedEmployeeCards//state
+    val employeesData = employState.changeShowedEmployeeCards
     val employeesCount = employeesData.count()
     val employeesInOfficeCount = employeesData.filter{it.state=="In office"}.count()
     val userMessageState = remember { mutableStateOf("") }
 
+    
 
     LaunchedEffect(component) {
         component.employLabel.collect { label ->
@@ -146,6 +152,7 @@ fun EmployeeScreenContent(
                         )
                     },
                     singleLine = true,
+                    keyboardActions = KeyboardActions(onGo = {userMessageState.value ="Check"}),
                     shape = RoundedCornerShape(32.dp)
 
                 )
@@ -224,13 +231,27 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
         color = theme_light_onPrimary
     ) {
         Row(modifier = Modifier.padding(6.dp, 15.dp)) {
-            Image(
-                painter = painterResource(emp.logoUrl),
-                contentDescription = "Employee logo",
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .size(56.dp)
-            )
+
+            CompositionLocalProvider(
+                LocalImageLoader provides remember {generateImageLoader()},
+            ) {
+                emp.logoUrl.let { url ->
+                    val request = remember(url) {
+                        ImageRequest {
+                            data(url)
+                        }
+                    }
+                    val painter = rememberAsyncImagePainter(request)
+                    Image(
+                        painter = painter,
+                        contentDescription = "Employee logo",
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .size(56.dp)
+                    )
+
+                }
+            }
             Column(modifier = Modifier.padding(15.dp, 0.dp)) {
                 Text(
                     text = emp.name,
@@ -274,19 +295,19 @@ object EmployeesData {
             "Ivanov Ivan",
             "Android-developer",
             "In office",
-            MainRes.images.logo_default
+            "https://www.kasandbox.org/programming-images/avatars/leaf-green.png"
         ),
         EmployeeCard(
             "Smirnov Andrey",
             "UI/UX Designer",
             "Will be today",
-            MainRes.images.logo_default
+            "https://www.kasandbox.org/programming-images/avatars/leaf-grey.png"
         ),
         EmployeeCard(
             "Vasiliev Vasiliy",
             "HR",
             "No bookings",
-            MainRes.images.logo_default
+            "https://www.kasandbox.org/programming-images/avatars/leaf-blue.png"
         )
     )
     val showedEmployeesCardData = listOf(
@@ -294,19 +315,20 @@ object EmployeesData {
             "Смирнов Андрей",
             "UI/UX Designer",
             "Будет сегодня",
-            MainRes.images.logo_default
+            "https://www.kasandbox.org/programming-images/avatars/leaf-grey.png"
+            //MainRes.images.logo_default
         ),
         EmployeeCard(
             "Васильев Василий",
             "HR",
             "Нет бронирований",
-            MainRes.images.logo_default
+            "https://www.kasandbox.org/programming-images/avatars/leaf-blue.png"
         ),
         EmployeeCard(
             "Иванов Иван",
             "Android-developer",
             "В офисе",
-            MainRes.images.logo_default
+            "https://www.kasandbox.org/programming-images/avatars/leaf-green.png"
         )
     )
 }
