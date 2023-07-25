@@ -20,12 +20,18 @@ class TokenVerifier : ITokenVerifier {
 
         val payload = token?.payload ?: throw Exception("Token cannot be verified")
         val emailVerified: Boolean = payload.emailVerified
-        val hostedDomain = payload.hostedDomain
+        val hostedDomain = payload.hostedDomain ?: extractDomain(payload.email)
 
         if ((acceptableMailDomain == hostedDomain) && emailVerified) {
             userMail = payload.email
         }
         return userMail ?: throw Exception("Token wasn't verified")
+    }
+
+    private fun extractDomain(email: String?): String {
+        email ?: throw Exception("Email is empty")
+        return email.split('@').last()
+
     }
 
 }
