@@ -59,7 +59,7 @@ fun FreeSelectRoomView(onCloseRequest: () -> Unit, onFreeRoomRequest: () -> Unit
             ) {
                 Spacer(modifier = Modifier.height(30.dp))
                 CrossButtonView(
-                    Modifier.width(518.dp),
+                    Modifier.width(518.dp).padding(end = 42.dp),
                     onDismissRequest = {
                         onCloseRequest()
                     }

@@ -35,7 +35,7 @@ fun LengthEventView(modifier: Modifier, booking: Booking) {
 
     Box(
         modifier = modifier,
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.CenterStart
     ) {
         Text(
             text = lengthEvent,

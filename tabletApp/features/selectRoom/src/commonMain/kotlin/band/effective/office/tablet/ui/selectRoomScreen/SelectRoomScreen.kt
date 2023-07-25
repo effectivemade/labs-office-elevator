@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import band.effective.office.tablet.ui.selectRoomScreen.successBooking.SuccessSelectRoomView
 
 @Composable
@@ -11,9 +12,9 @@ fun SelectRoomScreen(component: SelectRoomComponent) {
     val state by component.state.collectAsState()
 
     Dialog(
-        onDismissRequest = { component.close() }
-    )
-    {
+        onDismissRequest = { component.close() },
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
         component.onBooking()
         when {
             state.isData -> {
@@ -41,5 +42,4 @@ fun SelectRoomScreen(component: SelectRoomComponent) {
             }
         }
     }
-
 }
