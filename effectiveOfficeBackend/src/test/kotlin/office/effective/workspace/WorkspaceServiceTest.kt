@@ -8,20 +8,19 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
-import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.whenever
 import java.util.*
 
 class WorkspaceServiceTest {
     @Mock
-    private lateinit var repository: WorkspaceRepository
+    private lateinit var mockRepository: WorkspaceRepository
 
     private lateinit var workspaceService: WorkspaceService
 
     @Before
     fun setUp() {
         MockitoAnnotations.openMocks(this)
-        workspaceService = WorkspaceService(repository)
+        workspaceService = WorkspaceService(mockRepository)
     }
 
     @Test
@@ -29,7 +28,7 @@ class WorkspaceServiceTest {
         val workspaceId = UUID.randomUUID()
         val workspace = Workspace(workspaceId, "Workspace Name", "Tag", emptyList())
 
-        whenever(repository.findById(workspaceId)).thenReturn(workspace)
+        whenever(mockRepository.findById(workspaceId)).thenReturn(workspace)
 
         val result = workspaceService.findById(workspaceId)
 
@@ -44,7 +43,7 @@ class WorkspaceServiceTest {
             Workspace(UUID.randomUUID(), "Workspace 2", tag, emptyList())
         )
 
-        whenever(repository.findAllByTag(tag)).thenReturn(workspaces)
+        whenever(mockRepository.findAllByTag(tag)).thenReturn(workspaces)
 
         val result = workspaceService.findAllByTag(tag)
 
