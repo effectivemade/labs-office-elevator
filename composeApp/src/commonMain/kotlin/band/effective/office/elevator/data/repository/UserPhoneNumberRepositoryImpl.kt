@@ -5,7 +5,10 @@ import band.effective.office.elevator.domain.repository.UserPhoneNumberRepositor
 
 class UserPhoneNumberRepositoryImpl : UserPhoneNumberRepository {
     override suspend fun callUserPhoneNumber(idToken: String): UserPhoneNumber {
-        TODO("Not yet implemented")
+        return if (idToken.isNotEmpty())
+            UserPhoneNumber(phoneNumber = "0000000000")
+        else
+            UserPhoneNumber(phoneNumber = "")
     }
 
     override suspend fun saveUserPhoneNumberInDB(): Boolean {
