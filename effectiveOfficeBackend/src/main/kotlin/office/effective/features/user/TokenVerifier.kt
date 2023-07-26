@@ -33,7 +33,6 @@ class TokenVerifier : ITokenVerifier {
     private fun extractDomain(email: String?): String {
         email ?: throw Exception("Email is empty")
         return email.split('@').last()
-
     }
 
 }
