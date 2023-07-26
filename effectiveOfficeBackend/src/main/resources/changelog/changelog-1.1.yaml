@@ -15,6 +15,7 @@ databaseChangeLog:
               - column:
                   name: name
                   type: varchar(255)
+                  remarks: "Student, Worker, etc."
                   constraints:
                     nullable: false
 
@@ -95,13 +96,19 @@ databaseChangeLog:
               - column:
                   name: user_id
                   type: uuid
+                  constraints:
+                    nullable: false
               - column:
                   name: integration_id
                   type: uuid
+                  constraints:
+                    nullable: false
               - column:
                   name: value
                   type: varchar(255)
                   remarks: "For telegram is, for example, user tag @user"
+                  constraints:
+                    nullable: false
         - addPrimaryKey:
             tableName: users_integrations
             columnNames: integration_id, user_id
