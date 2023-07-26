@@ -23,7 +23,6 @@ fun Route.authRoutingFun() {
         }
         get("/callback") {
             try {
-//
                 val principal: OAuthAccessTokenResponse.OAuth2? = call.principal()
                 call.respondText(verifier.isCorrectToken(principal!!.extraParameters["id_token"] ?: ""))
 
