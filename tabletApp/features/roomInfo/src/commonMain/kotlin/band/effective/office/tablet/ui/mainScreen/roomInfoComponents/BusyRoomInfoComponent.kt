@@ -32,7 +32,8 @@ fun BusyRoomInfoComponent(
     isHaveTv: Boolean,
     electricSocketCount: Int,
     event: EventInfo?,
-    onButtonClick: () -> Unit
+    onButtonClick: () -> Unit,
+    timeToFinish: Int
 ) {
     val backgroundColor = LocalCustomColorsPalette.current.busyStatus
     Surface {
@@ -49,6 +50,10 @@ fun BusyRoomInfoComponent(
                     finishTime = event?.finishTime?.time() ?: "",
                     organizer = event?.organizer ?: ""
                 ),
+                style = MaterialTheme.typography.h5
+            )
+            Text(
+                text = "${MainRes.string.busy_duration_string} ${timeToFinish.getTime()}",
                 style = MaterialTheme.typography.h5
             )
         }

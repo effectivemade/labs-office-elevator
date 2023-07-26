@@ -43,7 +43,8 @@ fun RoomInfoComponent(
                     isHaveTv = room.isHaveTv,
                     electricSocketCount = room.electricSocketCount,
                     event = room.currentEvent,
-                    onButtonClick = { onOpenModalRequest() }
+                    onButtonClick = { onOpenModalRequest() },
+                    timeToFinish = timeToNextEvent
                 )
             }
         }

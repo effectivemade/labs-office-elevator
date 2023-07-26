@@ -35,10 +35,9 @@ fun FreeRoomInfoComponent(
             style = MaterialTheme.typography.h5
         )
         Text(
-            text = "${MainRes.string.free_duration_string} $timeToNextEvent",
+            text = "${MainRes.string.free_duration_string} ${timeToNextEvent.getTime()}",
             style = MaterialTheme.typography.h5
         )
     }
 }
-
 private fun Calendar.time() = CalendarStringConverter.calendarToString(this, "HH:mm")
