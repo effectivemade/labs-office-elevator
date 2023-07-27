@@ -49,8 +49,7 @@ fun BookingButtonView(modifier: Modifier, shape: RoundedCornerShape, text: Strin
                 color = when(LocalCustomColorsPalette.current) {
                     CustomDarkColors -> LocalCustomColorsPalette.current.primaryTextAndIcon
                     else -> MaterialTheme.colors.background
-                },
-              //  letterSpacing = 0.1.sp
+                }
             )
         }
     }

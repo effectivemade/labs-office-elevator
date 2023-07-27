@@ -3,16 +3,29 @@
     <string name="app_name">Office Elevator</string>
     <string name="sign_in_google">Sign in to Effective email</string>
     <string name="something_went_wrong">Something went wrong. Please try again</string>
+    <string name="company_name">effective\noffice</string>
     <string name="employee_1">Ivanov Ivan</string>
     <string name="employee_2">Smirnov Andrey</string>
     <string name="employee_3">Vasilyev Vasiliy</string>
     <string name="search_employee">Search employee</string>
-    <string name="employee_post_1">Android-developer</string>
-    <string name="employee_post_2">UI/UX Designer</string>
-    <string name="employee_post_3">HR</string>
     <string name="employee_in_office">In office</string>
     <string name="employee_soon_in_office">Will be today</string>
     <string name="employee_not_soon_in_office">No reservations</string>
+
+    <string name="company_name">Effective</string>
+
+    <!--Auth strings-->
+    <string name="_continue">Continue</string>
+    <string name="input_number">Enter number</string>
+    <string name="select_number">Specify a number to which colleagues could transfer money to you using SBP</string>
+    <string name="number_hint">Phone number</string>
+    <string name="input_profile">Fill in your profile</string>
+    <string name="select_profile">This is necessary for employees to recognize you</string>
+    <string name="profile_hint">Last Name First Name</string>
+    <string name="profile_hint_">Occupation</string>
+    <string name="input_employee">Specify contacts</string>
+    <string name="select_employee">This is necessary for colleagues to be able to contact you conveniently</string>
+    <string name="employee_hint">Telegram nickname</string>
 
     <string name="by_date"> By date </string>
     <string name="show_map">Show on map</string>
@@ -23,18 +36,17 @@
     <string name="cansel">Cansel</string>
     <string name="ok">Ok</string>
 
+    <!-- Buttons -->
+    <string name="_continue">Continue</string>
+
     <!--Tab titles-->
     <string name="profile">Profile</string>
     <string name="main">Main</string>
     <string name="booking">Booking</string>
     <string name="employees">Employees</string>
 
-    <string name="elevator_below">Elevator on the 1st floor</string>
-    <string name="elevator_goes" >The elevator is coming</string>
-    <string name="elevator_raised" >The elevator is up</string>
-    <string name="elevator_button" >Lift the elevator</string>
-    <string name="elevator_wait" >Wait...</string>
-    <string name="elevator_ready" >Call the elevator via the button</string>
+    <string name="elevator">Elevator</string>
+    <string name="elevator_button" >Lift</string>
 
     <!--Error messages-->
     <string name="you_need_to_sign_in">You need to sign in for the app to work</string>
@@ -44,6 +56,11 @@
     <string name="invalid_account_error">You are using the wrong account</string>
     <string name="timout_error">Request time is up. Try again</string>
     <string name="server_error">Server error ${code}</string>
+    <string name="number_format_error">Invalid phone number format</string>
+    <string name="profile_format_error">Enter your profile</string>
+    <string name="telegram_format_error">Specify nickname in telegram</string>
+    <string name="phone_plus_seven">+7</string>
+    <string name="telegram_symbol">@</string>
 
     <!-- Success messages -->
     <string name="elevator_called_successfully">Successfully!</string>
@@ -59,4 +76,9 @@
     <string name="post">Post</string>
     <string name="phone_number">Telephone number</string>
     <string name="save">Save</string>
+
+    <!-- Employee -->
+    <string name="about_the_employee">About the employee</string>
+    <string name="upcoming_bookings">Upcoming bookings</string>
+    <string name="transfer">Transfer</string>
 </resources>

@@ -61,8 +61,13 @@ object Plugins {
         const val plugin = "org.jetbrains.kotlin.plugin.parcelize"
     }
 
-    object Moko{
+    object Moko {
         const val implementation = "dev.icerock.moko:resources-generator:0.23.0"
         const val plugin = "dev.icerock.mobile.multiplatform-resources"
+    }
+
+    object SQLDelight {
+        const val version = "2.0.0-rc02"
+        const val plugin = "app.cash.sqldelight"
     }
 }

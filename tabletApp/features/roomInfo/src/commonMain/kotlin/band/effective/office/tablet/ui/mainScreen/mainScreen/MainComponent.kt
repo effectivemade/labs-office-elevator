@@ -10,6 +10,7 @@ import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStoreFactory
 import band.effective.office.tablet.ui.mainScreen.mockComponets.MockSettingsComponent
 import band.effective.office.tablet.ui.mainScreen.mockComponets.RealMockSettingsComponent
+import band.effective.office.tablet.ui.selectRoomScreen.RealFreeSelectRoomComponent
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponentImpl
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.childContext
@@ -43,6 +44,12 @@ class MainComponent(
             onCloseRequest = { mainStore.accept(MainStore.Intent.CloseModal) }
         )
 
+    val freeSelectRoomComponent: RealFreeSelectRoomComponent =
+        RealFreeSelectRoomComponent(
+            componentContext = childContext(key = "freeSelectRoom"),
+            onCloseRequest = { closeAllModal() }
+        )
+
     private val mainStore = instanceKeeper.getStore {
         MainStoreFactory(
             storeFactory = storeFactory
@@ -52,4 +59,15 @@ class MainComponent(
     @OptIn(ExperimentalCoroutinesApi::class)
     val state = mainStore.stateFlow
 
+    fun closeAllModal(){
+        mainStore.accept(MainStore.Intent.CloseModal)
+    }
+
+    fun openFreeRoomModal(){
+        mainStore.accept(MainStore.Intent.OnOpenFreeRoomModal)
+    }
+
+    fun onFreeRoom(){
+        mainStore.accept(MainStore.Intent.OnFreeRoomIntent)
+    }
 }

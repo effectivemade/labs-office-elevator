@@ -19,6 +19,10 @@ import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingR
 import band.effective.office.tablet.ui.mainScreen.mockComponets.MockSettingView
 import band.effective.office.tablet.ui.mainScreen.mockComponets.MockSettingsComponent
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.RoomInfoComponent
+import band.effective.office.tablet.ui.selectRoomScreen.FreeSelectRoomView
+import band.effective.office.tablet.ui.selectRoomScreen.RealFreeSelectRoomComponent
+import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponent
+import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomView
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponentImpl
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomScreen
 
@@ -27,9 +31,13 @@ import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomScreen
 fun MainScreenView(
     room: RoomInfo,
     showBookingModal: Boolean,
+    showFreeRoomModal: Boolean,
     mockComponent: MockSettingsComponent,
     bookingRoomComponent: BookingRoomComponent,
-    selectRoomComponent: SelectRoomComponentImpl
+    selectRoomComponent: SelectRoomComponent,
+    onOpenFreeModalRequest: () -> Unit,
+    onCloseFreeModalRequest: () -> Unit,
+    onFreeRoomRequest: () -> Unit,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         /*NOTE(Maksim Mishenko):
@@ -40,7 +48,8 @@ fun MainScreenView(
         Row(modifier = Modifier.fillMaxSize()) {
             RoomInfoComponent(
                 modifier = Modifier.fillMaxHeight().fillMaxWidth(infoViewWidth),
-                room = room
+                room = room,
+                onOpenModalRequest = { onOpenFreeModalRequest() }
             )
             Box(modifier = Modifier.fillMaxSize()) {
                 BookingRoomView(
@@ -52,9 +61,12 @@ fun MainScreenView(
             }
         }
         Box(modifier = Modifier.fillMaxSize()) {
-            if (showBookingModal)
-                SelectRoomScreen(component = selectRoomComponent)
+            when {
+                showBookingModal -> SelectRoomScreen(component = selectRoomComponent)
+                showFreeRoomModal -> FreeSelectRoomView(
+                    onCloseRequest = { onCloseFreeModalRequest() },
+                    onFreeRoomRequest = { onFreeRoomRequest() })
+            }
         }
     }
-
 }

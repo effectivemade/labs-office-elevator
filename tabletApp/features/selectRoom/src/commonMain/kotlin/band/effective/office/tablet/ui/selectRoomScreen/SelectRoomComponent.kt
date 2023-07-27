@@ -7,7 +7,5 @@ import band.effective.office.tablet.ui.selectRoomScreen.store.SelectRoomStore
 interface SelectRoomComponent {
 
     val state: StateFlow<SelectRoomStore.State>
-    fun bookRoom()
-    fun close()
-    fun onBooking()
+    fun onIntent(intent: SelectRoomStore.Intent)
 }

@@ -14,8 +14,7 @@ interface SelectRoomStore: Store<SelectRoomStore.Intent, SelectRoomStore.State, 
     data class State(
         val isData: Boolean,
         val isSuccess: Boolean,
-        val isError: Boolean,
-        val error: String,
+        val error: String?,
         val booking: Booking
     ) {
         companion object {
@@ -23,8 +22,7 @@ interface SelectRoomStore: Store<SelectRoomStore.Intent, SelectRoomStore.State, 
                 State(
                     isData = true,
                     isSuccess = false,
-                    isError = false,
-                    error = "",
+                    error = null,
                     booking = Booking.default
                 )
         }

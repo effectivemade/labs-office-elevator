@@ -25,7 +25,7 @@ abstract class CurrentEventController(
     }
 
     /**Finish current event*/
-    private fun cancelCurrentEvent() {
+    fun cancelCurrentEvent() {
         scope.launch {
             if (cancelRepository.cancelEvent()) {
                 onServerUpdate()

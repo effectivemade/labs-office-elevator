@@ -16,11 +16,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.features.roomInfo.MainRes
-import band.effective.office.tablet.ui.theme.alertColor
+import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.utils.CalendarStringConverter
 import io.github.skeptick.libres.compose.painterResource
 import java.util.Calendar
@@ -37,7 +38,8 @@ fun BusyAlertView(modifier: Modifier, event: EventInfo, onClick: () -> Unit) {
             Image(
                 modifier = Modifier,
                 painter = painterResource(MainRes.image.allert),
-                contentDescription = null
+                contentDescription = null,
+                colorFilter = ColorFilter.tint(color = MaterialTheme.colors.onError)
             )
             Spacer(Modifier.width(10.dp))
             Text(
@@ -46,7 +48,7 @@ fun BusyAlertView(modifier: Modifier, event: EventInfo, onClick: () -> Unit) {
                     finishTime = event.finishTime.time(),
                     organizer = event.organizer
                 ),
-                color = alertColor,
+                color = MaterialTheme.colors.onError,
                 style = MaterialTheme.typography.h6
             )
         }

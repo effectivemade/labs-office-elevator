@@ -34,7 +34,7 @@ fun EventLengthView(
     Column(modifier = modifier) {
         Text(
             text = MainRes.string.select_length_title,
-            color = LocalCustomColorsPalette.current.parameterTitle,
+            color = LocalCustomColorsPalette.current.secondaryTextAndIcon,
             style = MaterialTheme.typography.h8
         )
         Spacer(modifier = Modifier.height(10.dp))
@@ -52,13 +52,14 @@ fun EventLengthView(
             ) {
                 Text(
                     text = MainRes.string.minus_date_button_string,
-                    style = MaterialTheme.typography.h6
+                    style = MaterialTheme.typography.h6,
+                    color = LocalCustomColorsPalette.current.primaryTextAndIcon
                 )
             }
             Spacer(modifier = Modifier.width(space))
             Text(
                 text = MainRes.string.current_length_string.format(currentLength.toString()),
-                color = if (isBusy) MaterialTheme.colors.secondary else MaterialTheme.colors.onPrimary,
+                color = LocalCustomColorsPalette.current.primaryTextAndIcon,
                 style = MaterialTheme.typography.h4
             )
             Spacer(modifier = Modifier.width(space))
@@ -72,7 +73,8 @@ fun EventLengthView(
             ) {
                 Text(
                     text = MainRes.string.plus_date_button_string,
-                    style = MaterialTheme.typography.h6
+                    style = MaterialTheme.typography.h6,
+                    color = LocalCustomColorsPalette.current.primaryTextAndIcon
                 )
             }
         }

@@ -5,6 +5,7 @@ plugins {
     id(Plugins.MultiplatformCompose.plugin)
     id(Plugins.CocoaPods.plugin)
     id(Plugins.Android.plugin)
+    id(Plugins.SQLDelight.plugin) version Plugins.SQLDelight.version
     id(Plugins.BuildConfig.plugin)
     id(Plugins.Serialization.plugin)
     id(Plugins.Parcelize.plugin)
@@ -94,7 +95,7 @@ kotlin {
                 api(Dependencies.Ktor.Client.Android)
                 implementation(Dependencies.Google.SignIn)
                 implementation(Dependencies.AndroidX.activityKtx)
-
+                implementation(Dependencies.SqlDelight.androidDriver)
                 // Koin
                 api(Dependencies.Koin.android)
 
@@ -113,6 +114,7 @@ kotlin {
             dependencies {
                 implementation(Dependencies.Ktor.Client.Darwin)
                 implementation(files("iosApp/GoogleAuthorization/GoogleAuthorization/Sources"))
+                implementation(Dependencies.SqlDelight.nativeDriver)
             }
         }
 
@@ -201,4 +203,12 @@ buildConfig {
         "iosClient",
         "\"726357293621-hegk0410bsb1a5hvl3ihpc4d2bfkmlgb.apps.googleusercontent.com\""
     )
+}
+
+sqldelight {
+    databases {
+        create("Database") {
+            packageName.set("band.effective.office.elevator")
+        }
+    }
 }

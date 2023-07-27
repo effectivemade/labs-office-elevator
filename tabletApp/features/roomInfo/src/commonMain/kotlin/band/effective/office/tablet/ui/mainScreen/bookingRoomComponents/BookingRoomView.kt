@@ -26,6 +26,9 @@ import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiCompon
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.DateTimeView
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.EventLengthView
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.EventOrganizerView
+import band.effective.office.tablet.ui.theme.CustomDarkColors
+import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
+import band.effective.office.tablet.ui.theme.textButton
 
 @Composable
 fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: BookingRoomComponent) {
@@ -67,10 +70,21 @@ fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: Booking
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
             Button(
                 modifier = Modifier.fillMaxWidth().height(60.dp).clip(RoundedCornerShape(100.dp)),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = MaterialTheme.colors.primary,
+                    contentColor = textButton,
+                    disabledBackgroundColor = LocalCustomColorsPalette.current.disabledPrimaryButton,
+                    disabledContentColor = when(LocalCustomColorsPalette.current) {
+                        CustomDarkColors -> LocalCustomColorsPalette.current.secondaryTextAndIcon
+                        else -> textButton
+                    }
+                ),
                 onClick = { bookingRoomComponent.bookingCurrentRoom() },
                 enabled = !state.isBusy
             ) {
-                Text(text = MainRes.string.booking_button_text.format(roomName = state.roomName))
+                Text(
+                    text = MainRes.string.booking_button_text.format(roomName = state.roomName)
+                )
             }
         }
     }
