@@ -15,10 +15,11 @@ services:
     image: postgres:15.2-alpine
     volumes:
       - ./sql/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    env_file: .env
     environment:
-      - POSTGRES_DB=effectiveOfficeBackendDB
+      - POSTGRES_DB=${DOCKER_DB_NAME}
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=test1234567890
+      - POSTGRES_PASSWORD=${DOCKER_DB_PASSWORD}
     ports:
       - "15432:5432"
     restart: 'no'
