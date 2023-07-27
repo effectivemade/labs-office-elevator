@@ -34,5 +34,10 @@ fun Route.authRoutingFun() {
         val user = service.getUserById(userId as String, tokenStr as String)
         call.respond(user ?: "No such user. Suggestion: bad id")
     }
+    put("/users/alter/{user_id}") {
+        val user: UserDTO = call.receive<UserDTO>()
+        val tokenStr = call.request.header("id_token") ?: call.response.status(HttpStatusCode.Forbidden)
+        call.respond(service.updateUser(user, tokenStr as String))
+    }
 
 }
