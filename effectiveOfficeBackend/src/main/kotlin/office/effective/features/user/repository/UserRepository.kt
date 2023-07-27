@@ -14,9 +14,7 @@ import org.ktorm.dsl.*
 import org.ktorm.entity.*
 import java.util.*
 
-class UserRepository {
-    private val db: Database = GlobalContext.get().get()
-    private val converter: UserModelEntityConverter = GlobalContext.get().get()
+class UserRepository(private val db: Database, private val converter: UserModelEntityConverter) {
 
 
     fun existsById(userId: UUID): Boolean {

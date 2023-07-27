@@ -7,11 +7,11 @@ import office.effective.features.user.repository.UserRepository
 import org.koin.core.context.GlobalContext
 import java.util.*
 
-class UserService() : IUserService {
-
-    private val verifier: ITokenVerifier = GlobalContext.get().get()
-    private val converterDTO: UserDTOModelConverter = GlobalContext.get().get()
-    private val repository: UserRepository = GlobalContext.get().get()
+class UserService(
+    private val verifier: ITokenVerifier,
+    private val converterDTO: UserDTOModelConverter,
+    private val repository: UserRepository
+) : IUserService {
 
     override fun getUsersByTag(tagStr: String, token: String): Set<UserDTO>? {
         val models = repository.findByTag(repository.findTagByName(tagStr).id)
