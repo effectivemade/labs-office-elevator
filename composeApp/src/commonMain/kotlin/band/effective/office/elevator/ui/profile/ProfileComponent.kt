@@ -1,15 +1,13 @@
 package band.effective.office.elevator.ui.profile
 
-import band.effective.office.elevator.ui.profile.domain.ProfileRepository
-import band.effective.office.elevator.ui.profile.domain.models.User
 import band.effective.office.elevator.ui.profile.editProfile.ProfileEditComponent
 import band.effective.office.elevator.ui.profile.mainProfile.MainProfileComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
-import com.arkivanov.decompose.router.stack.replaceAll
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
@@ -56,7 +54,7 @@ class ProfileComponent(
 
     private fun editProfileOutput(output: ProfileEditComponent.Output) {
         when(output){
-            ProfileEditComponent.Output.NavigationBack -> navigation.replaceAll(Config.MainProfile)
+            ProfileEditComponent.Output.NavigationBack -> navigation.pop()
         }
     }
 

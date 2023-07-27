@@ -1,7 +1,7 @@
 package band.effective.office.elevator.ui.profile.mainProfile
 
 
-import band.effective.office.elevator.ui.profile.domain.models.User
+import band.effective.office.elevator.domain.models.User
 import band.effective.office.elevator.ui.profile.mainProfile.store.ProfileStore
 import band.effective.office.elevator.ui.profile.mainProfile.store.ProfileStoreFactory
 import com.arkivanov.decompose.ComponentContext

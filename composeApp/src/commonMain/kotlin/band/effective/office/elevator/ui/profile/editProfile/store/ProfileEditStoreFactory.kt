@@ -1,7 +1,9 @@
 package band.effective.office.elevator.ui.profile.editProfile.store
 
-import band.effective.office.elevator.ui.profile.domain.ProfileRepository
-import band.effective.office.elevator.ui.profile.domain.models.User
+
+import band.effective.office.elevator.domain.ProfileRepository
+import band.effective.office.elevator.domain.models.User
+import band.effective.office.elevator.domain.usecase.GetUserByIdUseCase
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import band.effective.office.elevator.ui.profile.editProfile.store.ProfileEditStore.*
@@ -23,7 +25,7 @@ internal class ProfileEditStoreFactory(
             Store<Intent, User, Label>
             by storeFactory.create(
                 name = "ProfileEditStore",
-                initialState = User(imageUrl = null, userName = null,post = null,phoneNumber = null,telegram = null,email = null, id = "1"),
+                initialState = User("","","","","","",""),
                 bootstrapper = coroutineBootstrapper {
                     dispatch(Action.FetchUserInfo)
                 },
@@ -32,6 +34,7 @@ internal class ProfileEditStoreFactory(
             ) {}
 
     private val repository: ProfileRepository by inject<ProfileRepository> ()
+    private val getUserByIdUseCase: GetUserByIdUseCase = GetUserByIdUseCase(profileRepository = repository)
 
     private sealed interface Action {
         object FetchUserInfo : Action
@@ -63,7 +66,7 @@ internal class ProfileEditStoreFactory(
 
         private fun fetchUserInfo() {
             scope.launch {
-                dispatch(Msg.ProfileData(user = repository.getUser(user)))
+                dispatch(Msg.ProfileData(user = getUserByIdUseCase.execute(user)))
             }
         }
 

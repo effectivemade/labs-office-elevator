@@ -6,5 +6,5 @@ import dev.icerock.moko.resources.StringResource
 data class FieldsData (
     val title:StringResource,
     val icon:ImageResource,
-    val value:String?
+    val value:String
     )

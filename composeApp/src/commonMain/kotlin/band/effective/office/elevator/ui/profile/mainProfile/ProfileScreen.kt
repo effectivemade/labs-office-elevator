@@ -70,11 +70,11 @@ fun ProfileScreen(component: MainProfileComponent) {
 
 @Composable
 internal fun ProfileScreenContent(
-    imageUrl: String?,
-    userName: String?,
-    post: String?,
-    telegram: String?,
-    phoneNumber: String?,
+    imageUrl: String,
+    userName: String,
+    post: String,
+    telegram: String,
+    phoneNumber: String,
     onSignOut: () -> Unit,
     onEditProfile: ()-> Unit) {
     val fieldsList = prepareFieldsData(telegram, phoneNumber)
@@ -121,8 +121,8 @@ internal fun ProfileScreenContent(
 }
 
 @Composable
-fun ProfileInfoAboutUser(imageUrl: String?, userName: String?, post: String?, onEditProfile: ()-> Unit) {
-    imageUrl?.let { url ->
+fun ProfileInfoAboutUser(imageUrl: String, userName: String, post: String, onEditProfile: ()-> Unit) {
+    imageUrl.let { url ->
         val request = remember(url) {
             ImageRequest {
                 data(url)
@@ -152,22 +152,18 @@ fun ProfileInfoAboutUser(imageUrl: String?, userName: String?, post: String?, on
             }
         }
     }
-    userName?.let {
-        Text(
-            it,
-            style = MaterialTheme.typography.subtitle1,
-            color = Color.Black,
-            modifier = Modifier.padding(top = 12.dp)
-        )
-    }
-    post?.let {
-        Text(
-            it,
-            style = MaterialTheme.typography.subtitle1,
-            color = textGrayColor,
-            modifier = Modifier.padding(top = 8.dp)
-        )
-    }
+    Text(
+        userName,
+        style = MaterialTheme.typography.subtitle1,
+        color = Color.Black,
+        modifier = Modifier.padding(top = 12.dp)
+    )
+    Text(
+        post,
+        style = MaterialTheme.typography.subtitle1,
+        color = textGrayColor,
+        modifier = Modifier.padding(top = 8.dp)
+    )
 }
 
 
@@ -211,7 +207,7 @@ private fun FieldsItemStyle(item: FieldsData, onEditProfile: () -> Unit) {
 
 
 
-private fun prepareFieldsData(telegram: String?, phoneNumber: String?) : List<FieldsData>{
+private fun prepareFieldsData(telegram: String, phoneNumber: String) : List<FieldsData>{
 
     val fieldsList = mutableListOf<FieldsData>()
 

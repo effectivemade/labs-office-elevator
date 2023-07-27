@@ -66,10 +66,10 @@ fun ProfileEditScreen(component: ProfileEditComponent){
 
 @Composable
 private fun ProfileEditScreenContent(
-    userName: String?,
-    post: String?,
-    telegram: String?,
-    phoneNumber: String?,
+    userName: String,
+    post: String,
+    telegram: String,
+    phoneNumber: String,
     onReturnToProfile: () -> Unit
 ) {
     val fieldsList =  prepareFieldsData(userName,post,telegram,phoneNumber)
@@ -105,54 +105,43 @@ private fun FieldsItemStyle(item:FieldsData){
                 style = MaterialTheme.typography.body1,
                 color = Color.Black
             )
-        itemText?.let { it ->
-            OutlinedTextField(
-                value = it,
-                modifier = Modifier.fillMaxWidth(),
-                onValueChange = {itemText = it},
-                shape = RoundedCornerShape(12.dp),
-                singleLine = true,
-                textStyle = TextStyle(
-                    fontSize = 16.sp,
-                ),
-                leadingIcon = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Start,
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    ) {
-                        Icon(
-                            painter= painterResource(item.icon),
-                            contentDescription = null,
+        OutlinedTextField(
+            value = itemText,
+            modifier = Modifier.fillMaxWidth(),
+            onValueChange = {itemText = it},
+            shape = RoundedCornerShape(12.dp),
+            singleLine = true,
+            textStyle = TextStyle(fontSize = 16.sp),
+            leadingIcon = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start,
+                    modifier = Modifier.padding(horizontal = 16.dp)) {
+                    Icon(
+                        painter= painterResource(item.icon),
+                        contentDescription = null,
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Divider(modifier = Modifier.height(28.dp).width(2.dp).clip(RoundedCornerShape(4.dp)))
+                }
+                          },
+            trailingIcon = {
+                IconButton(onClick = {}){
+                    Icon(
+                        painter = painterResource(MainRes.images.clear_icon),
+                        contentDescription = null,
                         )
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Divider(
-                            modifier = Modifier
-                                .height(28.dp)
-                                .width(2.dp)
-                                .clip(RoundedCornerShape(4.dp))
-                        )
-                    }
-                },
-                trailingIcon = {
-                    IconButton(onClick = {}){
-                        Icon(
-                            painter = painterResource(MainRes.images.clear_icon),
-                            contentDescription = null,
-                        )
-                    }
-                },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    textColor = textGrayColor,
-                    leadingIconColor = textGrayColor,
-                    trailingIconColor = textGrayColor
-                )
-            )
+                }
+                           },
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                textColor = textGrayColor,
+                leadingIconColor = textGrayColor,
+                trailingIconColor = textGrayColor)
+        )
         }
-    }
 }
 
-private fun prepareFieldsData(username: String?, post: String?, telegram: String?, phoneNumber: String?) : MutableList<FieldsData> {
+private fun prepareFieldsData(username: String, post: String, telegram: String, phoneNumber: String) : List<FieldsData> {
 
     val fieldsList = mutableListOf<FieldsData>()
 

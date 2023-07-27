@@ -1,6 +1,6 @@
 package band.effective.office.elevator.ui.profile.editProfile
 
-import band.effective.office.elevator.ui.profile.domain.models.User
+import band.effective.office.elevator.domain.models.User
 import band.effective.office.elevator.ui.profile.editProfile.store.ProfileEditStore
 import band.effective.office.elevator.ui.profile.editProfile.store.ProfileEditStoreFactory
 import com.arkivanov.decompose.ComponentContext

@@ -1,6 +1,6 @@
 package band.effective.office.elevator.ui.profile.mainProfile.store
 
-import band.effective.office.elevator.ui.profile.domain.models.User
+import band.effective.office.elevator.domain.models.User
 import com.arkivanov.mvikotlin.core.store.Store
 
 interface ProfileStore : Store<ProfileStore.Intent, User, ProfileStore.Label> {

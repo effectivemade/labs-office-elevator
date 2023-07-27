@@ -1,8 +1,9 @@
 package band.effective.office.elevator.ui.profile.mainProfile.store
 
 import band.effective.office.elevator.domain.GoogleSignIn
-import band.effective.office.elevator.ui.profile.domain.ProfileRepository
-import band.effective.office.elevator.ui.profile.domain.models.User
+import band.effective.office.elevator.domain.ProfileRepository
+import band.effective.office.elevator.domain.models.User
+import band.effective.office.elevator.domain.usecase.GetUserByIdUseCase
 import band.effective.office.elevator.ui.profile.mainProfile.store.ProfileStore.*
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
@@ -20,12 +21,13 @@ internal class ProfileStoreFactory(
 
     private val signInClient: GoogleSignIn by inject<GoogleSignIn>()
     private val repository: ProfileRepository by inject<ProfileRepository> ()
+    private val getUserByIdUseCase: GetUserByIdUseCase = GetUserByIdUseCase(profileRepository = repository)
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): ProfileStore =
         object : ProfileStore, Store<Intent, User, Label> by storeFactory.create(
             name = "ProfileStore",
-            initialState = User(imageUrl = null, userName = null,post = null,phoneNumber = null,telegram = null,email = null,id = "1"),
+            initialState =  User("","","","","","",""),
             bootstrapper = coroutineBootstrapper {
                 dispatch(Action.FetchUserInfo)
             },
@@ -45,7 +47,7 @@ internal class ProfileStoreFactory(
         CoroutineExecutor<Intent, Action, User, Msg, Label>() {
         override fun executeIntent(intent: Intent, getState: () -> User) {
             when (intent) {
-                Intent.SignOutClicked -> doSignOut()
+                is Intent.SignOutClicked -> doSignOut()
             }
         }
 
@@ -63,7 +65,7 @@ internal class ProfileStoreFactory(
 
         private fun fetchUserInfo() {
             scope.launch {
-               dispatch(Msg.ProfileData(user = repository.getUser("1")))
+               dispatch(Msg.ProfileData(user = getUserByIdUseCase.execute("2")))
             }
         }
     }
