@@ -20,7 +20,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.features.roomInfo.MainRes
 import band.effective.office.tablet.ui.theme.h8
-import band.effective.office.tablet.utils.getCorrectDeclension
 import io.github.skeptick.libres.compose.painterResource
 import io.github.skeptick.libres.images.Image
 
@@ -56,27 +55,11 @@ fun CommonRoomInfoComponent(
                         text = MainRes.string.tv_property
                     )
                 }
-                //NOTE(Maksim Mishenko): designers have not fully defined all the properties, a condition will appear in if
-                //TODO(Maksim Mishenko): replace condition in if
-                if (true) {
-                    Spacer(modifier = Modifier.width(spaceBetweenProperty))
-                    RoomPropertyComponent(
-                        image = MainRes.image.usb,
-                        text = MainRes.string.usb_property
-                    )
-                }
                 if (electricSocketCount > 0) {
                     Spacer(modifier = Modifier.width(spaceBetweenProperty))
                     RoomPropertyComponent(
-                        image = MainRes.image.power_socket,
-                        text = "$electricSocketCount ${
-                            getCorrectDeclension(
-                                number = electricSocketCount,
-                                nominativeCase = MainRes.string.electric_socket_property_nominative,
-                                genitive = MainRes.string.electric_socket_property_genitive,
-                                genitivePlural = MainRes.string.electric_socket_property_plural
-                            )
-                        }"
+                        image = MainRes.image.ethernet,
+                        text = "$electricSocketCount"
                     )
                 }
             }

@@ -30,7 +30,7 @@ fun RoomInfoComponent(
                     name = room.name,
                     capacity = room.capacity,
                     isHaveTv = room.isHaveTv,
-                    electricSocketCount = room.electricSocketCount,
+                    electricSocketCount = room.socketCount,
                     nextEvent = room.eventList.firstOrNull(),
                     timeToNextEvent = timeToNextEvent
                 )
@@ -42,7 +42,7 @@ fun RoomInfoComponent(
                     name = room.name,
                     capacity = room.capacity,
                     isHaveTv = room.isHaveTv,
-                    electricSocketCount = room.electricSocketCount,
+                    electricSocketCount = room.socketCount,
                     event = room.currentEvent,
                     onButtonClick = { onOpenModalRequest() },
                     timeToFinish = timeToNextEvent
