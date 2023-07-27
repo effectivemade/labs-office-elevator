@@ -1,17 +1,17 @@
-package office.effective.feature.auth.service
+package office.effective.features.user.service
 
-import office.effective.feature.auth.ITokenVerifier
-import office.effective.feature.auth.converters.UserDTOModelConverter
-import office.effective.feature.auth.dto.UserDTO
-import office.effective.feature.auth.repository.UserRepository
+import office.effective.features.user.ITokenVerifier
+import office.effective.features.user.converters.UserDTOModelConverter
+import office.effective.features.user.dto.UserDTO
+import office.effective.features.user.repository.UserRepository
 import org.koin.core.context.GlobalContext
 import java.util.*
 
-class UserService() : IUserService {
-
-    private val verifier: ITokenVerifier = GlobalContext.get().get()
-    private val converterDTO: UserDTOModelConverter = GlobalContext.get().get()
-    private val repository: UserRepository = GlobalContext.get().get()
+class UserService(
+    private val verifier: ITokenVerifier,
+    private val converterDTO: UserDTOModelConverter,
+    private val repository: UserRepository
+) : IUserService {
 
     override fun getUsersByTag(tagStr: String, token: String): Set<UserDTO>? {
         val models = repository.findByTag(repository.findTagByName(tagStr).id)
@@ -29,10 +29,8 @@ class UserService() : IUserService {
     }
 
     override fun updateUser(user: UserDTO, token: String): UserDTO {
-//        TODO fix update user inside repository
-//        val model = repository.updateUser(converterDTO.dTOToModel(user))
-//        return converterDTO.modelToDTO(model)
-        return user
+        val model = repository.updateUser(converterDTO.dTOToModel(user))
+        return converterDTO.modelToDTO(model)
     }
 
     override fun getUserByToken(tokenStr: String): UserDTO {
