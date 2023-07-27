@@ -1,5 +1,8 @@
 package band.effective.office.elevator.ui.authorization
 
+import band.effective.office.elevator.domain.GoogleSignIn
+import band.effective.office.elevator.domain.repository.UserProfileRepository
+import band.effective.office.elevator.domain.usecase.phone_authorization.GetUserUseCase
 import band.effective.office.elevator.ui.authorization.authorization_google.AuthorizationGoogleComponent
 import band.effective.office.elevator.ui.authorization.authorization_phone.AuthorizationPhoneComponent
 import band.effective.office.elevator.ui.authorization.authorization_profile.AuthorizationProfileComponent
@@ -15,16 +18,22 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
 import com.arkivanov.mvikotlin.core.store.StoreFactory
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class AuthorizationComponent(
     componentContext: ComponentContext,
     private val storeFactory: StoreFactory,
     private val openContentFlow: () -> Unit
 ) :
-    ComponentContext by componentContext {
+    ComponentContext by componentContext, KoinComponent {
 
     private val validator: Validator = Validator()
     private val navigation = StackNavigation<AuthorizationComponent.Config>()
+
+    private val userProfileRep: UserProfileRepository by inject()
+    private val getUserUseCase: GetUserUseCase = GetUserUseCase(userProfileRep)
+    private val signInClient: GoogleSignIn by inject()
 
     private val stack = childStack(
         source = navigation,

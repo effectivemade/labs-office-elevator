@@ -2,9 +2,9 @@ package band.effective.office.elevator.ui.authorization.authorization_phone.stor
 
 import band.effective.office.elevator.data.ApiResponse
 import band.effective.office.elevator.domain.GoogleSignIn
-import band.effective.office.elevator.domain.models.UserPhoneNumber
-import band.effective.office.elevator.domain.repository.UserPhoneNumberRepository
-import band.effective.office.elevator.domain.usecase.phone_authorization.CallUserByPhoneNumber
+import band.effective.office.elevator.domain.models.UserData
+import band.effective.office.elevator.domain.repository.UserProfileRepository
+import band.effective.office.elevator.domain.usecase.phone_authorization.GetUserUseCase
 import band.effective.office.elevator.ui.authorization.authorization_phone.store.AuthorizationPhoneStore.*
 import band.effective.office.elevator.ui.models.validator.Validator
 import com.arkivanov.mvikotlin.core.store.Reducer
@@ -22,8 +22,8 @@ internal class AuthorizationPhoneStoreFactory(
     private val validator: Validator
 ) : KoinComponent {
 
-    private val userPhoneRep: UserPhoneNumberRepository by inject()
-    private val callUserByPhoneNumber: CallUserByPhoneNumber = CallUserByPhoneNumber(userPhoneRep)
+    private val userProfileRep: UserProfileRepository by inject()
+    private val getUserUseCase: GetUserUseCase = GetUserUseCase(userProfileRep)
     private val signInClient: GoogleSignIn by inject()
 
     @OptIn(ExperimentalMviKotlinApi::class)
@@ -120,9 +120,10 @@ internal class AuthorizationPhoneStoreFactory(
                     ApiResponse.Error.SerializationError -> {}
                     ApiResponse.Error.UnknownError -> {}
                     is ApiResponse.Success -> {
-                        val userPhoneNumber: UserPhoneNumber =
-                            callUserByPhoneNumber.execute(result.body.idToken!!)
-                        dispatch(AuthorizationPhoneStoreFactory.Msg.Data(phoneNumber = userPhoneNumber.phoneNumber))
+                        val userData: UserData =
+                            getUserUseCase.execute(result.body.idToken!!)
+                        if (userData.phoneNumber.isNotEmpty())
+                            dispatch(AuthorizationPhoneStoreFactory.Msg.Data(phoneNumber = userData.phoneNumber))
                     }
                 }
             }
