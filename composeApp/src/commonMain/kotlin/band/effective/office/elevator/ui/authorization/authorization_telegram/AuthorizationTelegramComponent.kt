@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.authorization.authorization_telegram
 
+import band.effective.office.elevator.domain.models.User.UserData
 import band.effective.office.elevator.ui.authorization.authorization_telegram.store.AuthorizationTelegramStore
 import band.effective.office.elevator.ui.authorization.authorization_telegram.store.AuthorizationTelegramStoreFactory
 import band.effective.office.elevator.ui.models.validator.Validator
@@ -16,6 +17,7 @@ class AuthorizationTelegramComponent(
     componentContext: ComponentContext,
     private val storeFactory: StoreFactory,
     private val validator: Validator,
+    private val userData: UserData,
     private val output: (Output) -> Unit
 ) : ComponentContext by componentContext {
 
@@ -23,7 +25,8 @@ class AuthorizationTelegramComponent(
         instanceKeeper.getStore {
             AuthorizationTelegramStoreFactory(
                 storeFactory = storeFactory,
-                validator
+                validator = validator,
+                userData = userData
             ).create()
         }
 
@@ -43,6 +46,6 @@ class AuthorizationTelegramComponent(
     sealed class Output {
         object OpenContentFlow : Output()
 
-        object OpenProfileScreen : Output()
+        data class OpenProfileScreen(val userData: UserData) : Output()
     }
 }

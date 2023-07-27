@@ -1,8 +1,6 @@
 package band.effective.office.elevator.ui.authorization.authorization_profile.store
 
-import band.effective.office.elevator.domain.models.UserData
-import band.effective.office.elevator.domain.repository.UserProfileRepository
-import band.effective.office.elevator.domain.usecase.phone_authorization.GetUserUseCase
+import band.effective.office.elevator.domain.models.User.UserData
 import band.effective.office.elevator.ui.models.validator.Validator
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
@@ -11,17 +9,12 @@ import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 class AuthorizationProfileStoreFactory(
     private val storeFactory: StoreFactory,
-    private val validator: Validator
-) :
-    KoinComponent {
-
-    private val userProfileRep: UserProfileRepository by inject()
-    private val getUserUseCase: GetUserUseCase = GetUserUseCase(userProfileRep)
+    private val validator: Validator,
+    private val userData: UserData
+) {
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): AuthorizationProfileStore =
@@ -31,7 +24,7 @@ class AuthorizationProfileStoreFactory(
                 initialState = AuthorizationProfileStore.State(),
                 bootstrapper = coroutineBootstrapper {
                     launch {
-                        dispatch(AuthorizationProfileStoreFactory.Action.GetUserName)
+                        dispatch(AuthorizationProfileStoreFactory.Action.InitUser)
                     }
                 },
                 executorFactory = ::ExecutorImpl,
@@ -52,7 +45,7 @@ class AuthorizationProfileStoreFactory(
     }
 
     private sealed interface Action {
-        object GetUserName : Action
+        object InitUser : Action
     }
 
     private object ReducerImpl :
@@ -106,43 +99,35 @@ class AuthorizationProfileStoreFactory(
             getState: () -> AuthorizationProfileStore.State
         ) {
             when (action) {
-                is AuthorizationProfileStoreFactory.Action.GetUserName -> {
-                    getName()
-                }
-            }
-        }
+                is AuthorizationProfileStoreFactory.Action.InitUser -> {
 
-        private fun checkUserdata(name: String, post: String) {
-            if (!validator.checkName(name) && !validator.checkPost(post)) {
-                publish(AuthorizationProfileStore.Label.AuthorizationProfileSuccess)
-            } else {
-                publish(AuthorizationProfileStore.Label.AuthorizationProfileFailure)
-            }
-        }
+                    dispatch(
+                        AuthorizationProfileStoreFactory.Msg.PostData(
+                            post = userData.post!!,
+                            isPostError = userData.post == null
+                        )
+                    )
 
-        private fun back() {
-            publish(AuthorizationProfileStore.Label.ReturnInPhoneAuthorization)
-        }
-
-        private fun getName() {
-            scope.launch {
-                val userData: UserData =
-                    getUserUseCase.execute("TOKEN")
-                if (userData.phoneNumber.isNotEmpty())
                     dispatch(
                         AuthorizationProfileStoreFactory.Msg.NameData(
                             name = userData.name,
                             isNameError = false
                         )
                     )
-                else
-                    dispatch(
-                        AuthorizationProfileStoreFactory.Msg.NameData(
-                            name = "",
-                            isNameError = true
-                        )
-                    )
+                }
             }
+        }
+
+        private fun checkUserdata(name: String, post: String) {
+            if (!validator.checkName(name) && !validator.checkPost(post)) {
+                publish(AuthorizationProfileStore.Label.AuthorizationProfileSuccess(userData))
+            } else {
+                publish(AuthorizationProfileStore.Label.AuthorizationProfileFailure)
+            }
+        }
+
+        private fun back() {
+            publish(AuthorizationProfileStore.Label.ReturnInPhoneAuthorization(userData))
         }
     }
 }

@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.authorization.authorization_telegram.store
 
+import band.effective.office.elevator.domain.models.User.UserData
 import com.arkivanov.mvikotlin.core.store.Store
 
 interface AuthorizationTelegramStore :
@@ -23,6 +24,6 @@ interface AuthorizationTelegramStore :
 
         object AuthorizationTelegramFailure : Label
 
-        object ReturnInProfileAuthorization : Label
+        data class ReturnInProfileAuthorization(val userData: UserData) : Label
     }
 }

@@ -71,8 +71,8 @@ fun AuthorizationTelegramScreen(component: AuthorizationTelegramComponent) {
                     AuthorizationTelegramComponent.Output.OpenContentFlow
                 )
 
-                AuthorizationTelegramStore.Label.ReturnInProfileAuthorization -> component.onOutput(
-                    AuthorizationTelegramComponent.Output.OpenProfileScreen
+                is AuthorizationTelegramStore.Label.ReturnInProfileAuthorization -> component.onOutput(
+                    AuthorizationTelegramComponent.Output.OpenProfileScreen (label.userData)
                 )
             }
         }

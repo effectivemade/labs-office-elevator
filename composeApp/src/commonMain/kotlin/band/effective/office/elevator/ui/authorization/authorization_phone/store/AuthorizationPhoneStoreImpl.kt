@@ -1,10 +1,6 @@
 package band.effective.office.elevator.ui.authorization.authorization_phone.store
 
-import band.effective.office.elevator.data.ApiResponse
-import band.effective.office.elevator.domain.GoogleSignIn
-import band.effective.office.elevator.domain.models.UserData
-import band.effective.office.elevator.domain.repository.UserProfileRepository
-import band.effective.office.elevator.domain.usecase.phone_authorization.GetUserUseCase
+import band.effective.office.elevator.domain.models.User.UserData
 import band.effective.office.elevator.ui.authorization.authorization_phone.store.AuthorizationPhoneStore.*
 import band.effective.office.elevator.ui.models.validator.Validator
 import com.arkivanov.mvikotlin.core.store.Reducer
@@ -15,16 +11,12 @@ import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 internal class AuthorizationPhoneStoreFactory(
     private val storeFactory: StoreFactory,
-    private val validator: Validator
+    private val validator: Validator,
+    private val userData: UserData
 ) : KoinComponent {
-
-    private val userProfileRep: UserProfileRepository by inject()
-    private val getUserUseCase: GetUserUseCase = GetUserUseCase(userProfileRep)
-    private val signInClient: GoogleSignIn by inject()
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): AuthorizationPhoneStore =
@@ -85,14 +77,14 @@ internal class AuthorizationPhoneStoreFactory(
         override fun executeAction(action: Action, getState: () -> State) {
             when (action) {
                 is Action.PushToken -> {
-                    pushToken()
+                    initPhoneNumber()
                 }
             }
         }
 
         private fun checkPhoneNumber(phoneNumber: String) {
             if (validator.checkPhone(phoneNumber)) {
-                publish(AuthorizationPhoneStore.Label.AuthorizationPhoneSuccess)
+                publish(AuthorizationPhoneStore.Label.AuthorizationPhoneSuccess(userData))
                 dispatch(
                     AuthorizationPhoneStoreFactory.Msg.Error(
                         error = false
@@ -112,20 +104,13 @@ internal class AuthorizationPhoneStoreFactory(
             publish(AuthorizationPhoneStore.Label.ReturnInGoogleAuthorization)
         }
 
-        private fun pushToken() {
+        private fun initPhoneNumber() {
             scope.launch {
-                when (val result = signInClient.retrieveAuthorizedUser()) {
-                    is ApiResponse.Error.HttpError -> {}
-                    ApiResponse.Error.NetworkError -> {}
-                    ApiResponse.Error.SerializationError -> {}
-                    ApiResponse.Error.UnknownError -> {}
-                    is ApiResponse.Success -> {
-                        val userData: UserData =
-                            getUserUseCase.execute(result.body.idToken!!)
-                        if (userData.phoneNumber.isNotEmpty())
-                            dispatch(AuthorizationPhoneStoreFactory.Msg.Data(phoneNumber = userData.phoneNumber))
-                    }
-                }
+                dispatch(AuthorizationPhoneStoreFactory.Msg.Data(phoneNumber = userData.phoneNumber))
+//                val userData: UserData =
+//                    getUserUseCase.execute(idToken)
+//                if (userData.phoneNumber.isNotEmpty())
+//                    dispatch(AuthorizationPhoneStoreFactory.Msg.Data(phoneNumber = userData.phoneNumber))
             }
         }
     }

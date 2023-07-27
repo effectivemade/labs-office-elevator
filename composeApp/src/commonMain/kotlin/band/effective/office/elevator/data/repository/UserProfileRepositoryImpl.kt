@@ -1,6 +1,6 @@
 package band.effective.office.elevator.data.repository
 
-import band.effective.office.elevator.domain.models.UserData
+import band.effective.office.elevator.domain.models.User.UserData
 import band.effective.office.elevator.domain.repository.UserProfileRepository
 
 class UserProfileRepositoryImpl : UserProfileRepository {
@@ -8,6 +8,7 @@ class UserProfileRepositoryImpl : UserProfileRepository {
         return if (idToken.isNotEmpty())
             UserData(
                 phoneNumber = "0000000000",
+                post = "Android developer",
                 email = "@test.ru",
                 name = "Вася Вася",
                 imageUrl = null
@@ -15,6 +16,7 @@ class UserProfileRepositoryImpl : UserProfileRepository {
         else
             UserData(
                 phoneNumber = "",
+                post = "",
                 email = "",
                 name = "",
                 imageUrl = null

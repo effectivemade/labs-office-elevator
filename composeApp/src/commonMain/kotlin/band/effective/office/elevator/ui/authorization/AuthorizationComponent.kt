@@ -1,8 +1,8 @@
 package band.effective.office.elevator.ui.authorization
 
 import band.effective.office.elevator.domain.GoogleSignIn
+import band.effective.office.elevator.domain.models.User.UserData
 import band.effective.office.elevator.domain.repository.UserProfileRepository
-import band.effective.office.elevator.domain.usecase.phone_authorization.GetUserUseCase
 import band.effective.office.elevator.ui.authorization.authorization_google.AuthorizationGoogleComponent
 import band.effective.office.elevator.ui.authorization.authorization_phone.AuthorizationPhoneComponent
 import band.effective.office.elevator.ui.authorization.authorization_profile.AuthorizationProfileComponent
@@ -30,9 +30,6 @@ class AuthorizationComponent(
 
     private val validator: Validator = Validator()
     private val navigation = StackNavigation<AuthorizationComponent.Config>()
-
-    private val userProfileRep: UserProfileRepository by inject()
-    private val getUserUseCase: GetUserUseCase = GetUserUseCase(userProfileRep)
     private val signInClient: GoogleSignIn by inject()
 
     private val stack = childStack(
@@ -53,6 +50,7 @@ class AuthorizationComponent(
                 AuthorizationGoogleComponent(
                     componentContext,
                     storeFactory,
+                    signInClient,
                     ::googleAuthOutput
                 )
             )
@@ -62,6 +60,7 @@ class AuthorizationComponent(
                     componentContext,
                     storeFactory,
                     validator,
+                    config.userData,
                     ::phoneAuthOutput
                 )
             )
@@ -71,6 +70,7 @@ class AuthorizationComponent(
                     componentContext,
                     storeFactory,
                     validator,
+                    config.userData,
                     ::profileAuthOutput
                 )
             )
@@ -80,6 +80,7 @@ class AuthorizationComponent(
                     componentContext,
                     storeFactory,
                     validator,
+                    config.userData,
                     ::telegramAuthOutput
                 )
             )
@@ -87,8 +88,8 @@ class AuthorizationComponent(
 
     private fun googleAuthOutput(output: AuthorizationGoogleComponent.Output) {
         when (output) {
-            AuthorizationGoogleComponent.Output.OpenAuthorizationPhoneScreen -> navigation.replaceAll(
-                Config.PhoneAuth
+            is AuthorizationGoogleComponent.Output.OpenAuthorizationPhoneScreen -> navigation.replaceAll(
+                Config.PhoneAuth(output.userData)
             )
 
             else -> {}
@@ -97,8 +98,8 @@ class AuthorizationComponent(
 
     private fun phoneAuthOutput(output: AuthorizationPhoneComponent.Output) {
         when (output) {
-            AuthorizationPhoneComponent.Output.OpenProfileScreen -> navigation.bringToFront(
-                AuthorizationComponent.Config.ProfileAuth
+            is AuthorizationPhoneComponent.Output.OpenProfileScreen -> navigation.bringToFront(
+                Config.ProfileAuth(output.userData)
             )
 
             AuthorizationPhoneComponent.Output.OpenGoogleScreen -> navigation.bringToFront(
@@ -109,20 +110,20 @@ class AuthorizationComponent(
 
     private fun profileAuthOutput(output: AuthorizationProfileComponent.Output) {
         when (output) {
-            AuthorizationProfileComponent.Output.OpenPhoneScreen -> navigation.bringToFront(
-                Config.PhoneAuth
+            is AuthorizationProfileComponent.Output.OpenPhoneScreen -> navigation.bringToFront(
+                Config.PhoneAuth (output.userData)
             )
 
-            AuthorizationProfileComponent.Output.OpenTGScreen -> navigation.bringToFront(
-                Config.TelegramAuth
+            is AuthorizationProfileComponent.Output.OpenTGScreen -> navigation.bringToFront(
+                Config.TelegramAuth (output.userData)
             )
         }
     }
 
     private fun telegramAuthOutput(output: AuthorizationTelegramComponent.Output) {
         when (output) {
-            AuthorizationTelegramComponent.Output.OpenProfileScreen -> navigation.bringToFront(
-                Config.ProfileAuth
+            is AuthorizationTelegramComponent.Output.OpenProfileScreen -> navigation.bringToFront(
+                Config.ProfileAuth(output.userData)
             )
 
             AuthorizationTelegramComponent.Output.OpenContentFlow -> openContentFlow()
@@ -141,12 +142,12 @@ class AuthorizationComponent(
         object GoogleAuth : Config()
 
         @Parcelize
-        object PhoneAuth : Config()
+        data class PhoneAuth(val userData: UserData) : Config()
 
         @Parcelize
-        object ProfileAuth : Config()
+        data class ProfileAuth(val userData: UserData) : Config()
 
         @Parcelize
-        object TelegramAuth : Config()
+        data class TelegramAuth(val userData: UserData) : Config()
     }
 }

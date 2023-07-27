@@ -1,9 +1,9 @@
 package band.effective.office.elevator.ui.authorization.authorization_phone
 
+import band.effective.office.elevator.domain.models.User.UserData
 import band.effective.office.elevator.ui.authorization.authorization_phone.store.AuthorizationPhoneStore
 import band.effective.office.elevator.ui.authorization.authorization_phone.store.AuthorizationPhoneStoreFactory
 import band.effective.office.elevator.ui.models.validator.Validator
-import band.effective.office.elevator.ui.profile.editProfile.store.ProfileEditStore
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -17,6 +17,7 @@ class AuthorizationPhoneComponent(
     componentContext: ComponentContext,
     private val storeFactory: StoreFactory,
     private val validator: Validator,
+    private val userData: UserData,
     private val output: (AuthorizationPhoneComponent.Output) -> Unit
 ) : ComponentContext by componentContext {
 
@@ -24,7 +25,8 @@ class AuthorizationPhoneComponent(
         instanceKeeper.getStore {
             AuthorizationPhoneStoreFactory(
                 storeFactory = storeFactory,
-                validator
+                validator,
+                userData
             ).create()
         }
 
@@ -42,7 +44,7 @@ class AuthorizationPhoneComponent(
     }
 
     sealed class Output {
-        object OpenProfileScreen : Output()
+        data class OpenProfileScreen(val userData: UserData) : Output()
 
         object OpenGoogleScreen : Output()
     }

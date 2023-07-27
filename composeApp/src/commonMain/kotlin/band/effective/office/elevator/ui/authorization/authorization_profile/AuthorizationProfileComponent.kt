@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.authorization.authorization_profile
 
+import band.effective.office.elevator.domain.models.User.UserData
 import band.effective.office.elevator.ui.authorization.authorization_profile.store.AuthorizationProfileStore
 import band.effective.office.elevator.ui.authorization.authorization_profile.store.AuthorizationProfileStoreFactory
 import band.effective.office.elevator.ui.models.validator.Validator
@@ -16,6 +17,7 @@ class AuthorizationProfileComponent(
     componentContext: ComponentContext,
     private val storeFactory: StoreFactory,
     private val validator: Validator,
+    private val userData: UserData,
     private val output: (AuthorizationProfileComponent.Output) -> Unit
 ) : ComponentContext by componentContext {
 
@@ -23,7 +25,8 @@ class AuthorizationProfileComponent(
         instanceKeeper.getStore {
             AuthorizationProfileStoreFactory(
                 storeFactory = storeFactory,
-                validator
+                validator = validator,
+                userData = userData
             ).create()
         }
 
@@ -41,8 +44,8 @@ class AuthorizationProfileComponent(
     }
 
     sealed class Output {
-        object OpenTGScreen : Output()
+        data class OpenTGScreen(val userData: UserData) : Output()
 
-        object OpenPhoneScreen : Output()
+        data class OpenPhoneScreen(val userData: UserData) : Output()
     }
 }

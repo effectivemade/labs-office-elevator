@@ -1,5 +1,7 @@
 package band.effective.office.elevator.ui.authorization.authorization_phone.store
 
+import band.effective.office.elevator.domain.models.User
+import band.effective.office.elevator.ui.authorization.authorization_google.store.AuthorizationGoogleStore
 import com.arkivanov.mvikotlin.core.store.Store
 
 interface AuthorizationPhoneStore :
@@ -20,7 +22,7 @@ interface AuthorizationPhoneStore :
     )
 
     sealed interface Label {
-        object AuthorizationPhoneSuccess : Label
+        data class AuthorizationPhoneSuccess(val userData: User.UserData) : Label
 
         object AuthorizationPhoneFailure : Label
 

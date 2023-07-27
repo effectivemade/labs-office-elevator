@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.authorization.authorization_profile.store
 
+import band.effective.office.elevator.domain.models.User.UserData
 import com.arkivanov.mvikotlin.core.store.Store
 
 interface AuthorizationProfileStore :
@@ -22,10 +23,10 @@ interface AuthorizationProfileStore :
     )
 
     sealed interface Label {
-        object AuthorizationProfileSuccess : Label
+        data class AuthorizationProfileSuccess(val userData: UserData) : Label
 
         object AuthorizationProfileFailure : Label
 
-        object ReturnInPhoneAuthorization : Label
+        data class ReturnInPhoneAuthorization(val userData: UserData) : Label
     }
 }

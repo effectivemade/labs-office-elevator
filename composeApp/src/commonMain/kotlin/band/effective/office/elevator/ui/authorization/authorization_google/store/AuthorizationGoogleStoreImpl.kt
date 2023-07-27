@@ -1,10 +1,14 @@
 package band.effective.office.elevator.ui.authorization.authorization_google.store
 
+import band.effective.office.elevator.data.ApiResponse
 import band.effective.office.elevator.domain.GoogleSignIn
 import band.effective.office.elevator.domain.SignInResultCallback
+import band.effective.office.elevator.domain.models.User.UserData
+import band.effective.office.elevator.domain.usecase.phone_authorization.GetUserUseCase
 import band.effective.office.elevator.ui.authorization.authorization_google.store.AuthorizationGoogleStore.Intent
 import band.effective.office.elevator.ui.authorization.authorization_google.store.AuthorizationGoogleStore.Label
 import band.effective.office.elevator.ui.authorization.authorization_google.store.AuthorizationGoogleStore.State
+import band.effective.office.elevator.ui.authorization.authorization_phone.store.AuthorizationPhoneStoreFactory
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
@@ -12,13 +16,12 @@ import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 internal class AuthorizationGoogleStoreFactory(
-    private val storeFactory: StoreFactory
+    private val storeFactory: StoreFactory,
+    private val signInClient: GoogleSignIn,
+    private val getUserUseCase: GetUserUseCase
 ) : KoinComponent {
-
-    private val signInClient: GoogleSignIn by inject<GoogleSignIn>()
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): AuthorizationGoogleStore =
@@ -36,7 +39,7 @@ internal class AuthorizationGoogleStoreFactory(
     }
 
 
-    private inner class ExecutorImpl : CoroutineExecutor<Intent, Action, State, Nothing, Label>() {
+    private inner class ExecutorImpl : CoroutineExecutor<Intent, Action, State, AuthorizationPhoneStoreFactory.Msg, Label>() {
         override fun executeIntent(intent: Intent, getState: () -> State) {
             when (intent) {
                 Intent.SignInButtonClicked -> startAuthorization()
@@ -46,7 +49,18 @@ internal class AuthorizationGoogleStoreFactory(
         private fun startAuthorization() {
             signInClient.signIn(object : SignInResultCallback {
                 override fun onSuccess() {
-                    publish(Label.AuthorizationSuccess)
+                    scope.launch {
+                        when (val result = signInClient.retrieveAuthorizedUser()) {
+                            is ApiResponse.Error.HttpError -> {}
+                            ApiResponse.Error.NetworkError -> {}
+                            ApiResponse.Error.SerializationError -> {}
+                            ApiResponse.Error.UnknownError -> {}
+                            is ApiResponse.Success -> {
+                                val userData: UserData = getUserUseCase.execute(result.body.idToken!!)
+                                publish(Label.AuthorizationSuccess(userData))
+                            }
+                        }
+                    }
                 }
 
                 override fun onFailure(message: String) {
