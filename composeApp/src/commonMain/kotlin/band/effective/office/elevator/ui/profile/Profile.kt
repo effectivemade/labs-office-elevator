@@ -13,6 +13,7 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stac
 fun Profile (component: ProfileComponent){
     Children(
         stack = component.childStack,
+        animation = stackAnimation(fade() + scale()),
     ){
         when(val child = it.instance){
             is ProfileComponent.Child.MainProfileChild -> ProfileScreen(child.component)
