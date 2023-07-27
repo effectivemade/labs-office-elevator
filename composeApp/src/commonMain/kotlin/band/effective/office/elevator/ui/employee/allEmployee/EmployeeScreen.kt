@@ -1,4 +1,4 @@
-package band.effective.office.elevator.ui.employee
+package band.effective.office.elevator.ui.employee.allEmployee
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
@@ -51,7 +51,6 @@ import band.effective.office.elevator.theme_light_background
 import band.effective.office.elevator.theme_light_onBackground
 import band.effective.office.elevator.theme_light_onPrimary
 import band.effective.office.elevator.theme_light_tertiary_color
-import band.effective.office.elevator.ui.employee.allEmployee.EmployeeComponent
 import band.effective.office.elevator.ui.employee.allEmployee.store.EmployeeStore
 import band.effective.office.elevator.utils.generateImageLoader
 import com.seiko.imageloader.LocalImageLoader
@@ -106,64 +105,65 @@ fun EmployeeScreenContent(
 ) {
 
     Column {
-        Column (modifier = Modifier
-            .background(theme_light_onPrimary)
-            .padding(0.dp,0.dp,0.dp,15.dp)
-            .fillMaxWidth()){
-                Text(
-                    text = stringResource(MainRes.strings.employees),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight(600),//?
+        Column(
+            modifier = Modifier
+                .background(theme_light_onPrimary)
+                .padding(0.dp, 0.dp, 0.dp, 15.dp)
+                .fillMaxWidth()
+        ) {
+            Text(
+                text = stringResource(MainRes.strings.employees),
+                fontSize = 20.sp,
+                fontWeight = FontWeight(600),//?
+                color = theme_light_tertiary_color,
+                modifier = Modifier.padding(20.dp, 55.dp, 15.dp, 25.dp)
+            )
+            TextField(
+                value = userMessageState.value, onValueChange = {
+                    userMessageState.value = it
+                    onTextFieldUpdate(it)
+                }, modifier = Modifier
+                    .fillMaxWidth()
+                    .height(70.dp)
+                    .padding(20.dp, 10.dp, 20.dp, 5.dp),
+                textStyle = TextStyle(
                     color = theme_light_tertiary_color,
-                    modifier = Modifier.padding(20.dp, 55.dp, 15.dp, 25.dp)
-                )
-                TextField(
-                    value = userMessageState.value, onValueChange = {
-                        userMessageState.value = it
-                        onTextFieldUpdate(it)
-                    }, modifier = Modifier
-                        .fillMaxWidth()
-                        .height(70.dp)
-                        .padding(20.dp, 10.dp, 20.dp, 5.dp),
-                    textStyle = TextStyle(
-                        color = theme_light_tertiary_color,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight(500)
+                ),
+                colors = TextFieldDefaults.textFieldColors(
+                    focusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    backgroundColor = theme_light_background
+                ),
+                placeholder = {
+                    Text(
+                        text = stringResource(MainRes.strings.search_employee),
                         fontSize = 16.sp,
-                        fontWeight = FontWeight(500)
-                    ),
-                    colors = TextFieldDefaults.textFieldColors(
-                        focusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        backgroundColor = theme_light_background
-                    ),
-                    placeholder = {
-                        Text(
-                            text = stringResource(MainRes.strings.search_employee),
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight(500),//Style. maththeme
-                            color = textInBorderGray
-                        )
-                    },
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(MainRes.images.baseline_search_24),
-                            contentDescription = "SearchField",
-                            tint = textInBorderGray
-                        )
-                    },
-                    singleLine = true,
-                    shape = RoundedCornerShape(32.dp)
+                        fontWeight = FontWeight(500),//Style. maththeme
+                        color = textInBorderGray
+                    )
+                },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(MainRes.images.baseline_search_24),
+                        contentDescription = "SearchField",
+                        tint = textInBorderGray
+                    )
+                },
+                singleLine = true,
+                shape = RoundedCornerShape(32.dp)
 
-                )
+            )
 
-                //padding настроить!
-            }
+            //padding настроить!
         }
         Column(
             modifier = Modifier
                 .background(theme_light_onBackground)
                 .fillMaxSize()
-                .padding(20.dp,25.dp,20.dp,0.dp)
+                .padding(20.dp, 25.dp, 20.dp, 0.dp)
         ) {
             Row(modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 25.dp).fillMaxWidth()) {
                 Text(
@@ -189,7 +189,7 @@ fun EmployeeScreenContent(
                 )
             }
 
-            LazyColumn{
+            LazyColumn {
                 items(employeesData) { employee_Data ->
                     EveryEmployeeCard(emp = employee_Data, onCardClick)
 
@@ -198,6 +198,7 @@ fun EmployeeScreenContent(
             }
         }
     }
+}
 
 @Composable
 

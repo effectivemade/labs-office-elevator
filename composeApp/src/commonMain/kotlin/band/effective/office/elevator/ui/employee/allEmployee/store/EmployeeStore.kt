@@ -1,6 +1,6 @@
 package band.effective.office.elevator.ui.employee.allEmployee.store
 
-import band.effective.office.elevator.ui.employee.EmployeeCard
+import band.effective.office.elevator.ui.employee.allEmployee.EmployeeCard
 import com.arkivanov.mvikotlin.core.store.Store
 
 interface EmployeeStore: Store<EmployeeStore.Intent, EmployeeStore.State, EmployeeStore.Label> {

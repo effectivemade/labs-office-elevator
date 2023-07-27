@@ -1,8 +1,8 @@
 package band.effective.office.elevator.ui.employee.allEmployee.store
 
 
-import band.effective.office.elevator.ui.employee.EmployeeCard
-import band.effective.office.elevator.ui.employee.EmployeesData
+import band.effective.office.elevator.ui.employee.allEmployee.EmployeesData
+import band.effective.office.elevator.utils.changeEmployeeShowedList
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -53,19 +53,19 @@ internal class EmployeeStoreFactory(private val storeFactory: StoreFactory):Koin
                 )
             }
 
-        private fun changeEmployeeShowedList(query: String): List<EmployeeCard> {
-            return if(query.isEmpty()){
-                EmployeesData.employeesCardData
-            }else {
-                var compareString = query.filter { !it.isWhitespace() }.lowercase()
-                val allEmployeesCards = EmployeesData.employeesCardData
-
-                var showedEmployeesCards  = allEmployeesCards.filter { it.name.filter { !it.isWhitespace() }
-                    .lowercase().contains(compareString) }
-
-
-                showedEmployeesCards
-            }
-        }
+//        private fun changeEmployeeShowedList(query: String): List<EmployeeCard> {
+//            return if(query.isEmpty()){
+//                EmployeesData.employeesCardData
+//            }else {
+//                val compareString = query.filter { !it.isWhitespace() }.lowercase()
+//                val allEmployeesCards = EmployeesData.employeesCardData
+//
+//                val showedEmployeesCards  = allEmployeesCards.filter { it.name.filter { !it.isWhitespace() }
+//                    .lowercase().contains(compareString) }
+//
+//
+//                showedEmployeesCards
+//            }
+//        }
     }
 }
