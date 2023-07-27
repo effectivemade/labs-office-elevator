@@ -17,7 +17,8 @@ fun RoomInfoComponent(
     modifier: Modifier = Modifier,
     room: RoomInfo,
     onOpenModalRequest: () -> Unit,
-    timeToNextEvent: Int
+    timeToNextEvent: Int,
+    isToday: Boolean
 ) {
     val paddings = 30.dp
     Column(modifier = modifier) {
@@ -49,7 +50,7 @@ fun RoomInfoComponent(
             }
         }
         Spacer(modifier = Modifier.height(30.dp))
-        RoomEventListComponent(modifier = Modifier.padding(paddings), eventsList = room.eventList)
+        RoomEventListComponent(modifier = Modifier.padding(paddings), eventsList = room.eventList, isToday = isToday)
     }
 }
 

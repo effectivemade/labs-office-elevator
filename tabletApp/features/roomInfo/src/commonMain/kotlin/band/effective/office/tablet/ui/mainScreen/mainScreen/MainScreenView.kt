@@ -35,7 +35,8 @@ fun MainScreenView(
     onOpenFreeModalRequest: () -> Unit,
     onCloseFreeModalRequest: () -> Unit,
     onFreeRoomRequest: () -> Unit,
-    timeToNextEvent: Int
+    timeToNextEvent: Int,
+    isToday: Boolean
 ) {
     Box(modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colors.background)) {
         /*NOTE(Maksim Mishenko):
@@ -48,7 +49,8 @@ fun MainScreenView(
                 modifier = Modifier.fillMaxHeight().fillMaxWidth(infoViewWidth),
                 room = room,
                 onOpenModalRequest = { onOpenFreeModalRequest() },
-                timeToNextEvent = timeToNextEvent
+                timeToNextEvent = timeToNextEvent,
+                isToday = isToday
             )
             Box(modifier = Modifier.fillMaxSize()) {
                 BookingRoomView(

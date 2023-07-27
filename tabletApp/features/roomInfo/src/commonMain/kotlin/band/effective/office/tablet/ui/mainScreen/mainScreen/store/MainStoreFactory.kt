@@ -1,8 +1,10 @@
 package band.effective.office.tablet.ui.mainScreen.mainScreen.store
 
 import band.effective.office.tablet.domain.CurrentEventController
+import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.domain.useCase.UpdateUseCase
+import band.effective.office.tablet.utils.oneDay
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -13,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import java.util.Calendar
 
 class MainStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
 
@@ -66,6 +69,7 @@ class MainStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
         object StartFreeRoom : Message
         object FinishFreeRoom : Message
         data class UpdateChangeEventTime(val newValue: Int) : Message
+        data class UpdateDate(val newValue: Calendar,val eventList: List<EventInfo>) : Message
     }
 
     private inner class ExecutorImpl() :
@@ -77,20 +81,26 @@ class MainStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
                 is MainStore.Intent.CloseModal -> dispatch(Message.CloseModal)
                 is MainStore.Intent.OnFreeRoomIntent -> freeRoom()
                 is MainStore.Intent.OnOpenFreeRoomModal -> dispatch(Message.OpenFreeModal)
+                is MainStore.Intent.UpdateDate -> updateDate(intent.newValue)
             }
         }
 
         override fun executeAction(action: Action, getState: () -> MainStore.State) {
             when (action) {
-                is Action.UpdateRoomInfo -> dispatch(Message.UpdateRoomInfo(action.roomInfo))
+                is Action.UpdateRoomInfo -> dispatch(Message.UpdateRoomInfo(action.roomInfo.filter(getState().selectDate)))
                 is Action.UpdateChangeEventTime -> dispatch(Message.UpdateChangeEventTime(action.newValue))
             }
         }
-
         private fun freeRoom() = scope.launch {
             dispatch(Message.StartFreeRoom)
             currentEventController.cancelCurrentEvent()
             dispatch(Message.FinishFreeRoom)
+        }
+
+        private fun RoomInfo.filter(date: Calendar): RoomInfo = copy(eventList = eventList.filter { eventInfo -> eventInfo.startTime.oneDay(date) })
+
+        private fun updateDate(newDate: Calendar) = scope.launch{
+            dispatch(Message.UpdateDate(newDate, updateUseCase.getRoomInfo().filter(newDate).eventList))
         }
     }
 
@@ -110,6 +120,7 @@ class MainStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
                 is Message.FinishFreeRoom -> copy(showFreeModal = false)
                 is Message.StartFreeRoom -> copy()
                 is Message.UpdateChangeEventTime -> copy(changeEventTime = message.newValue)
+                is Message.UpdateDate -> copy(selectDate = message.newValue, roomInfo = roomInfo.copy(eventList = message.eventList))
             }
     }
 }

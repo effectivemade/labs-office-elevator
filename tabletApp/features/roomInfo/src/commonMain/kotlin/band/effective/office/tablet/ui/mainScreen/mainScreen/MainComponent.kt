@@ -1,10 +1,5 @@
 package band.effective.office.tablet.ui.mainScreen.mainScreen
 
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import band.effective.office.tablet.domain.MockBooking
-import band.effective.office.tablet.domain.model.Booking
-import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingRoomComponent
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStoreFactory
@@ -33,7 +28,8 @@ class MainComponent(
         componentContext = childContext(key = "bookingRoom"),
         onCurrentBookingRoom = { mainStore.accept(MainStore.Intent.OnBookingCurrentRoomRequest) },
         storeFactory = storeFactory,
-        onBookingOtherRoom = { OnSelectOtherRoomRequest() }
+        onBookingOtherRoom = { OnSelectOtherRoomRequest() },
+        onChangeDate = {mainStore.accept(MainStore.Intent.UpdateDate(it))}
     )
 
     val selectRoomComponent: SelectRoomComponentImpl =

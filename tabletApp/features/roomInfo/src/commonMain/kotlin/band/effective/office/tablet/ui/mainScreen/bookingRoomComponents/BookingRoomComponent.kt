@@ -20,7 +20,8 @@ class BookingRoomComponent(
     private val componentContext: ComponentContext,
     storeFactory: StoreFactory,
     private val onCurrentBookingRoom: () -> Unit,
-    private val onBookingOtherRoom: () -> Unit
+    private val onBookingOtherRoom: () -> Unit,
+    private val onChangeDate: (Calendar) -> Unit
 ) :
     ComponentContext by componentContext {
 
@@ -34,7 +35,10 @@ class BookingRoomComponent(
     val dateTimeComponent: RealDateTimeComponent =
         RealDateTimeComponent(
             childContext("dateTime"),
-            changeDay = { bookingStore.accept(BookingStore.Intent.OnChangeDate(it)) }
+            changeDay = {
+                bookingStore.accept(BookingStore.Intent.OnChangeDate(it))
+                onChangeDate((state.value.selectDate.clone() as Calendar).apply { add(Calendar.DAY_OF_MONTH, it) })
+            }
         )
     val eventLengthComponent: RealEventLengthComponent =
         RealEventLengthComponent(childContext("length"),

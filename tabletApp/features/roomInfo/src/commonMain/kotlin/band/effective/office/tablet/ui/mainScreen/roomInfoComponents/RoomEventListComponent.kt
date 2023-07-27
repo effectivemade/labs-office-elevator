@@ -17,10 +17,8 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.features.roomInfo.MainRes
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
@@ -30,10 +28,10 @@ import band.effective.office.tablet.utils.CalendarStringConverter
 import java.util.Calendar
 
 @Composable
-fun RoomEventListComponent(modifier: Modifier = Modifier, eventsList: List<EventInfo>) {
+fun RoomEventListComponent(modifier: Modifier = Modifier, eventsList: List<EventInfo>, isToday: Boolean) {
     Column(modifier = modifier) {
         Text(
-            text = MainRes.string.select_organizer_title,
+            text = "${MainRes.string.select_organizer_title} ${if (isToday) MainRes.string.on_today_string else ""}",
             style = MaterialTheme.typography.h7,
             color = LocalCustomColorsPalette.current.parameterTitle
         )
