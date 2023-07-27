@@ -9,8 +9,6 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -44,9 +42,10 @@ internal class RootStoreImplFactory(
         }
 
         private fun checkUserAlreadySigned() {
+            println("I was here")
             scope.launch {
+                println("I was here cor")
                 publish(Label.UserAlreadySigned)
-
             }
             // commented out for the test
 //            scope.launch {

@@ -231,35 +231,9 @@ fun ExtendedTheme(
         DarkColors
     }
 //    region::Extended colors
-    val extendedColors = ExtendedColors(
-        trinidad_50 = Color(0xFFFFF7ED),
-        trinidad_100 = Color(0xFFFEEDD6),
-        trinidad_200 = Color(0xFFFDD8AB),
-        trinidad_300 = Color(0xFFFBBB76),
-        trinidad_400 = Color(0xFFF8933F),
-        trinidad_500 = Color(0xFFF67619),
-        trinidad_600 = Color(0xFFE85B0F),
-        trinidad_700 = Color(0xFFC0430E),
-        trinidad_800 = Color(0xFF983614),
-        trinidad_900 = Color(0xFF7B2F13),
-        trinidad_950 = Color(0xFF421408),
 
-        purple_heart_50 = Color(0xFFF4F0FF),
-        purple_heart_100 = Color(0xFFEBE4FF),
-        purple_heart_200 = Color(0xFFD9CDFF),
-        purple_heart_300 = Color(0xFFBFA5FF),
-        purple_heart_400 = Color(0xFFA172FF),
-        purple_heart_500 = Color(0xFF873AFF),
-        purple_heart_600 = Color(0xFF7C12FF),
-        purple_heart_700 = Color(0xFF6F01FF),
-        purple_heart_800 = Color(0xFF5800CB),
-        purple_heart_900 = Color(0xFF4E02B0),
-        purple_heart_950 = Color(0xFF2D0078),
-        error = Color(0xFFFF3B30)
-    )
 //    endregion
 
-    CompositionLocalProvider(LocalExtendedColors provides extendedColors) {
         MaterialTheme(
             typography = typography,
             colors = colors,
@@ -267,11 +241,9 @@ fun ExtendedTheme(
                 Surface(content = content)
             }
         )
-    }
+
 }
 
-object ExtendedTheme {
-    val colors: ExtendedColors
-        @Composable
-        get() = LocalExtendedColors.current
+object ExtendedThemeColors {
+    val colors = ExtendedColors
 }

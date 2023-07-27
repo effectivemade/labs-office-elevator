@@ -1,4 +1,5 @@
 import dev.icerock.gradle.MRVisibility.Public
+import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
 plugins {
     id(Plugins.Kotlin.plugin)
@@ -21,10 +22,17 @@ kotlin {
         }
     }
 
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
+    val iosArm64 = iosArm64()
+    val iosX64 = iosX64()
+    val iosSimulatorArm64 = iosSimulatorArm64()
 
+//    configure(listOf(iosArm64, iosX64, iosSimulatorArm64)) {
+//        binaries {
+//            framework {
+//                export("dev.icerock.moko:resources:0.23.0")
+//            }
+//        }
+//    }
     cocoapods {
         version = "1.0.0"
         summary = "Compose application framework"
@@ -40,7 +48,9 @@ kotlin {
         }
         pod("GoogleSignIn") {}
     }
-
+    targets.getByName<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>("iosX64").compilations.forEach {
+        it.kotlinOptions.freeCompilerArgs += arrayOf("-linker-options", "-lsqlite3")
+    }
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -76,6 +86,8 @@ kotlin {
                 api(Dependencies.Moko.resourcesCompose)
 
                 implementation(Dependencies.Calendar.composeDatePicker)
+
+                implementation(Dependencies.SqlDelight.primitiveadaper)
             }
         }
 
