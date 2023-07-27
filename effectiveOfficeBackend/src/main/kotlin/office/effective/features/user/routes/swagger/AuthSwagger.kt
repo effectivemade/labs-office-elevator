@@ -110,3 +110,32 @@ fun SwaggerDocument.returnUserById(): OpenApiRoute.() -> Unit = {
         }
     }
 }
+
+fun SwaggerDocument.alterUser(): OpenApiRoute.() -> Unit = {
+    description = "Change user in db"
+    tags = listOf("users")
+    response {
+        HttpStatusCode.OK to {
+            description = "Return users dto"
+            body<UserDTO> {
+                example(
+                    "User",
+                    UserDTO(
+                        id = "2c77feee-2bc1-11ee-be56-0242ac120002",
+                        fullName = "Ivan Ivanov",
+                        active = true,
+                        role = "ADMIN",
+                        avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg"
+                    )
+                ) {
+                }
+            }
+        }
+        HttpStatusCode.BadRequest to {
+            description = "Bad request"
+        }
+        HttpStatusCode.NotFound to {
+            description = "User with this id was not found"
+        }
+    }
+}
