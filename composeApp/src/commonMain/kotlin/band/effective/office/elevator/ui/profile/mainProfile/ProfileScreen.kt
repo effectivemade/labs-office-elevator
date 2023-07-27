@@ -63,8 +63,9 @@ fun ProfileScreen(component: MainProfileComponent) {
         post = user.post,
         telegram = user.telegram,
         phoneNumber = user.phoneNumber,
+        id = user.id,
         onSignOut = { component.onEvent(ProfileStore.Intent.SignOutClicked) },
-        onEditProfile = {component.onOutput(MainProfileComponent.Output.NavigateToEdit(user.id))}
+        onEditProfile = {id -> component.onOutput(MainProfileComponent.Output.NavigateToEdit(userEdit = id))}
     )
 }
 
@@ -76,7 +77,9 @@ internal fun ProfileScreenContent(
     telegram: String,
     phoneNumber: String,
     onSignOut: () -> Unit,
-    onEditProfile: ()-> Unit) {
+    onEditProfile: (id: String) -> Unit,
+    id: String
+) {
     val fieldsList = prepareFieldsData(telegram, phoneNumber)
     Column(
         modifier = Modifier.fillMaxSize().background(Color.White),
@@ -110,18 +113,18 @@ internal fun ProfileScreenContent(
                 }
             }
         }
-        ProfileInfoAboutUser(imageUrl, userName, post, onEditProfile)
+        ProfileInfoAboutUser(imageUrl, userName, post, {onEditProfile(id)},id)
         LazyColumn(modifier = Modifier.fillMaxSize().padding(top = 24.dp))
         {
             items(fieldsList){item ->
-                FieldsItemStyle(item = item,onEditProfile)
+                FieldsItemStyle(item = item, { onEditProfile(id) },id)
             }
         }
     }
 }
 
 @Composable
-fun ProfileInfoAboutUser(imageUrl: String, userName: String, post: String, onEditProfile: ()-> Unit) {
+fun ProfileInfoAboutUser(imageUrl: String, userName: String, post: String, onEditProfile: (id: String)-> Unit, id: String) {
     imageUrl.let { url ->
         val request = remember(url) {
             ImageRequest {
@@ -142,7 +145,7 @@ fun ProfileInfoAboutUser(imageUrl: String, userName: String, post: String, onEdi
                     contentDescription = null,
                 )
             }
-            IconButton(onClick = onEditProfile,
+            IconButton(onClick = {onEditProfile(id)},
                 modifier = Modifier.size(24.dp).align(Alignment.TopEnd)){
                 Image(
                     painter = painterResource(MainRes.images.edit_profile_image),
@@ -169,7 +172,7 @@ fun ProfileInfoAboutUser(imageUrl: String, userName: String, post: String, onEdi
 
 
 @Composable
-private fun FieldsItemStyle(item: FieldsData, onEditProfile: () -> Unit) {
+private fun FieldsItemStyle(item: FieldsData, onEditProfile: (id: String) -> Unit,  id: String) {
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier
             .padding(horizontal = 16.dp).fillMaxWidth()
@@ -186,21 +189,17 @@ private fun FieldsItemStyle(item: FieldsData, onEditProfile: () -> Unit) {
             modifier = Modifier.padding(start = 12.dp)
         )
         Spacer(modifier = Modifier.weight(.1f))
-        item.value?.let {
-            Text(
-                it,
-                style = MaterialTheme.typography.subtitle1,
-                color = Color.Black
-            )
+        Text(item.value,
+            style = MaterialTheme.typography.subtitle1,
+            color = Color.Black)
         }
-        IconButton(onClick = onEditProfile) {
+        IconButton(onClick = {onEditProfile(id)}) {
             Icon(
                 painter = painterResource(MainRes.images.next),
                 contentDescription = null,
                 tint = borderPurple
             )
         }
-    }
     Divider(color = textGrayColor, thickness = 1.dp)
 }
 
