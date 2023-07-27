@@ -5,7 +5,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,7 +17,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
@@ -53,7 +51,8 @@ import band.effective.office.elevator.theme_light_background
 import band.effective.office.elevator.theme_light_onBackground
 import band.effective.office.elevator.theme_light_onPrimary
 import band.effective.office.elevator.theme_light_tertiary_color
-import band.effective.office.elevator.ui.employee.store.EmployeeStore
+import band.effective.office.elevator.ui.employee.allEmployee.EmployeeComponent
+import band.effective.office.elevator.ui.employee.allEmployee.store.EmployeeStore
 import band.effective.office.elevator.utils.generateImageLoader
 import com.seiko.imageloader.LocalImageLoader
 import com.seiko.imageloader.model.ImageRequest
@@ -199,7 +198,6 @@ fun EmployeeScreenContent(
             }
         }
     }
-}
 
 @Composable
 
