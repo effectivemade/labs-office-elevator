@@ -11,9 +11,7 @@ import org.ktorm.dsl.*
 import org.ktorm.entity.*
 import java.util.*
 
-class UserRepository {
-    private val db: Database = GlobalContext.get().get()
-    private val converter: UserModelEntityConverter = GlobalContext.get().get()
+class UserRepository(private val db: Database, private val converter: UserModelEntityConverter) {
 
 
     fun existsById(userId: UUID): Boolean {
@@ -91,6 +89,33 @@ class UserRepository {
             "Tag with name ${tagName} not found"
         )
         return UserTagModel(tag.id, tag.name)
+    }
+
+    fun updateUser(model: UserModel): UserModel {
+        val userid: UUID = model.id ?: throw UserNotFoundException("No id in the model")
+        if (!existsById(userid)) {
+            throw UserNotFoundException("User ${model.fullName} with id:${userid} does not exists")
+        }
+        var ent = db.users.find { it.id eq userid }
+        ent?.tag = model.tag
+        ent?.fullName = model.fullName
+        ent?.active = model.active
+        ent?.avatarURL = model.avatarURL
+        ent?.role = model.role
+        ent?.flushChanges()
+        //todo integrations
+        return findById(userid)
+    }
+
+    fun findTagByUserOrNull(userId: UUID): UsersTagEntity? {
+        if (!existsById(userId)) return null
+        val ent = findById(userId)
+        return ent.tag
+    }
+
+    fun findSetOfIntegrationsByUserOrNull(userId: UUID): Set<IntegrationModel>? {
+        if (!existsById(userId)) return null
+        return findSetOfIntegrationsByUser(userId)
     }
 
 

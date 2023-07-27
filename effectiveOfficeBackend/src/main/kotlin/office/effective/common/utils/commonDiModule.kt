@@ -18,4 +18,5 @@ val commonDiModule = module(createdAtStart = true) {
             password = password
         )
     }
+    single { DatabaseTransactionManager(get()) }
 }

@@ -58,6 +58,8 @@ dependencies {
     implementation("io.ktor:ktor-client-apache-jvm:2.3.2")
     implementation("org.liquibase:liquibase-core:$liquibase_version")
     implementation("io.ktor:ktor-client-apache:2.3.2")
+    implementation("io.ktor:ktor-server-swagger:$ktor_version")
+    implementation("io.github.smiley4:ktor-swagger-ui:2.2.0")
 
     liquibaseRuntime("org.liquibase:liquibase-core:$liquibase_version")
     liquibaseRuntime("org.postgresql:postgresql:$postgresql_driver_version")
