@@ -1,5 +1,6 @@
 package band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.store
 
+import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
@@ -7,11 +8,10 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
-class FreeNegotiationsFactory(private val storeFactory: StoreFactory): KoinComponent {
+class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory): KoinComponent {
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): FreeNegotiationsStore =
@@ -34,6 +34,7 @@ class FreeNegotiationsFactory(private val storeFactory: StoreFactory): KoinCompo
 
     private sealed interface Message {
         data class GetFreeRoomsInfo(val roomsInfo: List<RoomInfo>) : Message
+        data class SetEvent(val eventInfo: EventInfo): Message
         object BookRoom : Message
         object MainScreen : Message
         object CloseModal : Message
@@ -46,6 +47,7 @@ class FreeNegotiationsFactory(private val storeFactory: StoreFactory): KoinCompo
                 is FreeNegotiationsStore.Intent.OnBookingRoom -> dispatch(Message.BookRoom)
                 is FreeNegotiationsStore.Intent.OnMainScreen -> dispatch(Message.MainScreen)
                 is FreeNegotiationsStore.Intent.CloseModal -> dispatch(Message.CloseModal)
+                is FreeNegotiationsStore.Intent.SetEvent -> dispatch(Message.SetEvent(intent.eventInfo))
             }
         }
 
@@ -66,7 +68,7 @@ class FreeNegotiationsFactory(private val storeFactory: StoreFactory): KoinCompo
                     isData = true,
                     isLoad = false
                 )
-
+                is Message.SetEvent -> copy(eventInfo = message.eventInfo)
                 is Message.CloseModal -> copy(showBookingModal = false)
             }
     }
