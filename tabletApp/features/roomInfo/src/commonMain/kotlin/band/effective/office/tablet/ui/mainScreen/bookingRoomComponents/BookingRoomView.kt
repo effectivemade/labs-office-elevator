@@ -1,6 +1,7 @@
 package band.effective.office.tablet.ui.mainScreen.bookingRoomComponents
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -90,7 +91,7 @@ fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: Booking
                 Spacer(Modifier.height(10.dp))
             }
             Button(
-                modifier = Modifier.fillMaxWidth().height(60.dp).clip(RoundedCornerShape(100.dp)),
+                modifier = Modifier.fillMaxWidth().height(60.dp).clip(RoundedCornerShape(100.dp)).focusable(true),
                 onClick = { bookingRoomComponent.bookingCurrentRoom() }
             ) {
                 Text(text = MainRes.string.booking_button_text.format(roomName = state.roomName))

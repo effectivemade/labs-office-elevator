@@ -2,31 +2,36 @@ package band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiCompo
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExposedDropdownMenuBox
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import band.effective.office.tablet.features.roomInfo.MainRes
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.RealEventOrganizerComponent
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
@@ -40,11 +45,13 @@ fun EventOrganizerView(
     component: RealEventOrganizerComponent,
     organizers: List<String>
 ) {
+    val message = remember { mutableStateOf("") }
     val expended by component.expanded.collectAsState()
     val selectedItem by component.selectedItem.collectAsState()
+    val focusManager = LocalFocusManager.current
     Column(modifier = modifier) {
         Text(
-            text = MainRes.string.select_organizer_title,
+            text = MainRes.string.selectbox_organizer_title,
             color = LocalCustomColorsPalette.current.parameterTitle,
             style = MaterialTheme.typography.h8
         )
@@ -57,22 +64,32 @@ fun EventOrganizerView(
                 modifier = Modifier
                     .clip(RoundedCornerShape(15.dp))
                     .fillMaxSize()
-                    .background(color = Color(0xFF302D2C))
+                    .background(color = LocalCustomColorsPalette.current.elevationBackground)
                     .padding(horizontal = 20.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                if (selectedItem.notSelect()) {
-                    Text(
-                        text = MainRes.string.selectbox_organizer_title,
-                        color = LocalCustomColorsPalette.current.tertiaryTextAndIcon
+                TextField(
+                    modifier = Modifier.fillMaxWidth(0.8f),
+                    value = message.value,
+                    onValueChange = { message.value = it },
+                    placeholder = {
+                        Text(
+                            text = MainRes.string.selectbox_organizer_title,
+                            color = LocalCustomColorsPalette.current.tertiaryTextAndIcon
+                        )
+                    },
+                    colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.Transparent),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            defaultKeyboardAction(ImeAction.Done)
+                            focusManager.clearFocus()
+                            message.value = if (organizers.contains(message.value)) message.value else ""
+                            component.onSelectItem(message.value)
+                        }
                     )
-                } else {
-                    Text(
-                        text = selectedItem
-                    )
-                }
-
+                )
                 Image(
                     modifier = Modifier,
                     painter = painterResource(MainRes.image.arrow_to_down),
@@ -86,7 +103,7 @@ fun EventOrganizerView(
                         color = MaterialTheme.colors.surface
                     ),
                 expanded = expended,
-                onDismissRequest = { component.onExpandedChange() }
+                onDismissRequest = { /*component.onExpandedChange()*/ }
             ) {
                 Column(
                     modifier = Modifier.background(
@@ -95,8 +112,13 @@ fun EventOrganizerView(
                     )
                 ) {
                     organizers.forEach { organizer ->
+                        if (!organizer.lowercase()
+                                .contains(message.value.lowercase())
+                        ) return@forEach
                         DropdownMenuItem(onClick = {
+                            message.value = organizer
                             component.onSelectItem(organizer)
+                            focusManager.clearFocus()
                         }) {
                             Text(text = organizer)
                         }
