@@ -1,9 +1,6 @@
 package office.effective.features.user.repository
 
-import office.effective.common.exception.IntegrationNotFoundException
-import office.effective.common.exception.UserIntegrationNotFoundException
-import office.effective.common.exception.UserNotFoundException
-import office.effective.common.exception.UserTagNotFoundException
+import office.effective.common.exception.*
 import office.effective.features.user.converters.UserModelEntityConverter
 import office.effective.model.IntegrationModel
 import office.effective.model.UserModel
@@ -25,10 +22,13 @@ class UserRepository {
 
     fun findById(userId: UUID): UserModel {
         val userEnt: UserEntity =
-            db.users.find { it.id eq userId } ?: throw UserNotFoundException("DB sync error")
-        val integrations = findSetOfIntegrationsByUser(userEnt.id!!)
+            db.users.find { it.id eq userId } ?: throw InstanceNotFoundException(UserEntity::class, "User ${userId}")
+        val integrations = findSetOfIntegrationsByUser(userId)
         val tagEntity =
-            db.users_tags.find { it.id eq userEnt.tag.id } ?: throw UserTagNotFoundException("DB sync error")
+            db.users_tags.find { it.id eq userEnt.tag.id } ?: throw InstanceNotFoundException(
+                UsersTagEntity::class,
+                "Cannot find tag by id ${userEnt.tag.id}"
+            )
 
         val userModel = converter.EntityToModel(userEnt, null)
         userModel.integrations = integrations
@@ -53,13 +53,16 @@ class UserRepository {
     fun findByEmail(email: String): UserModel {
         val integrationUserEntity: UserIntegrationEntity =
             db.usersinegrations.find { it.valueStr eq email }
-                ?: throw UserIntegrationNotFoundException("not such email");
+                ?: throw InstanceNotFoundException(
+                    UserIntegrationEntity::class,
+                    "Integration with value ${email} not found"
+                );
         return findById(integrationUserEntity.userId.id)
     }
 
     fun findIntegrationById(id: UUID): IntegrationEntity {
         return db.integrations.find { it.id eq id }
-            ?: throw IntegrationNotFoundException("There are no integration with such id")
+            ?: throw InstanceNotFoundException(IntegrationEntity::class, "Integration with id ${id} not found")
     }
 
     fun findSetOfIntegrationsByUser(userId: UUID): MutableSet<IntegrationModel> {
@@ -83,7 +86,10 @@ class UserRepository {
     }
 
     fun findTagByName(tagName: String): UserTagModel {
-        val tag = db.users_tags.find { it.name eq tagName } ?: throw UserTagNotFoundException("Wrong tag name")
+        val tag = db.users_tags.find { it.name eq tagName } ?: throw InstanceNotFoundException(
+            UsersTagEntity::class,
+            "Tag with name ${tagName} not found"
+        )
         return UserTagModel(tag.id, tag.name)
     }
 
