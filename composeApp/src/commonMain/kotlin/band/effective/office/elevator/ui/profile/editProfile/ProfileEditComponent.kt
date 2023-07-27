@@ -1,6 +1,6 @@
 package band.effective.office.elevator.ui.profile.editProfile
 
-import band.effective.office.elevator.ui.models.User
+import band.effective.office.elevator.ui.profile.domain.models.User
 import band.effective.office.elevator.ui.profile.editProfile.store.ProfileEditStore
 import band.effective.office.elevator.ui.profile.editProfile.store.ProfileEditStoreFactory
 import com.arkivanov.decompose.ComponentContext
@@ -16,7 +16,7 @@ class ProfileEditComponent (
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
     private val output: (Output) -> Unit,
-    private val userEdit:User
+    private val userEdit: String
     ) : ComponentContext by componentContext {
 
             private val profileEditStore = instanceKeeper.getStore {

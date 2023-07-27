@@ -1,6 +1,6 @@
 package band.effective.office.elevator.ui.profile.editProfile.store
 
-import band.effective.office.elevator.ui.models.User
+import band.effective.office.elevator.ui.profile.domain.models.User
 import com.arkivanov.mvikotlin.core.store.Store
 
 interface ProfileEditStore : Store<ProfileEditStore.Intent, User, ProfileEditStore.Label>{

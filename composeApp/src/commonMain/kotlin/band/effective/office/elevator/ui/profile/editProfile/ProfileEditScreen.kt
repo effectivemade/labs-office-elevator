@@ -59,8 +59,9 @@ fun ProfileEditScreen(component: ProfileEditComponent){
         userName = user.userName,
         post = user.post,
         telegram = user.telegram,
-        phoneNumber = user.phoneNumber
-    ) { component.onEvent(ProfileEditStore.Intent.BackInProfileClicked) }
+        phoneNumber = user.phoneNumber,
+        onReturnToProfile = { component.onEvent(ProfileEditStore.Intent.BackInProfileClicked) }
+    )
 }
 
 @Composable
@@ -134,15 +135,17 @@ private fun FieldsItemStyle(item:FieldsData){
                     }
                 },
                 trailingIcon = {
-                    Icon(
-                        painter = painterResource(MainRes.images.clear_icon),
-                        contentDescription = null,
-                    )
+                    IconButton(onClick = {}){
+                        Icon(
+                            painter = painterResource(MainRes.images.clear_icon),
+                            contentDescription = null,
+                        )
+                    }
                 },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     textColor = textGrayColor,
-                    leadingIconColor = Color(0x66000000),
-                    trailingIconColor = Color(0x66000000)
+                    leadingIconColor = textGrayColor,
+                    trailingIconColor = textGrayColor
                 )
             )
         }

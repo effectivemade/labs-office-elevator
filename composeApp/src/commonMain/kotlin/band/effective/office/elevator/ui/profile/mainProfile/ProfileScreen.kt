@@ -64,7 +64,7 @@ fun ProfileScreen(component: MainProfileComponent) {
         telegram = user.telegram,
         phoneNumber = user.phoneNumber,
         onSignOut = { component.onEvent(ProfileStore.Intent.SignOutClicked) },
-        onEditProfile = {component.onOutput(MainProfileComponent.Output.NavigateToEdit(user))}
+        onEditProfile = {component.onOutput(MainProfileComponent.Output.NavigateToEdit(user.id))}
     )
 }
 
@@ -82,7 +82,34 @@ internal fun ProfileScreenContent(
         modifier = Modifier.fillMaxSize().background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top) {
-        ProfileHeader(onSignOut)
+        Row(
+            verticalAlignment = Alignment.CenterVertically, modifier = Modifier
+                .padding(horizontal = 16.dp).fillMaxWidth().padding(top = 40.dp)
+        ) {
+            TitlePage(
+                stringResource(MainRes.strings.profile)
+            )
+            Spacer(modifier = Modifier.weight(.1f))
+            OutlinedButton(
+                onClick = onSignOut,
+                shape = RoundedCornerShape(size = 8.dp),
+                border = BorderStroke(1.dp, MaterialTheme.colors.secondary),
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        painter = painterResource(MainRes.images.exit),
+                        contentDescription = null,
+                        tint = MaterialTheme.colors.secondary
+                    )
+                    Text(
+                        stringResource(MainRes.strings.exit),
+                        style = MaterialTheme.typography.body2,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
+            }
+        }
         ProfileInfoAboutUser(imageUrl, userName, post, onEditProfile)
         LazyColumn(modifier = Modifier.fillMaxSize().padding(top = 24.dp))
         {
@@ -143,37 +170,7 @@ fun ProfileInfoAboutUser(imageUrl: String?, userName: String?, post: String?, on
     }
 }
 
-@Composable
-private fun ProfileHeader(onSignOut: () -> Unit) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically, modifier = Modifier
-            .padding(horizontal = 16.dp).fillMaxWidth().padding(top = 40.dp)
-    ) {
-        TitlePage(
-            stringResource(MainRes.strings.profile)
-        )
-        Spacer(modifier = Modifier.weight(.1f))
-        OutlinedButton(
-            onClick = onSignOut,
-            shape = RoundedCornerShape(size = 8.dp),
-            border = BorderStroke(1.dp, MaterialTheme.colors.secondary),
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    painter = painterResource(MainRes.images.exit),
-                    contentDescription = null,
-                    tint = MaterialTheme.colors.secondary
-                )
-                Text(
-                    stringResource(MainRes.strings.exit),
-                    style = MaterialTheme.typography.body2,
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-            }
-        }
-    }
-}
+
 
 @Composable
 private fun FieldsItemStyle(item: FieldsData, onEditProfile: () -> Unit) {
@@ -214,7 +211,7 @@ private fun FieldsItemStyle(item: FieldsData, onEditProfile: () -> Unit) {
 
 
 
-private fun prepareFieldsData(telegram: String?, phoneNumber: String?) : MutableList<FieldsData>{
+private fun prepareFieldsData(telegram: String?, phoneNumber: String?) : List<FieldsData>{
 
     val fieldsList = mutableListOf<FieldsData>()
 
@@ -222,7 +219,7 @@ private fun prepareFieldsData(telegram: String?, phoneNumber: String?) : Mutable
         FieldsData(
             icon = MainRes.images.icon_call,
             title = MainRes.strings.phone_number,
-            value = telegram,
+            value = phoneNumber,
         )
     )
 
@@ -230,7 +227,7 @@ private fun prepareFieldsData(telegram: String?, phoneNumber: String?) : Mutable
         FieldsData(
             icon = MainRes.images.icon_telegram,
             title = MainRes.strings.telegram,
-            value = phoneNumber,
+            value = telegram,
         )
     )
     return fieldsList

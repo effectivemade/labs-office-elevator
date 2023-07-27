@@ -1,9 +1,8 @@
 package band.effective.office.elevator.ui.profile.mainProfile.store
 
-import band.effective.office.elevator.data.ApiResponse
 import band.effective.office.elevator.domain.GoogleSignIn
-import band.effective.office.elevator.domain.models.GoogleAccount
-import band.effective.office.elevator.ui.models.User
+import band.effective.office.elevator.ui.profile.domain.ProfileRepository
+import band.effective.office.elevator.ui.profile.domain.models.User
 import band.effective.office.elevator.ui.profile.mainProfile.store.ProfileStore.*
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
@@ -16,16 +15,17 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 internal class ProfileStoreFactory(
-    private val storeFactory: StoreFactory
+    private val storeFactory: StoreFactory,
 ) : KoinComponent {
 
     private val signInClient: GoogleSignIn by inject<GoogleSignIn>()
+    private val repository: ProfileRepository by inject<ProfileRepository> ()
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): ProfileStore =
         object : ProfileStore, Store<Intent, User, Label> by storeFactory.create(
             name = "ProfileStore",
-            initialState = User(null,null,null,null,null,null),
+            initialState = User(imageUrl = null, userName = null,post = null,phoneNumber = null,telegram = null,email = null,id = "1"),
             bootstrapper = coroutineBootstrapper {
                 dispatch(Action.FetchUserInfo)
             },
@@ -63,14 +63,7 @@ internal class ProfileStoreFactory(
 
         private fun fetchUserInfo() {
             scope.launch {
-                when (val result = signInClient.retrieveAuthorizedUser()) {
-                    is ApiResponse.Error.HttpError -> {}
-                    ApiResponse.Error.NetworkError -> {}
-                    ApiResponse.Error.SerializationError -> {}
-                    ApiResponse.Error.UnknownError -> {}
-                    is ApiResponse.Success ->{}
-                }
-                dispatch(Msg.ProfileData(user = mokValueUser))
+               dispatch(Msg.ProfileData(user = repository.getUser("1")))
             }
         }
     }
@@ -84,10 +77,10 @@ internal class ProfileStoreFactory(
                     telegram = message.user.telegram,
                     post = message.user.post,
                     phoneNumber = message.user.phoneNumber,
-                    email = message.user.email
+                    email = message.user.email,
+                    id = message.user.id
                 )
             }
     }
 
 }
-private val mokValueUser = User("1","Ivanov Ivan", "Android-developer","67","@ivanov","employee@effective.com")

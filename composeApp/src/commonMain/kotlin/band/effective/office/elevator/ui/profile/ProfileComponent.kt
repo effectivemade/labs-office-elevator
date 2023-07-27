@@ -1,12 +1,12 @@
 package band.effective.office.elevator.ui.profile
 
-import band.effective.office.elevator.ui.models.User
+import band.effective.office.elevator.ui.profile.domain.ProfileRepository
+import band.effective.office.elevator.ui.profile.domain.models.User
 import band.effective.office.elevator.ui.profile.editProfile.ProfileEditComponent
 import band.effective.office.elevator.ui.profile.mainProfile.MainProfileComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
-import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.router.stack.replaceAll
@@ -18,6 +18,7 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 class ProfileComponent(
     componentContext: ComponentContext,
     private val storeFactory: StoreFactory,
+
     private val openAuthorizationFlow: () -> Unit) :
     ComponentContext by componentContext {
 
@@ -32,15 +33,16 @@ class ProfileComponent(
 
     val childStack: Value<ChildStack<*,Child>> = stack
 
-    private fun child(config: Config, componentContext: ComponentContext):Child =
-        when(config){
+    private fun child(config: Config, componentContext: ComponentContext):Child {
+        return when(config){
             is Config.MainProfile -> Child.MainProfileChild(
                 MainProfileComponent(
                     componentContext,
                     storeFactory,
-                    ::mainProfileOutput,
+                    output = ::mainProfileOutput,
                 )
             )
+
             is Config.EditProfile -> Child.EditProfileChild(
                 ProfileEditComponent(
                     componentContext,
@@ -50,6 +52,7 @@ class ProfileComponent(
                 )
             )
         }
+    }
 
     private fun editProfileOutput(output: ProfileEditComponent.Output) {
         when(output){
@@ -74,6 +77,6 @@ class ProfileComponent(
         object MainProfile: Config()
 
         @Parcelize
-        data class EditProfile(val user: User): Config()
+        data class EditProfile(val user: String): Config()
     }
 }

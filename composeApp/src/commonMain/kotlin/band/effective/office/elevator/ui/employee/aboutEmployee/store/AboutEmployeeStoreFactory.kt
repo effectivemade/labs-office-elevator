@@ -2,7 +2,7 @@ package band.effective.office.elevator.ui.employee.aboutEmployee.store
 
 import band.effective.office.elevator.ui.employee.aboutEmployee.store.AboutEmployeeStore.*
 import band.effective.office.elevator.ui.models.ReservedSeat
-import band.effective.office.elevator.ui.models.User
+import band.effective.office.elevator.ui.profile.domain.models.User
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -72,7 +72,7 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory): KoinCom
     }
 }
 
-private val mokValueUser = User("1","Ivanov Ivan", "Android-developer","67","@ivanov","employee@effective.com")
+    private val mokValueUser = User("1","1","Ivanov Ivan", "Android-developer","67","@ivanov","employee@effective.com")
 private val mokValue = listOf(
     ReservedSeat(
         seatName = "Рабочее масто А2",

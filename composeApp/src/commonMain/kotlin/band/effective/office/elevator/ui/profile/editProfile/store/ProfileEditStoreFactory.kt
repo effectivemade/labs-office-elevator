@@ -1,6 +1,7 @@
 package band.effective.office.elevator.ui.profile.editProfile.store
 
-import band.effective.office.elevator.ui.models.User
+import band.effective.office.elevator.ui.profile.domain.ProfileRepository
+import band.effective.office.elevator.ui.profile.domain.models.User
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import band.effective.office.elevator.ui.profile.editProfile.store.ProfileEditStore.*
@@ -10,10 +11,11 @@ import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 internal class ProfileEditStoreFactory(
     private val storeFactory: StoreFactory,
-    private  val user:User
+    private  val user: String,
 ) : KoinComponent {
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): ProfileEditStore =
@@ -21,20 +23,15 @@ internal class ProfileEditStoreFactory(
             Store<Intent, User, Label>
             by storeFactory.create(
                 name = "ProfileEditStore",
-                initialState = User(
-                    userName = null,
-                    telegram = null,
-                    post = null,
-                    phoneNumber = null,
-                    imageUrl = null,
-                    email = null
-                ),
+                initialState = User(imageUrl = null, userName = null,post = null,phoneNumber = null,telegram = null,email = null, id = "1"),
                 bootstrapper = coroutineBootstrapper {
                     dispatch(Action.FetchUserInfo)
                 },
                 executorFactory = ::ExecutorImpl,
                 reducer = ReducerImpl
             ) {}
+
+    private val repository: ProfileRepository by inject<ProfileRepository> ()
 
     private sealed interface Action {
         object FetchUserInfo : Action
@@ -66,7 +63,7 @@ internal class ProfileEditStoreFactory(
 
         private fun fetchUserInfo() {
             scope.launch {
-                dispatch(Msg.ProfileData(user = user))
+                dispatch(Msg.ProfileData(user = repository.getUser(user)))
             }
         }
 
@@ -79,6 +76,7 @@ internal class ProfileEditStoreFactory(
         override fun User.reduce(message: Msg): User =
             when (message) {
                 is Msg.ProfileData -> User(
+                    id = message.user.id,
                     userName = message.user.userName,
                     telegram = message.user.telegram,
                     post = message.user.post,
