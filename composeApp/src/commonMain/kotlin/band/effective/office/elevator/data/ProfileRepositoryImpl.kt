@@ -27,11 +27,6 @@ class ProfileRepositoryImpl : ProfileRepository {
 
 
     override suspend fun getUser(id: String): User {
-        for(us in mutableListUser){
-            if (us.id.contains(id)){
-                return us
-            }
-        }
-        return mutableListUser[0]
+        return mutableListUser.find{it.id == id}?: mutableListUser[0]
     }
 }

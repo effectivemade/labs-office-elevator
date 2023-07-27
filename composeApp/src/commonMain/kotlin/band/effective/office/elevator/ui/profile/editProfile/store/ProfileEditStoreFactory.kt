@@ -33,8 +33,6 @@ internal class ProfileEditStoreFactory(
                 reducer = ReducerImpl
             ) {}
 
-    private val repository: ProfileRepository by inject<ProfileRepository> ()
-    private val getUserByIdUseCase: GetUserByIdUseCase = GetUserByIdUseCase(profileRepository = repository)
 
     private sealed interface Action {
         object FetchUserInfo : Action
@@ -66,7 +64,7 @@ internal class ProfileEditStoreFactory(
 
         private fun fetchUserInfo() {
             scope.launch {
-                dispatch(Msg.ProfileData(user = getUserByIdUseCase.execute(user)))
+                dispatch(Msg.ProfileData(user = GetUserByIdUseCase.execute(user)))
             }
         }
 

@@ -8,5 +8,4 @@ import org.koin.dsl.module
 
 internal val domainModuleDI = module {
     single<OfficeElevatorRepository> { OfficeElevatorRepositoryImpl(get(), get()) }
-    single<ProfileRepository> { ProfileRepositoryImpl() }
 }

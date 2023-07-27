@@ -189,17 +189,19 @@ private fun FieldsItemStyle(item: FieldsData, onEditProfile: (id: String) -> Uni
             modifier = Modifier.padding(start = 12.dp)
         )
         Spacer(modifier = Modifier.weight(.1f))
-        Text(item.value,
+        Text(
+            item.value,
             style = MaterialTheme.typography.subtitle1,
-            color = Color.Black)
-        }
-        IconButton(onClick = {onEditProfile(id)}) {
-            Icon(
-                painter = painterResource(MainRes.images.next),
-                contentDescription = null,
-                tint = borderPurple
-            )
-        }
+            color = Color.Black
+        )
+    IconButton(onClick = { onEditProfile(id) }) {
+        Icon(
+            painter = painterResource(MainRes.images.next),
+            contentDescription = null,
+            tint = borderPurple
+        )
+    }
+    }
     Divider(color = textGrayColor, thickness = 1.dp)
 }
 
