@@ -4,6 +4,7 @@ import authRoutingFun
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import office.effective.features.user.routes.userRouting
 import office.effective.features.workspace.routes.workspaceRouting
 
 fun Application.configureRouting() {
@@ -13,6 +14,7 @@ fun Application.configureRouting() {
         }
         authRoutingFun()
         workspaceRouting()
+        userRouting()
     }
 
 }
