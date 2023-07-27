@@ -1,5 +1,6 @@
 package band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen
 
+import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.store.FreeNegotiationsStoreFactory
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.store.FreeNegotiationsStore
@@ -14,7 +15,7 @@ import org.koin.core.component.KoinComponent
 class FreeNegotiationsComponentImpl(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
-    val onEventInfo: () -> EventInfo,
+    val onBookingInfo: () -> Booking,
     val onMainScreen: () -> Unit
 ) : ComponentContext by componentContext, FreeNegotiationsComponent, KoinComponent {
 
@@ -22,7 +23,11 @@ class FreeNegotiationsComponentImpl(
 
     override fun onIntent(intent: FreeNegotiationsStore.Intent){
         when(intent){
-            is FreeNegotiationsStore.Intent.SetEvent -> freeNegotiationsStore.accept(intent.copy(eventInfo = onEventInfo()))
+            is FreeNegotiationsStore.Intent.SetBooking ->
+                freeNegotiationsStore.accept(intent.copy(bookingInfo = onBookingInfo()))
+            is FreeNegotiationsStore.Intent.OnMainScreen -> {
+                onMainScreen()
+            }
             else -> {}
         }
     }

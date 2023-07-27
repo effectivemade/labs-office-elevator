@@ -48,6 +48,7 @@ kotlin {
 
                 implementation(project(":tabletApp:features:core"))
                 implementation(project(":tabletApp:features:domain"))
+                implementation(project(":tabletApp:features:roomInfo"))
             }
         }
 

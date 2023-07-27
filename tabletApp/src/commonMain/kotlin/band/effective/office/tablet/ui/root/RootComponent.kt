@@ -49,9 +49,9 @@ class RootComponent(componentContext: ComponentContext, private val storeFactory
                     onMainScreen = {
                         navigation.pop()
                     },
-                    onEventInfo = {
+                    onBookingInfo = {
                         (childStack.value.backStack.last().instance as Child.MainChild).component
-                            .bookingRoomComponent.getBooking().eventInfo
+                            .bookingRoomComponent.getBooking()
                     }
                 )
             )
