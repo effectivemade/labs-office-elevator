@@ -20,8 +20,7 @@ internal class ProfileStoreFactory(
 ) : KoinComponent {
 
     private val signInClient: GoogleSignIn by inject<GoogleSignIn>()
-    private val repository: ProfileRepository by inject<ProfileRepository> ()
-    private val getUserByIdUseCase: GetUserByIdUseCase = GetUserByIdUseCase(profileRepository = repository)
+    private val getUserByIdUseCase:GetUserByIdUseCase by inject()
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): ProfileStore =

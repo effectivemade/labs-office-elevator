@@ -19,6 +19,9 @@ internal class ProfileEditStoreFactory(
     private val storeFactory: StoreFactory,
     private  val user: String,
 ) : KoinComponent {
+
+    private val getUserByIdUseCase:GetUserByIdUseCase by inject()
+
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): ProfileEditStore =
         object : ProfileEditStore,
@@ -64,7 +67,7 @@ internal class ProfileEditStoreFactory(
 
         private fun fetchUserInfo() {
             scope.launch {
-                dispatch(Msg.ProfileData(user = GetUserByIdUseCase.execute(user)))
+                dispatch(Msg.ProfileData(user = getUserByIdUseCase.execute(user)))
             }
         }
 
