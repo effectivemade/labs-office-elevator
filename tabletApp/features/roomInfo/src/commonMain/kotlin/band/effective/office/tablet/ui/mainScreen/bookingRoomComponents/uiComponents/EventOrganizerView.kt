@@ -23,8 +23,6 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,7 +43,6 @@ fun EventOrganizerView(
     component: RealEventOrganizerComponent,
     organizers: List<String>
 ) {
-    val message = remember { mutableStateOf("") }
     val expended by component.expanded.collectAsState()
     val selectedItem by component.selectedItem.collectAsState()
     val focusManager = LocalFocusManager.current
@@ -71,8 +68,8 @@ fun EventOrganizerView(
             ) {
                 TextField(
                     modifier = Modifier.fillMaxWidth(0.8f),
-                    value = message.value,
-                    onValueChange = { message.value = it },
+                    value = selectedItem,
+                    onValueChange = { component.onSelectItem(it) },
                     placeholder = {
                         Text(
                             text = MainRes.string.selectbox_organizer_title,
@@ -85,8 +82,8 @@ fun EventOrganizerView(
                         onDone = {
                             defaultKeyboardAction(ImeAction.Done)
                             focusManager.clearFocus()
-                            message.value = if (organizers.contains(message.value)) message.value else ""
-                            component.onSelectItem(message.value)
+                            component.onSelectItem(if (organizers.contains(selectedItem)) selectedItem else "")
+                            component.onExpandedChange()
                         }
                     )
                 )
@@ -113,11 +110,11 @@ fun EventOrganizerView(
                 ) {
                     organizers.forEach { organizer ->
                         if (!organizer.lowercase()
-                                .contains(message.value.lowercase())
+                                .contains(selectedItem.lowercase())
                         ) return@forEach
                         DropdownMenuItem(onClick = {
-                            message.value = organizer
                             component.onSelectItem(organizer)
+                            component.onExpandedChange()
                             focusManager.clearFocus()
                         }) {
                             Text(text = organizer)

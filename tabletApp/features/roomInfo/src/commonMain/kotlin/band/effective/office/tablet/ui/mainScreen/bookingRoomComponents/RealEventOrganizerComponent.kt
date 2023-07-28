@@ -20,9 +20,10 @@ class RealEventOrganizerComponent(
         mutableExpanded.update { !it }
     }
 
+
+
     fun onSelectItem(item: String) {
         mutableSelectedItem.update { item }
-        mutableExpanded.update { false }
         onSelectOrganizer(item)
     }
 }

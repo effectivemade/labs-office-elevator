@@ -4,7 +4,6 @@ import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.domain.useCase.CheckBookingUseCase
 import band.effective.office.tablet.domain.useCase.UpdateUseCase
-import band.effective.office.tablet.ui.selectRoomScreen.store.SelectRoomStore
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -12,10 +11,13 @@ import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.Calendar
+import java.util.GregorianCalendar
 
 class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
 
@@ -88,6 +90,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             val isBusy: Boolean,
             val busyEvent: EventInfo
         ) : Message
+
+        object Reset : Message
     }
 
     private inner class ExecutorImpl() :
@@ -111,7 +115,20 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                 is BookingStore.Intent.OnChangeDate -> changeDate(getState(), intent.changeInDay)
                 is BookingStore.Intent.OnChangeLength -> changeLength(getState(), intent.change)
-                is BookingStore.Intent.OnChangeOrganizer -> dispatch(Message.ChangeOrganizer(intent.newOrganizer))
+                is BookingStore.Intent.OnChangeOrganizer -> {
+                    dispatch(Message.ChangeOrganizer(intent.newOrganizer))
+                    reset()
+                }
+            }
+        }
+
+        var resetTimer: Job? = null
+
+        fun reset() {
+            resetTimer?.cancel()
+            resetTimer = scope.launch {
+                delay(60000)
+                dispatch(Message.Reset)
             }
         }
 
@@ -123,7 +140,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     busyEvent != null -> dispatch(Message.NotCorrectEvent(busyEvent))
                     isCurrentRoom -> {
                         booking()
-                        dispatch(Message.BookingCurrentRoom)
+                        //dispatch(Message.BookingCurrentRoom)
                     }
 
                     else -> dispatch(Message.BookingOtherRoom)
@@ -164,6 +181,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     length = state.length + change
                 )
             )
+            reset()
         }
 
         fun checkBusy(state: BookingStore.State) = scope.launch {
@@ -174,6 +192,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     busyEvent = busyEvent ?: EventInfo.emptyEvent
                 )
             )
+            reset()
         }
     }
 
@@ -190,8 +209,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
     private object ReducerImpl : Reducer<BookingStore.State, Message> {
         override fun BookingStore.State.reduce(msg: Message): BookingStore.State =
             when (msg) {
-                is Message.BookingCurrentRoom -> copy()
-                is Message.BookingOtherRoom -> copy()
+                is Message.BookingCurrentRoom -> reset()
+                is Message.BookingOtherRoom -> reset()
                 is Message.ChangeEvent -> copy(
                     selectDate = msg.selectDate,
                     length = msg.length
@@ -206,7 +225,14 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is Message.UpdateBusy -> copy(isBusy = msg.isBusy, busyEvent = msg.busyEvent)
                 is Message.NotCorrectEvent -> copy(isBusy = true, busyEvent = msg.busyEvent)
                 is Message.OrganizerError -> copy(isOrganizerError = true)
+                is Message.Reset -> reset()
             }
+
+        fun BookingStore.State.reset() = copy(
+            organizer = BookingStore.State.default.organizer,
+            selectDate = GregorianCalendar(),
+            length = BookingStore.State.default.length
+        )
 
     }
 }

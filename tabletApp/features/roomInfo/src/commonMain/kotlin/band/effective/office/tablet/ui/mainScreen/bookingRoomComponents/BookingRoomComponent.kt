@@ -1,5 +1,6 @@
 package band.effective.office.tablet.ui.mainScreen.bookingRoomComponents
 
+import android.util.Log
 import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store.BookingStore
@@ -32,12 +33,17 @@ class BookingRoomComponent(
     @OptIn(ExperimentalCoroutinesApi::class)
     val state = bookingStore.stateFlow
 
+    init {
+        componentContext.componentCoroutineScope().launch{
+            state.collect{onChangeDate(state.value.selectDate.clone() as Calendar)}
+        }
+    }
+
     val dateTimeComponent: RealDateTimeComponent =
         RealDateTimeComponent(
             childContext("dateTime"),
             changeDay = {
                 bookingStore.accept(BookingStore.Intent.OnChangeDate(it))
-                onChangeDate((state.value.selectDate.clone() as Calendar).apply { add(Calendar.DAY_OF_MONTH, it) })
             }
         )
     val eventLengthComponent: RealEventLengthComponent =
@@ -70,6 +76,14 @@ class BookingRoomComponent(
         )
     }
 
+    init {
+        componentContext.componentCoroutineScope().launch {
+            state.collect{
+                val s = it
+                Log.e("cccheck",it.toString())
+            }
+        }
+    }
 
     //TODO(Maksim Mishenko): think about while(true)
     private fun updateSelectTime() {

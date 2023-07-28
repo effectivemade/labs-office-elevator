@@ -114,7 +114,6 @@ class MainStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
                     isData = true,
                     isLoad = false
                 )
-
                 is Message.CloseModal -> copy(showBookingModal = false, showFreeModal = false)
                 is Message.OpenFreeModal -> copy(showFreeModal = true)
                 is Message.FinishFreeRoom -> copy(showFreeModal = false)
