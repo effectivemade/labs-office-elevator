@@ -1,6 +1,6 @@
 package band.effective.office.elevator.ui.authorization.authorization_telegram
 
-import band.effective.office.elevator.domain.models.User.UserData
+import band.effective.office.elevator.domain.models.UserData
 import band.effective.office.elevator.ui.authorization.authorization_telegram.store.AuthorizationTelegramStore
 import band.effective.office.elevator.ui.authorization.authorization_telegram.store.AuthorizationTelegramStoreFactory
 import band.effective.office.elevator.ui.models.validator.Validator

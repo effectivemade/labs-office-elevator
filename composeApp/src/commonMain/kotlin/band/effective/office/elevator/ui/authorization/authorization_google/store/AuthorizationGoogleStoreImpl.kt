@@ -3,7 +3,7 @@ package band.effective.office.elevator.ui.authorization.authorization_google.sto
 import band.effective.office.elevator.data.ApiResponse
 import band.effective.office.elevator.domain.GoogleSignIn
 import band.effective.office.elevator.domain.SignInResultCallback
-import band.effective.office.elevator.domain.models.User.UserData
+import band.effective.office.elevator.domain.models.UserData
 import band.effective.office.elevator.domain.usecase.phone_authorization.GetUserUseCase
 import band.effective.office.elevator.ui.authorization.authorization_google.store.AuthorizationGoogleStore.Intent
 import band.effective.office.elevator.ui.authorization.authorization_google.store.AuthorizationGoogleStore.Label

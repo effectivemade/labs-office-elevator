@@ -1,6 +1,6 @@
 package band.effective.office.elevator.data.repository
 
-import band.effective.office.elevator.domain.models.User.UserData
+import band.effective.office.elevator.domain.models.UserData
 import band.effective.office.elevator.domain.repository.UserProfileRepository
 
 class UserProfileRepositoryImpl : UserProfileRepository {

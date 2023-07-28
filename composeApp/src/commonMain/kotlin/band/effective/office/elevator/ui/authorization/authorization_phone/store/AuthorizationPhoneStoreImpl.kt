@@ -1,6 +1,6 @@
 package band.effective.office.elevator.ui.authorization.authorization_phone.store
 
-import band.effective.office.elevator.domain.models.User.UserData
+import band.effective.office.elevator.domain.models.UserData
 import band.effective.office.elevator.ui.authorization.authorization_phone.store.AuthorizationPhoneStore.*
 import band.effective.office.elevator.ui.models.validator.Validator
 import com.arkivanov.mvikotlin.core.store.Reducer
@@ -84,6 +84,7 @@ internal class AuthorizationPhoneStoreFactory(
 
         private fun checkPhoneNumber(phoneNumber: String) {
             if (validator.checkPhone(phoneNumber)) {
+                userData.phoneNumber = phoneNumber
                 publish(AuthorizationPhoneStore.Label.AuthorizationPhoneSuccess(userData))
                 dispatch(
                     AuthorizationPhoneStoreFactory.Msg.Error(

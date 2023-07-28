@@ -1,6 +1,6 @@
 package band.effective.office.elevator.ui.authorization.authorization_phone
 
-import band.effective.office.elevator.domain.models.User.UserData
+import band.effective.office.elevator.domain.models.UserData
 import band.effective.office.elevator.ui.authorization.authorization_phone.store.AuthorizationPhoneStore
 import band.effective.office.elevator.ui.authorization.authorization_phone.store.AuthorizationPhoneStoreFactory
 import band.effective.office.elevator.ui.models.validator.Validator

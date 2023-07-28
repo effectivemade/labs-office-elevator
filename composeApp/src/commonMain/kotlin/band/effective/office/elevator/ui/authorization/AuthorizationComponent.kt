@@ -1,8 +1,7 @@
 package band.effective.office.elevator.ui.authorization
 
 import band.effective.office.elevator.domain.GoogleSignIn
-import band.effective.office.elevator.domain.models.User.UserData
-import band.effective.office.elevator.domain.repository.UserProfileRepository
+import band.effective.office.elevator.domain.models.UserData
 import band.effective.office.elevator.ui.authorization.authorization_google.AuthorizationGoogleComponent
 import band.effective.office.elevator.ui.authorization.authorization_phone.AuthorizationPhoneComponent
 import band.effective.office.elevator.ui.authorization.authorization_profile.AuthorizationProfileComponent

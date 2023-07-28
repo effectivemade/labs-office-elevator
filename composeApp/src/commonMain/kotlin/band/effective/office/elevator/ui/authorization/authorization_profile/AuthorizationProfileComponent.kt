@@ -1,6 +1,6 @@
 package band.effective.office.elevator.ui.authorization.authorization_profile
 
-import band.effective.office.elevator.domain.models.User.UserData
+import band.effective.office.elevator.domain.models.UserData
 import band.effective.office.elevator.ui.authorization.authorization_profile.store.AuthorizationProfileStore
 import band.effective.office.elevator.ui.authorization.authorization_profile.store.AuthorizationProfileStoreFactory
 import band.effective.office.elevator.ui.models.validator.Validator
