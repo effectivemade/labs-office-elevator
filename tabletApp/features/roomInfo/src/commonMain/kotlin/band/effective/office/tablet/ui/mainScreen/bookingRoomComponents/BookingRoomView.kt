@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.features.roomInfo.MainRes
+import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store.BookingStore
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.Alert
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.DateTimeView
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.EventLengthView
@@ -41,15 +42,16 @@ fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: Booking
             Spacer(modifier = Modifier.height(25.dp))
             DateTimeView(
                 modifier = Modifier.fillMaxWidth().height(100.dp),
-                component = bookingRoomComponent.dateTimeComponent,
-                selectDate = state.selectDate
+                selectDate = state.selectDate,
+                increment = {bookingRoomComponent.sendIntent(BookingStore.Intent.OnChangeDate(1))},
+                decrement = {bookingRoomComponent.sendIntent(BookingStore.Intent.OnChangeDate(-1))}
             )
             Spacer(modifier = Modifier.height(25.dp))
             EventLengthView(
                 modifier = Modifier.fillMaxWidth().height(100.dp),
-                component = bookingRoomComponent.eventLengthComponent,
                 currentLength = state.length,
-                isBusy = state.isBusy
+                increment = {bookingRoomComponent.sendIntent(BookingStore.Intent.OnChangeLength(30))},
+                decrement = {bookingRoomComponent.sendIntent(BookingStore.Intent.OnChangeLength(-15))}
             )
             if (state.isBusy) {
                 Spacer(Modifier.height(10.dp))
@@ -58,8 +60,11 @@ fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: Booking
             Spacer(modifier = Modifier.height(25.dp))
             EventOrganizerView(
                 modifier = Modifier.fillMaxWidth().height(100.dp),
-                component = bookingRoomComponent.eventOrganizerComponent,
-                organizers = state.organizers
+                organizers = state.organizers,
+                expanded = state.isExpandedOrganizersList,
+                selectedItem = state.organizer,
+                onExpandedChange = {bookingRoomComponent.sendIntent(BookingStore.Intent.OnChangeExpanded)},
+                onSelectItem = {bookingRoomComponent.sendIntent(BookingStore.Intent.OnChangeOrganizer(it))}
             )
             if (state.isOrganizerError) {
                 Spacer(Modifier.height(10.dp))
@@ -84,7 +89,7 @@ fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: Booking
                             color = MaterialTheme.colors.onPrimary
                         ),
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
-                    onClick = { bookingRoomComponent.bookingOtherRoom() }
+                    onClick = { bookingRoomComponent.sendIntent(BookingStore.Intent.OnBookingOtherRoom) }
                 ) {
                     Text(text = MainRes.string.see_free_room)
                 }
@@ -92,7 +97,7 @@ fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: Booking
             }
             Button(
                 modifier = Modifier.fillMaxWidth().height(60.dp).clip(RoundedCornerShape(100.dp)).focusable(true),
-                onClick = { bookingRoomComponent.bookingCurrentRoom() }
+                onClick = { bookingRoomComponent.sendIntent(BookingStore.Intent.OnBookingCurrentRoom) }
             ) {
                 Text(text = MainRes.string.booking_button_text.format(roomName = state.roomName))
             }

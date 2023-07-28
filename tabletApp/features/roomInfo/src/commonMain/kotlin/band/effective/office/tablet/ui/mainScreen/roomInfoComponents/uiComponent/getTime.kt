@@ -1,4 +1,4 @@
-package band.effective.office.tablet.ui.mainScreen.roomInfoComponents
+package band.effective.office.tablet.ui.mainScreen.roomInfoComponents.uiComponent
 
 import band.effective.office.tablet.features.roomInfo.MainRes
 import band.effective.office.tablet.utils.getCorrectDeclension

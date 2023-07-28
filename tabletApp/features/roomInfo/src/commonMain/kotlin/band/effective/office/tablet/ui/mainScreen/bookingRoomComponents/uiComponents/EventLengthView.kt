@@ -19,16 +19,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.features.roomInfo.MainRes
-import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.RealEventLengthComponent
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.h8
 
 @Composable
 fun EventLengthView(
     modifier: Modifier = Modifier,
-    component: RealEventLengthComponent,
     currentLength: Int,
-    isBusy: Boolean
+    increment: () -> Unit,
+    decrement: () -> Unit
 ) {
     val space = 50.dp
     Column(modifier = modifier) {
@@ -45,7 +44,7 @@ fun EventLengthView(
         ) {
             Button(
                 modifier = Modifier.fillMaxHeight().weight(1f).clip(RoundedCornerShape(15.dp)),
-                onClick = { component.decrement() },
+                onClick = { decrement() },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = LocalCustomColorsPalette.current.elevationBackground
                 )
@@ -65,7 +64,7 @@ fun EventLengthView(
             Button(
                 modifier = Modifier.fillMaxHeight().weight(1f).clip(RoundedCornerShape(15.dp)),
                 onClick = {
-                    component.increment()
+                    increment()
                 },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = LocalCustomColorsPalette.current.elevationBackground

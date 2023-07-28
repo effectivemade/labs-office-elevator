@@ -1,11 +1,12 @@
 package band.effective.office.tablet.ui.mainScreen.mainScreen
 
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingRoomComponent
+import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainFactory
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
-import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStoreFactory
 import band.effective.office.tablet.ui.mainScreen.mockComponets.MockSettingsComponent
 import band.effective.office.tablet.ui.mainScreen.mockComponets.RealMockSettingsComponent
-import band.effective.office.tablet.ui.selectRoomScreen.RealFreeSelectRoomComponent
+import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.RoomInfoComponent
+import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.store.RoomInfoStore
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponentImpl
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.childContext
@@ -24,12 +25,18 @@ class MainComponent(
         RealMockSettingsComponent(
             componentContext = childContext(key = "mock")
         )
+    val roomInfoComponent: RoomInfoComponent = RoomInfoComponent(
+        componentContext = childContext(key = "roomInfoComponent"),
+        storeFactory = storeFactory,
+        onFreeRoomIntent = { mainStore.accept(MainStore.Intent.OnOpenFreeRoomModal) }
+
+    )
     val bookingRoomComponent: BookingRoomComponent = BookingRoomComponent(
         componentContext = childContext(key = "bookingRoom"),
         onCurrentBookingRoom = { mainStore.accept(MainStore.Intent.OnBookingCurrentRoomRequest) },
         storeFactory = storeFactory,
         onBookingOtherRoom = { OnSelectOtherRoomRequest() },
-        onChangeDate = {mainStore.accept(MainStore.Intent.UpdateDate(it))}
+        onChangeDate = { roomInfoComponent.sendIntent(RoomInfoStore.Intent.OnChangeSelectDate(it)) }
     )
 
     val selectRoomComponent: SelectRoomComponentImpl =
@@ -40,14 +47,8 @@ class MainComponent(
             onCloseRequest = { mainStore.accept(MainStore.Intent.CloseModal) }
         )
 
-    val freeSelectRoomComponent: RealFreeSelectRoomComponent =
-        RealFreeSelectRoomComponent(
-            componentContext = childContext(key = "freeSelectRoom"),
-            onCloseRequest = { closeAllModal() }
-        )
-
     private val mainStore = instanceKeeper.getStore {
-        MainStoreFactory(
+        MainFactory(
             storeFactory = storeFactory
         ).create()
     }
@@ -55,15 +56,15 @@ class MainComponent(
     @OptIn(ExperimentalCoroutinesApi::class)
     val state = mainStore.stateFlow
 
-    fun closeAllModal(){
+    fun closeAllModal() {
         mainStore.accept(MainStore.Intent.CloseModal)
     }
 
-    fun openFreeRoomModal(){
+    fun openFreeRoomModal() {
         mainStore.accept(MainStore.Intent.OnOpenFreeRoomModal)
     }
 
-    fun onFreeRoom(){
+    fun onFreeRoom() {
         mainStore.accept(MainStore.Intent.OnFreeRoomIntent)
     }
 }

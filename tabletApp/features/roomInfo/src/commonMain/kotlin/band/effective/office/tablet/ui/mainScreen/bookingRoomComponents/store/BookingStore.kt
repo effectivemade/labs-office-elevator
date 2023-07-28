@@ -7,11 +7,12 @@ import java.util.GregorianCalendar
 
 interface BookingStore : Store<BookingStore.Intent, BookingStore.State, Nothing> {
     sealed interface Intent {
-        data class OnBookingCurrentRoom(val bookingRoom: () -> Unit) : Intent
+        object OnBookingCurrentRoom : Intent
         object OnBookingOtherRoom : Intent
         data class OnChangeDate(val changeInDay: Int) : Intent
         data class OnChangeLength(val change: Int) : Intent
         data class OnChangeOrganizer(val newOrganizer: String) : Intent
+        object OnChangeExpanded : Intent
     }
 
     data class State(
@@ -22,7 +23,8 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, Nothing>
         val selectDate: Calendar,
         val isBusy: Boolean,
         val busyEvent: EventInfo,
-        val roomName: String
+        val roomName: String,
+        val isExpandedOrganizersList: Boolean
     ) {
         fun isCorrect() = isCorrectOrganizer() && isCorrectLength() && isCorrectDate()
 
@@ -39,7 +41,8 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, Nothing>
                 isBusy = false,
                 busyEvent = EventInfo.emptyEvent,
                 roomName = "Sirius",
-                isOrganizerError = false
+                isOrganizerError = false,
+                isExpandedOrganizersList = false
             )
         }
     }

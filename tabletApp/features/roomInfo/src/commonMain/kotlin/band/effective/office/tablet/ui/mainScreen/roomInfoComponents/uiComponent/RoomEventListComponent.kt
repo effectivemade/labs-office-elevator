@@ -1,4 +1,4 @@
-package band.effective.office.tablet.ui.mainScreen.roomInfoComponents
+package band.effective.office.tablet.ui.mainScreen.roomInfoComponents.uiComponent
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

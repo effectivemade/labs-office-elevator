@@ -18,17 +18,14 @@ fun MainScreen(component: MainComponent) {
         state.isLoad -> {}
         state.isData -> {
             MainScreenView(
-                room = state.roomInfo,
                 showBookingModal = state.showBookingModal,
                 showFreeRoomModal = state.showFreeModal,
                 mockComponent = component.mockSettingsComponent,
                 bookingRoomComponent = component.bookingRoomComponent,
                 selectRoomComponent = component.selectRoomComponent,
+                roomInfoComponent = component.roomInfoComponent,
                 onCloseFreeModalRequest = { component.closeAllModal() },
-                onOpenFreeModalRequest = { component.openFreeRoomModal() },
-                onFreeRoomRequest = { component.onFreeRoom() },
-                timeToNextEvent = state.changeEventTime,
-                isToday = state.selectDate.isToday()
+                onFreeRoomRequest = { component.onFreeRoom() }
             )
         }
     }

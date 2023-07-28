@@ -1,21 +1,17 @@
 package band.effective.office.tablet.ui.mainScreen.bookingRoomComponents
 
-import android.util.Log
 import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store.BookingStore
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store.BookingStoreFactory
 import band.effective.office.tablet.utils.componentCoroutineScope
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.childContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Calendar
-import java.util.GregorianCalendar
 
 class BookingRoomComponent(
     private val componentContext: ComponentContext,
@@ -34,32 +30,9 @@ class BookingRoomComponent(
     val state = bookingStore.stateFlow
 
     init {
-        componentContext.componentCoroutineScope().launch{
-            state.collect{onChangeDate(state.value.selectDate.clone() as Calendar)}
+        componentContext.componentCoroutineScope().launch {
+            state.collect { onChangeDate(state.value.selectDate.clone() as Calendar) }
         }
-    }
-
-    val dateTimeComponent: RealDateTimeComponent =
-        RealDateTimeComponent(
-            childContext("dateTime"),
-            changeDay = {
-                bookingStore.accept(BookingStore.Intent.OnChangeDate(it))
-            }
-        )
-    val eventLengthComponent: RealEventLengthComponent =
-        RealEventLengthComponent(childContext("length"),
-            changeLength = { bookingStore.accept(BookingStore.Intent.OnChangeLength(it)) })
-    val eventOrganizerComponent: RealEventOrganizerComponent =
-        RealEventOrganizerComponent(
-            childContext("organizer"),
-            onSelectOrganizer = { bookingStore.accept(BookingStore.Intent.OnChangeOrganizer(it)) })
-
-    fun bookingCurrentRoom() {
-        bookingStore.accept(BookingStore.Intent.OnBookingCurrentRoom { onCurrentBookingRoom() })
-    }
-
-    fun bookingOtherRoom() {
-        onBookingOtherRoom()
     }
 
     fun getBooking(): Booking {
@@ -76,23 +49,19 @@ class BookingRoomComponent(
         )
     }
 
-    init {
-        componentContext.componentCoroutineScope().launch {
-            state.collect{
-                val s = it
-                Log.e("cccheck",it.toString())
+    fun sendIntent(intent: BookingStore.Intent) {
+        when (intent) {
+            is BookingStore.Intent.OnBookingCurrentRoom -> {
+                onCurrentBookingRoom()
+                bookingStore.accept(intent)
             }
-        }
-    }
 
-    //TODO(Maksim Mishenko): think about while(true)
-    private fun updateSelectTime() {
-        componentCoroutineScope().launch {
-            while (true) {
-                val now = GregorianCalendar()
-                //mutableState.update { it.copy(selectDate = now) }
-                delay((60 - now.get(Calendar.SECOND)) * 1000L)
+            is BookingStore.Intent.OnBookingOtherRoom -> {
+                onBookingOtherRoom
+                bookingStore.accept(intent)
             }
+
+            else -> bookingStore.accept(intent)
         }
     }
 }

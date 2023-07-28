@@ -16,11 +16,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import band.effective.office.tablet.features.roomInfo.MainRes
-import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.RealDateTimeComponent
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.h8
 import band.effective.office.tablet.utils.CalendarStringConverter
@@ -28,7 +25,12 @@ import io.github.skeptick.libres.compose.painterResource
 import java.util.Calendar
 
 @Composable
-fun DateTimeView(modifier: Modifier, component: RealDateTimeComponent, selectDate: Calendar) {
+fun DateTimeView(
+    modifier: Modifier,
+    selectDate: Calendar,
+    increment: () -> Unit,
+    decrement: () -> Unit
+) {
     Column(modifier = modifier) {
         Text(
             text = MainRes.string.select_date_tine_title,
@@ -39,7 +41,7 @@ fun DateTimeView(modifier: Modifier, component: RealDateTimeComponent, selectDat
         Row(modifier = Modifier.fillMaxSize()) {
             Button(
                 modifier = Modifier.fillMaxHeight().weight(1f).clip(RoundedCornerShape(15.dp)),
-                onClick = { component.decrementDay() },
+                onClick = { decrement() },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = LocalCustomColorsPalette.current.elevationBackground
                 )
@@ -72,7 +74,7 @@ fun DateTimeView(modifier: Modifier, component: RealDateTimeComponent, selectDat
             Spacer(modifier = Modifier.width(10.dp))
             Button(
                 modifier = Modifier.fillMaxHeight().weight(1f).clip(RoundedCornerShape(15.dp)),
-                onClick = { component.incrementDay() },
+                onClick = { increment() },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = LocalCustomColorsPalette.current.elevationBackground
                 )

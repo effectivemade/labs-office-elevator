@@ -1,4 +1,4 @@
-package band.effective.office.tablet.ui.mainScreen.roomInfoComponents
+package band.effective.office.tablet.ui.mainScreen.roomInfoComponents.uiComponent
 
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text

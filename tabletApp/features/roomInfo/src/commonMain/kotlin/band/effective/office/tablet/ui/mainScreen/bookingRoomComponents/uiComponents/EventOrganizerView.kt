@@ -21,8 +21,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,7 +29,6 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.features.roomInfo.MainRes
-import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.RealEventOrganizerComponent
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.h8
 import io.github.skeptick.libres.compose.painterResource
@@ -40,11 +37,13 @@ import io.github.skeptick.libres.compose.painterResource
 @Composable
 fun EventOrganizerView(
     modifier: Modifier = Modifier,
-    component: RealEventOrganizerComponent,
-    organizers: List<String>
+    organizers: List<String>,
+    expanded: Boolean,
+    selectedItem: String,
+    onExpandedChange: () -> Unit,
+    onSelectItem: (String) -> Unit,
+
 ) {
-    val expended by component.expanded.collectAsState()
-    val selectedItem by component.selectedItem.collectAsState()
     val focusManager = LocalFocusManager.current
     Column(modifier = modifier) {
         Text(
@@ -54,8 +53,8 @@ fun EventOrganizerView(
         )
         Spacer(modifier = Modifier.height(10.dp))
         ExposedDropdownMenuBox(
-            expanded = expended,
-            onExpandedChange = { component.onExpandedChange() }
+            expanded = expanded,
+            onExpandedChange = { onExpandedChange() }
         ) {
             Row(
                 modifier = Modifier
@@ -69,7 +68,7 @@ fun EventOrganizerView(
                 TextField(
                     modifier = Modifier.fillMaxWidth(0.8f),
                     value = selectedItem,
-                    onValueChange = { component.onSelectItem(it) },
+                    onValueChange = { onSelectItem(it) },
                     placeholder = {
                         Text(
                             text = MainRes.string.selectbox_organizer_title,
@@ -82,8 +81,8 @@ fun EventOrganizerView(
                         onDone = {
                             defaultKeyboardAction(ImeAction.Done)
                             focusManager.clearFocus()
-                            component.onSelectItem(if (organizers.contains(selectedItem)) selectedItem else "")
-                            component.onExpandedChange()
+                            onSelectItem(if (organizers.contains(selectedItem)) selectedItem else "")
+                            onExpandedChange()
                         }
                     )
                 )
@@ -99,7 +98,7 @@ fun EventOrganizerView(
                     .background(
                         color = MaterialTheme.colors.surface
                     ),
-                expanded = expended,
+                expanded = expanded,
                 onDismissRequest = { /*component.onExpandedChange()*/ }
             ) {
                 Column(
@@ -113,8 +112,8 @@ fun EventOrganizerView(
                                 .contains(selectedItem.lowercase())
                         ) return@forEach
                         DropdownMenuItem(onClick = {
-                            component.onSelectItem(organizer)
-                            component.onExpandedChange()
+                            onSelectItem(organizer)
+                            onExpandedChange()
                             focusManager.clearFocus()
                         }) {
                             Text(text = organizer)
