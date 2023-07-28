@@ -36,7 +36,7 @@ class RootComponent internal constructor(
 
     private val stack = childStack(
         source = navigation,
-        initialStack = { listOf(Config.Content) },
+        initialStack = { listOf(Config.Undefined) },
         handleBackButton = true,
         childFactory = ::child
     )
