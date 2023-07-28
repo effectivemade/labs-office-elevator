@@ -86,12 +86,13 @@ class AuthorizationProfileStoreFactory(
                     )
                 }
 
-                is AuthorizationProfileStore.Intent.NameChanged -> dispatch(
-                    AuthorizationProfileStoreFactory.Msg.NameData(
-                        name = intent.name,
-                        isNameError = validator.checkName(intent.name)
+                is AuthorizationProfileStore.Intent.NameChanged ->
+                    dispatch(
+                        AuthorizationProfileStoreFactory.Msg.NameData(
+                            name = intent.name,
+                            isNameError = validator.checkName(intent.name)
+                        )
                     )
-                )
             }
 
         override fun executeAction(
@@ -120,6 +121,8 @@ class AuthorizationProfileStoreFactory(
 
         private fun checkUserdata(name: String, post: String) {
             if (!validator.checkName(name) && !validator.checkPost(post)) {
+                userData.post = post
+                userData.name = name
                 publish(AuthorizationProfileStore.Label.AuthorizationProfileSuccess(userData))
             } else {
                 publish(AuthorizationProfileStore.Label.AuthorizationProfileFailure)
