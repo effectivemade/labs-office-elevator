@@ -1,5 +1,7 @@
 package band.effective.office.tablet.ui.mainScreen.bookingRoomComponents
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
@@ -29,6 +31,7 @@ import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiCompon
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.EventLengthView
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.EventOrganizerView
 
+@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable
 fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: BookingRoomComponent) {
     val state by bookingRoomComponent.state.collectAsState()
@@ -42,7 +45,7 @@ fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: Booking
             Spacer(modifier = Modifier.height(25.dp))
             DateTimeView(
                 modifier = Modifier.fillMaxWidth().height(100.dp),
-                selectDate = state.selectDate,
+                selectDate = if (state.isSelectCurrentTime) state.currentDate else state.selectDate,
                 increment = {bookingRoomComponent.sendIntent(BookingStore.Intent.OnChangeDate(1))},
                 decrement = {bookingRoomComponent.sendIntent(BookingStore.Intent.OnChangeDate(-1))}
             )

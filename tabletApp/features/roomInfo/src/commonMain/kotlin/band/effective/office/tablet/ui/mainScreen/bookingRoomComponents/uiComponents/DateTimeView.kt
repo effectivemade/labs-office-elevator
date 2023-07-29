@@ -1,5 +1,7 @@
 package band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,6 +26,7 @@ import band.effective.office.tablet.utils.CalendarStringConverter
 import io.github.skeptick.libres.compose.painterResource
 import java.util.Calendar
 
+@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable
 fun DateTimeView(
     modifier: Modifier,
@@ -61,7 +64,7 @@ fun DateTimeView(
                 )
             ) {
                 Text(
-                    text = selectDate.dateTime(),
+                    text =  selectDate.dateTime(),
                     style = MaterialTheme.typography.h6
                 )
                 Spacer(Modifier.width(5.dp))

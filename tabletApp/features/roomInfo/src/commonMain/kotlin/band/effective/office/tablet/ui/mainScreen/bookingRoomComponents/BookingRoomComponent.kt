@@ -12,6 +12,7 @@ import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import java.util.Calendar
+import java.util.GregorianCalendar
 
 class BookingRoomComponent(
     private val componentContext: ComponentContext,
@@ -36,13 +37,14 @@ class BookingRoomComponent(
     }
 
     fun getBooking(): Booking {
-        val finishDate = state.value.selectDate.clone() as Calendar
+        val startDate = if (state.value.isSelectCurrentTime) GregorianCalendar() else state.value.selectDate.clone() as Calendar
+        val finishDate = startDate.clone() as Calendar
         finishDate.add(Calendar.MINUTE, state.value.length)
 
         return Booking(
-            state.value.roomName,
-            EventInfo(
-                startTime = state.value.selectDate,
+            nameRoom = state.value.roomName,
+            eventInfo = EventInfo(
+                startTime = startDate,
                 finishTime = finishDate,
                 organizer = state.value.organizer
             )

@@ -1,5 +1,6 @@
 package band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store
 
+import band.effective.office.tablet.domain.CurrentEventController
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.domain.useCase.CheckBookingUseCase
@@ -18,11 +19,13 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.Calendar
 import java.util.GregorianCalendar
+import kotlin.math.absoluteValue
 
 class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
 
     val checkBookingUseCase: CheckBookingUseCase by inject()
     val updateUseCase: UpdateUseCase by inject()
+    val currentEventController: CurrentEventController by inject()
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): BookingStore =
@@ -55,6 +58,9 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                                     }
                                 })
                         }
+                        launch(Dispatchers.Main) {
+                            currentEventController.timeToUpdate.collect{dispatch(Action.UpdateSelectTime)}
+                        }
                     }
                 },
                 executorFactory = ::ExecutorImpl,
@@ -70,12 +76,14 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         ) : Action
 
         data class UpdateEvents(val newData: RoomInfo) : Action
+        object UpdateSelectTime: Action
     }
 
     private sealed interface Message {
         data class ChangeEvent(
             val selectDate: Calendar,
-            val length: Int
+            val length: Int,
+            val isSelectCurrentTime: Boolean
         ) : Message
 
         data class NotCorrectEvent(val busyEvent: EventInfo) : Message
@@ -93,6 +101,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
         object Reset : Message
         object OnChangeExpanded : Message
+        object UpdateTime: Message
     }
 
     private inner class ExecutorImpl() :
@@ -155,20 +164,24 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     dispatch(
                         Message.ChangeEvent(
                             selectDate = defaultEvent.startTime,
-                            length = BookingStore.State.default.length
+                            length = BookingStore.State.default.length,
+                            isSelectCurrentTime = BookingStore.State.default.isSelectCurrentTime
                         )
                     )
                 }
 
                 is Action.UpdateEvents -> checkBusy(getState())
+                Action.UpdateSelectTime -> dispatch(Message.UpdateTime)
             }
         }
 
         fun changeDate(state: BookingStore.State, changeDay: Int) = scope.launch() {
+            val newDate = (state.selectDate.clone() as Calendar).apply { add(Calendar.DAY_OF_MONTH, changeDay) }
             dispatch(
                 Message.ChangeEvent(
-                    selectDate = (state.selectDate.clone() as Calendar).apply { add(Calendar.DAY_OF_MONTH, changeDay) },
-                    length = state.length
+                    selectDate = newDate,
+                    length = state.length,
+                    isSelectCurrentTime = newDate.isNow()
                 )
             )
             reset()
@@ -179,7 +192,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             dispatch(
                 Message.ChangeEvent(
                     selectDate = state.selectDate,
-                    length = state.length + change
+                    length = state.length + change,
+                    isSelectCurrentTime = state.isSelectCurrentTime
                 )
             )
             reset()
@@ -214,12 +228,13 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is Message.BookingOtherRoom -> reset()
                 is Message.ChangeEvent -> copy(
                     selectDate = msg.selectDate,
-                    length = msg.length
+                    length = msg.length,
+                    isSelectCurrentTime = msg.isSelectCurrentTime
                 )
 
                 is Message.ChangeOrganizer -> copy(
                     organizer = msg.newOrganizer,
-                    isOrganizerError = false
+                    isOrganizerError = false,
                 )
 
                 is Message.UpdateOrganizers -> copy(organizers = msg.organizers)
@@ -228,13 +243,20 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is Message.OrganizerError -> copy(isOrganizerError = true)
                 is Message.Reset -> reset()
                 is Message.OnChangeExpanded -> copy(isExpandedOrganizersList = !isExpandedOrganizersList)
+                is Message.UpdateTime -> copy(currentDate = GregorianCalendar())
             }
 
         fun BookingStore.State.reset() = copy(
             organizer = BookingStore.State.default.organizer,
             selectDate = GregorianCalendar(),
-            length = BookingStore.State.default.length
+            length = BookingStore.State.default.length,
+            isSelectCurrentTime = BookingStore.State.default.isSelectCurrentTime
         )
 
     }
+}
+
+private fun Calendar.isNow(): Boolean {
+    val difference = (this.time.time - GregorianCalendar().time.time).absoluteValue
+    return difference <= 60000
 }

@@ -21,10 +21,12 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, Nothing>
         val isOrganizerError: Boolean,
         val organizers: List<String>,
         val selectDate: Calendar,
+        val currentDate: Calendar,
         val isBusy: Boolean,
         val busyEvent: EventInfo,
         val roomName: String,
-        val isExpandedOrganizersList: Boolean
+        val isExpandedOrganizersList: Boolean,
+        val isSelectCurrentTime: Boolean
     ) {
         fun isCorrect() = isCorrectOrganizer() && isCorrectLength() && isCorrectDate()
 
@@ -38,11 +40,13 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, Nothing>
                 organizer = "",
                 organizers = listOf(),
                 selectDate = GregorianCalendar(),
+                currentDate = GregorianCalendar(),
                 isBusy = false,
                 busyEvent = EventInfo.emptyEvent,
                 roomName = "Sirius",
                 isOrganizerError = false,
-                isExpandedOrganizersList = false
+                isExpandedOrganizersList = false,
+                isSelectCurrentTime = true
             )
         }
     }
