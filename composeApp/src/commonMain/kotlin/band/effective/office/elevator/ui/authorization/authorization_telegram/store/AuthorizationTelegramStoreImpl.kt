@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.authorization.authorization_telegram.store
 
+import band.effective.office.elevator.domain.entity.AuthorizationEntity
 import band.effective.office.elevator.domain.models.UserData
 import band.effective.office.elevator.domain.usecase.PushUserDataUseCase
 import band.effective.office.elevator.ui.models.validator.Validator
@@ -18,7 +19,7 @@ class AuthorizationTelegramStoreFactory(
 ) :
     KoinComponent {
 
-    private val pushUserDataUseCase: PushUserDataUseCase by inject()
+    private val authorizationEntity: AuthorizationEntity by inject()
 
     fun create(): AuthorizationTelegramStore =
         object : AuthorizationTelegramStore,
@@ -78,7 +79,7 @@ class AuthorizationTelegramStoreFactory(
             if (validator.checkTelegramNick(telegramNick)) {
                 userData.telegramNick = telegramNick
                 scope.launch {
-                    val result = pushUserDataUseCase.execute(userData)
+                    val result = authorizationEntity.push(userData)
                     if (result)
                         publish(AuthorizationTelegramStore.Label.AuthorizationTelegramSuccess)
                     else

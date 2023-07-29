@@ -29,7 +29,6 @@ class AuthorizationComponent(
 
     private val validator: Validator = Validator()
     private val navigation = StackNavigation<AuthorizationComponent.Config>()
-    private val signInClient: GoogleSignIn by inject()
 
     private val stack = childStack(
         source = navigation,
@@ -49,7 +48,6 @@ class AuthorizationComponent(
                 AuthorizationGoogleComponent(
                     componentContext,
                     storeFactory,
-                    signInClient,
                     ::googleAuthOutput
                 )
             )
