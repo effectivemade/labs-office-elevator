@@ -48,7 +48,7 @@ actual fun pickTelegram(telegramNick: String) {
 
 //    if (intent.resolveActivity(AndroidApp.INSTANCE.applicationContext.packageManager) != null) {
         startActivity(AndroidApp.INSTANCE.applicationContext, intent, Bundle())
-    } catch (e: Exception){
+    } catch (e: Exception) {
         showToast("Telegram app is not installed")
     }
 //    }
@@ -59,4 +59,35 @@ actual fun pickTelegram(telegramNick: String) {
 //        flags = Intent.FLAG_ACTIVITY_NEW_TASK
 //    }
 //    startActivity(AndroidApp.INSTANCE.applicationContext, intent, Bundle())
+}
+
+actual fun pickSBP(phoneNumber: String) {
+//    val packageName = "ru.sberbankmobile"
+//
+//    try {
+//        val intent = AndroidApp.INSTANCE.applicationContext.packageManager.getLaunchIntentForPackage(packageName)
+//        if (intent != null) {
+//            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//            AndroidApp.INSTANCE.applicationContext.startActivity(intent)
+//        } else {
+//            if (intent != null) {
+//                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//                val playStoreIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName"))
+//                AndroidApp.INSTANCE.applicationContext.startActivity(playStoreIntent)
+//            }
+//        }
+//    } catch (e: ActivityNotFoundException) {
+//        val playStoreIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName"))
+//        AndroidApp.INSTANCE.applicationContext.startActivity(playStoreIntent)
+//    }
+
+    val url =
+        "https://web4-new.online.sberbank.ru/payments/fps"
+    val intent = Intent(Intent.ACTION_VIEW).apply {
+        data = Uri.parse(url)
+//        `package` = "ru.sberbankmobile"
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+    }
+    AndroidApp.INSTANCE.applicationContext.startActivity(intent)
+
 }

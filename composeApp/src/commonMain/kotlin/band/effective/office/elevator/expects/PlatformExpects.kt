@@ -7,3 +7,5 @@ expect fun generateVibration(milliseconds: Long)
 expect fun makeCall(phoneNumber: String)
 
 expect fun pickTelegram(telegramNick: String)
+
+expect fun pickSBP(phoneNumber: String)

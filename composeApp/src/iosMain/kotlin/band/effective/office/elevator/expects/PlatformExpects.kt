@@ -30,3 +30,7 @@ actual fun pickTelegram(telegramNick: String) {
     val application = UIApplication.sharedApplication
     application.openURL(url)
 }
+
+actual fun pickSBP(phoneNumber: String){
+
+}

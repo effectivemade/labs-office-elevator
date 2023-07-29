@@ -1,6 +1,7 @@
 package band.effective.office.elevator.ui.employee.aboutEmployee.store
 
 import band.effective.office.elevator.expects.makeCall
+import band.effective.office.elevator.expects.pickSBP
 import band.effective.office.elevator.expects.pickTelegram
 import band.effective.office.elevator.ui.employee.aboutEmployee.store.AboutEmployeeStore.*
 import band.effective.office.elevator.ui.models.ReservedSeat
@@ -59,7 +60,7 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory) : KoinCo
                 Intent.BackClicked -> TODO()
                 Intent.TelegramClicked -> pickTelegram(getState().user.telegram!!)
                 Intent.TelephoneClicked -> makeCall(getState().user.phoneNumber!!)
-                Intent.TransferMoneyClicked -> TODO()
+                Intent.TransferMoneyClicked -> pickSBP(getState().user.phoneNumber!!)
             }
         }
 
