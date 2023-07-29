@@ -92,7 +92,7 @@ class WorkApi : Api {
                 name = "Sirius",
                 capacity = 4,
                 isHaveTv = false,
-                electricSocketCount = 2,
+                socketCount = 2,
                 eventList = eventsList(),
                 currentEvent = currentEvent()
             )

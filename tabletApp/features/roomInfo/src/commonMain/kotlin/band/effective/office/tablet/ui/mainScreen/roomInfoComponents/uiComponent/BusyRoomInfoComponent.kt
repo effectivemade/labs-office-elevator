@@ -1,4 +1,4 @@
-package band.effective.office.tablet.ui.mainScreen.roomInfoComponents
+package band.effective.office.tablet.ui.mainScreen.roomInfoComponents.uiComponent
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -26,8 +26,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.features.roomInfo.MainRes
-import band.effective.office.tablet.ui.selectRoomScreen.FreeSelectRoomView
-import band.effective.office.tablet.ui.selectRoomScreen.RealFreeSelectRoomComponent
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.roomInfoColor
 import band.effective.office.tablet.ui.theme.textButton
@@ -42,7 +40,8 @@ fun BusyRoomInfoComponent(
     isHaveTv: Boolean,
     electricSocketCount: Int,
     event: EventInfo?,
-    onButtonClick: () -> Unit
+    onButtonClick: () -> Unit,
+    timeToFinish: Int
 ) {
     val backgroundColor = LocalCustomColorsPalette.current.busyStatus
 
@@ -58,13 +57,20 @@ fun BusyRoomInfoComponent(
             capacity = capacity,
             isHaveTv = isHaveTv,
             electricSocketCount = electricSocketCount,
-            roomOccupancy = MainRes.string.room_occupancy.format(
-                startTime = event?.startTime?.time() ?: "",
-                finishTime = event?.finishTime?.time() ?: "",
-                organizer = event?.organizer ?: ""
-            ),
             backgroundColor = backgroundColor
-        )
+        ){
+            Text(
+                text = MainRes.string.room_occupancy.format(
+                    finishTime = event?.finishTime?.time() ?: "",
+                    organizer = event?.organizer ?: ""
+                ),
+                style = MaterialTheme.typography.h5
+            )
+            Text(
+                text = "${MainRes.string.busy_duration_string} ${timeToFinish.getDuration()}",
+                style = MaterialTheme.typography.h5
+            )
+        }
         Box(
             modifier = modifier.fillMaxWidth(),
             contentAlignment = Alignment.TopEnd

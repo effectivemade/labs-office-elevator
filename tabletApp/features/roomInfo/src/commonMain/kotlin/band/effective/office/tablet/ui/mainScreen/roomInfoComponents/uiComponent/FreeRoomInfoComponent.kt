@@ -1,12 +1,11 @@
-package band.effective.office.tablet.ui.mainScreen.roomInfoComponents
+package band.effective.office.tablet.ui.mainScreen.roomInfoComponents.uiComponent
 
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.features.roomInfo.MainRes
-import band.effective.office.tablet.ui.theme.CustomColorsPalette
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.utils.CalendarStringConverter
 import java.util.Calendar
@@ -18,7 +17,8 @@ fun FreeRoomInfoComponent(
     capacity: Int,
     isHaveTv: Boolean,
     electricSocketCount: Int,
-    nextEvent: EventInfo?
+    nextEvent: EventInfo?,
+    timeToNextEvent: Int
 ) {
     CommonRoomInfoComponent(
         modifier = modifier,
@@ -26,11 +26,18 @@ fun FreeRoomInfoComponent(
         capacity = capacity,
         isHaveTv = isHaveTv,
         electricSocketCount = electricSocketCount,
-        roomOccupancy = MainRes.string.free_room_occupancy.format(
-            time = nextEvent?.startTime?.time() ?: ""
-        ),
         backgroundColor = LocalCustomColorsPalette.current.freeStatus
-    )
+    ) {
+        Text(
+            text = MainRes.string.free_room_occupancy.format(
+                time = nextEvent?.startTime?.time() ?: ""
+            ),
+            style = MaterialTheme.typography.h5
+        )
+        Text(
+            text = "${MainRes.string.free_duration_string} ${timeToNextEvent.getDuration()}",
+            style = MaterialTheme.typography.h5
+        )
+    }
 }
-
 private fun Calendar.time() = CalendarStringConverter.calendarToString(this, "HH:mm")

@@ -5,6 +5,10 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
+import band.effective.office.tablet.utils.oneDay
+import java.util.Calendar
+import java.util.GregorianCalendar
 
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable
@@ -15,16 +19,17 @@ fun MainScreen(component: MainComponent) {
         state.isLoad -> {}
         state.isData -> {
             MainScreenView(
-                room = state.roomInfo,
                 showBookingModal = state.showBookingModal,
                 showFreeRoomModal = state.showFreeModal,
                 mockComponent = component.mockSettingsComponent,
                 bookingRoomComponent = component.bookingRoomComponent,
                 selectRoomComponent = component.selectRoomComponent,
-                onCloseFreeModalRequest = { component.closeAllModal() },
-                onOpenFreeModalRequest = { component.openFreeRoomModal() },
-                onFreeRoomRequest = { component.onFreeRoom() }
+                roomInfoComponent = component.roomInfoComponent,
+                onCloseFreeModalRequest = { component.sendIntent(MainStore.Intent.CloseModal) },
+                onFreeRoomRequest = { component.sendIntent(MainStore.Intent.OnFreeRoomIntent) }
             )
         }
     }
 }
+
+private fun Calendar.isToday(): Boolean = oneDay(GregorianCalendar())

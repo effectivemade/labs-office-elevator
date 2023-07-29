@@ -7,6 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 /**Use case for get info about room*/
 class RoomInfoUseCase(private val repository: RoomRepository) {
     suspend operator fun invoke() = repository.getRoomInfo()
+
     /**Subscribe on changes information
      * @param scope scope for collect new information
      * @param handler handler for new information*/

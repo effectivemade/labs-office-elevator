@@ -1,7 +1,7 @@
 package band.effective.office.tablet.di
 
 import band.effective.office.tablet.domain.CurrentEventController
-import band.effective.office.tablet.domain.CurrentEventControllerServerImpl
+import band.effective.office.tablet.domain.CurrentEventControllerImpl
 import band.effective.office.tablet.domain.useCase.BookingUseCase
 import band.effective.office.tablet.domain.useCase.OrganizersInfoUseCase
 import band.effective.office.tablet.domain.useCase.RoomInfoUseCase
@@ -24,5 +24,5 @@ val domainModule = module {
     single<RoomInfoUseCase> { RoomInfoUseCase(get()) }
     single<OrganizersInfoUseCase> { OrganizersInfoUseCase(get()) }
     single<BookingUseCase> { BookingUseCase(get()) }
-    single<CurrentEventController> { CurrentEventControllerServerImpl(get(), get()) }
+    single<CurrentEventController> { CurrentEventControllerImpl(get(), get()) }
 }
