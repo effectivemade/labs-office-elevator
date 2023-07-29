@@ -27,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -190,7 +191,7 @@ private fun FieldsItemStyle(item: FieldsData, onEditProfile: (id: String) -> Uni
         )
         Spacer(modifier = Modifier.weight(.1f))
         Text(
-            item.value,
+            item.value.value,
             style = MaterialTheme.typography.subtitle1,
             color = Color.Black
         )
@@ -216,7 +217,7 @@ private fun prepareFieldsData(telegram: String, phoneNumber: String) : List<Fiel
         FieldsData(
             icon = MainRes.images.icon_call,
             title = MainRes.strings.phone_number,
-            value = phoneNumber,
+            value = mutableStateOf(phoneNumber),
         )
     )
 
@@ -224,7 +225,7 @@ private fun prepareFieldsData(telegram: String, phoneNumber: String) : List<Fiel
         FieldsData(
             icon = MainRes.images.icon_telegram,
             title = MainRes.strings.telegram,
-            value = telegram,
+            value = mutableStateOf(telegram),
         )
     )
     return fieldsList

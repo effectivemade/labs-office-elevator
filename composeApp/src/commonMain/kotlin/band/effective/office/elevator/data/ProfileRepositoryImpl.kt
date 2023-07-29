@@ -4,7 +4,9 @@ package band.effective.office.elevator.data
 import band.effective.office.elevator.domain.ProfileRepository
 import band.effective.office.elevator.domain.models.User
 
+
 class ProfileRepositoryImpl : ProfileRepository {
+
     private val mutableListUser = mutableListOf(
         User(
             id = "1", imageUrl = "pry.jpg", userName = "Ivanov Ivan", post = "Android-developer",
@@ -24,7 +26,6 @@ class ProfileRepositoryImpl : ProfileRepository {
         val index = mutableListUser.indices.find { mutableListUser[it].id == user.id }
         mutableListUser[index!!] = user
     }
-
 
     override suspend fun getUser(id: String): User {
         return mutableListUser.find{it.id == id}?: mutableListUser[0]

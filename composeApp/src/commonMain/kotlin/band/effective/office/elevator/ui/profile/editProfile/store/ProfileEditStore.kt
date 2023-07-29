@@ -6,7 +6,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 interface ProfileEditStore : Store<ProfileEditStore.Intent, User, ProfileEditStore.Label>{
     sealed interface Intent {
         object BackInProfileClicked : Intent
-        object SaveChangeClicked : Intent
+        data class SaveChangeClicked (val userName:String, val telegram:String, val post:String, val phoneNumber:String) : Intent
     }
 
     sealed interface Label {

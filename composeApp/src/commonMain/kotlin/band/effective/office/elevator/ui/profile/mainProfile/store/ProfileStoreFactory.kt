@@ -72,7 +72,7 @@ internal class ProfileStoreFactory(
     private object ReducerImpl : Reducer<User, Msg> {
         override fun User.reduce(message: Msg): User =
             when (message) {
-                is Msg.ProfileData -> User(
+                is Msg.ProfileData -> copy(
                     imageUrl = message.user.imageUrl,
                     userName = message.user.userName,
                     telegram = message.user.telegram,

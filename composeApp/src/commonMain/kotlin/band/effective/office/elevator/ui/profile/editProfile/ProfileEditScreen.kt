@@ -25,8 +25,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,8 +48,8 @@ fun ProfileEditScreen(component: ProfileEditComponent){
     LaunchedEffect(component){
         component.label.collect{label->
             when(label){
-                ProfileEditStore.Label.ReturnedInProfile ->component.onOutput(ProfileEditComponent.Output.NavigationBack)
-                else-> {}
+                is ProfileEditStore.Label.ReturnedInProfile ->component.onOutput(ProfileEditComponent.Output.NavigationBack)
+                is ProfileEditStore.Label.SavedChange -> component.onOutput(ProfileEditComponent.Output.NavigationBack)
             }
         }
     }
@@ -60,7 +58,8 @@ fun ProfileEditScreen(component: ProfileEditComponent){
         post = user.post,
         telegram = user.telegram,
         phoneNumber = user.phoneNumber,
-        onReturnToProfile = { component.onEvent(ProfileEditStore.Intent.BackInProfileClicked) }
+        onReturnToProfile = { component.onEvent(ProfileEditStore.Intent.BackInProfileClicked) },
+        onSaveChange = { userName,post, phoneNumber,telegram -> component.onEvent(ProfileEditStore.Intent.SaveChangeClicked(userName = userName, post = post, telegram = telegram, phoneNumber = phoneNumber))}
     )
 }
 
@@ -70,7 +69,8 @@ private fun ProfileEditScreenContent(
     post: String,
     telegram: String,
     phoneNumber: String,
-    onReturnToProfile: () -> Unit
+    onReturnToProfile: () -> Unit,
+    onSaveChange: (userName:String, post:String,phoneNumber:String,telegram:String) -> Unit
 ) {
     val fieldsList =  prepareFieldsData(userName,post,telegram,phoneNumber)
     Column (
@@ -86,7 +86,12 @@ private fun ProfileEditScreenContent(
         }
         Spacer(modifier = Modifier.weight(.1f))
         EffectiveButton(
-            onClick = {},
+            onClick = {onSaveChange(
+                fieldsList[0].value.value,
+                fieldsList[1].value.value,
+                fieldsList[2].value.value,
+                fieldsList[3].value.value
+            )},
             buttonText = stringResource(MainRes.strings.save),
             modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
         )
@@ -95,7 +100,6 @@ private fun ProfileEditScreenContent(
 
 @Composable
 private fun FieldsItemStyle(item:FieldsData){
-    var itemText by remember { mutableStateOf(item.value) }
     Column(
         modifier = Modifier.padding(top = 16.dp).fillMaxWidth()
     ) {
@@ -106,9 +110,9 @@ private fun FieldsItemStyle(item:FieldsData){
                 color = Color.Black
             )
         OutlinedTextField(
-            value = itemText,
+            value = item.value.value,
             modifier = Modifier.fillMaxWidth(),
-            onValueChange = {itemText = it},
+            onValueChange = {item.value.value = it},
             shape = RoundedCornerShape(12.dp),
             singleLine = true,
             textStyle = TextStyle(fontSize = 16.sp),
@@ -126,7 +130,7 @@ private fun FieldsItemStyle(item:FieldsData){
                 }
                           },
             trailingIcon = {
-                IconButton(onClick = {}){
+                IconButton(onClick = {item.value.value = ""}){
                     Icon(
                         painter = painterResource(MainRes.images.clear_icon),
                         contentDescription = null,
@@ -149,28 +153,28 @@ private fun prepareFieldsData(username: String, post: String, telegram: String, 
         FieldsData(
             icon = MainRes.images.person_ic,
             title = MainRes.strings.last_name_and_first_name,
-            value = username,
+            value = mutableStateOf(username) ,
         )
     )
     fieldsList.add(
         FieldsData(
             icon = MainRes.images.symbols_work,
             title = MainRes.strings.post,
-            value = post,
+            value = mutableStateOf(post),
         )
     )
     fieldsList.add(
         FieldsData(
             icon = MainRes.images.mask_number,
             title = MainRes.strings.phone_number,
-            value = phoneNumber,
+            value = mutableStateOf(phoneNumber),
         )
     )
     fieldsList.add(
         FieldsData(
             icon = MainRes.images.mask_commercial_at,
             title = MainRes.strings.telegram,
-            value = telegram,
+            value = mutableStateOf(telegram),
         )
     )
     return fieldsList

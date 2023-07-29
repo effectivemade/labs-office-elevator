@@ -39,6 +39,6 @@ class ProfileEditComponent (
     }
 
         sealed interface Output {
-                object NavigationBack:Output
+            object NavigationBack:Output
         }
 }

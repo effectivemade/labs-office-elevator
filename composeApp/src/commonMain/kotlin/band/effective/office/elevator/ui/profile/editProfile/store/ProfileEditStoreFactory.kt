@@ -1,9 +1,9 @@
 package band.effective.office.elevator.ui.profile.editProfile.store
 
 
-import band.effective.office.elevator.domain.ProfileRepository
 import band.effective.office.elevator.domain.models.User
 import band.effective.office.elevator.domain.usecase.GetUserByIdUseCase
+import band.effective.office.elevator.domain.usecase.UpdateUserUseCase
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import band.effective.office.elevator.ui.profile.editProfile.store.ProfileEditStore.*
@@ -21,6 +21,7 @@ internal class ProfileEditStoreFactory(
 ) : KoinComponent {
 
     private val getUserByIdUseCase:GetUserByIdUseCase by inject()
+    private val updateUserUseCase:UpdateUserUseCase by inject()
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): ProfileEditStore =
@@ -53,10 +54,15 @@ internal class ProfileEditStoreFactory(
         ) {
             when (intent) {
                 Intent.BackInProfileClicked -> doReturnProfile()
-                Intent.SaveChangeClicked -> doSaveChange()
+                is Intent.SaveChangeClicked -> doSaveChange(getState(),intent)
             }
         }
-        private fun doSaveChange() {
+        private fun doSaveChange(user: User, intent: Intent.SaveChangeClicked) {
+            scope.launch {
+                val uptUser = User(id = user.id, imageUrl = user.imageUrl, userName = intent.userName, post = intent.post, phoneNumber = intent.phoneNumber, telegram = intent.telegram,email = user.email)
+                dispatch(Msg.ProfileData(user = uptUser))
+                updateUserUseCase.execute(uptUser)
+            }
             publish(Label.SavedChange)
         }
         override fun executeAction(action: Action, getState: () -> User) {
@@ -79,15 +85,14 @@ internal class ProfileEditStoreFactory(
     private object ReducerImpl : Reducer<User, Msg> {
         override fun User.reduce(message: Msg): User =
             when (message) {
-                is Msg.ProfileData -> User(
-                    id = message.user.id,
+                is Msg.ProfileData ->
+                    copy(id = message.user.id,
                     userName = message.user.userName,
                     telegram = message.user.telegram,
                     post = message.user.post,
                     phoneNumber = message.user.phoneNumber,
                     imageUrl = message.user.imageUrl,
-                    email = message.user.email
-                )
+                    email = message.user.email)
             }
     }
 }
