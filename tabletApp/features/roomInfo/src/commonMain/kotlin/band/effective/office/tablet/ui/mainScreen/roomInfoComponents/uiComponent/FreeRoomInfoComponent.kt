@@ -35,7 +35,7 @@ fun FreeRoomInfoComponent(
             style = MaterialTheme.typography.h5
         )
         Text(
-            text = "${MainRes.string.free_duration_string} ${timeToNextEvent.getTime()}",
+            text = "${MainRes.string.free_duration_string} ${timeToNextEvent.getDuration()}",
             style = MaterialTheme.typography.h5
         )
     }

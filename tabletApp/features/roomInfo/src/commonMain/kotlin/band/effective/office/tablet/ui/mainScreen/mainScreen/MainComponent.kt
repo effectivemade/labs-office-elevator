@@ -56,15 +56,7 @@ class MainComponent(
     @OptIn(ExperimentalCoroutinesApi::class)
     val state = mainStore.stateFlow
 
-    fun closeAllModal() {
-        mainStore.accept(MainStore.Intent.CloseModal)
-    }
-
-    fun openFreeRoomModal() {
-        mainStore.accept(MainStore.Intent.OnOpenFreeRoomModal)
-    }
-
-    fun onFreeRoom() {
-        mainStore.accept(MainStore.Intent.OnFreeRoomIntent)
+    fun sendIntent(intent: MainStore.Intent){
+        mainStore.accept(intent)
     }
 }

@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
 import band.effective.office.tablet.utils.oneDay
 import java.util.Calendar
 import java.util.GregorianCalendar
@@ -24,8 +25,8 @@ fun MainScreen(component: MainComponent) {
                 bookingRoomComponent = component.bookingRoomComponent,
                 selectRoomComponent = component.selectRoomComponent,
                 roomInfoComponent = component.roomInfoComponent,
-                onCloseFreeModalRequest = { component.closeAllModal() },
-                onFreeRoomRequest = { component.onFreeRoom() }
+                onCloseFreeModalRequest = { component.sendIntent(MainStore.Intent.CloseModal) },
+                onFreeRoomRequest = { component.sendIntent(MainStore.Intent.OnFreeRoomIntent) }
             )
         }
     }

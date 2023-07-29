@@ -99,7 +99,7 @@ fun EventOrganizerView(
                         color = MaterialTheme.colors.surface
                     ),
                 expanded = expanded,
-                onDismissRequest = { /*component.onExpandedChange()*/ }
+                onDismissRequest = {}
             ) {
                 Column(
                     modifier = Modifier.background(
@@ -125,5 +125,3 @@ fun EventOrganizerView(
         }
     }
 }
-
-private fun String.notSelect() = this == ""

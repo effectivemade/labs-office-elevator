@@ -53,7 +53,7 @@ fun BusyRoomInfoComponent(
                 style = MaterialTheme.typography.h5
             )
             Text(
-                text = "${MainRes.string.busy_duration_string} ${timeToFinish.getTime()}",
+                text = "${MainRes.string.busy_duration_string} ${timeToFinish.getDuration()}",
                 style = MaterialTheme.typography.h5
             )
         }

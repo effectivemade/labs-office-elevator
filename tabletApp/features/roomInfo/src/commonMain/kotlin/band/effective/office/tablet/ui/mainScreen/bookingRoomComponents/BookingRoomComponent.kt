@@ -37,7 +37,8 @@ class BookingRoomComponent(
     }
 
     fun getBooking(): Booking {
-        val startDate = if (state.value.isSelectCurrentTime) GregorianCalendar() else state.value.selectDate.clone() as Calendar
+        val startDate =
+            if (state.value.isSelectCurrentTime) GregorianCalendar() else state.value.selectDate.clone() as Calendar
         val finishDate = startDate.clone() as Calendar
         finishDate.add(Calendar.MINUTE, state.value.length)
 
@@ -54,12 +55,12 @@ class BookingRoomComponent(
     fun sendIntent(intent: BookingStore.Intent) {
         when (intent) {
             is BookingStore.Intent.OnBookingCurrentRoom -> {
-                onCurrentBookingRoom()
                 bookingStore.accept(intent)
+                if (state.value.isCorrect() && !state.value.isBusy) onCurrentBookingRoom()
             }
 
             is BookingStore.Intent.OnBookingOtherRoom -> {
-                onBookingOtherRoom
+                if (state.value.isCorrect()) onBookingOtherRoom()
                 bookingStore.accept(intent)
             }
 

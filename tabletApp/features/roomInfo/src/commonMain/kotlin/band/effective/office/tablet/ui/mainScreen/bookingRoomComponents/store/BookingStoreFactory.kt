@@ -151,7 +151,6 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     isCurrentRoom -> {
                         //dispatch(Message.BookingCurrentRoom)
                     }
-
                     else -> dispatch(Message.BookingOtherRoom)
                 }
             }
@@ -250,7 +249,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             organizer = BookingStore.State.default.organizer,
             selectDate = GregorianCalendar(),
             length = BookingStore.State.default.length,
-            isSelectCurrentTime = BookingStore.State.default.isSelectCurrentTime
+            isSelectCurrentTime = BookingStore.State.default.isSelectCurrentTime,
+            isOrganizerError = BookingStore.State.default.isOrganizerError
         )
 
     }

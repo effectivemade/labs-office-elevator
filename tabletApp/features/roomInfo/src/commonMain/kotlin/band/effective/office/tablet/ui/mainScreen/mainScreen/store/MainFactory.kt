@@ -1,8 +1,6 @@
 package band.effective.office.tablet.ui.mainScreen.mainScreen.store
 
 import band.effective.office.tablet.domain.CurrentEventController
-import band.effective.office.tablet.domain.model.RoomInfo
-import band.effective.office.tablet.domain.useCase.UpdateUseCase
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -15,7 +13,6 @@ import org.koin.core.component.inject
 
 class MainFactory(private val storeFactory: StoreFactory) : KoinComponent {
 
-    private val updateUseCase: UpdateUseCase by inject()
     private val currentEventController: CurrentEventController by inject()
 
     @OptIn(ExperimentalMviKotlinApi::class)
@@ -29,11 +26,6 @@ class MainFactory(private val storeFactory: StoreFactory) : KoinComponent {
                 reducer = ReducerImpl
             ) {}
 
-    private sealed interface Action {
-        data class UpdateRoomInfo(val roomInfo: RoomInfo) : Action
-        data class UpdateChangeEventTime(val newValue: Int) : Action
-    }
-
     private sealed interface Message {
         object BookingCurrentRoom : Message
         object BookingOtherRoom : Message
@@ -44,7 +36,7 @@ class MainFactory(private val storeFactory: StoreFactory) : KoinComponent {
     }
 
     private inner class ExecutorImpl() :
-        CoroutineExecutor<MainStore.Intent, Action, MainStore.State, Message, Nothing>() {
+        CoroutineExecutor<MainStore.Intent, Nothing, MainStore.State, Message, Nothing>() {
         override fun executeIntent(intent: MainStore.Intent, getState: () -> MainStore.State) {
             when (intent) {
                 is MainStore.Intent.OnBookingCurrentRoomRequest -> dispatch(Message.BookingCurrentRoom)

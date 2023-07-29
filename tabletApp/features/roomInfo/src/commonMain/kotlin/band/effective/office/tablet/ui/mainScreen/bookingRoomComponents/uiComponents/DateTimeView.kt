@@ -49,10 +49,10 @@ fun DateTimeView(
                     backgroundColor = LocalCustomColorsPalette.current.elevationBackground
                 )
             ) {
-                Text(
-                    text = "<",
-                    color = LocalCustomColorsPalette.current.tertiaryTextAndIcon,
-                    style = MaterialTheme.typography.h8
+                Image(
+                    modifier = Modifier,
+                    painter = painterResource(MainRes.image.arrow_left),
+                    contentDescription = null
                 )
             }
             Spacer(modifier = Modifier.width(10.dp))
@@ -82,10 +82,10 @@ fun DateTimeView(
                     backgroundColor = LocalCustomColorsPalette.current.elevationBackground
                 )
             ) {
-                Text(
-                    text = ">",
-                    color = LocalCustomColorsPalette.current.tertiaryTextAndIcon,
-                    style = MaterialTheme.typography.h6
+                Image(
+                    modifier = Modifier,
+                    painter = painterResource(MainRes.image.arrow_right),
+                    contentDescription = null
                 )
             }
         }

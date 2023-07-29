@@ -18,7 +18,7 @@
     <string name="booking_button_text">Занять ${roomName}</string>
     <string name="busy_duration_string">До конца</string>
     <string name="free_duration_string">Будет занята через</string>
-    <string name="see_free_room">Смотреть другие переговорки ></string>
+    <string name="see_free_room">Смотреть другие переговорки</string>
     <string name="select_date_tine_title">когда</string>
     <string name="select_length_title">на сколько</string>
     <string name="select_organizer_title">Занятое время</string>

@@ -23,9 +23,9 @@ import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.h8
 
 @Composable
-fun EventLengthView(
+fun EventDurationView(
     modifier: Modifier = Modifier,
-    currentLength: Int,
+    currentDuration: Int,
     increment: () -> Unit,
     decrement: () -> Unit
 ) {
@@ -56,7 +56,7 @@ fun EventLengthView(
             }
             Spacer(modifier = Modifier.width(space))
             Text(
-                text = currentLength.getLengthString(),
+                text = currentDuration.getDurationString(),
                 color = MaterialTheme.colors.onPrimary,
                 style = MaterialTheme.typography.h4
             )
@@ -80,7 +80,7 @@ fun EventLengthView(
 
 }
 
-private fun Int.getLengthString(): String {
+private fun Int.getDurationString(): String {
     val hours = this / 60
     val minutes = this % 60
     return when {
