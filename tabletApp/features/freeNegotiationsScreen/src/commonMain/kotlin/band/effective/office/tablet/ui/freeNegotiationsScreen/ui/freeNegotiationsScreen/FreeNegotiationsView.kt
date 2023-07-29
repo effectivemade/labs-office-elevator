@@ -30,6 +30,11 @@ fun FreeNegotiationsView(
             nameRoom = nameRoom,
             onMainScreen = onMainScreen
         )
-        RoomsView()
+        RoomsView(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colors.background),
+            listRooms = listRooms
+        )
     }
 }

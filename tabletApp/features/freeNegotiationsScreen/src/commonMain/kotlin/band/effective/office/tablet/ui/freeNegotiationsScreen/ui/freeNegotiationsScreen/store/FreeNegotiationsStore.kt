@@ -26,8 +26,8 @@ interface FreeNegotiationsStore : Store< FreeNegotiationsStore.Intent, FreeNegot
         companion object {
             val defaultState =
                 State(
-                    isLoad = true,
-                    isData = false,
+                    isLoad = false,
+                    isData = true,
                     error = null,
                     nameRoom = "",
                     listRooms = listOf(),

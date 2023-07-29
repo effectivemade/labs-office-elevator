@@ -34,7 +34,7 @@ fun PanelView(
                     .padding(start = 25.dp, top = 25.dp)
             )
             Spacer(modifier = Modifier.height(35.dp))
-            BackRoomView(
+            ButtonBackOnMain(
                 modifier = Modifier
                     .fillMaxWidth(0.2f)
                     .padding(start = 25.dp),

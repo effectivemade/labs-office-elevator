@@ -3,6 +3,7 @@ package band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiatio
 import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
+import band.effective.office.tablet.ui.freeNegotiationsScreen.domain.MockListRooms
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStoreFactory
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
@@ -23,7 +24,7 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory): Koin
                 initialState = FreeNegotiationsStore.State.defaultState,
                 bootstrapper = coroutineBootstrapper {
                     launch() {
-                        dispatch(Action.GetFreeRoomsInfo(listOf()))
+                        dispatch(Action.GetFreeRoomsInfo(MockListRooms.listRooms))
                         //TODO
                     }
                 },
@@ -67,9 +68,7 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory): Koin
                 is Message.BookRoom-> copy(showBookingModal = true)
                 is Message.MainScreen -> copy()
                 is Message.GetFreeRoomsInfo -> copy(
-                    listRooms = message.roomsInfo,
-                    isData = true,
-                    isLoad = false
+                    listRooms = message.roomsInfo
                 )
                 is Message.SetBooking -> copy(
                     eventInfo = message.bookingInfo.eventInfo,
