@@ -1,6 +1,7 @@
 package band.effective.office.tablet.domain
 
 import android.os.CountDownTimer
+import band.effective.office.tablet.domain.model.Either
 import band.effective.office.tablet.domain.useCase.RoomInfoUseCase
 import band.effective.office.tablet.network.repository.CancelRepository
 import kotlinx.coroutines.flow.update
@@ -14,10 +15,13 @@ class CurrentEventControllerImpl(
 ) : CurrentEventController(roomUseCase, cancelRepository) {
     private var timer: CountDownTimer? = null
     override fun update() = scope.launch {
-            val roomInfo = roomUseCase() //get actual room info
+            val roomInfo = when(val response = roomUseCase()){
+                is Either.Error -> null
+                is Either.Success -> response.data
+            } //get actual room info
             val nextEventTime =
-                roomInfo.currentEvent?.finishTime
-                    ?: roomInfo.eventList.firstOrNull()?.startTime // get next update time
+                roomInfo?.currentEvent?.finishTime
+                    ?: roomInfo?.eventList?.firstOrNull()?.startTime // get next update time
             if (nextEventTime != null) { // if we have next event
                 mutableTimeToUpdate.update { nextEventTime.time.time - GregorianCalendar().time.time }// calc time to next update
                 timer = object : CountDownTimer(/* millisInFuture = */ timeToUpdate.value, /* countDownInterval = */1000) {

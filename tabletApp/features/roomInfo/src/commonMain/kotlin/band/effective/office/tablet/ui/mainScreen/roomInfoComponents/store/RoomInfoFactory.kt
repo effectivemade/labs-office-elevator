@@ -5,6 +5,7 @@ import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.domain.useCase.UpdateUseCase
 import band.effective.office.tablet.utils.oneDay
+import band.effective.office.tablet.utils.unbox
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -29,7 +30,7 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
                 name = "RoomInfoStore",
                 initialState = RoomInfoStore.State.defaultState,
                 bootstrapper = coroutineBootstrapper {
-                    launch { dispatch(Action.UpdateRoomInfo(updateUseCase.getRoomInfo())) }
+                    launch { dispatch(Action.UpdateRoomInfo(updateUseCase.getRoomInfo().unbox({ TODO("Maksim Mishenko: add handler") }))) }
                     launch {
                         currentEventController.timeToUpdate.collect {
                             dispatch(
@@ -40,12 +41,12 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
                         }
                     }
                     launch() {
-                        dispatch(Action.UpdateRoomInfo(updateUseCase.getRoomInfo()))
+                        dispatch(Action.UpdateRoomInfo(updateUseCase.getRoomInfo().unbox({ TODO("Maksim Mishenko: add handler") })))
                         updateUseCase(
                             scope = this,
                             roomUpdateHandler = { roomInfo ->
                                 launch(Dispatchers.Main.immediate) {
-                                    dispatch(Action.UpdateRoomInfo(roomInfo))
+                                    dispatch(Action.UpdateRoomInfo(roomInfo.unbox({ TODO("Maksim Mishenko: add handler") })))
                                 }
 
                             },
@@ -100,7 +101,8 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
             dispatch(
                 Message.UpdateDate(
                     newValue = newDate,
-                    eventList = updateUseCase.getRoomInfo().filter(newDate).eventList
+                    eventList = updateUseCase.getRoomInfo().unbox { TODO("Maksim Mishenko: add handler") }
+                        .filter(newDate).eventList
                 )
             )
         }

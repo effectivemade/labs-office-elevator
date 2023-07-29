@@ -1,5 +1,6 @@
 package band.effective.office.tablet.domain
 
+import band.effective.office.tablet.domain.model.Either
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.useCase.RoomInfoUseCase
 import band.effective.office.tablet.network.repository.CancelRepository
@@ -31,7 +32,7 @@ abstract class CurrentEventController(
     /**Finish current event*/
     fun cancelCurrentEvent() {
         scope.launch {
-            if (cancelRepository.cancelEvent()) {
+            if (cancelRepository.cancelEvent() is Either.Success) {
                 onServerUpdate()
             }
         }
@@ -42,7 +43,10 @@ abstract class CurrentEventController(
         scope.launch {
             stopUpdate()
             job.cancel()
-            currentEvent = roomUseCase().currentEvent
+            currentEvent = when (val response = roomUseCase()) {
+                is Either.Error -> null
+                is Either.Success -> response.data.currentEvent
+            }
             job = update()
         }
     }

@@ -5,6 +5,7 @@ import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.domain.useCase.CheckBookingUseCase
 import band.effective.office.tablet.domain.useCase.UpdateUseCase
+import band.effective.office.tablet.utils.unbox
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -35,26 +36,26 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 initialState = BookingStore.State.default,
                 bootstrapper = coroutineBootstrapper {
                     launch(Dispatchers.IO) {
-                        val busyEvent = checkBookingUseCase(EventInfo.emptyEvent)
+                        val busyEvent = checkBookingUseCase(EventInfo.emptyEvent).unbox({ TODO("Maksim Mishenko: add handler") })
                         launch(Dispatchers.Main) {
                             dispatch(
                                 Action.Init(
-                                    organizers = updateUseCase.getOrganizersList(),
+                                    organizers = updateUseCase.getOrganizersList().unbox({ TODO("Maksim Mishenko: add handler") }),
                                     isBusy = busyEvent != null,
                                     busyEvent = busyEvent ?: EventInfo.emptyEvent
                                 )
                             )
-                            dispatch(Action.UpdateOrganizers(updateUseCase.getOrganizersList()))
+                            dispatch(Action.UpdateOrganizers(updateUseCase.getOrganizersList().unbox({ TODO("Maksim Mishenko: add handler") })))
                             updateUseCase(scope = this,
                                 {
                                     launch(Dispatchers.Main) {
-                                        dispatch(Action.UpdateEvents(it))
+                                        dispatch(Action.UpdateEvents(it.unbox({ TODO("Maksim Mishenko: add handler") })))
                                     }
 
                                 },
                                 {
                                     launch(Dispatchers.Main) {
-                                        dispatch(Action.UpdateOrganizers(it))
+                                        dispatch(Action.UpdateOrganizers(it.unbox({ TODO("Maksim Mishenko: add handler") })))
                                     }
                                 })
                         }
@@ -144,7 +145,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
         fun booking(isCurrentRoom: Boolean, state: BookingStore.State) =
             scope.launch {
-                val busyEvent = checkBookingUseCase(state.toEvent())
+                val busyEvent = checkBookingUseCase(state.toEvent()).unbox({ TODO("Maksim Mishenko: add handler") })
                 when {
                     !state.isCorrectOrganizer() -> dispatch(Message.OrganizerError)
                     busyEvent != null -> dispatch(Message.NotCorrectEvent(busyEvent))
@@ -199,7 +200,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         }
 
         fun checkBusy(state: BookingStore.State) = scope.launch {
-            val busyEvent = checkBookingUseCase(state.toEvent())
+            val busyEvent = checkBookingUseCase(state.toEvent()).unbox({ TODO("Maksim Mishenko: add handler") })
             dispatch(
                 Message.UpdateBusy(
                     isBusy = busyEvent != null,
