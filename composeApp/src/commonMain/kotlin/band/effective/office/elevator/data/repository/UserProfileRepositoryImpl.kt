@@ -22,4 +22,8 @@ class UserProfileRepositoryImpl : UserProfileRepository {
                 imageUrl = null
             )
     }
+
+    override suspend fun pushUser(userData: UserData): Boolean {
+        return true
+    }
 }

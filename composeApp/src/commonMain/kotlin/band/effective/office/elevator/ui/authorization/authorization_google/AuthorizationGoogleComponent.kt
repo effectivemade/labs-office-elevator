@@ -2,7 +2,7 @@ package band.effective.office.elevator.ui.authorization.authorization_google
 
 import band.effective.office.elevator.domain.GoogleSignIn
 import band.effective.office.elevator.domain.models.UserData
-import band.effective.office.elevator.domain.usecase.phone_authorization.GetUserUseCase
+import band.effective.office.elevator.domain.usecase.GetUserUseCase
 import band.effective.office.elevator.ui.authorization.authorization_google.store.AuthorizationGoogleStore
 import band.effective.office.elevator.ui.authorization.authorization_google.store.AuthorizationGoogleStoreFactory
 import com.arkivanov.decompose.ComponentContext

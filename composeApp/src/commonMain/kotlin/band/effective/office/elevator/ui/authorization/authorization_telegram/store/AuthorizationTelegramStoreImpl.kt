@@ -1,12 +1,15 @@
 package band.effective.office.elevator.ui.authorization.authorization_telegram.store
 
 import band.effective.office.elevator.domain.models.UserData
+import band.effective.office.elevator.domain.usecase.PushUserDataUseCase
 import band.effective.office.elevator.ui.models.validator.Validator
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
+import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class AuthorizationTelegramStoreFactory(
     private val storeFactory: StoreFactory,
@@ -14,6 +17,8 @@ class AuthorizationTelegramStoreFactory(
     private val userData: UserData
 ) :
     KoinComponent {
+
+    private val pushUserDataUseCase: PushUserDataUseCase by inject()
 
     fun create(): AuthorizationTelegramStore =
         object : AuthorizationTelegramStore,
@@ -70,9 +75,16 @@ class AuthorizationTelegramStoreFactory(
         private fun isErrorNickName(nickname: String) = validator.checkTelegramNick(nickname)
 
         private fun checkTelegramNick(telegramNick: String) {
-            if (validator.checkTelegramNick(telegramNick))
-                publish(AuthorizationTelegramStore.Label.AuthorizationTelegramSuccess)
-            else
+            if (validator.checkTelegramNick(telegramNick)) {
+                userData.telegramNick = telegramNick
+                scope.launch {
+                    val result = pushUserDataUseCase.execute(userData)
+                    if (result)
+                        publish(AuthorizationTelegramStore.Label.AuthorizationTelegramSuccess)
+                    else
+                        publish(AuthorizationTelegramStore.Label.AuthorizationTelegramFailure)
+                }
+            } else
                 publish(AuthorizationTelegramStore.Label.AuthorizationTelegramFailure)
 
         }

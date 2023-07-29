@@ -1,4 +1,4 @@
-package band.effective.office.elevator.domain.usecase.phone_authorization
+package band.effective.office.elevator.domain.usecase
 
 import band.effective.office.elevator.domain.models.UserData
 import band.effective.office.elevator.domain.repository.UserProfileRepository
