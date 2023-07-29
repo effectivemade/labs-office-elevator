@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.employee.aboutEmployee.store
 
+import band.effective.office.elevator.expects.makeCall
 import band.effective.office.elevator.ui.employee.aboutEmployee.store.AboutEmployeeStore.*
 import band.effective.office.elevator.ui.models.ReservedSeat
 import band.effective.office.elevator.ui.models.User
@@ -17,7 +18,7 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory): KoinCom
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): AboutEmployeeStore =
-        object : AboutEmployeeStore, Store<Intent,State,Nothing> by storeFactory.create(
+        object : AboutEmployeeStore, Store<Intent, State, Nothing> by storeFactory.create(
             name = "AboutEmployeeStore",
             initialState = State(
                 mokValueUser,
@@ -34,7 +35,7 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory): KoinCom
         override fun State.reduce(msg: Msg): State =
             when (msg) {
                 is Msg.ProfileData -> copy(user = mokValueUser)
-                is Msg.UpdateSeatsReservation ->{
+                is Msg.UpdateSeatsReservation -> {
                     val reservedSeats = mokValue
                     copy(reservedSeats = reservedSeats)
                 }
@@ -51,15 +52,16 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory): KoinCom
     }
 
     private inner class ExecutorImpl :
-            CoroutineExecutor<Intent, Action, State, Msg,Nothing>(){
-                override fun executeIntent(intent: Intent, getState: () ->State){
-                    when(intent){
-                        Intent.BackClicked -> TODO()
-                        Intent.TelegramClicked -> TODO()
-                        Intent.TelephoneClicked -> TODO()
-                        Intent.TransferMoneyClicked -> TODO()
-                    }
-                }
+        CoroutineExecutor<Intent, Action, State, Msg, Nothing>() {
+        override fun executeIntent(intent: Intent, getState: () -> State) {
+            when (intent) {
+                Intent.BackClicked -> TODO()
+                Intent.TelegramClicked -> TODO()
+                Intent.TelephoneClicked -> makeCall(getState().user.phoneNumber!!)
+                Intent.TransferMoneyClicked -> TODO()
+            }
+        }
+
         override fun executeAction(action: Action, getState: () -> State) {
             when (action) {
                 Action.FetchUserInfo -> fetchUserInfo()
@@ -72,7 +74,8 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory): KoinCom
     }
 }
 
-private val mokValueUser = User("1","Ivanov Ivan", "Android-developer","67","@ivanov","employee@effective.com")
+private val mokValueUser =
+    User("1", "Ivanov Ivan", "Android-developer", "+79136476225", "@ivanov", "employee@effective.com")
 private val mokValue = listOf(
     ReservedSeat(
         seatName = "Рабочее масто А2",

@@ -5,6 +5,10 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.widget.Toast
+import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
+import androidx.core.content.ContextCompat.startActivity
 import band.effective.office.elevator.AndroidApp
 
 actual fun showToast(message: String) {
@@ -24,4 +28,12 @@ actual fun generateVibration(milliseconds: Long) {
     } else {
         vibrator.vibrate(milliseconds)
     }
+}
+
+actual fun makeCall(phoneNumber: String) {
+    val intent = Intent(Intent.ACTION_DIAL).apply {
+        data = Uri.parse("tel:$phoneNumber")
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+    }
+    startActivity(AndroidApp.INSTANCE.applicationContext, intent, Bundle())
 }
