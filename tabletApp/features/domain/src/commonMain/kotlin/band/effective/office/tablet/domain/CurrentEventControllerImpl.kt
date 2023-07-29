@@ -1,12 +1,10 @@
 package band.effective.office.tablet.domain
 
-import android.util.Log
+import android.os.CountDownTimer
 import band.effective.office.tablet.domain.useCase.RoomInfoUseCase
 import band.effective.office.tablet.network.repository.CancelRepository
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.Calendar
 import java.util.GregorianCalendar
 
 /**Controller implementation following for current event*/
@@ -14,25 +12,28 @@ class CurrentEventControllerImpl(
     private val roomUseCase: RoomInfoUseCase,
     private val cancelRepository: CancelRepository
 ) : CurrentEventController(roomUseCase, cancelRepository) {
+    private var timer: CountDownTimer? = null
     override fun update() = scope.launch {
-        while (true) {
             val roomInfo = roomUseCase() //get actual room info
             val nextEventTime =
                 roomInfo.currentEvent?.finishTime
                     ?: roomInfo.eventList.firstOrNull()?.startTime // get next update time
             if (nextEventTime != null) { // if we have next event
                 mutableTimeToUpdate.update { nextEventTime.time.time - GregorianCalendar().time.time }// calc time to next update
-                while (timeToUpdate.value > 1000) {
-                    val timeMils =
-                        if (timeToUpdate.value > 60000) (60 - GregorianCalendar().get(Calendar.SECOND)) * 1000L else timeToUpdate.value
-                    //TODO(del log)
-                    Log.e("time", "${timeToUpdate.value/60000}")
-                    delay(timeMils) // wait for update
-                    mutableTimeToUpdate.update { nextEventTime.time.time - GregorianCalendar().time.time }// calc time to next update
-                }
-                currentEvent = roomUseCase().currentEvent // update info
-                handlersList.forEach { it() } // call handlers
-            }
+                timer = object : CountDownTimer(/* millisInFuture = */ timeToUpdate.value, /* countDownInterval = */1000) {
+
+                    override fun onTick(millisUntilFinished: Long) {
+                        mutableTimeToUpdate.update { millisUntilFinished }
+                    }
+
+                    override fun onFinish() {
+                        handlersList.forEach { it() }
+                    }
+                }.apply { start() }
         }
+    }
+
+    override fun stopUpdate() {
+        timer?.cancel()
     }
 }

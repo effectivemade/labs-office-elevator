@@ -40,6 +40,7 @@ abstract class CurrentEventController(
     /**Reloading current event state change handler*/
     private fun onServerUpdate() {
         scope.launch {
+            stopUpdate()
             job.cancel()
             currentEvent = roomUseCase().currentEvent
             job = update()
@@ -53,4 +54,6 @@ abstract class CurrentEventController(
 
     /**Update current event*/
     protected abstract fun update(): Job
+
+    protected abstract fun stopUpdate()
 }
