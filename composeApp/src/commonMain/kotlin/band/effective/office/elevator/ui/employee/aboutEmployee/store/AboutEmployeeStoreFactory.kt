@@ -1,6 +1,7 @@
 package band.effective.office.elevator.ui.employee.aboutEmployee.store
 
 import band.effective.office.elevator.expects.makeCall
+import band.effective.office.elevator.expects.pickTelegram
 import band.effective.office.elevator.ui.employee.aboutEmployee.store.AboutEmployeeStore.*
 import band.effective.office.elevator.ui.models.ReservedSeat
 import band.effective.office.elevator.ui.models.User
@@ -14,7 +15,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month
 import org.koin.core.component.KoinComponent
 
-class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory): KoinComponent {
+class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): AboutEmployeeStore =
@@ -56,7 +57,7 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory): KoinCom
         override fun executeIntent(intent: Intent, getState: () -> State) {
             when (intent) {
                 Intent.BackClicked -> TODO()
-                Intent.TelegramClicked -> TODO()
+                Intent.TelegramClicked -> pickTelegram(getState().user.telegram!!)
                 Intent.TelephoneClicked -> makeCall(getState().user.phoneNumber!!)
                 Intent.TransferMoneyClicked -> TODO()
             }
@@ -75,7 +76,14 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory): KoinCom
 }
 
 private val mokValueUser =
-    User("1", "Ivanov Ivan", "Android-developer", "+79136476225", "@ivanov", "employee@effective.com")
+    User(
+        "1",
+        "Ivanov Ivan",
+        "Android-developer",
+        "+79136476225",
+        "@gull192",
+        "employee@effective.com"
+    )
 private val mokValue = listOf(
     ReservedSeat(
         seatName = "Рабочее масто А2",

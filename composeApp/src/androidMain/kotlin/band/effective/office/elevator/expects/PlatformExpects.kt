@@ -37,3 +37,26 @@ actual fun makeCall(phoneNumber: String) {
     }
     startActivity(AndroidApp.INSTANCE.applicationContext, intent, Bundle())
 }
+
+actual fun pickTelegram(telegramNick: String) {
+
+    try {
+        val telegramUri = Uri.parse("https://t.me/$telegramNick")
+        val intent = Intent(Intent.ACTION_VIEW, telegramUri)
+        intent.`package` = "org.telegram.messenger"
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+
+//    if (intent.resolveActivity(AndroidApp.INSTANCE.applicationContext.packageManager) != null) {
+        startActivity(AndroidApp.INSTANCE.applicationContext, intent, Bundle())
+    } catch (e: Exception){
+        showToast("Telegram app is not installed")
+    }
+//    }
+
+
+//    val intent = Intent(Intent.ACTION_VIEW).apply {
+//        data = Uri.parse("https://telegram.me/$telegramNick")
+//        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//    }
+//    startActivity(AndroidApp.INSTANCE.applicationContext, intent, Bundle())
+}

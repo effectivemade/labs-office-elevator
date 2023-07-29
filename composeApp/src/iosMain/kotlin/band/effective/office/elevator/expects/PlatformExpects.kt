@@ -5,6 +5,8 @@ import io.github.aakira.napier.Napier
 import platform.UIKit.UIAlertController
 import platform.Foundation.NSURL
 import platform.UIKit.UIApplication
+import platform.Foundation.*
+import platform.UIKit.*
 
 actual fun showToast(message: String) {
     Napier.e { message }
@@ -20,4 +22,11 @@ actual fun generateVibration(milliseconds: Long) {
 actual fun makeCall(phoneNumber: String) {
     val url = NSURL(string = "tel:$phoneNumber")
     UIApplication.sharedApplication.openURL(url)
+}
+
+actual fun pickTelegram(telegramNick: String) {
+    val urlString = "https://telegram.me/$telegramNick"
+    val url = NSURL.URLWithString(urlString)
+    val application = UIApplication.sharedApplication
+    application.openURL(url)
 }
