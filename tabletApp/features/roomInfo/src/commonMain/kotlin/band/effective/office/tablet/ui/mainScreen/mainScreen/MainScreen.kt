@@ -33,7 +33,8 @@ fun MainScreen(component: MainComponent) {
                 bookingRoomComponent = component.bookingRoomComponent,
                 selectRoomComponent = component.selectRoomComponent,
                 roomInfoComponent = component.roomInfoComponent,
-                freeSelectRoomComponent = component.freeSelectRoomComponent
+                freeSelectRoomComponent = component.freeSelectRoomComponent,
+                showModal = state.showModal()
             )
         }
     }

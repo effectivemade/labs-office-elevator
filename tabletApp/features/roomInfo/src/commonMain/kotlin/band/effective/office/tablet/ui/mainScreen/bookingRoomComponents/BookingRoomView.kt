@@ -32,6 +32,7 @@ import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiCompon
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.DateTimeView
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.EventDurationView
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.EventOrganizerView
+import band.effective.office.tablet.ui.theme.h7
 import io.github.skeptick.libres.compose.painterResource
 import java.util.Calendar
 
@@ -148,7 +149,7 @@ fun BookingRoomView(
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     onClick = { onRequestBookingOtherRoom() }
                 ) {
-                    Text(text = MainRes.string.see_free_room)
+                    Text(text = MainRes.string.see_free_room, style = MaterialTheme.typography.h7)
                     Image(
                         modifier = Modifier,
                         painter = painterResource(MainRes.image.arrow_right),
@@ -163,7 +164,10 @@ fun BookingRoomView(
                     .focusable(true),
                 onClick = { onRequestBookingCurrentRoom() }
             ) {
-                Text(text = MainRes.string.booking_button_text.format(roomName = roomName))
+                Text(
+                    text = MainRes.string.booking_button_text.format(roomName = roomName),
+                    style = MaterialTheme.typography.h6
+                )
             }
         }
     }

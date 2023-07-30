@@ -17,6 +17,7 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, Nothing> {
         val showBookingModal: Boolean,
         val showFreeModal: Boolean,
     ) {
+        fun showModal() = showFreeModal || showBookingModal
         companion object {
             val defaultState =
                 State(

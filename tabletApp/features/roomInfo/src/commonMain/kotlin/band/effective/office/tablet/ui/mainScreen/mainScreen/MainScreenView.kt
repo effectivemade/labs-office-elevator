@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomComponent
 import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomView
@@ -32,7 +33,8 @@ fun MainScreenView(
     bookingRoomComponent: BookingRoomComponent,
     selectRoomComponent: SelectRoomComponent,
     freeSelectRoomComponent: FreeSelectRoomComponent,
-    roomInfoComponent: RoomInfoComponent
+    roomInfoComponent: RoomInfoComponent,
+    showModal: Boolean
 ) {
     Box(modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colors.background)) {
         /*NOTE(Maksim Mishenko):
@@ -55,7 +57,10 @@ fun MainScreenView(
                 MockSettingView(mockComponent)
             }
         }
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier.fillMaxSize()
+                .background(color = if (showModal) Color.Black.copy(alpha = 0.7f) else Color.Transparent)
+        ) {
             when {
                 showBookingModal -> SelectRoomScreen(component = selectRoomComponent)
                 showFreeRoomModal -> FreeSelectRoomView(freeSelectRoomComponent = freeSelectRoomComponent)
