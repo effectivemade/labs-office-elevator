@@ -2,16 +2,12 @@ package office.effective.features.booking.repository
 
 import office.effective.features.booking.converters.BookingRepositoryConverter
 import office.effective.features.user.repository.*
-import office.effective.features.workspace.repository.Utilities
-import office.effective.features.workspace.repository.WorkspaceTags
-import office.effective.features.workspace.repository.WorkspaceUtilities
-import office.effective.features.workspace.repository.Workspaces
 import office.effective.model.Booking
-import office.effective.model.UserModel
-import office.effective.model.Utility
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
+import org.ktorm.entity.filter
 import org.ktorm.entity.find
+import org.ktorm.entity.toList
 import java.util.*
 import kotlin.collections.List
 
@@ -30,5 +26,13 @@ class BookingRepository(private val database: Database, private val converter: B
             .select()
             .where { BookingParticipants.bookingId eq bookingId }
             .map { row -> Users.createEntity(row) }
+    }
+
+    fun findAllByOwnerId(ownerId: UUID): List<Booking> {
+        val entityList = database.workspaceBooking.filter { it.ownerId eq ownerId }.toList()
+        return entityList.map {
+            val participants = findParticipants(it.id)
+            converter.entityToModel(it, participants)
+        }
     }
 }

@@ -10,7 +10,7 @@ import org.koin.core.context.GlobalContext
 import java.util.*
 
 fun Route.bookingRouting() {
-    route("/booking") {
+    route("/bookings") {
         val rep = BookingRepository(GlobalContext.get().get(),
             BookingRepositoryConverter(GlobalContext.get().get(), GlobalContext.get().get()))
 
@@ -19,6 +19,13 @@ fun Route.bookingRouting() {
                 ?: return@get call.respond(HttpStatusCode.BadRequest)
 
             call.respond(rep.findById(UUID.fromString(id)).toString())
+        }
+
+        get {
+            val userId: String = call.request.queryParameters["user_id"]
+                ?: return@get call.respond(HttpStatusCode.BadRequest)
+
+            call.respond(rep.findAllByOwnerId(UUID.fromString(userId)).map { it.toString() })
         }
     }
 }
