@@ -9,13 +9,14 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import network.model.ErrorResponse
 
 /**Class for control start/finish event in room*/
 abstract class CurrentEventController(
     private val roomUseCase: RoomInfoUseCase,
     private val cancelRepository: CancelRepository
 ) {
-    private lateinit var job: Job
+    private var job: Job? = null
     protected lateinit var scope: CoroutineScope
     protected var currentEvent: EventInfo? = null
     protected val handlersList: MutableList<() -> Unit> = mutableListOf()
@@ -25,24 +26,26 @@ abstract class CurrentEventController(
     /**Prepare controller for async work*/
     fun start(scope: CoroutineScope) {
         this.scope = scope
+        job?.cancel()
+        stopUpdate()
         job = update()
         roomUseCase.subscribe(scope) { onServerUpdate() }
     }
 
     /**Finish current event*/
-    fun cancelCurrentEvent() {
-        scope.launch {
-            if (cancelRepository.cancelEvent() is Either.Success) {
-                onServerUpdate()
-            }
+    suspend fun cancelCurrentEvent(): Either<ErrorResponse, String> {
+        val result = cancelRepository.cancelEvent()
+        if (result is Either.Success) {
+            onServerUpdate()
         }
+        return result
     }
 
     /**Reloading current event state change handler*/
     private fun onServerUpdate() {
         scope.launch {
             stopUpdate()
-            job.cancel()
+            job?.cancel()
             currentEvent = when (val response = roomUseCase()) {
                 is Either.Error -> null
                 is Either.Success -> response.data.currentEvent

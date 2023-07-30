@@ -5,6 +5,7 @@ import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.network.model.WebServerEvent
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -18,6 +19,7 @@ class WorkApi : Api {
         MutableStateFlow(listOf("Ольга Белозерова", "Матвей Авгуль", "Лилия Акентьева"))
 
     override suspend fun getRoomInfo(): Either<ErrorResponse, RoomInfo> {
+        delay(5000L)
         return Either.Success(mutableRoomInfo.value)
     }
 
@@ -26,6 +28,7 @@ class WorkApi : Api {
     }
 
     override suspend fun cancelEvent(): Either<ErrorResponse, String> {
+        delay(5000L)
         mutableRoomInfo.update { it.copy(currentEvent = null) }
         return Either.Success("ok")
     }

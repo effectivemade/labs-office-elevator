@@ -5,7 +5,6 @@ import com.arkivanov.mvikotlin.core.store.Store
 interface MainStore : Store<MainStore.Intent, MainStore.State, Nothing> {
     sealed interface Intent {
         object OnOpenFreeRoomModal : Intent
-        object OnFreeRoomIntent : Intent
         object CloseModal : Intent
         object OnBookingCurrentRoomRequest : Intent
         object OnBookingOtherRoomRequest : Intent

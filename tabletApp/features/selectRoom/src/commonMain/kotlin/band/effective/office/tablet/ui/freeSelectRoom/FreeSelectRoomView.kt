@@ -1,4 +1,4 @@
-package band.effective.office.tablet.ui.selectRoomScreen
+package band.effective.office.tablet.ui.freeSelectRoom
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -25,19 +25,33 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import band.effective.office.tablet.features.selectRoom.MainRes
+import band.effective.office.tablet.ui.freeSelectRoom.store.FreeSelectStore
+import band.effective.office.tablet.ui.loader.Loader
 import band.effective.office.tablet.ui.selectRoomScreen.uiComponents.CrossButtonView
-import band.effective.office.tablet.ui.theme.CustomDarkColors
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
-import band.effective.office.tablet.ui.theme.header4
-import band.effective.office.tablet.ui.theme.header6
 import band.effective.office.tablet.ui.theme.textButton
 
 @Composable
-fun FreeSelectRoomView(onCloseRequest: () -> Unit, onFreeRoomRequest: () -> Unit) {
+fun FreeSelectRoomView(freeSelectRoomComponent: FreeSelectRoomComponent) {
+    val state by freeSelectRoomComponent.state.collectAsState()
+    FreeSelectRoomView(
+        onCloseRequest = { freeSelectRoomComponent.sendIntent(FreeSelectStore.Intent.OnCloseWindowRequest) },
+        onFreeRoomRequest = { freeSelectRoomComponent.sendIntent(FreeSelectStore.Intent.OnFreeSelectRequest) },
+        isLoading = state.isLoad
+    )
+}
+
+
+@Composable
+fun FreeSelectRoomView(
+    onCloseRequest: () -> Unit,
+    onFreeRoomRequest: () -> Unit,
+    isLoading: Boolean
+) {
     val shape = RoundedCornerShape(50)
 
     val isPressed = remember { mutableStateOf(false) }
-    val colorButton =  if(isPressed.value)
+    val colorButton = if (isPressed.value)
         LocalCustomColorsPalette.current.pressedPrimaryButton else MaterialTheme.colors.primary
 
     Dialog(
@@ -87,11 +101,13 @@ fun FreeSelectRoomView(onCloseRequest: () -> Unit, onFreeRoomRequest: () -> Unit
                 ) {
                     Box(contentAlignment = Alignment.Center)
                     {
-                        Text(
-                            text = MainRes.string.free_select_room_button,
-                            style = MaterialTheme.typography.h6,
-                            color = textButton,
-                        )
+                        if (isLoading) Loader()
+                        else
+                            Text(
+                                text = MainRes.string.free_select_room_button,
+                                style = MaterialTheme.typography.h6,
+                                color = textButton,
+                            )
                     }
                 }
             }

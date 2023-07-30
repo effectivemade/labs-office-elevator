@@ -1,5 +1,6 @@
 package band.effective.office.tablet.ui.mainScreen.mainScreen
 
+import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomComponent
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingRoomComponent
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainFactory
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
@@ -47,6 +48,12 @@ class MainComponent(
             onCloseRequest = { mainStore.accept(MainStore.Intent.CloseModal) }
         )
 
+    val freeSelectRoomComponent: FreeSelectRoomComponent =
+        FreeSelectRoomComponent(
+            componentContext = componentContext,
+            storeFactory = storeFactory,
+            onCloseRequest = { mainStore.accept(MainStore.Intent.CloseModal) })
+
     private val mainStore = instanceKeeper.getStore {
         MainFactory(
             storeFactory = storeFactory
@@ -56,7 +63,7 @@ class MainComponent(
     @OptIn(ExperimentalCoroutinesApi::class)
     val state = mainStore.stateFlow
 
-    fun sendIntent(intent: MainStore.Intent){
+    fun sendIntent(intent: MainStore.Intent) {
         mainStore.accept(intent)
     }
 }

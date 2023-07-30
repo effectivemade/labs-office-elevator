@@ -28,6 +28,10 @@ kotlin {
             dependencies {
                 implementation(compose.material)
 
+                // Decompose
+                implementation(Dependencies.Decompose.decompose)
+                implementation(Dependencies.Decompose.extensions)
+
                 //Libres
                 implementation(Dependencies.Libres.libresCompose)
             }

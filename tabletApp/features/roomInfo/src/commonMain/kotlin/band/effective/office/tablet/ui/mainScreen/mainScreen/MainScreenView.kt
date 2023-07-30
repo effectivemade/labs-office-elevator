@@ -13,12 +13,13 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomComponent
+import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomView
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingRoomComponent
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingRoomView
 import band.effective.office.tablet.ui.mainScreen.mockComponets.MockSettingView
 import band.effective.office.tablet.ui.mainScreen.mockComponets.MockSettingsComponent
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.RoomInfoComponent
-import band.effective.office.tablet.ui.selectRoomScreen.FreeSelectRoomView
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponent
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomScreen
 
@@ -30,9 +31,8 @@ fun MainScreenView(
     mockComponent: MockSettingsComponent,
     bookingRoomComponent: BookingRoomComponent,
     selectRoomComponent: SelectRoomComponent,
-    roomInfoComponent: RoomInfoComponent,
-    onCloseFreeModalRequest: () -> Unit,
-    onFreeRoomRequest: () -> Unit,
+    freeSelectRoomComponent: FreeSelectRoomComponent,
+    roomInfoComponent: RoomInfoComponent
 ) {
     Box(modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colors.background)) {
         /*NOTE(Maksim Mishenko):
@@ -58,9 +58,7 @@ fun MainScreenView(
         Box(modifier = Modifier.fillMaxSize()) {
             when {
                 showBookingModal -> SelectRoomScreen(component = selectRoomComponent)
-                showFreeRoomModal -> FreeSelectRoomView(
-                    onCloseRequest = { onCloseFreeModalRequest() },
-                    onFreeRoomRequest = { onFreeRoomRequest() })
+                showFreeRoomModal -> FreeSelectRoomView(freeSelectRoomComponent = freeSelectRoomComponent)
             }
         }
     }

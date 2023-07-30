@@ -12,7 +12,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import band.effective.office.tablet.ui.loader.Loader
-import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
 import band.effective.office.tablet.utils.oneDay
 import java.util.Calendar
 import java.util.GregorianCalendar
@@ -26,7 +25,6 @@ fun MainScreen(component: MainComponent) {
         state.isLoad -> {
             LoadMainScreen()
         }
-
         state.isData -> {
             MainScreenView(
                 showBookingModal = state.showBookingModal,
@@ -35,8 +33,7 @@ fun MainScreen(component: MainComponent) {
                 bookingRoomComponent = component.bookingRoomComponent,
                 selectRoomComponent = component.selectRoomComponent,
                 roomInfoComponent = component.roomInfoComponent,
-                onCloseFreeModalRequest = { component.sendIntent(MainStore.Intent.CloseModal) },
-                onFreeRoomRequest = { component.sendIntent(MainStore.Intent.OnFreeRoomIntent) }
+                freeSelectRoomComponent = component.freeSelectRoomComponent
             )
         }
     }
