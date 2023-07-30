@@ -8,10 +8,10 @@ import office.effective.features.workspace.facade.WorkspaceFacade
 import org.koin.core.context.GlobalContext
 
 fun Route.workspaceRouting() {
-    route("/workspace") {
+    route("/workspaces") {
         val facade: WorkspaceFacade = GlobalContext.get().get()
 
-        get("{id?}") {
+        get("{id}") {
             val id: String = call.parameters["id"]
                 ?: return@get call.respond(HttpStatusCode.BadRequest)
 

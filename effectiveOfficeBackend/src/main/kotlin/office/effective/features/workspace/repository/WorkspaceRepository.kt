@@ -37,7 +37,7 @@ class WorkspaceRepository(private val database: Database, private val converter:
      *
      * @author Daniil Zavyalov
      */
-    private fun findUtilitiesByWorkspaceId(workspaceId: UUID): List<Utility> {
+    fun findUtilitiesByWorkspaceId(workspaceId: UUID): List<Utility> {
         if (!workspaceExistsById(workspaceId)) {
             throw InstanceNotFoundException(WorkspaceEntity::class, "Workspace with id $workspaceId not found", workspaceId)
         }
