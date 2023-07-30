@@ -27,5 +27,11 @@ fun Route.bookingRouting() {
 
             call.respond(rep.findAllByOwnerId(UUID.fromString(userId)).map { it.toString() })
         }
+        delete("{id}") {
+            val id: String = call.parameters["id"]
+                ?: return@delete call.respond(HttpStatusCode.BadRequest)
+            rep.deleteById(UUID.fromString(id))
+            call.respond(HttpStatusCode.NoContent)
+        }
     }
 }

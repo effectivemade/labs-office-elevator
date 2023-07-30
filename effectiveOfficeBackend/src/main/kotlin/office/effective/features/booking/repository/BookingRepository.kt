@@ -7,6 +7,7 @@ import org.ktorm.database.Database
 import org.ktorm.dsl.*
 import org.ktorm.entity.filter
 import org.ktorm.entity.find
+import org.ktorm.entity.removeIf
 import org.ktorm.entity.toList
 import java.util.*
 import kotlin.collections.List
@@ -34,5 +35,9 @@ class BookingRepository(private val database: Database, private val converter: B
             val participants = findParticipants(it.id)
             converter.entityToModel(it, participants)
         }
+    }
+
+    fun deleteById(id: UUID) {
+        database.workspaceBooking.removeIf { it.id eq id }
     }
 }
