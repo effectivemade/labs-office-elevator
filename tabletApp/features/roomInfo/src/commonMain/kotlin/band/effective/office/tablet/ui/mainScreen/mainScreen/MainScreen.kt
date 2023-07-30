@@ -2,9 +2,16 @@ package band.effective.office.tablet.ui.mainScreen.mainScreen
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import band.effective.office.tablet.ui.loader.Loader
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
 import band.effective.office.tablet.utils.oneDay
 import java.util.Calendar
@@ -16,7 +23,10 @@ fun MainScreen(component: MainComponent) {
     val state by component.state.collectAsState()
     when {
         state.isError -> {}
-        state.isLoad -> {}
+        state.isLoad -> {
+            LoadMainScreen()
+        }
+
         state.isData -> {
             MainScreenView(
                 showBookingModal = state.showBookingModal,
@@ -29,6 +39,16 @@ fun MainScreen(component: MainComponent) {
                 onFreeRoomRequest = { component.sendIntent(MainStore.Intent.OnFreeRoomIntent) }
             )
         }
+    }
+}
+
+@Composable
+fun LoadMainScreen() {
+    Box(
+        modifier = Modifier.background(color = MaterialTheme.colors.background).fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Loader()
     }
 }
 

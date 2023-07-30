@@ -21,8 +21,8 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, Nothing> {
         companion object {
             val defaultState =
                 State(
-                    isLoad = false,
-                    isData = true,
+                    isLoad = true,
+                    isData = false,
                     isError = false,
                     showBookingModal = false,
                     showFreeModal = false,
