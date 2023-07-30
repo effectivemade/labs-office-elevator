@@ -6,6 +6,10 @@ import band.effective.office.elevator.ui.authorization.authorization_google.Auth
 import band.effective.office.elevator.ui.authorization.authorization_phone.AuthorizationPhoneComponent
 import band.effective.office.elevator.ui.authorization.authorization_profile.AuthorizationProfileComponent
 import band.effective.office.elevator.ui.authorization.authorization_telegram.AuthorizationTelegramComponent
+import band.effective.office.elevator.ui.authorization.authorization_telegram.store.AuthorizationTelegramStore
+import band.effective.office.elevator.ui.authorization.authorization_telegram.store.AuthorizationTelegramStoreFactory
+import band.effective.office.elevator.ui.authorization.store.AuthorizationStore
+import band.effective.office.elevator.ui.authorization.store.AuthorizationStoreFactory
 import band.effective.office.elevator.ui.models.validator.Validator
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
@@ -16,7 +20,13 @@ import com.arkivanov.decompose.router.stack.replaceAll
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
+import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
+import com.arkivanov.mvikotlin.extensions.coroutines.labels
+import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -29,6 +39,38 @@ class AuthorizationComponent(
 
     private val validator: Validator = Validator()
     private val navigation = StackNavigation<AuthorizationComponent.Config>()
+
+    init {
+        val userData = UserData()
+
+        val changeName = { name: String ->
+            userData.name = name
+        }
+
+        val changePost = { post: String ->
+            userData.post = post
+        }
+
+        val changePhoneNumber = { phoneNumber: String ->
+            userData.phoneNumber = phoneNumber
+        }
+
+        val changeTelegramNick = { telegramNick: String ->
+            userData.telegramNick = telegramNick
+        }
+    }
+
+    private val authorizationStore =
+        instanceKeeper.getStore {
+            AuthorizationStoreFactory(
+                storeFactory = storeFactory
+            ).create()
+        }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val state: StateFlow<AuthorizationStore.State> = authorizationStore.stateFlow
+
+    val label: Flow<AuthorizationStore.Label> = authorizationStore.labels
 
     private val stack = childStack(
         source = navigation,
@@ -108,11 +150,11 @@ class AuthorizationComponent(
     private fun profileAuthOutput(output: AuthorizationProfileComponent.Output) {
         when (output) {
             is AuthorizationProfileComponent.Output.OpenPhoneScreen -> navigation.bringToFront(
-                Config.PhoneAuth (output.userData)
+                Config.PhoneAuth(output.userData)
             )
 
             is AuthorizationProfileComponent.Output.OpenTGScreen -> navigation.bringToFront(
-                Config.TelegramAuth (output.userData)
+                Config.TelegramAuth(output.userData)
             )
         }
     }
