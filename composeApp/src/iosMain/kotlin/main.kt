@@ -12,6 +12,7 @@ import band.effective.office.elevator.AppTheme
 import band.effective.office.elevator.data.database.di.databaseModule
 import band.effective.office.elevator.di.appModuleDI
 import band.effective.office.elevator.di.iosModuleDI
+import band.effective.office.elevator.di.permissionmodule
 import band.effective.office.elevator.ui.helper.LocalSafeArea
 import band.effective.office.elevator.ui.root.ContentView
 import band.effective.office.elevator.ui.root.RootComponent
@@ -28,7 +29,7 @@ fun MainViewController(
     bottomSafeArea: Float
 ): UIViewController {
     startKoin {
-        modules(appModuleDI + iosModuleDI + databaseModule)
+        modules(appModuleDI + iosModuleDI + databaseModule + permissionmodule)
     }
 
     val rootComponent =

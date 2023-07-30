@@ -74,6 +74,7 @@ kotlin {
 
                 //Moko
                 api(Dependencies.Moko.resourcesCompose)
+                api(Dependencies.Moko.permission)
 
                 implementation(Dependencies.Calendar.composeDatePicker)
             }

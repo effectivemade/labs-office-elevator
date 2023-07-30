@@ -27,6 +27,7 @@ object Dependencies {
         const val moko = "0.23.0"
         const val calendar = "1.0.4"
         const val sqlDelight = "2.0.0-rc02"
+        const val mokoPermission = "0.16.0"
     }
 
     object Ktor {
@@ -128,6 +129,7 @@ object Dependencies {
 
     object Moko{
         const val resourcesCompose = "dev.icerock.moko:resources-compose:${Versions.moko}"
+        const val permission = "dev.icerock.moko:permissions-compose:${Versions.mokoPermission}"
     }
 
     object Calendar{

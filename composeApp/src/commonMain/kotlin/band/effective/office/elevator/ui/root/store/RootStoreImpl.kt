@@ -9,6 +9,11 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
+import dev.icerock.moko.permissions.DeniedAlwaysException
+import dev.icerock.moko.permissions.DeniedException
+import dev.icerock.moko.permissions.Permission
+import dev.icerock.moko.permissions.PermissionState
+import dev.icerock.moko.permissions.PermissionsController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
@@ -20,6 +25,7 @@ internal class RootStoreImplFactory(
 ) : KoinComponent {
 
     private val signInClient: GoogleSignIn by inject<GoogleSignIn>()
+    private val permissionController: PermissionsController by inject()
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): RootStore =
@@ -63,4 +69,5 @@ internal class RootStoreImplFactory(
 //            }
         }
     }
+
 }

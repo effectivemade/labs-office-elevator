@@ -4,6 +4,7 @@ import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.os.BuildCompat.PrereleaseSdkCheck
@@ -11,14 +12,17 @@ import band.effective.office.elevator.components.Calendar
 import band.effective.office.elevator.data.database.di.databaseModule
 import band.effective.office.elevator.di.androidModuleDI
 import band.effective.office.elevator.di.appModuleDI
+import band.effective.office.elevator.di.permissionModule
 import band.effective.office.elevator.domain.AppActivityLifecycleObserver
 import band.effective.office.elevator.ui.ContentView
 import band.effective.office.elevator.ui.root.RootComponent
 import band.effective.office.elevator.utils.LastOpenActivityProvider
 import com.arkivanov.decompose.defaultComponentContext
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
+import dev.icerock.moko.permissions.PermissionsController
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
+import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -35,12 +39,12 @@ class AndroidApp : Application() {
         Napier.base(DebugAntilog())
         startKoin {
             androidContext(this@AndroidApp)
-            modules(databaseModule, appModuleDI, androidModuleDI)
+            modules(databaseModule, appModuleDI, androidModuleDI, permissionModule)
         }
     }
 }
 
-class AppActivity : ComponentActivity() {
+class AppActivity : AppCompatActivity() {
 
     lateinit var appActivityLifecycleObserver: AppActivityLifecycleObserver
 
@@ -58,6 +62,8 @@ class AppActivity : ComponentActivity() {
                 storeFactory = DefaultStoreFactory(),
             )
 
+        val permissionController: PermissionsController by inject()
+        permissionController.bind(lifecycle, supportFragmentManager)
 
         setContent {
             ContentView(rootComponent)
