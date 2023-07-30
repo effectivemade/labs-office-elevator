@@ -1,7 +1,5 @@
 package band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.uiComponents
 
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -18,13 +16,14 @@ import band.effective.office.tablet.ui.theme.h7
 @Composable
 fun ButtonBookingView(
     modifier: Modifier,
-    roomInfo: RoomInfo
-){
+    roomInfo: RoomInfo,
+    onBookRoom: (name: String) -> Unit
+) {
     val enabled = roomInfo.currentEvent == null
     Button(
         modifier = modifier,
         onClick = {
-
+            onBookRoom(roomInfo.name)
         },
         elevation = ButtonDefaults.elevation(0.dp),
         colors = ButtonDefaults.buttonColors(

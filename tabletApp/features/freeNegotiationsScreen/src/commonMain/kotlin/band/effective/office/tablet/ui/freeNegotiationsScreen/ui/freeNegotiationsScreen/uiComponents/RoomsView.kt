@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.uiComponents.roomCard.RoomCard
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
@@ -27,8 +28,9 @@ import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 @Composable
 fun RoomsView(
     modifier: Modifier,
-    listRooms: List<RoomInfo>
-) {
+    listRooms: List<RoomInfo>,
+    onBookRoom: (name: String) -> Unit
+    ) {
     Box(
         modifier = modifier
     )
@@ -57,6 +59,7 @@ fun RoomsView(
                     Spacer(modifier = Modifier.height(10.dp))
                     ButtonBookingView(
                         roomInfo = it,
+                        onBookRoom = onBookRoom,
                         modifier = Modifier
                             .fillMaxSize()
                             .border(
@@ -67,7 +70,7 @@ fun RoomsView(
                                     LocalCustomColorsPalette.current.disabledPrimaryButton
                                 },
                                 RoundedCornerShape(100.dp)
-                            ),
+                            )
                     )
                 }
             }

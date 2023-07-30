@@ -23,8 +23,15 @@ fun FreeNegotiationsScreen(component: FreeNegotiationsComponent) {
         state.isData -> {
             FreeNegotiationsView(
                 listRooms = state.listRooms,
-                nameRoom = state.nameRoom,
-                onMainScreen = {component.onIntent(FreeNegotiationsStore.Intent.OnMainScreen)}
+                nameRoomCurrent = state.nameCurrentRoom,
+                eventInfo = state.eventInfo,
+                showBookingModal = state.showBookingModal,
+                selectRoomComponent = component.selectRoomComponent,
+                onMainScreen = {component.onIntent(FreeNegotiationsStore.Intent.OnMainScreen)},
+                onBookRoom =  {
+                    name: String ->
+                    component.onIntent(FreeNegotiationsStore.Intent.OnBookingRoom(name))
+                }
             )
         }
         state.isLoad -> {}

@@ -1,10 +1,11 @@
 package band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen
 
 import band.effective.office.tablet.domain.model.Booking
-import band.effective.office.tablet.domain.model.EventInfo
-import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.store.FreeNegotiationsStoreFactory
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.store.FreeNegotiationsStore
+import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.store.FreeNegotiationsStoreFactory
+import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponentImpl
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.childContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
@@ -19,16 +20,22 @@ class FreeNegotiationsComponentImpl(
     val onMainScreen: () -> Unit
 ) : ComponentContext by componentContext, FreeNegotiationsComponent, KoinComponent {
 
-    //SelectRoom
-
-    override fun onIntent(intent: FreeNegotiationsStore.Intent){
-        when(intent){
+    override fun onIntent(intent: FreeNegotiationsStore.Intent) {
+        when (intent) {
             is FreeNegotiationsStore.Intent.SetBooking ->
                 freeNegotiationsStore.accept(intent.copy(bookingInfo = onBookingInfo()))
+
             is FreeNegotiationsStore.Intent.OnMainScreen -> {
                 onMainScreen()
             }
-            else -> {}
+
+            is FreeNegotiationsStore.Intent.OnBookingRoom -> {
+                freeNegotiationsStore.accept(intent)
+            }
+
+            is FreeNegotiationsStore.Intent.CloseModal ->
+                freeNegotiationsStore.accept(intent)
+
         }
     }
 
@@ -37,6 +44,19 @@ class FreeNegotiationsComponentImpl(
             storeFactory = storeFactory
         ).create()
     }
+
+    override val selectRoomComponent: SelectRoomComponentImpl =
+        SelectRoomComponentImpl(
+            componentContext = childContext(key = "bookingCurrentRoom"),
+            storeFactory = storeFactory,
+            onBookingRoom = {
+                Booking(
+                    nameRoom = state.value.nameBookingRoom,
+                    eventInfo = state.value.eventInfo
+                )
+            },
+            onCloseRequest = { onIntent(FreeNegotiationsStore.Intent.CloseModal) }
+        )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override val state = freeNegotiationsStore.stateFlow

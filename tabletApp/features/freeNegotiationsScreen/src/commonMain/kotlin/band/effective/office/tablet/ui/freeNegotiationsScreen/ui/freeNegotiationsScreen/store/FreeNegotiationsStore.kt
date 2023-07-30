@@ -8,10 +8,10 @@ import com.arkivanov.mvikotlin.core.store.Store
 interface FreeNegotiationsStore : Store< FreeNegotiationsStore.Intent, FreeNegotiationsStore.State, Nothing>{
 
     sealed interface Intent{
-        object OnBookingRoom : Intent
         object OnMainScreen : Intent
         object CloseModal : Intent
         data class SetBooking(val bookingInfo: Booking): Intent
+        data class OnBookingRoom(val name: String) : Intent
     }
 
     data class State(
@@ -19,7 +19,8 @@ interface FreeNegotiationsStore : Store< FreeNegotiationsStore.Intent, FreeNegot
         val isData: Boolean,
         val error: String?,
         val listRooms: List<RoomInfo>,
-        val nameRoom: String,
+        val nameCurrentRoom: String,
+        val nameBookingRoom: String,
         val eventInfo: EventInfo,
         val showBookingModal: Boolean
     ) {
@@ -29,7 +30,8 @@ interface FreeNegotiationsStore : Store< FreeNegotiationsStore.Intent, FreeNegot
                     isLoad = false,
                     isData = true,
                     error = null,
-                    nameRoom = "",
+                    nameCurrentRoom = "",
+                    nameBookingRoom = "",
                     listRooms = listOf(),
                     eventInfo = EventInfo.emptyEvent,
                     showBookingModal = false
