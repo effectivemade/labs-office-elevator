@@ -17,7 +17,8 @@ class AuthorizationProfileComponent(
     componentContext: ComponentContext,
     private val storeFactory: StoreFactory,
     private val validator: Validator,
-    private val userData: UserData,
+    private val name: String,
+    private val post: String,
     private val output: (AuthorizationProfileComponent.Output) -> Unit,
     private val changeName: (String) -> Unit,
     private val changePost: (String) -> Unit
@@ -28,7 +29,8 @@ class AuthorizationProfileComponent(
             AuthorizationProfileStoreFactory(
                 storeFactory = storeFactory,
                 validator = validator,
-                userData = userData
+                name = name,
+                post = post
             ).create()
         }
 
@@ -49,8 +51,8 @@ class AuthorizationProfileComponent(
     fun changeUserPost(post: String) = changePost(post)
 
     sealed class Output {
-        data class OpenTGScreen(val userData: UserData) : Output()
+        object OpenTGScreen : Output()
 
-        data class OpenPhoneScreen(val userData: UserData) : Output()
+        object OpenPhoneScreen : Output()
     }
 }

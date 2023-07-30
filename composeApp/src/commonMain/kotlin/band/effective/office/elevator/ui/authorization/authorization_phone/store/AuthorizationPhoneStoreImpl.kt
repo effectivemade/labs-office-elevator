@@ -15,7 +15,7 @@ import org.koin.core.component.KoinComponent
 internal class AuthorizationPhoneStoreFactory(
     private val storeFactory: StoreFactory,
     private val validator: Validator,
-    private val userData: UserData
+    private var userPhoneNumber: String
 ) : KoinComponent {
 
     @OptIn(ExperimentalMviKotlinApi::class)
@@ -84,8 +84,8 @@ internal class AuthorizationPhoneStoreFactory(
 
         private fun checkPhoneNumber(phoneNumber: String) {
             if (validator.checkPhone(phoneNumber)) {
-                userData.phoneNumber = phoneNumber
-                publish(AuthorizationPhoneStore.Label.AuthorizationPhoneSuccess(userData))
+                userPhoneNumber = phoneNumber
+                publish(AuthorizationPhoneStore.Label.AuthorizationPhoneSuccess)
                 dispatch(
                     AuthorizationPhoneStoreFactory.Msg.Error(
                         error = false
@@ -107,11 +107,7 @@ internal class AuthorizationPhoneStoreFactory(
 
         private fun initPhoneNumber() {
             scope.launch {
-                dispatch(AuthorizationPhoneStoreFactory.Msg.Data(phoneNumber = userData.phoneNumber))
-//                val userData: UserData =
-//                    getUserUseCase.execute(idToken)
-//                if (userData.phoneNumber.isNotEmpty())
-//                    dispatch(AuthorizationPhoneStoreFactory.Msg.Data(phoneNumber = userData.phoneNumber))
+                dispatch(AuthorizationPhoneStoreFactory.Msg.Data(phoneNumber = userPhoneNumber))
             }
         }
     }

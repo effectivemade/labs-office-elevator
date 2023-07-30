@@ -13,7 +13,8 @@ import kotlinx.coroutines.launch
 class AuthorizationProfileStoreFactory(
     private val storeFactory: StoreFactory,
     private val validator: Validator,
-    private val userData: UserData
+    private var name: String,
+    private var post: String
 ) {
 
     @OptIn(ExperimentalMviKotlinApi::class)
@@ -104,14 +105,14 @@ class AuthorizationProfileStoreFactory(
 
                     dispatch(
                         AuthorizationProfileStoreFactory.Msg.PostData(
-                            post = userData.post!!,
-                            isPostError = userData.post == null
+                            post = post,
+                            isPostError = post == null
                         )
                     )
 
                     dispatch(
                         AuthorizationProfileStoreFactory.Msg.NameData(
-                            name = userData.name,
+                            name = name,
                             isNameError = false
                         )
                     )
@@ -119,18 +120,18 @@ class AuthorizationProfileStoreFactory(
             }
         }
 
-        private fun checkUserdata(name: String, post: String) {
+        private fun checkUserdata(name_: String, post_: String) {
             if (!validator.checkName(name) && !validator.checkPost(post)) {
-                userData.post = post
-                userData.name = name
-                publish(AuthorizationProfileStore.Label.AuthorizationProfileSuccess(userData))
+                post = post_
+                name = name_
+                publish(AuthorizationProfileStore.Label.AuthorizationProfileSuccess)
             } else {
                 publish(AuthorizationProfileStore.Label.AuthorizationProfileFailure)
             }
         }
 
         private fun back() {
-            publish(AuthorizationProfileStore.Label.ReturnInPhoneAuthorization(userData))
+            publish(AuthorizationProfileStore.Label.ReturnInPhoneAuthorization)
         }
     }
 }

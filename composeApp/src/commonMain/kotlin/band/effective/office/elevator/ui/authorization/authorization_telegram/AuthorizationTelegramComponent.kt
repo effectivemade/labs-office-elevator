@@ -17,7 +17,7 @@ class AuthorizationTelegramComponent(
     componentContext: ComponentContext,
     private val storeFactory: StoreFactory,
     private val validator: Validator,
-    private val userData: UserData,
+    private val telegramNick: String,
     private val output: (Output) -> Unit,
     private val changeTelegramNick: (String) -> Unit
 ) : ComponentContext by componentContext {
@@ -27,7 +27,7 @@ class AuthorizationTelegramComponent(
             AuthorizationTelegramStoreFactory(
                 storeFactory = storeFactory,
                 validator = validator,
-                userData = userData
+                nick = telegramNick
             ).create()
         }
 
@@ -49,6 +49,6 @@ class AuthorizationTelegramComponent(
     sealed class Output {
         object OpenContentFlow : Output()
 
-        data class OpenProfileScreen(val userData: UserData) : Output()
+        object OpenProfileScreen : Output()
     }
 }

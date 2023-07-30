@@ -23,10 +23,10 @@ interface AuthorizationProfileStore :
     )
 
     sealed interface Label {
-        data class AuthorizationProfileSuccess(val userData: UserData) : Label
+        object AuthorizationProfileSuccess : Label
 
         object AuthorizationProfileFailure : Label
 
-        data class ReturnInPhoneAuthorization(val userData: UserData) : Label
+        object ReturnInPhoneAuthorization : Label
     }
 }

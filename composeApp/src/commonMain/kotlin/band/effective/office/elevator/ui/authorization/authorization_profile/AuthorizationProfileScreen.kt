@@ -77,15 +77,13 @@ fun AuthorizationProfileScreen(component: AuthorizationProfileComponent) {
                 }
 
                 is AuthorizationProfileStore.Label.AuthorizationProfileSuccess -> {
-                    component.changeUserPost(label.userData.post!!)
-                    component.changeUserName(label.userData.name)
                     component.onOutput(
-                        AuthorizationProfileComponent.Output.OpenTGScreen(label.userData)
+                        AuthorizationProfileComponent.Output.OpenTGScreen
                     )
                 }
 
                 is AuthorizationProfileStore.Label.ReturnInPhoneAuthorization -> component.onOutput(
-                    AuthorizationProfileComponent.Output.OpenPhoneScreen(label.userData)
+                    AuthorizationProfileComponent.Output.OpenPhoneScreen
                 )
             }
         }

@@ -18,7 +18,7 @@ class AuthorizationPhoneComponent(
     componentContext: ComponentContext,
     private val storeFactory: StoreFactory,
     private val validator: Validator,
-    private val userData: UserData,
+    private val phoneNumber: String,
     private val output: (AuthorizationPhoneComponent.Output) -> Unit,
     private val function: (String) -> Unit
 ) : ComponentContext by componentContext {
@@ -28,7 +28,7 @@ class AuthorizationPhoneComponent(
             AuthorizationPhoneStoreFactory(
                 storeFactory = storeFactory,
                 validator,
-                userData
+                phoneNumber
             ).create()
         }
 
@@ -48,7 +48,7 @@ class AuthorizationPhoneComponent(
     fun change(phoneNumber: String) = function(phoneNumber)
 
     sealed class Output {
-        data class OpenProfileScreen(val userData: UserData) : Output()
+        object OpenProfileScreen : Output()
 
         object OpenGoogleScreen : Output()
     }

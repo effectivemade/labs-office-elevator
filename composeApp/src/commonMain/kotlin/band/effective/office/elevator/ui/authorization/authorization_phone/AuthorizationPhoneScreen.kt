@@ -68,9 +68,9 @@ fun AuthorizationPhoneScreen(component: AuthorizationPhoneComponent) {
                 }
 
                 is AuthorizationPhoneStore.Label.AuthorizationPhoneSuccess -> {
-                    component.change(label.userData.phoneNumber)
+                    component.change(state.phoneNumber)
                     component.onOutput(
-                        AuthorizationPhoneComponent.Output.OpenProfileScreen(label.userData)
+                        AuthorizationPhoneComponent.Output.OpenProfileScreen
                     )
                 }
 

@@ -21,7 +21,7 @@ interface AuthorizationPhoneStore :
     )
 
     sealed interface Label {
-        data class AuthorizationPhoneSuccess(val userData: UserData) : Label
+        object AuthorizationPhoneSuccess : Label
 
         object AuthorizationPhoneFailure : Label
 
