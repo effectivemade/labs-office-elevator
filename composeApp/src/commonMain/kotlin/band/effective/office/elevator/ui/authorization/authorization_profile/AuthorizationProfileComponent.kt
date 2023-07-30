@@ -18,7 +18,9 @@ class AuthorizationProfileComponent(
     private val storeFactory: StoreFactory,
     private val validator: Validator,
     private val userData: UserData,
-    private val output: (AuthorizationProfileComponent.Output) -> Unit
+    private val output: (AuthorizationProfileComponent.Output) -> Unit,
+    private val changeName: (String) -> Unit,
+    private val changePost: (String) -> Unit
 ) : ComponentContext by componentContext {
 
     private val authorizationProfileStore =
@@ -42,6 +44,9 @@ class AuthorizationProfileComponent(
     fun onOutput(output: Output) {
         output(output)
     }
+
+    fun changeUserName(name: String) = changeName(name)
+    fun changeUserPost(post: String) = changePost(post)
 
     sealed class Output {
         data class OpenTGScreen(val userData: UserData) : Output()

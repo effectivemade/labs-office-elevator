@@ -1,13 +1,11 @@
 package band.effective.office.elevator.ui.authorization
 
-import band.effective.office.elevator.domain.GoogleSignIn
 import band.effective.office.elevator.domain.models.UserData
+import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.ui.authorization.authorization_google.AuthorizationGoogleComponent
 import band.effective.office.elevator.ui.authorization.authorization_phone.AuthorizationPhoneComponent
 import band.effective.office.elevator.ui.authorization.authorization_profile.AuthorizationProfileComponent
 import band.effective.office.elevator.ui.authorization.authorization_telegram.AuthorizationTelegramComponent
-import band.effective.office.elevator.ui.authorization.authorization_telegram.store.AuthorizationTelegramStore
-import band.effective.office.elevator.ui.authorization.authorization_telegram.store.AuthorizationTelegramStoreFactory
 import band.effective.office.elevator.ui.authorization.store.AuthorizationStore
 import band.effective.office.elevator.ui.authorization.store.AuthorizationStoreFactory
 import band.effective.office.elevator.ui.models.validator.Validator
@@ -28,7 +26,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 class AuthorizationComponent(
     componentContext: ComponentContext,
@@ -39,25 +36,23 @@ class AuthorizationComponent(
 
     private val validator: Validator = Validator()
     private val navigation = StackNavigation<AuthorizationComponent.Config>()
+    private val userData: UserData = UserData()
 
-    init {
-        val userData = UserData()
+    private fun changePhoneNumber(phoneNumber: String) {
+        userData.phoneNumber = phoneNumber
+    }
 
-        val changeName = { name: String ->
-            userData.name = name
-        }
+    private fun changeName(name: String) {
+        userData.name = name
+    }
 
-        val changePost = { post: String ->
-            userData.post = post
-        }
+    private fun changePost(post: String) {
+        userData.post = post
+    }
 
-        val changePhoneNumber = { phoneNumber: String ->
-            userData.phoneNumber = phoneNumber
-        }
-
-        val changeTelegramNick = { telegramNick: String ->
-            userData.telegramNick = telegramNick
-        }
+    private fun changeTelegramNick(telegramNick: String) {
+        showToast(userData.phoneNumber)
+        userData.telegramNick = telegramNick
     }
 
     private val authorizationStore =
@@ -100,7 +95,8 @@ class AuthorizationComponent(
                     storeFactory,
                     validator,
                     config.userData,
-                    ::phoneAuthOutput
+                    ::phoneAuthOutput,
+                    ::changePhoneNumber
                 )
             )
 
@@ -110,7 +106,9 @@ class AuthorizationComponent(
                     storeFactory,
                     validator,
                     config.userData,
-                    ::profileAuthOutput
+                    ::profileAuthOutput,
+                    ::changeName,
+                    ::changePost
                 )
             )
 
@@ -120,7 +118,8 @@ class AuthorizationComponent(
                     storeFactory,
                     validator,
                     config.userData,
-                    ::telegramAuthOutput
+                    ::telegramAuthOutput,
+                    ::changeTelegramNick
                 )
             )
         }

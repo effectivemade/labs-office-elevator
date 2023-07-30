@@ -81,7 +81,11 @@ class AuthorizationTelegramStoreFactory(
                 scope.launch {
                     val result = authorizationEntity.push(userData)
                     if (result)
-                        publish(AuthorizationTelegramStore.Label.AuthorizationTelegramSuccess)
+                        publish(
+                            AuthorizationTelegramStore.Label.AuthorizationTelegramSuccess(
+                                userData
+                            )
+                        )
                     else
                         publish(AuthorizationTelegramStore.Label.AuthorizationTelegramFailure)
                 }

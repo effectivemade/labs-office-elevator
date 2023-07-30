@@ -76,12 +76,16 @@ fun AuthorizationProfileScreen(component: AuthorizationProfileComponent) {
                     showToast(errorMessage)
                 }
 
-                is AuthorizationProfileStore.Label.AuthorizationProfileSuccess -> component.onOutput(
-                    AuthorizationProfileComponent.Output.OpenTGScreen (label.userData)
-                )
+                is AuthorizationProfileStore.Label.AuthorizationProfileSuccess -> {
+                    component.changeUserPost(label.userData.post!!)
+                    component.changeUserName(label.userData.name)
+                    component.onOutput(
+                        AuthorizationProfileComponent.Output.OpenTGScreen(label.userData)
+                    )
+                }
 
                 is AuthorizationProfileStore.Label.ReturnInPhoneAuthorization -> component.onOutput(
-                    AuthorizationProfileComponent.Output.OpenPhoneScreen (label.userData)
+                    AuthorizationProfileComponent.Output.OpenPhoneScreen(label.userData)
                 )
             }
         }

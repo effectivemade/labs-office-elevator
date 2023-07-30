@@ -67,9 +67,12 @@ fun AuthorizationPhoneScreen(component: AuthorizationPhoneComponent) {
                     showToast(errorMessage)
                 }
 
-                is AuthorizationPhoneStore.Label.AuthorizationPhoneSuccess -> component.onOutput(
-                    AuthorizationPhoneComponent.Output.OpenProfileScreen(label.userData)
-                )
+                is AuthorizationPhoneStore.Label.AuthorizationPhoneSuccess -> {
+                    component.change(label.userData.phoneNumber)
+                    component.onOutput(
+                        AuthorizationPhoneComponent.Output.OpenProfileScreen(label.userData)
+                    )
+                }
 
                 AuthorizationPhoneStore.Label.ReturnInGoogleAuthorization -> component.onOutput(
                     AuthorizationPhoneComponent.Output.OpenGoogleScreen

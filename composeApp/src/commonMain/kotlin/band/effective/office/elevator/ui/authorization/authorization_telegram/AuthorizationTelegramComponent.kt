@@ -18,7 +18,8 @@ class AuthorizationTelegramComponent(
     private val storeFactory: StoreFactory,
     private val validator: Validator,
     private val userData: UserData,
-    private val output: (Output) -> Unit
+    private val output: (Output) -> Unit,
+    private val changeTelegramNick: (String) -> Unit
 ) : ComponentContext by componentContext {
 
     private val authorizationTelegramStore =
@@ -42,6 +43,8 @@ class AuthorizationTelegramComponent(
     fun onOutput(output: Output) {
         output(output)
     }
+
+    fun changeTG(telegramNick: String) = changeTelegramNick(telegramNick)
 
     sealed class Output {
         object OpenContentFlow : Output()

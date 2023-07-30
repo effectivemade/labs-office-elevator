@@ -20,7 +20,7 @@ interface AuthorizationTelegramStore :
     )
 
     sealed interface Label {
-        object AuthorizationTelegramSuccess : Label
+        data class AuthorizationTelegramSuccess(val userData: UserData) : Label
 
         object AuthorizationTelegramFailure : Label
 

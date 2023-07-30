@@ -67,12 +67,15 @@ fun AuthorizationTelegramScreen(component: AuthorizationTelegramComponent) {
                     showToast(errorMessage)
                 }
 
-                AuthorizationTelegramStore.Label.AuthorizationTelegramSuccess -> component.onOutput(
-                    AuthorizationTelegramComponent.Output.OpenContentFlow
-                )
+                is AuthorizationTelegramStore.Label.AuthorizationTelegramSuccess -> {
+                    component.changeTG(label.userData.telegramNick)
+                    component.onOutput(
+                        AuthorizationTelegramComponent.Output.OpenContentFlow
+                    )
+                }
 
                 is AuthorizationTelegramStore.Label.ReturnInProfileAuthorization -> component.onOutput(
-                    AuthorizationTelegramComponent.Output.OpenProfileScreen (label.userData)
+                    AuthorizationTelegramComponent.Output.OpenProfileScreen(label.userData)
                 )
             }
         }
