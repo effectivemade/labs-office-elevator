@@ -51,7 +51,6 @@ class AuthorizationComponent(
     }
 
     private fun changeTelegramNick(telegramNick: String) {
-        showToast(userData.phoneNumber)
         userData.telegramNick = telegramNick
     }
 
