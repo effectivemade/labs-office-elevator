@@ -1,5 +1,6 @@
 package band.effective.office.elevator.domain.di
 
+import band.effective.office.elevator.data.MockProfileData
 import band.effective.office.elevator.data.ProfileRepositoryImpl
 import band.effective.office.elevator.domain.ProfileRepository
 import band.effective.office.elevator.domain.usecase.GetUserByIdUseCase
@@ -10,4 +11,5 @@ internal val profileDomainModuleDI = module{
     single<ProfileRepository> { ProfileRepositoryImpl() }
     single<GetUserByIdUseCase> {GetUserByIdUseCase(get())}
     single<UpdateUserUseCase> {UpdateUserUseCase(get())}
+    single<MockProfileData>{MockProfileData()}
 }

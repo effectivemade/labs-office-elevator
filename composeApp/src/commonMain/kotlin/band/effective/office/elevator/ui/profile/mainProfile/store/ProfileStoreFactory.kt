@@ -11,6 +11,8 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.subscribe
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -64,7 +66,9 @@ internal class ProfileStoreFactory(
 
         private fun fetchUserInfo() {
             scope.launch {
-               dispatch(Msg.ProfileData(user = getUserByIdUseCase.execute("2")))
+                getUserByIdUseCase.execute("1").collect {
+                    user -> dispatch(Msg.ProfileData(user = user))
+                }
             }
         }
     }
@@ -72,7 +76,7 @@ internal class ProfileStoreFactory(
     private object ReducerImpl : Reducer<User, Msg> {
         override fun User.reduce(message: Msg): User =
             when (message) {
-                is Msg.ProfileData -> copy(
+                is Msg.ProfileData -> User(
                     imageUrl = message.user.imageUrl,
                     userName = message.user.userName,
                     telegram = message.user.telegram,

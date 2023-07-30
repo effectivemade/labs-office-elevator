@@ -27,7 +27,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,7 +37,7 @@ import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.borderPurple
 import band.effective.office.elevator.components.TitlePage
 import band.effective.office.elevator.textGrayColor
-import band.effective.office.elevator.ui.models.FieldsData
+import band.effective.office.elevator.ui.models.FieldsDataForProfile
 import band.effective.office.elevator.ui.profile.mainProfile.store.ProfileStore
 import com.seiko.imageloader.model.ImageRequest
 import com.seiko.imageloader.rememberAsyncImagePainter
@@ -173,7 +172,7 @@ fun ProfileInfoAboutUser(imageUrl: String, userName: String, post: String, onEdi
 
 
 @Composable
-private fun FieldsItemStyle(item: FieldsData, onEditProfile: (id: String) -> Unit,  id: String) {
+private fun FieldsItemStyle(item: FieldsDataForProfile, onEditProfile: (id: String) -> Unit,  id: String) {
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier
             .padding(horizontal = 16.dp).fillMaxWidth()
@@ -191,7 +190,7 @@ private fun FieldsItemStyle(item: FieldsData, onEditProfile: (id: String) -> Uni
         )
         Spacer(modifier = Modifier.weight(.1f))
         Text(
-            item.value.value,
+            item.value,
             style = MaterialTheme.typography.subtitle1,
             color = Color.Black
         )
@@ -209,23 +208,23 @@ private fun FieldsItemStyle(item: FieldsData, onEditProfile: (id: String) -> Uni
 
 
 
-private fun prepareFieldsData(telegram: String, phoneNumber: String) : List<FieldsData>{
+private fun prepareFieldsData(telegram: String, phoneNumber: String) : List<FieldsDataForProfile>{
 
-    val fieldsList = mutableListOf<FieldsData>()
+    val fieldsList = mutableListOf<FieldsDataForProfile>()
 
     fieldsList.add(
-        FieldsData(
+        FieldsDataForProfile(
             icon = MainRes.images.icon_call,
             title = MainRes.strings.phone_number,
-            value = mutableStateOf(phoneNumber),
+            value = phoneNumber,
         )
     )
 
     fieldsList.add(
-        FieldsData(
+        FieldsDataForProfile(
             icon = MainRes.images.icon_telegram,
             title = MainRes.strings.telegram,
-            value = mutableStateOf(telegram),
+            value =telegram,
         )
     )
     return fieldsList
