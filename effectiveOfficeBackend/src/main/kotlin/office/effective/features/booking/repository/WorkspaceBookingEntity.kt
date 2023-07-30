@@ -8,8 +8,10 @@ import org.ktorm.database.Database
 import org.ktorm.entity.Entity
 import org.ktorm.entity.sequenceOf
 import org.ktorm.schema.Table
+import org.ktorm.schema.jdbcTimestamp
 import org.ktorm.schema.timestamp
 import org.ktorm.schema.uuid
+import java.sql.Timestamp
 import java.time.Instant
 import java.util.*
 
@@ -25,7 +27,7 @@ interface WorkspaceBookingEntity: Entity<WorkspaceBookingEntity> {
 object WorkspaceBooking: Table<WorkspaceBookingEntity>("workspace_booking") {
     val ownerId = uuid("owner_id").references(Users) { it.owner }
     val workspaceId = uuid("workspace_id").references(Workspaces) { it.workspace }
-    val id = uuid("owner_id").primaryKey().bindTo { it.id }
+    val id = uuid("id").primaryKey().bindTo { it.id }
     val beginBooking = timestamp("begin_booking").bindTo { it.beginBooking }
     val endBooking = timestamp("end_booking").bindTo { it.endBooking }
 }
