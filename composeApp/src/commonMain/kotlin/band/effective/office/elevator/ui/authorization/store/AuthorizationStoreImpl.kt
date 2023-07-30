@@ -1,12 +1,15 @@
 package band.effective.office.elevator.ui.authorization.store
 
+import band.effective.office.elevator.domain.entity.AuthorizationEntity
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class AuthorizationStoreFactory(
     private val storeFactory: StoreFactory
-) {
+) : KoinComponent {
 
     fun create(): AuthorizationStore =
         object : AuthorizationStore,
@@ -25,7 +28,9 @@ class AuthorizationStoreFactory(
             getState: () -> AuthorizationStore.State
         ) {
             when (intent) {
-                AuthorizationStore.Intent.ContinueButtonClicked -> TODO()
+                AuthorizationStore.Intent.ContinueButtonClicked -> {
+                    TODO()
+                }
             }
         }
     }

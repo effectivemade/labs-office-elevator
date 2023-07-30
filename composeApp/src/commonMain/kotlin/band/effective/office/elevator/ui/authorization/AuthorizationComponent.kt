@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.authorization
 
+import band.effective.office.elevator.domain.entity.AuthorizationEntity
 import band.effective.office.elevator.domain.models.UserData
 import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.ui.authorization.authorization_google.AuthorizationGoogleComponent
@@ -22,10 +23,15 @@ import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class AuthorizationComponent(
     componentContext: ComponentContext,
@@ -37,6 +43,7 @@ class AuthorizationComponent(
     private val validator: Validator = Validator()
     private val navigation = StackNavigation<AuthorizationComponent.Config>()
     private val userData: UserData = UserData()
+    private val authorizationEntity: AuthorizationEntity by inject()
 
     private fun changePhoneNumber(phoneNumber: String) {
         userData.phoneNumber = phoneNumber
@@ -129,8 +136,6 @@ class AuthorizationComponent(
             is AuthorizationGoogleComponent.Output.OpenAuthorizationPhoneScreen -> navigation.replaceAll(
                 Config.PhoneAuth
             )
-
-            else -> {}
         }
     }
 
@@ -140,7 +145,7 @@ class AuthorizationComponent(
                 Config.ProfileAuth
             )
 
-            AuthorizationPhoneComponent.Output.OpenGoogleScreen -> navigation.bringToFront(
+            is AuthorizationPhoneComponent.Output.OpenGoogleScreen -> navigation.bringToFront(
                 AuthorizationComponent.Config.GoogleAuth
             )
         }
@@ -164,7 +169,13 @@ class AuthorizationComponent(
                 Config.ProfileAuth
             )
 
-            AuthorizationTelegramComponent.Output.OpenContentFlow -> openContentFlow()
+            is AuthorizationTelegramComponent.Output.OpenContentFlow -> {
+                CoroutineScope(Dispatchers.Main).launch {
+                    val result = authorizationEntity.push(userData)
+                    if (result)
+                        openContentFlow()
+                }
+            }
         }
     }
 

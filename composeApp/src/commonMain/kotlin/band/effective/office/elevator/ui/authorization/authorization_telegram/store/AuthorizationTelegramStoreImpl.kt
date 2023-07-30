@@ -1,9 +1,5 @@
 package band.effective.office.elevator.ui.authorization.authorization_telegram.store
 
-import band.effective.office.elevator.domain.entity.AuthorizationEntity
-import band.effective.office.elevator.domain.models.UserData
-import band.effective.office.elevator.domain.usecase.PushUserDataUseCase
-import band.effective.office.elevator.ui.authorization.authorization_profile.store.AuthorizationProfileStoreFactory
 import band.effective.office.elevator.ui.models.validator.Validator
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
@@ -13,7 +9,6 @@ import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 class AuthorizationTelegramStoreFactory(
     private val storeFactory: StoreFactory,
@@ -21,8 +16,6 @@ class AuthorizationTelegramStoreFactory(
     private var nick: String
 ) :
     KoinComponent {
-
-    private val authorizationEntity: AuthorizationEntity by inject()
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): AuthorizationTelegramStore =
