@@ -59,90 +59,27 @@ actual fun pickTelegram(telegramNick: String) {
 actual fun pickSBP(phoneNumber: String) {
 
 
-    try {
-        val intent = Intent().apply {
-            flags = 0x24000000 or Intent.FLAG_ACTIVITY_NEW_TASK
-            component = ComponentName(
-                "ru.sberbankmobile",
+    with(AndroidApp.INSTANCE.applicationContext) {
+        try {
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                flags = 0x24000000 or Intent.FLAG_ACTIVITY_NEW_TASK
+                component = ComponentName(
+                    "ru.sberbankmobile",
 //            "ru.sberbank.mobile.auth.presentation.prelogin.PreloginActivity"
 //            "ru.sberbank.mobile.app.configuration.SbolApplication"
-                "ru.sberbank.mobile.auth.presentation.splash.SplashActivity"
-            )
+                    "ru.sberbank.mobile.auth.presentation.splash.SplashActivity"
+                )
+            }
+            this@with.startActivity(intent)
+        } catch (e: Exception) {
+            showToast("SberBank app is not installed")
+            val url =
+                "https://web4-new.online.sberbank.ru/payments/fps"
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                data = Uri.parse(url)
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+            this@with.startActivity(intent)
         }
-        AndroidApp.INSTANCE.applicationContext.startActivity(intent)
-    } catch (e: Exception) {
-        showToast("SberBank app is not installed")
-        val url =
-            "https://web4-new.online.sberbank.ru/payments/fps"
-        val intent = Intent(Intent.ACTION_VIEW).apply {
-            data = Uri.parse(url)
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        }
-        AndroidApp.INSTANCE.applicationContext.startActivity(intent)
     }
-
-//    region::V4
-//    val packageName = "ru.sberbankmobile"
-//    val activityName =
-//        "ru.sberbank.mobile.feature.efs.transfers.quickpaymentssystem.impl.MainActivity"
-//
-//    val intent = Intent()
-//    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//    intent.component = ComponentName(packageName, activityName)
-//    startActivity(AndroidApp.INSTANCE.applicationContext, intent, Bundle())
-//    endregion
-
-//    region::V3
-
-//    val packageName = "ru.sberbankmobile/ru.sberbank.mobile.feature.efs.transfers.quickpaymentssystem.impl.TransferActivity"
-//
-//    with(AndroidApp.INSTANCE.applicationContext) {
-//        try {
-//            val intent: Intent? = this@with.packageManager.getLaunchIntentForPackage(packageName)
-////            val intent = Intent(Intent.ACTION_VIEW)
-////            intent.`package` = "ru.sberbankmobile"
-////        intent.data = Uri.parse("https://web4-new.online.sberbank.ru/payments/fps")
-//            if (intent != null) {
-//                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//                this@with.startActivity(intent)
-//            } else {
-//                showToast("Sberbank app is not installed")
-//            }
-//        } catch (e: Exception) {
-//        }
-//    }
-//    endregion
-
-//    region::V1
-//    val packageName = "ru.sberbankmobile"
-//
-//    try {
-//        val intent = AndroidApp.INSTANCE.applicationContext.packageManager.getLaunchIntentForPackage(packageName)
-//        if (intent != null) {
-//            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//            AndroidApp.INSTANCE.applicationContext.startActivity(intent)
-//        } else {
-//            if (intent != null) {
-//                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//                val playStoreIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName"))
-//                AndroidApp.INSTANCE.applicationContext.startActivity(playStoreIntent)
-//            }
-//        }
-//    } catch (e: ActivityNotFoundException) {
-//        val playStoreIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName"))
-//        AndroidApp.INSTANCE.applicationContext.startActivity(playStoreIntent)
-//    }
-//    endregion
-
-//    region:: V2
-//    val url =
-//        "https://web4-new.online.sberbank.ru/payments/fps"
-//    val intent = Intent(Intent.ACTION_VIEW).apply {
-//        data = Uri.parse(url)
-////        `package` = "ru.sberbankmobile"
-//        flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//    }
-//    AndroidApp.INSTANCE.applicationContext.startActivity(intent)
-//    endregion
-
 }
