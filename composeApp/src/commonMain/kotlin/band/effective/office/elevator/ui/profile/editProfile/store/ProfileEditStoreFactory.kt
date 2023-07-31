@@ -1,13 +1,11 @@
 package band.effective.office.elevator.ui.profile.editProfile.store
 
-
 import band.effective.office.elevator.domain.models.User
 import band.effective.office.elevator.domain.usecase.GetUserByIdUseCase
 import band.effective.office.elevator.domain.usecase.UpdateUserUseCase
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import band.effective.office.elevator.ui.profile.editProfile.store.ProfileEditStore.*
-import band.effective.office.elevator.ui.profile.mainProfile.store.ProfileStoreFactory
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
@@ -76,7 +74,7 @@ internal class ProfileEditStoreFactory(
 
         private fun fetchUserInfo() {
             scope.launch {
-                getUserByIdUseCase.execute(user).collect {
+                getUserByIdUseCase.execute(user).collectLatest {
                         user -> dispatch(Msg.ProfileData(user = user))
                 }
             }
