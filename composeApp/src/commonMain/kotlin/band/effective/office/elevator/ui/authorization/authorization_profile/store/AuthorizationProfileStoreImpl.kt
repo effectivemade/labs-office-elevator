@@ -85,6 +85,7 @@ class AuthorizationProfileStoreFactory(
                 )
             }
 
+
         private fun checkUserdata(name: String, post: String) {
             if (!validator.checkName(name) && !validator.checkPost(post)) {
                 publish(AuthorizationProfileStore.Label.AuthorizationProfileSuccess)

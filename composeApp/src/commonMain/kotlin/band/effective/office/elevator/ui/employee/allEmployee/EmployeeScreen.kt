@@ -45,6 +45,7 @@ import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.borderGray
 import band.effective.office.elevator.borderGreen
 import band.effective.office.elevator.borderPurple
+import band.effective.office.elevator.domain.models.EmployeeInfo
 import band.effective.office.elevator.textInBorderGray
 import band.effective.office.elevator.textInBorderPurple
 import band.effective.office.elevator.theme_light_background
@@ -157,7 +158,6 @@ fun EmployeeScreenContent(
 
             )
 
-            //padding настроить!
         }
         Column(
             modifier = Modifier
@@ -294,44 +294,62 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
 
 object EmployeesData {
     val employeesCardData = listOf(
-        EmployeeCard(
+        EmployeeInfo(
             "Ivanov Ivan",
             "Android-developer",
             "In office",
-            "https://wampi.ru/image/R9C6OC7"
+            "https://wampi.ru/image/R9C6OC7",
+            "",
+            "",
+            ""
         ),
-        EmployeeCard(
+        EmployeeInfo(
             "Smirnov Andrey",
             "UI/UX Designer",
             "Will be today",
-            "https://www.kasandbox.org/programming-images/avatars/leaf-grey.png"
+            "https://www.kasandbox.org/programming-images/avatars/leaf-grey.png",
+            "",
+            "",
+            ""
         ),
-        EmployeeCard(
+        EmployeeInfo(
             "Vasiliev Vasiliy",
             "HR",
             "No bookings",
-            "https://www.kasandbox.org/programming-images/avatars/leaf-blue.png"
+            "https://www.kasandbox.org/programming-images/avatars/leaf-blue.png",
+            "",
+            "",
+            ""
         )
     )
     val showedEmployeesCardData = listOf(
-        EmployeeCard(
+        EmployeeInfo(
             "Смирнов Андрей",
             "UI/UX Designer",
             "Будет сегодня",
-            "https://www.kasandbox.org/programming-images/avatars/leaf-grey.png"
+            "https://www.kasandbox.org/programming-images/avatars/leaf-grey.png",
             //MainRes.images.logo_default
+            "",
+            "",
+            ""
         ),
-        EmployeeCard(
+        EmployeeInfo(
             "Васильев Василий",
             "HR",
             "Нет бронирований",
-            "https://www.kasandbox.org/programming-images/avatars/leaf-blue.png"
+            "https://www.kasandbox.org/programming-images/avatars/leaf-blue.png",
+            "",
+            "",
+            ""
         ),
-        EmployeeCard(
+        EmployeeInfo(
             "Иванов Иван",
             "Android-developer",
             "В офисе",
-            "https://www.kasandbox.org/programming-images/avatars/leaf-green.png"
+            "https://www.kasandbox.org/programming-images/avatars/leaf-green.png",
+            "",
+            "",
+            ""
         )
     )
 }
