@@ -33,10 +33,11 @@ fun Route.authRoutingFun() {
         }
         get("/callback") {
             try {
-                val principal: OAuthAccessTokenResponse.OAuth2? = call.principal()
+                val principal: OAuthAccessTokenResponse.OAuth2 =
+                    call.principal() ?: throw Exception("Token cannot be verified")
                 val res = transactionManager.useTransaction({
                     verifier.isCorrectToken(
-                        principal!!.extraParameters["id_token"] ?: ""
+                        principal.extraParameters["id_token"] ?: ""
                     )
                 })
                 call.respondText(res)
