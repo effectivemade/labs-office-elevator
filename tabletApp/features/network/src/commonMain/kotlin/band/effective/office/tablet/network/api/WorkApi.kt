@@ -18,9 +18,10 @@ class WorkApi : Api {
     val mutableOrgList =
         MutableStateFlow(listOf("Ольга Белозерова", "Матвей Авгуль", "Лилия Акентьева"))
 
+    var isSuccess = MutableStateFlow(true)
     override suspend fun getRoomInfo(): Either<ErrorResponse, RoomInfo> {
         delay(5000L)
-        return Either.Success(mutableRoomInfo.value)
+        return if (isSuccess.value) Either.Success(mutableRoomInfo.value) else Either.Error(ErrorResponse(0, ""))
     }
 
     override suspend fun getOrganizers(): Either<ErrorResponse, List<String>> {
@@ -68,6 +69,12 @@ class WorkApi : Api {
         scope: CoroutineScope,
         handler: (event: WebServerEvent) -> Unit
     ) {
+        scope.launch {
+            isSuccess.collect {
+                handler(WebServerEvent.RoomInfoUpdate)
+                handler(WebServerEvent.OrganizerInfoUpdate)
+            }
+        }
         scope.launch {
             mutableRoomInfo.collect { handler(WebServerEvent.RoomInfoUpdate) }
         }

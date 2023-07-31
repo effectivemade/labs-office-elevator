@@ -17,4 +17,8 @@ class MockController(
     fun changeHaveTv(newValue: Boolean){
         workApi.mutableRoomInfo.update { it.copy(isHaveTv = newValue) }
     }
+
+    fun changeSuccess(newValue: Boolean) {
+        workApi.isSuccess.update { newValue }
+    }
 }

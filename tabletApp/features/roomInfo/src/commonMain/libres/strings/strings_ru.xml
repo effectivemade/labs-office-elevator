@@ -33,4 +33,5 @@
     <string name="event_list_title">Занятое время</string>
     <string name="no_select_organizer_alert">Выберите организатора</string>
     <string name="no_correct_time">В это время будет другая бронь</string>
+    <string name="connection_lost">Нет подключения к интернету</string>
 </resources>

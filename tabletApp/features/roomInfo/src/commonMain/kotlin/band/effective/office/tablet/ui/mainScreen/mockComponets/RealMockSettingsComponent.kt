@@ -34,6 +34,10 @@ class RealMockSettingsComponent(
             }
 
             is MockSettingsEvent.OnSwitchVisible -> mutableState.update { it.copy(isVisible = !it.isVisible) }
+            is MockSettingsEvent.OnSwitchSuccess -> {
+                mockController.changeSuccess(event.newState)
+                mutableState.update { it.copy(isSuccess = event.newState) }
+            }
         }
     }
 

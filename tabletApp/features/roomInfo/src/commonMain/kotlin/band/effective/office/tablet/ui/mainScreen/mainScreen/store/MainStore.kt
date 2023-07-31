@@ -8,6 +8,7 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, Nothing> {
         object CloseModal : Intent
         object OnBookingCurrentRoomRequest : Intent
         object OnBookingOtherRoomRequest : Intent
+        data class OnDisconnectChange(val newValue: Boolean) : Intent
     }
 
     data class State(
@@ -16,8 +17,10 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, Nothing> {
         val isError: Boolean,
         val showBookingModal: Boolean,
         val showFreeModal: Boolean,
+        val isDisconnect: Boolean
     ) {
         fun showModal() = showFreeModal || showBookingModal
+
         companion object {
             val defaultState =
                 State(
@@ -26,6 +29,7 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, Nothing> {
                     isError = false,
                     showBookingModal = false,
                     showFreeModal = false,
+                    isDisconnect = false
                 )
         }
     }

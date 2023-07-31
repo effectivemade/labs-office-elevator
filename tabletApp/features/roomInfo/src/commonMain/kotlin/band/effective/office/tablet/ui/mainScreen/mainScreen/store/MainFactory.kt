@@ -39,11 +39,10 @@ class MainFactory(private val storeFactory: StoreFactory) : KoinComponent {
         object BookingCurrentRoom : Message
         object BookingOtherRoom : Message
         object CloseModal : Message
-        object OpenFreeModal : Message {
-
-        }
+        object OpenFreeModal : Message
 
         data class Load(val isSuccess: Boolean) : Message
+        data class UpdateDisconnect(val newValue: Boolean) : Message
     }
 
     private sealed interface Action {
@@ -58,6 +57,7 @@ class MainFactory(private val storeFactory: StoreFactory) : KoinComponent {
                 is MainStore.Intent.OnBookingOtherRoomRequest -> dispatch(Message.BookingOtherRoom)
                 is MainStore.Intent.CloseModal -> dispatch(Message.CloseModal)
                 is MainStore.Intent.OnOpenFreeRoomModal -> dispatch(Message.OpenFreeModal)
+                is MainStore.Intent.OnDisconnectChange -> dispatch(Message.UpdateDisconnect(intent.newValue))
             }
         }
 
@@ -81,6 +81,7 @@ class MainFactory(private val storeFactory: StoreFactory) : KoinComponent {
                 )
 
                 is Message.OpenFreeModal -> copy(showFreeModal = true)
+                is Message.UpdateDisconnect -> copy(isDisconnect = message.newValue)
             }
     }
 }

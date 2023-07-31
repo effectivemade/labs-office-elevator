@@ -30,7 +30,22 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
                 name = "RoomInfoStore",
                 initialState = RoomInfoStore.State.defaultState,
                 bootstrapper = coroutineBootstrapper {
-                    launch { dispatch(Action.UpdateRoomInfo(updateUseCase.getRoomInfo().unbox({ TODO("Maksim Mishenko: add handler") }))) }
+                    launch {
+                        dispatch(
+                            Action.UpdateRoomInfo(
+                                updateUseCase.getRoomInfo().unbox(
+                                    errorHandler = {
+                                        dispatch(Action.OnResponse(false))
+                                        it.saveData ?: RoomInfo.defaultValue
+                                    },
+                                    successHandler = {
+                                        dispatch(Action.OnResponse(true))
+                                        it
+                                    }
+                                )
+                            )
+                        )
+                    }
                     launch {
                         currentEventController.timeToUpdate.collect {
                             dispatch(
@@ -41,12 +56,35 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
                         }
                     }
                     launch() {
-                        dispatch(Action.UpdateRoomInfo(updateUseCase.getRoomInfo().unbox({ TODO("Maksim Mishenko: add handler") })))
+                        dispatch(
+                            Action.UpdateRoomInfo(
+                                updateUseCase.getRoomInfo()
+                                    .unbox(
+                                        errorHandler = {
+                                            dispatch(Action.OnResponse(false))
+                                            it.saveData ?: RoomInfo.defaultValue
+                                        },
+                                        successHandler = {
+                                            dispatch(Action.OnResponse(true))
+                                            it
+                                        }
+                                    )
+                            )
+                        )
                         updateUseCase(
                             scope = this,
                             roomUpdateHandler = { roomInfo ->
                                 launch(Dispatchers.Main.immediate) {
-                                    dispatch(Action.UpdateRoomInfo(roomInfo.unbox({ TODO("Maksim Mishenko: add handler") })))
+                                    dispatch(Action.UpdateRoomInfo(roomInfo.unbox(
+                                        errorHandler = {
+                                            dispatch(Action.OnResponse(false))
+                                            it.saveData ?: RoomInfo.defaultValue
+                                        },
+                                        successHandler = {
+                                            dispatch(Action.OnResponse(true))
+                                            it
+                                        }
+                                    )))
                                 }
 
                             },
@@ -60,12 +98,14 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
     private sealed interface Action {
         data class UpdateRoomInfo(val roomInfo: RoomInfo) : Action
         data class UpdateChangeEventTime(val newValue: Int) : Action
+        data class OnResponse(val isSuccess: Boolean) : Action
     }
 
     private sealed interface Message {
         data class UpdateRoomInfo(val roomInfo: RoomInfo) : Message
         data class UpdateChangeEventTime(val newValue: Int) : Message
         data class UpdateDate(val newValue: Calendar, val eventList: List<EventInfo>) : Message
+        data class OnResponse(val isSuccess: Boolean) : Message
     }
 
     private inner class ExecutorImpl() :
@@ -91,6 +131,7 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
                 )
 
                 is Action.UpdateChangeEventTime -> dispatch(Message.UpdateChangeEventTime(action.newValue))
+                is Action.OnResponse -> dispatch(Message.OnResponse(action.isSuccess))
             }
         }
 
@@ -101,7 +142,17 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
             dispatch(
                 Message.UpdateDate(
                     newValue = newDate,
-                    eventList = updateUseCase.getRoomInfo().unbox { TODO("Maksim Mishenko: add handler") }
+                    eventList = updateUseCase.getRoomInfo()
+                        .unbox(
+                            errorHandler = {
+                                dispatch(Message.OnResponse(false))
+                                it.saveData ?: RoomInfo.defaultValue
+                            },
+                            successHandler = {
+                                dispatch(Message.OnResponse(true))
+                                it
+                            }
+                        )
                         .filter(newDate).eventList
                 )
             )
@@ -112,8 +163,13 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
         override fun RoomInfoStore.State.reduce(message: Message): RoomInfoStore.State =
             when (message) {
                 is Message.UpdateChangeEventTime -> copy(changeEventTime = message.newValue)
-                is Message.UpdateDate -> copy(selectDate = message.newValue, roomInfo = roomInfo.copy(eventList = message.eventList))
+                is Message.UpdateDate -> copy(
+                    selectDate = message.newValue,
+                    roomInfo = roomInfo.copy(eventList = message.eventList)
+                )
+
                 is Message.UpdateRoomInfo -> copy(roomInfo = message.roomInfo)
+                is Message.OnResponse -> copy(isError = !message.isSuccess)
             }
     }
 }
