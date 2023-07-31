@@ -36,50 +36,37 @@ actual fun generateVibration(milliseconds: Long) {
 }
 
 actual fun makeCall(phoneNumber: String) {
-    val intent = Intent(Intent.ACTION_DIAL).apply {
-        data = Uri.parse("tel:$phoneNumber")
-        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+    with(AndroidApp.INSTANCE.applicationContext) {
+        val intent = Intent(Intent.ACTION_DIAL).apply {
+            data = Uri.parse("tel:$phoneNumber")
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        this@with.startActivity(intent)
     }
-    startActivity(AndroidApp.INSTANCE.applicationContext, intent, Bundle())
 }
 
 actual fun pickTelegram(telegramNick: String) {
-    try {
-        val telegramUri = Uri.parse("https://t.me/$telegramNick")
-        val intent = Intent(Intent.ACTION_VIEW, telegramUri)
-        intent.`package` = "org.telegram.messenger"
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        startActivity(AndroidApp.INSTANCE.applicationContext, intent, Bundle())
-    } catch (e: Exception) {
-        showToast("Telegram app is not installed")
+    with(AndroidApp.INSTANCE.applicationContext) {
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            data = Uri.parse("https://t.me/$telegramNick")
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//            `package` = "org.telegram.messenger"
+        }
+        this@with.startActivity(intent)
     }
 }
 
 @SuppressLint("WrongConstant")
 actual fun pickSBP(phoneNumber: String) {
-
-
     with(AndroidApp.INSTANCE.applicationContext) {
-        try {
-            val intent = Intent(Intent.ACTION_VIEW).apply {
-                flags = 0x24000000 or Intent.FLAG_ACTIVITY_NEW_TASK
-                component = ComponentName(
-                    "ru.sberbankmobile",
-//            "ru.sberbank.mobile.auth.presentation.prelogin.PreloginActivity"
-//            "ru.sberbank.mobile.app.configuration.SbolApplication"
-                    "ru.sberbank.mobile.auth.presentation.splash.SplashActivity"
-                )
-            }
-            this@with.startActivity(intent)
-        } catch (e: Exception) {
-            showToast("SberBank app is not installed")
-            val url =
-                "https://web4-new.online.sberbank.ru/payments/fps"
-            val intent = Intent(Intent.ACTION_VIEW).apply {
-                data = Uri.parse(url)
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            }
-            this@with.startActivity(intent)
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            data = Uri.parse("tel:$phoneNumber")
+            flags = 0x24000000 or Intent.FLAG_ACTIVITY_NEW_TASK
+//            component = ComponentName(
+//                "ru.sberbankmobile",
+//                "ru.sberbank.mobile.auth.presentation.splash.SplashActivity"
+//            )
         }
+        this@with.startActivity(intent)
     }
 }

@@ -32,12 +32,6 @@ actual fun pickTelegram(telegramNick: String) {
 }
 
 actual fun pickSBP(phoneNumber: String){
-    try {
-        val app = UIApplication.sharedApplication
-        val url = NSURL(string = "sberbankmobile://")
-        app.openURL(url)
-    } catch (e: Exception) {
-        val url = NSURL(string = "https://web4-new.online.sberbank.ru/payments/fps")
-        UIApplication.sharedApplication.openURL(url)
-    }
+    val url = NSURL(string = "tel:$phoneNumber")
+    UIApplication.sharedApplication.openURL(url)
 }
