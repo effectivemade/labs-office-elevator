@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -24,6 +26,7 @@ import androidx.compose.ui.window.Dialog
 import band.effective.office.tablet.features.selectRoom.MainRes
 import band.effective.office.tablet.ui.selectRoomScreen.uiComponents.CrossButtonView
 import band.effective.office.tablet.ui.theme.CustomDarkColors
+import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.header4
 import band.effective.office.tablet.ui.theme.header6
 
@@ -37,9 +40,11 @@ fun FreeSelectRoomView(onCloseRequest: () -> Unit, onFreeRoomRequest: () -> Unit
     ) {
         Box(
             modifier = Modifier
-                .size(518.dp, 304.dp)
+                //.size(518.dp, 304.dp)
+                .fillMaxWidth(0.9f)
+                .fillMaxHeight(0.6f)
                 .clip(RoundedCornerShape(5))
-                .background(CustomDarkColors.elevationBackground),
+                .background(LocalCustomColorsPalette.current.elevationBackground),
         ) {
 
             Column(
@@ -62,13 +67,13 @@ fun FreeSelectRoomView(onCloseRequest: () -> Unit, onFreeRoomRequest: () -> Unit
                     Text(
                         text = MainRes.string.free_select_room,
                         style = header4,
-                        color = CustomDarkColors.primaryTextAndIcon
+                        color = LocalCustomColorsPalette.current.primaryTextAndIcon
                     )
                 }
                 Spacer(modifier = Modifier.height(30.dp))
                 Button(
                     modifier = Modifier.size(290.dp, 64.dp),
-                    colors = ButtonDefaults.buttonColors(CustomDarkColors.pressedPrimaryButton),
+                    colors = ButtonDefaults.buttonColors(LocalCustomColorsPalette.current.pressedPrimaryButton),
                     shape = shape,
                     onClick = {
                         onFreeRoomRequest()
@@ -79,7 +84,7 @@ fun FreeSelectRoomView(onCloseRequest: () -> Unit, onFreeRoomRequest: () -> Unit
                         Text(
                             text = MainRes.string.free_select_room_button,
                             style = header6,
-                            color = CustomDarkColors.primaryTextAndIcon,
+                            color = LocalCustomColorsPalette.current.primaryTextAndIcon,
                         )
                     }
                 }

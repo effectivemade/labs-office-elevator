@@ -1,5 +1,7 @@
 package band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,9 +18,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import band.effective.office.tablet.features.roomInfo.MainRes
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.RealDateTimeComponent
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
@@ -27,8 +27,9 @@ import band.effective.office.tablet.utils.CalendarStringConverter
 import io.github.skeptick.libres.compose.painterResource
 import java.util.Calendar
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun DateTimeView(modifier: Modifier, component: RealDateTimeComponent, selectDate: Calendar) {
+fun DateTimeView(modifier: Modifier, component: RealDateTimeComponent, selectDate: Calendar, onOpenTimePickerModal: () -> Unit) {
     Column(modifier = modifier) {
         Text(
             text = MainRes.string.select_date_tine_title,
@@ -53,7 +54,7 @@ fun DateTimeView(modifier: Modifier, component: RealDateTimeComponent, selectDat
             Spacer(modifier = Modifier.width(10.dp))
             Button(
                 modifier = Modifier.fillMaxHeight().weight(4f).clip(RoundedCornerShape(15.dp)),
-                onClick = { },
+                onClick = { onOpenTimePickerModal() },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = LocalCustomColorsPalette.current.elevationBackground
                 )

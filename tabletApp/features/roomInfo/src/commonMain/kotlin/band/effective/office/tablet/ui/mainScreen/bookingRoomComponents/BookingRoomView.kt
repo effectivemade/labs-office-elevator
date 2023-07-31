@@ -1,5 +1,6 @@
 package band.effective.office.tablet.ui.mainScreen.bookingRoomComponents
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -27,8 +28,9 @@ import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiCompon
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.EventLengthView
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.EventOrganizerView
 
+@SuppressLint("NewApi")
 @Composable
-fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: BookingRoomComponent) {
+fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: BookingRoomComponent, onOpenTimePickerModal: () -> Unit) {
     val state by bookingRoomComponent.state.collectAsState()
     Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -41,7 +43,8 @@ fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: Booking
             DateTimeView(
                 modifier = Modifier.fillMaxWidth().height(100.dp),
                 component = bookingRoomComponent.dateTimeComponent,
-                selectDate = state.selectDate
+                selectDate = state.selectDate,
+                onOpenTimePickerModal = onOpenTimePickerModal
             )
             Spacer(modifier = Modifier.height(25.dp))
             EventLengthView(

@@ -97,8 +97,10 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is BookingStore.Intent.OnBookingCurrentRoom -> dispatch(Message.BookingCurrentRoom)
                 is BookingStore.Intent.OnBookingOtherRoom -> dispatch(Message.BookingOtherRoom)
                 is BookingStore.Intent.OnChangeDate -> changeDate(getState(), intent.changeInDay)
+                is BookingStore.Intent.OnChangeTime -> changeTime(getState(), intent.changeInTimeMillis)
                 is BookingStore.Intent.OnChangeLength -> changeLength(getState(), intent.change)
                 is BookingStore.Intent.OnChangeOrganizer -> dispatch(Message.ChangeOrganizer(intent.newOrganizer))
+                is BookingStore.Intent.OnSetDay -> setDate(getState(), intent.changedDay)
             }
         }
 
@@ -123,6 +125,32 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
         fun changeDate(state: BookingStore.State, changeDay: Int) = scope.launch() {
             val event = state.copy(selectDate = state.selectDate.dayUpdate(changeDay)).toEvent()
+            val busyEvent = checkBookingUseCase(event)
+            dispatch(
+                Message.ChangeEvent(
+                    event.startTime,
+                    state.length,
+                    busyEvent != null,
+                    busyEvent ?: EventInfo.emptyEvent
+                )
+            )
+        }
+
+        fun setDate(state: BookingStore.State, newDay: Int) = scope.launch() {
+            val event = state.copy(selectDate = state.selectDate.setDay(newDay)).toEvent()
+            val busyEvent = checkBookingUseCase(event)
+            dispatch(
+                Message.ChangeEvent(
+                    event.startTime,
+                    state.length,
+                    busyEvent != null,
+                    busyEvent ?: EventInfo.emptyEvent
+                )
+            )
+        }
+
+        fun changeTime(state: BookingStore.State, changeInTimeMillis: Long) = scope.launch() {
+            val event = state.copy(selectDate = state.selectDate.setTime(changeInTimeMillis)).toEvent()
             val busyEvent = checkBookingUseCase(event)
             dispatch(
                 Message.ChangeEvent(
@@ -190,6 +218,17 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
     private fun Calendar.dayUpdate(changeDay: Int): Calendar {
         val result = clone() as Calendar
         result.add(Calendar.DAY_OF_MONTH, changeDay)
+        return result
+    }
+
+    private fun Calendar.setDay(newDay: Int): Calendar {
+        val result = clone() as Calendar
+        result.set(Calendar.DAY_OF_MONTH, newDay)
+        return result
+    }
+    private fun Calendar.setTime(changeInTimeMillis: Long): Calendar {
+        val result = clone() as Calendar
+        result.timeInMillis += changeInTimeMillis
         return result
     }
 }

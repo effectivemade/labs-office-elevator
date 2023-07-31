@@ -55,6 +55,8 @@ class MainStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
         object OpenFreeModal : Message
         object StartFreeRoom : Message
         object FinishFreeRoom : Message
+
+        object OpenTimePickerModal : Message
     }
 
     private inner class ExecutorImpl() :
@@ -66,6 +68,7 @@ class MainStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
                 is MainStore.Intent.CloseModal -> dispatch(Message.CloseModal)
                 is MainStore.Intent.OnFreeRoomIntent -> freeRoom()
                 is MainStore.Intent.OnOpenFreeRoomModal -> dispatch(Message.OpenFreeModal)
+                is MainStore.Intent.OnOpenTimePickerModal -> dispatch(Message.OpenTimePickerModal)
             }
         }
 
@@ -93,10 +96,11 @@ class MainStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
                     isLoad = false
                 )
 
-                is Message.CloseModal -> copy(showBookingModal = false, showFreeModal = false)
+                is Message.CloseModal -> copy(showBookingModal = false, showFreeModal = false, showTimePickerModal = false)
                 is Message.OpenFreeModal -> copy(showFreeModal = true)
                 is Message.FinishFreeRoom -> copy(showFreeModal = false)
                 is Message.StartFreeRoom -> copy()
+                is Message.OpenTimePickerModal -> copy(showTimePickerModal = true)
             }
     }
 }

@@ -8,6 +8,7 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, Nothing> {
         object OnBookingCurrentRoomRequest : Intent
         object OnBookingOtherRoomRequest : Intent
         object OnOpenFreeRoomModal : Intent
+        object OnOpenTimePickerModal: Intent
         object OnFreeRoomIntent : Intent
         object CloseModal : Intent
     }
@@ -19,7 +20,8 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, Nothing> {
         val roomInfo: RoomInfo,
         val error: String,
         val showBookingModal: Boolean,
-        val showFreeModal: Boolean
+        val showFreeModal: Boolean,
+        val showTimePickerModal: Boolean
     ) {
         companion object {
             val defaultState =
@@ -30,7 +32,8 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, Nothing> {
                     roomInfo = RoomInfo.defaultValue,
                     error = "",
                     showBookingModal = false,
-                    showFreeModal = false
+                    showFreeModal = false,
+                    showTimePickerModal = false
                 )
         }
     }

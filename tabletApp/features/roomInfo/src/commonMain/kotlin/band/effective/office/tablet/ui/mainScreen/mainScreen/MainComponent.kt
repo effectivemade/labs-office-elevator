@@ -67,6 +67,10 @@ class MainComponent(
         mainStore.accept(MainStore.Intent.OnOpenFreeRoomModal)
     }
 
+    fun openTimePickerModal() {
+        mainStore.accept(MainStore.Intent.OnOpenTimePickerModal)
+    }
+
     fun onFreeRoom(){
         mainStore.accept(MainStore.Intent.OnFreeRoomIntent)
     }
