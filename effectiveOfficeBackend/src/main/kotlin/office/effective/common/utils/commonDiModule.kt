@@ -8,7 +8,7 @@ val commonDiModule = module(createdAtStart = true) {
     val url: String = config.propertyOrNull("database.url")
         ?.getString() ?: "jdbc:postgresql://localhost:15432/effectiveOfficeBackendDB"
     val username: String = config.propertyOrNull("database.username")?.getString() ?: "postgres"
-    val password: String = config.propertyOrNull("database.password")?.getString() ?: "test1234567890"
+    val password: String = System.getenv("DATABASE_PASSWORD")
 
     single<Database> {
         Database.connect(
@@ -18,4 +18,5 @@ val commonDiModule = module(createdAtStart = true) {
             password = password
         )
     }
+    single { DatabaseTransactionManager(get()) }
 }

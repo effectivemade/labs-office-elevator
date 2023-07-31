@@ -1,10 +1,12 @@
 package band.effective.office.tablet.domain.useCase
 
 import band.effective.office.tablet.domain.CurrentEventController
+import band.effective.office.tablet.domain.model.Either
 import band.effective.office.tablet.domain.model.RoomInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import network.model.ErrorResponse
 
 /**Use case for tracking for updates*/
 class UpdateUseCase(
@@ -24,8 +26,8 @@ class UpdateUseCase(
      * @param organizerUpdateHandler handler for org list update*/
     operator fun invoke(
         scope: CoroutineScope,
-        roomUpdateHandler: (RoomInfo) -> Unit,
-        organizerUpdateHandler: (List<String>) -> Unit
+        roomUpdateHandler: (Either<ErrorResponse, RoomInfo>) -> Unit,
+        organizerUpdateHandler: (Either<ErrorResponse, List<String>>) -> Unit
     ) {
         roomInfoUseCase.subscribe(scope) { roomUpdateHandler(it) }
         organizersInfoUseCase.subscribe(scope) { organizerUpdateHandler(it) }

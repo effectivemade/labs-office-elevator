@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: create-workspace-utilities-table
+      id: create-workspace-booking-table
       author: zavyalov-daniil
       changes:
         - createTable:
@@ -56,9 +56,13 @@ databaseChangeLog:
               - column:
                   name: user_id
                   type: uuid
+                  constraints:
+                    nullable: false
               - column:
                   name: booking_id
                   type: uuid
+                  constraints:
+                    nullable: false
         - addPrimaryKey:
             tableName: booking_participants
             columnNames: user_id, booking_id

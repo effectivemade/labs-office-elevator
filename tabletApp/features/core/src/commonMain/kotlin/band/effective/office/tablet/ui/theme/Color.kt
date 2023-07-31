@@ -3,6 +3,7 @@ package band.effective.office.tablet.ui.theme
 import androidx.compose.ui.graphics.Color
 
 internal val md_theme_dark_primary = Color(0xFFEE7234)
+internal val md_theme_dark_onPrimary = Color(0xFFFAFAFA)
 internal val md_theme_dark_secondary = Color(0xFFA262F7)
 internal val md_theme_dark_background = Color(0xFF1E1C1A)
 internal val md_theme_dark_surface = Color(0xFF252322)
@@ -39,6 +40,7 @@ internal val md_theme_light_disabledPrimaryButton = Color(0xFFD2CAC6)
 
 val textButton = Color(0xFFFFFFFF)
 val roomInfoColor = Color(0xFFFAFAFA)
+val alertColor = Color(0xFF95260E)
 
 object ScrollBarColor{
     val background = Color(0xFF4D4D4D)
