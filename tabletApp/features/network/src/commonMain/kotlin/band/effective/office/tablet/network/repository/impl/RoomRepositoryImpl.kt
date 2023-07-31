@@ -14,20 +14,25 @@ import kotlinx.coroutines.launch
 import network.model.ErrorResponse
 
 class RoomRepositoryImpl(private val api: Api) : RoomRepository {
-    private val roomInfo =
-        MutableStateFlow<Either<ErrorResponse, RoomInfo>>(Either.Success(RoomInfo.defaultValue))
+    private val roomInfo: MutableStateFlow<Either<ErrorResponse, RoomInfo>?> =
+        MutableStateFlow(null)
 
-    override suspend fun getRoomInfo() = api.getRoomInfo()
+    private suspend fun loadRoomInfo() = api.getRoomInfo()
+    override suspend fun getRoomInfo(): Either<ErrorResponse, RoomInfo> {
+        if (roomInfo.value == null) roomInfo.update { loadRoomInfo() }
+        return roomInfo.value!!
+    }
+
     override fun subscribeOnUpdates(
         scope: CoroutineScope,
         handler: (Either<ErrorResponse, RoomInfo>) -> Unit
     ): Job =
         scope.launch(Dispatchers.IO) {
-            roomInfo.update { getRoomInfo() }
+            //roomInfo.update { loadRoomInfo() }
             api.subscribeOnWebHock(this) {
                 if (it is WebServerEvent.RoomInfoUpdate)
-                    launch(Dispatchers.IO) { roomInfo.update { getRoomInfo() } }
+                    launch(Dispatchers.IO) { roomInfo.update { loadRoomInfo() } }
             }
-            roomInfo.collect { handler(it) }
+            roomInfo.collect { if (it != null) handler(it) }
         }
 }
