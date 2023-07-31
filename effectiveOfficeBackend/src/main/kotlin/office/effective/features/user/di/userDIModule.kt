@@ -12,9 +12,9 @@ import org.koin.dsl.module
 
 val userDIModule = module(createdAtStart = true) {
     single<ITokenVerifier> { TokenVerifier() }
-    single<IUserService> { UserService() }
+    single<IUserService> { UserService(get(), get(), get()) }
     single<IntegrationModelEntityConverter> { IntegrationModelEntityConverter() }
     single<UserModelEntityConverter> { UserModelEntityConverter() }
     single<UserDTOModelConverter> { UserDTOModelConverter() }
-    single<UserRepository> { UserRepository() }
+    single<UserRepository> { UserRepository(get(), get()) }
 }

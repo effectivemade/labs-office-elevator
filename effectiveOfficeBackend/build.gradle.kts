@@ -39,6 +39,7 @@ dependencies {
     implementation("io.ktor:ktor-server-host-common-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-status-pages-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-content-negotiation-jvm:$ktor_version")
+    implementation("io.ktor:ktor-client-content-negotiation-jvm:$ktor_version")
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-auth-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
@@ -56,6 +57,9 @@ dependencies {
     implementation("io.ktor:ktor-client-core-jvm:2.3.2")
     implementation("io.ktor:ktor-client-apache-jvm:2.3.2")
     implementation("org.liquibase:liquibase-core:$liquibase_version")
+    implementation("io.ktor:ktor-client-apache:2.3.2")
+    implementation("io.ktor:ktor-server-swagger:$ktor_version")
+    implementation("io.github.smiley4:ktor-swagger-ui:2.2.0")
 
     liquibaseRuntime("org.liquibase:liquibase-core:$liquibase_version")
     liquibaseRuntime("org.postgresql:postgresql:$postgresql_driver_version")
