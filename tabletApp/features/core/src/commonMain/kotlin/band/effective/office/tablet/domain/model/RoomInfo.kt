@@ -4,7 +4,7 @@ data class RoomInfo(
     val name: String,
     val capacity: Int,
     val isHaveTv: Boolean,
-    val electricSocketCount: Int,
+    val socketCount: Int,
     val eventList: List<EventInfo>,
     //NOTE(Maksim Mishenko): currentEvent is null if room is free
     val currentEvent: EventInfo?
@@ -15,7 +15,7 @@ data class RoomInfo(
                 name = "Default",
                 capacity = 0,
                 isHaveTv = false,
-                electricSocketCount = 0,
+                socketCount = 0,
                 eventList = listOf(),
                 currentEvent = null
             )

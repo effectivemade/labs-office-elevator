@@ -1,7 +1,7 @@
 package band.effective.office.tablet.ui.selectRoomScreen.store
 
 import band.effective.office.tablet.domain.model.Booking
-import band.effective.office.tablet.domain.model.EventInfo
+import band.effective.office.tablet.domain.model.Either
 import band.effective.office.tablet.domain.useCase.BookingUseCase
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
@@ -48,7 +48,7 @@ class SelectRoomStoreFactory(private val storeFactory: StoreFactory) : KoinCompo
 
         private fun bookingRoom(state: SelectRoomStore.State) =
             scope.launch {
-                dispatch(Message.BookingRoom(bookingUseCase(state.booking.eventInfo)))
+                dispatch(Message.BookingRoom(bookingUseCase(state.booking.eventInfo) is Either.Success))
             }
     }
 

@@ -1,12 +1,15 @@
 package band.effective.office.tablet.network.api
 
+import band.effective.office.tablet.domain.model.Either
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.network.model.WebServerEvent
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import network.model.ErrorResponse
 import java.util.Calendar
 import java.util.GregorianCalendar
 
@@ -15,24 +18,26 @@ class WorkApi : Api {
     val mutableOrgList =
         MutableStateFlow(listOf("Ольга Белозерова", "Матвей Авгуль", "Лилия Акентьева"))
 
-    override suspend fun getRoomInfo(): RoomInfo {
-        return mutableRoomInfo.value
+    override suspend fun getRoomInfo(): Either<ErrorResponse, RoomInfo> {
+        delay(5000L)
+        return Either.Success(mutableRoomInfo.value)
     }
 
-    override suspend fun getOrganizers(): List<String> {
-        return mutableOrgList.value
+    override suspend fun getOrganizers(): Either<ErrorResponse, List<String>> {
+        return Either.Success(mutableOrgList.value)
     }
 
-    override suspend fun cancelEvent(): Boolean {
+    override suspend fun cancelEvent(): Either<ErrorResponse, String> {
+        delay(5000L)
         mutableRoomInfo.update { it.copy(currentEvent = null) }
-        return true
+        return Either.Success("ok")
     }
 
     override suspend fun bookingRoom(
         begin: Calendar,
         end: Calendar,
         owner: String,
-    ): Boolean {
+    ): Either<ErrorResponse, String> {
         if (begin <= GregorianCalendar() && GregorianCalendar() <= end) {
             mutableRoomInfo.update {
                 it.copy(
@@ -56,7 +61,7 @@ class WorkApi : Api {
             }
         }
 
-        return true
+        return Either.Success("ok")
     }
 
     override fun subscribeOnWebHock(
@@ -92,7 +97,7 @@ class WorkApi : Api {
                 name = "Sirius",
                 capacity = 4,
                 isHaveTv = false,
-                electricSocketCount = 2,
+                socketCount = 2,
                 eventList = eventsList(),
                 currentEvent = currentEvent()
             )
