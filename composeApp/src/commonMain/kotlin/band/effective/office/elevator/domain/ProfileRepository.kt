@@ -4,6 +4,6 @@ import band.effective.office.elevator.domain.models.User
 import kotlinx.coroutines.flow.Flow
 
 interface ProfileRepository {
-    suspend fun getUser(id:String): Flow<User>
+    suspend fun getUser(id:String): User
     suspend fun updateUser(user: User)
 }

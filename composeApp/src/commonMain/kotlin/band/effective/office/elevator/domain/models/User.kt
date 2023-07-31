@@ -8,4 +8,17 @@ data class User(
     val phoneNumber:String,
     val telegram: String,
     val email:String
-)
+){
+    companion object {
+        val defaultUser =
+            User(
+                id = "",
+                imageUrl = "",
+                userName = "",
+                post = "",
+                phoneNumber = "",
+                telegram = "",
+                email = ""
+            )
+    }
+}

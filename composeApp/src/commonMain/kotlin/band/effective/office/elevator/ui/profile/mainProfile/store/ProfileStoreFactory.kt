@@ -11,7 +11,6 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -28,7 +27,7 @@ internal class ProfileStoreFactory(
     fun create(): ProfileStore =
         object : ProfileStore, Store<Intent, User, Label> by storeFactory.create(
             name = "ProfileStore",
-            initialState =  User("","","","","","",""),
+            initialState =   User.defaultUser,
             bootstrapper = coroutineBootstrapper {
                 dispatch(Action.FetchUserInfo)
             },
@@ -66,9 +65,7 @@ internal class ProfileStoreFactory(
 
         private fun fetchUserInfo() {
             scope.launch {
-                getUserByIdUseCase.execute(getLastUserIdUseCase.execute()).collectLatest {
-                    user -> dispatch(Msg.ProfileData(user = user))
-                }
+                dispatch(Msg.ProfileData(user = getUserByIdUseCase.execute(getLastUserIdUseCase.execute())))
             }
         }
     }

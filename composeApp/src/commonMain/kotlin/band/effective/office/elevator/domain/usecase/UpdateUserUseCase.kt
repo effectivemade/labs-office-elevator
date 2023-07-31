@@ -5,6 +5,14 @@ import band.effective.office.elevator.domain.models.User
 
 class UpdateUserUseCase (private val profileRepository: ProfileRepository) {
     suspend fun execute(user: User){
-        profileRepository.updateUser(user)
+        profileRepository.updateUser(User(
+            id = user.id,
+            imageUrl = user.imageUrl,
+            userName = user.userName,
+            email = user.email,
+            phoneNumber = "+7"+user.phoneNumber,
+            telegram = "@"+user.telegram,
+            post = user.post
+        ))
     }
 }
