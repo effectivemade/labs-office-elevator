@@ -55,13 +55,11 @@ class BookingRoomComponent(
     fun sendIntent(intent: BookingStore.Intent) {
         when (intent) {
             is BookingStore.Intent.OnBookingCurrentRoom -> {
-                bookingStore.accept(intent)
-                if (state.value.isCorrect() && !state.value.isBusy) onCurrentBookingRoom()
+                bookingStore.accept(intent.copy(onCurrentBookingRoom))
             }
 
             is BookingStore.Intent.OnBookingOtherRoom -> {
-                if (state.value.isCorrect()) onBookingOtherRoom()
-                bookingStore.accept(intent)
+                bookingStore.accept(intent.copy(onBookingOtherRoom))
             }
 
             else -> bookingStore.accept(intent)

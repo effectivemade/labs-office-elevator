@@ -39,14 +39,17 @@ class FreeSelectStoreFactory(private val storeFactory: StoreFactory) : KoinCompo
             getState: () -> FreeSelectStore.State
         ) {
             when (intent) {
-                FreeSelectStore.Intent.OnFreeSelectRequest -> freeRoom()
-                else -> {}
+                is FreeSelectStore.Intent.OnFreeSelectRequest -> freeRoom(intent.close)
+                is FreeSelectStore.Intent.OnCloseWindowRequest -> intent.close?.invoke()
             }
         }
 
-        private fun freeRoom() = scope.launch() {
+        private fun freeRoom(close: (() -> Unit)?) = scope.launch() {
             dispatch(Message.Load)
-            if (currentEventController.cancelCurrentEvent() is Either.Success) dispatch(Message.Success)
+            if (currentEventController.cancelCurrentEvent() is Either.Success) {
+                close?.invoke()
+                dispatch(Message.Success)
+            }
             else TODO("Maksim Mishenko: add error handler")
         }
     }
@@ -55,7 +58,7 @@ class FreeSelectStoreFactory(private val storeFactory: StoreFactory) : KoinCompo
         override fun FreeSelectStore.State.reduce(msg: Message) =
             when (msg) {
                 is Message.Load -> copy(isLoad = true)
-                is Message.Success -> copy(isSuccess = true)
+                is Message.Success -> copy(isLoad = false)
             }
     }
 }

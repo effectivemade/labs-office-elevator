@@ -61,8 +61,8 @@ fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: Booking
             )
         },
         isOrganizerError = state.isOrganizerError,
-        onRequestBookingCurrentRoom = { bookingRoomComponent.sendIntent(BookingStore.Intent.OnBookingCurrentRoom) },
-        onRequestBookingOtherRoom = { bookingRoomComponent.sendIntent(BookingStore.Intent.OnBookingOtherRoom) },
+        onRequestBookingCurrentRoom = { bookingRoomComponent.sendIntent(BookingStore.Intent.OnBookingCurrentRoom()) },
+        onRequestBookingOtherRoom = { bookingRoomComponent.sendIntent(BookingStore.Intent.OnBookingOtherRoom()) },
         roomName = state.roomName
     )
 }

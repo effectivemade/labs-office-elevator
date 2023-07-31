@@ -114,12 +114,14 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             when (intent) {
                 is BookingStore.Intent.OnBookingCurrentRoom -> booking(
                     isCurrentRoom = true,
-                    state = getState()
+                    state = getState(),
+                    booking = intent.booking
                 )
 
                 is BookingStore.Intent.OnBookingOtherRoom -> booking(
                     isCurrentRoom = false,
-                    state = getState()
+                    state = getState(),
+                    booking = intent.booking
                 )
 
                 is BookingStore.Intent.OnChangeDate -> changeDate(getState(), intent.changeInDay)
@@ -143,16 +145,20 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             }
         }
 
-        fun booking(isCurrentRoom: Boolean, state: BookingStore.State) =
+        fun booking(isCurrentRoom: Boolean, state: BookingStore.State, booking: (() -> Unit)?) =
             scope.launch {
                 val busyEvent = checkBookingUseCase(state.toEvent()).unbox({ TODO("Maksim Mishenko: add handler") })
                 when {
                     !state.isCorrectOrganizer() -> dispatch(Message.OrganizerError)
                     busyEvent != null -> dispatch(Message.NotCorrectEvent(busyEvent))
                     isCurrentRoom -> {
+                        booking?.invoke()
                         //dispatch(Message.BookingCurrentRoom)
                     }
-                    else -> dispatch(Message.BookingOtherRoom)
+                    else -> {
+                        booking?.invoke()
+                        dispatch(Message.BookingOtherRoom)
+                    }
                 }
             }
 
