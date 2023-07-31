@@ -82,7 +82,7 @@ private val mokValueUser =
         "Ivanov Ivan",
         "Android-developer",
         "+79136476225",
-        "@gull192",
+        "gull192",
         "employee@effective.com"
     )
 private val mokValue = listOf(
