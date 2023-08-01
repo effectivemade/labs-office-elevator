@@ -41,6 +41,7 @@ class WorkApi : Api {
         end: Calendar,
         owner: String,
     ): Either<ErrorResponse, String> {
+        delay(5000L)
         if (begin <= GregorianCalendar() && GregorianCalendar() <= end) {
             mutableRoomInfo.update {
                 it.copy(

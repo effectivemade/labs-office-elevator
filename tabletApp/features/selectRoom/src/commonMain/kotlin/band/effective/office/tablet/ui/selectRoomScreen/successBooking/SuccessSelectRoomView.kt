@@ -66,7 +66,8 @@ fun SuccessSelectRoomView(
             text = MainRes.string.on_main,
             onClick = {
                 close()
-            }
+            },
+            isLoading = false
         )
     }
 }

@@ -16,7 +16,8 @@ interface SelectRoomStore: Store<SelectRoomStore.Intent, SelectRoomStore.State, 
         val isData: Boolean,
         val isSuccess: Boolean,
         val error: String?,
-        val booking: Booking
+        val booking: Booking,
+        val isLoading: Boolean
     ) {
         companion object {
             val defaultState =
@@ -24,7 +25,8 @@ interface SelectRoomStore: Store<SelectRoomStore.Intent, SelectRoomStore.State, 
                     isData = true,
                     isSuccess = false,
                     error = null,
-                    booking = Booking.default
+                    booking = Booking.default,
+                    isLoading = false
                 )
         }
     }

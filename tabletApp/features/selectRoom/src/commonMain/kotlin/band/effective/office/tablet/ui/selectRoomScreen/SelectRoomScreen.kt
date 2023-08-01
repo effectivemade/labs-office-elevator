@@ -30,7 +30,8 @@ fun SelectRoomScreen(component: SelectRoomComponent) {
                 SelectRoomView(
                     booking = state.booking,
                     close = { component.onIntent(SelectRoomStore.Intent.CloseModal) },
-                    bookRoom = { component.onIntent(SelectRoomStore.Intent.BookingRoom) }
+                    bookRoom = { component.onIntent(SelectRoomStore.Intent.BookingRoom) },
+                    isLoading = state.isLoading
                 )
             }
 
@@ -39,11 +40,6 @@ fun SelectRoomScreen(component: SelectRoomComponent) {
                     booking = state.booking,
                     close = { component.onIntent(SelectRoomStore.Intent.CloseModal) }
                 )
-            }
-
-            else -> {
-                /* (Margarita Djinjolia)
-            no load in design */
             }
         }
     }

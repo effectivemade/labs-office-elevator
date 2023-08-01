@@ -29,7 +29,8 @@ import band.effective.office.tablet.utils.time24
 fun SelectRoomView(
     booking: Booking,
     close: () -> Unit,
-    bookRoom: () -> Unit
+    bookRoom: () -> Unit,
+    isLoading: Boolean
 ) {
 
     val modifier = Modifier
@@ -97,7 +98,8 @@ fun SelectRoomView(
             ),
             onClick = {
                 bookRoom()
-            }
+            },
+            isLoading = isLoading
         )
     }
 }
