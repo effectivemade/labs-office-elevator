@@ -1,12 +1,15 @@
 plugins {
     id(Plugins.Kotlin.plugin)
     id(Plugins.MultiplatformCompose.plugin)
-    id(Plugins.Android.plugin)
+    id(Plugins.AndroidLib.plugin)
 }
 
 android {
     namespace = "band.effective.office.elevator"
     compileSdk = 33
+    defaultConfig {
+        minSdk = ConfigData.Android.minSdkVersion
+    }
 }
 
 kotlin {
@@ -33,5 +36,6 @@ kotlin {
                 implementation(Dependencies.KotlinxDatetime.kotlinxDatetime)
             }
         }
+        val androidMain by getting
     }
 }
