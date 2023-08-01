@@ -22,9 +22,13 @@ class WorkspaceFacade(private val service: WorkspaceService,
             throw ValidationException("Provided id is not UUID: " + ex.message)
         }
 
-        val workspace: Workspace = transactionManager.useTransaction({ service.findById(uuid) })
-            ?: throw InstanceNotFoundException(Workspace::class, "Workspace with id $id not found", uuid)
-        return converter.workspaceModelToDto(workspace)
+        val workspaceDTO: WorkspaceDTO = transactionManager.useTransaction({
+            val workspace = service.findById(uuid)
+                ?: throw InstanceNotFoundException(Workspace::class, "Workspace with id $id not found", uuid)
+            workspace.let { converter.workspaceModelToDto(it) }
+        })
+
+        return workspaceDTO
     }
 
     fun findAllByTag(tag: String): List<WorkspaceDTO> {
