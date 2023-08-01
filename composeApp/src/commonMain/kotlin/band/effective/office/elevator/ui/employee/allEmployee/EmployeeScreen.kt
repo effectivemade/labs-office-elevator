@@ -27,7 +27,6 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,6 +51,7 @@ import band.effective.office.elevator.theme_light_background
 import band.effective.office.elevator.theme_light_onBackground
 import band.effective.office.elevator.theme_light_onPrimary
 import band.effective.office.elevator.theme_light_tertiary_color
+import band.effective.office.elevator.ui.employee.allEmployee.models.mappers.EmployeeCard
 import band.effective.office.elevator.ui.employee.allEmployee.store.EmployeeStore
 import band.effective.office.elevator.utils.generateImageLoader
 import com.seiko.imageloader.LocalImageLoader
@@ -60,23 +60,14 @@ import com.seiko.imageloader.rememberAsyncImagePainter
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 
-
-data class EmployeeCard(
-    val name: String,
-    val post: String,
-    val state: String,
-    val logoUrl: String
-)
-
 @Composable
 fun EmployeeScreen(component: EmployeeComponent) {
 
     val employState by component.employState.collectAsState()
     val employeesData = employState.changeShowedEmployeeCards
-    val employeesCount = employeesData.count()
-    val employeesInOfficeCount = employeesData.filter{it.state=="In office"}.count()
-    val userMessageState = remember { mutableStateOf("") }
-
+    val employeesCount = employState.countShowedEmployeeCards
+    val employeesInOfficeCount = employState.countInOfficeShowedEmployeeCards
+    val userMessageState = employState.query
 
 
     LaunchedEffect(component) {
@@ -98,9 +89,9 @@ fun EmployeeScreen(component: EmployeeComponent) {
 @Composable
 fun EmployeeScreenContent(
     employeesData: List<EmployeeCard>,
-    employeesCount: Int,
-    employeesInOfficeCount: Int,
-    userMessageState: MutableState<String>,
+    employeesCount: String,
+    employeesInOfficeCount: String,
+    userMessageState: String,
     onCardClick: () -> Unit,
     onTextFieldUpdate: (String) -> Unit
 ) {
@@ -120,8 +111,7 @@ fun EmployeeScreenContent(
                 modifier = Modifier.padding(20.dp, 55.dp, 15.dp, 25.dp)
             )
             TextField(
-                value = userMessageState.value, onValueChange = {
-                    userMessageState.value = it
+                value = userMessageState, onValueChange = {
                     onTextFieldUpdate(it)
                 }, modifier = Modifier
                     .fillMaxWidth()
@@ -352,4 +342,13 @@ object EmployeesData {
             ""
         )
     )
+    val initial=listOf(
+        EmployeeInfo(
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""))
 }

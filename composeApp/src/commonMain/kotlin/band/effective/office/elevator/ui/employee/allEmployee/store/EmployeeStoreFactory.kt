@@ -4,8 +4,8 @@ package band.effective.office.elevator.ui.employee.allEmployee.store
 import band.effective.office.elevator.domain.models.EmployeeInfo
 import band.effective.office.elevator.domain.usecase.EmployeeUseCase
 import band.effective.office.elevator.ui.employee.allEmployee.EmployeesData
+import band.effective.office.elevator.ui.employee.allEmployee.models.mappers.toUI
 import band.effective.office.elevator.utils.changeEmployeeShowedList
-import band.effective.office.elevator.utils.convertEmployeeInfoListToEmployeeCard
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -14,6 +14,8 @@ import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -22,20 +24,26 @@ internal class EmployeeStoreFactory(private val storeFactory: StoreFactory):Koin
 
     private val employeesInfo:EmployeeUseCase by inject()
 
-    var employeesInfoList:List<EmployeeInfo> = EmployeesData.employeesCardData//listOf()
+    var employeesInfoList:List<EmployeeInfo> = listOf()
+    private val _employList = MutableStateFlow(EmployeesData.initial)
+    val employList=_employList.asStateFlow()
     var employeesNameFilter:String=""
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): EmployeeStore =
         object: EmployeeStore, Store<EmployeeStore.Intent, EmployeeStore.State, EmployeeStore.Label> by storeFactory.create(
             name="EmployeeStore",
             initialState = EmployeeStore.State(
-                changeShowedEmployeeCards = convertEmployeeInfoListToEmployeeCard(employeesInfoList)
+                changeShowedEmployeeCards = employeesInfoList.map(EmployeeInfo::toUI),
+                countShowedEmployeeCards =employeesInfoList.count().toString(),
+                countInOfficeShowedEmployeeCards = employeesInfoList.filter {it.state=="In office"}.count().toString(),
+                query=employeesNameFilter
+
             ),
             bootstrapper = coroutineBootstrapper {
                 launch(Dispatchers.IO) {
-                    employeesInfo.invoke().collect{value->employeesInfoList}
+                    employeesInfo.invoke().collect{newList->_employList.value=newList}
                 }
-                launch { dispatch(EmployeeStoreFactory.Action.UpdateEmployeesInfo(employeesInfoList))
+                launch { dispatch(EmployeeStoreFactory.Action.UpdateEmployeesInfo)
                 }},
             executorFactory = ::ExecutorImpl,
             reducer = ReducerIMPL
@@ -47,7 +55,7 @@ internal class EmployeeStoreFactory(private val storeFactory: StoreFactory):Koin
         data class UpdateEmployees(val query: String, val employeesInfo:List<EmployeeInfo>): Msg
     }
     private sealed interface Action{
-        data class UpdateEmployeesInfo(val employeesInfo: List<EmployeeInfo>): Action
+        object UpdateEmployeesInfo: Action//val employeesInfo: List<EmployeeInfo>
     }
 
     private inner class ExecutorImpl :
@@ -74,7 +82,7 @@ internal class EmployeeStoreFactory(private val storeFactory: StoreFactory):Koin
         ) {
             when(action){
                 is EmployeeStoreFactory.Action.UpdateEmployeesInfo->{
-                    employeesInfoList=action.employeesInfo//???
+                    employeesInfoList=employList.value
                     dispatch(Msg.UpdateEmployees(query = employeesNameFilter, employeesInfo = employeesInfoList))//i need intent.query there so i made special variable
                 }
             }
@@ -84,8 +92,13 @@ internal class EmployeeStoreFactory(private val storeFactory: StoreFactory):Koin
     private object ReducerIMPL: Reducer<EmployeeStore.State, Msg> {
         override fun EmployeeStore.State.reduce(msg: Msg): EmployeeStore.State =
             when(msg){
-                is Msg.UpdateEmployees -> copy(
-                    changeShowedEmployeeCards = changeEmployeeShowedList(msg.query,convertEmployeeInfoListToEmployeeCard(msg.employeesInfo))
+                is Msg.UpdateEmployees ->
+                    copy(
+                    changeShowedEmployeeCards = changeEmployeeShowedList(msg.query, msg.employeesInfo.map(EmployeeInfo::toUI)),
+                    countShowedEmployeeCards=changeEmployeeShowedList(msg.query, msg.employeesInfo.map(EmployeeInfo::toUI)).count().toString(),
+                    countInOfficeShowedEmployeeCards=changeEmployeeShowedList(msg.query, msg.employeesInfo.map(EmployeeInfo::toUI))
+                        .filter {it.state=="In office"}.count().toString(),
+                    query = msg.query
 
                 )
             }
