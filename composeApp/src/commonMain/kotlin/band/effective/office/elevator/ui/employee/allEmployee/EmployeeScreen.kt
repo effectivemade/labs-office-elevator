@@ -57,6 +57,7 @@ import band.effective.office.elevator.utils.generateImageLoader
 import com.seiko.imageloader.LocalImageLoader
 import com.seiko.imageloader.model.ImageRequest
 import com.seiko.imageloader.rememberAsyncImagePainter
+import dev.icerock.moko.resources.ImageResource
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 
@@ -236,7 +237,7 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
                     }
                     val painter = rememberAsyncImagePainter(request)
                     Image(
-                        painter = painter,
+                        painter = painterResource(MainRes.images.logo_default),
                         contentDescription = "Employee logo",
                         modifier = Modifier
                             .clip(CircleShape)
