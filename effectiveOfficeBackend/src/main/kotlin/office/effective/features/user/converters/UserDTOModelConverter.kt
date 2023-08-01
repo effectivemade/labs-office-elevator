@@ -9,9 +9,10 @@ import office.effective.model.UserModel
 import org.koin.core.context.GlobalContext
 import java.util.UUID
 
-class UserDTOModelConverter {
-    private val repository: UserRepository = GlobalContext.get().get()
-    private val converter: IntegrationDTOModelConverter = GlobalContext.get().get()
+class UserDTOModelConverter(
+    private val repository: UserRepository,
+    private val converter: IntegrationDTOModelConverter
+) {
 
     fun dTOToModel(userDTO: UserDTO): UserModel {
         val userId = UUID.fromString(userDTO.id);
