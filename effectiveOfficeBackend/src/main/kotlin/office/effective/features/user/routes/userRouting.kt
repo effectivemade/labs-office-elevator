@@ -33,7 +33,7 @@ fun Route.userRouting() {
                 repo.findByEmail(
                     (call.parameters["email"] ?: call.response.status(HttpStatusCode.BadRequest)) as String
                 )
-            val converterDTO = UserDTOModelConverter()
+            val converterDTO: UserDTOModelConverter = GlobalContext.get().get()
             call.respond(converterDTO.modelToDTO(model))
         }
     }
