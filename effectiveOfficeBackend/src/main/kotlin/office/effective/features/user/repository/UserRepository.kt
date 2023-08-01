@@ -5,7 +5,6 @@ import office.effective.features.user.converters.UserModelEntityConverter
 import office.effective.model.IntegrationModel
 import office.effective.model.UserModel
 import office.effective.model.UserTagModel
-import org.koin.core.context.GlobalContext
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
 import org.ktorm.entity.*
@@ -28,7 +27,7 @@ class UserRepository(private val db: Database, private val converter: UserModelE
                 "Cannot find tag by id ${userEnt.tag.id}"
             )
 
-        val userModel = converter.EntityToModel(userEnt, null)
+        val userModel = converter.entityToModel(userEnt, null)
         userModel.integrations = integrations
         userModel.tag = tagEntity
 
@@ -40,7 +39,7 @@ class UserRepository(private val db: Database, private val converter: UserModelE
         val ents = db.users.filter { Users.tagId eq tagId }.toSet()
         var models: MutableSet<UserModel> = mutableSetOf<UserModel>()
         ents.forEach {
-            val user = converter.EntityToModel(it, null)
+            val user = converter.entityToModel(it, null)
             user.integrations = findSetOfIntegrationsByUser(user.id!!)
             models.add(user)
 
