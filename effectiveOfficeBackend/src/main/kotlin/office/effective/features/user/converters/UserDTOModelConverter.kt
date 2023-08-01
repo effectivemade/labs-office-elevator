@@ -1,5 +1,6 @@
 package office.effective.features.user.converters
 
+import office.effective.features.user.dto.IntegrationDTO
 import office.effective.features.user.dto.UserDTO
 import office.effective.features.user.repository.UserRepository
 import office.effective.features.user.repository.UsersTagEntity
@@ -9,12 +10,14 @@ import org.koin.core.context.GlobalContext
 import java.util.UUID
 
 class UserDTOModelConverter {
-    val repository: UserRepository = GlobalContext.get().get()
+    private val repository: UserRepository = GlobalContext.get().get()
+    private val converter: IntegrationDTOModelConverter = GlobalContext.get().get()
 
     fun dTOToModel(userDTO: UserDTO): UserModel {
         val userId = UUID.fromString(userDTO.id);
         val tag: UsersTagEntity? = repository.findTagByUserOrNull(userId);
-        val integrations: Set<IntegrationModel>? = repository.findSetOfIntegrationsByUserOrNull(userId);
+        val integrations: MutableSet<IntegrationModel> = mutableSetOf()
+        userDTO.integrations?.forEach { integrations.add(converter.dTOToModel(it)) }
         return UserModel(
             userDTO.fullName,
             userId,
@@ -27,12 +30,16 @@ class UserDTOModelConverter {
     }
 
     fun modelToDTO(userModel: UserModel): UserDTO {
+
+        val integrations: MutableList<IntegrationDTO> = mutableListOf()
+        userModel.integrations?.forEach { integrations.add(converter.modelToDTO(it)) }
         return UserDTO(
             id = userModel.id.toString(),
             fullName = userModel.fullName,
             active = userModel.active,
             role = userModel.role ?: "",
-            avatarUrl = userModel.avatarURL ?: ""
+            avatarUrl = userModel.avatarURL ?: "",
+            integrations = integrations
         )
     }
 
