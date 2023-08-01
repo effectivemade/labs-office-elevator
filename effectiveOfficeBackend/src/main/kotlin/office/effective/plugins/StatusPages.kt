@@ -6,6 +6,7 @@ import io.ktor.server.plugins.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.response.*
 import office.effective.common.exception.InstanceNotFoundException
+import office.effective.common.exception.MissingIdException
 import office.effective.common.exception.ValidationException
 
 fun Application.configureExceptionHandling() {
@@ -18,6 +19,9 @@ fun Application.configureExceptionHandling() {
         }
         exception<ValidationException> { call, cause ->
             call.respondText(text = "404: $cause", status = HttpStatusCode.NotFound)
+        }
+        exception<MissingIdException> { call, cause ->
+            call.respondText(text = "500: $cause", status = HttpStatusCode.InternalServerError)
         }
         exception<Throwable> { call, cause ->
             call.respondText(text = "500: $cause", status = HttpStatusCode.InternalServerError)
