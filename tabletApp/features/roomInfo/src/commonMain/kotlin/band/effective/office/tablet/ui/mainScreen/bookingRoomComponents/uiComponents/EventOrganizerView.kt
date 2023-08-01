@@ -43,12 +43,12 @@ fun EventOrganizerView(
     onExpandedChange: () -> Unit,
     onSelectItem: (String) -> Unit,
 
-) {
+    ) {
     val focusManager = LocalFocusManager.current
     Column(modifier = modifier) {
         Text(
             text = MainRes.string.selectbox_organizer_title,
-            color = LocalCustomColorsPalette.current.parameterTitle,
+            color = LocalCustomColorsPalette.current.secondaryTextAndIcon,
             style = MaterialTheme.typography.h8
         )
         Spacer(modifier = Modifier.height(10.dp))
@@ -75,7 +75,11 @@ fun EventOrganizerView(
                             color = LocalCustomColorsPalette.current.tertiaryTextAndIcon
                         )
                     },
-                    colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.Transparent),
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent
+                    ),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(
                         onDone = {
@@ -84,7 +88,7 @@ fun EventOrganizerView(
                             onSelectItem(if (organizers.contains(selectedItem)) selectedItem else "")
                             onExpandedChange()
                         }
-                    )
+                    ),
                 )
                 Image(
                     modifier = Modifier,

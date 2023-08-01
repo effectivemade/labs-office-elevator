@@ -31,7 +31,7 @@ import java.util.Calendar
 fun RoomEventListComponent(modifier: Modifier = Modifier, eventsList: List<EventInfo>, isToday: Boolean) {
     Column(modifier = modifier) {
         Text(
-            text = "${MainRes.string.select_organizer_title} ${if (isToday) MainRes.string.on_today_string else ""}",
+            text = "${MainRes.string.list_organizers_title} ${if (isToday) MainRes.string.on_today_string else ""}",
             style = MaterialTheme.typography.h7,
             color = LocalCustomColorsPalette.current.secondaryTextAndIcon
         )

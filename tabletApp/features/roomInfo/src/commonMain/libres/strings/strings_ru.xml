@@ -19,9 +19,9 @@
     <string name="busy_duration_string">До конца</string>
     <string name="free_duration_string">Будет занята через</string>
     <string name="see_free_room">Смотреть другие переговорки</string>
-    <string name="select_date_tine_title">когда</string>
-    <string name="select_length_title">на сколько</string>
-    <string name="select_organizer_title">Занятое время</string>
+    <string name="select_date_tine_title">Когда</string>
+    <string name="select_length_title">На сколько</string>
+    <string name="select_organizer_title">Организатор</string>
     <string name="on_today_string">на сегодня</string>
     <string name="start_date_time">${date} с ${time}</string>
     <string name="minus_date_button_string">- 15 мин</string>
@@ -29,7 +29,8 @@
     <string name="current_length_string">${currentLength} мин</string>
     <string name="short_minuets">мин</string>
     <string name="short_hours">ч</string>
-    <string name="selectbox_organizer_title">Организатор встречи</string>
+    <string name="selectbox_organizer_title">Выберите организатора</string>
+    <string name="list_organizers_title">Занятое время</string>
     <string name="event_list_title">Занятое время</string>
     <string name="no_select_organizer_alert">Выберите организатора</string>
     <string name="no_correct_time">В это время будет другая бронь</string>
