@@ -10,7 +10,7 @@ object MockListRooms {
             name = "Pluto",
             capacity = 3,
             isHaveTv = false,
-            electricSocketCount = 0,
+            socketCount = 0,
             eventList = listOf(
                 EventInfo(
                     startTime = addTime(0, 0, 30),
@@ -25,7 +25,7 @@ object MockListRooms {
             name = "Moon",
             capacity = 8,
             isHaveTv = false,
-            electricSocketCount = 0,
+            socketCount = 0,
             eventList = listOf(
                 EventInfo(
                     startTime = addTime(1, 2, 30),
@@ -40,7 +40,7 @@ object MockListRooms {
             name = "Antares",
             capacity = 3,
             isHaveTv = false,
-            electricSocketCount = 14,
+            socketCount = 14,
             eventList = listOf(
                 EventInfo(
                     startTime = addTime(0, 0 , 0),
@@ -59,7 +59,7 @@ object MockListRooms {
             name = "Sun",
             capacity = 8,
             isHaveTv = false,
-            electricSocketCount = 0,
+            socketCount = 0,
             eventList = listOf(
                 EventInfo(
                     startTime = addTime(0, 0 , 0),

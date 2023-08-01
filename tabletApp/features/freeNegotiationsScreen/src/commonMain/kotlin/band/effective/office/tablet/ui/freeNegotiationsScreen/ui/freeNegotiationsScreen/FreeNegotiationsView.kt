@@ -14,7 +14,6 @@ import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.uiComponents.PanelView
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.uiComponents.RoomsView
-import band.effective.office.tablet.ui.selectRoomScreen.FreeSelectRoomView
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponent
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomScreen
 

@@ -13,7 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.DateTimeComponent
+import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.uiComponent.DateTimeComponent
 
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable

@@ -1,10 +1,8 @@
 package band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.store
 
 import band.effective.office.tablet.domain.model.Booking
-import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.ui.freeNegotiationsScreen.domain.MockListRooms
-import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStoreFactory
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory

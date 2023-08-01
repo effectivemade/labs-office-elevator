@@ -2,6 +2,7 @@ package band.effective.office.tablet.ui.root
 
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.FreeNegotiationsComponent
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.FreeNegotiationsComponentImpl
+import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store.BookingStore
 import band.effective.office.tablet.ui.mainScreen.mainScreen.MainComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.StackNavigation
@@ -48,6 +49,8 @@ class RootComponent(componentContext: ComponentContext, private val storeFactory
                     storeFactory = storeFactory,
                     onMainScreen = {
                         navigation.pop()
+                        (childStack.value.active.instance as Child.MainChild).
+                        component.bookingRoomComponent.sendIntent(BookingStore.Intent.OnChangeIsActive)
                     },
                     onBookingInfo = {
                         (childStack.value.backStack.last().instance as Child.MainChild).component

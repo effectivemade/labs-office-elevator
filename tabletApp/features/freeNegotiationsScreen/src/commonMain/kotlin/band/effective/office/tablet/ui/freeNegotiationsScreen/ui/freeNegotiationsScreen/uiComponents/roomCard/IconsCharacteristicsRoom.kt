@@ -37,10 +37,10 @@ fun IconCharacteristicsRoom(
             )
             Spacer(modifier = Modifier.width(10.dp))
         }
-        if (roomInfo.electricSocketCount > 0) {
+        if (roomInfo.socketCount > 0) {
             IconCharacteristic(
                 icon = ImageVector.vectorResource(MainRes.image.port),
-                value = roomInfo.electricSocketCount,
+                value = roomInfo.socketCount,
                 description = "ports"
             )
             Spacer(modifier = Modifier.width(10.dp))

@@ -36,16 +36,23 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 initialState = BookingStore.State.default,
                 bootstrapper = coroutineBootstrapper {
                     launch(Dispatchers.IO) {
-                        val busyEvent = checkBookingUseCase(EventInfo.emptyEvent).unbox({ TODO("Maksim Mishenko: add handler") })
+                        val busyEvent =
+                            checkBookingUseCase(EventInfo.emptyEvent).unbox({ TODO("Maksim Mishenko: add handler") })
                         launch(Dispatchers.Main) {
                             dispatch(
                                 Action.Init(
-                                    organizers = updateUseCase.getOrganizersList().unbox({ TODO("Maksim Mishenko: add handler") }),
+                                    organizers = updateUseCase.getOrganizersList()
+                                        .unbox({ TODO("Maksim Mishenko: add handler") }),
                                     isBusy = busyEvent != null,
                                     busyEvent = busyEvent ?: EventInfo.emptyEvent
                                 )
                             )
-                            dispatch(Action.UpdateOrganizers(updateUseCase.getOrganizersList().unbox({ TODO("Maksim Mishenko: add handler") })))
+                            dispatch(
+                                Action.UpdateOrganizers(
+                                    updateUseCase.getOrganizersList()
+                                        .unbox({ TODO("Maksim Mishenko: add handler") })
+                                )
+                            )
                             updateUseCase(scope = this,
                                 {
                                     launch(Dispatchers.Main) {
@@ -60,7 +67,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                                 })
                         }
                         launch(Dispatchers.Main) {
-                            currentEventController.timeToUpdate.collect{dispatch(Action.UpdateSelectTime)}
+                            currentEventController.timeToUpdate.collect { dispatch(Action.UpdateSelectTime) }
                         }
                     }
                 },
@@ -77,7 +84,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         ) : Action
 
         data class UpdateEvents(val newData: RoomInfo) : Action
-        object UpdateSelectTime: Action
+        object UpdateSelectTime : Action
     }
 
     private sealed interface Message {
@@ -102,7 +109,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
         object Reset : Message
         object OnChangeExpanded : Message
-        object UpdateTime: Message
+        object UpdateTime : Message
+        object OnChangeIsActive : Message
     }
 
     private inner class ExecutorImpl() :
@@ -124,11 +132,16 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     booking = intent.booking
                 )
 
-                is BookingStore.Intent.OnChangeDate -> changeDate(getState(), intent.changeInDay)
-                is BookingStore.Intent.OnChangeLength -> changeLength(getState(), intent.change)
+                is BookingStore.Intent.OnChangeDate -> changeDate(getState, intent.changeInDay)
+                is BookingStore.Intent.OnChangeLength -> changeLength(getState, intent.change)
                 is BookingStore.Intent.OnChangeOrganizer -> {
                     dispatch(Message.ChangeOrganizer(intent.newOrganizer))
-                    reset()
+                    reset(getState)
+                }
+
+                is BookingStore.Intent.OnChangeIsActive -> {
+                    dispatch(Message.OnChangeIsActive)
+                    reset(getState)
                 }
 
                 BookingStore.Intent.OnChangeExpanded -> dispatch(Message.OnChangeExpanded)
@@ -137,17 +150,20 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
         var resetTimer: Job? = null
 
-        fun reset() {
+        fun reset(getState: () -> BookingStore.State) {
             resetTimer?.cancel()
             resetTimer = scope.launch {
-                delay(60000)
-                dispatch(Message.Reset)
+                    delay(60000)
+                if (getState().isActive) {
+                    dispatch(Message.Reset)
+                }
             }
         }
 
         fun booking(isCurrentRoom: Boolean, state: BookingStore.State, booking: (() -> Unit)?) =
             scope.launch {
-                val busyEvent = checkBookingUseCase(state.toEvent()).unbox({ TODO("Maksim Mishenko: add handler") })
+                val busyEvent =
+                    checkBookingUseCase(state.toEvent()).unbox({ TODO("Maksim Mishenko: add handler") })
                 when {
                     !state.isCorrectOrganizer() -> dispatch(Message.OrganizerError)
                     busyEvent != null -> dispatch(Message.NotCorrectEvent(busyEvent))
@@ -155,6 +171,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                         booking?.invoke()
                         //dispatch(Message.BookingCurrentRoom)
                     }
+
                     else -> {
                         booking?.invoke()
                         dispatch(Message.BookingOtherRoom)
@@ -176,13 +193,19 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     )
                 }
 
-                is Action.UpdateEvents -> checkBusy(getState())
+                is Action.UpdateEvents -> checkBusy(getState)
                 Action.UpdateSelectTime -> dispatch(Message.UpdateTime)
             }
         }
 
-        fun changeDate(state: BookingStore.State, changeDay: Int) = scope.launch() {
-            val newDate = (state.selectDate.clone() as Calendar).apply { add(Calendar.DAY_OF_MONTH, changeDay) }
+        fun changeDate(getState: () -> BookingStore.State, changeDay: Int) = scope.launch() {
+            val state = getState()
+            val newDate = (state.selectDate.clone() as Calendar).apply {
+                add(
+                    Calendar.DAY_OF_MONTH,
+                    changeDay
+                )
+            }
             dispatch(
                 Message.ChangeEvent(
                     selectDate = newDate,
@@ -190,10 +213,11 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     isSelectCurrentTime = newDate.isNow()
                 )
             )
-            reset()
+            reset(getState)
         }
 
-        fun changeLength(state: BookingStore.State, change: Int) = scope.launch() {
+        fun changeLength(getState: () -> BookingStore.State, change: Int) = scope.launch() {
+            val state = getState()
             if (state.length + change <= 0) return@launch
             dispatch(
                 Message.ChangeEvent(
@@ -202,18 +226,20 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     isSelectCurrentTime = state.isSelectCurrentTime
                 )
             )
-            reset()
+            reset(getState)
         }
 
-        fun checkBusy(state: BookingStore.State) = scope.launch {
-            val busyEvent = checkBookingUseCase(state.toEvent()).unbox({ TODO("Maksim Mishenko: add handler") })
+        fun checkBusy(getState: () -> BookingStore.State) = scope.launch {
+            val state = getState()
+            val busyEvent =
+                checkBookingUseCase(state.toEvent()).unbox({ TODO("Maksim Mishenko: add handler") })
             dispatch(
                 Message.UpdateBusy(
                     isBusy = busyEvent != null,
                     busyEvent = busyEvent ?: EventInfo.emptyEvent
                 )
             )
-            reset()
+            reset(getState)
         }
     }
 
@@ -230,8 +256,11 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
     private object ReducerImpl : Reducer<BookingStore.State, Message> {
         override fun BookingStore.State.reduce(msg: Message): BookingStore.State =
             when (msg) {
-                is Message.BookingCurrentRoom -> reset()
-                is Message.BookingOtherRoom -> reset()
+                is Message.BookingCurrentRoom -> copy()
+                is Message.BookingOtherRoom -> copy(
+                    isActive = false
+                )
+
                 is Message.ChangeEvent -> copy(
                     selectDate = msg.selectDate,
                     length = msg.length,
@@ -250,6 +279,10 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is Message.Reset -> reset()
                 is Message.OnChangeExpanded -> copy(isExpandedOrganizersList = !isExpandedOrganizersList)
                 is Message.UpdateTime -> copy(currentDate = GregorianCalendar())
+                is Message.OnChangeIsActive -> {
+                    copy(isActive = true)
+                }
+
             }
 
         fun BookingStore.State.reset() = copy(
