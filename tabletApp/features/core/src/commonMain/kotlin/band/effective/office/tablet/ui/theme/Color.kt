@@ -41,6 +41,8 @@ internal val md_theme_light_disabledPrimaryButton = Color(0xFFD2CAC6)
 val textButton = Color(0xFFFFFFFF)
 val roomInfoColor = Color(0xFFFAFAFA)
 val alertColor = Color(0xFF95260E)
+val disconnectColor = Color(0xFFD01E1E)
+val undefineStateColor = Color(0xFF6E6E6E)
 
 object ScrollBarColor{
     val background = Color(0xFF4D4D4D)

@@ -26,6 +26,7 @@ import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.features.roomInfo.MainRes
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.roomInfoColor
+import band.effective.office.tablet.ui.theme.undefineStateColor
 import band.effective.office.tablet.utils.CalendarStringConverter
 import java.util.Calendar
 
@@ -38,14 +39,16 @@ fun BusyRoomInfoComponent(
     electricSocketCount: Int,
     event: EventInfo?,
     onButtonClick: () -> Unit,
-    timeToFinish: Int
+    timeToFinish: Int,
+    isError: Boolean
 ) {
     val backgroundColor = LocalCustomColorsPalette.current.busyStatus
 
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
-    val colorButton =  if(isPressed) roomInfoColor else backgroundColor
-    val colorTextButton = if(isPressed) backgroundColor else roomInfoColor
+    val correctBackgroundColor = if (isError) undefineStateColor else backgroundColor
+    val colorButton = if (isPressed) roomInfoColor else correctBackgroundColor
+    val colorTextButton = if (isPressed) correctBackgroundColor else roomInfoColor
 
     Surface {
         CommonRoomInfoComponent(
@@ -54,8 +57,9 @@ fun BusyRoomInfoComponent(
             capacity = capacity,
             isHaveTv = isHaveTv,
             electricSocketCount = electricSocketCount,
-            backgroundColor = backgroundColor
-        ){
+            backgroundColor = backgroundColor,
+            isError = isError
+        ) {
             Text(
                 text = MainRes.string.room_occupancy.format(
                     finishTime = event?.finishTime?.time() ?: "",

@@ -33,7 +33,7 @@ fun EventDurationView(
     Column(modifier = modifier) {
         Text(
             text = MainRes.string.select_length_title,
-            color = LocalCustomColorsPalette.current.parameterTitle,
+            color = LocalCustomColorsPalette.current.secondaryTextAndIcon,
             style = MaterialTheme.typography.h8
         )
         Spacer(modifier = Modifier.height(10.dp))

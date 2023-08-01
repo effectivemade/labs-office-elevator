@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.features.roomInfo.MainRes
 import band.effective.office.tablet.ui.theme.h8
 import band.effective.office.tablet.ui.theme.roomInfoColor
+import band.effective.office.tablet.ui.theme.undefineStateColor
 import io.github.skeptick.libres.compose.painterResource
 import io.github.skeptick.libres.images.Image
 
@@ -33,11 +34,12 @@ fun CommonRoomInfoComponent(
     isHaveTv: Boolean,
     electricSocketCount: Int,
     backgroundColor: Color,
+    isError: Boolean,
     content: @Composable () -> Unit
 ) {
     Surface(
         modifier = Modifier.background(color = backgroundColor).fillMaxWidth(),
-        color = backgroundColor
+        color = if (isError) undefineStateColor else backgroundColor
     ) {
         Column(modifier = modifier) {
             Text(

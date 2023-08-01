@@ -22,7 +22,8 @@ fun FreeRoomInfoComponent(
     isHaveTv: Boolean,
     electricSocketCount: Int,
     nextEvent: EventInfo?,
-    timeToNextEvent: Int
+    timeToNextEvent: Int,
+    isError: Boolean
 ) {
     CommonRoomInfoComponent(
         modifier = modifier,
@@ -30,7 +31,8 @@ fun FreeRoomInfoComponent(
         capacity = capacity,
         isHaveTv = isHaveTv,
         electricSocketCount = electricSocketCount,
-        backgroundColor = LocalCustomColorsPalette.current.freeStatus
+        backgroundColor = LocalCustomColorsPalette.current.freeStatus,
+        isError = isError
     ) {
         Text(
             text = MainRes.string.free_room_occupancy.format(
