@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.features.freeNegotiationsScreen.MainRes
+import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.uiComponents.roomCard.checkDuration
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.h7
 
@@ -17,9 +18,10 @@ import band.effective.office.tablet.ui.theme.h7
 fun ButtonBookingView(
     modifier: Modifier,
     roomInfo: RoomInfo,
+    isLessDuration: Boolean,
     onBookRoom: (name: String) -> Unit
 ) {
-    val enabled = roomInfo.currentEvent == null
+    val enabled = ( roomInfo.currentEvent == null && isLessDuration)
     Button(
         modifier = modifier,
         onClick = {

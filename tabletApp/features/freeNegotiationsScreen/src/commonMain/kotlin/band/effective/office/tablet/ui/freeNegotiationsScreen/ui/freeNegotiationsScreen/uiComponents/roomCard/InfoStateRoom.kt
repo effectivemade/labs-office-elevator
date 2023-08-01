@@ -11,33 +11,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.features.freeNegotiationsScreen.MainRes
-import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.roomInfoColor
-import band.effective.office.tablet.utils.time24
-import java.util.Calendar
 
 @Composable
-fun InfoNearEventTime(
-    roomInfo: RoomInfo
-) {
-    if (roomInfo.currentEvent == null){
-        EventTime(roomInfo.eventList.first().startTime, LocalCustomColorsPalette.current.freeStatus)
-    } else {
-        EventTime(roomInfo.currentEvent!!.finishTime, LocalCustomColorsPalette.current.busyStatus)
-    }
-}
-
-@Composable
-fun EventTime(time: Calendar, color: Color) {
-    val timeInstance = Calendar.getInstance()
-    val dateInstance =
-        "${timeInstance.get(Calendar.DAY_OF_MONTH)}.${getMonth(timeInstance.get(Calendar.MONTH))}"
-
-    val eventDate = "${time.get(Calendar.DAY_OF_MONTH)}.${getMonth(time.get(Calendar.MONTH))}"
-    val eventTime = time.time24()
-
+fun InfoStateRoom(state: String, color: Color) {
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(80.dp))
@@ -45,10 +23,7 @@ fun EventTime(time: Calendar, color: Color) {
     ) {
         Text(
             modifier = Modifier.padding(horizontal = 15.dp, vertical = 5.dp),
-            text = if (dateInstance == eventDate) eventTime
-            else {
-                "$eventDate $eventTime"
-            },
+            text = state,
             style = MaterialTheme.typography.h5,
             color = roomInfoColor
         )

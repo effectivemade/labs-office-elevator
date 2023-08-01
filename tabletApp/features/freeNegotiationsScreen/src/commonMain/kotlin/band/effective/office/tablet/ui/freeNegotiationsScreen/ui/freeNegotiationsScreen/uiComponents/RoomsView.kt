@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.uiComponents.roomCard.RoomCard
+import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.uiComponents.roomCard.checkDuration
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 
 @RequiresApi(Build.VERSION_CODES.GINGERBREAD)
@@ -29,6 +30,7 @@ import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 fun RoomsView(
     modifier: Modifier,
     listRooms: List<RoomInfo>,
+    newEventDuration: Int,
     onBookRoom: (name: String) -> Unit
     ) {
     Box(
@@ -48,23 +50,27 @@ fun RoomsView(
                         .padding(horizontal = 10.dp)
                         .fillMaxHeight()
                 ) {
+                    val isLessDuration = it.currentEvent == null &&
+                            checkDuration(it.eventList.first().startTime, newEventDuration)
                     RoomCard(
                         roomInfo = it,
                         modifier = Modifier
                             .fillMaxHeight(0.8f)
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(20))
-                            .background(LocalCustomColorsPalette.current.mountainBackground)
+                            .background(LocalCustomColorsPalette.current.mountainBackground),
+                        isLessDuration = isLessDuration
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     ButtonBookingView(
                         roomInfo = it,
+                        isLessDuration = isLessDuration,
                         onBookRoom = onBookRoom,
                         modifier = Modifier
                             .fillMaxSize()
                             .border(
                                 2.dp,
-                                if (it.currentEvent == null) {
+                                if (it.currentEvent == null && isLessDuration) {
                                     MaterialTheme.colors.primary
                                 } else {
                                     LocalCustomColorsPalette.current.disabledPrimaryButton

@@ -7,4 +7,7 @@
     <string name="hours">${hours}ч </string>
     <string name="minutes">${minutes}мин</string>
     <string name="month">0${month}</string>
+    <string name="may_occupy">можно занять</string>
+    <string name="at_time">в ${time}</string>
+    <string name="through_time">через ${time}</string>
 </resources>

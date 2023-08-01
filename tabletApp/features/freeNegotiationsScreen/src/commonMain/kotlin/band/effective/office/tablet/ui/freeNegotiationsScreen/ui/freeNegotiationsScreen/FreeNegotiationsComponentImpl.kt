@@ -1,6 +1,7 @@
 package band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen
 
 import band.effective.office.tablet.domain.model.Booking
+import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.store.FreeNegotiationsStore
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.store.FreeNegotiationsStoreFactory
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponentImpl
@@ -11,6 +12,7 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.core.component.KoinComponent
+import java.util.Calendar
 
 
 class FreeNegotiationsComponentImpl(
@@ -45,6 +47,8 @@ class FreeNegotiationsComponentImpl(
         ).create()
     }
 
+    val startTime = Calendar.getInstance()
+
     override val selectRoomComponent: SelectRoomComponentImpl =
         SelectRoomComponentImpl(
             componentContext = childContext(key = "bookingCurrentRoom"),
@@ -52,11 +56,21 @@ class FreeNegotiationsComponentImpl(
             onBookingRoom = {
                 Booking(
                     nameRoom = state.value.nameBookingRoom,
-                    eventInfo = state.value.eventInfo
+                    eventInfo = EventInfo(
+                        startTime = state.value.currentTime,
+                        finishTime = getFinishTime(state.value.currentTime, state.value.durationMinutes),
+                        organizer = state.value.organizer
+                    )
                 )
             },
             onCloseRequest = { onIntent(FreeNegotiationsStore.Intent.CloseModal) }
         )
+
+    private fun getFinishTime(startTime: Calendar, duration: Int): Calendar {
+        val finishDate = startTime.clone() as Calendar
+        finishDate.add(Calendar.MINUTE, state.value.durationMinutes)
+        return finishDate
+    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override val state = freeNegotiationsStore.stateFlow

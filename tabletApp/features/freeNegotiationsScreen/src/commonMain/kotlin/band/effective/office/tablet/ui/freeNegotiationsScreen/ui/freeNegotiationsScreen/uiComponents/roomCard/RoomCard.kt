@@ -20,7 +20,8 @@ import band.effective.office.tablet.domain.model.RoomInfo
 @Composable
 fun RoomCard(
     modifier: Modifier,
-    roomInfo: RoomInfo
+    roomInfo: RoomInfo,
+    isLessDuration: Boolean
 ) {
     Box(
         modifier = modifier,
@@ -31,9 +32,10 @@ fun RoomCard(
         ) {
             NameRoom(roomInfo.name)
             Spacer(modifier = Modifier.height(10.dp))
-            InfoNearEventTime(roomInfo)
-            Spacer(modifier = Modifier.height(20.dp))
-            StateRoomView(roomInfo)
+            StateRoomView(
+                roomInfo = roomInfo,
+                isLessDuration = isLessDuration
+            )
             Spacer(modifier = Modifier.height(20.dp))
             IconCharacteristicsRoom(
                 modifier = Modifier

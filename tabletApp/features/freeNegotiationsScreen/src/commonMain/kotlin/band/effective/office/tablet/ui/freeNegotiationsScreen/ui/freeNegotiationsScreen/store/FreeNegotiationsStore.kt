@@ -4,6 +4,7 @@ import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
 import com.arkivanov.mvikotlin.core.store.Store
+import java.util.Calendar
 
 interface FreeNegotiationsStore : Store< FreeNegotiationsStore.Intent, FreeNegotiationsStore.State, Nothing>{
 
@@ -20,9 +21,11 @@ interface FreeNegotiationsStore : Store< FreeNegotiationsStore.Intent, FreeNegot
         val error: String?,
         val listRooms: List<RoomInfo>,
         val nameCurrentRoom: String,
+        val durationMinutes: Int,
+        val organizer: String,
         val nameBookingRoom: String,
-        val eventInfo: EventInfo,
-        val showBookingModal: Boolean
+        val showBookingModal: Boolean,
+        val currentTime: Calendar
     ) {
         companion object {
             val defaultState =
@@ -33,8 +36,10 @@ interface FreeNegotiationsStore : Store< FreeNegotiationsStore.Intent, FreeNegot
                     nameCurrentRoom = "",
                     nameBookingRoom = "",
                     listRooms = listOf(),
-                    eventInfo = EventInfo.emptyEvent,
-                    showBookingModal = false
+                    durationMinutes = 0,
+                    organizer = "",
+                    showBookingModal = false,
+                    currentTime = Calendar.getInstance()
                 )
         }
     }

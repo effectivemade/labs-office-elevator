@@ -21,8 +21,8 @@ import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomScreen
 @Composable
 fun FreeNegotiationsView(
     listRooms: List<RoomInfo>,
+    newEventDuration: Int,
     nameRoomCurrent: String,
-    eventInfo: EventInfo,
     showBookingModal: Boolean,
     selectRoomComponent: SelectRoomComponent,
     onMainScreen: () -> Unit,
@@ -43,6 +43,7 @@ fun FreeNegotiationsView(
                 .fillMaxSize()
                 .background(MaterialTheme.colors.background),
             listRooms = listRooms,
+            newEventDuration = newEventDuration,
             onBookRoom = onBookRoom
         )
     }

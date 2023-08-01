@@ -3,6 +3,7 @@ package band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiatio
 import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.ui.freeNegotiationsScreen.domain.MockListRooms
+import band.effective.office.tablet.ui.selectRoomScreen.uiComponents.getLengthEvent
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -11,6 +12,7 @@ import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
+import java.util.Calendar
 
 class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory): KoinComponent {
 
@@ -65,6 +67,7 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory): Koin
             when (message) {
                 is Message.BookRoom-> copy(
                     nameBookingRoom = message.nameRoom,
+                    currentTime = Calendar.getInstance(),
                     showBookingModal = true
                 )
                 is Message.MainScreen -> copy()
@@ -72,7 +75,11 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory): Koin
                     listRooms = message.roomsInfo
                 )
                 is Message.SetBooking -> copy(
-                    eventInfo = message.bookingInfo.eventInfo,
+                    organizer = message.bookingInfo.eventInfo.organizer,
+                    durationMinutes = getLengthEvent(
+                        start = message.bookingInfo.eventInfo.startTime,
+                        finish = message.bookingInfo.eventInfo.finishTime
+                    ),
                     nameCurrentRoom = message.bookingInfo.nameRoom
                 )
                 is Message.CloseModal -> copy(showBookingModal = false)
