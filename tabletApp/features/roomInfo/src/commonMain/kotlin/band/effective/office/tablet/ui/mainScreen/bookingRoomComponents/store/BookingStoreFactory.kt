@@ -159,7 +159,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 val busyEvent = checkBookingUseCase(state.toEvent()).unbox({ it.saveData })
                 when {
                     !state.isCorrectOrganizer() -> dispatch(Message.OrganizerError)
-                    busyEvent != null -> dispatch(Message.NotCorrectEvent(busyEvent))
+                    isCurrentRoom && busyEvent != null -> dispatch(Message.NotCorrectEvent(busyEvent))
                     isCurrentRoom -> {
                         booking?.invoke()
                     }
