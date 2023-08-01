@@ -32,13 +32,21 @@
     <string name="elevator_button" >Поднять</string>
 
     <string name="by_date"> По дате </string>
-    <string name="show_map">Показать на карте</string>
+    <string name="show_map">Карта</string>
     <string name="book_a_seat">Забронировать место</string>
     <string name="nearest_bookings">Ваши ближайшие брони</string>
     <string name="none_booking_seat">У вас пока нет бронирований</string>
 
     <string name="cansel">Отмена</string>
     <string name="ok">Ок</string>
+
+    <!--Booking-->
+    <string name="type_booking">Тип брони</string>
+    <string name="workplace">Рабочее место</string>
+    <string name="meeting_room">Переговорная</string>
+    <string name="booking_period">Период бронирования</string>
+    <string name="suitable_options">Подходящие варианты</string>
+    <string name="select_zones">Выбрать зоны</string>
 
     <!--Tab titles-->
     <string name="profile">Профиль</string>

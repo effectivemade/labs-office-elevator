@@ -28,13 +28,21 @@
     <string name="employee_hint">Telegram nickname</string>
 
     <string name="by_date"> By date </string>
-    <string name="show_map">Show on map</string>
+    <string name="show_map">Map</string>
     <string name="book_a_seat">Book a seat</string>
     <string name="nearest_bookings">Your upcoming bookings</string>
     <string name="none_booking_seat">You dont have any bookings yet</string>
 
     <string name="cansel">Cansel</string>
     <string name="ok">Ok</string>
+
+    <!--Booking-->
+    <string name="type_booking">Type booking</string>
+    <string name="workplace">Workplace</string>
+    <string name="meeting_room">Meeting room</string>
+    <string name="booking_period">Booking period</string>
+    <string name="suitable_options">Suitable options</string>
+    <string name="select_zones">Select zones</string>
 
     <!-- Buttons -->
     <string name="_continue">Continue</string>
