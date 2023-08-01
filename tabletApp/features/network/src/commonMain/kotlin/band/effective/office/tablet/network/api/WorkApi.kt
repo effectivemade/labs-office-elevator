@@ -42,6 +42,7 @@ class WorkApi : Api {
         owner: String,
     ): Either<ErrorResponse, String> {
         delay(5000L)
+        if (!isSuccess.value) Either.Error(ErrorResponse(code = 404, description = "Not found"))
         if (begin <= GregorianCalendar() && GregorianCalendar() <= end) {
             mutableRoomInfo.update {
                 it.copy(
@@ -58,12 +59,7 @@ class WorkApi : Api {
             }
         }
 
-        return if (isSuccess.value) Either.Success("ok")
-        else Either.Error(
-            ErrorResponse(
-                code = 404, description = "Not found"
-            )
-        )
+        return Either.Success("ok")
     }
 
     override fun subscribeOnWebHock(
