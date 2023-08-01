@@ -11,4 +11,6 @@ class RealDateTimeComponent(
 ) : ComponentContext by componentContext {
     fun incrementDay() = changeDay(1)
     fun decrementDay() = changeDay(-1)
+    fun changeCurrentDay(newDay: Int) = setDay(newDay)
+    fun changeCurrentMonth(newMonth: Int) = setMonth(newMonth)
 }

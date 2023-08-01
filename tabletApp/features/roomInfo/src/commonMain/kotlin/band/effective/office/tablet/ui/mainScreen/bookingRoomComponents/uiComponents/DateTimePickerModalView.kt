@@ -6,12 +6,8 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,19 +16,16 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingRoomComponent
-import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store.BookingStore
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
-import band.effective.office.tablet.ui.theme.h8
 import band.effective.office.tablet.ui.theme.header4
 import band.effective.office.tablet.ui.theme.header6
 import epicarchitect.calendar.compose.basis.BasisDayOfMonthContent
 import epicarchitect.calendar.compose.basis.BasisDayOfWeekContent
+import epicarchitect.calendar.compose.basis.EpicMonth
 import epicarchitect.calendar.compose.basis.config.LocalBasisEpicCalendarConfig
 import epicarchitect.calendar.compose.basis.config.rememberBasisEpicCalendarConfig
 import epicarchitect.calendar.compose.basis.contains
@@ -47,8 +40,8 @@ import epicarchitect.calendar.compose.pager.config.rememberEpicCalendarPagerConf
 import epicarchitect.calendar.compose.pager.state.EpicCalendarPagerState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.Month
 import java.util.*
 
 @SuppressLint("StateFlowValueCalledInComposition")
@@ -67,23 +60,11 @@ fun DateTimePickerModalView(
             pagerConfig = rememberEpicCalendarPagerConfig(
                 basisConfig = rememberBasisEpicCalendarConfig(
                     displayDaysOfAdjacentMonths = true,
-//                    daysOfWeek = listOf(
-//                        DayOfWeek(1),
-//                        DayOfWeek(2),
-//                        DayOfWeek(3),
-//                        DayOfWeek(4),
-//                        DayOfWeek(5),
-//                        DayOfWeek(6),
-//                        DayOfWeek(7),
-//                    ),
                     dayOfMonthViewHeight = 32.dp
                 )
             ),
             selectionContainerColor = LocalCustomColorsPalette.current.pressedPrimaryButton,
-
-
         ),
-
         selectedDates =
         listOf(
             LocalDate(
@@ -92,7 +73,10 @@ fun DateTimePickerModalView(
                 selectedDateTime[Calendar.DAY_OF_MONTH]
             )
         ),
-        selectionMode = EpicDatePickerState.SelectionMode.Single(1)
+        selectionMode = EpicDatePickerState.SelectionMode.Single(1),
+        initialMonth = EpicMonth(
+            year = stateDateTime.selectDate[Calendar.YEAR],
+            month = Month(stateDateTime.selectDate[Calendar.MONTH] + 1))
     )
 
     Dialog(
@@ -136,18 +120,12 @@ fun DateTimePickerModalView(
                         } else {
                             selectedDateTime[Calendar.MONTH] - 1
                         }
-                        val intentDay = BookingStore.Intent.OnSetDay(changeInDay)
-                        val intentMonth = BookingStore.Intent.OnSetMonth(changeInMonth)
 
-                        val changeInTimeMillis =
-                            (updatedCalendar.timeInMillis - stateDateTime.selectDate.timeInMillis)
-                        val intentTime = BookingStore.Intent.OnChangeTime(changeInTimeMillis)
-
-                        bookingRoomComponent.bookingStore.accept(intentDay)
-                        bookingRoomComponent.bookingStore.accept(intentMonth)
-                        //bookingRoomComponent.bookingStore.accept(intentTime)
+                        //val changeInTimeMillis = (updatedCalendar.timeInMillis - stateDateTime.selectDate.timeInMillis)
 
 
+                        bookingRoomComponent.dateTimeComponent.changeCurrentDay(changeInDay)
+                        bookingRoomComponent.dateTimeComponent.changeCurrentMonth(changeInMonth)
 
                         onCloseRequest()
                     },
@@ -223,7 +201,8 @@ private fun DatePickerTitleView(
         }
         Text(
             text = if (epicDatePickerState.selectedDates.isNotEmpty()) {
-                epicDatePickerState.selectedDates.firstOrNull()!!.month.name.toLowerCase() + ", " + epicDatePickerState.selectedDates.firstOrNull()!!.dayOfMonth.toString()
+                epicDatePickerState.selectedDates.firstOrNull()!!.month.name.toLowerCase() +
+                ", " + epicDatePickerState.selectedDates.firstOrNull()!!.dayOfMonth.toString()
             } else {
              epicDatePickerState.pagerState.currentMonth.month.name.toLowerCase()
              },

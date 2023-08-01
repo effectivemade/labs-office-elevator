@@ -100,7 +100,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is BookingStore.Intent.OnChangeTime -> changeTime(getState(), intent.changeInTimeMillis)
                 is BookingStore.Intent.OnChangeLength -> changeLength(getState(), intent.change)
                 is BookingStore.Intent.OnChangeOrganizer -> dispatch(Message.ChangeOrganizer(intent.newOrganizer))
-                is BookingStore.Intent.OnSetDay -> setDayValueInDate(getState(), intent.changedDay)
+                is BookingStore.Intent.OnSetDay ->  setDayValueInDate(getState(), intent.changedDay)
                 is BookingStore.Intent.OnSetMonth -> setMonthValueInDate(getState(), intent.changedMonth)
             }
         }
@@ -138,7 +138,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         }
 
         fun setDayValueInDate(state: BookingStore.State, newDay: Int) = scope.launch() {
-            state.selectDate.set(Calendar.DATE, newDay)
+            state.selectDate.set(Calendar.DAY_OF_MONTH, newDay)
             val event = state.copy(selectDate = state.selectDate).toEvent()
             val busyEvent = checkBookingUseCase(event)
             dispatch(

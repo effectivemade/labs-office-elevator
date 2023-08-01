@@ -24,7 +24,7 @@ class BookingRoomComponent(
 ) :
     ComponentContext by componentContext {
 
-    internal val bookingStore = instanceKeeper.getStore {
+    private val bookingStore = instanceKeeper.getStore {
         BookingStoreFactory(storeFactory).create()
     }
 
@@ -37,7 +37,7 @@ class BookingRoomComponent(
             changeDay = { bookingStore.accept(BookingStore.Intent.OnChangeDate(it)) },
             changeTime = { bookingStore.accept(BookingStore.Intent.OnChangeTime(it)) },
             setDay = { bookingStore.accept(BookingStore.Intent.OnSetDay(it)) },
-            setMonth = { bookingStore.accept(BookingStore.Intent.OnSetDay(it)) },
+            setMonth = { bookingStore.accept(BookingStore.Intent.OnSetMonth(it)) },
         )
     val eventLengthComponent: RealEventLengthComponent =
         RealEventLengthComponent(childContext("length"),
