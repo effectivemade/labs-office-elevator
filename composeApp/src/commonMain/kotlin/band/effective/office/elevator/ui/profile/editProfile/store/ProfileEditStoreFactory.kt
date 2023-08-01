@@ -3,10 +3,10 @@ package band.effective.office.elevator.ui.profile.editProfile.store
 import band.effective.office.elevator.domain.models.User
 import band.effective.office.elevator.domain.usecase.GetUserByIdUseCase
 import band.effective.office.elevator.domain.usecase.UpdateUserUseCase
+import band.effective.office.elevator.ui.models.validator.Validator
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import band.effective.office.elevator.ui.profile.editProfile.store.ProfileEditStore.*
-import band.effective.office.elevator.ui.profile.mainProfile.store.ProfileStoreFactory
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
@@ -23,14 +23,15 @@ internal class ProfileEditStoreFactory(
 
     private val getUserByIdUseCase:GetUserByIdUseCase by inject()
     private val updateUserUseCase:UpdateUserUseCase by inject()
+    private val validator: Validator = Validator()
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): ProfileEditStore =
         object : ProfileEditStore,
-            Store<Intent, User, Label>
+            Store<Intent, State, Label>
             by storeFactory.create(
                 name = "ProfileEditStore",
-                initialState = User.defaultUser,
+                initialState = State(user = User.defaultUser),
                 bootstrapper = coroutineBootstrapper {
                     dispatch(Action.FetchUserInfo)
                 },
@@ -45,29 +46,125 @@ internal class ProfileEditStoreFactory(
 
     private sealed interface Msg {
         data class ProfileData(val user: User) : Msg
+        data class ErrorPhone(
+            val errorPhone: Boolean
+        ) : Msg
+
+        data class ErrorName(
+            val isNameError: Boolean
+        ) : Msg
+
+        data class ErrorPost(
+            val isPostError: Boolean
+        ) : Msg
+        data class ErrorTelegram(
+            val isTelegramError: Boolean
+        ) : Msg
     }
 
     private inner class ExecutorImpl :
-        CoroutineExecutor<Intent, Action, User, Msg, Label>() {
-        override fun executeIntent(
-            intent: Intent,
-            getState: () -> User
-        ) {
+        CoroutineExecutor<Intent, Action, State, Msg, Label>() {
+        override fun executeIntent(intent: Intent, getState: () -> State) {
             when (intent) {
                 Intent.BackInProfileClicked -> doReturnProfile()
                 is Intent.SaveChangeClicked -> doSaveChange(getState(),intent)
             }
         }
-        private fun doSaveChange(user: User, intent: Intent.SaveChangeClicked) {
+        private fun doSaveChange(user: State, intent: Intent.SaveChangeClicked) {
             scope.launch {
-                val uptUser = User(id = user.id, imageUrl = user.imageUrl, userName = intent.userName, post = intent.post, phoneNumber = intent.phoneNumber, telegram = intent.telegram,email = user.email)
+                val uptUser = User(
+                id = user.user.id,
+                imageUrl = user.user.imageUrl,
+                userName = intent.userName, post = intent.post,
+                phoneNumber = intent.phoneNumber,
+                telegram = intent.telegram,
+                email = user.user.email)
                 dispatch(Msg.ProfileData(user = uptUser))
-                updateUserUseCase.execute(uptUser)
-                publish(Label.SavedChange)
+                if(checkPhoneNumber(intent.phoneNumber)&& checkUserdata(userName = intent.userName)&& checkPost(intent.post)&&checkTelegram(intent.telegram)){
+                    updateUserUseCase.execute(uptUser)
+                    publish(Label.SavedChange)
+                }else{
+                    publish(Label.Error)
+                }
             }
 
         }
-        override fun executeAction(action: Action, getState: () -> User) {
+
+        private fun checkTelegram(telegram: String): Boolean {
+            return if (validator.checkTelegramNick(telegram)) {
+                dispatch(
+                    Msg.ErrorTelegram(
+                        isTelegramError = false
+                    )
+                )
+                true
+            }else{
+                dispatch(
+                    Msg.ErrorTelegram(
+                        isTelegramError = true
+                    )
+                )
+                false
+            }
+        }
+
+        private fun checkPost(post: String): Boolean {
+            return if (!validator.checkPost(post)) {
+                dispatch(
+                    Msg.ErrorPost(
+                        isPostError = false
+                    )
+                )
+                true
+            }else{
+                dispatch(
+                    Msg.ErrorPost(
+                        isPostError = true
+                    )
+                )
+                false
+            }
+        }
+
+        private fun checkUserdata(userName:String): Boolean {
+            return if (!validator.checkName(userName)) {
+                dispatch(
+                    Msg.ErrorName(
+                        isNameError = false
+                    )
+                )
+                true
+            }else{
+                dispatch(
+                    Msg.ErrorName(
+                        isNameError = true
+                    )
+                )
+                false
+            }
+        }
+
+        private fun checkPhoneNumber(phone:String):Boolean{
+            return if (validator.checkPhone(phone)) {
+                dispatch(
+                    Msg.ErrorPhone(
+                        errorPhone = false
+                    )
+                )
+                true
+            } else {
+                dispatch(
+                    Msg.ErrorPhone(
+                        errorPhone = true
+                    )
+                )
+                false
+            }
+
+        }
+
+
+        override fun executeAction(action: Action, getState: () -> State) {
             when (action) {
                 Action.FetchUserInfo -> fetchUserInfo()
             }
@@ -75,7 +172,7 @@ internal class ProfileEditStoreFactory(
 
         private fun fetchUserInfo() {
             scope.launch {
-                getUserByIdUseCase.execute(user).collectLatest{
+                getUserByIdUseCase.executeInFormat(user).collectLatest{
                         user ->  dispatch(Msg.ProfileData(user = user))
                 }
             }
@@ -86,17 +183,21 @@ internal class ProfileEditStoreFactory(
         }
     }
 
-    private object ReducerImpl : Reducer<User, Msg> {
-        override fun User.reduce(message: Msg): User =
+    private object ReducerImpl : Reducer<State, Msg> {
+        override fun State.reduce(message: Msg): State =
             when (message) {
-                is Msg.ProfileData ->
-                    copy(id = message.user.id,
+                is Msg.ProfileData -> State(User(id = message.user.id,
                     userName = message.user.userName,
                     telegram = message.user.telegram,
                     post = message.user.post,
                     phoneNumber = message.user.phoneNumber,
                     imageUrl = message.user.imageUrl,
-                    email = message.user.email)
+                    email = message.user.email))
+                is Msg.ErrorPhone ->
+                    copy(isErrorPhone = message.errorPhone)
+                is Msg.ErrorName -> copy(isErrorName = message.isNameError)
+                is Msg.ErrorPost -> copy(isErrorPost = message.isPostError)
+                is Msg.ErrorTelegram -> copy(isErrorTelegram = message.isTelegramError)
             }
     }
 }

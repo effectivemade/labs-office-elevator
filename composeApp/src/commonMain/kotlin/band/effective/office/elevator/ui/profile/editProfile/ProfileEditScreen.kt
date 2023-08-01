@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -30,13 +31,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.components.TitlePage
+import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.ui.models.FieldsData
+import band.effective.office.elevator.ui.models.PhoneMaskTransformation
 import band.effective.office.elevator.ui.profile.editProfile.store.ProfileEditStore
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
@@ -45,19 +49,28 @@ import dev.icerock.moko.resources.compose.stringResource
 fun ProfileEditScreen(component: ProfileEditComponent){
     val user by component.user.collectAsState()
 
+    val errorMessage = stringResource(MainRes.strings.profile_format_error)
+
     LaunchedEffect(component){
         component.label.collect{label->
             when(label){
                 is ProfileEditStore.Label.ReturnedInProfile ->component.onOutput(ProfileEditComponent.Output.NavigationBack)
                 is ProfileEditStore.Label.SavedChange -> component.onOutput(ProfileEditComponent.Output.NavigationBack)
+                is ProfileEditStore.Label.Error -> {
+                    showToast(errorMessage)
+                }
             }
         }
     }
     ProfileEditScreenContent(
-        userName = user.userName,
-        post = user.post,
-        telegram = user.telegram,
-        phoneNumber = user.phoneNumber,
+        isErrorTelegram = user.isErrorTelegram,
+        isErrorPost = user.isErrorPost,
+        isErrorName = user.isErrorName,
+        isErrorPhone = user.isErrorPhone,
+        userName = user.user.userName,
+        post = user.user.post,
+        telegram = user.user.telegram,
+        phoneNumber = user.user.phoneNumber,
         onReturnToProfile = { component.onEvent(ProfileEditStore.Intent.BackInProfileClicked) },
         onSaveChange = { userName,post, phoneNumber,telegram -> component.onEvent(ProfileEditStore.Intent.SaveChangeClicked(userName = userName, post = post, telegram = telegram, phoneNumber = phoneNumber))}
     )
@@ -65,14 +78,26 @@ fun ProfileEditScreen(component: ProfileEditComponent){
 
 @Composable
 private fun ProfileEditScreenContent(
+    isErrorPhone: Boolean,
     userName: String,
     post: String,
     telegram: String,
     phoneNumber: String,
     onReturnToProfile: () -> Unit,
-    onSaveChange: (userName:String, post:String,phoneNumber:String,telegram:String) -> Unit
+    onSaveChange: (userName: String, post: String, phoneNumber: String, telegram: String) -> Unit,
+    isErrorName: Boolean,
+    isErrorPost: Boolean,
+    isErrorTelegram: Boolean
 ) {
-    val fieldsList =  prepareFieldsData(userName,post,telegram,phoneNumber)
+    val fieldsList =  prepareFieldsData(
+        userName = userName,
+        post = post,
+        telegram = telegram,
+        phoneNumber = phoneNumber,
+        isErrorPhone  = isErrorPhone,
+        isErrorName = isErrorName,
+        isErrorPost = isErrorPost,
+        isErrorTelegram = isErrorTelegram)
     Column (
         modifier = Modifier.fillMaxSize().background(Color.White).padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -103,18 +128,20 @@ private fun FieldsItemStyle(item:FieldsData){
     Column(
         modifier = Modifier.padding(top = 16.dp).fillMaxWidth()
     ) {
-            Text(
-                stringResource(item.title),
-                modifier = Modifier.padding(bottom = 8.dp),
-                style = MaterialTheme.typography.body1,
-                color = Color.Black
-            )
+        Text(
+            stringResource(item.title),
+            modifier = Modifier.padding(bottom = 8.dp),
+            style = MaterialTheme.typography.body1,
+            color = Color.Black
+        )
         OutlinedTextField(
             value = item.value.value,
             modifier = Modifier.fillMaxWidth(),
-            onValueChange = {item.value.value = it},
+            onValueChange = { newText -> item.value.value = newText},
             shape = RoundedCornerShape(12.dp),
             singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = item.keyboardType),
+            isError =   item.isError,
             textStyle = TextStyle(fontSize = 16.sp),
             leadingIcon = {
                 Row(
@@ -140,12 +167,22 @@ private fun FieldsItemStyle(item:FieldsData){
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 textColor = textGrayColor,
                 leadingIconColor = textGrayColor,
-                trailingIconColor = textGrayColor)
+                trailingIconColor = textGrayColor),
+            visualTransformation = item.visualTransformation
         )
         }
 }
 
-private fun prepareFieldsData(username: String, post: String, telegram: String, phoneNumber: String) : List<FieldsData> {
+private fun prepareFieldsData(
+    userName: String,
+    post: String,
+    telegram: String,
+    phoneNumber: String,
+    isErrorPhone: Boolean,
+    isErrorName: Boolean,
+    isErrorPost: Boolean,
+    isErrorTelegram: Boolean
+) : List<FieldsData> {
 
     val fieldsList = mutableListOf<FieldsData>()
 
@@ -153,7 +190,8 @@ private fun prepareFieldsData(username: String, post: String, telegram: String, 
         FieldsData(
             icon = MainRes.images.person_ic,
             title = MainRes.strings.last_name_and_first_name,
-            value = mutableStateOf(username) ,
+            value = mutableStateOf(userName),
+            isError = isErrorName
         )
     )
     fieldsList.add(
@@ -161,6 +199,7 @@ private fun prepareFieldsData(username: String, post: String, telegram: String, 
             icon = MainRes.images.symbols_work,
             title = MainRes.strings.post,
             value = mutableStateOf(post),
+            isError = isErrorPost
         )
     )
     fieldsList.add(
@@ -168,6 +207,9 @@ private fun prepareFieldsData(username: String, post: String, telegram: String, 
             icon = MainRes.images.mask_number,
             title = MainRes.strings.phone_number,
             value = mutableStateOf(phoneNumber),
+            isError = isErrorPhone,
+            visualTransformation = PhoneMaskTransformation(),
+            keyboardType = KeyboardType.Phone
         )
     )
     fieldsList.add(
@@ -175,6 +217,7 @@ private fun prepareFieldsData(username: String, post: String, telegram: String, 
             icon = MainRes.images.mask_commercial_at,
             title = MainRes.strings.telegram,
             value = mutableStateOf(telegram),
+            isError = isErrorTelegram
         )
     )
     return fieldsList

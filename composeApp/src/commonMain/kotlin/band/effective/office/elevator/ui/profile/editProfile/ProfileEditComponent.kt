@@ -27,7 +27,7 @@ class ProfileEditComponent (
             }
 
         @OptIn(ExperimentalMviKotlinApi::class)
-        val user: StateFlow<User> = profileEditStore.stateFlow
+        val user: StateFlow<ProfileEditStore.State> = profileEditStore.stateFlow
 
         val label: Flow<ProfileEditStore.Label> = profileEditStore.labels
 
