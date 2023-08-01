@@ -11,7 +11,7 @@ fun getCurrentTime(timeZone: TimeZone = TimeZone.currentSystemDefault()) =
 
 val LocalTime.Companion.Max
     get() = LocalTime(
-        hour = 24,
+        hour = 23,
         minute = 59,
         second = 59,
         nanosecond = 999999999
