@@ -1,6 +1,7 @@
 package band.effective.office.tablet.network.repository.impl
 
 import band.effective.office.tablet.domain.model.Either
+import band.effective.office.tablet.domain.model.ErrorWithData
 import band.effective.office.tablet.network.api.Api
 import band.effective.office.tablet.network.model.WebServerEvent
 import band.effective.office.tablet.network.repository.OrganizerRepository
@@ -10,18 +11,36 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import network.model.ErrorResponse
 
 class OrganizerRepositoryImpl(private val api: Api) : OrganizerRepository {
     private val orgList =
-        MutableStateFlow<Either<ErrorResponse, List<String>>>(Either.Success(listOf()))
+        MutableStateFlow<Either<ErrorWithData<List<String>>, List<String>>?>(null)
 
-    override suspend fun getOrganizersList(): Either<ErrorResponse, List<String>> =
-        api.getOrganizers()
+    private suspend fun loadOrganizersList(): Either<ErrorWithData<List<String>>, List<String>> {
+        when (val response = api.getOrganizers()) {
+            is Either.Error -> orgList.update {
+                Either.Error(
+                    ErrorWithData(
+                        error = response.error, saveData = when (it) {
+                            is Either.Error -> it.error.saveData
+                            is Either.Success -> it.data
+                            null -> null
+                        }
+                    )
+                )
+            }
+
+            is Either.Success -> orgList.update { response }
+        }
+        return orgList.value!!
+    }
+
+    override suspend fun getOrganizersList(): Either<ErrorWithData<List<String>>, List<String>> =
+        if (orgList.value != null) orgList.value!! else loadOrganizersList()
 
     override fun subscribeOnUpdates(
         scope: CoroutineScope,
-        handler: (Either<ErrorResponse, List<String>>) -> Unit
+        handler: (Either<ErrorWithData<List<String>>, List<String>>) -> Unit
     ): Job =
         scope.launch(Dispatchers.IO) {
             orgList.update { getOrganizersList() }
@@ -29,6 +48,6 @@ class OrganizerRepositoryImpl(private val api: Api) : OrganizerRepository {
                 if (it is WebServerEvent.OrganizerInfoUpdate)
                     launch(Dispatchers.IO) { orgList.update { getOrganizersList() } }
             }
-            orgList.collect { handler(it) }
+            orgList.collect { if (it != null) handler(it) }
         }
 }

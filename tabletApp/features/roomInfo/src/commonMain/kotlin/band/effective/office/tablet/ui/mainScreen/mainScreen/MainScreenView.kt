@@ -18,6 +18,7 @@ import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomComponent
 import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomView
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingRoomComponent
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingRoomView
+import band.effective.office.tablet.ui.mainScreen.mainScreen.uiComponents.Disconnect
 import band.effective.office.tablet.ui.mainScreen.mockComponets.MockSettingView
 import band.effective.office.tablet.ui.mainScreen.mockComponets.MockSettingsComponent
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.RoomInfoComponent
@@ -34,7 +35,8 @@ fun MainScreenView(
     selectRoomComponent: SelectRoomComponent,
     freeSelectRoomComponent: FreeSelectRoomComponent,
     roomInfoComponent: RoomInfoComponent,
-    showModal: Boolean
+    showModal: Boolean,
+    isDisconnect: Boolean
 ) {
     Box(modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colors.background)) {
         /*NOTE(Maksim Mishenko):
@@ -54,12 +56,15 @@ fun MainScreenView(
                         .padding(25.dp),
                     bookingRoomComponent = bookingRoomComponent
                 )
-                MockSettingView(mockComponent)
+                Box() {
+                    MockSettingView(mockComponent)
+                    Disconnect(visible = isDisconnect)
+                }
             }
         }
         Box(
             modifier = Modifier.fillMaxSize()
-                .background(color = if (showModal) Color.Black.copy(alpha = 0.7f) else Color.Transparent)
+                .background(color = if (showModal) Color.Black.copy(alpha = 0.9f) else Color.Transparent)
         ) {
             when {
                 showBookingModal -> SelectRoomScreen(component = selectRoomComponent)

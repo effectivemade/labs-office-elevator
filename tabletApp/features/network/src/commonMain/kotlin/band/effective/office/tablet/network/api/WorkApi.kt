@@ -18,9 +18,12 @@ class WorkApi : Api {
     val mutableOrgList =
         MutableStateFlow(listOf("Ольга Белозерова", "Матвей Авгуль", "Лилия Акентьева"))
 
+    var isSuccess = MutableStateFlow(true)
     override suspend fun getRoomInfo(): Either<ErrorResponse, RoomInfo> {
         delay(5000L)
-        return Either.Success(mutableRoomInfo.value)
+        return if (isSuccess.value) Either.Success(mutableRoomInfo.value) else Either.Error(
+            ErrorResponse(0, "")
+        )
     }
 
     override suspend fun getOrganizers(): Either<ErrorResponse, List<String>> {
@@ -38,26 +41,21 @@ class WorkApi : Api {
         end: Calendar,
         owner: String,
     ): Either<ErrorResponse, String> {
+        delay(5000L)
+        if (!isSuccess.value) Either.Error(ErrorResponse(code = 404, description = "Not found"))
         if (begin <= GregorianCalendar() && GregorianCalendar() <= end) {
             mutableRoomInfo.update {
                 it.copy(
                     currentEvent = EventInfo(
-                        startTime = begin,
-                        finishTime = end,
-                        organizer = owner
+                        startTime = begin, finishTime = end, organizer = owner
                     )
                 )
             }
         } else {
             mutableRoomInfo.update { roomInfo ->
-                roomInfo.copy(
-                    eventList = (roomInfo
-                        .eventList + EventInfo(
-                        startTime = begin,
-                        finishTime = end,
-                        organizer = owner
-                    )).sortedBy { it.startTime }
-                )
+                roomInfo.copy(eventList = (roomInfo.eventList + EventInfo(
+                    startTime = begin, finishTime = end, organizer = owner
+                )).sortedBy { it.startTime })
             }
         }
 
@@ -65,9 +63,14 @@ class WorkApi : Api {
     }
 
     override fun subscribeOnWebHock(
-        scope: CoroutineScope,
-        handler: (event: WebServerEvent) -> Unit
+        scope: CoroutineScope, handler: (event: WebServerEvent) -> Unit
     ) {
+        scope.launch {
+            isSuccess.collect {
+                handler(WebServerEvent.RoomInfoUpdate)
+                handler(WebServerEvent.OrganizerInfoUpdate)
+            }
+        }
         scope.launch {
             mutableRoomInfo.collect { handler(WebServerEvent.RoomInfoUpdate) }
         }
@@ -116,21 +119,15 @@ class WorkApi : Api {
     )
 
     private fun olyaEvent() = EventInfo(
-        startTime = getTime(),
-        finishTime = getTime(),
-        organizer = "Ольга Белозерова"
+        startTime = getTime(), finishTime = getTime(), organizer = "Ольга Белозерова"
     )
 
     private fun matveyEvent() = EventInfo(
-        startTime = getTime(),
-        finishTime = getTime(),
-        organizer = "Матвей Авгуль"
+        startTime = getTime(), finishTime = getTime(), organizer = "Матвей Авгуль"
     )
 
     private fun lilaEvent() = EventInfo(
-        startTime = getTime(),
-        finishTime = getTime(),
-        organizer = "Лилия Акентьева"
+        startTime = getTime(), finishTime = getTime(), organizer = "Лилия Акентьева"
     )
 
     private fun eventsList() = listOf(olyaEvent(), matveyEvent(), lilaEvent())

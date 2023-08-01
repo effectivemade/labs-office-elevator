@@ -7,8 +7,8 @@ import java.util.GregorianCalendar
 
 interface BookingStore : Store<BookingStore.Intent, BookingStore.State, Nothing> {
     sealed interface Intent {
-        object OnBookingCurrentRoom : Intent
-        object OnBookingOtherRoom : Intent
+        data class OnBookingCurrentRoom(val booking: (() -> Unit)? = null) : Intent
+        data class OnBookingOtherRoom(val booking: (() -> Unit)? = null) : Intent
         data class OnChangeDate(val changeInDay: Int) : Intent
         data class OnChangeLength(val change: Int) : Intent
         data class OnChangeOrganizer(val newOrganizer: String) : Intent

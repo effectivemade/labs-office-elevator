@@ -9,12 +9,14 @@ import band.effective.office.tablet.ui.mainScreen.mockComponets.RealMockSettings
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.RoomInfoComponent
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.store.RoomInfoStore
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponentImpl
+import band.effective.office.tablet.utils.componentCoroutineScope
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.childContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 
 class MainComponent(
     componentContext: ComponentContext,
@@ -45,6 +47,7 @@ class MainComponent(
             componentContext = childContext(key = "bookingCurrentRoom"),
             storeFactory = storeFactory,
             onBookingRoom = { bookingRoomComponent.getBooking() },
+            onBookingOtherRoom = { OnSelectOtherRoomRequest() },
             onCloseRequest = { mainStore.accept(MainStore.Intent.CloseModal) }
         )
 
@@ -65,5 +68,17 @@ class MainComponent(
 
     fun sendIntent(intent: MainStore.Intent) {
         mainStore.accept(intent)
+    }
+
+    init {
+        componentContext.componentCoroutineScope().launch {
+            roomInfoComponent.state.collect {
+                mainStore.accept(
+                    MainStore.Intent.OnDisconnectChange(
+                        it.isError
+                    )
+                )
+            }
+        }
     }
 }

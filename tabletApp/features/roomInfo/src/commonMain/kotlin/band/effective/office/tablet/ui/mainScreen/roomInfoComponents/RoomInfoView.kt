@@ -30,7 +30,8 @@ fun RoomInfoComponent(modifier: Modifier, roomInfoComponent: RoomInfoComponent) 
         room = state.roomInfo,
         onOpenModalRequest = { roomInfoComponent.sendIntent(RoomInfoStore.Intent.OnFreeRoomRequest) },
         timeToNextEvent = state.changeEventTime,
-        isToday = state.selectDate.isToday()
+        isToday = state.selectDate.isToday(),
+        isError = state.isError
     )
 }
 
@@ -41,7 +42,8 @@ fun RoomInfoComponent(
     room: RoomInfo,
     onOpenModalRequest: () -> Unit,
     timeToNextEvent: Int,
-    isToday: Boolean
+    isToday: Boolean,
+    isError: Boolean
 ) {
     val paddings = 30.dp
     Column(modifier = modifier) {
@@ -55,7 +57,8 @@ fun RoomInfoComponent(
                     isHaveTv = room.isHaveTv,
                     electricSocketCount = room.socketCount,
                     nextEvent = room.eventList.firstOrNull(),
-                    timeToNextEvent = timeToNextEvent
+                    timeToNextEvent = timeToNextEvent,
+                    isError = isError
                 )
             }
 
@@ -68,7 +71,8 @@ fun RoomInfoComponent(
                     electricSocketCount = room.socketCount,
                     event = room.currentEvent,
                     onButtonClick = { onOpenModalRequest() },
-                    timeToFinish = timeToNextEvent
+                    timeToFinish = timeToNextEvent,
+                    isError = isError
                 )
             }
         }

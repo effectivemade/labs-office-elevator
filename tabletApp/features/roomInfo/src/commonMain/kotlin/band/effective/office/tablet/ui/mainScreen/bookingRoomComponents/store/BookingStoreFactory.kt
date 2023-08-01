@@ -36,31 +36,42 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 initialState = BookingStore.State.default,
                 bootstrapper = coroutineBootstrapper {
                     launch(Dispatchers.IO) {
-                        val busyEvent = checkBookingUseCase(EventInfo.emptyEvent).unbox({ TODO("Maksim Mishenko: add handler") })
+                        val busyEvent =
+                            checkBookingUseCase(EventInfo.emptyEvent).unbox({ it.saveData })
                         launch(Dispatchers.Main) {
                             dispatch(
                                 Action.Init(
-                                    organizers = updateUseCase.getOrganizersList().unbox({ TODO("Maksim Mishenko: add handler") }),
+                                    organizers = updateUseCase.getOrganizersList()
+                                        .unbox({ it.saveData ?: listOf() }),
                                     isBusy = busyEvent != null,
                                     busyEvent = busyEvent ?: EventInfo.emptyEvent
                                 )
                             )
-                            dispatch(Action.UpdateOrganizers(updateUseCase.getOrganizersList().unbox({ TODO("Maksim Mishenko: add handler") })))
+                            dispatch(
+                                Action.UpdateOrganizers(
+                                    updateUseCase.getOrganizersList()
+                                        .unbox({ it.saveData ?: listOf() })
+                                )
+                            )
                             updateUseCase(scope = this,
                                 {
                                     launch(Dispatchers.Main) {
-                                        dispatch(Action.UpdateEvents(it.unbox({ TODO("Maksim Mishenko: add handler") })))
+                                        dispatch(Action.UpdateEvents(it.unbox({
+                                            it.saveData ?: RoomInfo.defaultValue
+                                        })))
                                     }
 
                                 },
                                 {
                                     launch(Dispatchers.Main) {
-                                        dispatch(Action.UpdateOrganizers(it.unbox({ TODO("Maksim Mishenko: add handler") })))
+                                        dispatch(Action.UpdateOrganizers(it.unbox({
+                                            it.saveData ?: listOf()
+                                        })))
                                     }
                                 })
                         }
                         launch(Dispatchers.Main) {
-                            currentEventController.timeToUpdate.collect{dispatch(Action.UpdateSelectTime)}
+                            currentEventController.timeToUpdate.collect { dispatch(Action.UpdateSelectTime) }
                         }
                     }
                 },
@@ -77,7 +88,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         ) : Action
 
         data class UpdateEvents(val newData: RoomInfo) : Action
-        object UpdateSelectTime: Action
+        object UpdateSelectTime : Action
     }
 
     private sealed interface Message {
@@ -90,8 +101,6 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         data class NotCorrectEvent(val busyEvent: EventInfo) : Message
 
         data class ChangeOrganizer(val newOrganizer: String) : Message
-        object BookingCurrentRoom : Message
-        object BookingOtherRoom : Message
         object OrganizerError : Message
 
         data class UpdateOrganizers(val organizers: List<String>) : Message
@@ -102,7 +111,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
         object Reset : Message
         object OnChangeExpanded : Message
-        object UpdateTime: Message
+        object UpdateTime : Message
     }
 
     private inner class ExecutorImpl() :
@@ -114,12 +123,14 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             when (intent) {
                 is BookingStore.Intent.OnBookingCurrentRoom -> booking(
                     isCurrentRoom = true,
-                    state = getState()
+                    state = getState(),
+                    booking = intent.booking
                 )
 
                 is BookingStore.Intent.OnBookingOtherRoom -> booking(
                     isCurrentRoom = false,
-                    state = getState()
+                    state = getState(),
+                    booking = intent.booking
                 )
 
                 is BookingStore.Intent.OnChangeDate -> changeDate(getState(), intent.changeInDay)
@@ -143,16 +154,19 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             }
         }
 
-        fun booking(isCurrentRoom: Boolean, state: BookingStore.State) =
+        fun booking(isCurrentRoom: Boolean, state: BookingStore.State, booking: (() -> Unit)?) =
             scope.launch {
-                val busyEvent = checkBookingUseCase(state.toEvent()).unbox({ TODO("Maksim Mishenko: add handler") })
+                val busyEvent = checkBookingUseCase(state.toEvent()).unbox({ it.saveData })
                 when {
                     !state.isCorrectOrganizer() -> dispatch(Message.OrganizerError)
-                    busyEvent != null -> dispatch(Message.NotCorrectEvent(busyEvent))
+                    isCurrentRoom && busyEvent != null -> dispatch(Message.NotCorrectEvent(busyEvent))
                     isCurrentRoom -> {
-                        //dispatch(Message.BookingCurrentRoom)
+                        booking?.invoke()
                     }
-                    else -> dispatch(Message.BookingOtherRoom)
+
+                    else -> {
+                        booking?.invoke()
+                    }
                 }
             }
 
@@ -170,13 +184,18 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     )
                 }
 
-                is Action.UpdateEvents -> checkBusy(getState())
+                is Action.UpdateEvents -> reset()
                 Action.UpdateSelectTime -> dispatch(Message.UpdateTime)
             }
         }
 
         fun changeDate(state: BookingStore.State, changeDay: Int) = scope.launch() {
-            val newDate = (state.selectDate.clone() as Calendar).apply { add(Calendar.DAY_OF_MONTH, changeDay) }
+            val newDate = (state.selectDate.clone() as Calendar).apply {
+                add(
+                    Calendar.DAY_OF_MONTH,
+                    changeDay
+                )
+            }
             dispatch(
                 Message.ChangeEvent(
                     selectDate = newDate,
@@ -198,17 +217,6 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             )
             reset()
         }
-
-        fun checkBusy(state: BookingStore.State) = scope.launch {
-            val busyEvent = checkBookingUseCase(state.toEvent()).unbox({ TODO("Maksim Mishenko: add handler") })
-            dispatch(
-                Message.UpdateBusy(
-                    isBusy = busyEvent != null,
-                    busyEvent = busyEvent ?: EventInfo.emptyEvent
-                )
-            )
-            reset()
-        }
     }
 
     private fun BookingStore.State.toEvent(): EventInfo {
@@ -224,12 +232,11 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
     private object ReducerImpl : Reducer<BookingStore.State, Message> {
         override fun BookingStore.State.reduce(msg: Message): BookingStore.State =
             when (msg) {
-                is Message.BookingCurrentRoom -> reset()
-                is Message.BookingOtherRoom -> reset()
                 is Message.ChangeEvent -> copy(
                     selectDate = msg.selectDate,
                     length = msg.length,
-                    isSelectCurrentTime = msg.isSelectCurrentTime
+                    isSelectCurrentTime = msg.isSelectCurrentTime,
+                    isBusy = false
                 )
 
                 is Message.ChangeOrganizer -> copy(

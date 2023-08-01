@@ -14,14 +14,16 @@ interface RoomInfoStore : Store<RoomInfoStore.Intent, RoomInfoStore.State, Nothi
     data class State(
         val roomInfo: RoomInfo,
         val changeEventTime: Int,
-        val selectDate: Calendar
+        val selectDate: Calendar,
+        val isError: Boolean,
     ) {
         companion object {
             val defaultState =
                 State(
                     roomInfo = RoomInfo.defaultValue,
                     changeEventTime = 0,
-                    selectDate = GregorianCalendar()
+                    selectDate = GregorianCalendar(),
+                    isError = false
                 )
         }
     }
