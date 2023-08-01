@@ -2,6 +2,7 @@ package office.effective.features.user.di
 
 import office.effective.features.user.ITokenVerifier
 import office.effective.features.user.TokenVerifier
+import office.effective.features.user.converters.IntegrationDTOModelConverter
 import office.effective.features.user.converters.IntegrationModelEntityConverter
 import office.effective.features.user.converters.UserDTOModelConverter
 import office.effective.features.user.converters.UserModelEntityConverter
@@ -19,4 +20,5 @@ val userDIModule = module(createdAtStart = true) {
     single<UserDTOModelConverter> { UserDTOModelConverter() }
     single<UserRepository> { UserRepository(get(), get()) }
     single<UserFacade> { UserFacade(get(), get(), get(), get()) }
+    single<IntegrationDTOModelConverter> { IntegrationDTOModelConverter() }
 }
