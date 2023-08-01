@@ -47,6 +47,7 @@ class MainComponent(
             componentContext = childContext(key = "bookingCurrentRoom"),
             storeFactory = storeFactory,
             onBookingRoom = { bookingRoomComponent.getBooking() },
+            onBookingOtherRoom = { OnSelectOtherRoomRequest() },
             onCloseRequest = { mainStore.accept(MainStore.Intent.CloseModal) }
         )
 

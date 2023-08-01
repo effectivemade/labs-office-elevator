@@ -9,6 +9,7 @@ interface SelectRoomStore: Store<SelectRoomStore.Intent, SelectRoomStore.State, 
         object BookingRoom : Intent
         object CloseModal : Intent
         data class SetBooking(val booking: Booking): Intent
+        object BookingOtherRoom: Intent
     }
 
     data class State(

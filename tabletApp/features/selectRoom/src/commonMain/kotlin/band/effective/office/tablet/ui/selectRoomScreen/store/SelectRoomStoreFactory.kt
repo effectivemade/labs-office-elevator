@@ -43,6 +43,7 @@ class SelectRoomStoreFactory(private val storeFactory: StoreFactory) : KoinCompo
                 is SelectRoomStore.Intent.BookingRoom -> bookingRoom(getState())
                 is SelectRoomStore.Intent.CloseModal -> dispatch(Message.CloseModal)
                 is SelectRoomStore.Intent.SetBooking -> dispatch(Message.SetBooking(intent.booking))
+                SelectRoomStore.Intent.BookingOtherRoom -> dispatch(Message.CloseModal)
             }
         }
 
@@ -58,8 +59,9 @@ class SelectRoomStoreFactory(private val storeFactory: StoreFactory) : KoinCompo
                 is Message.BookingRoom ->
                     if (message.isSuccess) copy(
                         isData = false,
-                        isSuccess = true
-                    ) else SelectRoomStore.State.defaultState
+                        isSuccess = true,
+                        error = null
+                    ) else copy(error = "error")
 
                 is Message.CloseModal -> SelectRoomStore.State.defaultState
                 is Message.SetBooking -> copy(booking = message.booking)
