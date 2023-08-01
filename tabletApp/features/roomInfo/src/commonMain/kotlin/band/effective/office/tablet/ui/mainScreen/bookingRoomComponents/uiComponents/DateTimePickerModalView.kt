@@ -6,11 +6,13 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
+import androidx.compose.material3.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,6 +20,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -26,9 +29,10 @@ import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingR
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store.BookingStore
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.h8
+import band.effective.office.tablet.ui.theme.header4
+import band.effective.office.tablet.ui.theme.header6
 import epicarchitect.calendar.compose.basis.BasisDayOfMonthContent
 import epicarchitect.calendar.compose.basis.BasisDayOfWeekContent
-import epicarchitect.calendar.compose.basis.EpicMonth
 import epicarchitect.calendar.compose.basis.config.LocalBasisEpicCalendarConfig
 import epicarchitect.calendar.compose.basis.config.rememberBasisEpicCalendarConfig
 import epicarchitect.calendar.compose.basis.contains
@@ -43,12 +47,8 @@ import epicarchitect.calendar.compose.pager.config.rememberEpicCalendarPagerConf
 import epicarchitect.calendar.compose.pager.state.EpicCalendarPagerState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.atTime
-import kotlinx.datetime.number
-import kotlinx.datetime.toDateTimePeriod
-import kotlinx.datetime.toLocalDate
-import kotlinx.datetime.toLocalDateTime
 import java.util.*
 
 @SuppressLint("StateFlowValueCalledInComposition")
@@ -62,21 +62,33 @@ fun DateTimePickerModalView(
     val selectedDateTime by remember { mutableStateOf(stateDateTime.selectDate) }
 
 
-
-
     val epicDatePickerState = rememberEpicDatePickerState(
         config = rememberEpicDatePickerConfig(
             pagerConfig = rememberEpicCalendarPagerConfig(
                 basisConfig = rememberBasisEpicCalendarConfig(
-                    displayDaysOfAdjacentMonths = true
+                    displayDaysOfAdjacentMonths = true,
+//                    daysOfWeek = listOf(
+//                        DayOfWeek(1),
+//                        DayOfWeek(2),
+//                        DayOfWeek(3),
+//                        DayOfWeek(4),
+//                        DayOfWeek(5),
+//                        DayOfWeek(6),
+//                        DayOfWeek(7),
+//                    ),
+                    dayOfMonthViewHeight = 32.dp
                 )
             ),
+            selectionContainerColor = LocalCustomColorsPalette.current.pressedPrimaryButton,
+
+
         ),
+
         selectedDates =
         listOf(
             LocalDate(
                 selectedDateTime[Calendar.YEAR],
-                selectedDateTime[Calendar.MONTH],
+                selectedDateTime[Calendar.MONTH] + 1,
                 selectedDateTime[Calendar.DAY_OF_MONTH]
             )
         ),
@@ -114,28 +126,32 @@ fun DateTimePickerModalView(
                         val updatedCalendar = Calendar.getInstance()
                         updatedCalendar.timeInMillis = selectedDateTime.timeInMillis
 
-//                        val changeInDay =
-//                            (updatedCalendar.get(Calendar.DAY_OF_YEAR) - stateDateTime.get(Calendar.DAY_OF_YEAR))
-
                         val changeInDay = if (epicDatePickerState.selectedDates.isNotEmpty()) {
                             epicDatePickerState.selectedDates.first().dayOfMonth
                         } else {
-                            selectedDateTime[Calendar.DAY_OF_MONTH]
+                            selectedDateTime[Calendar.DATE]
                         }
-                        val intentDate = BookingStore.Intent.OnSetDay(changeInDay)
+                        val changeInMonth = if (epicDatePickerState.selectedDates.isNotEmpty()) {
+                            epicDatePickerState.selectedDates.first().monthNumber - 1
+                        } else {
+                            selectedDateTime[Calendar.MONTH] - 1
+                        }
+                        val intentDay = BookingStore.Intent.OnSetDay(changeInDay)
+                        val intentMonth = BookingStore.Intent.OnSetMonth(changeInMonth)
 
                         val changeInTimeMillis =
                             (updatedCalendar.timeInMillis - stateDateTime.selectDate.timeInMillis)
                         val intentTime = BookingStore.Intent.OnChangeTime(changeInTimeMillis)
 
-                        bookingRoomComponent.bookingStore.accept(intentDate)
+                        bookingRoomComponent.bookingStore.accept(intentDay)
+                        bookingRoomComponent.bookingStore.accept(intentMonth)
                         //bookingRoomComponent.bookingStore.accept(intentTime)
 
 
 
                         onCloseRequest()
                     },
-                    colors = ButtonDefaults.buttonColors(
+                    colors = buttonColors(
                         contentColor = Color.White
                     )
                 ) {
@@ -149,7 +165,7 @@ fun DateTimePickerModalView(
 @Composable
 private fun DatePickerView(epicDatePickerState: EpicDatePickerState) {
     val coroutineScope = rememberCoroutineScope()
-    Card() {
+    Box(modifier = Modifier.fillMaxWidth(0.35f)) {
         Column {
             DatePickerTitleView(
                 epicDatePickerState = epicDatePickerState,
@@ -171,7 +187,8 @@ private fun DatePickerView(epicDatePickerState: EpicDatePickerState) {
             EpicDatePicker(
                 state = epicDatePickerState,
                 dayOfWeekContent = CustomDayOfWeekContent,
-                dayOfMonthContent = CustomDayOfMonthContent
+                dayOfMonthContent = CustomDayOfMonthContent,
+                modifier = Modifier.background(Color.Transparent),
             )
         }
     }
@@ -183,35 +200,49 @@ private fun DatePickerTitleView(
     onClickNextMonth: () -> Unit,
     onClickPreviousMonth: () -> Unit
 ) {
-    Row() {
+    Row(modifier = Modifier
+        .background(LocalCustomColorsPalette.current.mountainBackground, RoundedCornerShape(12.dp))
+        .fillMaxWidth().fillMaxHeight(0.15f)
+        .clip(RoundedCornerShape(12.dp)),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Button(
-            modifier = Modifier
-                .size(32.dp),
+            modifier = Modifier.fillMaxHeight(),
             onClick = { onClickPreviousMonth() },
+            colors = buttonColors(
+                containerColor = Color.Transparent,
+            )
 
         ) {
             Text(
-                text = "<",
-                color = LocalCustomColorsPalette.current.tertiaryTextAndIcon,
-                style = MaterialTheme.typography.h8
+                text = " < ",
+                style = header4,
+                color = LocalCustomColorsPalette.current.tertiaryTextAndIcon
             )
         }
         Text(
-            text = epicDatePickerState.selectedDates.first().month.name + ", " + epicDatePickerState.selectedDates.first().dayOfMonth.toString(),
-            fontSize = 20.sp,
-            color = Color.Black
+            text = if (epicDatePickerState.selectedDates.isNotEmpty()) {
+                epicDatePickerState.selectedDates.firstOrNull()!!.month.name.toLowerCase() + ", " + epicDatePickerState.selectedDates.firstOrNull()!!.dayOfMonth.toString()
+            } else {
+             epicDatePickerState.pagerState.currentMonth.month.name.toLowerCase()
+             },
+            style = header6,
+            color = LocalCustomColorsPalette.current.primaryTextAndIcon,
         )
 
         Button(
-            modifier = Modifier
-                .size(32.dp),
+            modifier = Modifier.fillMaxHeight(),
             onClick = { onClickNextMonth() },
+            colors = buttonColors(
+                containerColor = Color.Transparent,
+            )
 
         ) {
             Text(
-                text = "<",
+                text = " > ",
                 color = LocalCustomColorsPalette.current.tertiaryTextAndIcon,
-                style = MaterialTheme.typography.h8
+                style = header4,
             )
         }
     }
@@ -233,7 +264,7 @@ private val CustomDayOfWeekContent: BasisDayOfWeekContent = { dayOfWeek ->
         text = dayOfWeek.localized(),
         textAlign = TextAlign.Center,
         color = config.contentColor,
-        fontSize = 20.sp,
+        style = header6,
         maxLines = 1
     )
 }
@@ -263,7 +294,7 @@ private val CustomDayOfMonthContent: BasisDayOfMonthContent = { date ->
         ),
         text = date.dayOfMonth.toString(),
         textAlign = TextAlign.Center,
-        fontSize = 20.sp,
+        style = header6,
         maxLines = 1,
         color = if (isSelected) pickerState.config.selectionContentColor
         else pickerState.config.pagerConfig.basisConfig.contentColor

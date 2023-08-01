@@ -36,7 +36,8 @@ class BookingRoomComponent(
             childContext("dateTime"),
             changeDay = { bookingStore.accept(BookingStore.Intent.OnChangeDate(it)) },
             changeTime = { bookingStore.accept(BookingStore.Intent.OnChangeTime(it)) },
-            setDay = { bookingStore.accept(BookingStore.Intent.OnSetDay(it)) }
+            setDay = { bookingStore.accept(BookingStore.Intent.OnSetDay(it)) },
+            setMonth = { bookingStore.accept(BookingStore.Intent.OnSetDay(it)) },
         )
     val eventLengthComponent: RealEventLengthComponent =
         RealEventLengthComponent(childContext("length"),

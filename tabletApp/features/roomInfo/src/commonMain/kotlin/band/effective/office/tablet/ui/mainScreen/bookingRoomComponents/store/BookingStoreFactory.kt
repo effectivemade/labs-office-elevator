@@ -100,7 +100,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is BookingStore.Intent.OnChangeTime -> changeTime(getState(), intent.changeInTimeMillis)
                 is BookingStore.Intent.OnChangeLength -> changeLength(getState(), intent.change)
                 is BookingStore.Intent.OnChangeOrganizer -> dispatch(Message.ChangeOrganizer(intent.newOrganizer))
-                is BookingStore.Intent.OnSetDay -> setDate(getState(), intent.changedDay)
+                is BookingStore.Intent.OnSetDay -> setDayValueInDate(getState(), intent.changedDay)
+                is BookingStore.Intent.OnSetMonth -> setMonthValueInDate(getState(), intent.changedMonth)
             }
         }
 
@@ -136,8 +137,23 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             )
         }
 
-        fun setDate(state: BookingStore.State, newDay: Int) = scope.launch() {
-            val event = state.copy(selectDate = state.selectDate.setDay(newDay)).toEvent()
+        fun setDayValueInDate(state: BookingStore.State, newDay: Int) = scope.launch() {
+            state.selectDate.set(Calendar.DATE, newDay)
+            val event = state.copy(selectDate = state.selectDate).toEvent()
+            val busyEvent = checkBookingUseCase(event)
+            dispatch(
+                Message.ChangeEvent(
+                    event.startTime,
+                    state.length,
+                    busyEvent != null,
+                    busyEvent ?: EventInfo.emptyEvent
+                )
+            )
+        }
+
+        fun setMonthValueInDate(state: BookingStore.State, newMonth: Int) = scope.launch() {
+            state.selectDate.set(Calendar.MONTH, newMonth)
+            val event = state.copy(selectDate =  state.selectDate).toEvent()
             val busyEvent = checkBookingUseCase(event)
             dispatch(
                 Message.ChangeEvent(
@@ -221,11 +237,6 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         return result
     }
 
-    private fun Calendar.setDay(newDay: Int): Calendar {
-        val result = clone() as Calendar
-        result.set(Calendar.DAY_OF_MONTH, newDay)
-        return result
-    }
     private fun Calendar.setTime(changeInTimeMillis: Long): Calendar {
         val result = clone() as Calendar
         result.timeInMillis += changeInTimeMillis
