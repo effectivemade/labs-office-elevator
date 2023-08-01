@@ -33,4 +33,5 @@ fun Application.module() {
     configureRouting()
     configureExceptionHandling()
     configureSwagger()
+    install(VerificationPlugin)
 }
