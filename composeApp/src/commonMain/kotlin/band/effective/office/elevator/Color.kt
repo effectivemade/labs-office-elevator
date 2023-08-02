@@ -145,6 +145,7 @@ internal val theme_dark_tertiary_icon_color = Color(0x00000066)
 data class ExtendedColors(
     val _66x: Color,
     val dividerColor: Color,
+    val radioTextColor: Color,
 
 //    region::Trinidad
     val trinidad_50: Color,
@@ -181,6 +182,7 @@ val LocalExtendedColors = staticCompositionLocalOf {
     ExtendedColors(
         _66x = Color(0x66000000),
         dividerColor = Color(0xFF8E8E93),
+        radioTextColor = Color(0xFF1D1B20),
 
         trinidad_50 = Color(0xFFFFF7ED),
         trinidad_100 = Color(0xFFFEEDD6),

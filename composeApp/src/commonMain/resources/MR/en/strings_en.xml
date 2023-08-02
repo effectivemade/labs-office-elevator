@@ -51,6 +51,7 @@
     <string name="do_not_repeat">Do not repeat</string>
     <string name="every_work_day">Every work day</string>
     <string name="every_week">Every week</string>
+    <string name="every_month">Every month</string>
     <string name="another">Other...</string>
 
     <!-- Buttons -->

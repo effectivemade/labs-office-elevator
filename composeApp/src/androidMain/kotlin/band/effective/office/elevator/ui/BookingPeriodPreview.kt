@@ -5,12 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
 import band.effective.office.elevator.ui.booking.components.BookingPeriod
-import band.effective.office.elevator.ui.booking.components.BookingSuccess
 
 
 @Preview(showBackground = true)
 @Composable
-fun BookingSuccessPreview() {
+fun BookingPeriodPreview() {
     val switchValue = remember {
         mutableStateOf(value = false)
     }
