@@ -46,6 +46,17 @@ fun Route.bookingRouting() {
             call.response.status(HttpStatusCode.Created)
             call.respond(rep.save(booking).toString())
         }
+        put {
+            val booking = Booking(
+                userRep.findById(UUID.fromString("87e66ee0-2550-4188-8d79-75560125836a")),
+                userRep.findByTag(UUID.fromString("b59ecd48-368a-4cb6-b07e-de4376ddf6a6")).toList(),
+                workspaceRep.findById(UUID.fromString("3d951692-dbe1-4102-9b7d-d1881cff8d17"))!!,
+                UUID.fromString("c63d5296-fd8b-4b4c-ba75-0e9285b3c349"),
+                Instant.now(),
+                Instant.now()
+            )
+            call.respond(rep.update(booking).toString())
+        }
         delete("{id}") {
             val id: String = call.parameters["id"]
                 ?: return@delete call.respond(HttpStatusCode.BadRequest)

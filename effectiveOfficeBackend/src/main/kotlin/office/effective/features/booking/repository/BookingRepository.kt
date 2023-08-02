@@ -9,10 +9,20 @@ import office.effective.model.UserModel
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
 import org.ktorm.entity.*
+import org.ktorm.support.postgresql.insertOrUpdate
 import java.util.*
 import kotlin.collections.List
 
 class BookingRepository(private val database: Database, private val converter: BookingRepositoryConverter) {
+
+    fun existsById(id: UUID): Boolean {
+        var result = false
+        database.from(WorkspaceBooking)
+            .select(exists(database.from(WorkspaceBooking).select().where { WorkspaceBooking.id eq id }))
+            .limit(1)
+            .forEach { row -> result = row.getBoolean(1) }
+        return result
+    }
 
     fun findById(bookingId: UUID): Booking? {
         val entity = database.workspaceBooking.find { it.id eq bookingId } ?: return null
@@ -50,14 +60,37 @@ class BookingRepository(private val database: Database, private val converter: B
 
         val participantList = findParticipantEntities(booking.participants)
         for(participant in participantList) {
-            database.bookingParticipants.add(
-                BookingParticipantEntity {
-                    this.user = participant
-                    this.booking = entity
-                }
-            )
+            database.insert(BookingParticipants) {
+                set(it.bookingId, entity.id)
+                set(it.userId, participant.id)
+            }
         }
         return booking
+    }
+
+    fun update(booking: Booking): Booking {
+        booking.id?.let {
+            if(!existsById(it))
+                throw InstanceNotFoundException(WorkspaceBookingEntity::class, "Booking with id $it not wound")
+        }
+
+        val entity = converter.modelToEntity(booking)
+        database.workspaceBooking.update(entity)
+
+        database.bookingParticipants.removeIf { it.bookingId eq entity.id }
+        saveParticipants(booking.participants, entity.id)
+        return booking
+    }
+
+    private fun saveParticipants(participantModels: List<UserModel>, bookingId: UUID): List<UserEntity> {
+        val participantList = findParticipantEntities(participantModels)
+        for(participant in participantList) {
+            database.insert(BookingParticipants) {
+                set(it.bookingId, bookingId)
+                set(it.userId, participant.id)
+            }
+        }
+        return participantList
     }
 
     private fun findParticipantEntities(participantModels: List<UserModel>): List<UserEntity> {
