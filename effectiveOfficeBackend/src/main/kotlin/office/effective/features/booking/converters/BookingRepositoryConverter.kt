@@ -27,8 +27,8 @@ class BookingRepositoryConverter(private val database: Database,
      */
     fun entityToModel(bookingEntity: WorkspaceBookingEntity,
                       participants: List<UserEntity>): Booking {
-        val ownerModel = userConverter.EntityToModel(bookingEntity.owner, emptySet())
-        val participantModels = participants.map { userConverter.EntityToModel(it, emptySet()) }
+        val ownerModel = userConverter.entityToModel(bookingEntity.owner, emptySet())
+        val participantModels = participants.map { userConverter.entityToModel(it, emptySet()) }
         val workspaceModel = workspaceConverter.entityToModel(bookingEntity.workspace, emptyList())
         return Booking (
             ownerModel,

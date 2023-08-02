@@ -15,6 +15,10 @@ class BookingService(private val bookingRepository: BookingRepository,
         return bookingRepository.existsById(id)
     }
 
+    fun deleteById(id: UUID) {
+        bookingRepository.deleteById(id)
+    }
+
     private fun findIntegrations(user: UserModel): Set<IntegrationModel> {
         val userId = user.id
             ?: throw MissingIdException("User with name ${ user.fullName } doesn't have an id")
