@@ -9,23 +9,24 @@ interface SelectRoomStore: Store<SelectRoomStore.Intent, SelectRoomStore.State, 
         object BookingRoom : Intent
         object CloseModal : Intent
         data class SetBooking(val booking: Booking): Intent
+        object BookingOtherRoom: Intent
     }
 
     data class State(
-        var isData: Boolean,
-        var isSuccess: Boolean,
-        var isError: Boolean,
-        var error: String,
-        val booking: Booking
+        val isData: Boolean,
+        val isSuccess: Boolean,
+        val error: String?,
+        val booking: Booking,
+        val isLoading: Boolean
     ) {
         companion object {
             val defaultState =
                 State(
                     isData = true,
                     isSuccess = false,
-                    isError = false,
-                    error = "",
-                    booking = Booking.default
+                    error = null,
+                    booking = Booking.default,
+                    isLoading = false
                 )
         }
     }

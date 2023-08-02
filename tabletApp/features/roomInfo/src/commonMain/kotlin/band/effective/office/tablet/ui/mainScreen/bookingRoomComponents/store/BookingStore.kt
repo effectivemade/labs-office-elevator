@@ -7,47 +7,62 @@ import java.util.GregorianCalendar
 
 interface BookingStore : Store<BookingStore.Intent, BookingStore.State, Nothing> {
     sealed interface Intent {
-        object OnBookingCurrentRoom : Intent
-        object OnBookingOtherRoom : Intent
+        data class OnBookingCurrentRoom(val booking: (() -> Unit)? = null) : Intent
+        data class OnBookingOtherRoom(val booking: (() -> Unit)? = null) : Intent
         data class OnChangeDate(val changeInDay: Int) : Intent
         data class OnSetDay(val changedDay: Int) : Intent
         data class OnSetMonth(val changedMonth: Int) : Intent
         data class OnChangeTime(val changeInTimeMillis: Long) : Intent
         data class OnChangeLength(val change: Int) : Intent
         data class OnChangeOrganizer(val newOrganizer: String) : Intent
+        object OnChangeExpanded : Intent
     }
 
     data class State(
         val length: Int,
         val organizer: String,
+        val isOrganizerError: Boolean,
         val organizers: List<String>,
         val selectDate: Calendar,
+        val currentDate: Calendar,
         val isBusy: Boolean,
         val busyEvent: EventInfo,
-        val roomName: String
+        val roomName: String,
+        val isExpandedOrganizersList: Boolean,
+        val isSelectCurrentTime: Boolean
     ) {
-        fun isCorrect() = validateLength() && validateOrganizer() && validateDate()
+        fun isCorrect() = isCorrectOrganizer() && isCorrectLength() && isCorrectDate()
 
-        private fun validateDate(): Boolean {
-            val date = selectDate.clone() as Calendar
+        fun isCorrectOrganizer() = BookingInfoValidator.validateOrganizer(organizer)
+        fun isCorrectLength() = BookingInfoValidator.validateLength(length)
+        fun isCorrectDate() = BookingInfoValidator.validateDate(selectDate)
+
+        companion object {
+            val default = State(
+                length = 30,
+                organizer = "",
+                organizers = listOf(),
+                selectDate = GregorianCalendar(),
+                currentDate = GregorianCalendar(),
+                isBusy = false,
+                busyEvent = EventInfo.emptyEvent,
+                roomName = "Sirius",
+                isOrganizerError = false,
+                isExpandedOrganizersList = false,
+                isSelectCurrentTime = true
+            )
+        }
+    }
+
+    object BookingInfoValidator {
+        fun validateDate(date: Calendar): Boolean {
+            val date = date.clone() as Calendar
             date.add(Calendar.SECOND, 59)
             return date > GregorianCalendar()
         }
 
-        private fun validateLength() = length > 0
+        fun validateLength(length: Int) = length > 0
 
-        private fun validateOrganizer() = organizer != ""
-
-        companion object {
-            val default = State(
-                length = 0,
-                organizer = "",
-                organizers = listOf(),
-                selectDate = GregorianCalendar(),
-                isBusy = false,
-                busyEvent = EventInfo.emptyEvent,
-                roomName = "Sirius"
-            )
-        }
+        fun validateOrganizer(organizer: String) = organizer != ""
     }
 }

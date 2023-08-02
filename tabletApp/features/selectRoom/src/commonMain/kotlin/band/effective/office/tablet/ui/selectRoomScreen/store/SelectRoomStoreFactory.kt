@@ -1,7 +1,7 @@
 package band.effective.office.tablet.ui.selectRoomScreen.store
 
 import band.effective.office.tablet.domain.model.Booking
-import band.effective.office.tablet.domain.model.EventInfo
+import band.effective.office.tablet.domain.model.Either
 import band.effective.office.tablet.domain.useCase.BookingUseCase
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
@@ -31,6 +31,7 @@ class SelectRoomStoreFactory(private val storeFactory: StoreFactory) : KoinCompo
         data class BookingRoom(val isSuccess: Boolean) : Message
         object CloseModal : Message
         data class SetBooking(val booking: Booking) : Message
+        object StartLoading: Message
     }
 
     private inner class ExecutorImpl :
@@ -43,12 +44,14 @@ class SelectRoomStoreFactory(private val storeFactory: StoreFactory) : KoinCompo
                 is SelectRoomStore.Intent.BookingRoom -> bookingRoom(getState())
                 is SelectRoomStore.Intent.CloseModal -> dispatch(Message.CloseModal)
                 is SelectRoomStore.Intent.SetBooking -> dispatch(Message.SetBooking(intent.booking))
+                is SelectRoomStore.Intent.BookingOtherRoom -> dispatch(Message.CloseModal)
             }
         }
 
         private fun bookingRoom(state: SelectRoomStore.State) =
             scope.launch {
-                dispatch(Message.BookingRoom(bookingUseCase(state.booking.eventInfo)))
+                dispatch(Message.StartLoading)
+                dispatch(Message.BookingRoom(bookingUseCase(state.booking.eventInfo) is Either.Success))
             }
     }
 
@@ -58,11 +61,14 @@ class SelectRoomStoreFactory(private val storeFactory: StoreFactory) : KoinCompo
                 is Message.BookingRoom ->
                     if (message.isSuccess) copy(
                         isData = false,
-                        isSuccess = true
-                    ) else SelectRoomStore.State.defaultState
+                        isSuccess = true,
+                        error = null,
+                        isLoading = false
+                    ) else copy(error = "error", isLoading = false)
 
                 is Message.CloseModal -> SelectRoomStore.State.defaultState
                 is Message.SetBooking -> copy(booking = message.booking)
+                is Message.StartLoading -> copy(isLoading = true)
             }
     }
 
