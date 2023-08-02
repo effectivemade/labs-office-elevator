@@ -76,6 +76,8 @@ kotlin {
                 api(Dependencies.Moko.resourcesCompose)
 
                 implementation(Dependencies.Calendar.composeDatePicker)
+
+                implementation(project(":wheel-picker-compose"))
             }
         }
 
