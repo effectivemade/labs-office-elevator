@@ -15,7 +15,7 @@ class UserModelEntityConverter {
         return res
     }
 
-    fun EntityToModel(userEntity: UserEntity, integrations: Set<IntegrationModel>?): UserModel {
+    fun entityToModel(userEntity: UserEntity, integrations: Set<IntegrationModel>?): UserModel {
 
         return UserModel(
             userEntity.fullName,
