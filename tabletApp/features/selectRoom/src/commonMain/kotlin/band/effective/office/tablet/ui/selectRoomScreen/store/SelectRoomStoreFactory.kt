@@ -71,6 +71,4 @@ class SelectRoomStoreFactory(private val storeFactory: StoreFactory) : KoinCompo
                 is Message.StartLoading -> copy(isLoading = true)
             }
     }
-
-
 }

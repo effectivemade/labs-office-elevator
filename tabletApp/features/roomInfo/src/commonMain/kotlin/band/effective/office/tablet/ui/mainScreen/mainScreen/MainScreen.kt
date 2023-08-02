@@ -29,7 +29,7 @@ fun MainScreen(component: MainComponent) {
             MainScreenView(
                 showBookingModal = state.showBookingModal,
                 showFreeRoomModal = state.showFreeModal,
-                showTimePickerModal = state.showTimePickerModal,
+                showDateTimePickerModal = state.showDateTimePickerModal,
                 mockComponent = component.mockSettingsComponent,
                 bookingRoomComponent = component.bookingRoomComponent,
                 selectRoomComponent = component.selectRoomComponent,

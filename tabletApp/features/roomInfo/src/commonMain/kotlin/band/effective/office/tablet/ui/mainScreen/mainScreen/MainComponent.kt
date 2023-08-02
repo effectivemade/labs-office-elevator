@@ -2,6 +2,7 @@ package band.effective.office.tablet.ui.mainScreen.mainScreen
 
 import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomComponent
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingRoomComponent
+import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store.BookingStore
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainFactory
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
 import band.effective.office.tablet.ui.mainScreen.mockComponets.MockSettingsComponent
@@ -39,7 +40,9 @@ class MainComponent(
         onCurrentBookingRoom = { mainStore.accept(MainStore.Intent.OnBookingCurrentRoomRequest) },
         storeFactory = storeFactory,
         onBookingOtherRoom = { OnSelectOtherRoomRequest() },
-        onChangeDate = { roomInfoComponent.sendIntent(RoomInfoStore.Intent.OnChangeSelectDate(it)) }
+        onChangeDate = { roomInfoComponent.sendIntent(RoomInfoStore.Intent.OnChangeSelectDate(it)) },
+        onOpenDateTimePickerModal = { mainStore.accept(MainStore.Intent.OnOpenDateTimePickerModal) },
+        onCloseRequest = { mainStore.accept(MainStore.Intent.CloseModal) }
     )
 
     val selectRoomComponent: SelectRoomComponentImpl =
@@ -63,6 +66,7 @@ class MainComponent(
         ).create()
     }
 
+
     @OptIn(ExperimentalCoroutinesApi::class)
     val state = mainStore.stateFlow
 
@@ -70,16 +74,6 @@ class MainComponent(
         mainStore.accept(intent)
     }
 
-    fun openFreeRoomModal(){
-        mainStore.accept(MainStore.Intent.OnOpenFreeRoomModal)
-    }
-
-    fun openTimePickerModal() {
-        mainStore.accept(MainStore.Intent.OnOpenTimePickerModal)
-    }
-
-    fun onFreeRoom(){
-        mainStore.accept(MainStore.Intent.OnFreeRoomIntent)
     init {
         componentContext.componentCoroutineScope().launch {
             roomInfoComponent.state.collect {

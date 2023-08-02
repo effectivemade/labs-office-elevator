@@ -19,7 +19,9 @@ class BookingRoomComponent(
     storeFactory: StoreFactory,
     private val onCurrentBookingRoom: () -> Unit,
     private val onBookingOtherRoom: () -> Unit,
-    private val onChangeDate: (Calendar) -> Unit
+    private val onChangeDate: (Calendar) -> Unit,
+    private val onOpenDateTimePickerModal: () -> Unit,
+    private val onCloseRequest: () -> Unit
 ) :
     ComponentContext by componentContext {
 
@@ -30,25 +32,6 @@ class BookingRoomComponent(
     @OptIn(ExperimentalCoroutinesApi::class)
     val state = bookingStore.stateFlow
 
-    val dateTimeComponent: RealDateTimeComponent =
-        RealDateTimeComponent(
-            childContext("dateTime"),
-            changeDay = { bookingStore.accept(BookingStore.Intent.OnChangeDate(it)) },
-            changeTime = { bookingStore.accept(BookingStore.Intent.OnChangeTime(it)) },
-            setDay = { bookingStore.accept(BookingStore.Intent.OnSetDay(it)) },
-            setMonth = { bookingStore.accept(BookingStore.Intent.OnSetMonth(it)) },
-        )
-    val eventLengthComponent: RealEventLengthComponent =
-        RealEventLengthComponent(childContext("length"),
-            changeLength = { bookingStore.accept(BookingStore.Intent.OnChangeLength(it)) })
-    val eventOrganizerComponent: RealEventOrganizerComponent =
-        RealEventOrganizerComponent(
-            childContext("organizer"),
-            onSelectOrganizer = { bookingStore.accept(BookingStore.Intent.OnChangeOrganizer(it)) })
-
-    fun bookingCurrentRoom() {
-        if (state.value.isCorrect()) {
-            onCurrentBookingRoom()
     init {
         componentContext.componentCoroutineScope().launch {
             state.collect { onChangeDate(state.value.selectDate.clone() as Calendar) }
@@ -80,6 +63,10 @@ class BookingRoomComponent(
             is BookingStore.Intent.OnBookingOtherRoom -> {
                 bookingStore.accept(intent.copy(onBookingOtherRoom))
             }
+
+            is BookingStore.Intent.OnDateTimePickerModal -> onOpenDateTimePickerModal()
+
+            is BookingStore.Intent.CloseModal -> bookingStore.accept(intent.copy(onCloseRequest))
 
             else -> bookingStore.accept(intent)
         }

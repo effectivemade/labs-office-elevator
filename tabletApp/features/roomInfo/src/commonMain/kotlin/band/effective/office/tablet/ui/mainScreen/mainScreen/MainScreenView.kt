@@ -3,6 +3,7 @@ package band.effective.office.tablet.ui.mainScreen.mainScreen
 import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomComponent
 import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomView
@@ -23,7 +25,7 @@ import band.effective.office.tablet.ui.mainScreen.mockComponets.MockSettingsComp
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.RoomInfoComponent
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponent
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomScreen
-import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.DateTimePickerModalView
+import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.pickerDateTime.DateTimePickerModalView
 
 @SuppressLint("NewApi")
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -31,7 +33,7 @@ import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiCompon
 fun MainScreenView(
     showBookingModal: Boolean,
     showFreeRoomModal: Boolean,
-    showTimePickerModal: Boolean,
+    showDateTimePickerModal: Boolean,
     mockComponent: MockSettingsComponent,
     bookingRoomComponent: BookingRoomComponent,
     selectRoomComponent: SelectRoomComponent,
@@ -41,7 +43,7 @@ fun MainScreenView(
     isDisconnect: Boolean
 ) {
     Box(modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colors.background)) {
-        /*NOTE(Maksim Mishenko):
+    /*NOTE(Maksim Mishenko):
     * infoViewWidth is part of the width occupied by roomInfoView
     * infoViewWidth = infoViewFrame.width / mainScreenFrame.width
     * where infoViewFrame, mainScreenFrame is frames from figma and all width I get from figma*/
@@ -53,11 +55,11 @@ fun MainScreenView(
             )
             Box(modifier = Modifier.fillMaxSize()) {
                 BookingRoomView(
-                    modifier = Modifier.background(color = MaterialTheme.colors.surface)
+                    modifier = Modifier
+                        .background(color = MaterialTheme.colors.surface)
                         .fillMaxSize()
                         .padding(25.dp),
                     bookingRoomComponent = bookingRoomComponent,
-                    onOpenTimePickerModal = onOpenTimePickerModal
                 )
                 Box() {
                     MockSettingView(mockComponent)
@@ -72,10 +74,7 @@ fun MainScreenView(
             when {
                 showBookingModal -> SelectRoomScreen(component = selectRoomComponent)
                 showFreeRoomModal -> FreeSelectRoomView(freeSelectRoomComponent = freeSelectRoomComponent)
-                showTimePickerModal -> DateTimePickerModalView(
-                    onCloseRequest = { onCloseFreeModalRequest() },
-                    bookingRoomComponent = bookingRoomComponent,
-                )
+                showDateTimePickerModal -> DateTimePickerModalView(bookingRoomComponent = bookingRoomComponent)
 
             }
         }

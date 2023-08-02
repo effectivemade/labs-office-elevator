@@ -125,7 +125,6 @@ fun EventOrganizerView(
                     }
                 }
             }
-
         }
     }
 }

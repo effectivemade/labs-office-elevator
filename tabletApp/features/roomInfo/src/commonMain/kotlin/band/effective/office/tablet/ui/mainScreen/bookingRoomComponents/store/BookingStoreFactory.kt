@@ -1,10 +1,13 @@
 package band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store
 
+import android.util.Log
 import band.effective.office.tablet.domain.CurrentEventController
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.domain.useCase.CheckBookingUseCase
 import band.effective.office.tablet.domain.useCase.UpdateUseCase
+import band.effective.office.tablet.ui.selectRoomScreen.store.SelectRoomStoreFactory
+import band.effective.office.tablet.utils.date
 import band.effective.office.tablet.utils.unbox
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
@@ -134,16 +137,17 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 )
 
                 is BookingStore.Intent.OnChangeDate -> changeDate(getState(), intent.changeInDay)
-                is BookingStore.Intent.OnChangeTime -> changeTime(getState(), intent.changeInTimeMillis)
                 is BookingStore.Intent.OnChangeLength -> changeLength(getState(), intent.change)
-                is BookingStore.Intent.OnSetDay ->  setDayValueInDate(getState(), intent.changedDay)
-                is BookingStore.Intent.OnSetMonth -> setMonthValueInDate(getState(), intent.changedMonth)
                 is BookingStore.Intent.OnChangeOrganizer -> {
                     dispatch(Message.ChangeOrganizer(intent.newOrganizer))
                     reset()
                 }
+                is BookingStore.Intent.OnSetDate -> setNewDate(getState(), intent.changedDay, intent.changedMonth)
+                is BookingStore.Intent.CloseModal -> intent.close?.invoke()
 
                 BookingStore.Intent.OnChangeExpanded -> dispatch(Message.OnChangeExpanded)
+
+                else -> {}
             }
         }
 
@@ -209,45 +213,22 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             reset()
         }
 
-        fun setDayValueInDate(state: BookingStore.State, newDay: Int) = scope.launch() {
-            state.selectDate.set(Calendar.DAY_OF_MONTH, newDay)
-            val event = state.copy(selectDate = state.selectDate).toEvent()
-            val busyEvent = checkBookingUseCase(event)
+        fun setNewDate(state: BookingStore.State, changeDay: Int, changeMonth: Int) = scope.launch() {
+            val newDate = (state.selectDate.clone() as Calendar).apply {
+                set(
+                    this[Calendar.YEAR],
+                    changeMonth,
+                    changeDay
+                )
+            }
             dispatch(
                 Message.ChangeEvent(
-                    event.startTime,
-                    state.length,
-                    busyEvent != null,
-                    busyEvent ?: EventInfo.emptyEvent
+                    selectDate = newDate,
+                    length = state.length,
+                    isSelectCurrentTime = newDate.isNow()
                 )
             )
-        }
-
-        fun setMonthValueInDate(state: BookingStore.State, newMonth: Int) = scope.launch() {
-            state.selectDate.set(Calendar.MONTH, newMonth)
-            val event = state.copy(selectDate =  state.selectDate).toEvent()
-            val busyEvent = checkBookingUseCase(event)
-            dispatch(
-                Message.ChangeEvent(
-                    event.startTime,
-                    state.length,
-                    busyEvent != null,
-                    busyEvent ?: EventInfo.emptyEvent
-                )
-            )
-        }
-
-        fun changeTime(state: BookingStore.State, changeInTimeMillis: Long) = scope.launch() {
-            val event = state.copy(selectDate = state.selectDate.setTime(changeInTimeMillis)).toEvent()
-            val busyEvent = checkBookingUseCase(event)
-            dispatch(
-                Message.ChangeEvent(
-                    event.startTime,
-                    state.length,
-                    busyEvent != null,
-                    busyEvent ?: EventInfo.emptyEvent
-                )
-            )
+            reset()
         }
 
         fun changeLength(state: BookingStore.State, change: Int) = scope.launch() {
@@ -311,15 +292,4 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 private fun Calendar.isNow(): Boolean {
     val difference = (this.time.time - GregorianCalendar().time.time).absoluteValue
     return difference <= 60000
-    private fun Calendar.dayUpdate(changeDay: Int): Calendar {
-        val result = clone() as Calendar
-        result.add(Calendar.DAY_OF_MONTH, changeDay)
-        return result
-    }
-
-    private fun Calendar.setTime(changeInTimeMillis: Long): Calendar {
-        val result = clone() as Calendar
-        result.timeInMillis += changeInTimeMillis
-        return result
-    }
 }

@@ -5,7 +5,6 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,7 +34,7 @@ import java.util.Calendar
 
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable
-fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: BookingRoomComponent, onOpenTimePickerModal: () -> Unit) {
+fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: BookingRoomComponent) {
     val state by bookingRoomComponent.state.collectAsState()
     BookingRoomView(
         modifier = modifier,
@@ -60,6 +59,7 @@ fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: Booking
         isOrganizerError = state.isOrganizerError,
         onRequestBookingCurrentRoom = { bookingRoomComponent.sendIntent(BookingStore.Intent.OnBookingCurrentRoom()) },
         onRequestBookingOtherRoom = { bookingRoomComponent.sendIntent(BookingStore.Intent.OnBookingOtherRoom()) },
+        onOpenDateTimePickerModal = { bookingRoomComponent.sendIntent(BookingStore.Intent.OnDateTimePickerModal()) },
         roomName = state.roomName
     )
 }
@@ -85,6 +85,7 @@ fun BookingRoomView(
     isOrganizerError: Boolean,
     onRequestBookingCurrentRoom: () -> Unit,
     onRequestBookingOtherRoom: () -> Unit,
+    onOpenDateTimePickerModal: () -> Unit,
     roomName: String
 ) {
     Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
@@ -99,9 +100,8 @@ fun BookingRoomView(
                 modifier = Modifier.fillMaxWidth().height(100.dp),
                 selectDate = if (isSelectCurrentTime) currentDate else selectDate,
                 increment = { incrementDay() },
-                decrement = { decrementDay() }
-                component = bookingRoomComponent.dateTimeComponent,
-                onOpenTimePickerModal = onOpenTimePickerModal
+                decrement = { decrementDay() },
+                onOpenDateTimePickerModal = onOpenDateTimePickerModal
             )
             Spacer(modifier = Modifier.height(25.dp))
             EventDurationView(

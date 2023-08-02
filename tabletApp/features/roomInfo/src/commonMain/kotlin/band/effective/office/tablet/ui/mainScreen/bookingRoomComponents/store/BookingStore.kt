@@ -10,12 +10,13 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, Nothing>
         data class OnBookingCurrentRoom(val booking: (() -> Unit)? = null) : Intent
         data class OnBookingOtherRoom(val booking: (() -> Unit)? = null) : Intent
         data class OnChangeDate(val changeInDay: Int) : Intent
-        data class OnSetDay(val changedDay: Int) : Intent
-        data class OnSetMonth(val changedMonth: Int) : Intent
-        data class OnChangeTime(val changeInTimeMillis: Long) : Intent
+        data class OnSetDate(val changedDay: Int, val changedMonth: Int) : Intent
         data class OnChangeLength(val change: Int) : Intent
         data class OnChangeOrganizer(val newOrganizer: String) : Intent
         object OnChangeExpanded : Intent
+
+        data class OnDateTimePickerModal(val close: (() -> Unit)? = null): Intent
+        data class CloseModal(val close: (() -> Unit)? = null) : Intent
     }
 
     data class State(
