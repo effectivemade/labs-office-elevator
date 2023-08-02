@@ -24,19 +24,14 @@ class BookingRepository(private val database: Database, private val converter: B
         return result
     }
 
+    fun deleteById(id: UUID) {
+        database.workspaceBooking.removeIf { it.id eq id }
+    }
+
     fun findById(bookingId: UUID): Booking? {
         val entity = database.workspaceBooking.find { it.id eq bookingId } ?: return null
         val participants = findParticipants(bookingId)
         return entity.let { converter.entityToModel(it, participants) }
-    }
-
-    private fun findParticipants(bookingId: UUID): List<UserEntity> {
-        return database
-            .from(BookingParticipants)
-            .innerJoin(right = Users, on = BookingParticipants.userId eq Users.id)
-            .select()
-            .where { BookingParticipants.bookingId eq bookingId }
-            .map { row -> Users.createEntity(row) }
     }
 
     fun findAllByOwnerId(ownerId: UUID): List<Booking> {
@@ -47,8 +42,13 @@ class BookingRepository(private val database: Database, private val converter: B
         }
     }
 
-    fun deleteById(id: UUID) {
-        database.workspaceBooking.removeIf { it.id eq id }
+    private fun findParticipants(bookingId: UUID): List<UserEntity> {
+        return database
+            .from(BookingParticipants)
+            .innerJoin(right = Users, on = BookingParticipants.userId eq Users.id)
+            .select()
+            .where { BookingParticipants.bookingId eq bookingId }
+            .map { row -> Users.createEntity(row) }
     }
 
     fun save(booking: Booking): Booking {
