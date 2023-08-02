@@ -88,7 +88,7 @@ fun BookingRoomView(
 ) {
     Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
         Column(modifier = Modifier.fillMaxSize()) {
-            Spacer(modifier = Modifier.height(63.dp))
+            //Spacer(modifier = Modifier.height(63.dp))
             Text(
                 text = MainRes.string.booking_view_title,
                 style = MaterialTheme.typography.h3
@@ -134,21 +134,20 @@ fun BookingRoomView(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Bottom
         ) {
-            if (isBusy) {
-                AlertButton(
-                    modifier = Modifier.fillMaxWidth().height(60.dp),
-                    onClick = { onRequestBookingOtherRoom() }
-                ) {
-                    Text(text = MainRes.string.see_free_room, style = MaterialTheme.typography.h7)
-                    Image(
-                        modifier = Modifier,
-                        painter = painterResource(MainRes.image.arrow_right),
-                        contentDescription = null,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colors.onPrimary)
-                    )
-                }
-                Spacer(Modifier.height(10.dp))
+            AlertButton(
+                modifier = Modifier.fillMaxWidth().height(60.dp),
+                onClick = { onRequestBookingOtherRoom() }
+            ) {
+                Text(text = MainRes.string.see_free_room, style = MaterialTheme.typography.h7)
+                Image(
+                    modifier = Modifier,
+                    painter = painterResource(MainRes.image.arrow_right),
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(MaterialTheme.colors.onPrimary)
+                )
             }
+            Spacer(Modifier.height(10.dp))
+
             SuccessButton(
                 modifier = Modifier.fillMaxWidth().height(60.dp).focusable(true),
                 onClick = { onRequestBookingCurrentRoom() }

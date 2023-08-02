@@ -57,11 +57,11 @@ fun SuccessSelectRoomView(
         )
         Spacer(modifier = Modifier.height(12.dp))
         OrganizerEventView(booking = booking)
-        Spacer(modifier = Modifier.height(60.dp))
+        Spacer(modifier = Modifier.height(30.dp))
         BookingButtonView(
             modifier = Modifier
                 .fillMaxWidth(0.72f)
-                .fillMaxHeight(0.4f),
+                .height(64.dp),
             shape = RoundedCornerShape(100),
             text = MainRes.string.on_main,
             onClick = {
