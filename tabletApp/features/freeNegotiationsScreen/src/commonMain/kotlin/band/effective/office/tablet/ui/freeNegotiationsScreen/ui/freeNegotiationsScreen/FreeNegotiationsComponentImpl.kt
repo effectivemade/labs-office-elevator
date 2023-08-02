@@ -56,7 +56,7 @@ class FreeNegotiationsComponentImpl(
                     nameRoom = state.value.nameBookingRoom,
                     eventInfo = EventInfo(
                         startTime = state.value.currentTime,
-                        finishTime = getFinishTime(state.value.currentTime, state.value.durationMinutes),
+                        finishTime = getFinishTime(state.value.currentTime, state.value.realDurationBooking),
                         organizer = state.value.organizer
                     )
                 )

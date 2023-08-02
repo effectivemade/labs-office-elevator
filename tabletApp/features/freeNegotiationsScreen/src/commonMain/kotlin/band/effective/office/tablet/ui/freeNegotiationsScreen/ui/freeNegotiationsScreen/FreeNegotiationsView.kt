@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
+import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.roomUiState.RoomInfoUiState
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.uiComponents.PanelView
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.uiComponents.RoomsView
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponent
@@ -20,13 +21,12 @@ import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomScreen
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable
 fun FreeNegotiationsView(
-    listRooms: List<RoomInfo>,
-    newEventDuration: Int,
+    listRooms: List<RoomInfoUiState>,
     nameRoomCurrent: String,
     showBookingModal: Boolean,
     selectRoomComponent: SelectRoomComponent,
     onMainScreen: () -> Unit,
-    onBookRoom: (name: String) -> Unit
+    onBookRoom: (name: String, maxDuration: Int) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
@@ -43,7 +43,6 @@ fun FreeNegotiationsView(
                 .fillMaxSize()
                 .background(MaterialTheme.colors.background),
             listRooms = listRooms,
-            newEventDuration = newEventDuration,
             onBookRoom = onBookRoom
         )
     }

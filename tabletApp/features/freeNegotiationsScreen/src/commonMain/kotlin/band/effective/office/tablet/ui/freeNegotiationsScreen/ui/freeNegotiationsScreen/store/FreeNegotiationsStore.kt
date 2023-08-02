@@ -3,6 +3,7 @@ package band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiatio
 import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
+import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.roomUiState.RoomInfoUiState
 import com.arkivanov.mvikotlin.core.store.Store
 import java.util.Calendar
 
@@ -12,16 +13,17 @@ interface FreeNegotiationsStore : Store< FreeNegotiationsStore.Intent, FreeNegot
         object OnMainScreen : Intent
         object CloseModal : Intent
         data class SetBooking(val bookingInfo: Booking): Intent
-        data class OnBookingRoom(val name: String) : Intent
+        data class OnBookingRoom(val name: String, val maxDuration: Int) : Intent
     }
 
     data class State(
         val isLoad: Boolean,
         val isData: Boolean,
         val error: String?,
-        val listRooms: List<RoomInfo>,
+        val listRooms: List<RoomInfoUiState>,
         val nameCurrentRoom: String,
-        val durationMinutes: Int,
+        val chosenDurationBooking: Int,
+        val realDurationBooking: Int,
         val organizer: String,
         val nameBookingRoom: String,
         val showBookingModal: Boolean,
@@ -36,7 +38,8 @@ interface FreeNegotiationsStore : Store< FreeNegotiationsStore.Intent, FreeNegot
                     nameCurrentRoom = "",
                     nameBookingRoom = "",
                     listRooms = listOf(),
-                    durationMinutes = 0,
+                    chosenDurationBooking = 0,
+                    realDurationBooking = 0,
                     organizer = "",
                     showBookingModal = false,
                     currentTime = Calendar.getInstance()

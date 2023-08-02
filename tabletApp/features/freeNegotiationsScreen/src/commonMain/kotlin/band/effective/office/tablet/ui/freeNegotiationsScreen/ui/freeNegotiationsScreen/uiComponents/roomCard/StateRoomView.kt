@@ -1,7 +1,5 @@
 package band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.uiComponents.roomCard
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -9,38 +7,37 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.features.freeNegotiationsScreen.MainRes
+import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.roomUiState.RoomInfoUiState
+import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.roomUiState.RoomState
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.utils.time24
 import java.util.Calendar
-import java.util.concurrent.TimeUnit
 
-val currentTime: Calendar = Calendar.getInstance()
-@RequiresApi(Build.VERSION_CODES.GINGERBREAD)
 @Composable
 fun StateRoomView(
-    roomInfo: RoomInfo,
-    isLessDuration: Boolean
+    roomInfo: RoomInfoUiState
 ) {
     Column {
-        when {
-            (roomInfo.currentEvent == null && isLessDuration) ->
-                RoomIsFree()
-
-            roomInfo.currentEvent != null -> RoomIsBusy(
-                roomInfo.currentEvent!!.finishTime,
-                roomInfo.currentEvent!!.organizer
+        when (roomInfo.state) {
+            RoomState.FREE -> RoomIsFree()
+            RoomState.BUSY -> RoomIsBusy(
+                changeEventTime = roomInfo.changeEventTime,
+                timeFinish = roomInfo.room.currentEvent!!.finishTime,
+                organizer = roomInfo.room.currentEvent!!.organizer
             )
 
             else -> {
-                RoomIsSoonBusy(roomInfo.eventList.first().startTime, roomInfo.eventList.first().organizer)
+                RoomIsSoonBusy(
+                    changeEventTime = roomInfo.changeEventTime,
+                    timeStart = roomInfo.room.eventList.first().startTime,
+                    organizer = roomInfo.room.eventList.first().organizer
+                )
             }
         }
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.GINGERBREAD)
 @Composable
 fun RoomIsFree() {
     InfoStateRoom(
@@ -53,9 +50,8 @@ fun RoomIsFree() {
     InfoTimeNextEvent(" ")
 }
 
-@RequiresApi(Build.VERSION_CODES.GINGERBREAD)
 @Composable
-fun RoomIsBusy(timeFinish: Calendar, organizer: String) {
+fun RoomIsBusy(changeEventTime: Int, timeFinish: Calendar, organizer: String) {
     InfoStateRoom(
         state = infoEvent(timeFinish),
         color = LocalCustomColorsPalette.current.busyStatus
@@ -63,12 +59,11 @@ fun RoomIsBusy(timeFinish: Calendar, organizer: String) {
     Spacer(modifier = Modifier.height(20.dp))
     OrganizerView(organizer)
     Spacer(modifier = Modifier.height(10.dp))
-    InfoTimeNextEvent(MainRes.string.until_finish.format(time = getDuration(currentTime, timeFinish)))
+    InfoTimeNextEvent(MainRes.string.until_finish.format(time = getDuration(changeEventTime)))
 }
 
-@RequiresApi(Build.VERSION_CODES.GINGERBREAD)
 @Composable
-fun RoomIsSoonBusy(timeStart: Calendar, organizer: String){
+fun RoomIsSoonBusy(changeEventTime: Int, timeStart: Calendar, organizer: String) {
     InfoStateRoom(
         state = MainRes.string.at_time.format(time = infoEvent(timeStart)),
         color = MaterialTheme.colors.secondary
@@ -76,32 +71,19 @@ fun RoomIsSoonBusy(timeStart: Calendar, organizer: String){
     Spacer(modifier = Modifier.height(20.dp))
     OrganizerView(organizer)
     Spacer(modifier = Modifier.height(10.dp))
-    InfoTimeNextEvent(MainRes.string.through_time.format(time = getDuration(currentTime, timeStart)))
+    InfoTimeNextEvent(MainRes.string.through_time.format(time = getDuration(changeEventTime)))
 }
 
-
-@RequiresApi(Build.VERSION_CODES.GINGERBREAD)
-fun getDuration(start: Calendar, finish: Calendar): String {
-    val ml = finish.timeInMillis - start.timeInMillis
-    val minutesDifferent = TimeUnit.MILLISECONDS.toMinutes(ml).toInt()
-    val days = (minutesDifferent / 60) / 24
-    val hours = (minutesDifferent / 60) % 24
-    val minutes = minutesDifferent % 60 + 1
+fun getDuration(changeEventTime: Int): String {
+    val days = (changeEventTime / 60) / 24
+    val hours = (changeEventTime / 60) % 24
+    val minutes = changeEventTime % 60 + 1
 
     val daysString = if (days != 0) MainRes.string.days.format(days = days.toString()) else ""
     val hoursString = if (hours != 0) MainRes.string.hours.format(hours = hours.toString()) else ""
     val minutesString =
         if (minutes != 0) MainRes.string.minutes.format(minutes = minutes.toString()) else ""
     return "${daysString}${hoursString}${minutesString}"
-}
-
-@RequiresApi(Build.VERSION_CODES.GINGERBREAD)
-fun checkDuration(startEvent: Calendar, newEventDuration: Int): Boolean {
-    val deviation = 5
-    val currentTime = Calendar.getInstance()
-    val ml = startEvent.timeInMillis - currentTime.timeInMillis
-    val minutesDifferent = TimeUnit.MILLISECONDS.toMinutes(ml).toInt()
-    return minutesDifferent >= newEventDuration - deviation
 }
 
 fun infoEvent(time: Calendar): String {

@@ -19,19 +19,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import band.effective.office.tablet.domain.model.EventInfo
-import band.effective.office.tablet.domain.model.RoomInfo
+import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.roomUiState.RoomInfoUiState
+import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.roomUiState.RoomState
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.uiComponents.roomCard.RoomCard
-import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.uiComponents.roomCard.checkDuration
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 
 @RequiresApi(Build.VERSION_CODES.GINGERBREAD)
 @Composable
 fun RoomsView(
     modifier: Modifier,
-    listRooms: List<RoomInfo>,
-    newEventDuration: Int,
-    onBookRoom: (name: String) -> Unit
+    listRooms: List<RoomInfoUiState>,
+    onBookRoom: (name: String, maxDuration: Int) -> Unit
     ) {
     Box(
         modifier = modifier
@@ -50,27 +48,23 @@ fun RoomsView(
                         .padding(horizontal = 10.dp)
                         .fillMaxHeight()
                 ) {
-                    val isLessDuration = it.currentEvent == null &&
-                            checkDuration(it.eventList.first().startTime, newEventDuration)
                     RoomCard(
                         roomInfo = it,
                         modifier = Modifier
                             .fillMaxHeight(0.8f)
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(20))
-                            .background(LocalCustomColorsPalette.current.mountainBackground),
-                        isLessDuration = isLessDuration
+                            .background(LocalCustomColorsPalette.current.mountainBackground)
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     ButtonBookingView(
                         roomInfo = it,
-                        isLessDuration = isLessDuration,
                         onBookRoom = onBookRoom,
                         modifier = Modifier
                             .fillMaxSize()
                             .border(
                                 2.dp,
-                                if (it.currentEvent == null && isLessDuration) {
+                                if (it.state == RoomState.FREE) {
                                     MaterialTheme.colors.primary
                                 } else {
                                     LocalCustomColorsPalette.current.disabledPrimaryButton

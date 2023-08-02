@@ -16,31 +16,32 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.features.freeNegotiationsScreen.MainRes
+import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.roomUiState.RoomInfoUiState
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.h8
 
 @Composable
 fun IconCharacteristicsRoom(
     modifier: Modifier,
-    roomInfo: RoomInfo
+    roomInfo: RoomInfoUiState
 ) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
-        if (roomInfo.capacity > 0) {
+        if (roomInfo.room.capacity > 0) {
             IconCharacteristic(
                 icon = ImageVector.vectorResource(MainRes.image.capacity),
-                value = roomInfo.capacity,
+                value = roomInfo.room.capacity,
                 description = "capacity"
             )
             Spacer(modifier = Modifier.width(10.dp))
         }
-        if (roomInfo.socketCount > 0) {
+        if (roomInfo.room.socketCount > 0) {
             IconCharacteristic(
                 icon = ImageVector.vectorResource(MainRes.image.port),
-                value = roomInfo.socketCount,
+                value = roomInfo.room.socketCount,
                 description = "ports"
             )
             Spacer(modifier = Modifier.width(10.dp))

@@ -3,6 +3,10 @@ package band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiatio
 import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.ui.freeNegotiationsScreen.domain.MockListRooms
+import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.roomUiState.RoomInfoUiState
+import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.roomUiState.RoomState
+import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.uiComponents.checkDuration
+import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.uiComponents.getDurationRelativeCurrentTime
 import band.effective.office.tablet.ui.selectRoomScreen.uiComponents.getLengthEvent
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
@@ -37,9 +41,9 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory): Koin
     }
 
     private sealed interface Message {
-        data class GetFreeRoomsInfo(val roomsInfo: List<RoomInfo>) : Message
+        data class GetFreeRoomsInfo(val roomsInfo: List<RoomInfoUiState>) : Message
         data class SetBooking(val bookingInfo: Booking): Message
-        data class BookRoom(val nameRoom: String) : Message
+        data class BookRoom(val nameRoom: String, val maxDuration: Int) : Message
         object MainScreen : Message
         object CloseModal : Message
     }
@@ -48,7 +52,8 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory): Koin
         CoroutineExecutor<FreeNegotiationsStore.Intent, Action, FreeNegotiationsStore.State, Message, Nothing>() {
         override fun executeIntent(intent: FreeNegotiationsStore.Intent, getState: () -> FreeNegotiationsStore.State) {
             when (intent) {
-                is FreeNegotiationsStore.Intent.OnBookingRoom -> dispatch(Message.BookRoom(intent.name))
+                is FreeNegotiationsStore.Intent.OnBookingRoom ->
+                    dispatch(Message.BookRoom(nameRoom =  intent.name, maxDuration = intent.maxDuration))
                 is FreeNegotiationsStore.Intent.OnMainScreen -> dispatch(Message.MainScreen)
                 is FreeNegotiationsStore.Intent.CloseModal -> dispatch(Message.CloseModal)
                 is FreeNegotiationsStore.Intent.SetBooking -> dispatch(Message.SetBooking(intent.bookingInfo))
@@ -57,8 +62,40 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory): Koin
 
         override fun executeAction(action: Action, getState: () -> FreeNegotiationsStore.State) {
             when (action) {
-                is Action.GetFreeRoomsInfo -> dispatch(Message.GetFreeRoomsInfo(action.roomsInfo))
+                is Action.GetFreeRoomsInfo -> {
+                    val roomsInfoUi = mutableListOf<RoomInfoUiState>()
+                    action.roomsInfo.forEach {
+                        val roomState = getStateBusyRoom(it, getState())
+                        roomsInfoUi.add(
+                            RoomInfoUiState(
+                                room = it,
+                                state = roomState,
+                                changeEventTime = getChangeEventTime(roomState, it)
+                            )
+                        )
+                    }
+                    roomsInfoUi.sortBy { it.state.codeState }
+                    dispatch(Message.GetFreeRoomsInfo(roomsInfoUi.toList()))
+                }
             }
+        }
+
+    }
+
+    fun getStateBusyRoom(room: RoomInfo, state: FreeNegotiationsStore.State): RoomState{
+        return when {
+            room.currentEvent != null -> RoomState.BUSY
+            room.eventList.isNotEmpty() && !checkDuration
+                (room.eventList.first().startTime, state.chosenDurationBooking) -> RoomState.SOON_BUSY
+            else -> RoomState.FREE
+        }
+    }
+
+    fun getChangeEventTime(roomState: RoomState, room: RoomInfo): Int{
+        return when (roomState) {
+            RoomState.BUSY -> getDurationRelativeCurrentTime(room.currentEvent!!.finishTime)
+            RoomState.SOON_BUSY -> getDurationRelativeCurrentTime(room.eventList.first().startTime)
+            else -> -1
         }
     }
 
@@ -68,6 +105,9 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory): Koin
                 is Message.BookRoom-> copy(
                     nameBookingRoom = message.nameRoom,
                     currentTime = Calendar.getInstance(),
+                    realDurationBooking = if(message.maxDuration != -1) {
+                        chosenDurationBooking.coerceAtMost(message.maxDuration)
+                    } else { this.chosenDurationBooking },
                     showBookingModal = true
                 )
                 is Message.MainScreen -> copy()
@@ -76,7 +116,7 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory): Koin
                 )
                 is Message.SetBooking -> copy(
                     organizer = message.bookingInfo.eventInfo.organizer,
-                    durationMinutes = getLengthEvent(
+                    chosenDurationBooking = getLengthEvent(
                         start = message.bookingInfo.eventInfo.startTime,
                         finish = message.bookingInfo.eventInfo.finishTime
                     ),

@@ -8,24 +8,22 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.features.freeNegotiationsScreen.MainRes
-import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.uiComponents.roomCard.checkDuration
+import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.roomUiState.RoomInfoUiState
+import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.roomUiState.RoomState
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.h7
 
 @Composable
 fun ButtonBookingView(
     modifier: Modifier,
-    roomInfo: RoomInfo,
-    isLessDuration: Boolean,
-    onBookRoom: (name: String) -> Unit
+    roomInfo: RoomInfoUiState,
+    onBookRoom: (name: String, maxDuration: Int) -> Unit
 ) {
-    val enabled = ( roomInfo.currentEvent == null && isLessDuration)
     Button(
         modifier = modifier,
         onClick = {
-            onBookRoom(roomInfo.name)
+            onBookRoom(roomInfo.room.name, roomInfo.changeEventTime)
         },
         elevation = ButtonDefaults.elevation(0.dp),
         colors = ButtonDefaults.buttonColors(
@@ -35,7 +33,7 @@ fun ButtonBookingView(
             disabledContentColor = LocalCustomColorsPalette.current.disabledPrimaryButton
         ),
         shape = RoundedCornerShape(100.dp),
-        enabled = enabled
+        enabled = roomInfo.state == RoomState.FREE
     ) {
         Text(
             text = MainRes.string.occupy,
