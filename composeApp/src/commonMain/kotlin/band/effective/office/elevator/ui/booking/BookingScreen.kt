@@ -11,10 +11,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,7 +23,6 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -37,15 +36,18 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.borderPurple
 import band.effective.office.elevator.components.TitlePage
 import band.effective.office.elevator.textGrayColor
+import band.effective.office.elevator.textInBorderPurple
 import band.effective.office.elevator.ui.booking.components.OutlineButtonPurple
+import band.effective.office.elevator.ui.booking.components.BookingCard
+import band.effective.office.elevator.ui.models.TypesList
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
-import org.koin.dsl.module
 
 @Composable
 fun BookingScreen(bookingComponent: BookingComponent) {
@@ -56,28 +58,78 @@ fun BookingScreen(bookingComponent: BookingComponent) {
 
 @Composable
 private fun BookingScreenContent() {
-    Box{
-        OptionMenu()
-        Box(
-            modifier = Modifier.align(Alignment.BottomCenter)
-                .graphicsLayer {
-                    translationY = 40f
+    Column (modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colors.onBackground)){
+        Box{
+            OptionMenu()
+            Box(
+                modifier = Modifier.align(Alignment.BottomCenter)
+                    .graphicsLayer {
+                        translationY = 40f
+                    }
+            ){
+                Button(onClick = {},
+                    shape = CircleShape,
+                    border = BorderStroke(
+                        width = 1.dp,
+                        color = textGrayColor
+                    ),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.White,
+                        contentColor = textGrayColor),
+                    modifier = Modifier.size(40.dp)){
+                    Image(
+                        painter = painterResource(MainRes.images.back_button),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp).rotate(90f),
+                        contentScale = ContentScale.Crop
+                    )
                 }
-        ){
-            Button(onClick = {},
-                shape = CircleShape,
-                border = BorderStroke(
-                    width = 1.dp,
-                    color = textGrayColor
-                ),
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.White,
-                    contentColor = textGrayColor),
-                modifier = Modifier.size(40.dp)){
-                Image(
-                    painter = painterResource(MainRes.images.back_button),
-                    contentDescription = null,
-                    modifier = Modifier.size(24.dp).rotate(90f),
-                    contentScale = ContentScale.Crop
+            }
+        }
+        ListBooking()
+    }
+}
+
+@Composable
+private fun ListBooking() {
+    Column{
+        Row (modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth(), verticalAlignment = Alignment.Top) {
+            Text(
+                modifier = Modifier.padding(top = 16.dp),
+                text = stringResource(MainRes.strings.suitable_options),
+                style = MaterialTheme.typography.subtitle1.copy(
+                    color = Color.Black,
+                    fontWeight = FontWeight(500)
+                )
+            )
+            Spacer(modifier = Modifier.weight(.1f))
+            IconButton(onClick = {},  modifier = Modifier.padding(top = 3.dp),
+                ){
+                Row (verticalAlignment = Alignment.CenterVertically){
+                    Icon(
+                        painter = painterResource(MainRes.images.icon_location),
+                        tint = textInBorderPurple,
+                        contentDescription = null
+                    )
+                    Text(
+                        modifier = Modifier.padding(start = 8.dp),
+                        text = stringResource(MainRes.strings.select_zones),
+                        style = MaterialTheme.typography.subtitle1.copy(
+                            color = borderPurple,
+                            fontWeight = FontWeight(400)
+                        )
+                    )
+                }
+            }
+        }
+
+        LazyColumn (modifier = Modifier.padding(top = 16.dp).padding(horizontal = 16.dp)){
+           val listSeats = listOf(
+               "Cassipopea | Стол 1",
+               "Cassipopea | Стол 2"
+           )
+            items(listSeats) { seat ->
+                BookingCard(
+                    seat
                 )
             }
         }
@@ -120,7 +172,10 @@ private fun  OptionMenu(){
                 color = Color.Black
             )
             Row (modifier = Modifier.padding(top = 8.dp).fillMaxWidth(), horizontalArrangement  = Arrangement.Center ){
-                val types = listOf(stringResource(MainRes.strings.workplace), stringResource(MainRes.strings.meeting_room))
+                val types = listOf(
+                    TypesList(name = MainRes.strings.workplace, icon = MainRes.images.table_icon),
+                    TypesList(name = MainRes.strings.meeting_room, icon = MainRes.images.icon_meet)
+                )
                 val selectedType = remember { mutableStateOf(types[0]) }
 
                 types.forEach {type ->
@@ -141,13 +196,13 @@ private fun  OptionMenu(){
                    ){
                        Row (modifier = Modifier.padding(horizontal = 12.dp, vertical = 24.dp)){
                            Icon(
-                               painter = painterResource(MainRes.images.table_icon),
+                               painter = painterResource(type.icon),
                                contentDescription = null,
                                tint = MaterialTheme.colors.secondary
                            )
                            Text(
                                modifier = Modifier.padding(start = 8.dp),
-                               text = type,
+                               text = stringResource(type.name),
                                style = MaterialTheme.typography.body2
                            )
                        }
