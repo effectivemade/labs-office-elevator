@@ -17,17 +17,21 @@
     <!--Auth strings-->
     <string name="_continue">Continue</string>
     <string name="input_number">Enter number</string>
-    <string name="select_number">Specify a number to which colleagues could transfer money to you using SBP</string>
+    <string name="select_number">Specify a number to which colleagues could transfer money to you
+        using SBP
+    </string>
     <string name="number_hint">Phone number</string>
     <string name="input_profile">Fill in your profile</string>
     <string name="select_profile">This is necessary for employees to recognize you</string>
     <string name="profile_hint">Last Name First Name</string>
     <string name="profile_hint_">Occupation</string>
     <string name="input_employee">Specify contacts</string>
-    <string name="select_employee">This is necessary for colleagues to be able to contact you conveniently</string>
+    <string name="select_employee">This is necessary for colleagues to be able to contact you
+        conveniently
+    </string>
     <string name="employee_hint">Telegram nickname</string>
 
-    <string name="by_date"> By date </string>
+    <string name="by_date">By date</string>
     <string name="show_map">Show on map</string>
     <string name="book_a_seat">Book a seat</string>
     <string name="nearest_bookings">Your upcoming bookings</string>
@@ -35,6 +39,19 @@
 
     <string name="cansel">Cansel</string>
     <string name="ok">Ok</string>
+
+    <!--Booking period-->
+    <string name="place_booked">Place reserved</string>
+    <string name="good_working_day">Have a good working day!</string>
+    <string name="move_to_main_from_booking">Go to main</string>
+    <string name="close_booking">Close</string>
+    <string name="booking_period">Booking period</string>
+    <string name="whole_day_booking">Whole day</string>
+    <string name="confirm_booking">Confirm</string>
+    <string name="do_not_repeat">Do not repeat</string>
+    <string name="every_work_day">Every work day</string>
+    <string name="every_week">Every week</string>
+    <string name="another">Other...</string>
 
     <!-- Buttons -->
     <string name="_continue">Continue</string>
@@ -46,12 +63,14 @@
     <string name="employees">Employees</string>
 
     <string name="elevator">Elevator</string>
-    <string name="elevator_button" >Lift</string>
+    <string name="elevator_button">Lift</string>
 
     <!--Error messages-->
     <string name="you_need_to_sign_in">You need to sign in for the app to work</string>
     <string name="network_error">Network connection error</string>
-    <string name="developer_error">The developer seems to have broken something. Report the problem</string>
+    <string name="developer_error">The developer seems to have broken something. Report the
+        problem
+    </string>
     <string name="cancelled_error">You canceled the operation. Try again</string>
     <string name="invalid_account_error">You are using the wrong account</string>
     <string name="timout_error">Request time is up. Try again</string>

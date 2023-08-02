@@ -232,6 +232,9 @@ fun ExtendedTheme(
     }
 //    region::Extended colors
     val extendedColors = ExtendedColors(
+        _66x = Color(0x66000000),
+        dividerColor = Color(0xFF8E8E93),
+
         trinidad_50 = Color(0xFFFFF7ED),
         trinidad_100 = Color(0xFFFEEDD6),
         trinidad_200 = Color(0xFFFDD8AB),

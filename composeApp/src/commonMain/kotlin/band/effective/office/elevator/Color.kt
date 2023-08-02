@@ -143,6 +143,9 @@ internal val theme_dark_tertiary_icon_color = Color(0x00000066)
 //region::Extended colors
 @Immutable
 data class ExtendedColors(
+    val _66x: Color,
+    val dividerColor: Color,
+
 //    region::Trinidad
     val trinidad_50: Color,
     val trinidad_100: Color,
@@ -176,6 +179,9 @@ data class ExtendedColors(
 
 val LocalExtendedColors = staticCompositionLocalOf {
     ExtendedColors(
+        _66x = Color(0x66000000),
+        dividerColor = Color(0xFF8E8E93),
+
         trinidad_50 = Color(0xFFFFF7ED),
         trinidad_100 = Color(0xFFFEEDD6),
         trinidad_200 = Color(0xFFFDD8AB),
@@ -208,8 +214,8 @@ internal val seed = Color(0xFF2C3639)
 
 // Non Material specified colors
 internal val lightGray = Color(0xFFEBEBEB)
-internal val textInBorderGray = Color (0xFF808080)
-internal val borderGray = Color (0xFF666666)
+internal val textInBorderGray = Color(0xFF808080)
+internal val borderGray = Color(0xFF666666)
 internal val successGreen = Color(0xFF4BB543)
 
 internal val borderGreen = Color(0xFF34C759)
