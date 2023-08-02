@@ -62,6 +62,10 @@ class BookingRoomComponent(
                 bookingStore.accept(intent.copy(onBookingOtherRoom))
             }
 
+            is BookingStore.Intent.OnChangeIsActive -> {
+                bookingStore.accept(intent)
+            }
+
             else -> bookingStore.accept(intent)
         }
     }

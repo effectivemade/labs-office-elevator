@@ -102,6 +102,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
         data class ChangeOrganizer(val newOrganizer: String) : Message
         object OrganizerError : Message
+        object BookingOtherRoom : Message
 
         data class UpdateOrganizers(val organizers: List<String>) : Message
         data class UpdateBusy(
@@ -112,6 +113,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         object Reset : Message
         object OnChangeExpanded : Message
         object UpdateTime : Message
+        object OnChangeIsActive : Message
     }
 
     private inner class ExecutorImpl() :
@@ -127,17 +129,25 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     booking = intent.booking
                 )
 
-                is BookingStore.Intent.OnBookingOtherRoom -> booking(
-                    isCurrentRoom = false,
-                    state = getState(),
-                    booking = intent.booking
-                )
+                is BookingStore.Intent.OnBookingOtherRoom -> {
+                    booking(
+                        isCurrentRoom = false,
+                        state = getState(),
+                        booking = intent.booking
+                    )
+                    dispatch(Message.BookingOtherRoom)
+                }
 
-                is BookingStore.Intent.OnChangeDate -> changeDate(getState(), intent.changeInDay)
-                is BookingStore.Intent.OnChangeLength -> changeLength(getState(), intent.change)
+                is BookingStore.Intent.OnChangeDate -> changeDate(getState, intent.changeInDay)
+                is BookingStore.Intent.OnChangeLength -> changeLength(getState, intent.change)
                 is BookingStore.Intent.OnChangeOrganizer -> {
                     dispatch(Message.ChangeOrganizer(intent.newOrganizer))
-                    reset()
+                    reset(getState)
+                }
+
+                is BookingStore.Intent.OnChangeIsActive -> {
+                    dispatch(Message.OnChangeIsActive)
+                    reset(getState)
                 }
 
                 BookingStore.Intent.OnChangeExpanded -> dispatch(Message.OnChangeExpanded)
@@ -146,11 +156,13 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
         var resetTimer: Job? = null
 
-        fun reset() {
+        fun reset(getState: () -> BookingStore.State) {
             resetTimer?.cancel()
             resetTimer = scope.launch {
                 delay(60000)
-                dispatch(Message.Reset)
+                if (getState().isActive) {
+                    dispatch(Message.Reset)
+                }
             }
         }
 
@@ -184,12 +196,13 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     )
                 }
 
-                is Action.UpdateEvents -> reset()
+                is Action.UpdateEvents -> reset(getState)
                 Action.UpdateSelectTime -> dispatch(Message.UpdateTime)
             }
         }
 
-        fun changeDate(state: BookingStore.State, changeDay: Int) = scope.launch() {
+        fun changeDate(getState: () -> BookingStore.State, changeDay: Int) = scope.launch() {
+            val state = getState()
             val newDate = (state.selectDate.clone() as Calendar).apply {
                 add(
                     Calendar.DAY_OF_MONTH,
@@ -203,10 +216,11 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     isSelectCurrentTime = newDate.isNow()
                 )
             )
-            reset()
+            reset(getState)
         }
 
-        fun changeLength(state: BookingStore.State, change: Int) = scope.launch() {
+        fun changeLength(getState: () -> BookingStore.State, change: Int) = scope.launch() {
+            val state = getState()
             if (state.length + change <= 0) return@launch
             dispatch(
                 Message.ChangeEvent(
@@ -215,7 +229,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     isSelectCurrentTime = state.isSelectCurrentTime
                 )
             )
-            reset()
+            reset(getState)
         }
     }
 
@@ -232,6 +246,9 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
     private object ReducerImpl : Reducer<BookingStore.State, Message> {
         override fun BookingStore.State.reduce(msg: Message): BookingStore.State =
             when (msg) {
+                is Message.BookingOtherRoom -> copy(
+                    isActive = false
+                )
                 is Message.ChangeEvent -> copy(
                     selectDate = msg.selectDate,
                     length = msg.length,
@@ -251,6 +268,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is Message.Reset -> reset()
                 is Message.OnChangeExpanded -> copy(isExpandedOrganizersList = !isExpandedOrganizersList)
                 is Message.UpdateTime -> copy(currentDate = GregorianCalendar())
+                is Message.OnChangeIsActive -> copy(isActive = true)
             }
 
         fun BookingStore.State.reset() = copy(

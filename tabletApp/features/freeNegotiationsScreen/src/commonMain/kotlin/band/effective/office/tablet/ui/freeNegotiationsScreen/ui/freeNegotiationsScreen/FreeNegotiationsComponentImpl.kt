@@ -47,8 +47,6 @@ class FreeNegotiationsComponentImpl(
         ).create()
     }
 
-    val startTime = Calendar.getInstance()
-
     override val selectRoomComponent: SelectRoomComponentImpl =
         SelectRoomComponentImpl(
             componentContext = childContext(key = "bookingCurrentRoom"),
@@ -63,12 +61,13 @@ class FreeNegotiationsComponentImpl(
                     )
                 )
             },
+            onBookingOtherRoom = {},
             onCloseRequest = { onIntent(FreeNegotiationsStore.Intent.CloseModal) }
         )
 
     private fun getFinishTime(startTime: Calendar, duration: Int): Calendar {
         val finishDate = startTime.clone() as Calendar
-        finishDate.add(Calendar.MINUTE, state.value.durationMinutes)
+        finishDate.add(Calendar.MINUTE, duration)
         return finishDate
     }
 

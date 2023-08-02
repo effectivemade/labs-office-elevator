@@ -101,7 +101,7 @@ fun checkDuration(startEvent: Calendar, newEventDuration: Int): Boolean {
     val currentTime = Calendar.getInstance()
     val ml = startEvent.timeInMillis - currentTime.timeInMillis
     val minutesDifferent = TimeUnit.MILLISECONDS.toMinutes(ml).toInt()
-    return minutesDifferent - deviation >= newEventDuration
+    return minutesDifferent >= newEventDuration - deviation
 }
 
 fun infoEvent(time: Calendar): String {
