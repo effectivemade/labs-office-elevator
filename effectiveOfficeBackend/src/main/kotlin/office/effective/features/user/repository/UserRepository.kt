@@ -1,6 +1,7 @@
 package office.effective.features.user.repository
 
 import office.effective.common.exception.*
+import office.effective.features.user.converters.IntegrationModelEntityConverter
 import office.effective.features.user.converters.UserModelEntityConverter
 import office.effective.model.IntegrationModel
 import office.effective.model.UserModel
@@ -28,7 +29,7 @@ class UserRepository(private val db: Database, private val converter: UserModelE
                 "Cannot find tag by id ${userEnt.tag.id}"
             )
 
-        val userModel = converter.EntityToModel(userEnt, null)
+        val userModel = converter.entityToModel(userEnt, null)
         userModel.integrations = integrations
         userModel.tag = tagEntity
 
@@ -40,7 +41,7 @@ class UserRepository(private val db: Database, private val converter: UserModelE
         val ents = db.users.filter { Users.tagId eq tagId }.toSet()
         var models: MutableSet<UserModel> = mutableSetOf<UserModel>()
         ents.forEach {
-            val user = converter.EntityToModel(it, null)
+            val user = converter.entityToModel(it, null)
             user.integrations = findSetOfIntegrationsByUser(user.id!!)
             models.add(user)
 
@@ -103,7 +104,19 @@ class UserRepository(private val db: Database, private val converter: UserModelE
         ent?.avatarURL = model.avatarURL
         ent?.role = model.role
         ent?.flushChanges()
-        //todo integrations
+
+        val integrations: Set<IntegrationModel>? = model.integrations
+        if (!integrations.isNullOrEmpty()) {
+            val converter: IntegrationModelEntityConverter = GlobalContext.get().get()
+            db.usersinegrations.filter { it.userId eq userid }.forEach { it.delete() }
+            for (i in integrations) {
+                db.insert(UsersIntegrations) {
+                    set(it.userId, userid)
+                    set(it.integrationId, i.id)
+                    set(it.valueStr, i.valueStr)
+                }
+            }
+        }
         return findById(userid)
     }
 
@@ -117,6 +130,4 @@ class UserRepository(private val db: Database, private val converter: UserModelE
         if (!existsById(userId)) return null
         return findSetOfIntegrationsByUser(userId)
     }
-
-
 }
