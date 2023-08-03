@@ -159,9 +159,9 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     dispatch(Message.OnChangeIsActive)
                     reset(getState)
                 }
-                is BookingStore.Intent.OnSetDate -> setNewDate(getState(), intent.changedDay, intent.changedMonth)
+                is BookingStore.Intent.OnSetDate -> setNewDate(getState, intent.changedDay, intent.changedMonth)
                 is BookingStore.Intent.CloseModal -> intent.close?.invoke()
-                is BookingStore.Intent.OnChangeIsCurrentSelectTime -> changeIsSelectCurrentTime(getState())
+                is BookingStore.Intent.OnChangeIsCurrentSelectTime -> changeIsSelectCurrentTime(getState)
 
                 BookingStore.Intent.OnChangeExpanded -> dispatch(Message.OnChangeExpanded)
 
@@ -234,7 +234,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             reset(getState)
         }
 
-        fun setNewDate(state: BookingStore.State, changeDay: Int, changeMonth: Int) = scope.launch() {
+        fun setNewDate(getState: () -> BookingStore.State, changeDay: Int, changeMonth: Int) = scope.launch() {
+            val state = getState()
             val newDate = (state.selectDate.clone() as Calendar).apply {
                 set(
                     /* year = */ this[Calendar.YEAR],
@@ -249,7 +250,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     isSelectCurrentTime = newDate.isNow()
                 )
             )
-            reset()
+            reset(getState)
         }
 
         fun changeLength(getState: () -> BookingStore.State, change: Int) = scope.launch() {
@@ -265,7 +266,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             reset(getState)
         }
 
-        fun changeIsSelectCurrentTime(state: BookingStore.State) {
+        fun changeIsSelectCurrentTime(getState: () -> BookingStore.State) {
+            val state = getState()
             dispatch(
                 Message.ChangeEvent(
                     selectDate = state.selectDate,
@@ -273,7 +275,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     isSelectCurrentTime = !state.isSelectCurrentTime
                 )
             )
-            reset()
+            reset(getState)
         }
     }
 
