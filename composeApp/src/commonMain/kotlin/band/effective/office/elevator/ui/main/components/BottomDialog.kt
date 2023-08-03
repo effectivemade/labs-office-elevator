@@ -30,7 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import band.effective.office.elevator.ExtendedThemeColors
+import band.effective.office.elevator.ExtendedTheme
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.PrimaryButton
 import band.effective.office.elevator.getDefaultFont
@@ -63,7 +63,7 @@ fun BottomDialog(modifier: Modifier, title: String) {
                 onClick = {
 
                 },
-                border = BorderStroke(1.dp, ExtendedThemeColors.colors.purple_heart_800),
+                border = BorderStroke(1.dp, ExtendedTheme.colors.purple_heart_800),
                 modifier = Modifier.fillMaxWidth(0.5f)
             ) {
                 Row(
@@ -73,13 +73,13 @@ fun BottomDialog(modifier: Modifier, title: String) {
                     Icon(
                         imageVector = Icons.Rounded.Done,
                         contentDescription = "done button",
-                        tint = ExtendedThemeColors.colors.purple_heart_800,
+                        tint = ExtendedTheme.colors.purple_heart_800,
                         modifier = Modifier.size(24.dp),
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = stringResource(MainRes.strings.working_place),
-                        color = ExtendedThemeColors.colors.purple_heart_800,
+                        color = ExtendedTheme.colors.purple_heart_800,
                         style = MaterialTheme.typography.body2,
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -92,7 +92,7 @@ fun BottomDialog(modifier: Modifier, title: String) {
                 onClick = {
 
                 },
-                border = BorderStroke(1.dp, ExtendedThemeColors.colors.purple_heart_800),
+                border = BorderStroke(1.dp, ExtendedTheme.colors.purple_heart_800),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Row(
@@ -102,13 +102,13 @@ fun BottomDialog(modifier: Modifier, title: String) {
                     Icon(
                         imageVector = Icons.Rounded.Done,
                         contentDescription = "done button",
-                        tint = ExtendedThemeColors.colors.purple_heart_800,
+                        tint = ExtendedTheme.colors.purple_heart_800,
                         modifier = Modifier.size(24.dp),
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = stringResource(MainRes.strings.meeting_room),
-                        color = ExtendedThemeColors.colors.purple_heart_800,
+                        color = ExtendedTheme.colors.purple_heart_800,
                         style = MaterialTheme.typography.body2,
                     )
                 }
@@ -127,7 +127,7 @@ fun BottomDialog(modifier: Modifier, title: String) {
                 onClick = {
 
                 },
-                border = BorderStroke(1.dp, ExtendedThemeColors.colors.trinidad_700),
+                border = BorderStroke(1.dp, ExtendedTheme.colors.trinidad_700),
                 modifier = Modifier.fillMaxWidth(0.5f),
                 shape = RoundedCornerShape(8.dp)
             )
