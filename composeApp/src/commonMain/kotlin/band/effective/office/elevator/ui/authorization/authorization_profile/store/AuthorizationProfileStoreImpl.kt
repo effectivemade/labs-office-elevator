@@ -4,20 +4,29 @@ import band.effective.office.elevator.ui.models.validator.Validator
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
+import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
-import org.koin.core.component.KoinComponent
+import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
+import kotlinx.coroutines.launch
 
 class AuthorizationProfileStoreFactory(
     private val storeFactory: StoreFactory,
-    private val validator: Validator
-) :
-    KoinComponent {
+    private val validator: Validator,
+    private var name: String,
+    private var post: String
+) {
 
+    @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): AuthorizationProfileStore =
         object : AuthorizationProfileStore,
             Store<AuthorizationProfileStore.Intent, AuthorizationProfileStore.State, AuthorizationProfileStore.Label> by storeFactory.create(
                 name = "Authorization profile",
                 initialState = AuthorizationProfileStore.State(),
+                bootstrapper = coroutineBootstrapper {
+                    launch {
+                        dispatch(AuthorizationProfileStoreFactory.Action.InitUser)
+                    }
+                },
                 executorFactory = ::ExecutorImpl,
                 reducer = ReducerImpl
             ) {
@@ -36,7 +45,7 @@ class AuthorizationProfileStoreFactory(
     }
 
     private sealed interface Action {
-
+        object InitUser : Action
     }
 
     private object ReducerImpl :
@@ -77,16 +86,43 @@ class AuthorizationProfileStoreFactory(
                     )
                 }
 
-                is AuthorizationProfileStore.Intent.NameChanged -> dispatch(
-                    AuthorizationProfileStoreFactory.Msg.NameData(
-                        name = intent.name,
-                        isNameError = validator.checkName(intent.name)
+                is AuthorizationProfileStore.Intent.NameChanged ->
+                    dispatch(
+                        AuthorizationProfileStoreFactory.Msg.NameData(
+                            name = intent.name,
+                            isNameError = validator.checkName(intent.name)
+                        )
                     )
-                )
             }
 
-        private fun checkUserdata(name: String, post: String) {
+        override fun executeAction(
+            action: Action,
+            getState: () -> AuthorizationProfileStore.State
+        ) {
+            when (action) {
+                is AuthorizationProfileStoreFactory.Action.InitUser -> {
+
+                    dispatch(
+                        AuthorizationProfileStoreFactory.Msg.PostData(
+                            post = post,
+                            isPostError = post == null
+                        )
+                    )
+
+                    dispatch(
+                        AuthorizationProfileStoreFactory.Msg.NameData(
+                            name = name,
+                            isNameError = false
+                        )
+                    )
+                }
+            }
+        }
+
+        private fun checkUserdata(name_: String, post_: String) {
             if (!validator.checkName(name) && !validator.checkPost(post)) {
+                post = post_
+                name = name_
                 publish(AuthorizationProfileStore.Label.AuthorizationProfileSuccess)
             } else {
                 publish(AuthorizationProfileStore.Label.AuthorizationProfileFailure)

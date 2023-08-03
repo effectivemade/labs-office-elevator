@@ -16,14 +16,17 @@ class AuthorizationTelegramComponent(
     componentContext: ComponentContext,
     private val storeFactory: StoreFactory,
     private val validator: Validator,
-    private val output: (Output) -> Unit
+    private val telegramNick: String,
+    private val output: (Output) -> Unit,
+    private val changeTelegramNick: (String) -> Unit
 ) : ComponentContext by componentContext {
 
     private val authorizationTelegramStore =
         instanceKeeper.getStore {
             AuthorizationTelegramStoreFactory(
                 storeFactory = storeFactory,
-                validator
+                validator = validator,
+                nick = telegramNick
             ).create()
         }
 
@@ -39,6 +42,8 @@ class AuthorizationTelegramComponent(
     fun onOutput(output: Output) {
         output(output)
     }
+
+    fun changeTG(telegramNick: String) = changeTelegramNick(telegramNick)
 
     sealed class Output {
         object OpenContentFlow : Output()
