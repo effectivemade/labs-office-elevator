@@ -180,6 +180,9 @@ android {
         }
     }
 }
+dependencies {
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+}
 
 multiplatformResources {
     multiplatformResourcesPackage = "band.effective.office.elevator"

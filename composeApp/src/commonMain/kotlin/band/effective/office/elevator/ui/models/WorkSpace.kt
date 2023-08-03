@@ -1,6 +1,7 @@
 package band.effective.office.elevator.ui.models
 
-data class MeetingRoom(
+data class WorkSpace(
+    val id:String,
     val name:String,
-    val seat:String
+    val type:String,
 )
