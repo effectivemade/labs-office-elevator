@@ -15,15 +15,22 @@ import java.util.GregorianCalendar
 
 class WorkApi : Api {
     val mutableRoomInfo = MutableStateFlow(RoomInfo.defaultValue)
+
+    // NOTE(Maksim Mishenko) add other room here
+    var otherRoomInfo: MutableMap<String, RoomInfo> =
+        mutableMapOf("default" to RoomInfo.defaultValue)
     val mutableOrgList =
         MutableStateFlow(listOf("Ольга Белозерова", "Матвей Авгуль", "Лилия Акентьева"))
 
     var isSuccess = MutableStateFlow(true)
-    override suspend fun getRoomInfo(): Either<ErrorResponse, RoomInfo> {
+    override suspend fun getRoomInfo(room: String): Either<ErrorResponse, RoomInfo> {
         delay(5000L)
-        return if (isSuccess.value) Either.Success(mutableRoomInfo.value) else Either.Error(
-            ErrorResponse(0, "")
-        )
+        return when {
+            !isSuccess.value -> Either.Error(ErrorResponse(0, ""))
+            mutableRoomInfo.value.name == room -> Either.Success(mutableRoomInfo.value)
+            !otherRoomInfo.keys.contains(room) -> Either.Error(ErrorResponse(404, "Not Found"))
+            else -> Either.Success(otherRoomInfo[room]!!)
+        }
     }
 
     override suspend fun getOrganizers(): Either<ErrorResponse, List<String>> {
@@ -40,26 +47,53 @@ class WorkApi : Api {
         begin: Calendar,
         end: Calendar,
         owner: String,
+        room: String
     ): Either<ErrorResponse, String> {
         delay(5000L)
-        if (!isSuccess.value) Either.Error(ErrorResponse(code = 404, description = "Not found"))
-        if (begin <= GregorianCalendar() && GregorianCalendar() <= end) {
-            mutableRoomInfo.update {
-                it.copy(
+        return when {
+            !isSuccess.value -> Either.Error(ErrorResponse(code = 404, description = "Not found"))
+            begin <= GregorianCalendar() && GregorianCalendar() <= end && room == mutableRoomInfo.value.name -> {
+                mutableRoomInfo.update {
+                    it.copy(
+                        currentEvent = EventInfo(
+                            startTime = begin, finishTime = end, organizer = owner
+                        )
+                    )
+                }
+                Either.Success("ok")
+            }
+
+            room == mutableRoomInfo.value.name -> {
+                mutableRoomInfo.update { roomInfo ->
+                    roomInfo.copy(eventList = (roomInfo.eventList + EventInfo(
+                        startTime = begin, finishTime = end, organizer = owner
+                    )).sortedBy { it.startTime })
+                }
+                Either.Success("ok")
+            }
+
+            begin <= GregorianCalendar() && GregorianCalendar() <= end && otherRoomInfo.keys.contains(
+                room
+            ) -> {
+                otherRoomInfo[room] = otherRoomInfo[room]!!.copy(
                     currentEvent = EventInfo(
                         startTime = begin, finishTime = end, organizer = owner
                     )
                 )
+                Either.Success("ok")
             }
-        } else {
-            mutableRoomInfo.update { roomInfo ->
-                roomInfo.copy(eventList = (roomInfo.eventList + EventInfo(
-                    startTime = begin, finishTime = end, organizer = owner
-                )).sortedBy { it.startTime })
-            }
-        }
 
-        return Either.Success("ok")
+            otherRoomInfo.keys.contains(room) -> {
+                otherRoomInfo[room] = otherRoomInfo[room]!!.copy(
+                    eventList = otherRoomInfo[room]!!.eventList + EventInfo(
+                        startTime = begin, finishTime = end, organizer = owner
+                    )
+                )
+                Either.Success("ok")
+            }
+
+            else -> Either.Error(ErrorResponse(code = 404, description = "Not found"))
+        }
     }
 
     override fun subscribeOnWebHock(
