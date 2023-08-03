@@ -22,10 +22,11 @@ import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedTheme
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.textInBorderPurple
+import dev.icerock.moko.resources.ImageResource
 import dev.icerock.moko.resources.compose.painterResource
 
 @Composable
-fun BookingCard(roomText: String) {
+fun BookingCard(roomText: String, icon:ImageResource) {
     Column (modifier = Modifier.padding(bottom = 16.dp)){
         Box(
             modifier = Modifier
@@ -47,7 +48,7 @@ fun BookingCard(roomText: String) {
                         .size(44.dp)
                 ) {
                     Icon(
-                        painter = painterResource(MainRes.images.table_icon),
+                        painter = painterResource(icon),
                         contentDescription = null,
                         modifier = Modifier,
                         tint = textInBorderPurple

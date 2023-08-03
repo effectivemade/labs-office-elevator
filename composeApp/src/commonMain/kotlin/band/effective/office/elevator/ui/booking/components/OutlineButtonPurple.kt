@@ -21,7 +21,13 @@ import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
-fun OutlineButtonPurple(onClick: ()->Unit, icon1:ImageResource, icon2:ImageResource, title: StringResource){
+fun OutlineButtonPurple(
+    onClick: () -> Unit,
+    icon1: ImageResource,
+    icon2: ImageResource,
+    title: StringResource,
+    rotare: Float
+){
     OutlinedButton(
         modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
         onClick = onClick,
@@ -41,7 +47,7 @@ fun OutlineButtonPurple(onClick: ()->Unit, icon1:ImageResource, icon2:ImageResou
                 style = MaterialTheme.typography.body2
             )
             Icon(
-                modifier = Modifier.padding(start = 8.dp).size(24.dp).rotate(90f),
+                modifier = Modifier.padding(start = 8.dp).size(24.dp).rotate(rotare),
                 painter =  painterResource(icon2),
                 contentDescription = null,
                 tint = textInBorderPurple

@@ -15,7 +15,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory): KoinComponent
         object : BookingStore, Store<BookingStore.Intent, BookingStore.State,Nothing> by storeFactory.create(
             name = "BookingStore",
             initialState = BookingStore.State(
-                listMeetingRoom = listOf(),
+                listPlace = listOf(),
             ),
             executorFactory = ::ExecutorImpl,
             reducer = ReducerImpl,
