@@ -44,6 +44,7 @@ class MainFactory(private val storeFactory: StoreFactory) : KoinComponent {
 
         data class Load(val isSuccess: Boolean) : Message
         data class UpdateDisconnect(val newValue: Boolean) : Message
+        object Reboot : Message
     }
 
     private sealed interface Action {
@@ -60,7 +61,13 @@ class MainFactory(private val storeFactory: StoreFactory) : KoinComponent {
                 is MainStore.Intent.OnOpenFreeRoomModal -> dispatch(Message.OpenFreeModal)
                 is MainStore.Intent.OnOpenDateTimePickerModal -> dispatch(Message.OpenDateTimePickerModal)
                 is MainStore.Intent.OnDisconnectChange -> dispatch(Message.UpdateDisconnect(intent.newValue))
+                is MainStore.Intent.RebootRequest -> reboot()
             }
+        }
+
+        fun reboot() = scope.launch {
+            dispatch(Message.Reboot)
+            dispatch(Message.Load(roomInfoUseCase() is Either.Success))
         }
 
         override fun executeAction(action: Action, getState: () -> MainStore.State) {
@@ -84,6 +91,7 @@ class MainFactory(private val storeFactory: StoreFactory) : KoinComponent {
 
                 is Message.OpenFreeModal -> copy(showFreeModal = true)
                 is Message.UpdateDisconnect -> copy(isDisconnect = message.newValue)
+                is Message.Reboot -> copy(isError = false, isLoad = true)
                 is Message.OpenDateTimePickerModal -> copy(showDateTimePickerModal = true)
             }
     }

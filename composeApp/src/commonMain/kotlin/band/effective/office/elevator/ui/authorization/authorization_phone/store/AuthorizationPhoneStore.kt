@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.authorization.authorization_phone.store
 
+import band.effective.office.elevator.domain.models.UserData
 import com.arkivanov.mvikotlin.core.store.Store
 
 interface AuthorizationPhoneStore :
@@ -13,6 +14,7 @@ interface AuthorizationPhoneStore :
 
     data class State(
         var phoneNumber: String = "",
+        var idToken: String? = null,
         var isErrorPhoneNumber: Boolean = false,
         var isLoading: Boolean = false,
         var isError: Boolean = false

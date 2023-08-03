@@ -40,7 +40,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import band.effective.office.elevator.ExtendedTheme
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.OutlinedTextColorsSetup
 import band.effective.office.elevator.components.PrimaryButton
@@ -67,9 +67,12 @@ fun AuthorizationPhoneScreen(component: AuthorizationPhoneComponent) {
                     showToast(errorMessage)
                 }
 
-                AuthorizationPhoneStore.Label.AuthorizationPhoneSuccess -> component.onOutput(
-                    AuthorizationPhoneComponent.Output.OpenProfileScreen
-                )
+                is AuthorizationPhoneStore.Label.AuthorizationPhoneSuccess -> {
+                    component.change(state.phoneNumber)
+                    component.onOutput(
+                        AuthorizationPhoneComponent.Output.OpenProfileScreen
+                    )
+                }
 
                 AuthorizationPhoneStore.Label.ReturnInGoogleAuthorization -> component.onOutput(
                     AuthorizationPhoneComponent.Output.OpenGoogleScreen
@@ -208,7 +211,7 @@ private fun AuthorizationPhoneComponent(
                                 .height(20.dp)
                                 .width(2.dp)
                                 .clip(RoundedCornerShape(4.dp))
-                                .background(if (state.isErrorPhoneNumber) ExtendedTheme.colors.error else borderColor.value)
+                                .background(if (state.isErrorPhoneNumber) ExtendedThemeColors.colors.error else borderColor.value)
                                 .padding(vertical = 14.dp)
                         )
                     }

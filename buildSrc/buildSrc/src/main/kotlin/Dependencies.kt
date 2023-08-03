@@ -13,6 +13,7 @@ object Dependencies {
         const val napier = "2.6.1"
         const val buildConfig = "3.1.0"
         const val kotlinxCoroutines = "1.7.1"
+        const val kotlinCorutinesMultiplatform = "1.6.1-native-mt"
         const val ktor = "2.3.1"
         const val composeIcons = "1.1.0"
         const val kotlinxSerialization = "1.5.1"
@@ -140,5 +141,6 @@ object Dependencies {
     object SqlDelight {
         const val nativeDriver = "app.cash.sqldelight:native-driver:${Versions.sqlDelight}"
         const val androidDriver = "app.cash.sqldelight:android-driver:${Versions.sqlDelight}"
+        const val primitiveadaper = "app.cash.sqldelight:primitive-adapters:${Versions.sqlDelight}"
     }
 }

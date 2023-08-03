@@ -2,29 +2,26 @@ package band.effective.office.tablet.ui.mainScreen.mainScreen
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import band.effective.office.tablet.ui.loader.Loader
-import band.effective.office.tablet.utils.oneDay
-import java.util.Calendar
-import java.util.GregorianCalendar
+import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
+import band.effective.office.tablet.ui.mainScreen.mainScreen.uiComponents.ErrorMainScreen
+import band.effective.office.tablet.ui.mainScreen.mainScreen.uiComponents.LoadMainScreen
 
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable
 fun MainScreen(component: MainComponent) {
     val state by component.state.collectAsState()
     when {
-        state.isError -> {}
+        state.isError -> {
+            ErrorMainScreen { component.sendIntent(MainStore.Intent.RebootRequest) }
+        }
+
         state.isLoad -> {
             LoadMainScreen()
         }
+
         state.isData -> {
             MainScreenView(
                 showBookingModal = state.showBookingModal,
@@ -41,15 +38,3 @@ fun MainScreen(component: MainComponent) {
         }
     }
 }
-
-@Composable
-fun LoadMainScreen() {
-    Box(
-        modifier = Modifier.background(color = MaterialTheme.colors.background).fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Loader()
-    }
-}
-
-private fun Calendar.isToday(): Boolean = oneDay(GregorianCalendar())
