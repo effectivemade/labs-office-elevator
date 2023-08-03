@@ -1,5 +1,4 @@
 package office.effective.features.booking.facade
-//import office.effective.common.utils.UuidValidator
 import office.effective.common.exception.InstanceNotFoundException
 import office.effective.common.utils.DatabaseTransactionManager
 import office.effective.common.utils.UuidValidator

@@ -18,7 +18,12 @@ import java.util.*
 
 fun Route.bookingRouting() {
     route("/bookings") {
-        val bookingFacade = BookingFacade(GlobalContext.get().get(), GlobalContext.get().get(), GlobalContext.get().get(), GlobalContext.get().get())
+        val bookingFacade = BookingFacade(
+            GlobalContext.get().get(),
+            GlobalContext.get().get(),
+            GlobalContext.get().get(),
+            GlobalContext.get().get()
+        )
 
         get("{id}") {
             val id: String = call.parameters["id"]
