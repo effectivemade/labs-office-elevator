@@ -40,6 +40,9 @@ databaseChangeLog:
                   name: name
                   type: varchar(255)
                   remarks: "Meeting, Regular, etc."
+                  constraints:
+                    unique: true
+                    nullable: false
 
   - changeSet:
       id: create-workspaces-table
@@ -62,6 +65,8 @@ databaseChangeLog:
               - column:
                   name: tag_id
                   type: uuid
+                  constraints:
+                    nullable: false
         - addForeignKeyConstraint:
             baseTableName: workspaces
             baseColumnNames: tag_id
@@ -79,9 +84,13 @@ databaseChangeLog:
               - column:
                   name: utility_id
                   type: uuid
+                  constraints:
+                    nullable: false
               - column:
                   name: workspace_id
                   type: uuid
+                  constraints:
+                    nullable: false
               - column:
                   name: count
                   type: int

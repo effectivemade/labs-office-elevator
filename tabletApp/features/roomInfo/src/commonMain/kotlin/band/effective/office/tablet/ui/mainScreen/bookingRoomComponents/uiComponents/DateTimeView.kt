@@ -1,5 +1,7 @@
 package band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,38 +18,41 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import band.effective.office.tablet.features.roomInfo.MainRes
-import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.RealDateTimeComponent
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.h8
 import band.effective.office.tablet.utils.CalendarStringConverter
 import io.github.skeptick.libres.compose.painterResource
 import java.util.Calendar
 
+@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable
-fun DateTimeView(modifier: Modifier, component: RealDateTimeComponent, selectDate: Calendar) {
+fun DateTimeView(
+    modifier: Modifier,
+    selectDate: Calendar,
+    increment: () -> Unit,
+    decrement: () -> Unit
+) {
     Column(modifier = modifier) {
         Text(
             text = MainRes.string.select_date_tine_title,
-            color = LocalCustomColorsPalette.current.parameterTitle,
+            color = LocalCustomColorsPalette.current.secondaryTextAndIcon,
             style = MaterialTheme.typography.h8
         )
         Spacer(modifier = Modifier.height(10.dp))
         Row(modifier = Modifier.fillMaxSize()) {
             Button(
                 modifier = Modifier.fillMaxHeight().weight(1f).clip(RoundedCornerShape(15.dp)),
-                onClick = { component.decrementDay() },
+                onClick = { decrement() },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = LocalCustomColorsPalette.current.elevationBackground
                 )
             ) {
-                Text(
-                    text = "<",
-                    color = LocalCustomColorsPalette.current.tertiaryTextAndIcon,
-                    style = MaterialTheme.typography.h8
+                Image(
+                    modifier = Modifier,
+                    painter = painterResource(MainRes.image.arrow_left),
+                    contentDescription = null
                 )
             }
             Spacer(modifier = Modifier.width(10.dp))
@@ -59,7 +64,7 @@ fun DateTimeView(modifier: Modifier, component: RealDateTimeComponent, selectDat
                 )
             ) {
                 Text(
-                    text = selectDate.dateTime(),
+                    text =  selectDate.dateTime(),
                     style = MaterialTheme.typography.h6
                 )
                 Spacer(Modifier.width(5.dp))
@@ -72,15 +77,15 @@ fun DateTimeView(modifier: Modifier, component: RealDateTimeComponent, selectDat
             Spacer(modifier = Modifier.width(10.dp))
             Button(
                 modifier = Modifier.fillMaxHeight().weight(1f).clip(RoundedCornerShape(15.dp)),
-                onClick = { component.incrementDay() },
+                onClick = { increment() },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = LocalCustomColorsPalette.current.elevationBackground
                 )
             ) {
-                Text(
-                    text = ">",
-                    color = LocalCustomColorsPalette.current.tertiaryTextAndIcon,
-                    style = MaterialTheme.typography.h6
+                Image(
+                    modifier = Modifier,
+                    painter = painterResource(MainRes.image.arrow_right),
+                    contentDescription = null
                 )
             }
         }

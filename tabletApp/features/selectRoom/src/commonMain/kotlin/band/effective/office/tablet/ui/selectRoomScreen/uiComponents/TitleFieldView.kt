@@ -19,7 +19,7 @@ import band.effective.office.tablet.ui.theme.h8
 @Composable
 fun TitleFieldView(modifier: Modifier, title: String) {
     Box(
-        modifier = modifier.padding(0.dp),
+        modifier = modifier,
         contentAlignment = Alignment.CenterStart
     ) {
         Text(

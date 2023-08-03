@@ -11,13 +11,13 @@ import office.effective.common.exception.ValidationException
 fun Application.configureExceptionHandling() {
     install(StatusPages) {
         exception<InstanceNotFoundException> { call, cause ->
-            call.respondText(text = "403: $cause", status = HttpStatusCode.BadRequest)
+            call.respondText(text = "404: $cause", status = HttpStatusCode.NotFound)
         }
         exception<BadRequestException> { call, cause ->
-            call.respondText(text = "403: $cause", status = HttpStatusCode.BadRequest)
+            call.respondText(text = "404: $cause", status = HttpStatusCode.NotFound)
         }
         exception<ValidationException> { call, cause ->
-            call.respondText(text = "403: $cause", status = HttpStatusCode.BadRequest)
+            call.respondText(text = "404: $cause", status = HttpStatusCode.NotFound)
         }
         exception<Throwable> { call, cause ->
             call.respondText(text = "500: $cause", status = HttpStatusCode.InternalServerError)

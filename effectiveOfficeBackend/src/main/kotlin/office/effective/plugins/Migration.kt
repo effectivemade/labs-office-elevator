@@ -12,7 +12,8 @@ fun Application.configureMigration() {
     val url: String = config.propertyOrNull("database.url")
         ?.getString() ?: "jdbc:postgresql://localhost:15432/effectiveOfficeBackendDB"
     val username: String = config.propertyOrNull("database.username")?.getString() ?: "postgres"
-    val password: String = config.propertyOrNull("database.password")?.getString() ?: "test1234567890"
+    val password: String =
+        System.getenv("DATABASE_PASSWORD")
 
     val changelogFile: String = config.propertyOrNull("liquibase.changelogFile")
         ?.getString() ?: "changelog/changelog-master.yaml"
