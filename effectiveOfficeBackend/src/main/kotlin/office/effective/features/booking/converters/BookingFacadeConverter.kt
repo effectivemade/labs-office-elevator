@@ -16,8 +16,8 @@ class BookingFacadeConverter(private val userConverter: UserDTOModelConverter,
             participants = booking.participants.map { userConverter.modelToDTO(it) },
             workspace = workspaceConverter.modelToDto(booking.workspace),
             id = booking.id.toString(),
-            beginBooking = booking.beginBooking.epochSecond,
-            endBooking = booking.endBooking.epochSecond
+            beginBooking = booking.beginBooking.toEpochMilli(),
+            endBooking = booking.endBooking.toEpochMilli()
         )
     }
 
@@ -27,8 +27,8 @@ class BookingFacadeConverter(private val userConverter: UserDTOModelConverter,
             participants = bookingDTO.participants.map { userConverter.dTOToModel(it) },
             workspace = workspaceConverter.dtoToModel(bookingDTO.workspace),
             id = bookingDTO.id?.let { uuidValidator.uuidFromString(it) },
-            beginBooking = Instant.ofEpochSecond(bookingDTO.beginBooking),
-            endBooking = Instant.ofEpochSecond(bookingDTO.endBooking)
+            beginBooking = Instant.ofEpochMilli(bookingDTO.beginBooking),
+            endBooking = Instant.ofEpochMilli(bookingDTO.endBooking)
         )
     }
 }
