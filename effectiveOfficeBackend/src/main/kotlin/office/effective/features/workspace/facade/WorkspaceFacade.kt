@@ -25,7 +25,7 @@ class WorkspaceFacade(private val service: WorkspaceService,
         val workspaceDTO: WorkspaceDTO = transactionManager.useTransaction({
             val workspace = service.findById(uuid)
                 ?: throw InstanceNotFoundException(Workspace::class, "Workspace with id $id not found", uuid)
-            workspace.let { converter.workspaceModelToDto(it) }
+            workspace.let { converter.modelToDto(it) }
         })
 
         return workspaceDTO
@@ -36,7 +36,7 @@ class WorkspaceFacade(private val service: WorkspaceService,
             service.findAllByTag(tag)
         })
         return workspaceList.map {
-            converter.workspaceModelToDto(it)
+            converter.modelToDto(it)
         }
     }
 }

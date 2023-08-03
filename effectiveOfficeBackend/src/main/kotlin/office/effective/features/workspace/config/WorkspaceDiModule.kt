@@ -11,6 +11,6 @@ val workspaceDiModule = module(createdAtStart = true) {
     single { WorkspaceRepositoryConverter(get()) }
     single { WorkspaceRepository(get(), get()) }
     single { WorkspaceService(get()) }
-    single { WorkspaceFacadeConverter() }
+    single { WorkspaceFacadeConverter(get()) }
     single { WorkspaceFacade(get(), get(), get()) }
 }

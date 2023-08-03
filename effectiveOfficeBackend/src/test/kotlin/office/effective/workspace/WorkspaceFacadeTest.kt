@@ -9,13 +9,10 @@ import office.effective.features.workspace.dto.WorkspaceDTO
 import office.effective.features.workspace.facade.WorkspaceFacade
 import office.effective.features.workspace.service.WorkspaceService
 import office.effective.model.Workspace
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.ktorm.database.TransactionIsolation
-import org.mockito.ArgumentMatchers.any
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 import org.mockito.invocation.InvocationOnMock
 import org.mockito.kotlin.anyOrNull
@@ -46,7 +43,7 @@ class WorkspaceFacadeTest {
     }
 
     private fun setUpMockConverter(workspace: Workspace, workspaceDTO: WorkspaceDTO) {
-        whenever(mockConverter.workspaceModelToDto(workspace)).thenReturn(workspaceDTO)
+        whenever(mockConverter.modelToDto(workspace)).thenReturn(workspaceDTO)
     }
 
     private fun setUpMockTransactionManager() {
@@ -111,7 +108,7 @@ class WorkspaceFacadeTest {
 
         setUpMockTransactionManager()
         whenever(mockService.findAllByTag(anyOrNull())).thenReturn(existingList)
-        whenever(mockConverter.workspaceModelToDto(anyOrNull())).thenReturn(expectedList[0], expectedList[1])
+        whenever(mockConverter.modelToDto(anyOrNull())).thenReturn(expectedList[0], expectedList[1])
 
         val result = workspaceFacade.findAllByTag("tag")
 

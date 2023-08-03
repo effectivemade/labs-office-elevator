@@ -19,4 +19,5 @@ val commonDiModule = module(createdAtStart = true) {
         )
     }
     single { DatabaseTransactionManager(get()) }
+    single { UuidValidator() }
 }
