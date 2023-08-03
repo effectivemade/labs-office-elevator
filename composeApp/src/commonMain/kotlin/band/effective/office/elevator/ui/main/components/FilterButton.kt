@@ -14,12 +14,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedTheme
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun FilterButton(onClickOpenBottomSheetDialog: () -> Unit) {
-    val color = ExtendedTheme.colors.purple_heart_700
+    val color = ExtendedThemeColors.colors.purple_heart_700
     IconButton(onClick = onClickOpenBottomSheetDialog) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.Start),
