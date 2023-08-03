@@ -33,7 +33,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory): KoinComponent
                                 type = intent.type
                             )
                         )
-                        else -> {}
+                        is BookingStore.Intent.OpenChooseZone ->{}
                     }
                 }
             }

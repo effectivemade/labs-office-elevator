@@ -104,7 +104,7 @@ fun ChooseZone(zone: Boolean) {
                         .fillMaxWidth(fraction = .3f)
                         .height(4.dp)
                         .background(
-                            color = ExtendedTheme.colors.dividedColor,
+                            color = ExtendedTheme.colors.dividerColor,
                             shape = RoundedCornerShape(size = 16.dp)
                         )
                         .padding(
@@ -140,7 +140,7 @@ fun ChooseZone(zone: Boolean) {
                         .fillMaxWidth(fraction = 1.0f)
                         .height(height = 1.dp)
                         .background(
-                            color = ExtendedTheme.colors._x66
+                            color = ExtendedTheme.colors._66x
                         )
                 )
                 Column(
@@ -180,7 +180,7 @@ fun ChooseZone(zone: Boolean) {
                 ) {
 
                     Text(
-                        text = stringResource(MainRes.strings._confirm),
+                        text = stringResource(MainRes.strings.confirm_booking),
                         fontSize = 16.sp,
                         fontWeight = FontWeight(500)
                     )

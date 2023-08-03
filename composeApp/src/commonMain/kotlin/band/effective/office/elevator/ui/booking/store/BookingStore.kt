@@ -6,7 +6,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 interface BookingStore: Store<BookingStore.Intent,BookingStore.State, Nothing> {
 
     sealed interface Intent {
-        object OpenMap: Intent
+        object OpenChooseZone: Intent
         data class ShowPlace(val type:String): Intent
     }
 

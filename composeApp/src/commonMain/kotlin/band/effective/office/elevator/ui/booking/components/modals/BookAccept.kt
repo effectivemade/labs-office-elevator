@@ -64,7 +64,7 @@ fun BookAccept(){
                         .fillMaxWidth(fraction = .3f)
                         .height(4.dp)
                         .background(
-                            color = ExtendedTheme.colors.dividedColor,
+                            color = ExtendedTheme.colors.dividerColor,
                             shape = RoundedCornerShape(size = 16.dp)
                         )
                         .padding(
@@ -115,7 +115,7 @@ fun BookAccept(){
                     )){
 
                     Text(
-                        text= stringResource(MainRes.strings._confirm_booking),
+                        text= stringResource(MainRes.strings.confirm_booking),
                         fontSize = 16.sp,
                         fontWeight = FontWeight(500))
                 }
