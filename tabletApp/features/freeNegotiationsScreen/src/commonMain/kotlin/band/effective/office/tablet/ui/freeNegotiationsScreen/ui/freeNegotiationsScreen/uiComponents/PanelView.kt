@@ -33,7 +33,6 @@ fun PanelView(
                 modifier = Modifier
                     .padding(start = 25.dp, top = 25.dp)
             )
-            Spacer(modifier = Modifier.height(35.dp))
             ButtonBackOnMain(
                 modifier = Modifier
                     .fillMaxWidth(0.2f)

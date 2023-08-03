@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.features.freeNegotiationsScreen.MainRes
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
@@ -57,7 +58,8 @@ fun ButtonBackOnMain(
                 Text(
                     text = nameRoom,
                     style = MaterialTheme.typography.h4,
-                    color = LocalCustomColorsPalette.current.primaryTextAndIcon
+                    color = LocalCustomColorsPalette.current.primaryTextAndIcon,
+                    textAlign = TextAlign.Center
                 )
             }
         }
