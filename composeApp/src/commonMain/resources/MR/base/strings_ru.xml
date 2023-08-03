@@ -47,6 +47,22 @@
     <string name="booking_period">Период бронирования</string>
     <string name="suitable_options">Подходящие варианты</string>
     <string name="select_zones">Выбрать зоны</string>
+    <string name="selection_zones">Выбор зон</string>
+    <string name="selection_rooms">Выбор переговорки</string>
+    <string name="sirius_zone">Sirius</string>
+    <string name="antares_zone">Antares</string>
+    <string name="mars_zone">Mars</string>
+    <string name="cassiopeia_zone">Cassipopeia</string>
+    <string name="arrakis_zone">Arrakis</string>
+    <string name="moon_room">Moon</string>
+    <string name="sun_room">Sun</string>
+    <string name="mercury_room">Mercury</string>
+    <string name="pluto_room">Pluto</string>
+    <string name="no_repeat">Не повотряется</string>
+    <string name="every_work_day_repeat">Каждый рабочий день</string>
+    <string name="every_week_repeat">Каждую неделю</string>
+    <string name="every_month_repeat">Каждый месяц</string>
+    <string name="other_repeat">Другое</string>
 
     <!--Tab titles-->
     <string name="profile">Профиль</string>
@@ -57,6 +73,8 @@
 
     <!-- Buttons -->
     <string name="_continue">Продолжить</string>
+    <string name="_confirm">Подтвердить</string>
+    <string name="_confirm_booking">Подтвердить бронирование</string>
 
     <!--Error messages-->
     <string name="you_need_to_sign_in">Для работы приложения нужно авторизоваться</string>

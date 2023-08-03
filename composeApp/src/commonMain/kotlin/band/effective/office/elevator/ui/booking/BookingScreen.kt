@@ -43,8 +43,8 @@ import band.effective.office.elevator.borderPurple
 import band.effective.office.elevator.components.TitlePage
 import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.textInBorderPurple
-import band.effective.office.elevator.ui.booking.components.OutlineButtonPurple
 import band.effective.office.elevator.ui.booking.components.BookingCard
+import band.effective.office.elevator.ui.booking.components.OutlineButtonPurple
 import band.effective.office.elevator.ui.models.TypesList
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
@@ -102,7 +102,8 @@ private fun ListBooking() {
                 )
             )
             Spacer(modifier = Modifier.weight(.1f))
-            IconButton(onClick = {},  modifier = Modifier.padding(top = 3.dp),
+            IconButton(onClick = {//TODO: (прописать связь с модалкой Choose zone)
+            },  modifier = Modifier.padding(top = 3.dp),
                 ){
                 Row (verticalAlignment = Alignment.CenterVertically){
                     Icon(

@@ -43,9 +43,18 @@
     <string name="booking_period">Booking period</string>
     <string name="suitable_options">Suitable options</string>
     <string name="select_zones">Select zones</string>
+    <string name="selection_zones">Selection zones</string>
+    <string name="selection_rooms">Selection meeting rooms</string>
+    <string name="no_repeat">No repeats</string>
+    <string name="every_work_day_repeat">Every working day</string>
+    <string name="every_week_repeat">Every week</string>
+    <string name="every_month_repeat">Every month</string>
+    <string name="other_repeat">Other</string>
 
     <!-- Buttons -->
     <string name="_continue">Continue</string>
+    <string name="_confirm">Confirm</string>
+    <string name="_confirm_booking">Confirm booking</string>
 
     <!--Tab titles-->
     <string name="profile">Profile</string>
