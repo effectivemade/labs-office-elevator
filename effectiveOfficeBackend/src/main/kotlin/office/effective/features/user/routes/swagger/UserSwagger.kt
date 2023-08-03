@@ -29,7 +29,13 @@ fun SwaggerDocument.returnUserByEmail(): OpenApiRoute.() -> Unit = {
                         active = true,
                         role = "ADMIN",
                         avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                        integrations = listOf(IntegrationDTO("email", "123@effective.band"))
+                        integrations = listOf(
+                            IntegrationDTO(
+                                "13c80c3d-4278-45cf-8d2a-e281004d3ff9",
+                                "email",
+                                "123@effective.band"
+                            )
+                        )
                     )
                 ) {
                 }
@@ -60,7 +66,13 @@ fun SwaggerDocument.returnUsers(): OpenApiRoute.() -> Unit = {
                             active = true,
                             role = "ADMIN",
                             avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                            integrations = listOf(IntegrationDTO("email", "123@effective.band"))
+                            integrations = listOf(
+                                IntegrationDTO(
+                                    "13c80c3d-4278-45cf-8d2a-e281004d3ff9",
+                                    "email",
+                                    "123@effective.band"
+                                )
+                            )
                         ),
                         UserDTO(
                             id = "207b9634-2bc4-11ee-be56-0242ac120002",
@@ -68,7 +80,13 @@ fun SwaggerDocument.returnUsers(): OpenApiRoute.() -> Unit = {
                             active = true,
                             role = "USER",
                             avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                            integrations = listOf(IntegrationDTO("email", "321@effective.band"))
+                            integrations = listOf(
+                                IntegrationDTO(
+                                    "13c80c3d-4278-45cf-8d2a-e281004d3ff9",
+                                    "email",
+                                    "321@effective.band"
+                                )
+                            )
                         )
                     )
                 ) {
@@ -101,7 +119,13 @@ fun SwaggerDocument.returnUserById(): OpenApiRoute.() -> Unit = {
                         active = true,
                         role = "ADMIN",
                         avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                        integrations = listOf(IntegrationDTO("email", "123@effective.band"))
+                        integrations = listOf(
+                            IntegrationDTO(
+                                "13c80c3d-4278-45cf-8d2a-e281004d3ff9",
+                                "email",
+                                "123@effective.band"
+                            )
+                        )
                     )
                 ) {
                 }
@@ -131,7 +155,13 @@ fun SwaggerDocument.alterUser(): OpenApiRoute.() -> Unit = {
                         active = true,
                         role = "ADMIN",
                         avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                        integrations = listOf(IntegrationDTO("email", "123@effective.band"))
+                        integrations = listOf(
+                            IntegrationDTO(
+                                "13c80c3d-4278-45cf-8d2a-e281004d3ff9",
+                                "email",
+                                "123@effective.band"
+                            )
+                        )
                     )
                 ) {
                 }

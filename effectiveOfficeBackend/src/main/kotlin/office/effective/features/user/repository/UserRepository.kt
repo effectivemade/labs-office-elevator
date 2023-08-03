@@ -1,10 +1,12 @@
 package office.effective.features.user.repository
 
 import office.effective.common.exception.*
+import office.effective.features.user.converters.IntegrationModelEntityConverter
 import office.effective.features.user.converters.UserModelEntityConverter
 import office.effective.model.IntegrationModel
 import office.effective.model.UserModel
 import office.effective.model.UserTagModel
+import org.koin.core.context.GlobalContext
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
 import org.ktorm.entity.*
@@ -102,7 +104,19 @@ class UserRepository(private val db: Database, private val converter: UserModelE
         ent?.avatarURL = model.avatarURL
         ent?.role = model.role
         ent?.flushChanges()
-        //todo integrations
+
+        val integrations: Set<IntegrationModel>? = model.integrations
+        if (!integrations.isNullOrEmpty()) {
+            val converter: IntegrationModelEntityConverter = GlobalContext.get().get()
+            db.usersinegrations.filter { it.userId eq userid }.forEach { it.delete() }
+            for (i in integrations) {
+                db.insert(UsersIntegrations) {
+                    set(it.userId, userid)
+                    set(it.integrationId, i.id)
+                    set(it.valueStr, i.valueStr)
+                }
+            }
+        }
         return findById(userid)
     }
 
@@ -116,6 +130,4 @@ class UserRepository(private val db: Database, private val converter: UserModelE
         if (!existsById(userId)) return null
         return findSetOfIntegrationsByUser(userId)
     }
-
-
 }
