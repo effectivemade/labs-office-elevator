@@ -36,6 +36,9 @@
     <string name="cansel">Cansel</string>
     <string name="ok">Ok</string>
 
+    <string name="take_from">Take from</string>
+    <string name="take_before">Take before</string>
+
     <!-- Buttons -->
     <string name="_continue">Continue</string>
 
