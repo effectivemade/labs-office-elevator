@@ -21,8 +21,6 @@ class FreeNegotiationsComponentImpl(
     val onBookingInfo: () -> Booking,
     val onMainScreen: (reset: Boolean) -> Unit
 ) : ComponentContext by componentContext, FreeNegotiationsComponent, KoinComponent {
-
-    private val isResetMainScreen = true
     override fun onIntent(intent: FreeNegotiationsStore.Intent) {
         when (intent) {
             is FreeNegotiationsStore.Intent.SetBooking ->
@@ -63,7 +61,7 @@ class FreeNegotiationsComponentImpl(
                 )
             },
             onBookingOtherRoom = {},
-            onMainScreen = { onIntent(FreeNegotiationsStore.Intent.OnMainScreen(isResetMainScreen)) },
+            onMainScreen = { onIntent(FreeNegotiationsStore.Intent.OnMainScreen(reset = true)) },
             onCloseRequest = { onIntent(FreeNegotiationsStore.Intent.CloseModal) }
         )
 

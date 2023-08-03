@@ -29,13 +29,12 @@ fun ButtonBackOnMain(
     nameRoom: String,
     onMainScreen: (reset: Boolean) -> Unit
 ) {
-    val isResetMainScreen = false
     Button(
         modifier = modifier,
         elevation = ButtonDefaults.elevation(0.dp),
         colors = ButtonDefaults.buttonColors(MaterialTheme.colors.surface),
         onClick = {
-            onMainScreen(isResetMainScreen)
+            onMainScreen(false)
         }
     ) {
         Box(
