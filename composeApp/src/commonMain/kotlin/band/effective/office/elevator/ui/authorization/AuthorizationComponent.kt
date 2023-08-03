@@ -1,9 +1,14 @@
 package band.effective.office.elevator.ui.authorization
 
+import band.effective.office.elevator.domain.entity.AuthorizationEntity
+import band.effective.office.elevator.domain.models.UserData
+import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.ui.authorization.authorization_google.AuthorizationGoogleComponent
 import band.effective.office.elevator.ui.authorization.authorization_phone.AuthorizationPhoneComponent
 import band.effective.office.elevator.ui.authorization.authorization_profile.AuthorizationProfileComponent
 import band.effective.office.elevator.ui.authorization.authorization_telegram.AuthorizationTelegramComponent
+import band.effective.office.elevator.ui.authorization.store.AuthorizationStore
+import band.effective.office.elevator.ui.authorization.store.AuthorizationStoreFactory
 import band.effective.office.elevator.ui.models.validator.Validator
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
@@ -14,17 +19,57 @@ import com.arkivanov.decompose.router.stack.replaceAll
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
+import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
+import com.arkivanov.mvikotlin.extensions.coroutines.labels
+import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class AuthorizationComponent(
     componentContext: ComponentContext,
     private val storeFactory: StoreFactory,
     private val openContentFlow: () -> Unit
 ) :
-    ComponentContext by componentContext {
+    ComponentContext by componentContext, KoinComponent {
 
     private val validator: Validator = Validator()
     private val navigation = StackNavigation<AuthorizationComponent.Config>()
+    private val authorizationEntity: AuthorizationEntity by inject()
+    private val authorizationStore =
+        instanceKeeper.getStore {
+            AuthorizationStoreFactory(
+                storeFactory = storeFactory
+            ).create()
+        }
+
+    private fun changePhoneNumber(phoneNumber: String) {
+        authorizationStore.state.userData.phoneNumber = phoneNumber
+    }
+
+    private fun changeName(name: String) {
+        authorizationStore.state.userData.name = name
+    }
+
+    private fun changePost(post: String) {
+        authorizationStore.state.userData.post = post
+    }
+
+    private fun changeTelegramNick(telegramNick: String) {
+        authorizationStore.state.userData.telegramNick = telegramNick
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val state: StateFlow<AuthorizationStore.State> = authorizationStore.stateFlow
+
+    val label: Flow<AuthorizationStore.Label> = authorizationStore.labels
 
     private val stack = childStack(
         source = navigation,
@@ -53,7 +98,9 @@ class AuthorizationComponent(
                     componentContext,
                     storeFactory,
                     validator,
-                    ::phoneAuthOutput
+                    authorizationStore.state.userData.phoneNumber,
+                    ::phoneAuthOutput,
+                    ::changePhoneNumber
                 )
             )
 
@@ -62,7 +109,11 @@ class AuthorizationComponent(
                     componentContext,
                     storeFactory,
                     validator,
-                    ::profileAuthOutput
+                    authorizationStore.state.userData.name,
+                    authorizationStore.state.userData.post!!,
+                    ::profileAuthOutput,
+                    ::changeName,
+                    ::changePost
                 )
             )
 
@@ -71,28 +122,28 @@ class AuthorizationComponent(
                     componentContext,
                     storeFactory,
                     validator,
-                    ::telegramAuthOutput
+                    authorizationStore.state.userData.telegramNick,
+                    ::telegramAuthOutput,
+                    ::changeTelegramNick
                 )
             )
         }
 
     private fun googleAuthOutput(output: AuthorizationGoogleComponent.Output) {
         when (output) {
-            AuthorizationGoogleComponent.Output.OpenAuthorizationPhoneScreen -> navigation.replaceAll(
+            is AuthorizationGoogleComponent.Output.OpenAuthorizationPhoneScreen -> navigation.replaceAll(
                 Config.PhoneAuth
             )
-
-            else -> {}
         }
     }
 
     private fun phoneAuthOutput(output: AuthorizationPhoneComponent.Output) {
         when (output) {
-            AuthorizationPhoneComponent.Output.OpenProfileScreen -> navigation.bringToFront(
-                AuthorizationComponent.Config.ProfileAuth
+            is AuthorizationPhoneComponent.Output.OpenProfileScreen -> navigation.bringToFront(
+                Config.ProfileAuth
             )
 
-            AuthorizationPhoneComponent.Output.OpenGoogleScreen -> navigation.bringToFront(
+            is AuthorizationPhoneComponent.Output.OpenGoogleScreen -> navigation.bringToFront(
                 AuthorizationComponent.Config.GoogleAuth
             )
         }
@@ -100,11 +151,11 @@ class AuthorizationComponent(
 
     private fun profileAuthOutput(output: AuthorizationProfileComponent.Output) {
         when (output) {
-            AuthorizationProfileComponent.Output.OpenPhoneScreen -> navigation.bringToFront(
+            is AuthorizationProfileComponent.Output.OpenPhoneScreen -> navigation.bringToFront(
                 Config.PhoneAuth
             )
 
-            AuthorizationProfileComponent.Output.OpenTGScreen -> navigation.bringToFront(
+            is AuthorizationProfileComponent.Output.OpenTGScreen -> navigation.bringToFront(
                 Config.TelegramAuth
             )
         }
@@ -112,11 +163,17 @@ class AuthorizationComponent(
 
     private fun telegramAuthOutput(output: AuthorizationTelegramComponent.Output) {
         when (output) {
-            AuthorizationTelegramComponent.Output.OpenProfileScreen -> navigation.bringToFront(
+            is AuthorizationTelegramComponent.Output.OpenProfileScreen -> navigation.bringToFront(
                 Config.ProfileAuth
             )
 
-            AuthorizationTelegramComponent.Output.OpenContentFlow -> openContentFlow()
+            is AuthorizationTelegramComponent.Output.OpenContentFlow -> {
+                CoroutineScope(Dispatchers.Main).launch {
+                    val result = authorizationEntity.push(authorizationStore.state.userData)
+                    if (result)
+                        openContentFlow()
+                }
+            }
         }
     }
 

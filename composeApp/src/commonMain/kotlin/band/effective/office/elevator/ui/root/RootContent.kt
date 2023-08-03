@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.root
 
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -17,6 +18,7 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
 
     LaunchedEffect(component) {
         component.label.collect { label ->
+            println("was label")
             when (label) {
                 RootStore.Label.UserAlreadySigned -> component.onOutput(
                     RootComponent.Output.OpenContent
@@ -37,6 +39,7 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
             is RootComponent.Child.ContentChild -> Content(child.component)
             RootComponent.Child.Undefined -> {
                 // Wait until fetch Google account if user signed in previously
+                Text("Im here")
             }
         }
     }

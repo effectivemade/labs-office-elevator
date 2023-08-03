@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="room_occupancy">Занята c ${startTime} по ${finishTime} · ${organizer}</string>
+    <string name="room_occupancy">Занято до ${finishTime} · ${organizer}</string>
     <string name="free_room_occupancy">Свободна до ${time}</string>
     <string name="stop_meeting_button">Освободить</string>
     <string name="tv_property">TV</string>
@@ -8,17 +8,34 @@
     <string name="electric_socket_property_nominative">Розетка</string>
     <string name="electric_socket_property_genitive">Розетки</string>
     <string name="electric_socket_property_plural">Розеток</string>
+    <string name="hour_nominative">час</string>
+    <string name="hour_genitive">часа</string>
+    <string name="hour_plural">часов</string>
+    <string name="minuit_nominative">минута</string>
+    <string name="minuit_genitive">минуты</string>
+    <string name="minuit_plural">минут</string>
     <string name="booking_view_title">Занять</string>
     <string name="booking_button_text">Занять ${roomName}</string>
-    <string name="busy_time_string">Время ${startTime} — ${finishTime} занято · ${organizer}</string>
-    <string name="see_free_room">Смотреть свободные переговорки на это время</string>
-    <string name="select_date_tine_title">когда</string>
-    <string name="select_length_title">на сколько</string>
-    <string name="select_organizer_title">организатор</string>
-    <string name="start_date_time">${date} c ${time}</string>
-    <string name="minus_date_button_string">-30</string>
-    <string name="plus_date_button_string">+15</string>
+    <string name="busy_duration_string">До конца</string>
+    <string name="free_duration_string">Будет занята через</string>
+    <string name="see_free_room">Смотреть другие переговорки</string>
+    <string name="select_date_tine_title">Когда</string>
+    <string name="select_length_title">На сколько</string>
+    <string name="select_organizer_title">Организатор</string>
+    <string name="on_today_string">на сегодня</string>
+    <string name="start_date_time">${date} с ${time}</string>
+    <string name="minus_date_button_string">- 15 мин</string>
+    <string name="plus_date_button_string">+ 30 мин</string>
     <string name="current_length_string">${currentLength} мин</string>
-    <string name="selectbox_organizer_title">Организатор встречи</string>
+    <string name="short_minuets">мин</string>
+    <string name="short_hours">ч</string>
+    <string name="selectbox_organizer_title">Выберите организатора</string>
+    <string name="list_organizers_title">Занятое время</string>
     <string name="event_list_title">Занятое время</string>
+    <string name="no_select_organizer_alert">Выберите организатора</string>
+    <string name="no_correct_time">В это время будет другая бронь</string>
+    <string name="connection_lost">Нет подключения к интернету</string>
+    <string name="disconnect">Нет соединения с сервером</string>
+    <string name="reset">Перезагрузите приложение</string>
+    <string name="reset_button">Перезагрузить приложение</string>
 </resources>

@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.authorization.authorization_profile.store
 
+import band.effective.office.elevator.domain.models.UserData
 import com.arkivanov.mvikotlin.core.store.Store
 
 interface AuthorizationProfileStore :

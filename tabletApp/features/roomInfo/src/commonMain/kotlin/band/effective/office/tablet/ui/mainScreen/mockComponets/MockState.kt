@@ -5,5 +5,6 @@ data class MockState(
     val isManyEvent: Boolean = false,
     val isHaveTv: Boolean = false,
     val isBusyTime: Boolean = false,
-    val isVisible: Boolean = false
+    val isVisible: Boolean = false,
+    val isSuccess: Boolean = true
 )
