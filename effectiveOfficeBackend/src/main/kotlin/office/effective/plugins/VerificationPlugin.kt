@@ -20,7 +20,6 @@ val VerificationPlugin = createApplicationPlugin(name = "VerificationPlugin") {
     if (pluginOn) {
         onCall {
             run {
-
                 try {
                     val token = it.request.header("id_token") ?: it.response.status(HttpStatusCode.Forbidden)
                     val email = verifier.isCorrectToken(token as String)
