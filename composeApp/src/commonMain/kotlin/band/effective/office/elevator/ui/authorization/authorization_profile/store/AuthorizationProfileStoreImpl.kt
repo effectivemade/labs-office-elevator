@@ -95,6 +95,7 @@ class AuthorizationProfileStoreFactory(
                     )
             }
 
+
         override fun executeAction(
             action: Action,
             getState: () -> AuthorizationProfileStore.State
@@ -120,6 +121,7 @@ class AuthorizationProfileStoreFactory(
         }
 
         private fun checkUserdata(name_: String, post_: String) {
+
             if (!validator.checkName(name) && !validator.checkPost(post)) {
                 post = post_
                 name = name_
