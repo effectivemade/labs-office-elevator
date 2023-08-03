@@ -15,6 +15,7 @@ class SelectRoomComponentImpl(
     storeFactory: StoreFactory,
     val onBookingRoom: () -> Booking,
     val onBookingOtherRoom: () -> Unit,
+    val onMainScreen: () -> Unit,
     private val onCloseRequest: () -> Unit
 ) : ComponentContext by componentContext, SelectRoomComponent, KoinComponent {
 
@@ -32,7 +33,8 @@ class SelectRoomComponentImpl(
             }
 
             is SelectRoomStore.Intent.CloseModal -> {
-                onCloseRequest()
+                if(state.value.isSuccess) onMainScreen()
+                else onCloseRequest()
                 bookingStore.accept(intent)
             }
 

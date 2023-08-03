@@ -16,6 +16,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 
@@ -25,7 +26,7 @@ fun MockSettingView(component: MockSettingsComponent) {
     val state by component.state.collectAsState()
     Surface(
         modifier = Modifier.fillMaxWidth().height(100.dp),
-        color = MaterialTheme.colors.surface,
+        color = if (state.isVisible) MaterialTheme.colors.surface else Color.Transparent,
         onClick = { component.sendEvent(MockSettingsEvent.OnSwitchVisible) }) {
         if (state.isVisible) {
             Column {

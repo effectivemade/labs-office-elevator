@@ -36,6 +36,6 @@ fun DurationEventView(modifier: Modifier, booking: Booking) {
     }
 }
 
-private fun getLengthEvent(start: Calendar, finish: Calendar) =
+fun getLengthEvent(start: Calendar, finish: Calendar) =
     (finish.get(Calendar.HOUR) * 60 + finish.get(Calendar.MINUTE)) -
             (start.get(Calendar.HOUR) * 60 + start.get(Calendar.MINUTE))

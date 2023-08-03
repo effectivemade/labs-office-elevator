@@ -13,6 +13,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, Nothing>
         data class OnChangeLength(val change: Int) : Intent
         data class OnChangeOrganizer(val newOrganizer: String) : Intent
         object OnChangeExpanded : Intent
+        data class OnChangeIsActive(val reset: Boolean): Intent
     }
 
     data class State(
@@ -26,7 +27,8 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, Nothing>
         val busyEvent: EventInfo,
         val roomName: String,
         val isExpandedOrganizersList: Boolean,
-        val isSelectCurrentTime: Boolean
+        val isSelectCurrentTime: Boolean,
+        val isActive: Boolean
     ) {
         fun isCorrect() = isCorrectOrganizer() && isCorrectLength() && isCorrectDate()
 
@@ -46,7 +48,8 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, Nothing>
                 roomName = "Sirius",
                 isOrganizerError = false,
                 isExpandedOrganizersList = false,
-                isSelectCurrentTime = true
+                isSelectCurrentTime = true,
+                isActive = true
             )
         }
     }

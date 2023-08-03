@@ -55,10 +55,10 @@ fun FailureSelectRoomView(onDismissRequest: () -> Unit, onClick: () -> Unit) {
         )
         Spacer(modifier = Modifier.height(24.dp))
         Text(text = MainRes.string.select_other_room, style = MaterialTheme.typography.h4)
-        Spacer(modifier = Modifier.height(60.dp))
+        Spacer(modifier = Modifier.height(30.dp))
         AlertButton(modifier = Modifier
             .fillMaxWidth(0.72f)
-            .fillMaxHeight(0.4f),
+            .height(64.dp),
             onClick = { onClick() }) {
             Text(text = MainRes.string.see_free_room, style = MaterialTheme.typography.h7)
             Image(
