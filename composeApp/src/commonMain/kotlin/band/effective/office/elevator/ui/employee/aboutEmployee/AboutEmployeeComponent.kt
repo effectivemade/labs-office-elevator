@@ -2,7 +2,6 @@ package band.effective.office.elevator.ui.employee.aboutEmployee
 
 import band.effective.office.elevator.ui.employee.aboutEmployee.store.AboutEmployeeStore
 import band.effective.office.elevator.ui.employee.aboutEmployee.store.AboutEmployeeStoreFactory
-import band.effective.office.elevator.ui.employee.allEmployee.EmployeeComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory

@@ -9,6 +9,7 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, Nothing> {
         object OnBookingCurrentRoomRequest : Intent
         object OnBookingOtherRoomRequest : Intent
         data class OnDisconnectChange(val newValue: Boolean) : Intent
+        object RebootRequest: Intent
     }
 
     data class State(
