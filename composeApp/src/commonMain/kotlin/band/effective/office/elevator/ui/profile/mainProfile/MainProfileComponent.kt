@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.profile.mainProfile
 
+import band.effective.office.elevator.domain.models.User
 import band.effective.office.elevator.ui.profile.mainProfile.store.ProfileStore
 import band.effective.office.elevator.ui.profile.mainProfile.store.ProfileStoreFactory
 import com.arkivanov.decompose.ComponentContext
@@ -9,6 +10,7 @@ import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class MainProfileComponent(
@@ -17,14 +19,15 @@ class MainProfileComponent(
     private val output: (Output) -> Unit) :
     ComponentContext by componentContext {
 
+
     private val profileStore = instanceKeeper.getStore {
         ProfileStoreFactory(
-            storeFactory = storeFactory
+            storeFactory = storeFactory,
         ).create()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val user: StateFlow<ProfileStore.User> = profileStore.stateFlow
+    val user: StateFlow<User> = profileStore.stateFlow
 
     val label: Flow<ProfileStore.Label> = profileStore.labels
     fun onEvent(event: ProfileStore.Intent) {
@@ -35,7 +38,7 @@ class MainProfileComponent(
     }
     sealed interface Output {
         object OpenAuthorizationFlow : Output
-        object OpenEditProfile: Output
+        data class NavigateToEdit(val userEdit: String): Output
     }
 
 }
