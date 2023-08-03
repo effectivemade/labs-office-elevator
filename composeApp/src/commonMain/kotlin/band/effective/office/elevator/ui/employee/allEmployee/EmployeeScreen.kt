@@ -44,7 +44,6 @@ import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.borderGray
 import band.effective.office.elevator.borderGreen
 import band.effective.office.elevator.borderPurple
-import band.effective.office.elevator.domain.models.EmployeeInfo
 import band.effective.office.elevator.textInBorderGray
 import band.effective.office.elevator.textInBorderPurple
 import band.effective.office.elevator.theme_light_background
@@ -57,7 +56,6 @@ import band.effective.office.elevator.utils.generateImageLoader
 import com.seiko.imageloader.LocalImageLoader
 import com.seiko.imageloader.model.ImageRequest
 import com.seiko.imageloader.rememberAsyncImagePainter
-import dev.icerock.moko.resources.ImageResource
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 
@@ -101,7 +99,7 @@ fun EmployeeScreenContent(
         Column(
             modifier = Modifier
                 .background(theme_light_onPrimary)
-                .padding(0.dp, 0.dp, 0.dp, 15.dp)
+                .padding(bottom = 15.dp)
                 .fillMaxWidth()
         ) {
             Text(
@@ -109,7 +107,7 @@ fun EmployeeScreenContent(
                 fontSize = 20.sp,
                 fontWeight = FontWeight(600),//?
                 color = theme_light_tertiary_color,
-                modifier = Modifier.padding(20.dp, 55.dp, 15.dp, 25.dp)
+                modifier = Modifier.padding(start = 20.dp, top = 55.dp, end = 15.dp, bottom = 25.dp)
             )
             TextField(
                 value = userMessageState, onValueChange = {
@@ -117,7 +115,7 @@ fun EmployeeScreenContent(
                 }, modifier = Modifier
                     .fillMaxWidth()
                     .height(70.dp)
-                    .padding(20.dp, 10.dp, 20.dp, 5.dp),
+                    .padding(start = 20.dp, top = 10.dp, end = 20.dp, bottom = 5.dp),
                 textStyle = TextStyle(
                     color = theme_light_tertiary_color,
                     fontSize = 16.sp,
@@ -154,9 +152,9 @@ fun EmployeeScreenContent(
             modifier = Modifier
                 .background(theme_light_onBackground)
                 .fillMaxSize()
-                .padding(20.dp, 25.dp, 20.dp, 0.dp)
+                .padding(start = 20.dp, top = 25.dp, end = 20.dp)
         ) {
-            Row(modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 25.dp).fillMaxWidth()) {
+            Row(modifier = Modifier.padding(bottom = 25.dp).fillMaxWidth()) {
                 Text(
                     text = stringResource(MainRes.strings.employees) + " ",
                     fontSize = 16.sp,
@@ -219,7 +217,7 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier
             .fillMaxSize()
-            .padding(0.dp,0.dp,0.dp,15.dp)
+            .padding(bottom=15.dp)
             .animateContentSize()
             .clickable { isExpanded = !isExpanded },
         color = theme_light_onPrimary
@@ -280,76 +278,4 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
             }
         }
     }
-}
-
-
-object EmployeesData {
-    val employeesCardData = listOf(
-        EmployeeInfo(
-            "Ivanov Ivan",
-            "Android-developer",
-            "In office",
-            "https://wampi.ru/image/R9C6OC7",
-            "",
-            "",
-            ""
-        ),
-        EmployeeInfo(
-            "Smirnov Andrey",
-            "UI/UX Designer",
-            "Will be today",
-            "https://www.kasandbox.org/programming-images/avatars/leaf-grey.png",
-            "",
-            "",
-            ""
-        ),
-        EmployeeInfo(
-            "Vasiliev Vasiliy",
-            "HR",
-            "No bookings",
-            "https://www.kasandbox.org/programming-images/avatars/leaf-blue.png",
-            "",
-            "",
-            ""
-        )
-    )
-    val showedEmployeesCardData = listOf(
-        EmployeeInfo(
-            "Смирнов Андрей",
-            "UI/UX Designer",
-            "Будет сегодня",
-            "https://www.kasandbox.org/programming-images/avatars/leaf-grey.png",
-            //MainRes.images.logo_default
-            "",
-            "",
-            ""
-        ),
-        EmployeeInfo(
-            "Васильев Василий",
-            "HR",
-            "Нет бронирований",
-            "https://www.kasandbox.org/programming-images/avatars/leaf-blue.png",
-            "",
-            "",
-            ""
-        ),
-        EmployeeInfo(
-            "Иванов Иван",
-            "Android-developer",
-            "В офисе",
-            "https://www.kasandbox.org/programming-images/avatars/leaf-green.png",
-            "",
-            "",
-            ""
-        )
-    )
-    val initial=listOf(
-        EmployeeInfo(
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            ""))
 }

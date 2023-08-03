@@ -4,6 +4,6 @@ import band.effective.office.elevator.domain.models.EmployeeInfo
 import kotlinx.coroutines.flow.Flow
 
 interface EmployeeRepository {
-    suspend fun getEmployeesInfo(): Flow<List<EmployeeInfo>>//State
+    suspend fun getEmployeesInfo(): Flow<List<EmployeeInfo>>
 
 }

@@ -2,8 +2,8 @@ package band.effective.office.elevator.ui.employee.allEmployee.store
 
 
 import band.effective.office.elevator.domain.models.EmployeeInfo
+import band.effective.office.elevator.domain.repository.impl.EmployeeRepositoryImpl
 import band.effective.office.elevator.domain.usecase.EmployeeUseCase
-import band.effective.office.elevator.ui.employee.allEmployee.EmployeesData
 import band.effective.office.elevator.ui.employee.allEmployee.models.mappers.toUI
 import band.effective.office.elevator.utils.changeEmployeeShowedList
 import com.arkivanov.mvikotlin.core.store.Reducer
@@ -24,8 +24,7 @@ internal class EmployeeStoreFactory(private val storeFactory: StoreFactory):Koin
 
     private val employeesInfo:EmployeeUseCase by inject()
 
-    var employeesInfoList:List<EmployeeInfo> = listOf()
-    private val _employList = MutableStateFlow(EmployeesData.initial)
+    private val _employList = MutableStateFlow(EmployeeRepositoryImpl.EmployeesData.initial)
     val employList=_employList.asStateFlow()
     var employeesNameFilter:String=""
     @OptIn(ExperimentalMviKotlinApi::class)
@@ -33,9 +32,9 @@ internal class EmployeeStoreFactory(private val storeFactory: StoreFactory):Koin
         object: EmployeeStore, Store<EmployeeStore.Intent, EmployeeStore.State, EmployeeStore.Label> by storeFactory.create(
             name="EmployeeStore",
             initialState = EmployeeStore.State(
-                changeShowedEmployeeCards = employeesInfoList.map(EmployeeInfo::toUI),
-                countShowedEmployeeCards =employeesInfoList.count().toString(),
-                countInOfficeShowedEmployeeCards = employeesInfoList.filter {it.state=="In office"}.count().toString(),
+                changeShowedEmployeeCards = employList.value.map(EmployeeInfo::toUI),
+                countShowedEmployeeCards = employList.value.count().toString(),
+                countInOfficeShowedEmployeeCards = employList.value.filter {it.state=="In office"}.count().toString(),
                 query=employeesNameFilter
 
             ),
@@ -55,7 +54,7 @@ internal class EmployeeStoreFactory(private val storeFactory: StoreFactory):Koin
         data class UpdateEmployees(val query: String, val employeesInfo:List<EmployeeInfo>): Msg
     }
     private sealed interface Action{
-        object UpdateEmployeesInfo: Action//val employeesInfo: List<EmployeeInfo>
+        object UpdateEmployeesInfo: Action
     }
 
     private inner class ExecutorImpl :
@@ -65,7 +64,7 @@ internal class EmployeeStoreFactory(private val storeFactory: StoreFactory):Koin
                 is EmployeeStore.Intent.OnTextFieldUpdate -> {
                     scope.launch {
                         employeesNameFilter=intent.query
-                        dispatch(Msg.UpdateEmployees(query = employeesNameFilter, employeesInfo = employeesInfoList))//employeesInfoList
+                        dispatch(Msg.UpdateEmployees(query = employeesNameFilter, employeesInfo = employList.value))
                     }
                 }
                 EmployeeStore.Intent.OnClickOnEmployee ->{
@@ -82,8 +81,7 @@ internal class EmployeeStoreFactory(private val storeFactory: StoreFactory):Koin
         ) {
             when(action){
                 is EmployeeStoreFactory.Action.UpdateEmployeesInfo->{
-                    employeesInfoList=employList.value
-                    dispatch(Msg.UpdateEmployees(query = employeesNameFilter, employeesInfo = employeesInfoList))//i need intent.query there so i made special variable
+                    dispatch(Msg.UpdateEmployees(query = employeesNameFilter, employeesInfo = employList.value))//i need intent.query there so i made special variable
                 }
             }
         }

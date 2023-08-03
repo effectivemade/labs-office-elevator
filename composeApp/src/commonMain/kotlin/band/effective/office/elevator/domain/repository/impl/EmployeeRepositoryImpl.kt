@@ -6,9 +6,19 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 
-class EmployeeRepositoryImpl: EmployeeRepository{//private val api:EmployeeRepository: EmployeeRepository
-
-    override suspend fun getEmployeesInfo(): Flow<List<EmployeeInfo>> {//State
+class EmployeeRepositoryImpl: EmployeeRepository{
+    object EmployeesData {
+        val initial=listOf(
+            EmployeeInfo(
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""))
+    }
+    override suspend fun getEmployeesInfo(): Flow<List<EmployeeInfo>> {
         return flow<List<EmployeeInfo>> {
             emit(
                 listOf(
