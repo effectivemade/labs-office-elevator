@@ -87,12 +87,16 @@ private val mokValueUser =
     )
 private val mokValue = listOf(
     ReservedSeat(
+        bookingId = 1,
+        ownerId = 1,
         seatName = "Рабочее масто А2",
         bookingDay = "Пн, 1 июля",
         bookingTime = "12:00 - 14:00",
         bookingDate = LocalDate(month = Month.JULY, year = 2023, dayOfMonth = 16)
     ),
     ReservedSeat(
+        bookingId = 1,
+        ownerId = 1,
         seatName = "Переговорная Sun",
         bookingDay = "Вт, 2 июля",
         bookingTime = "14:00 - 16:00",
