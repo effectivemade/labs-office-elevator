@@ -19,11 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import band.effective.office.elevator.ExtendedColors
+import band.effective.office.elevator.ExtendedTheme
 import band.effective.office.elevator.MainRes
 import com.commandiron.wheel_picker_compose.WheelTimePicker
 import com.commandiron.wheel_picker_compose.core.WheelPickerDefaults
-import com.commandiron.wheel_picker_compose.utils.Min
 import com.commandiron.wheel_picker_compose.utils.getCurrentTime
 import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.datetime.LocalTime
@@ -46,7 +45,7 @@ fun TimePickerModal(
             modifier = Modifier
                 .clip(RoundedCornerShape(16.dp))
                 .padding(16.dp)
-                .background(color = ExtendedColors.backgroundTextColor)
+                .background(color = ExtendedTheme.colors.backgroundTextColor)
                 .fillMaxWidth(),
             text = titleText,
             style = MaterialTheme.typography.h6

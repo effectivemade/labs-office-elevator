@@ -260,7 +260,8 @@ fun ExtendedTheme(
         purple_heart_800 = Color(0xFF5800CB),
         purple_heart_900 = Color(0xFF4E02B0),
         purple_heart_950 = Color(0xFF2D0078),
-        error = Color(0xFFFF3B30)
+        error = Color(0xFFFF3B30),
+        backgroundTextColor = Color(0xFFF9F9F9)
     )
 //    endregion
 

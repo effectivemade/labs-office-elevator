@@ -54,6 +54,17 @@ class BookingStoreFactory(private val storeFactory: StoreFactory): KoinComponent
                                 publish(BookingStore.Label.CloseBookPeriod)
                             }
                         }
+                        is BookingStore.Intent.OpenRepeatDialog-> {
+                            scope.launch {
+                                publish(BookingStore.Label.OpenRepeatDialog)
+                            }
+                        }
+                        is BookingStore.Intent.CloseRepeatDialog -> {
+                            scope.launch {
+                                publish(BookingStore.Label.CloseRepeatDialog)
+                            }
+                        }
+
                     }
                 }
             }

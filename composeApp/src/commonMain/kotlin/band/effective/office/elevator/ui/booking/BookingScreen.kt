@@ -55,8 +55,8 @@ import band.effective.office.elevator.borderPurple
 import band.effective.office.elevator.components.TitlePage
 import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.textInBorderPurple
-import band.effective.office.elevator.ui.booking.components.OutlineButtonPurple
 import band.effective.office.elevator.ui.booking.components.BookingCard
+import band.effective.office.elevator.ui.booking.components.OutlineButtonPurple
 import band.effective.office.elevator.ui.booking.components.modals.BookingPeriod
 import band.effective.office.elevator.ui.booking.components.modals.ChooseZone
 import band.effective.office.elevator.ui.booking.store.BookingStore
@@ -70,6 +70,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
     val list by bookingComponent.state.collectAsState()
     var showChooseZone = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     var showBookPeriod = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    var showRepeatDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(bookingComponent) {
         bookingComponent.label.collect { label ->
@@ -78,14 +79,19 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                 is BookingStore.Label.CloseChooseZone -> showChooseZone.hide()
                 is BookingStore.Label.OpenBookPeriod ->showBookPeriod.show()
                 is BookingStore.Label.CloseBookPeriod -> showBookPeriod.hide()
+                is BookingStore.Label.OpenRepeatDialog -> showRepeatDialog = true
+                is BookingStore.Label.CloseRepeatDialog -> showRepeatDialog = false
             }
         }
     }
     BookingScreenContent(
         showChooseZone = showChooseZone,
+        showRepeatDialog = showRepeatDialog,
         showBookPeriod = showBookPeriod,
         onClickCloseChoseZone = {bookingComponent.onEvent(BookingStore.Intent.CloseChooseZone)},
         onClickOpenChoseZone = {bookingComponent.onEvent(BookingStore.Intent.OpenChooseZone)},
+        onClickCloseRepeatDialog = {bookingComponent.onEvent(BookingStore.Intent.CloseRepeatDialog)},
+        onClickOpenRepeatDialog = {bookingComponent.onEvent(BookingStore.Intent.OpenRepeatDialog)},
         onClickCloseBookPeriod = {bookingComponent.onEvent(BookingStore.Intent.CloseBookPeriod)},
         onClickOpenBookPeriod = {bookingComponent.onEvent(BookingStore.Intent.OpenBookPeriod)}
     )
@@ -93,12 +99,17 @@ fun BookingScreen(bookingComponent: BookingComponent) {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-private fun BookingScreenContent(showChooseZone: ModalBottomSheetState,
-                                 showBookPeriod: ModalBottomSheetState,
-                                 onClickOpenBookPeriod: ()-> Unit,
-                                 onClickCloseBookPeriod: ()-> Unit,
-                                 onClickOpenChoseZone: ()-> Unit,
-                                 onClickCloseChoseZone: ()-> Unit) {
+private fun BookingScreenContent(
+    showChooseZone: ModalBottomSheetState,
+    showBookPeriod: ModalBottomSheetState,
+    onClickOpenBookPeriod: () -> Unit,
+    onClickCloseBookPeriod: () -> Unit,
+    onClickOpenChoseZone: () -> Unit,
+    onClickCloseChoseZone: () -> Unit,
+    showRepeatDialog: Boolean,
+    onClickCloseRepeatDialog: () -> Unit,
+    onClickOpenRepeatDialog: () -> Unit
+) {
     val  scrollState = rememberLazyListState()
 
     var isExpandedCard by rememberSaveable { mutableStateOf(true) }
@@ -109,7 +120,6 @@ private fun BookingScreenContent(showChooseZone: ModalBottomSheetState,
         isExpandedCard = false
         isExpandedOptions = false
     }
-
     ModalBottomSheetLayout(
         sheetState = if(showChooseZone.targetValue == ModalBottomSheetValue.Expanded){showChooseZone}else{showBookPeriod},
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
@@ -134,7 +144,9 @@ private fun BookingScreenContent(showChooseZone: ModalBottomSheetState,
                     {},
                     {},
                     {},
-                    {},
+                   bookingRepeat =  onClickOpenRepeatDialog,
+                    showRepeatDialog = showRepeatDialog,
+                    onClickCloseRepeatDialog = onClickCloseRepeatDialog
                 )
             }
         }
