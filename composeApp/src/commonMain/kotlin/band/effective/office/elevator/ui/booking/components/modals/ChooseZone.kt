@@ -1,9 +1,7 @@
 package band.effective.office.elevator.ui.booking.components.modals
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,12 +12,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.BottomSheetScaffold
-import androidx.compose.material.BottomSheetValue
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -27,13 +22,10 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Done
-import androidx.compose.material.rememberBottomSheetScaffoldState
-import androidx.compose.material.rememberBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,25 +36,14 @@ import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.ExtendedTheme
 import band.effective.office.elevator.LocalExtendedColors
 import band.effective.office.elevator.MainRes
-import band.effective.office.elevator.borderPurple
 import band.effective.office.elevator.textInBorderGray
 import band.effective.office.elevator.textInBorderPurple
-import band.effective.office.elevator.theme_light_onPrimary
 import band.effective.office.elevator.theme_light_primary_color
-import band.effective.office.elevator.theme_light_tertiary_color
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
-import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
-fun ChooseZone(zone: Boolean) {
-
-    val sheetState = rememberBottomSheetState(initialValue = BottomSheetValue.Collapsed)
-    val scaffoldState = rememberBottomSheetScaffoldState(
-        bottomSheetState = sheetState
-    )
-    val scope = rememberCoroutineScope()
+fun ChooseZone(zone: Boolean, onClickCloseChoseZone: () -> Unit) {
     val highZonesNames = listOf(
         MainRes.strings.sirius_zone,
         MainRes.strings.antares_zone,
@@ -91,127 +72,85 @@ fun ChooseZone(zone: Boolean) {
         highListNames = highRoomsNames
         lowListNames = lowRoomsNames
     }
-
-    BottomSheetScaffold(
-        scaffoldState = scaffoldState,
-        sheetShape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
-        sheetContent = {
-            Column(modifier = Modifier.fillMaxWidth().background(Color.Green)) {
-                Spacer(modifier = Modifier.padding(vertical = 10.dp))
-                Divider(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .fillMaxWidth(fraction = .3f)
-                        .height(4.dp)
-                        .background(
-                            color = ExtendedTheme.colors.dividerColor,
-                            shape = RoundedCornerShape(size = 16.dp)
-                        )
-                        .padding(
-                            bottom = 8.dp
-                        )
+    Column(modifier = Modifier.fillMaxWidth().background(Color.White)) {
+        Spacer(modifier = Modifier.padding(vertical = 10.dp))
+        Divider(
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .fillMaxWidth(fraction = .3f)
+                .height(4.dp)
+                .background(
+                    color = ExtendedTheme.colors.dividerColor,
+                    shape = RoundedCornerShape(size = 16.dp))
+                .padding(
+                    bottom = 8.dp
                 )
-                Row(modifier = Modifier.padding(top = 10.dp, start = 16.dp, end = 16.dp)) {
-                    IconButton(
-                        onClick = { scope.launch { sheetState.collapse() } },
-                        modifier = Modifier
-                            .align(Alignment.Top)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.Close,
-                            contentDescription = "Krestik",
-                            tint = theme_light_tertiary_color
-                        )
-                    }
-                    Text(
-                        text = stringResource(
-                            if (zone) MainRes.strings.selection_zones
-                            else MainRes.strings.selection_rooms
-                        ),
-                        style = MaterialTheme.typography.subtitle1,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight(600),
-                        color = theme_light_tertiary_color,
-                        modifier = Modifier.padding(vertical = 10.dp)
-                    )
-                }
-                Divider(
-                    modifier = Modifier
-                        .fillMaxWidth(fraction = 1.0f)
-                        .height(height = 1.dp)
-                        .background(
-                            color = ExtendedTheme.colors._66x
-                        )
-                )
-                Column(
-                    modifier = Modifier.padding(
-                        top = 16.dp,
-                        bottom = 6.dp,
-                        start = 16.dp
-                    )
-                        .fillMaxWidth()
-                ) {
-                    LazyRow {
-                        items(highListNames) { highListName ->
-                            WorkingZones(highListName)
-
-                        }
-                    }
-                    LazyRow {
-                        items(lowListNames) { lowListName ->
-                            WorkingZones(lowListName)
-
-                        }
-                    }
-
-                }
-                Button(
-                    onClick = { scope.launch { sheetState.collapse() } },
-                    modifier = Modifier
-                        .align(alignment = Alignment.CenterHorizontally)
-                        .fillMaxWidth()
-                        .height(60.dp)
-                        .padding(horizontal = 15.dp, vertical = 10.dp),
-                    shape = RoundedCornerShape(32.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = LocalExtendedColors.current.trinidad_600,
-                        contentColor = theme_light_onPrimary
-                    )
-                ) {
-
-                    Text(
-                        text = stringResource(MainRes.strings.confirm_booking),
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight(500)
-                    )
-                }
-            }
-        },
-        sheetPeekHeight = 0.dp
-    ) {
-        Box(modifier = Modifier.padding(horizontal = 45.dp)) {
-            Button(
-                onClick = {
-                    scope.launch {
-                        if (sheetState.isCollapsed)
-                            sheetState.expand()
-                        else
-                            sheetState.collapse()
-                    }
-                },
-                modifier = Modifier.align(alignment = Alignment.Center)
+        )
+        Row(modifier = Modifier.padding(top = 10.dp, start = 16.dp, end = 16.dp)) {
+            IconButton(
+                onClick = onClickCloseChoseZone,
+                modifier = Modifier
+                    .align(Alignment.Top)
             ) {
-
-                Text(
-                    modifier = Modifier.padding(start = 8.dp),
-                    text = stringResource(MainRes.strings.select_zones),
-                    style = MaterialTheme.typography.subtitle1.copy(
-                        color = borderPurple,
-                        fontWeight = FontWeight(400)
-                    )
+                Icon(
+                    imageVector = Icons.Rounded.Close,
+                    contentDescription = "Krestik",
+                    tint = Color.Black
                 )
             }
-
+            Text(
+                text = stringResource(
+                    if (zone) MainRes.strings.selection_zones
+                    else MainRes.strings.selection_rooms
+                ),
+                style = MaterialTheme.typography.subtitle1,
+                fontSize = 20.sp,
+                fontWeight = FontWeight(600),
+                color = Color.Black,
+                modifier = Modifier.padding(vertical = 10.dp)
+            )
+        }
+        Divider(
+            modifier = Modifier
+                .fillMaxWidth(fraction = 1.0f)
+                .height(height = 1.dp)
+                .background(
+                    color = ExtendedTheme.colors._66x
+                )
+        )
+        Column(
+            modifier = Modifier.padding(
+                top = 16.dp,
+                bottom = 6.dp,
+                start = 16.dp
+            ).fillMaxWidth()) {
+            LazyRow {
+                items(highListNames) { highListName ->
+                    WorkingZones(highListName)
+                }
+            }
+            LazyRow {
+                items(lowListNames) { lowListName ->
+                    WorkingZones(lowListName)
+                }
+            }
+        }
+        Button(
+            onClick = onClickCloseChoseZone,
+            modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
+                .fillMaxWidth()
+                .height(60.dp)
+                .padding(horizontal = 15.dp, vertical = 10.dp),
+            shape = RoundedCornerShape(32.dp),
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = LocalExtendedColors.current.trinidad_600,
+                contentColor = Color.White
+            )
+        ) {
+            Text(
+                text = stringResource(MainRes.strings.confirm_booking),
+                style = MaterialTheme.typography.button
+            )
         }
     }
 }

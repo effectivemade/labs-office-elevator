@@ -23,12 +23,18 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetState
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,19 +57,48 @@ import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.textInBorderPurple
 import band.effective.office.elevator.ui.booking.components.OutlineButtonPurple
 import band.effective.office.elevator.ui.booking.components.BookingCard
+import band.effective.office.elevator.ui.booking.components.modals.BookingPeriod
+import band.effective.office.elevator.ui.booking.components.modals.ChooseZone
+import band.effective.office.elevator.ui.booking.store.BookingStore
 import band.effective.office.elevator.ui.models.TypesList
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BookingScreen(bookingComponent: BookingComponent) {
     val list by bookingComponent.state.collectAsState()
+    var showChooseZone = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    var showBookPeriod = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
 
-    BookingScreenContent()
+    LaunchedEffect(bookingComponent) {
+        bookingComponent.label.collect { label ->
+            when (label) {
+               is BookingStore.Label.OpenChooseZone -> showChooseZone.show()
+                is BookingStore.Label.CloseChooseZone -> showChooseZone.hide()
+                is BookingStore.Label.OpenBookPeriod ->showBookPeriod.show()
+                is BookingStore.Label.CloseBookPeriod -> showBookPeriod.hide()
+            }
+        }
+    }
+    BookingScreenContent(
+        showChooseZone = showChooseZone,
+        showBookPeriod = showBookPeriod,
+        onClickCloseChoseZone = {bookingComponent.onEvent(BookingStore.Intent.CloseChooseZone)},
+        onClickOpenChoseZone = {bookingComponent.onEvent(BookingStore.Intent.OpenChooseZone)},
+        onClickCloseBookPeriod = {bookingComponent.onEvent(BookingStore.Intent.CloseBookPeriod)},
+        onClickOpenBookPeriod = {bookingComponent.onEvent(BookingStore.Intent.OpenBookPeriod)}
+    )
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-private fun BookingScreenContent() {
+private fun BookingScreenContent(showChooseZone: ModalBottomSheetState,
+                                 showBookPeriod: ModalBottomSheetState,
+                                 onClickOpenBookPeriod: ()-> Unit,
+                                 onClickCloseBookPeriod: ()-> Unit,
+                                 onClickOpenChoseZone: ()-> Unit,
+                                 onClickCloseChoseZone: ()-> Unit) {
     val  scrollState = rememberLazyListState()
 
     var isExpandedCard by rememberSaveable { mutableStateOf(true) }
@@ -74,8 +109,38 @@ private fun BookingScreenContent() {
         isExpandedCard = false
         isExpandedOptions = false
     }
-    Scaffold(
-        topBar = {
+
+    ModalBottomSheetLayout(
+        sheetState = if(showChooseZone.targetValue == ModalBottomSheetValue.Expanded){showChooseZone}else{showBookPeriod},
+        sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+        sheetContent = {
+            if(showChooseZone.targetValue == ModalBottomSheetValue.Expanded){
+                ChooseZone(
+                    true,
+                    onClickCloseChoseZone
+                )
+            }else{
+                BookingPeriod(
+                    startDate = "Чт, 27 июл. 2023 г.",
+                    startTime = "10:30",
+                    finishDate = "Чт, 27 июл. 2023 г.",
+                    finishTime =  "15:30",
+                    repeatBooking = "Бронирование не повторяется",
+                    false,
+                    closeClick =  onClickCloseBookPeriod,
+                    {false},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                )
+            }
+        }
+    ) {
+        Scaffold(
+            topBar = {
                 Box {
                     Column (modifier = Modifier.clip(
                         RoundedCornerShape(bottomEnd = 16.dp, bottomStart = 16.dp)).background(
@@ -127,48 +192,50 @@ private fun BookingScreenContent() {
                         }
                     }
                 }
-        }
-    ) {
-        Column {
-            Row(modifier = Modifier.fillMaxWidth().background(MaterialTheme.colors.onBackground).
-            padding(horizontal = 16.dp),
-                verticalAlignment = Alignment.Top) {
-                Text(
-                    modifier = Modifier.padding(top = 16.dp),
-                    text = stringResource(MainRes.strings.suitable_options),
-                    style = MaterialTheme.typography.subtitle1.copy(
-                        color = Color.Black,
-                        fontWeight = FontWeight(500)
+            }
+        ) {
+            Column {
+                Row(modifier = Modifier.fillMaxWidth().background(MaterialTheme.colors.onBackground).
+                padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.Top) {
+                    Text(
+                        modifier = Modifier.padding(top = 16.dp),
+                        text = stringResource(MainRes.strings.suitable_options),
+                        style = MaterialTheme.typography.subtitle1.copy(
+                            color = Color.Black,
+                            fontWeight = FontWeight(500)
+                        )
                     )
-                )
-                Spacer(modifier = Modifier.weight(.1f))
-                IconButton(
-                    onClick = {}, modifier = Modifier.padding(top = 3.dp),
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            painter = painterResource(MainRes.images.icon_location),
-                            tint = textInBorderPurple,
-                            contentDescription = null
-                        )
-                        Text(
-                            modifier = Modifier.padding(start = 8.dp),
-                            text = stringResource(MainRes.strings.select_zones),
-                            style = MaterialTheme.typography.subtitle1.copy(
-                                color = borderPurple,
-                                fontWeight = FontWeight(400)
+                    Spacer(modifier = Modifier.weight(.1f))
+                    IconButton(
+                        onClick = onClickOpenChoseZone, modifier = Modifier.padding(top = 3.dp),
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                painter = painterResource(MainRes.images.icon_location),
+                                tint = textInBorderPurple,
+                                contentDescription = null
                             )
-                        )
+                            Text(
+                                modifier = Modifier.padding(start = 8.dp),
+                                text = stringResource(MainRes.strings.select_zones),
+                                style = MaterialTheme.typography.subtitle1.copy(
+                                    color = borderPurple,
+                                    fontWeight = FontWeight(400)
+                                )
+                            )
+                        }
                     }
                 }
+                ListBooking(scrollState, onClickOpenBookPeriod)
             }
-            ListBooking(scrollState)
         }
     }
+
 }
 
 @Composable
-private fun ListBooking(scrollState: LazyListState) {
+private fun ListBooking(scrollState: LazyListState, onClickOpenBookPeriod: () -> Unit) {
     LazyColumn(modifier =  Modifier.background(MaterialTheme.colors.onBackground).padding(horizontal = 16.dp),
         state = scrollState) {
         val listSeats = listOf(
@@ -186,6 +253,7 @@ private fun ListBooking(scrollState: LazyListState) {
         items(listSeats) { seat ->
             BookingCard(
                 seat,
+                onClickOpenBookPeriod
             )
         }
     }

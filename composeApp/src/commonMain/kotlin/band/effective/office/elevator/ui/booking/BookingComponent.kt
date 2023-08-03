@@ -5,8 +5,10 @@ import band.effective.office.elevator.ui.booking.store.BookingStoreFactory
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
+import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 class BookingComponent(
@@ -23,6 +25,8 @@ class BookingComponent(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val state: StateFlow<BookingStore.State> = bookingStore.stateFlow
+
+    val label: Flow<BookingStore.Label> = bookingStore.labels
     fun onEvent(event: BookingStore.Intent) {
         bookingStore.accept(event)
     }

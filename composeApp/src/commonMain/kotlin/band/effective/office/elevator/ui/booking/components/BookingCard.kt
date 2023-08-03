@@ -2,6 +2,7 @@ package band.effective.office.elevator.ui.booking.components
 
 import androidx.compose.material.MaterialTheme
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,12 +27,11 @@ import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedTheme
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.textInBorderPurple
-import dev.icerock.moko.resources.ImageResource
 import dev.icerock.moko.resources.compose.painterResource
 
 @Composable
-fun BookingCard(roomText: String) {
-    Column (modifier = Modifier.padding(bottom = 16.dp)){
+fun BookingCard(roomText: String, onClickOpenBookPeriod: () -> Unit) {
+    Column (modifier = Modifier.padding(bottom = 16.dp).clickable {  onClickOpenBookPeriod()}){
         Box(
             modifier = Modifier
                 .fillMaxWidth()
