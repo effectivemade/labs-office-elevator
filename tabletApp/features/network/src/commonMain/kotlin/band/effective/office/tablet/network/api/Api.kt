@@ -9,9 +9,14 @@ import java.util.Calendar
 
 interface Api {
     //TODO(Maksim Mishenko): change return value
-    suspend fun getRoomInfo(): Either<ErrorResponse, RoomInfo>
+    suspend fun getRoomInfo(room: String): Either<ErrorResponse, RoomInfo>
     suspend fun getOrganizers(): Either<ErrorResponse, List<String>>
     suspend fun cancelEvent(): Either<ErrorResponse, String>
-    fun subscribeOnWebHock(scope: CoroutineScope,handler: (event: WebServerEvent) -> Unit)
-    suspend fun bookingRoom(begin: Calendar, end: Calendar, owner: String): Either<ErrorResponse, String>
+    fun subscribeOnWebHock(scope: CoroutineScope, handler: (event: WebServerEvent) -> Unit)
+    suspend fun bookingRoom(
+        begin: Calendar,
+        end: Calendar,
+        owner: String,
+        room: String
+    ): Either<ErrorResponse, String>
 }

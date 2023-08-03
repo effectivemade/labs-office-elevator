@@ -1,9 +1,6 @@
 package office.effective
 
 import com.typesafe.config.ConfigFactory
-import io.github.smiley4.ktorswaggerui.SwaggerUI
-import io.github.smiley4.ktorswaggerui.dsl.AuthScheme
-import io.github.smiley4.ktorswaggerui.dsl.AuthType
 import io.ktor.server.application.*
 import io.ktor.server.config.*
 import io.ktor.server.engine.*
@@ -31,6 +28,7 @@ fun Application.module() {
     configureAuthentication()
     configureSerialization()
     configureRouting()
+    configureValidation()
     configureExceptionHandling()
     configureSwagger()
 }

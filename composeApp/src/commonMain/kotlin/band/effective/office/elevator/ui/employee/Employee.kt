@@ -2,6 +2,7 @@ package band.effective.office.elevator.ui.employee
 
 import androidx.compose.runtime.Composable
 import band.effective.office.elevator.ui.employee.aboutEmployee.AboutEmployee
+import band.effective.office.elevator.ui.employee.allEmployee.EmployeeScreen
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.plus

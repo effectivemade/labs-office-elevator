@@ -8,12 +8,16 @@ import kotlinx.coroutines.CoroutineScope
 
 /**Use case for get info about room*/
 class RoomInfoUseCase(private val repository: RoomRepository) {
-    suspend operator fun invoke() = repository.getRoomInfo()
+    suspend operator fun invoke(room: String = "Sirius") = repository.getRoomInfo(room)
 
     /**Subscribe on changes information
      * @param scope scope for collect new information
      * @param handler handler for new information*/
-    fun subscribe(scope: CoroutineScope, handler: (Either<ErrorWithData<RoomInfo>, RoomInfo>) -> Unit) {
-        repository.subscribeOnUpdates(scope) { handler(it) }
+    fun subscribe(
+        scope: CoroutineScope,
+        room: String = "Sirius",
+        handler: (Either<ErrorWithData<RoomInfo>, RoomInfo>) -> Unit
+    ) {
+        repository.subscribeOnUpdates(scope, room) { handler(it) }
     }
 }

@@ -1,12 +1,9 @@
 package band.effective.office.elevator.ui.main.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -18,14 +15,15 @@ fun BookingInformation(
     onClickBook: () -> Unit,
     onClickShowMap: () -> Unit,
     onClickShowOptions: () -> Unit,
-    onClickOpenCalendar: () -> Unit
+    onClickOpenCalendar: () -> Unit,
+    onClickOpenBottomDialog: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
     ) {
         Spacer(modifier = Modifier.height(24.dp))
-        DateSelection(onClickOpenCalendar = onClickOpenCalendar)
+        DateSelection(onClickOpenCalendar = onClickOpenCalendar, onClickOpenBottomDialog = onClickOpenBottomDialog)
         Spacer(modifier = Modifier.height(24.dp))
         SeatsReservation(
             reservedSeats = reservedSeats,

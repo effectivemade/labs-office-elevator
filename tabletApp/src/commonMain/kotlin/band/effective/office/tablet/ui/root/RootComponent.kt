@@ -1,10 +1,13 @@
 package band.effective.office.tablet.ui.root
 
-import band.effective.office.tablet.ui.freeNegotiationsScreen.FreeNegotiationsComponent
+import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.FreeNegotiationsComponent
+import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.FreeNegotiationsComponentImpl
+import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store.BookingStore
 import band.effective.office.tablet.ui.mainScreen.mainScreen.MainComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -40,7 +43,21 @@ class RootComponent(componentContext: ComponentContext, private val storeFactory
         }
 
         is Config.SelectRoom -> {
-            Child.SelectRoomChild(FreeNegotiationsComponent(componentContext))
+            Child.SelectRoomChild(
+                FreeNegotiationsComponentImpl(
+                    componentContext = componentContext,
+                    storeFactory = storeFactory,
+                    onMainScreen = { reset: Boolean ->
+                        navigation.pop()
+                        (childStack.value.active.instance as Child.MainChild).
+                        component.bookingRoomComponent.sendIntent(BookingStore.Intent.OnChangeIsActive(reset))
+                    },
+                    onBookingInfo = {
+                        (childStack.value.backStack.last().instance as Child.MainChild).component
+                            .bookingRoomComponent.getBooking()
+                    }
+                )
+            )
         }
     }
 

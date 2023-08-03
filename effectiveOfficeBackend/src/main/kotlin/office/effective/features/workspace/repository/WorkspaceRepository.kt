@@ -33,11 +33,11 @@ class WorkspaceRepository(private val database: Database, private val converter:
     /**
      * Returns all workspace utilities by workspace id
      *
-     * Throws WorkspaceNotFoundException if workspace with given id doesn't exist in the database
+     * Throws InstanceNotFoundException if workspace with given id doesn't exist in the database
      *
      * @author Daniil Zavyalov
      */
-    private fun findUtilitiesByWorkspaceId(workspaceId: UUID): List<Utility> {
+    fun findUtilitiesByWorkspaceId(workspaceId: UUID): List<Utility> {
         if (!workspaceExistsById(workspaceId)) {
             throw InstanceNotFoundException(WorkspaceEntity::class, "Workspace with id $workspaceId not found", workspaceId)
         }
@@ -68,7 +68,7 @@ class WorkspaceRepository(private val database: Database, private val converter:
     /**
      * Returns all workspaces with the given tag
      *
-     * Throws WorkspaceTagNotFoundException if tag doesn't exist in the database
+     * Throws InstanceNotFoundException if tag doesn't exist in the database
      *
      * @author Daniil Zavyalov
      */
@@ -79,7 +79,7 @@ class WorkspaceRepository(private val database: Database, private val converter:
         val entityList = database.workspaces.filter { it.tagId eq tagEntity.id }.toList()
         return entityList.map {
             val utilities: List<Utility> = findUtilitiesByWorkspaceId(it.id)
-                converter.entityToModel(it, utilities)
+            converter.entityToModel(it, utilities)
         }
     }
 
@@ -87,9 +87,7 @@ class WorkspaceRepository(private val database: Database, private val converter:
      * Adds utility to workspace by their id.
      * If the utility has already been added to the workspace, the count value will be overwritten
      *
-     * Throws WorkspaceNotFoundException if workspace with given id doesn't exist in the database
-     *
-     * Throws UtilityNotFoundException if utility with given id doesn't exist in the database
+     * Throws InstanceNotFoundException if workspace or utility with given id doesn't exist in the database
      *
      * @author Daniil Zavyalov
      */
@@ -114,16 +112,11 @@ class WorkspaceRepository(private val database: Database, private val converter:
     /**
      * Saves a given workspace. If given model will have id, it will be ignored. Use the returned model for further operations
      *
-     * Throws WorkspaceTagNotFoundException if tag doesn't exist in the database
-     *
      * @author Daniil Zavyalov
      */
     @Deprecated("API does not involve saving workspace entities")
     fun save(workspace: Workspace): Workspace {
-        val tagEntity: WorkspaceTagEntity = database.workspaceTags.find { it.name eq workspace.tag }
-            ?: throw InstanceNotFoundException(WorkspaceTagEntity::class, "Workspace tag ${workspace.tag} not found")
-
-        val entity = converter.modelToEntity(workspace, tagEntity);
+        val entity = converter.modelToEntity(workspace);
         database.workspaces.add(entity)
         for (utility in workspace.utilities) {
             addUtilityToWorkspace(utility.id, entity.id, utility.count.toUInt())

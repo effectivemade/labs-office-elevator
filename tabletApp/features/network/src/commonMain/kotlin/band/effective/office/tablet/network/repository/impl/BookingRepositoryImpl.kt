@@ -7,9 +7,10 @@ import band.effective.office.tablet.network.repository.BookingRepository
 import network.model.ErrorResponse
 
 class BookingRepositoryImpl(private val api: Api) : BookingRepository {
-    override suspend fun bookingRoom(eventInfo: EventInfo): Either<ErrorResponse, String> = api.bookingRoom(
+    override suspend fun bookingRoom(eventInfo: EventInfo, room: String): Either<ErrorResponse, String> = api.bookingRoom(
         begin = eventInfo.startTime,
         end = eventInfo.finishTime,
-        owner = eventInfo.organizer
+        owner = eventInfo.organizer,
+        room = room
     )
 }

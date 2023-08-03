@@ -33,7 +33,7 @@ fun DateTimeView(modifier: Modifier, booking: Booking) {
             Text(
                 text = booking.eventInfo.startTime.date(),
                 style = MaterialTheme.typography.h6,
-                color = MaterialTheme.colors.secondary
+                color = LocalCustomColorsPalette.current.primaryTextAndIcon
             )
 
             Spacer(modifier = Modifier.width(5.dp))
