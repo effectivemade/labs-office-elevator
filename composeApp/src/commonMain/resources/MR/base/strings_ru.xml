@@ -51,6 +51,9 @@
     <string name="every_month">Каждый месяц</string>
     <string name="another">Другое...</string>
 
+    <string name="take_from">Занять с</string>
+    <string name="take_before">Занять до</string>
+
     <string name="cansel">Отмена</string>
     <string name="ok">Ок</string>
 

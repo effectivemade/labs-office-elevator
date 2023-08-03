@@ -28,7 +28,7 @@
     <string name="employee_hint">Telegram nickname</string>
 
     <string name="by_date"> By date </string>
-    <string name="show_map">Map</string>
+    <string name="show_map">Show on map</string>
     <string name="book_a_seat">Book a seat</string>
     <string name="nearest_bookings">Your upcoming bookings</string>
     <string name="none_booking_seat">You dont have any bookings yet</string>
@@ -65,6 +65,9 @@
     <string name="every_week">Every week</string>
     <string name="every_month">Every month</string>
     <string name="another">Other...</string>
+
+    <string name="take_from">Take from</string>
+    <string name="take_before">Take before</string>
 
     <!-- Buttons -->
     <string name="_continue">Continue</string>
