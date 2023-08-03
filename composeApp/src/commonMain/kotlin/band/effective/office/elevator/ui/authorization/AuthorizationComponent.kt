@@ -42,31 +42,29 @@ class AuthorizationComponent(
 
     private val validator: Validator = Validator()
     private val navigation = StackNavigation<AuthorizationComponent.Config>()
-    private val userData: UserData = UserData()
     private val authorizationEntity: AuthorizationEntity by inject()
-
-    private fun changePhoneNumber(phoneNumber: String) {
-        userData.phoneNumber = phoneNumber
-    }
-
-    private fun changeName(name: String) {
-        userData.name = name
-    }
-
-    private fun changePost(post: String) {
-        userData.post = post
-    }
-
-    private fun changeTelegramNick(telegramNick: String) {
-        userData.telegramNick = telegramNick
-    }
-
     private val authorizationStore =
         instanceKeeper.getStore {
             AuthorizationStoreFactory(
                 storeFactory = storeFactory
             ).create()
         }
+
+    private fun changePhoneNumber(phoneNumber: String) {
+        authorizationStore.state.userData.phoneNumber = phoneNumber
+    }
+
+    private fun changeName(name: String) {
+        authorizationStore.state.userData.name = name
+    }
+
+    private fun changePost(post: String) {
+        authorizationStore.state.userData.post = post
+    }
+
+    private fun changeTelegramNick(telegramNick: String) {
+        authorizationStore.state.userData.telegramNick = telegramNick
+    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val state: StateFlow<AuthorizationStore.State> = authorizationStore.stateFlow
@@ -100,7 +98,7 @@ class AuthorizationComponent(
                     componentContext,
                     storeFactory,
                     validator,
-                    userData.phoneNumber,
+                    authorizationStore.state.userData.phoneNumber,
                     ::phoneAuthOutput,
                     ::changePhoneNumber
                 )
@@ -111,8 +109,8 @@ class AuthorizationComponent(
                     componentContext,
                     storeFactory,
                     validator,
-                    userData.name,
-                    userData.post!!,
+                    authorizationStore.state.userData.name,
+                    authorizationStore.state.userData.post!!,
                     ::profileAuthOutput,
                     ::changeName,
                     ::changePost
@@ -124,7 +122,7 @@ class AuthorizationComponent(
                     componentContext,
                     storeFactory,
                     validator,
-                    userData.telegramNick,
+                    authorizationStore.state.userData.telegramNick,
                     ::telegramAuthOutput,
                     ::changeTelegramNick
                 )
@@ -171,7 +169,7 @@ class AuthorizationComponent(
 
             is AuthorizationTelegramComponent.Output.OpenContentFlow -> {
                 CoroutineScope(Dispatchers.Main).launch {
-                    val result = authorizationEntity.push(userData)
+                    val result = authorizationEntity.push(authorizationStore.state.userData)
                     if (result)
                         openContentFlow()
                 }
