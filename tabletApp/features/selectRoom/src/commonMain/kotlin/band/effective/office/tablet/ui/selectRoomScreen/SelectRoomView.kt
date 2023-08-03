@@ -86,11 +86,11 @@ fun SelectRoomView(
             modifier = modifier,
             booking = booking
         )
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         BookingButtonView(
             modifier = Modifier
                 .fillMaxWidth(0.65f)
-                .fillMaxHeight(0.45f),
+                .height(64.dp),
             shape = RoundedCornerShape(100),
             text = MainRes.string.booking_time_button.format(
                 startTime = booking.eventInfo.startTime.time24(),

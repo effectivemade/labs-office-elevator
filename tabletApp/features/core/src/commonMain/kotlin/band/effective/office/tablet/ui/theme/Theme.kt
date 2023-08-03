@@ -91,8 +91,8 @@ fun AppTheme(
         CustomDarkColors
     }
 
-    //val colors = darkColors
-    //val customColorsPalette = CustomDarkColors
+   // val colors = darkColors
+  //  val customColorsPalette = CustomDarkColors
 
     val typography = Typography(
         h1 = header1,

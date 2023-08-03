@@ -76,6 +76,10 @@ class BookingRoomComponent(
                 bookingStore.accept(intent.copy(onBookingOtherRoom))
             }
 
+            is BookingStore.Intent.OnChangeIsActive -> {
+                bookingStore.accept(intent)
+            }
+
             is BookingStore.Intent.OnDateTimePickerModal -> onOpenDateTimePickerModal()
 
             is BookingStore.Intent.CloseModal -> bookingStore.accept(intent.copy(onCloseRequest))

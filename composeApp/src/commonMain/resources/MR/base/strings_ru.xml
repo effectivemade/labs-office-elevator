@@ -4,6 +4,7 @@
     <string name="sign_in_google">Авторизация через Google</string>
     <string name="something_went_wrong">Что-то пошло не так. Пожалуйста попробуйте еще раз</string>
     <string name="company_name">effective\noffice</string>
+
     <string name="search_employee">Поиск сотрудника</string>
     <string name="employee_in_office">В офисе</string>
 
@@ -26,6 +27,9 @@
     <string name="phone_plus_seven">+7</string>
     <string name="telegram_symbol">@</string>
 
+    <!--Main Screen-->
+    <string name="filter">Фильтры</string>
+
 
     <!--Elevator-->
     <string name="elevator" >Лифт</string>
@@ -34,8 +38,13 @@
     <string name="by_date"> По дате </string>
     <string name="show_map">Показать на карте</string>
     <string name="book_a_seat">Забронировать место</string>
-    <string name="nearest_bookings">Ваши ближайшие брони</string>
+    <string name="nearest_bookings">Ваши\nближайшие\nброни</string>
     <string name="none_booking_seat">У вас пока нет бронирований</string>
+
+    <string name="filter_by_category">Фильтры по категории</string>
+    <string name="working_place">Рабочее место</string>
+    <string name="meeting_room">Переговорка</string>
+    <string name="reset_filter">Сбросить</string>
 
     <string name="cansel">Отмена</string>
     <string name="ok">Ок</string>

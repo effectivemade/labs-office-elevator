@@ -5,6 +5,7 @@ import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingR
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store.BookingStore
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.pickerDateTime.DateTimePickerComponent
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.pickerDateTime.DateTimePickerStore
+import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store.BookingStore
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainFactory
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
 import band.effective.office.tablet.ui.mainScreen.mockComponets.MockSettingsComponent
@@ -53,7 +54,14 @@ class MainComponent(
             storeFactory = storeFactory,
             onBookingRoom = { bookingRoomComponent.getBooking() },
             onBookingOtherRoom = { OnSelectOtherRoomRequest() },
-            onCloseRequest = { mainStore.accept(MainStore.Intent.CloseModal) }
+            onMainScreen = {
+                mainStore.accept(MainStore.Intent.CloseModal)
+                bookingRoomComponent.sendIntent(BookingStore.Intent.OnChangeIsActive(true))
+                           },
+            onCloseRequest = {
+                mainStore.accept(MainStore.Intent.CloseModal)
+                bookingRoomComponent.sendIntent(BookingStore.Intent.OnChangeIsActive(false))
+            }
         )
 
     val freeSelectRoomComponent: FreeSelectRoomComponent =

@@ -4,13 +4,9 @@
     <string name="sign_in_google">Sign in to Effective email</string>
     <string name="something_went_wrong">Something went wrong. Please try again</string>
     <string name="company_name">effective\noffice</string>
-    <string name="employee_1">Ivanov Ivan</string>
-    <string name="employee_2">Smirnov Andrey</string>
-    <string name="employee_3">Vasilyev Vasiliy</string>
+
     <string name="search_employee">Search employee</string>
     <string name="employee_in_office">In office</string>
-    <string name="employee_soon_in_office">Will be today</string>
-    <string name="employee_not_soon_in_office">No reservations</string>
 
     <string name="company_name">Effective</string>
 
@@ -30,11 +26,19 @@
     <string name="by_date"> By date </string>
     <string name="show_map">Show on map</string>
     <string name="book_a_seat">Book a seat</string>
-    <string name="nearest_bookings">Your upcoming bookings</string>
+    <string name="nearest_bookings">Your\nupcoming\nbookings</string>
     <string name="none_booking_seat">You dont have any bookings yet</string>
+
+    <string name="filter_by_category">Filter by category</string>
+    <string name="working_place">Working Place</string>
+    <string name="meeting_room">Meeting Room</string>
+    <string name="reset_filter">Reset</string>
 
     <string name="cansel">Cansel</string>
     <string name="ok">Ok</string>
+
+    <!--Main Screen-->
+    <string name="filter">Filters</string>
 
     <!-- Buttons -->
     <string name="_continue">Continue</string>
