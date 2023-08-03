@@ -1,4 +1,4 @@
-package band.effective.office.elevator.ui.booking.components
+package band.effective.office.elevator.ui.booking.components.modals
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,27 +19,31 @@ import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun BookingRepeatCard(onSelected: () -> Unit) {
-    val strings = listOf<String>(
-        stringResource(MainRes.strings.do_not_repeat),
-        stringResource(MainRes.strings.every_work_day),
-        stringResource(MainRes.strings.every_week),
-        stringResource(MainRes.strings.every_month),
-        stringResource(MainRes.strings.another)
+    val strings = listOf(
+        MainRes.strings.do_not_repeat,
+        MainRes.strings.every_work_day,
+        MainRes.strings.every_week,
+        MainRes.strings.every_month,
+        MainRes.strings.another
     )
+    val (selectedOption, onOptionSelected) = remember { mutableStateOf(strings[0]) }
 
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start,
         modifier = Modifier
+            .padding(all = 24.dp)
             .fillMaxWidth()
             .wrapContentHeight()
             .background(color = Color.White, shape = RoundedCornerShape(size = 16.dp))
-            .padding(start = 16.dp, top = 12.dp, end = 24.dp, bottom = 12.dp)
     ) {
-        for (element in strings) {
+        strings.forEach { frequency ->
             BookingRepeatElement(
-                bookingText = element,
-                onSelect = onSelected
+                selected = frequency == selectedOption,
+                bookingText = stringResource(frequency),
+                onSelect = {
+                    onOptionSelected(frequency)
+                }
             )
         }
     }

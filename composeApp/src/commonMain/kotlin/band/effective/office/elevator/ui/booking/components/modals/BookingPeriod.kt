@@ -1,10 +1,11 @@
-package band.effective.office.elevator.ui.booking.components
+package band.effective.office.elevator.ui.booking.components.modals
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,7 +22,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.rounded.Repeat
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.ExtendedTheme
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.PrimaryButton
-import band.effective.office.elevator.ui.authorization.authorization_phone.store.AuthorizationPhoneStore
 import dev.icerock.moko.resources.compose.stringResource
 import dev.icerock.moko.resources.compose.painterResource
 
@@ -51,7 +50,9 @@ fun BookingPeriod(
     closeClick: () -> Unit,
     onSwitchChange: (Boolean) -> Unit,
     bookStartDate: () -> Unit,
+    bookStartTime: () -> Unit,
     bookFinishDate: () -> Unit,
+    bookFinishTime: () -> Unit,
     confirmBooking: () -> Unit,
     bookingRepeat: () -> Unit
 ) {
@@ -80,6 +81,7 @@ fun BookingPeriod(
             )
             .padding(bottom = 16.dp)
     ) {
+        Spacer(modifier = Modifier.height(height = 8.dp))
         Divider(
             modifier = Modifier
                 .fillMaxWidth(fraction = .3f)
@@ -88,7 +90,10 @@ fun BookingPeriod(
                     color = ExtendedTheme.colors.dividerColor,
                     shape = RoundedCornerShape(size = 16.dp)
                 )
-                .padding(bottom = 8.dp)
+                .padding(
+                    bottom = 8.dp,
+                    top = 8.dp
+                )
         )
 
         Row(
@@ -159,7 +164,12 @@ fun BookingPeriod(
                     Switch(
                         checked = switchChecked,
                         onCheckedChange = onSwitchChange,
-                        colors = SwitchDefaults.colors()
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = MaterialTheme.colors.primary,
+                            uncheckedThumbColor = ExtendedTheme.colors.switchColor,
+                            uncheckedBorderColor = Color.Transparent,
+                            checkedBorderColor = Color.Transparent
+                        )
                     )
                 }
 
@@ -168,7 +178,8 @@ fun BookingPeriod(
                     date = startDate,
                     time = startTime,
                     elevation = elevation,
-                    onPick = bookStartDate
+                    onPickDate = bookStartDate,
+                    onPickTime = bookStartTime
                 )
 
                 //Finish booking date
@@ -176,7 +187,8 @@ fun BookingPeriod(
                     date = finishDate,
                     time = finishTime,
                     elevation = elevation,
-                    onPick = bookFinishDate
+                    onPickDate = bookFinishDate,
+                    onPickTime = bookFinishTime
                 )
 
                 //Book period

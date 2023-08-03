@@ -146,6 +146,7 @@ data class ExtendedColors(
     val _66x: Color,
     val dividerColor: Color,
     val radioTextColor: Color,
+    val switchColor: Color,
 
 //    region::Trinidad
     val trinidad_50: Color,
@@ -183,6 +184,7 @@ val LocalExtendedColors = staticCompositionLocalOf {
         _66x = Color(0x66000000),
         dividerColor = Color(0xFF8E8E93),
         radioTextColor = Color(0xFF1D1B20),
+        switchColor = Color(0xFFB8BAC6),
 
         trinidad_50 = Color(0xFFFFF7ED),
         trinidad_100 = Color(0xFFFEEDD6),

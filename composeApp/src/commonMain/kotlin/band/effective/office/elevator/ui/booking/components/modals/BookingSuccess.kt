@@ -1,4 +1,4 @@
-package band.effective.office.elevator.ui.booking.components
+package band.effective.office.elevator.ui.booking.components.modals
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
