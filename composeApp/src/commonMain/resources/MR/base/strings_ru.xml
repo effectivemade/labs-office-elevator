@@ -36,6 +36,20 @@
     <string name="book_a_seat">Забронировать место</string>
     <string name="nearest_bookings">Ваши ближайшие брони</string>
     <string name="none_booking_seat">У вас пока нет бронирований</string>
+    <string name="place_booked">Место забронировано</string>
+    <string name="good_working_day">Хорошего рабочего дня!</string>
+    <string name="move_to_main_from_booking">На главную</string>
+    <string name="close_booking">Закрыть</string>
+    <string name="booking_period">Период бронирования</string>
+    <string name="whole_day_booking">Весь день</string>
+    <string name="confirm_booking">Подтвердить</string>
+
+    <!--Booking period-->
+    <string name="do_not_repeat">Не повторяется</string>
+    <string name="every_work_day">Каждый будний день</string>
+    <string name="every_week">Каждую неделю</string>
+    <string name="every_month">Каждый месяц</string>
+    <string name="another">Другое...</string>
 
     <string name="cansel">Отмена</string>
     <string name="ok">Ок</string>
@@ -64,6 +78,7 @@
     <string name="every_month_repeat">Каждый месяц</string>
     <string name="other_repeat">Другое</string>
 
+
     <!--Tab titles-->
     <string name="profile">Профиль</string>
     <string name="elevator">Лифт</string>
@@ -73,8 +88,6 @@
 
     <!-- Buttons -->
     <string name="_continue">Продолжить</string>
-    <string name="_confirm">Подтвердить</string>
-    <string name="_confirm_booking">Подтвердить бронирование</string>
 
     <!--Error messages-->
     <string name="you_need_to_sign_in">Для работы приложения нужно авторизоваться</string>

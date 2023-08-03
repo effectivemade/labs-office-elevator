@@ -51,10 +51,23 @@
     <string name="every_month_repeat">Every month</string>
     <string name="other_repeat">Other</string>
 
+
+    <!--Booking period-->
+    <string name="place_booked">Place reserved</string>
+    <string name="good_working_day">Have a good working day!</string>
+    <string name="move_to_main_from_booking">Go to main</string>
+    <string name="close_booking">Close</string>
+    <string name="booking_period">Booking period</string>
+    <string name="whole_day_booking">Whole day</string>
+    <string name="confirm_booking">Confirm</string>
+    <string name="do_not_repeat">Do not repeat</string>
+    <string name="every_work_day">Every work day</string>
+    <string name="every_week">Every week</string>
+    <string name="every_month">Every month</string>
+    <string name="another">Other...</string>
+
     <!-- Buttons -->
     <string name="_continue">Continue</string>
-    <string name="_confirm">Confirm</string>
-    <string name="_confirm_booking">Confirm booking</string>
 
     <!--Tab titles-->
     <string name="profile">Profile</string>
