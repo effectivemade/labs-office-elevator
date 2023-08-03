@@ -6,6 +6,7 @@ import band.effective.office.elevator.domain.models.GoogleAccount
 import band.effective.office.elevator.ui.uiViewController
 import cocoapods.GoogleSignIn.GIDConfiguration
 import cocoapods.GoogleSignIn.GIDSignIn
+import dev.icerock.moko.resources.desc.desc
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -50,7 +51,7 @@ class GoogleSignInImpl(gidClientId: String, serverClientId: String) : GoogleSign
 
     override fun signIn(callback: SignInResultCallback) {
         GIDSignIn.sharedInstance.signInWithPresentingViewController(uiViewController) { result, error ->
-            if (result == null) callback.onFailure(MainRes.string.something_went_wrong)
+            if (result == null) callback.onFailure(MainRes.strings.something_went_wrong.desc().localized())
             else callback.onSuccess()
         }
     }
