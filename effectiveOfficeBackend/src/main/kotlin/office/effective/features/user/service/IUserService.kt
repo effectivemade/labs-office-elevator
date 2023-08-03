@@ -1,10 +1,10 @@
 package office.effective.features.user.service
 
-import office.effective.features.user.dto.UserDTO
+import office.effective.model.UserModel
 
 interface IUserService {
-    fun getUsersByTag(tagStr: String, token: String): Set<UserDTO>?;
-    fun getUserById(userIdStr: String, token: String): UserDTO;
-    fun updateUser(user: UserDTO, token: String): UserDTO;
-    fun getUserByToken(tokenStr: String): UserDTO;
+    fun getUsersByTag(tagStr: String): Set<UserModel>;
+    fun getUserById(userIdStr: String): UserModel;
+    fun updateUser(user: UserModel): UserModel;
+    fun getUserByEmail(emailStr: String): UserModel;
 }

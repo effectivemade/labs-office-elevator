@@ -8,5 +8,6 @@ data class UserDTO(
     val fullName: String,
     val active: Boolean,
     val role: String,
-    val avatarUrl: String
+    val avatarUrl: String,
+    val integrations: List<IntegrationDTO>?
 )

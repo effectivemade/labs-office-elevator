@@ -3,6 +3,7 @@ package office.effective.features.user.routes.swagger
 import io.github.smiley4.ktorswaggerui.dsl.OpenApiRoute
 import io.ktor.http.*
 import office.effective.common.swagger.SwaggerDocument
+import office.effective.features.user.dto.IntegrationDTO
 import office.effective.features.user.dto.UserDTO
 
 fun SwaggerDocument.returnUserByEmail(): OpenApiRoute.() -> Unit = {
@@ -27,7 +28,14 @@ fun SwaggerDocument.returnUserByEmail(): OpenApiRoute.() -> Unit = {
                         fullName = "Ivan Ivanov",
                         active = true,
                         role = "ADMIN",
-                        avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg"
+                        avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
+                        integrations = listOf(
+                            IntegrationDTO(
+                                "13c80c3d-4278-45cf-8d2a-e281004d3ff9",
+                                "email",
+                                "123@effective.band"
+                            )
+                        )
                     )
                 ) {
                 }
@@ -57,14 +65,28 @@ fun SwaggerDocument.returnUsers(): OpenApiRoute.() -> Unit = {
                             fullName = "Ivan Ivanov",
                             active = true,
                             role = "ADMIN",
-                            avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg"
+                            avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
+                            integrations = listOf(
+                                IntegrationDTO(
+                                    "13c80c3d-4278-45cf-8d2a-e281004d3ff9",
+                                    "email",
+                                    "123@effective.band"
+                                )
+                            )
                         ),
                         UserDTO(
                             id = "207b9634-2bc4-11ee-be56-0242ac120002",
                             fullName = "Lol Kekov",
                             active = true,
                             role = "USER",
-                            avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg"
+                            avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
+                            integrations = listOf(
+                                IntegrationDTO(
+                                    "13c80c3d-4278-45cf-8d2a-e281004d3ff9",
+                                    "email",
+                                    "321@effective.band"
+                                )
+                            )
                         )
                     )
                 ) {
@@ -96,7 +118,14 @@ fun SwaggerDocument.returnUserById(): OpenApiRoute.() -> Unit = {
                         fullName = "Ivan Ivanov",
                         active = true,
                         role = "ADMIN",
-                        avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg"
+                        avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
+                        integrations = listOf(
+                            IntegrationDTO(
+                                "13c80c3d-4278-45cf-8d2a-e281004d3ff9",
+                                "email",
+                                "123@effective.band"
+                            )
+                        )
                     )
                 ) {
                 }
@@ -125,7 +154,14 @@ fun SwaggerDocument.alterUser(): OpenApiRoute.() -> Unit = {
                         fullName = "Ivan Ivanov",
                         active = true,
                         role = "ADMIN",
-                        avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg"
+                        avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
+                        integrations = listOf(
+                            IntegrationDTO(
+                                "13c80c3d-4278-45cf-8d2a-e281004d3ff9",
+                                "email",
+                                "123@effective.band"
+                            )
+                        )
                     )
                 ) {
                 }
