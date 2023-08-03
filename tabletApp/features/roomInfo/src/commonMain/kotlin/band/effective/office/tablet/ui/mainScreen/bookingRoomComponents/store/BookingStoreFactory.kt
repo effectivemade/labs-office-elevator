@@ -103,6 +103,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         data class ChangeOrganizer(val newOrganizer: String) : Message
         object OrganizerError : Message
         object BookingOtherRoom : Message
+        object BookingCurrentRoom : Message
 
         data class UpdateOrganizers(val organizers: List<String>) : Message
         data class UpdateBusy(
@@ -123,11 +124,14 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             getState: () -> BookingStore.State
         ) {
             when (intent) {
-                is BookingStore.Intent.OnBookingCurrentRoom -> booking(
-                    isCurrentRoom = true,
-                    state = getState(),
-                    booking = intent.booking
-                )
+                is BookingStore.Intent.OnBookingCurrentRoom -> {
+                    booking(
+                        isCurrentRoom = true,
+                        state = getState(),
+                        booking = intent.booking
+                    )
+                    dispatch(Message.BookingCurrentRoom)
+                }
 
                 is BookingStore.Intent.OnBookingOtherRoom -> {
                     booking(
@@ -146,7 +150,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 }
 
                 is BookingStore.Intent.OnChangeIsActive -> {
-                    if(intent.reset){
+                    if (intent.reset) {
                         dispatch(Message.Reset)
                     }
                     dispatch(Message.OnChangeIsActive)
@@ -252,6 +256,11 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is Message.BookingOtherRoom -> copy(
                     isActive = false
                 )
+
+                is Message.BookingCurrentRoom -> copy(
+                    isActive = false
+                )
+
                 is Message.ChangeEvent -> copy(
                     selectDate = msg.selectDate,
                     length = msg.length,
