@@ -5,6 +5,7 @@ import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.ui.freeNegotiationsScreen.domain.MockListRooms
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.roomUiState.RoomInfoUiState
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.roomUiState.RoomState
+import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.timer.Timer
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.uiComponents.checkDuration
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.uiComponents.getDurationRelativeCurrentTime
 import band.effective.office.tablet.ui.selectRoomScreen.uiComponents.getLengthEvent
@@ -18,7 +19,9 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import java.util.Calendar
 
-class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory): KoinComponent {
+class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
+
+    private val timer = Timer()
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): FreeNegotiationsStore =
@@ -29,7 +32,12 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory): Koin
                 bootstrapper = coroutineBootstrapper {
                     launch() {
                         dispatch(Action.GetFreeRoomsInfo(MockListRooms.listRooms))
-                        //TODO
+                        timer.subscribe {
+                            dispatch(
+                                Action.UpdateChangeEventTime
+                            )
+                        }
+                        timer.startTimer()
                     }
                 },
                 executorFactory = ::ExecutorImpl,
@@ -38,23 +46,39 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory): Koin
 
     private sealed interface Action {
         data class GetFreeRoomsInfo(val roomsInfo: List<RoomInfo>) : Action
+        object UpdateChangeEventTime : Action
     }
 
     private sealed interface Message {
         data class GetFreeRoomsInfo(val roomsInfo: List<RoomInfoUiState>) : Message
-        data class SetBooking(val bookingInfo: Booking): Message
+        data class SetBooking(val bookingInfo: Booking) : Message
         data class BookRoom(val nameRoom: String, val maxDuration: Int) : Message
         object MainScreen : Message
         object CloseModal : Message
+        object UpdateChangeEventTime : Message
+
     }
 
     private inner class ExecutorImpl() :
         CoroutineExecutor<FreeNegotiationsStore.Intent, Action, FreeNegotiationsStore.State, Message, Nothing>() {
-        override fun executeIntent(intent: FreeNegotiationsStore.Intent, getState: () -> FreeNegotiationsStore.State) {
+        override fun executeIntent(
+            intent: FreeNegotiationsStore.Intent,
+            getState: () -> FreeNegotiationsStore.State
+        ) {
             when (intent) {
                 is FreeNegotiationsStore.Intent.OnBookingRoom ->
-                    dispatch(Message.BookRoom(nameRoom =  intent.name, maxDuration = intent.maxDuration))
-                is FreeNegotiationsStore.Intent.OnMainScreen -> dispatch(Message.MainScreen)
+                    dispatch(
+                        Message.BookRoom(
+                            nameRoom = intent.name,
+                            maxDuration = intent.maxDuration
+                        )
+                    )
+
+                is FreeNegotiationsStore.Intent.OnMainScreen -> {
+                    dispatch(Message.MainScreen)
+                    timer.close()
+                }
+
                 is FreeNegotiationsStore.Intent.CloseModal -> dispatch(Message.CloseModal)
                 is FreeNegotiationsStore.Intent.SetBooking -> dispatch(Message.SetBooking(intent.bookingInfo))
             }
@@ -77,24 +101,34 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory): Koin
                     roomsInfoUi.sortBy { it.state.codeState }
                     dispatch(Message.GetFreeRoomsInfo(roomsInfoUi.toList()))
                 }
+
+                is Action.UpdateChangeEventTime -> {
+                    dispatch(Message.UpdateChangeEventTime)
+                }
             }
         }
 
     }
 
-    fun getStateBusyRoom(room: RoomInfo, state: FreeNegotiationsStore.State): RoomState{
+    fun getStateBusyRoom(room: RoomInfo, state: FreeNegotiationsStore.State): RoomState {
         return when {
             room.currentEvent != null -> RoomState.BUSY
             room.eventList.isNotEmpty() && !checkDuration
-                (room.eventList.first().startTime, state.chosenDurationBooking) -> RoomState.SOON_BUSY
+                (
+                room.eventList.first().startTime,
+                state.chosenDurationBooking
+            ) -> RoomState.SOON_BUSY
+
             else -> RoomState.FREE
         }
     }
 
-    fun getChangeEventTime(roomState: RoomState, room: RoomInfo): Int{
-        return when (roomState) {
-            RoomState.BUSY -> getDurationRelativeCurrentTime(room.currentEvent!!.finishTime)
-            RoomState.SOON_BUSY -> getDurationRelativeCurrentTime(room.eventList.first().startTime)
+    fun getChangeEventTime(roomState: RoomState, room: RoomInfo): Int {
+        return when {
+            roomState == RoomState.BUSY -> getDurationRelativeCurrentTime(room.currentEvent!!.finishTime)
+            roomState == RoomState.SOON_BUSY || (roomState == RoomState.FREE && room.eventList.isNotEmpty()) ->
+                getDurationRelativeCurrentTime(room.eventList.first().startTime)
+
             else -> -1
         }
     }
@@ -102,18 +136,22 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory): Koin
     private object ReducerImpl : Reducer<FreeNegotiationsStore.State, Message> {
         override fun FreeNegotiationsStore.State.reduce(message: Message): FreeNegotiationsStore.State =
             when (message) {
-                is Message.BookRoom-> copy(
+                is Message.BookRoom -> copy(
                     nameBookingRoom = message.nameRoom,
                     currentTime = Calendar.getInstance(),
-                    realDurationBooking = if(message.maxDuration != -1) {
+                    realDurationBooking = if (message.maxDuration != -1) {
                         chosenDurationBooking.coerceAtMost(message.maxDuration)
-                    } else { this.chosenDurationBooking },
+                    } else {
+                        this.chosenDurationBooking
+                    },
                     showBookingModal = true
                 )
+
                 is Message.MainScreen -> copy()
                 is Message.GetFreeRoomsInfo -> copy(
                     listRooms = message.roomsInfo
                 )
+
                 is Message.SetBooking -> copy(
                     organizer = message.bookingInfo.eventInfo.organizer,
                     chosenDurationBooking = getLengthEvent(
@@ -122,7 +160,42 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory): Koin
                     ),
                     nameCurrentRoom = message.bookingInfo.nameRoom
                 )
+
                 is Message.CloseModal -> copy(showBookingModal = false)
+                is Message.UpdateChangeEventTime -> copy(
+                    listRooms = updateTimeEvent(this.listRooms)
+                )
             }
+
+        fun updateTimeEvent(
+            listRooms: List<RoomInfoUiState>
+        ): List<RoomInfoUiState> {
+            val newListRooms = mutableListOf<RoomInfoUiState>()
+            listRooms.forEach {
+                if (it.changeEventTime != -1) {
+                    val roomNewTime = it.copy(changeEventTime = it.changeEventTime - 1)
+                    newListRooms.add(roomNewTime)
+                } else {
+                    newListRooms.add(it)
+                }
+            }
+            return newListRooms.toList()
+        }
+
+        fun updateState(
+            roomInfo: RoomInfoUiState
+        ): RoomInfoUiState {
+            when {
+                (roomInfo.state == RoomState.BUSY && roomInfo.changeEventTime == 0) ->
+                {
+                   /* val room = roomInfo.copy(
+                        room = roomInfo.room.copy(
+                            eventList = roomInfo.room.eventList.
+                        )
+                    )*/
+                }
+            }
+            return roomInfo
+        }
     }
 }
