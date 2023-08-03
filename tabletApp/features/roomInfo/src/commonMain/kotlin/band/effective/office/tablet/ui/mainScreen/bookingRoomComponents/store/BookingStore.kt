@@ -13,7 +13,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, Nothing>
         data class OnChangeLength(val change: Int) : Intent
         data class OnChangeOrganizer(val newOrganizer: String) : Intent
         object OnChangeExpanded : Intent
-        object OnChangeIsActive: Intent
+        data class OnChangeIsActive(val reset: Boolean): Intent
     }
 
     data class State(

@@ -25,7 +25,7 @@ fun FreeNegotiationsView(
     nameRoomCurrent: String,
     showBookingModal: Boolean,
     selectRoomComponent: SelectRoomComponent,
-    onMainScreen: () -> Unit,
+    onMainScreen: (reset: Boolean) -> Unit,
     onBookRoom: (name: String, maxDuration: Int) -> Unit
 ) {
     Column(

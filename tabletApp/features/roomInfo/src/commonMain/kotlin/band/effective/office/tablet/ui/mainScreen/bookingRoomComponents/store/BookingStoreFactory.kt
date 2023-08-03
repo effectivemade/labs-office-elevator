@@ -146,6 +146,9 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 }
 
                 is BookingStore.Intent.OnChangeIsActive -> {
+                    if(intent.reset){
+                        dispatch(Message.Reset)
+                    }
                     dispatch(Message.OnChangeIsActive)
                     reset(getState)
                 }

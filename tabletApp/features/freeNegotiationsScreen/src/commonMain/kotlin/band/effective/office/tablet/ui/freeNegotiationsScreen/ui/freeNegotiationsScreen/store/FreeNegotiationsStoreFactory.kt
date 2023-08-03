@@ -53,7 +53,6 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
         data class GetFreeRoomsInfo(val roomsInfo: List<RoomInfoUiState>) : Message
         data class SetBooking(val bookingInfo: Booking) : Message
         data class BookRoom(val nameRoom: String, val maxDuration: Int) : Message
-        object MainScreen : Message
         object CloseModal : Message
         object UpdateChangeEventTime : Message
 
@@ -75,7 +74,6 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
                     )
 
                 is FreeNegotiationsStore.Intent.OnMainScreen -> {
-                    dispatch(Message.MainScreen)
                     timer.close()
                 }
 
@@ -146,8 +144,6 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
                     },
                     showBookingModal = true
                 )
-
-                is Message.MainScreen -> copy()
                 is Message.GetFreeRoomsInfo -> copy(
                     listRooms = message.roomsInfo
                 )
@@ -188,11 +184,7 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
             when {
                 (roomInfo.state == RoomState.BUSY && roomInfo.changeEventTime == 0) ->
                 {
-                   /* val room = roomInfo.copy(
-                        room = roomInfo.room.copy(
-                            eventList = roomInfo.room.eventList.
-                        )
-                    )*/
+                   //TODO(take info room from back)
                 }
             }
             return roomInfo

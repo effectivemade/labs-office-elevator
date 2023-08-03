@@ -26,7 +26,8 @@ fun FreeNegotiationsScreen(component: FreeNegotiationsComponent) {
                 nameRoomCurrent = state.nameCurrentRoom,
                 showBookingModal = state.showBookingModal,
                 selectRoomComponent = component.selectRoomComponent,
-                onMainScreen = {component.onIntent(FreeNegotiationsStore.Intent.OnMainScreen)},
+                onMainScreen = { reset: Boolean ->
+                    component.onIntent(FreeNegotiationsStore.Intent.OnMainScreen(reset))},
                 onBookRoom =  {
                         name: String, maxDuration: Int ->
                     component.onIntent(FreeNegotiationsStore.Intent.OnBookingRoom(name, maxDuration))

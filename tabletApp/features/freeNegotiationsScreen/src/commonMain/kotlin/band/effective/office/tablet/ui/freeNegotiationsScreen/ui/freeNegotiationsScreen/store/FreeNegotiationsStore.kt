@@ -10,7 +10,7 @@ import java.util.Calendar
 interface FreeNegotiationsStore : Store< FreeNegotiationsStore.Intent, FreeNegotiationsStore.State, Nothing>{
 
     sealed interface Intent{
-        object OnMainScreen : Intent
+        data class OnMainScreen(val reset: Boolean) : Intent
         object CloseModal : Intent
         data class SetBooking(val bookingInfo: Booking): Intent
         data class OnBookingRoom(val name: String, val maxDuration: Int) : Intent

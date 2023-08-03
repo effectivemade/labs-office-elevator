@@ -48,6 +48,7 @@ class MainComponent(
             storeFactory = storeFactory,
             onBookingRoom = { bookingRoomComponent.getBooking() },
             onBookingOtherRoom = { OnSelectOtherRoomRequest() },
+            onMainScreen = { mainStore.accept(MainStore.Intent.CloseModal) },
             onCloseRequest = { mainStore.accept(MainStore.Intent.CloseModal) }
         )
 

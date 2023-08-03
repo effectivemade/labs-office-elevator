@@ -47,10 +47,10 @@ class RootComponent(componentContext: ComponentContext, private val storeFactory
                 FreeNegotiationsComponentImpl(
                     componentContext = componentContext,
                     storeFactory = storeFactory,
-                    onMainScreen = {
+                    onMainScreen = { reset: Boolean ->
                         navigation.pop()
                         (childStack.value.active.instance as Child.MainChild).
-                        component.bookingRoomComponent.sendIntent(BookingStore.Intent.OnChangeIsActive)
+                        component.bookingRoomComponent.sendIntent(BookingStore.Intent.OnChangeIsActive(reset))
                     },
                     onBookingInfo = {
                         (childStack.value.backStack.last().instance as Child.MainChild).component

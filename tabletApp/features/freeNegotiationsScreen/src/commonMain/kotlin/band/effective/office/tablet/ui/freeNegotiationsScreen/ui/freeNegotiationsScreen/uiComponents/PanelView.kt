@@ -20,7 +20,7 @@ import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.uiComponent
 fun PanelView(
     modifier: Modifier,
     nameRoom: String,
-    onMainScreen: () -> Unit
+    onMainScreen: (reset: Boolean) -> Unit
 ) {
     Box(
         modifier = modifier
