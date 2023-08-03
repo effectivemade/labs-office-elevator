@@ -9,37 +9,36 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import band.effective.office.tablet.domain.model.RoomInfo
+import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomComponent
+import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomView
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingRoomComponent
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingRoomView
+import band.effective.office.tablet.ui.mainScreen.mainScreen.uiComponents.Disconnect
 import band.effective.office.tablet.ui.mainScreen.mockComponets.MockSettingView
 import band.effective.office.tablet.ui.mainScreen.mockComponets.MockSettingsComponent
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.RoomInfoComponent
-import band.effective.office.tablet.ui.selectRoomScreen.FreeSelectRoomView
-import band.effective.office.tablet.ui.selectRoomScreen.RealFreeSelectRoomComponent
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponent
-import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomView
-import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponentImpl
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomScreen
 
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable
 fun MainScreenView(
-    room: RoomInfo,
     showBookingModal: Boolean,
     showFreeRoomModal: Boolean,
     mockComponent: MockSettingsComponent,
     bookingRoomComponent: BookingRoomComponent,
     selectRoomComponent: SelectRoomComponent,
-    onOpenFreeModalRequest: () -> Unit,
-    onCloseFreeModalRequest: () -> Unit,
-    onFreeRoomRequest: () -> Unit,
+    freeSelectRoomComponent: FreeSelectRoomComponent,
+    roomInfoComponent: RoomInfoComponent,
+    showModal: Boolean,
+    isDisconnect: Boolean
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colors.background)) {
         /*NOTE(Maksim Mishenko):
     * infoViewWidth is part of the width occupied by roomInfoView
     * infoViewWidth = infoViewFrame.width / mainScreenFrame.width
@@ -48,24 +47,28 @@ fun MainScreenView(
         Row(modifier = Modifier.fillMaxSize()) {
             RoomInfoComponent(
                 modifier = Modifier.fillMaxHeight().fillMaxWidth(infoViewWidth),
-                room = room,
-                onOpenModalRequest = { onOpenFreeModalRequest() }
+                roomInfoComponent = roomInfoComponent
             )
             Box(modifier = Modifier.fillMaxSize()) {
                 BookingRoomView(
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.background(color = MaterialTheme.colors.surface)
+                        .fillMaxSize()
                         .padding(25.dp),
                     bookingRoomComponent = bookingRoomComponent
                 )
-                MockSettingView(mockComponent)
+                Box() {
+                    MockSettingView(mockComponent)
+                    Disconnect(visible = isDisconnect)
+                }
             }
         }
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier.fillMaxSize()
+                .background(color = if (showModal) Color.Black.copy(alpha = 0.9f) else Color.Transparent)
+        ) {
             when {
                 showBookingModal -> SelectRoomScreen(component = selectRoomComponent)
-                showFreeRoomModal -> FreeSelectRoomView(
-                    onCloseRequest = { onCloseFreeModalRequest() },
-                    onFreeRoomRequest = { onFreeRoomRequest() })
+                showFreeRoomModal -> FreeSelectRoomView(freeSelectRoomComponent = freeSelectRoomComponent)
             }
         }
     }

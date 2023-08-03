@@ -40,7 +40,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import band.effective.office.elevator.ExtendedTheme
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.OutlinedTextColorsSetup
 import band.effective.office.elevator.components.PrimaryButton
@@ -67,11 +67,14 @@ fun AuthorizationTelegramScreen(component: AuthorizationTelegramComponent) {
                     showToast(errorMessage)
                 }
 
-                AuthorizationTelegramStore.Label.AuthorizationTelegramSuccess -> component.onOutput(
-                    AuthorizationTelegramComponent.Output.OpenContentFlow
-                )
+                is AuthorizationTelegramStore.Label.AuthorizationTelegramSuccess -> {
+                    component.changeTG(state.nick)
+                    component.onOutput(
+                        AuthorizationTelegramComponent.Output.OpenContentFlow
+                    )
+                }
 
-                AuthorizationTelegramStore.Label.ReturnInProfileAuthorization -> component.onOutput(
+                is AuthorizationTelegramStore.Label.ReturnInProfileAuthorization -> component.onOutput(
                     AuthorizationTelegramComponent.Output.OpenProfileScreen
                 )
             }
@@ -205,7 +208,7 @@ private fun AuthorizationTelegramComponent(
                                 .height(20.dp)
                                 .width(2.dp)
                                 .clip(RoundedCornerShape(4.dp))
-                                .background(if (state.isErrorNick) ExtendedTheme.colors.error else borderColor.value)
+                                .background(if (state.isErrorNick) ExtendedThemeColors.colors.error else borderColor.value)
                                 .padding(vertical = 14.dp)
                         )
                     }

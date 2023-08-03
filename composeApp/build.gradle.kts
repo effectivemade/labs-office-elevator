@@ -21,9 +21,9 @@ kotlin {
         }
     }
 
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
+    val iosArm64 = iosArm64()
+    val iosX64 = iosX64()
+    val iosSimulatorArm64 = iosSimulatorArm64()
 
     cocoapods {
         version = "1.0.0"
@@ -40,7 +40,9 @@ kotlin {
         }
         pod("GoogleSignIn") {}
     }
-
+    targets.getByName<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>("iosX64").compilations.forEach {
+        it.kotlinOptions.freeCompilerArgs += arrayOf("-linker-options", "-lsqlite3")
+    }
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -76,6 +78,10 @@ kotlin {
                 api(Dependencies.Moko.resourcesCompose)
 
                 implementation(Dependencies.Calendar.composeDatePicker)
+
+                implementation(Dependencies.SqlDelight.primitiveadaper)
+
+                implementation(project(":wheel-picker-compose"))
             }
         }
 

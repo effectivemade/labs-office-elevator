@@ -1,14 +1,12 @@
 package band.effective.office.elevator.ui.authorization.authorization_profile
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,10 +20,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Person
@@ -42,25 +37,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import band.effective.office.elevator.ExtendedTheme
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.OutlinedTextColorsSetup
 import band.effective.office.elevator.components.PrimaryButton
 import band.effective.office.elevator.expects.showToast
-import band.effective.office.elevator.getDefaultFont
 import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.theme_light_primary_stroke
-import band.effective.office.elevator.ui.authorization.authorization_phone.store.AuthorizationPhoneStore
 import band.effective.office.elevator.ui.authorization.authorization_profile.store.AuthorizationProfileStore
 import band.effective.office.elevator.ui.authorization.components.AuthSubTitle
 import band.effective.office.elevator.ui.authorization.components.AuthTabRow
 import band.effective.office.elevator.ui.authorization.components.AuthTitle
-import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
@@ -76,11 +66,13 @@ fun AuthorizationProfileScreen(component: AuthorizationProfileComponent) {
                     showToast(errorMessage)
                 }
 
-                AuthorizationProfileStore.Label.AuthorizationProfileSuccess -> component.onOutput(
-                    AuthorizationProfileComponent.Output.OpenTGScreen
-                )
+                is AuthorizationProfileStore.Label.AuthorizationProfileSuccess -> {
+                    component.onOutput(
+                        AuthorizationProfileComponent.Output.OpenTGScreen
+                    )
+                }
 
-                AuthorizationProfileStore.Label.ReturnInPhoneAuthorization -> component.onOutput(
+                is AuthorizationProfileStore.Label.ReturnInPhoneAuthorization -> component.onOutput(
                     AuthorizationProfileComponent.Output.OpenPhoneScreen
                 )
             }
@@ -218,7 +210,7 @@ fun AuthorizationProfileComponent(
                                 .height(20.dp)
                                 .width(2.dp)
                                 .clip(RoundedCornerShape(4.dp))
-                                .background(if (state.isErrorName) ExtendedTheme.colors.error else borderColor1.value)
+                                .background(if (state.isErrorName) ExtendedThemeColors.colors.error else borderColor1.value)
                                 .padding(vertical = 14.dp)
                         )
                     }
@@ -299,7 +291,7 @@ fun AuthorizationProfileComponent(
                                 .height(20.dp)
                                 .width(2.dp)
                                 .clip(RoundedCornerShape(4.dp))
-                                .background(if (state.isErrorPost) ExtendedTheme.colors.error else borderColor2.value)
+                                .background(if (state.isErrorPost) ExtendedThemeColors.colors.error else borderColor2.value)
                                 .padding(vertical = 14.dp)
                         )
                     }

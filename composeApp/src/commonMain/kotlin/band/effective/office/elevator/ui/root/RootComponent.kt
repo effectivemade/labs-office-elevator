@@ -85,10 +85,10 @@ class RootComponent internal constructor(
         }
 
     fun onOutput(output: Output) {
+        println("Output")
         when (output) {
-            Output.OpenContent -> navigation.replaceAll(Config.Content)
+            Output.OpenContent -> navigation.replaceAll(Config.Content, onComplete = { println("navigation compli") })
             Output.OpenAuthorizationFlow -> navigation.replaceAll(Config.Authorization)
-            else -> {}
         }
     }
 

@@ -10,4 +10,5 @@ class CurrentEventControllerServerImpl(
     cancelRepository: CancelRepository
 ) : CurrentEventController(roomUseCase, cancelRepository) {
     override fun update() = scope.launch {}
+    override fun stopUpdate() {}
 }

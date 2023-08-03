@@ -1,36 +1,36 @@
 package band.effective.office.tablet.ui.mainScreen.mainScreen.store
 
-import band.effective.office.tablet.domain.model.RoomInfo
 import com.arkivanov.mvikotlin.core.store.Store
 
 interface MainStore : Store<MainStore.Intent, MainStore.State, Nothing> {
     sealed interface Intent {
+        object OnOpenFreeRoomModal : Intent
+        object CloseModal : Intent
         object OnBookingCurrentRoomRequest : Intent
         object OnBookingOtherRoomRequest : Intent
-        object OnOpenFreeRoomModal : Intent
-        object OnFreeRoomIntent : Intent
-        object CloseModal : Intent
+        data class OnDisconnectChange(val newValue: Boolean) : Intent
+        object RebootRequest: Intent
     }
 
     data class State(
         val isLoad: Boolean,
         val isData: Boolean,
         val isError: Boolean,
-        val roomInfo: RoomInfo,
-        val error: String,
         val showBookingModal: Boolean,
-        val showFreeModal: Boolean
+        val showFreeModal: Boolean,
+        val isDisconnect: Boolean
     ) {
+        fun showModal() = showFreeModal || showBookingModal
+
         companion object {
             val defaultState =
                 State(
                     isLoad = true,
                     isData = false,
                     isError = false,
-                    roomInfo = RoomInfo.defaultValue,
-                    error = "",
                     showBookingModal = false,
-                    showFreeModal = false
+                    showFreeModal = false,
+                    isDisconnect = false
                 )
         }
     }
