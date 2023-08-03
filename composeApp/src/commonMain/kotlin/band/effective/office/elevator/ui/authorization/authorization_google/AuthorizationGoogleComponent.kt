@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.authorization.authorization_google
 
+import band.effective.office.elevator.domain.models.UserData
 import band.effective.office.elevator.ui.authorization.authorization_google.store.AuthorizationGoogleStore
 import band.effective.office.elevator.ui.authorization.authorization_google.store.AuthorizationGoogleStoreFactory
 import com.arkivanov.decompose.ComponentContext
@@ -7,12 +8,13 @@ import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import kotlinx.coroutines.flow.Flow
+import org.koin.core.component.KoinComponent
 
 class AuthorizationGoogleComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
     private val output: (Output) -> Unit
-) : ComponentContext by componentContext {
+) : ComponentContext by componentContext, KoinComponent {
 
     private val authorizationStore =
         instanceKeeper.getStore {
@@ -33,8 +35,7 @@ class AuthorizationGoogleComponent(
     }
 
     sealed class Output {
-        object OpenAuthorizationPhoneScreen : Output()
-//        object OpenMainScreen : Output()
+        data class OpenAuthorizationPhoneScreen(val userData: UserData) : Output()
     }
 
 }

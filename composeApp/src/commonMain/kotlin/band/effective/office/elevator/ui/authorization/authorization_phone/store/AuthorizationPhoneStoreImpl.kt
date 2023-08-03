@@ -5,27 +5,34 @@ import band.effective.office.elevator.ui.models.validator.Validator
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
+import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
+import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
+import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
 internal class AuthorizationPhoneStoreFactory(
     private val storeFactory: StoreFactory,
-    private val validator: Validator
-) :
-    KoinComponent {
+    private val validator: Validator,
+    private var userPhoneNumber: String
+) : KoinComponent {
 
+    @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): AuthorizationPhoneStore =
         object : AuthorizationPhoneStore,
             Store<Intent, State, Label> by storeFactory.create(
                 name = "Authorization phone",
                 initialState = State(),
+                bootstrapper = coroutineBootstrapper {
+                    dispatch(AuthorizationPhoneStoreFactory.Action.PushToken)
+                },
                 executorFactory = ::ExecutorImpl,
                 reducer = ReducerImpl
             ) {
         }
 
     private sealed interface Action {
-
+        object PushToken : Action
     }
 
     sealed interface Msg {
@@ -66,8 +73,17 @@ internal class AuthorizationPhoneStoreFactory(
 
             }
 
+        override fun executeAction(action: Action, getState: () -> State) {
+            when (action) {
+                is Action.PushToken -> {
+                    initPhoneNumber()
+                }
+            }
+        }
+
         private fun checkPhoneNumber(phoneNumber: String) {
             if (validator.checkPhone(phoneNumber)) {
+                userPhoneNumber = phoneNumber
                 publish(AuthorizationPhoneStore.Label.AuthorizationPhoneSuccess)
                 dispatch(
                     AuthorizationPhoneStoreFactory.Msg.Error(
@@ -86,6 +102,12 @@ internal class AuthorizationPhoneStoreFactory(
 
         private fun back() {
             publish(AuthorizationPhoneStore.Label.ReturnInGoogleAuthorization)
+        }
+
+        private fun initPhoneNumber() {
+            scope.launch {
+                dispatch(AuthorizationPhoneStoreFactory.Msg.Data(phoneNumber = userPhoneNumber))
+            }
         }
     }
 }
