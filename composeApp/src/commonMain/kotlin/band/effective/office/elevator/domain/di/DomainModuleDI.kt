@@ -5,6 +5,8 @@ import band.effective.office.elevator.data.OfficeElevatorRepositoryImpl
 import band.effective.office.elevator.domain.BookingRepository
 import band.effective.office.elevator.data.repository.UserProfileRepositoryImpl
 import band.effective.office.elevator.domain.OfficeElevatorRepository
+import band.effective.office.elevator.data.ProfileRepositoryImpl
+import band.effective.office.elevator.domain.ProfileRepository
 import band.effective.office.elevator.domain.useCase.ElevatorCallUseCase
 import band.effective.office.elevator.domain.useCase.GetBookingsUseCase
 import band.effective.office.elevator.domain.entity.AuthorizationEntity
