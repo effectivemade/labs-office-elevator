@@ -9,21 +9,25 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import band.effective.office.tablet.di.initRoomInfoKoin
 import com.arkivanov.decompose.defaultComponentContext
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 
 
 class MainActivity : AppCompatActivity() {
-    @RequiresApi(Build.VERSION_CODES.P)
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    companion object{
+        var isRunKioskMode = false
+    }
 
+    @RequiresApi(Build.VERSION_CODES.P)
+    fun runKioskMode(){
         val context = this
         val dpm = context.getSystemService(Context.DEVICE_POLICY_SERVICE)
                 as DevicePolicyManager
         val adminName = AdminReceiver.getComponentName(context)
+        val KIOSK_PACKAGE = "band.effective.office.tablet"
+        val APP_PACKAGES = arrayOf(KIOSK_PACKAGE)
+        if (isRunKioskMode || !dpm.isDeviceOwnerApp(adminName.packageName)) return
 
         val intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN).apply {
             putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, adminName)
@@ -32,22 +36,12 @@ class MainActivity : AppCompatActivity() {
         }
         startActivityForResult(intent, 1)
 
-
-
-        val KIOSK_PACKAGE = "band.effective.office.tablet"
-
-
-// ...
-
-
-        val a = dpm.isDeviceOwnerApp(KIOSK_PACKAGE)
-        val b = dpm.isDeviceOwnerApp(adminName.packageName)
-        val APP_PACKAGES = arrayOf(adminName.packageName, KIOSK_PACKAGE)
         dpm.setLockTaskPackages(adminName, APP_PACKAGES)
 
         // Set an option to turn on lock task mode when starting the activity.
         val options = ActivityOptions.makeBasic()
         options.setLockTaskEnabled(true)
+        isRunKioskMode = true
 
         // Start our kiosk app's main activity with our lock task mode option.
         val packageManager = context.packageManager
@@ -55,8 +49,11 @@ class MainActivity : AppCompatActivity() {
         if (launchIntent != null) {
             context.startActivity(launchIntent, options.toBundle())
         }
-
-
+    }
+    @RequiresApi(Build.VERSION_CODES.P)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        runKioskMode()
+        super.onCreate(savedInstanceState)
         initRoomInfoKoin()
         setContent {
             App(defaultComponentContext(), DefaultStoreFactory())
