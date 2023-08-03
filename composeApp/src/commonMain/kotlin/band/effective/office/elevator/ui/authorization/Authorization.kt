@@ -1,10 +1,12 @@
 package band.effective.office.elevator.ui.authorization
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import band.effective.office.elevator.ui.authorization.authorization_google.AuthorizationGoogleScreen
 import band.effective.office.elevator.ui.authorization.authorization_phone.AuthorizationPhoneScreen
 import band.effective.office.elevator.ui.authorization.authorization_profile.AuthorizationProfileScreen
 import band.effective.office.elevator.ui.authorization.authorization_telegram.AuthorizationTelegramScreen
+import band.effective.office.elevator.ui.authorization.store.AuthorizationStore
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.plus
@@ -13,6 +15,15 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stac
 
 @Composable
 fun AuthorizationScreen(component: AuthorizationComponent) {
+
+    LaunchedEffect(component) {
+        component.label.collect { label ->
+            when (label) {
+                AuthorizationStore.Label.AuthorizationSuccess -> TODO()
+            }
+        }
+    }
+
     Children(
         stack = component.childStack,
         animation = stackAnimation(fade() + scale()),

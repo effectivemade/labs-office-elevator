@@ -5,6 +5,7 @@ plugins {
     id(Plugins.MultiplatformCompose.plugin)
     id(Plugins.CocoaPods.plugin)
     id(Plugins.Android.plugin)
+    id(Plugins.SQLDelight.plugin) version Plugins.SQLDelight.version
     id(Plugins.BuildConfig.plugin)
     id(Plugins.Serialization.plugin)
     id(Plugins.Parcelize.plugin)
@@ -20,9 +21,9 @@ kotlin {
         }
     }
 
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
+    val iosArm64 = iosArm64()
+    val iosX64 = iosX64()
+    val iosSimulatorArm64 = iosSimulatorArm64()
 
     cocoapods {
         version = "1.0.0"
@@ -39,7 +40,9 @@ kotlin {
         }
         pod("GoogleSignIn") {}
     }
-
+    targets.getByName<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>("iosX64").compilations.forEach {
+        it.kotlinOptions.freeCompilerArgs += arrayOf("-linker-options", "-lsqlite3")
+    }
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -75,6 +78,10 @@ kotlin {
                 api(Dependencies.Moko.resourcesCompose)
 
                 implementation(Dependencies.Calendar.composeDatePicker)
+
+                implementation(Dependencies.SqlDelight.primitiveadaper)
+
+                implementation(project(":wheel-picker-compose"))
             }
         }
 
@@ -94,7 +101,7 @@ kotlin {
                 api(Dependencies.Ktor.Client.Android)
                 implementation(Dependencies.Google.SignIn)
                 implementation(Dependencies.AndroidX.activityKtx)
-
+                implementation(Dependencies.SqlDelight.androidDriver)
                 // Koin
                 api(Dependencies.Koin.android)
 
@@ -113,6 +120,7 @@ kotlin {
             dependencies {
                 implementation(Dependencies.Ktor.Client.Darwin)
                 implementation(files("iosApp/GoogleAuthorization/GoogleAuthorization/Sources"))
+                implementation(Dependencies.SqlDelight.nativeDriver)
             }
         }
 
@@ -201,4 +209,12 @@ buildConfig {
         "iosClient",
         "\"726357293621-hegk0410bsb1a5hvl3ihpc4d2bfkmlgb.apps.googleusercontent.com\""
     )
+}
+
+sqldelight {
+    databases {
+        create("Database") {
+            packageName.set("band.effective.office.elevator")
+        }
+    }
 }
