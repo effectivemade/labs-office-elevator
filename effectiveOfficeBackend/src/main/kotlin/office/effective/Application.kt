@@ -31,6 +31,7 @@ fun Application.module() {
     configureAuthentication()
     configureSerialization()
     configureRouting()
+    configureValidation()
     configureExceptionHandling()
     configureSwagger()
 }

@@ -46,7 +46,6 @@ class BookingFacade(private val bookingService: BookingService,
     }
 
     fun post(bookingDTO: BookingDTO): BookingDTO {
-        //todo: validation
         val model = bookingConverter.dtoToModel(bookingDTO)
         val dto: BookingDTO = transactionManager.useTransaction({
             val savedModel = bookingService.save(model)

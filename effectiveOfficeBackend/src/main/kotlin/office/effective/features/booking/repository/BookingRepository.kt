@@ -81,7 +81,6 @@ class BookingRepository(private val database: Database, private val converter: B
         saveParticipants(booking.participants, entity.id)
         return booking
     }
-
     private fun saveParticipants(participantModels: List<UserModel>, bookingId: UUID): List<UserEntity> {
         val participantList = findParticipantEntities(participantModels)
         for(participant in participantList) {
@@ -92,7 +91,6 @@ class BookingRepository(private val database: Database, private val converter: B
         }
         return participantList
     }
-
     private fun findParticipantEntities(participantModels: List<UserModel>): List<UserEntity> {
         val participantList = mutableListOf<UserEntity>()
 
