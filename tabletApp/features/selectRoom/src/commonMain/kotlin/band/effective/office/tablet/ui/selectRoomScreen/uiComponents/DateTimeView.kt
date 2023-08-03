@@ -27,7 +27,7 @@ import band.effective.office.tablet.utils.time24
 fun DateTimeView(modifier: Modifier, booking: Booking) {
     Box(
         modifier = modifier,
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.CenterStart
     ) {
         Row {
             Text(

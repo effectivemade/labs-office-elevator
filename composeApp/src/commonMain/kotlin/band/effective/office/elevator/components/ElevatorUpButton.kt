@@ -1,0 +1,31 @@
+package band.effective.office.elevator.components
+
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.dp
+
+@Composable
+fun ElevatorUpButton(
+    buttonText: String,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = MaterialTheme.colors.primary,
+            contentColor = MaterialTheme.colors.background
+        ),
+        shape = RoundedCornerShape(48.dp),
+        contentPadding = PaddingValues(horizontal = 24.dp, vertical = 5.dp)
+    ) {
+        Text(
+            text = buttonText,
+            style = MaterialTheme.typography.button,
+        )
+    }
+}

@@ -16,23 +16,23 @@ class FreeNegotiationsComponent(
             stuff = listOf(
                 RoomCharacteristicsItem(
                     icon = Icons.Default.Person,
-                    text = "5"
+                    text = "5 человек"
                 ),
                 RoomCharacteristicsItem(
                     icon = Icons.Default.Person,
-                    text = "5"
+                    text = "5 человек"
                 ),
                 RoomCharacteristicsItem(
                     icon = Icons.Default.Person,
-                    text = "5"
+                    text = "5 человек"
                 ),
                 RoomCharacteristicsItem(
                     icon = Icons.Default.Person,
-                    text = "5"
+                    text = "5 человек"
                 ),
                 RoomCharacteristicsItem(
                     icon = Icons.Default.Person,
-                    text = "5"
+                    text = "5 человек"
                 )
             )
         ),
@@ -41,7 +41,7 @@ class FreeNegotiationsComponent(
             stuff = listOf(
                 RoomCharacteristicsItem(
                     icon = Icons.Default.Person,
-                    text = "5"
+                    text = "5 человек"
                 )
             )
         ),
@@ -50,7 +50,7 @@ class FreeNegotiationsComponent(
             stuff = listOf(
                 RoomCharacteristicsItem(
                     icon = Icons.Default.Person,
-                    text = "5"
+                    text = "5 человек"
                 )
             )
         ),

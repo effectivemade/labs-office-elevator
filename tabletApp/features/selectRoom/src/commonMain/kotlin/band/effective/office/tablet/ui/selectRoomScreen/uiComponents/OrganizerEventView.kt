@@ -23,7 +23,7 @@ import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 fun OrganizerEventView(modifier: Modifier, booking: Booking) {
     Box(
         modifier = modifier,
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.CenterStart
     ) {
         Text(
             text = booking.eventInfo.organizer,

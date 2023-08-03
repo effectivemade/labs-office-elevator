@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Office Elevator</string>
+    <string name="sign_in_google">Sign in to Effective email</string>
+    <string name="something_went_wrong">Something went wrong. Please try again</string>
+    <string name="company_name">effective\noffice</string>
+
+    <string name="search_employee">Search employee</string>
+    <string name="employee_in_office">In office</string>
+
+    <string name="company_name">Effective</string>
+
+    <!--Auth strings-->
+    <string name="_continue">Continue</string>
+    <string name="input_number">Enter number</string>
+    <string name="select_number">Specify a number to which colleagues could transfer money to you using SBP</string>
+    <string name="number_hint">Phone number</string>
+    <string name="input_profile">Fill in your profile</string>
+    <string name="select_profile">This is necessary for employees to recognize you</string>
+    <string name="profile_hint">Last Name First Name</string>
+    <string name="profile_hint_">Occupation</string>
+    <string name="input_employee">Specify contacts</string>
+    <string name="select_employee">This is necessary for colleagues to be able to contact you conveniently</string>
+    <string name="employee_hint">Telegram nickname</string>
+
+    <string name="by_date"> By date </string>
+    <string name="show_map">Show on map</string>
+    <string name="book_a_seat">Book a seat</string>
+    <string name="nearest_bookings">Your\nupcoming\nbookings</string>
+    <string name="none_booking_seat">You dont have any bookings yet</string>
+
+    <string name="filter_by_category">Filter by category</string>
+    <string name="working_place">Working Place</string>
+    <string name="meeting_room">Meeting Room</string>
+    <string name="reset_filter">Reset</string>
+
+    <string name="cansel">Cansel</string>
+    <string name="ok">Ok</string>
+
+    <!--Main Screen-->
+    <string name="filter">Filters</string>
+
+    <!-- Buttons -->
+    <string name="_continue">Continue</string>
+
+    <!--Tab titles-->
+    <string name="profile">Profile</string>
+    <string name="main">Main</string>
+    <string name="booking">Booking</string>
+    <string name="employees">Employees</string>
+
+    <string name="elevator">Elevator</string>
+    <string name="elevator_button" >Lift</string>
+
+    <!--Error messages-->
+    <string name="you_need_to_sign_in">You need to sign in for the app to work</string>
+    <string name="network_error">Network connection error</string>
+    <string name="developer_error">The developer seems to have broken something. Report the problem</string>
+    <string name="cancelled_error">You canceled the operation. Try again</string>
+    <string name="invalid_account_error">You are using the wrong account</string>
+    <string name="timout_error">Request time is up. Try again</string>
+    <string name="server_error">Server error ${code}</string>
+    <string name="number_format_error">Invalid phone number format</string>
+    <string name="profile_format_error">Enter your profile</string>
+    <string name="telegram_format_error">Specify nickname in telegram</string>
+    <string name="phone_plus_seven">+7</string>
+    <string name="telegram_symbol">@</string>
+
+    <!-- Success messages -->
+    <string name="elevator_called_successfully">Successfully!</string>
+
+    <!-- Profile specifics-->
+    <string name="exit">Exit</string>
+    <string name="phone">Phone number</string>
+    <string name="telegram">Telegram</string>
+
+    <!-- Edit Profile-->
+    <string name="profile_data">Profile Data</string>
+    <string name="last_name_and_first_name">Last name and First name</string>
+    <string name="post">Post</string>
+    <string name="phone_number">Telephone number</string>
+    <string name="save">Save</string>
+
+    <!-- Employee -->
+    <string name="about_the_employee">About the employee</string>
+    <string name="upcoming_bookings">Upcoming bookings</string>
+    <string name="transfer">Transfer</string>
+</resources>

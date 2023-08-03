@@ -18,6 +18,7 @@ private val darkColors = darkColors(
     background = md_theme_dark_background,
     surface = md_theme_dark_surface,
     onError = md_theme_dark_onError,
+    onPrimary = md_theme_dark_onPrimary
 )
 
 val CustomDarkColors = CustomColorsPalette(
@@ -68,6 +69,7 @@ data class CustomColorsPalette (
     val tertiaryTextAndIcon: Color = Color.Unspecified,
     val pressedPrimaryButton: Color = Color.Unspecified,
     val disabledPrimaryButton: Color = Color.Unspecified,
+    val parameterTitle: Color = Color.Unspecified,
 )
 
 val LocalCustomColorsPalette = staticCompositionLocalOf { CustomColorsPalette() }
@@ -77,7 +79,7 @@ fun AppTheme(
     useDarkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colors = if (!useDarkTheme) {
+   val colors = if (!useDarkTheme) {
         lightColors
     } else {
         darkColors

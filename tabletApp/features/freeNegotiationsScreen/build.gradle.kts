@@ -3,10 +3,15 @@ plugins {
     id(Plugins.MultiplatformCompose.plugin)
     id(Plugins.Kotlin.plugin)
     id(Plugins.Parcelize.plugin)
+    id(Plugins.Libres.plugin)
 }
 
 android {
-   compileSdk = 33
+    compileSdk = 33
+    sourceSets["main"].apply {
+        res.srcDirs("src/androidMain/resources")
+        res.srcDir("build/generated/libres/android/resources")
+    }
 }
 
 kotlin {
@@ -18,6 +23,7 @@ kotlin {
         }
     }
 
+
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -28,7 +34,32 @@ kotlin {
                 // Decompose
                 implementation(Dependencies.Decompose.decompose)
                 implementation(Dependencies.Decompose.extensions)
+
+                //Koin
+                api(Dependencies.Koin.core)
+
+                //Libres
+                implementation(Dependencies.Libres.libresCompose)
+
+                implementation(project(":tabletApp:features:core"))
+            }
+        }
+
+        val androidMain by getting {
+            dependencies {
+                //Koin
+                api(Dependencies.Koin.android)
             }
         }
     }
+
+    libres {
+        // https://github.com/Skeptick/libres#setup
+        generatedClassName = "MainRes" // "Res" by default
+        generateNamedArguments = true // false by default
+        baseLocaleLanguageCode = "ru" // "en" by default
+        camelCaseNamesForAppleFramework = true // false by default
+
+    }
+
 }
