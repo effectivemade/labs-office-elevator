@@ -28,13 +28,19 @@ import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiCompon
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.DateTimeView
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.EventDurationView
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.EventOrganizerView
+import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.pickerDateTime.DateTimePickerComponent
+import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.pickerDateTime.DateTimePickerStore
 import band.effective.office.tablet.ui.theme.h7
 import io.github.skeptick.libres.compose.painterResource
 import java.util.Calendar
 
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable
-fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: BookingRoomComponent) {
+fun BookingRoomView(
+    modifier: Modifier = Modifier,
+    bookingRoomComponent: BookingRoomComponent,
+    dateTimePickerComponent: DateTimePickerComponent
+) {
     val state by bookingRoomComponent.state.collectAsState()
     BookingRoomView(
         modifier = modifier,
@@ -59,7 +65,7 @@ fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: Booking
         isOrganizerError = state.isOrganizerError,
         onRequestBookingCurrentRoom = { bookingRoomComponent.sendIntent(BookingStore.Intent.OnBookingCurrentRoom()) },
         onRequestBookingOtherRoom = { bookingRoomComponent.sendIntent(BookingStore.Intent.OnBookingOtherRoom()) },
-        onOpenDateTimePickerModal = { bookingRoomComponent.sendIntent(BookingStore.Intent.OnDateTimePickerModal()) },
+        onOpenDateTimePickerModal = { dateTimePickerComponent.sendIntent(DateTimePickerStore.Intent.OnDateTimePickerModal()) },
         roomName = state.roomName
     )
 }

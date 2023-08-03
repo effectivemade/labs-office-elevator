@@ -216,9 +216,9 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         fun setNewDate(state: BookingStore.State, changeDay: Int, changeMonth: Int) = scope.launch() {
             val newDate = (state.selectDate.clone() as Calendar).apply {
                 set(
-                    this[Calendar.YEAR],
-                    changeMonth,
-                    changeDay
+                    /* year = */ this[Calendar.YEAR],
+                    /* month = */ changeMonth,
+                    /* date = */ changeDay
                 )
             }
             dispatch(
