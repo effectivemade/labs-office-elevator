@@ -5,5 +5,5 @@ import band.effective.office.tablet.network.repository.BookingRepository
 
 /**Use case for booking room*/
 class BookingUseCase(private val repository: BookingRepository) {
-    suspend operator fun invoke(eventInfo: EventInfo) = repository.bookingRoom(eventInfo)
+    suspend operator fun invoke(eventInfo: EventInfo, room: String = "Sirius") = repository.bookingRoom(eventInfo, room)
 }

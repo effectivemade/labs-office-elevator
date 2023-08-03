@@ -17,8 +17,8 @@ class RoomRepositoryImpl(private val api: Api) : RoomRepository {
     private val roomInfo: MutableStateFlow<Either<ErrorWithData<RoomInfo>, RoomInfo>?> =
         MutableStateFlow(null)
 
-    private suspend fun loadRoomInfo(): Either<ErrorWithData<RoomInfo>, RoomInfo> {
-        val response = api.getRoomInfo()
+    private suspend fun loadRoomInfo(room: String): Either<ErrorWithData<RoomInfo>, RoomInfo> {
+        val response = api.getRoomInfo(room)
         val save = roomInfo.value
         when (response) {
             is Either.Error -> roomInfo.update {
@@ -39,20 +39,21 @@ class RoomRepositoryImpl(private val api: Api) : RoomRepository {
         return roomInfo.value!!
     }
 
-    override suspend fun getRoomInfo(): Either<ErrorWithData<RoomInfo>, RoomInfo> =
+    override suspend fun getRoomInfo(room: String): Either<ErrorWithData<RoomInfo>, RoomInfo> =
         if (roomInfo.value == null)
-            loadRoomInfo()
+            loadRoomInfo(room)
         else
             roomInfo.value!!
 
     override fun subscribeOnUpdates(
         scope: CoroutineScope,
+        room: String,
         handler: (Either<ErrorWithData<RoomInfo>, RoomInfo>) -> Unit
     ): Job =
         scope.launch(Dispatchers.IO) {
             api.subscribeOnWebHock(this) {
                 if (it is WebServerEvent.RoomInfoUpdate)
-                    launch(Dispatchers.IO) { roomInfo.update { loadRoomInfo() } }
+                    launch(Dispatchers.IO) { roomInfo.update { loadRoomInfo(room) } }
             }
             roomInfo.collect { if (it != null) handler(it) }
         }

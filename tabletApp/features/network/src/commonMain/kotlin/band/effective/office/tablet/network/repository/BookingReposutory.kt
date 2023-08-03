@@ -5,5 +5,5 @@ import band.effective.office.tablet.domain.model.EventInfo
 import network.model.ErrorResponse
 
 interface BookingRepository {
-    suspend fun bookingRoom(eventInfo: EventInfo): Either<ErrorResponse, String>
+    suspend fun bookingRoom(eventInfo: EventInfo, room: String): Either<ErrorResponse, String>
 }
