@@ -1,10 +1,11 @@
 package band.effective.office.elevator.ui.root
 
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import band.effective.office.elevator.ui.authorization.AuthorizationScreen
-import band.effective.office.elevator.ui.main.MainScreen
+import band.effective.office.elevator.ui.content.Content
 import band.effective.office.elevator.ui.root.store.RootStore
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
@@ -17,9 +18,10 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
 
     LaunchedEffect(component) {
         component.label.collect { label ->
+            println("was label")
             when (label) {
                 RootStore.Label.UserAlreadySigned -> component.onOutput(
-                    RootComponent.Output.OpenMainScreen
+                    RootComponent.Output.OpenContent
                 )
 
                 RootStore.Label.UserNotSigned -> component.onOutput(RootComponent.Output.OpenAuthorizationFlow)
@@ -34,9 +36,10 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
     ) {
         when (val child = it.instance) {
             is RootComponent.Child.AuthorizationChild -> AuthorizationScreen(child.component)
-            is RootComponent.Child.MainChild -> MainScreen(child.component)
+            is RootComponent.Child.ContentChild -> Content(child.component)
             RootComponent.Child.Undefined -> {
                 // Wait until fetch Google account if user signed in previously
+                Text("Im here")
             }
         }
     }

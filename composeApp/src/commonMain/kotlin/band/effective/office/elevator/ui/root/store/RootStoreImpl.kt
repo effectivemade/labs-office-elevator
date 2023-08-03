@@ -1,6 +1,7 @@
 package band.effective.office.elevator.ui.root.store
 
 import band.effective.office.elevator.data.ApiResponse
+import band.effective.office.elevator.data.database.DBSource
 import band.effective.office.elevator.domain.GoogleSignIn
 import band.effective.office.elevator.ui.root.store.RootStore.Label
 import band.effective.office.elevator.ui.root.store.RootStore.State
@@ -50,7 +51,6 @@ internal class RootStoreImplFactory(
                     ApiResponse.Error.UnknownError -> {
                         publish(Label.UserNotSigned)
                     }
-
                     is ApiResponse.Success -> publish(Label.UserAlreadySigned)
                 }
             }

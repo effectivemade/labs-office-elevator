@@ -1,12 +1,15 @@
+import dev.icerock.gradle.MRVisibility.Public
+
 plugins {
     id(Plugins.Kotlin.plugin)
     id(Plugins.MultiplatformCompose.plugin)
     id(Plugins.CocoaPods.plugin)
     id(Plugins.Android.plugin)
-    id(Plugins.Libres.plugin)
+    id(Plugins.SQLDelight.plugin) version Plugins.SQLDelight.version
     id(Plugins.BuildConfig.plugin)
     id(Plugins.Serialization.plugin)
     id(Plugins.Parcelize.plugin)
+    id(Plugins.Moko.plugin)
 }
 
 kotlin {
@@ -18,9 +21,9 @@ kotlin {
         }
     }
 
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
+    val iosArm64 = iosArm64()
+    val iosX64 = iosX64()
+    val iosSimulatorArm64 = iosSimulatorArm64()
 
     cocoapods {
         version = "1.0.0"
@@ -37,14 +40,17 @@ kotlin {
         }
         pod("GoogleSignIn") {}
     }
-
+    targets.getByName<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>("iosX64").compilations.forEach {
+        it.kotlinOptions.freeCompilerArgs += arrayOf("-linker-options", "-lsqlite3")
+    }
     sourceSets {
         val commonMain by getting {
             dependencies {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material)
-                implementation(Dependencies.Libres.libresCompose)
+                implementation(compose.material3)
+                implementation(compose.materialIconsExtended)
                 implementation(Dependencies.ImageLoader.imageLoader)
                 implementation(Dependencies.Napier.napier)
                 implementation(Dependencies.KotlinxCoroutines.core)
@@ -67,12 +73,22 @@ kotlin {
                 api(Dependencies.Koin.core)
 
                 api(Dependencies.Essenty.essenty)
+
+                //Moko
+                api(Dependencies.Moko.resourcesCompose)
+
+                implementation(Dependencies.Calendar.composeDatePicker)
+
+                implementation(Dependencies.SqlDelight.primitiveadaper)
+
+                implementation(project(":wheel-picker-compose"))
             }
         }
 
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
+                implementation("dev.icerock.moko:resources-test:0.23.0")
             }
         }
 
@@ -85,7 +101,7 @@ kotlin {
                 api(Dependencies.Ktor.Client.Android)
                 implementation(Dependencies.Google.SignIn)
                 implementation(Dependencies.AndroidX.activityKtx)
-
+                implementation(Dependencies.SqlDelight.androidDriver)
                 // Koin
                 api(Dependencies.Koin.android)
 
@@ -104,6 +120,7 @@ kotlin {
             dependencies {
                 implementation(Dependencies.Ktor.Client.Darwin)
                 implementation(files("iosApp/GoogleAuthorization/GoogleAuthorization/Sources"))
+                implementation(Dependencies.SqlDelight.nativeDriver)
             }
         }
 
@@ -134,7 +151,6 @@ android {
     sourceSets["main"].apply {
         manifest.srcFile("src/androidMain/AndroidManifest.xml")
         res.srcDirs("src/androidMain/resources")
-        res.srcDir("build/generated/libres/android/resources")
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -171,13 +187,11 @@ android {
     }
 }
 
-libres {
-    // https://github.com/Skeptick/libres#setup
-    generatedClassName = "MainRes" // "Res" by default
-    generateNamedArguments = true // false by default
-    baseLocaleLanguageCode = "ru" // "en" by default
-    camelCaseNamesForAppleFramework = true // false by default
-
+multiplatformResources {
+    multiplatformResourcesPackage = "band.effective.office.elevator"
+    multiplatformResourcesVisibility = Public
+    multiplatformResourcesClassName = "MainRes"
+    iosBaseLocalizationRegion = "ru" // optional, default "en"
 }
 
 buildConfig {
@@ -195,4 +209,12 @@ buildConfig {
         "iosClient",
         "\"726357293621-hegk0410bsb1a5hvl3ihpc4d2bfkmlgb.apps.googleusercontent.com\""
     )
+}
+
+sqldelight {
+    databases {
+        create("Database") {
+            packageName.set("band.effective.office.elevator")
+        }
+    }
 }
