@@ -25,17 +25,11 @@ class DateTimePickerComponent(
     @OptIn(ExperimentalCoroutinesApi::class)
     val state = dateTimePickerStore.stateFlow
 
-//    init {
-//        componentContext.componentCoroutineScope().launch {
-//            state.collect { onChangeDate(state.value.selectDate.clone() as Calendar) }
-//        }
-//    }
-
     fun sendIntent(intent: DateTimePickerStore.Intent) {
         when (intent) {
             is DateTimePickerStore.Intent.OnDateTimePickerModal -> onOpenDateTimePickerModal()
             is DateTimePickerStore.Intent.CloseModal -> onCloseRequest()
-            is DateTimePickerStore.Intent.OnSetDate -> { day: Int, month: Int -> changeDate(day, month) }
+            is DateTimePickerStore.Intent.OnSetDate -> changeDate
         }
     }
 }

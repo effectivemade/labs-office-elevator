@@ -15,6 +15,8 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, Nothing>
         data class OnChangeOrganizer(val newOrganizer: String) : Intent
         object OnChangeExpanded : Intent
 
+        object OnChangeIsCurrentSelectTime: Intent
+
         data class OnDateTimePickerModal(val close: (() -> Unit)? = null): Intent
         data class CloseModal(val close: (() -> Unit)? = null) : Intent
     }

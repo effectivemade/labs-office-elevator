@@ -2,6 +2,7 @@ package band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiCompo
 
 import android.annotation.SuppressLint
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -32,11 +33,11 @@ import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun DateTimePickerModalView(dateTimePickerComponent: DateTimePickerComponent) {
+fun DateTimePickerModalView(bookingRoomComponent: BookingRoomComponent) {
     DateTimePickerModalView(
-        dateTimePickerComponent = dateTimePickerComponent,
-        onCloseRequest = { dateTimePickerComponent.sendIntent(DateTimePickerStore.Intent.CloseModal()) },
-        onSetDate = { day: Int, month: Int -> dateTimePickerComponent.sendIntent(DateTimePickerStore.Intent.OnSetDate(day, month)) }
+        bookingRoomComponent = bookingRoomComponent,
+        onCloseRequest = { bookingRoomComponent.sendIntent(BookingStore.Intent.CloseModal()) },
+        onSetDate = { day: Int, month: Int -> bookingRoomComponent.sendIntent(BookingStore.Intent.OnSetDate(day, month)) }
     )
 }
 
@@ -44,11 +45,11 @@ fun DateTimePickerModalView(dateTimePickerComponent: DateTimePickerComponent) {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DateTimePickerModalView(
-    dateTimePickerComponent: DateTimePickerComponent,
+    bookingRoomComponent: BookingRoomComponent,
     onCloseRequest: () -> Unit,
     onSetDate: (changedDay: Int, changedMonth: Int) -> Unit
 ) {
-    val stateDateTime by dateTimePickerComponent.state.collectAsState()
+    val stateDateTime by bookingRoomComponent.state.collectAsState()
     val selectedDateTime by remember { mutableStateOf(stateDateTime.selectDate) }
 
 

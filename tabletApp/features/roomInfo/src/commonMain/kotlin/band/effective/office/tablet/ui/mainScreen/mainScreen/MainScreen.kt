@@ -32,7 +32,6 @@ fun MainScreen(component: MainComponent) {
                 selectRoomComponent = component.selectRoomComponent,
                 roomInfoComponent = component.roomInfoComponent,
                 freeSelectRoomComponent = component.freeSelectRoomComponent,
-                dateTimePickerComponent = component.dateTimePickerComponent,
                 showModal = state.showModal(),
                 isDisconnect = state.isDisconnect
             )

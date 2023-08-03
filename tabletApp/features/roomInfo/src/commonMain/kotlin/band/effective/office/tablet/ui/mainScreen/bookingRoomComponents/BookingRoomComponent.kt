@@ -4,6 +4,9 @@ import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store.BookingStore
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store.BookingStoreFactory
+import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.pickerDateTime.DateTimePickerComponent
+import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.pickerDateTime.DateTimePickerStore
+import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
 import band.effective.office.tablet.utils.componentCoroutineScope
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
@@ -38,6 +41,15 @@ class BookingRoomComponent(
         }
     }
 
+    val dateTimePickerComponent: DateTimePickerComponent =
+        DateTimePickerComponent(
+            componentContext = componentContext,
+            storeFactory = storeFactory,
+            onOpenDateTimePickerModal = { DateTimePickerStore.Intent.OnDateTimePickerModal() },
+            onCloseRequest = { DateTimePickerStore.Intent.CloseModal() },
+            changeDate = { day: Int, month: Int -> bookingStore.accept(BookingStore.Intent.OnSetDate(day, month)) }
+        )
+
     fun getBooking(): Booking {
         val startDate =
             if (state.value.isSelectCurrentTime) GregorianCalendar() else state.value.selectDate.clone() as Calendar
@@ -67,6 +79,8 @@ class BookingRoomComponent(
             is BookingStore.Intent.OnDateTimePickerModal -> onOpenDateTimePickerModal()
 
             is BookingStore.Intent.CloseModal -> bookingStore.accept(intent.copy(onCloseRequest))
+
+            is BookingStore.Intent.OnChangeIsCurrentSelectTime -> bookingStore.accept(BookingStore.Intent.OnChangeIsCurrentSelectTime)
 
             else -> bookingStore.accept(intent)
         }

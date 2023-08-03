@@ -53,7 +53,10 @@ class DateTimePickerStoreFactory(private val storeFactory: StoreFactory) : KoinC
             getState: () -> DateTimePickerStore.State
         ) {
             when (intent) {
-                is DateTimePickerStore.Intent.OnSetDate -> setNewDate(getState(), intent.changedDay, intent.changedMonth)
+                is DateTimePickerStore.Intent.OnSetDate -> {
+                    setNewDate(getState(), intent.changedDay, intent.changedMonth)
+
+                }
                 is DateTimePickerStore.Intent.CloseModal -> intent.close?.invoke()
                 else -> {}
             }

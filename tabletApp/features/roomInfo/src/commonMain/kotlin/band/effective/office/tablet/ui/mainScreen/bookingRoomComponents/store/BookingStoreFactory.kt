@@ -144,6 +144,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 }
                 is BookingStore.Intent.OnSetDate -> setNewDate(getState(), intent.changedDay, intent.changedMonth)
                 is BookingStore.Intent.CloseModal -> intent.close?.invoke()
+                is BookingStore.Intent.OnChangeIsCurrentSelectTime -> changeIsSelectCurrentTime(getState())
 
                 BookingStore.Intent.OnChangeExpanded -> dispatch(Message.OnChangeExpanded)
 
@@ -238,6 +239,17 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     selectDate = state.selectDate,
                     length = state.length + change,
                     isSelectCurrentTime = state.isSelectCurrentTime
+                )
+            )
+            reset()
+        }
+
+        fun changeIsSelectCurrentTime(state: BookingStore.State) {
+            dispatch(
+                Message.ChangeEvent(
+                    selectDate = state.selectDate,
+                    length = state.length,
+                    isSelectCurrentTime = !state.isSelectCurrentTime
                 )
             )
             reset()
