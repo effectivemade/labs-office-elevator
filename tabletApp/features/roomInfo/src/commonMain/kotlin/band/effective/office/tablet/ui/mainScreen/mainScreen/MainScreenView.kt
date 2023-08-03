@@ -19,6 +19,7 @@ import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomComponent
 import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomView
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingRoomComponent
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingRoomView
+import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.pickerDateTime.DateTimePickerComponent
 import band.effective.office.tablet.ui.mainScreen.mainScreen.uiComponents.Disconnect
 import band.effective.office.tablet.ui.mainScreen.mockComponets.MockSettingView
 import band.effective.office.tablet.ui.mainScreen.mockComponets.MockSettingsComponent
@@ -40,7 +41,8 @@ fun MainScreenView(
     freeSelectRoomComponent: FreeSelectRoomComponent,
     roomInfoComponent: RoomInfoComponent,
     showModal: Boolean,
-    isDisconnect: Boolean
+    isDisconnect: Boolean,
+    dateTimePickerComponent: DateTimePickerComponent
 ) {
     Box(modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colors.background)) {
     /*NOTE(Maksim Mishenko):
@@ -60,6 +62,7 @@ fun MainScreenView(
                         .fillMaxSize()
                         .padding(25.dp),
                     bookingRoomComponent = bookingRoomComponent,
+                    dateTimePickerComponent = dateTimePickerComponent
                 )
                 Box() {
                     MockSettingView(mockComponent)
@@ -74,7 +77,7 @@ fun MainScreenView(
             when {
                 showBookingModal -> SelectRoomScreen(component = selectRoomComponent)
                 showFreeRoomModal -> FreeSelectRoomView(freeSelectRoomComponent = freeSelectRoomComponent)
-                showDateTimePickerModal -> DateTimePickerModalView(bookingRoomComponent = bookingRoomComponent)
+                showDateTimePickerModal -> DateTimePickerModalView(dateTimePickerComponent = dateTimePickerComponent)
 
             }
         }

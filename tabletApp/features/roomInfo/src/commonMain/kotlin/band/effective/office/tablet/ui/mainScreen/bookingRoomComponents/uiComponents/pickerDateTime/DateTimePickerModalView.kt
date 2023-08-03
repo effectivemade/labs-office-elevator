@@ -32,11 +32,11 @@ import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun DateTimePickerModalView(bookingRoomComponent: BookingRoomComponent) {
+fun DateTimePickerModalView(dateTimePickerComponent: DateTimePickerComponent) {
     DateTimePickerModalView(
-        bookingRoomComponent = bookingRoomComponent,
-        onCloseRequest = { bookingRoomComponent.sendIntent(BookingStore.Intent.CloseModal()) },
-        onSetDate = { day: Int, month: Int -> bookingRoomComponent.sendIntent(BookingStore.Intent.OnSetDate(day, month)) }
+        dateTimePickerComponent = dateTimePickerComponent,
+        onCloseRequest = { dateTimePickerComponent.sendIntent(DateTimePickerStore.Intent.CloseModal()) },
+        onSetDate = { day: Int, month: Int -> dateTimePickerComponent.sendIntent(DateTimePickerStore.Intent.OnSetDate(day, month)) }
     )
 }
 
@@ -44,11 +44,11 @@ fun DateTimePickerModalView(bookingRoomComponent: BookingRoomComponent) {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DateTimePickerModalView(
-    bookingRoomComponent: BookingRoomComponent,
+    dateTimePickerComponent: DateTimePickerComponent,
     onCloseRequest: () -> Unit,
     onSetDate: (changedDay: Int, changedMonth: Int) -> Unit
 ) {
-    val stateDateTime by bookingRoomComponent.state.collectAsState()
+    val stateDateTime by dateTimePickerComponent.state.collectAsState()
     val selectedDateTime by remember { mutableStateOf(stateDateTime.selectDate) }
 
 
