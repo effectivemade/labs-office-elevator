@@ -1,6 +1,5 @@
 package band.effective.office.elevator.ui.booking.store
 
-import band.effective.office.elevator.domain.models.GoogleAccount
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -22,13 +21,20 @@ class BookingStoreFactory(private val storeFactory: StoreFactory): KoinComponent
         ){}
 
     private sealed interface Msg {
-        data class ProfileData(val user: GoogleAccount) : Msg
+        data class TypeList(val type: String) : Msg
     }
 
     private inner class ExecutorImpl:
             CoroutineExecutor<BookingStore.Intent,Nothing,BookingStore.State,Msg,Nothing>(){
                 override fun executeIntent(intent: BookingStore.Intent, getState:()->BookingStore.State){
-
+                    when (intent){
+                        is BookingStore.Intent.ShowPlace -> dispatch(
+                            Msg.TypeList (
+                                type = intent.type
+                            )
+                        )
+                        else -> {}
+                    }
                 }
             }
 

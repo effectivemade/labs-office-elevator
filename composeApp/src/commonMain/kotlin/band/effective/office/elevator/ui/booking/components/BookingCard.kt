@@ -26,7 +26,7 @@ import dev.icerock.moko.resources.ImageResource
 import dev.icerock.moko.resources.compose.painterResource
 
 @Composable
-fun BookingCard(roomText: String, icon:ImageResource) {
+fun BookingCard(roomText: String) {
     Column (modifier = Modifier.padding(bottom = 16.dp)){
         Box(
             modifier = Modifier
@@ -48,7 +48,7 @@ fun BookingCard(roomText: String, icon:ImageResource) {
                         .size(44.dp)
                 ) {
                     Icon(
-                        painter = painterResource(icon),
+                        painter = painterResource(MainRes.images.table_icon),
                         contentDescription = null,
                         modifier = Modifier,
                         tint = textInBorderPurple

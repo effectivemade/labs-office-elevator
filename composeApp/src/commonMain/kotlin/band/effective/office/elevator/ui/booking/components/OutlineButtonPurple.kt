@@ -5,14 +5,17 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
+import androidx.compose.material3.ButtonColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.textInBorderPurple
 import dev.icerock.moko.resources.ImageResource
@@ -26,13 +29,14 @@ fun OutlineButtonPurple(
     icon1: ImageResource,
     icon2: ImageResource,
     title: StringResource,
-    rotare: Float
+    rotate: Float
 ){
     OutlinedButton(
         modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
         onClick = onClick,
         shape = RoundedCornerShape(size = 8.dp),
-        border = BorderStroke(1.dp, textInBorderPurple)
+        border = BorderStroke(1.dp, textInBorderPurple),
+        colors =  ButtonDefaults.buttonColors(backgroundColor = Color.White)
     ){
         Row (verticalAlignment = Alignment.CenterVertically){
             Icon(
@@ -47,7 +51,7 @@ fun OutlineButtonPurple(
                 style = MaterialTheme.typography.body2
             )
             Icon(
-                modifier = Modifier.padding(start = 8.dp).size(24.dp).rotate(rotare),
+                modifier = Modifier.padding(start = 8.dp).size(24.dp).rotate(rotate),
                 painter =  painterResource(icon2),
                 contentDescription = null,
                 tint = textInBorderPurple

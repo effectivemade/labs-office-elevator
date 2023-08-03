@@ -1,6 +1,7 @@
 package band.effective.office.elevator.ui.booking
 
-import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -11,7 +12,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -33,6 +33,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,9 +43,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.borderPurple
 import band.effective.office.elevator.components.TitlePage
@@ -54,7 +54,6 @@ import band.effective.office.elevator.ui.booking.components.BookingCard
 import band.effective.office.elevator.ui.models.TypesList
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
-import kotlin.math.min
 
 @Composable
 fun BookingScreen(bookingComponent: BookingComponent) {
@@ -66,16 +65,21 @@ fun BookingScreen(bookingComponent: BookingComponent) {
 @Composable
 private fun BookingScreenContent() {
     val  scrollState = rememberLazyListState()
-    var scrollOffset: Float = min(
-        1f,
-        1 - (scrollState.firstVisibleItemScrollOffset / 600f + scrollState.firstVisibleItemIndex)
-    )
-    val imageSize by animateDpAsState(targetValue = max(24.dp, 300.dp * scrollOffset))
 
+    var isExpandedCard by rememberSaveable { mutableStateOf(true) }
+    val iconRotationStateCard by animateFloatAsState(targetValue = if (isExpandedCard) 90F else 270F)
+    var isExpandedOptions by rememberSaveable { mutableStateOf(true) }
+    val iconRotationStateOptions by animateFloatAsState(targetValue = if (isExpandedOptions) 90F else 270F)
+    if(scrollState.isScrollInProgress){
+        isExpandedCard = false
+        isExpandedOptions = false
+    }
     Scaffold(
         topBar = {
                 Box {
-                    Column {
+                    Column (modifier = Modifier.clip(
+                        RoundedCornerShape(bottomEnd = 16.dp, bottomStart = 16.dp)).background(
+                        Color.White).padding(bottom = 24.dp)){
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.background(Color.White).padding(horizontal = 16.dp)
@@ -86,14 +90,14 @@ private fun BookingScreenContent() {
                             )
                             Spacer(modifier = Modifier.weight(.1f))
                             OutlineButtonPurple(
-                                onClick = { scrollOffset = -30f},
+                                onClick = { isExpandedCard =!isExpandedCard},
                                 icon1 = MainRes.images.icon_map,
                                 icon2 = MainRes.images.back_button,
                                 title = MainRes.strings.show_map,
-                                rotare = if (imageSize>270.dp){90f}else{270f}
+                                rotate = iconRotationStateCard
                             )
                         }
-                        OptionMenu(imageSize)
+                        OptionMenu( isExpandedCard = isExpandedCard, isExpandedOptions =  isExpandedOptions)
                     }
                     Box(
                         modifier = Modifier.align(Alignment.BottomCenter)
@@ -102,7 +106,7 @@ private fun BookingScreenContent() {
                             }
                     ) {
                         Button(
-                            onClick = {},
+                            onClick = {isExpandedOptions = !isExpandedOptions},
                             shape = CircleShape,
                             border = BorderStroke(
                                 width = 1.dp,
@@ -117,7 +121,7 @@ private fun BookingScreenContent() {
                             Image(
                                 painter = painterResource(MainRes.images.back_button),
                                 contentDescription = null,
-                                modifier = Modifier.size(24.dp).rotate(if(imageSize >24.dp){90f}else{270f}),
+                                modifier = Modifier.size(24.dp).rotate(iconRotationStateOptions),
                                 contentScale = ContentScale.Crop
                             )
                         }
@@ -126,7 +130,7 @@ private fun BookingScreenContent() {
         }
     ) {
         Column {
-            Row(modifier = Modifier.fillMaxWidth(). background(MaterialTheme.colors.onBackground).
+            Row(modifier = Modifier.fillMaxWidth().background(MaterialTheme.colors.onBackground).
             padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.Top) {
                 Text(
@@ -182,99 +186,99 @@ private fun ListBooking(scrollState: LazyListState) {
         items(listSeats) { seat ->
             BookingCard(
                 seat,
-                iconPlace
             )
         }
     }
 }
 
-private var iconPlace = MainRes.images.table_icon
 
 @Composable
-private fun  OptionMenu(imageSize: Dp) {
-    Column (modifier = Modifier.clip(
-        RoundedCornerShape(bottomEnd = 16.dp, bottomStart = 16.dp)).background(
-        Color.White).height(imageSize)){
+private fun  OptionMenu(isExpandedCard: Boolean, isExpandedOptions: Boolean) {
+    Column {
+        AnimatedVisibility(visible = isExpandedCard){
             Column(modifier = Modifier.fillMaxWidth().padding(top = 16.dp).
             background(MaterialTheme.colors.onBackground)
             ) {
-                   Row (horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth().height(imageSize - 260.dp)) {
-                       Image(
-                           modifier = Modifier.padding(vertical = 20.dp),
-                           painter = painterResource(MainRes.images.icon_map), //TODO(Заменить карту!")
-                           contentDescription = null
-                       )
-                   }
-               }
-        Column(modifier = Modifier.padding(top = 16.dp).padding(horizontal = 16.dp)){
-            Text(
-                text = stringResource(MainRes.strings.type_booking),
-                style = MaterialTheme.typography.subtitle1,
-                color = Color.Black
-            )
-            Row (modifier = Modifier.padding(top = 8.dp).fillMaxWidth(), horizontalArrangement  = Arrangement.Center ){
-                val types = listOf(
-                    TypesList(name = MainRes.strings.workplace, icon = MainRes.images.table_icon),
-                    TypesList(name = MainRes.strings.meeting_room, icon = MainRes.images.icon_meet)
-                )
-                val selectedType = remember { mutableStateOf(types[0]) }
-
-                types.forEach {type ->
-                    val selected = selectedType.value == type
-                   Box(
-                    modifier = Modifier.padding(
-                        end = 12.dp
-                    ).border(
-                        width = 1.dp,
-                        shape = RoundedCornerShape(8.dp),
-                        color = MaterialTheme.colors.secondary
-                    ).background(
-                        color = if(selected){MaterialTheme.colors.background}else{Color.White}
-                    ).selectable(
-                        selected = selected,
-                        onClick = {
-                            selectedType.value = type
-                            iconPlace = type.icon
-                        }
+                Row (horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+                    Image(
+                        modifier = Modifier.padding(vertical = 20.dp),
+                        painter = painterResource(MainRes.images.icon_map), //TODO(Заменить карту!")
+                        contentDescription = null
                     )
-                   ){
-                       Row (modifier = Modifier.padding(horizontal = 12.dp, vertical = 24.dp)){
-                           Icon(
-                               painter = painterResource(type.icon),
-                               contentDescription = null,
-                               tint = MaterialTheme.colors.secondary
-                           )
-                           Text(
-                               modifier = Modifier.padding(start = 8.dp),
-                               text = stringResource(type.name),
-                               style = MaterialTheme.typography.body2
-                           )
-                       }
-                   }
                 }
             }
-            Text(
-                modifier = Modifier.padding(top= 12.dp),
-                text = stringResource(MainRes.strings.booking_period),
-                style = MaterialTheme.typography.subtitle1,
-                color = Color.Black
-            )
-            Row (modifier = Modifier.padding(top = 8.dp, bottom = 24.dp), verticalAlignment = Alignment.CenterVertically){
-                IconButton(
-                    onClick = {}
-                ){
-                    Icon(
-                        modifier = Modifier.size(24.dp),
-                        painter = painterResource(MainRes.images.material_calendar_ic),
-                        contentDescription = null,
-                         tint = MaterialTheme.colors.secondary
+        }
+
+        AnimatedVisibility(visible = isExpandedOptions){
+            Column(modifier = Modifier.padding(top = 16.dp).padding(horizontal = 16.dp)){
+                Text(
+                    text = stringResource(MainRes.strings.type_booking),
+                    style = MaterialTheme.typography.subtitle1,
+                    color = Color.Black
+                )
+                Row (modifier = Modifier.padding(top = 8.dp).fillMaxWidth(), horizontalArrangement  = Arrangement.Center ){
+                    val types = listOf(
+                        TypesList(name = MainRes.strings.workplace, icon = MainRes.images.table_icon),
+                        TypesList(name = MainRes.strings.meeting_room, icon = MainRes.images.icon_meet)
                     )
+                    val selectedType = remember { mutableStateOf(types[0]) }
+
+                    types.forEach {type ->
+                        val selected = selectedType.value == type
+                        Box(
+                            modifier = Modifier.padding(
+                                end = 12.dp
+                            ).border(
+                                width = 1.dp,
+                                shape = RoundedCornerShape(8.dp),
+                                color = MaterialTheme.colors.secondary
+                            ).background(
+                                color = if(selected){MaterialTheme.colors.background}else{Color.White}
+                            ).selectable(
+                                selected = selected,
+                                onClick = {
+                                    selectedType.value = type
+                                }
+                            )
+                        ){
+                            Row (modifier = Modifier.padding(horizontal = 12.dp, vertical = 24.dp)){
+                                Icon(
+                                    painter = painterResource(type.icon),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colors.secondary
+                                )
+                                Text(
+                                    modifier = Modifier.padding(start = 8.dp),
+                                    text = stringResource(type.name),
+                                    style = MaterialTheme.typography.body2
+                                )
+                            }
+                        }
+                    }
                 }
                 Text(
-                    text = "Пт, 30 июня 12:00 — 14:00", //TODO("Получать текст из календаря")
-                    modifier = Modifier.padding(start = 8.dp),
-                    style = MaterialTheme.typography.body2
+                    modifier = Modifier.padding(top= 12.dp),
+                    text = stringResource(MainRes.strings.booking_period),
+                    style = MaterialTheme.typography.subtitle1,
+                    color = Color.Black
                 )
+                Row (modifier = Modifier.padding(top = 8.dp), verticalAlignment = Alignment.CenterVertically){
+                    IconButton(
+                        onClick = {}
+                    ){
+                        Icon(
+                            modifier = Modifier.size(24.dp),
+                            painter = painterResource(MainRes.images.material_calendar_ic),
+                            contentDescription = null,
+                            tint = MaterialTheme.colors.secondary
+                        )
+                    }
+                    Text(
+                        text = "Пт, 30 июня 12:00 — 14:00", //TODO("Получать текст из календаря")
+                        modifier = Modifier.padding(start = 8.dp),
+                        style = MaterialTheme.typography.body2
+                    )
+                }
             }
         }
     }
