@@ -64,6 +64,17 @@
     <string name="another">Other...</string>
     <string name="booking_repeat">Repeat booking</string>
     <string name="booking_repeat_in">Repeats every:</string>
+    <string name="when_repeat">When it repeats:</string>
+    <string name="book_finish">Finish:</string>
+    <string name="never">Never</string>
+
+    <string name="Monday">Mon</string>
+    <string name="Tuesday">Tue</string>
+    <string name="Wednesday">Wed</string>
+    <string name="Thursday">Thu</string>
+    <string name="Friday">Fri</string>
+    <string name="Saturday">Sat</string>
+    <string name="Sunday">Sun</string>
 
     <string name="take_from">Take from</string>
     <string name="take_before">Take before</string>
