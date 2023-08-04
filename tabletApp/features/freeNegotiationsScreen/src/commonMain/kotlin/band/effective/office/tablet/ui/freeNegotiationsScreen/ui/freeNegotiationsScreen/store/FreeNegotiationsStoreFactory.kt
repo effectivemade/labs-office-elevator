@@ -2,13 +2,14 @@ package band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiatio
 
 import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.domain.model.RoomInfo
-import band.effective.office.tablet.ui.freeNegotiationsScreen.domain.MockListRooms
+import band.effective.office.tablet.domain.useCase.RoomInfoUseCase
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.roomUiState.RoomInfoUiState
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.roomUiState.RoomState
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.timer.Timer
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.uiComponents.checkDuration
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.uiComponents.getDurationRelativeCurrentTime
 import band.effective.office.tablet.ui.selectRoomScreen.uiComponents.getLengthEvent
+import band.effective.office.tablet.utils.unbox
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -17,11 +18,13 @@ import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.util.Calendar
 
 class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
 
     private val timer = Timer()
+    private val roomInfoUseCase: RoomInfoUseCase by inject()
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): FreeNegotiationsStore =
@@ -31,13 +34,60 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
                 initialState = FreeNegotiationsStore.State.defaultState,
                 bootstrapper = coroutineBootstrapper {
                     launch() {
-                        dispatch(Action.GetFreeRoomsInfo(MockListRooms.listRooms))
-                        timer.subscribe {
-                            dispatch(
-                                Action.UpdateChangeEventTime
-                            )
+                        var error = false
+                        val pluto = roomInfoUseCase.invoke(room = "Pluto").unbox(
+                            errorHandler = {
+                                error = true
+                                dispatch(Action.ResponseError)
+                                it.saveData ?: RoomInfo.defaultValue
+                            },
+                            successHandler = {
+                                it
+                            }
+                        )
+
+                        val moon = roomInfoUseCase.invoke(room = "Moon").unbox(
+                            errorHandler = {
+                                error = true
+                                dispatch(Action.ResponseError)
+                                it.saveData ?: RoomInfo.defaultValue
+                            },
+                            successHandler = {
+                                it
+                            }
+                        )
+
+                        val antares = roomInfoUseCase.invoke(room = "Antares").unbox(
+                            errorHandler = {
+                                error = true
+                                dispatch(Action.ResponseError)
+                                it.saveData ?: RoomInfo.defaultValue
+                            },
+                            successHandler = {
+                                it
+                            }
+                        )
+
+                        val sun = roomInfoUseCase.invoke(room = "Sun").unbox(
+                            errorHandler = {
+                                error = true
+                                dispatch(Action.ResponseError)
+                                it.saveData ?: RoomInfo.defaultValue
+                            },
+                            successHandler = {
+                                it
+                            }
+                        )
+
+                        if (!error) {
+                            dispatch(Action.GetFreeRoomsInfo(listOf(pluto, moon, antares, sun)))
+                            timer.subscribe {
+                                dispatch(
+                                    Action.UpdateChangeEventTime
+                                )
+                            }
+                            timer.startTimer()
                         }
-                        timer.startTimer()
                     }
                 },
                 executorFactory = ::ExecutorImpl,
@@ -47,6 +97,7 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
     private sealed interface Action {
         data class GetFreeRoomsInfo(val roomsInfo: List<RoomInfo>) : Action
         object UpdateChangeEventTime : Action
+        object ResponseError : Action
     }
 
     private sealed interface Message {
@@ -55,6 +106,7 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
         data class BookRoom(val nameRoom: String, val maxDuration: Int) : Message
         object CloseModal : Message
         object UpdateChangeEventTime : Message
+        object ResponseError : Message
 
     }
 
@@ -103,6 +155,10 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
                 is Action.UpdateChangeEventTime -> {
                     dispatch(Message.UpdateChangeEventTime)
                 }
+
+                is Action.ResponseError -> {
+                    dispatch(Message.ResponseError)
+                }
             }
         }
 
@@ -144,7 +200,10 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
                     },
                     showBookingModal = true
                 )
+
                 is Message.GetFreeRoomsInfo -> copy(
+                    isLoad = false,
+                    isData = true,
                     listRooms = message.roomsInfo
                 )
 
@@ -161,6 +220,11 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
                 is Message.UpdateChangeEventTime -> copy(
                     listRooms = updateTimeEvent(this.listRooms)
                 )
+
+                is Message.ResponseError -> copy(
+                    isLoad = false,
+                    error = ""
+                )
             }
 
         fun updateTimeEvent(
@@ -168,7 +232,7 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
         ): List<RoomInfoUiState> {
             val newListRooms = mutableListOf<RoomInfoUiState>()
             listRooms.forEach {
-                if (it.changeEventTime != -1) {
+                if (it.changeEventTime > 0) {
                     val roomNewTime = it.copy(changeEventTime = it.changeEventTime - 1)
                     newListRooms.add(roomNewTime)
                 } else {
@@ -182,9 +246,8 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
             roomInfo: RoomInfoUiState
         ): RoomInfoUiState {
             when {
-                (roomInfo.state == RoomState.BUSY && roomInfo.changeEventTime == 0) ->
-                {
-                   //TODO(take info room from back)
+                (roomInfo.state == RoomState.BUSY && roomInfo.changeEventTime == 0) -> {
+                    //TODO(take info room from back)
                 }
             }
             return roomInfo
