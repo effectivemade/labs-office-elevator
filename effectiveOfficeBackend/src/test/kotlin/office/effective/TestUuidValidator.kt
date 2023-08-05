@@ -11,7 +11,7 @@ class TestUuidValidator {
     private val validator = UuidValidator()
 
     @Test
-    fun testFindByIdWithNonExistingWorkspace() {
+    fun testValidId() {
         val validId = UUID.randomUUID()
 
         assertEquals(validId, validator.uuidFromString(validId.toString()))
