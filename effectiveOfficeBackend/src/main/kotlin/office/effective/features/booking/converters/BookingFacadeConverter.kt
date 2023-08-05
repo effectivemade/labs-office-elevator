@@ -10,6 +10,11 @@ import java.time.Instant
 class BookingFacadeConverter(private val userConverter: UserDTOModelConverter,
                              private val workspaceConverter: WorkspaceFacadeConverter,
                              private val uuidValidator: UuidValidator) {
+    /**
+     * Converts WorkspaceEntity to BookingDTO
+     *
+     * @author Daniil Zavyalov
+     */
     fun modelToDto(booking: Booking): BookingDTO {
         return BookingDTO(
             owner = userConverter.modelToDTO(booking.owner),
@@ -21,6 +26,11 @@ class BookingFacadeConverter(private val userConverter: UserDTOModelConverter,
         )
     }
 
+    /**
+     * Converts BookingDTO to Booking
+     *
+     * @author Daniil Zavyalov
+     */
     fun dtoToModel(bookingDTO: BookingDTO): Booking {
         return Booking(
             owner = userConverter.dTOToModel(bookingDTO.owner),

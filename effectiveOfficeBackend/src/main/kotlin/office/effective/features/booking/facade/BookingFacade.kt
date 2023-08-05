@@ -15,6 +15,11 @@ class BookingFacade(private val bookingService: BookingService,
                     private val bookingConverter: BookingFacadeConverter
 ) {
 
+    /**
+     * Deletes the booking with the given id
+     *
+     * @author Daniil Zavyalov
+     */
     fun deleteById(id: String) {
         transactionManager.useTransaction({
             bookingService.deleteById(
@@ -23,6 +28,13 @@ class BookingFacade(private val bookingService: BookingService,
         })
     }
 
+    /**
+     * Retrieves a booking model by its id
+     *
+     * Throws InstanceNotFoundException if booking with the given id doesn't exist in database
+     *
+     * @author Daniil Zavyalov
+     */
     fun findById(id: String): BookingDTO {
         val uuid = uuidValidator.uuidFromString(id)
         val dto: BookingDTO = transactionManager.useTransaction({
@@ -33,6 +45,13 @@ class BookingFacade(private val bookingService: BookingService,
         return dto
     }
 
+    /**
+     * Retrieves a booking model by its id
+     *
+     * Throws InstanceNotFoundException if booking with the given id doesn't exist in database
+     *
+     * @author Daniil Zavyalov
+     */
     fun findAllByOwnerId(ownerId: String): List<BookingDTO> {
         val bookingList: List<Booking> = transactionManager.useTransaction({
             bookingService.findAllByOwnerId(
@@ -44,6 +63,11 @@ class BookingFacade(private val bookingService: BookingService,
         }
     }
 
+    /**
+     * Returns all bookings with the given owner id
+     *
+     * @author Daniil Zavyalov
+     */
     fun findAllByWorkspaceId(workspaceId: String): List<BookingDTO> {
         val bookingList: List<Booking> = transactionManager.useTransaction({
             bookingService.findAllByWorkspaceId(
@@ -55,6 +79,11 @@ class BookingFacade(private val bookingService: BookingService,
         }
     }
 
+    /**
+     * Saves a given booking. Use the returned model for further operations
+     *
+     * @author Daniil Zavyalov
+     */
     fun post(bookingDTO: BookingDTO): BookingDTO {
         val model = bookingConverter.dtoToModel(bookingDTO)
         val dto: BookingDTO = transactionManager.useTransaction({
@@ -64,6 +93,11 @@ class BookingFacade(private val bookingService: BookingService,
         return dto
     }
 
+    /**
+     * Updates a given booking. Use the returned model for further operations
+     *
+     * @author Daniil Zavyalov
+     */
     fun put(bookingDTO: BookingDTO): BookingDTO {
         val model = bookingConverter.dtoToModel(bookingDTO)
         val dto: BookingDTO = transactionManager.useTransaction({

@@ -14,6 +14,7 @@ import java.lang.IllegalArgumentException
 import java.util.UUID
 
 class WorkspaceRepositoryConverter(private val database: Database) {
+
     /**
      * Converts WorkspaceEntity to Workspace
      *
@@ -22,8 +23,10 @@ class WorkspaceRepositoryConverter(private val database: Database) {
     fun entityToModel(entity: WorkspaceEntity, utilities: List<Utility>): Workspace {
         return Workspace(entity.id, entity.name, entity.tag.name, utilities)
     }
+
     /**
-     * Converts Workspace and WorkspaceTagEntity to WorkspaceEntity with random UUID
+     * Converts Workspace and WorkspaceTagEntity to WorkspaceEntity with random UUID.
+     * Use database connection to find tag
      *
      * Throws InstanceNotFoundException if tag doesn't exist in the database
      *
