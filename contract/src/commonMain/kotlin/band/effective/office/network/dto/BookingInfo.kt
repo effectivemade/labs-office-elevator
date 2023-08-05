@@ -4,6 +4,7 @@ data class BookingInfo(
     val id: String,
     val begin: Long,
     val end: Long,
-    val owner: UserDTO,
-    val participants: List<UserDTO>
+    val ownerId: String,
+    val participants: List<UserDTO>,
+    val workspaceId: String
 )

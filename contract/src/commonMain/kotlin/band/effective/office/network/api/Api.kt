@@ -31,6 +31,9 @@ interface Api {
     /**Get user's bookings*/
     suspend fun getBookingsByUser(userId: String): Either<ErrorResponse, List<BookingInfo>>
 
+    /**Get bookings in workspace*/
+    suspend fun getBookingsByWorkspaces(workspaceId: String): Either<ErrorResponse, List<BookingInfo>>
+
     /**Booking workspace*/
     suspend fun booking(bookingInfo: BookingInfo): Either<ErrorResponse, SuccessResponse>
 
@@ -42,8 +45,7 @@ interface Api {
 
     /**Delete booking*/
     suspend fun deleteBooking(
-        bookingId: String,
-        bookingInfo: BookingInfo
+        bookingId: String
     ): Either<ErrorResponse, SuccessResponse>
 
     /**Subscribe on workspace info updates*/
@@ -51,4 +53,7 @@ interface Api {
 
     /**Subscribe on organizers list updates*/
     suspend fun subscribeOnOrganizersList(): Flow<Either<ErrorResponse, List<UserDTO>>>
+
+    /**Subscribe on bookings list updates*/
+    suspend fun subscribeOnBookingsList(workspaceId: String): Flow<Either<ErrorResponse, List<BookingInfo>>>
 }

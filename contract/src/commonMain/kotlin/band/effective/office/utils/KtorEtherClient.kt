@@ -20,8 +20,8 @@ object KtorEtherClient {
 
     suspend inline fun <reified T> securityResponse(
         urlString: String,
+        method: RestMethod = RestMethod.Get,
         block: HttpRequestBuilder.() -> Unit = {},
-        method: RestMethod = RestMethod.Get
     ): Either<ErrorResponse, T> =
         try {
             when (method) {
