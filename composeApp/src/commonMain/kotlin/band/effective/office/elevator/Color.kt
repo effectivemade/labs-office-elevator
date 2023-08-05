@@ -230,3 +230,5 @@ internal val borderPurple = Color(0xFF6F01FF)
 internal val textGrayColor = Color(0x80000000)
 
 internal val companyColor = Color(0xFF323E48)
+
+internal val radioButtonColor = Color(0xFF6750A4)

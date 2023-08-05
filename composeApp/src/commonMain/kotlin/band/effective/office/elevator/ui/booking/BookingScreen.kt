@@ -138,7 +138,7 @@ private fun BookingScreenContent(
                     repeatBooking = "Бронирование не повторяется",
                     false,
                     closeClick =  onClickCloseBookPeriod,
-                    {false},
+                   onSwitchChange =  {false},
                     {},
                     {},
                     {},
@@ -253,14 +253,14 @@ private fun ListBooking(scrollState: LazyListState, onClickOpenBookPeriod: () ->
         val listSeats = listOf(
             "Cassipopea | Стол 1",
             "Cassipopea | Стол 2",
-            "Cassipopea | Стол 2",
-            "Cassipopea | Стол 2",
-            "Cassipopea | Стол 2",
-            "Cassipopea | Стол 2",
-            "Cassipopea | Стол 2",
-            "Cassipopea | Стол 2",
-            "Cassipopea | Стол 2",
-            "Cassipopea | Стол 2",
+            "Cassipopea | Стол 3",
+            "Cassipopea | Стол 4",
+            "Cassipopea | Стол 5",
+            "Cassipopea | Стол 6",
+            "Cassipopea | Стол 7",
+            "Cassipopea | Стол 8",
+            "Cassipopea | Стол 9",
+            "Cassipopea | Стол 10",
         )
         items(listSeats) { seat ->
             BookingCard(

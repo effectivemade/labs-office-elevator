@@ -43,7 +43,8 @@ fun BookingRepeatCard(onSelected: () -> Unit) {
                 bookingText = stringResource(frequency),
                 onSelect = {
                     onOptionSelected(frequency)
-                }
+                },
+                onSelected = onSelected
             )
         }
     }

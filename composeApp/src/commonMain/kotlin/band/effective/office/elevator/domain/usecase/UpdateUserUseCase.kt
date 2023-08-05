@@ -1,4 +1,4 @@
-package band.effective.office.elevator.domain.usecase
+package band.effective.office.elevator.domain.useCase
 
 import band.effective.office.elevator.domain.ProfileRepository
 import band.effective.office.elevator.domain.models.User
