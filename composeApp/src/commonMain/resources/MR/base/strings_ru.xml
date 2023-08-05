@@ -64,6 +64,10 @@
     <string name="when_repeat">Когда повторяется:</string>
     <string name="book_finish">Заканчивается:</string>
     <string name="never">Никогда</string>
+    <string name="booking_1">После</string>
+    <string name="booking_2">раза</string>
+    <string name="week">Неделя</string>
+    <string name="month">Месяц</string>
 
     <string name="Monday">Пн</string>
     <string name="Tuesday">Вт</string>
@@ -71,7 +75,7 @@
     <string name="Thursday">Чт</string>
     <string name="Friday">Пт</string>
     <string name="Saturday">Сб</string>
-    <string name="Sunday">Вт</string>
+    <string name="Sunday">Вс</string>
 
     <string name="take_from">Занять с</string>
     <string name="take_before">Занять до</string>

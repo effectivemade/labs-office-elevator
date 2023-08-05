@@ -67,6 +67,10 @@
     <string name="when_repeat">When it repeats:</string>
     <string name="book_finish">Finish:</string>
     <string name="never">Never</string>
+    <string name="booking_1">After</string>
+    <string name="booking_2">time</string>
+    <string name="week">Week</string>
+    <string name="month">Month</string>
 
     <string name="Monday">Mon</string>
     <string name="Tuesday">Tue</string>
