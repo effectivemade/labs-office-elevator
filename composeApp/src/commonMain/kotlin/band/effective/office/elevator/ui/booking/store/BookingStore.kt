@@ -10,7 +10,10 @@ interface BookingStore: Store<BookingStore.Intent,BookingStore.State, BookingSto
         object CloseChooseZone: Intent
         object CloseRepeatDialog : Intent
         object OpenRepeatDialog : Intent
+        object OpenBookAccept: Intent
+        object CloseBookAccept: Intent
         object OpenBookPeriod: Intent
+
         object CloseBookPeriod: Intent
         data class ShowPlace(val type:String): Intent
     }
@@ -26,5 +29,7 @@ interface BookingStore: Store<BookingStore.Intent,BookingStore.State, BookingSto
         object CloseBookPeriod: Label
         object CloseRepeatDialog : Label
         object OpenRepeatDialog : Label
+        object OpenBookAccept: Label
+        object CloseBookAccept: Label
     }
 }

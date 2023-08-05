@@ -144,7 +144,6 @@ fun ChooseZone(zone: Boolean, onClickCloseChoseZone: () -> Unit) {
             shape = RoundedCornerShape(32.dp),
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = LocalExtendedColors.current.trinidad_600,
-                contentColor = Color.White
             )
         ) {
             Text(

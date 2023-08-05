@@ -46,12 +46,15 @@ class BookingStoreFactory(private val storeFactory: StoreFactory): KoinComponent
                         }
                         is BookingStore.Intent.OpenBookPeriod -> {
                             scope.launch {
+                                publish(BookingStore.Label.CloseBookAccept)
                                 publish(BookingStore.Label.OpenBookPeriod)
+
                             }
                         }
                         is BookingStore.Intent.CloseBookPeriod -> {
                             scope.launch {
                                 publish(BookingStore.Label.CloseBookPeriod)
+                                publish(BookingStore.Label.OpenBookAccept)
                             }
                         }
                         is BookingStore.Intent.OpenRepeatDialog-> {
@@ -65,6 +68,17 @@ class BookingStoreFactory(private val storeFactory: StoreFactory): KoinComponent
                             }
                         }
 
+                        is BookingStore.Intent.OpenBookAccept -> {
+                            scope.launch {
+                                publish(BookingStore.Label.OpenBookAccept)
+                            }
+                        }
+
+                        is BookingStore.Intent.CloseBookAccept -> {
+                            scope.launch {
+                                publish(BookingStore.Label.CloseBookAccept)
+                            }
+                        }
                     }
                 }
             }

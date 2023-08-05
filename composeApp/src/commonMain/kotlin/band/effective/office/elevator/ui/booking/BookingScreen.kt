@@ -57,6 +57,7 @@ import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.textInBorderPurple
 import band.effective.office.elevator.ui.booking.components.BookingCard
 import band.effective.office.elevator.ui.booking.components.OutlineButtonPurple
+import band.effective.office.elevator.ui.booking.components.modals.BookAccept
 import band.effective.office.elevator.ui.booking.components.modals.BookingPeriod
 import band.effective.office.elevator.ui.booking.components.modals.ChooseZone
 import band.effective.office.elevator.ui.booking.store.BookingStore
@@ -70,6 +71,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
     val list by bookingComponent.state.collectAsState()
     var showChooseZone = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     var showBookPeriod = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    var showBookAccept = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     var showRepeatDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(bookingComponent) {
@@ -77,10 +79,18 @@ fun BookingScreen(bookingComponent: BookingComponent) {
             when (label) {
                is BookingStore.Label.OpenChooseZone -> showChooseZone.show()
                 is BookingStore.Label.CloseChooseZone -> showChooseZone.hide()
-                is BookingStore.Label.OpenBookPeriod ->showBookPeriod.show()
-                is BookingStore.Label.CloseBookPeriod -> showBookPeriod.hide()
+                is BookingStore.Label.OpenBookPeriod ->{
+                    showBookAccept.hide()
+                    showBookPeriod.show()
+                    }
+                is BookingStore.Label.CloseBookPeriod ->{
+                    showBookPeriod.hide()
+                    showBookAccept.show()
+                }
                 is BookingStore.Label.OpenRepeatDialog -> showRepeatDialog = true
                 is BookingStore.Label.CloseRepeatDialog -> showRepeatDialog = false
+                is BookingStore.Label.OpenBookAccept -> showBookAccept.show()
+                is BookingStore.Label.CloseBookAccept -> showBookAccept.hide()
             }
         }
     }
@@ -88,12 +98,15 @@ fun BookingScreen(bookingComponent: BookingComponent) {
         showChooseZone = showChooseZone,
         showRepeatDialog = showRepeatDialog,
         showBookPeriod = showBookPeriod,
+        showBookAccept = showBookAccept,
         onClickCloseChoseZone = {bookingComponent.onEvent(BookingStore.Intent.CloseChooseZone)},
         onClickOpenChoseZone = {bookingComponent.onEvent(BookingStore.Intent.OpenChooseZone)},
         onClickCloseRepeatDialog = {bookingComponent.onEvent(BookingStore.Intent.CloseRepeatDialog)},
         onClickOpenRepeatDialog = {bookingComponent.onEvent(BookingStore.Intent.OpenRepeatDialog)},
         onClickCloseBookPeriod = {bookingComponent.onEvent(BookingStore.Intent.CloseBookPeriod)},
-        onClickOpenBookPeriod = {bookingComponent.onEvent(BookingStore.Intent.OpenBookPeriod)}
+        onClickOpenBookPeriod = {bookingComponent.onEvent(BookingStore.Intent.OpenBookPeriod)},
+        onClickOpenBookAccept = {bookingComponent.onEvent(BookingStore.Intent.OpenBookAccept)},
+        onClickCloseBookAccept = { bookingComponent.onEvent(BookingStore.Intent.CloseBookAccept) }
     )
 }
 
@@ -108,7 +121,10 @@ private fun BookingScreenContent(
     onClickCloseChoseZone: () -> Unit,
     showRepeatDialog: Boolean,
     onClickCloseRepeatDialog: () -> Unit,
-    onClickOpenRepeatDialog: () -> Unit
+    onClickOpenRepeatDialog: () -> Unit,
+    showBookAccept: ModalBottomSheetState,
+    onClickOpenBookAccept: () -> Unit,
+    onClickCloseBookAccept: () -> Unit
 ) {
     val  scrollState = rememberLazyListState()
 
@@ -121,7 +137,11 @@ private fun BookingScreenContent(
         isExpandedOptions = false
     }
     ModalBottomSheetLayout(
-        sheetState = if(showChooseZone.targetValue == ModalBottomSheetValue.Expanded){showChooseZone}else{showBookPeriod},
+        sheetState = AddSheetState(
+            showBookPeriod = showBookPeriod,
+            showBookAccept = showBookAccept,
+            showChooseZone = showChooseZone
+        ),
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
         sheetContent = {
             if(showChooseZone.targetValue == ModalBottomSheetValue.Expanded){
@@ -129,7 +149,12 @@ private fun BookingScreenContent(
                     true,
                     onClickCloseChoseZone
                 )
-            }else{
+            }else if (showBookAccept.targetValue == ModalBottomSheetValue.Expanded){
+              BookAccept(
+                  onClickCloseBookAccept = onClickCloseBookAccept,
+                  onClickOpenBookPeriod = onClickOpenBookPeriod
+              )
+            }else {
                 BookingPeriod(
                     startDate = "Чт, 27 июл. 2023 г.",
                     startTime = "10:30",
@@ -138,13 +163,13 @@ private fun BookingScreenContent(
                     repeatBooking = "Бронирование не повторяется",
                     false,
                     closeClick =  onClickCloseBookPeriod,
-                   onSwitchChange =  {false},
+                    onSwitchChange =  {false},
                     {},
                     {},
                     {},
                     {},
                     {},
-                   bookingRepeat =  onClickOpenRepeatDialog,
+                    bookingRepeat =  onClickOpenRepeatDialog,
                     showRepeatDialog = showRepeatDialog,
                     onClickCloseRepeatDialog = onClickCloseRepeatDialog
                 )
@@ -239,15 +264,30 @@ private fun BookingScreenContent(
                         }
                     }
                 }
-                ListBooking(scrollState, onClickOpenBookPeriod)
+                ListBooking(scrollState, onClickOpenBookAccept)
             }
         }
     }
 
 }
 
+@OptIn(ExperimentalMaterialApi::class)
+fun AddSheetState(
+    showBookPeriod: ModalBottomSheetState,
+    showBookAccept: ModalBottomSheetState,
+    showChooseZone: ModalBottomSheetState
+): ModalBottomSheetState {
+    return if (showBookAccept.targetValue == ModalBottomSheetValue.Expanded){
+        showBookAccept
+    }else if (showChooseZone.targetValue == ModalBottomSheetValue.Expanded) {
+        showChooseZone
+    }else{
+        showBookPeriod
+    }
+}
+
 @Composable
-private fun ListBooking(scrollState: LazyListState, onClickOpenBookPeriod: () -> Unit) {
+private fun ListBooking(scrollState: LazyListState, onClickOpenBookAccept: () -> Unit) {
     LazyColumn(modifier =  Modifier.background(MaterialTheme.colors.onBackground).padding(horizontal = 16.dp),
         state = scrollState) {
         val listSeats = listOf(
@@ -265,7 +305,7 @@ private fun ListBooking(scrollState: LazyListState, onClickOpenBookPeriod: () ->
         items(listSeats) { seat ->
             BookingCard(
                 seat,
-                onClickOpenBookPeriod
+                onClickOpenBookAccept
             )
         }
     }
