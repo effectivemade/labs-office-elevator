@@ -34,12 +34,23 @@ class BookingFacade(private val bookingService: BookingService,
     }
 
     fun findAllByOwnerId(ownerId: String): List<BookingDTO> {
-        val workspaceList: List<Booking> = transactionManager.useTransaction({
+        val bookingList: List<Booking> = transactionManager.useTransaction({
             bookingService.findAllByOwnerId(
                 uuidValidator.uuidFromString(ownerId)
             )
         })
-        return workspaceList.map {
+        return bookingList.map {
+            bookingConverter.modelToDto(it)
+        }
+    }
+
+    fun findAllByWorkspaceId(workspaceId: String): List<BookingDTO> {
+        val bookingList: List<Booking> = transactionManager.useTransaction({
+            bookingService.findAllByWorkspaceId(
+                uuidValidator.uuidFromString(workspaceId)
+            )
+        })
+        return bookingList.map {
             bookingConverter.modelToDto(it)
         }
     }

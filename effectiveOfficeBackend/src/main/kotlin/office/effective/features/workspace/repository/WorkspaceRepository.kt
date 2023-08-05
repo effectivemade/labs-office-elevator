@@ -41,7 +41,16 @@ class WorkspaceRepository(private val database: Database, private val converter:
         if (!workspaceExistsById(workspaceId)) {
             throw InstanceNotFoundException(WorkspaceEntity::class, "Workspace with id $workspaceId not found", workspaceId)
         }
-        val modelList = database
+        return findUtilityModels(workspaceId)
+    }
+
+    /**
+     * Returns all workspace utilities by workspace id
+     *
+     * @author Daniil Zavyalov
+     */
+    private fun findUtilityModels(workspaceId: UUID): List<Utility> {
+        return database
             .from(WorkspaceUtilities)
             .innerJoin(right = Utilities, on = WorkspaceUtilities.utilityId eq Utilities.id)
             .select()
@@ -51,7 +60,6 @@ class WorkspaceRepository(private val database: Database, private val converter:
                     Utilities.createEntity(row), row[WorkspaceUtilities.count]?:0
                 )
             }
-        return modelList
     }
 
     /**
@@ -60,9 +68,9 @@ class WorkspaceRepository(private val database: Database, private val converter:
      * @author Daniil Zavyalov
      */
     fun findById(workspaceId: UUID): Workspace? {
-        val entity: WorkspaceEntity? = database.workspaces.find { it.id eq workspaceId }
-        val utilities: List<Utility> = findUtilitiesByWorkspaceId(workspaceId)
-        return entity?.let { converter.entityToModel(it, utilities) }
+        val entity: WorkspaceEntity = database.workspaces.find { it.id eq workspaceId } ?: return null
+        val utilities: List<Utility> = findUtilityModels(workspaceId)
+        return converter.entityToModel(entity, utilities)
     }
 
     /**
@@ -78,7 +86,7 @@ class WorkspaceRepository(private val database: Database, private val converter:
 
         val entityList = database.workspaces.filter { it.tagId eq tagEntity.id }.toList()
         return entityList.map {
-            val utilities: List<Utility> = findUtilitiesByWorkspaceId(it.id)
+            val utilities: List<Utility> = findUtilityModels(it.id)
             converter.entityToModel(it, utilities)
         }
     }

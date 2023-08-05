@@ -42,6 +42,14 @@ class BookingRepository(private val database: Database, private val converter: B
         }
     }
 
+    fun findAllByWorkspaceId(workspaceId: UUID): List<Booking> {
+        val entityList = database.workspaceBooking.filter { it.workspaceId eq workspaceId }.toList()
+        return entityList.map {
+            val participants = findParticipants(it.id)
+            converter.entityToModel(it, participants)
+        }
+    }
+
     private fun findParticipants(bookingId: UUID): List<UserEntity> {
         return database
             .from(BookingParticipants)

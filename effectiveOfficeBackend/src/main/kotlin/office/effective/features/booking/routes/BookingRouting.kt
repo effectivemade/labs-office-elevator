@@ -33,10 +33,15 @@ fun Route.bookingRouting() {
         }
 
         get {
-            val userId: String = call.request.queryParameters["user_id"]
-                ?: return@get call.respond(HttpStatusCode.BadRequest)
-
-            call.respond(bookingFacade.findAllByOwnerId(userId))
+            val userId: String? = call.request.queryParameters["user_id"]
+            userId?.let {
+                return@get call.respond(bookingFacade.findAllByOwnerId(userId))
+            }
+            val workspaceId: String? = call.request.queryParameters["workspace_id"]
+            workspaceId?.let {
+                call.respond(bookingFacade.findAllByWorkspaceId(workspaceId))
+            }
+            return@get call.respond(HttpStatusCode.BadRequest)
         }
         post {
             val dto = call.receive<BookingDTO>()
