@@ -35,10 +35,10 @@ interface Api {
     suspend fun getBookingsByWorkspaces(workspaceId: String): Either<ErrorResponse, List<BookingInfo>>
 
     /**Booking workspace*/
-    suspend fun booking(bookingInfo: BookingInfo): Either<ErrorResponse, SuccessResponse>
+    suspend fun createBooking(bookingInfo: BookingInfo): Either<ErrorResponse, SuccessResponse>
 
     /**Update booking info*/
-    suspend fun changeBooking(
+    suspend fun updateBooking(
         bookingId: String,
         bookingInfo: BookingInfo
     ): Either<ErrorResponse, SuccessResponse>

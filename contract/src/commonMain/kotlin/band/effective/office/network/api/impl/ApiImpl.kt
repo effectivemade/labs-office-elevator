@@ -47,11 +47,11 @@ class ApiImpl : Api {
         Either.Error(ErrorResponse(code = 601, description = "Request not exist in swagger"))
 
     //TODO(Maksim Mishenko): Request not exist in swagger
-    override suspend fun booking(bookingInfo: BookingInfo): Either<ErrorResponse, SuccessResponse> =
+    override suspend fun createBooking(bookingInfo: BookingInfo): Either<ErrorResponse, SuccessResponse> =
         Either.Error(ErrorResponse(code = 601, description = "Request not exist in swagger"))
 
     //TODO(Maksim Mishenko): Request not exist in swagger
-    override suspend fun changeBooking(
+    override suspend fun updateBooking(
         bookingId: String,
         bookingInfo: BookingInfo
     ): Either<ErrorResponse, SuccessResponse> =
@@ -87,7 +87,7 @@ class ApiImpl : Api {
             )
         }
 
-    //TODO(Maksim Mishenko): Request not exist in swagger
+    //TODO(Maksim Mрегьюлар воркспейсамishenko): Request not exist in swagger
     override suspend fun subscribeOnBookingsList(workspaceId: String): Flow<Either<ErrorResponse, List<BookingInfo>>> =
         flow {
             emit(

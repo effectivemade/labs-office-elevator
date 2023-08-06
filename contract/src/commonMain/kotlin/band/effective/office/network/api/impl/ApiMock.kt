@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class ApiMock(private val realApi: Api, private val mockFactory: MockFactory) : Api {
+class ApiMock(private val realApi: Api, mockFactory: MockFactory) : Api {
     var getRealResponse: Boolean = false
     private val workspaces = mockFactory.workspaces()
     private val meetingRooms = mockFactory.meetingRooms()
@@ -69,18 +69,18 @@ class ApiMock(private val realApi: Api, private val mockFactory: MockFactory) : 
             realResponse = realApi.getBookingsByWorkspaces(workspaceId = workspaceId)
         )
 
-    override suspend fun booking(bookingInfo: BookingInfo): Either<ErrorResponse, SuccessResponse> =
+    override suspend fun createBooking(bookingInfo: BookingInfo): Either<ErrorResponse, SuccessResponse> =
         response(
             mock = successResponse.apply { bookings.update { it + bookingInfo } },
-            realResponse = realApi.booking(bookingInfo)
+            realResponse = realApi.createBooking(bookingInfo)
         )
 
-    override suspend fun changeBooking(
+    override suspend fun updateBooking(
         bookingId: String,
         bookingInfo: BookingInfo
     ): Either<ErrorResponse, SuccessResponse> = response(
         mock = successResponse.apply { bookings.update { it.map { element -> if (element.id == bookingId) bookingInfo else element } } },
-        realResponse = realApi.changeBooking(bookingId, bookingInfo)
+        realResponse = realApi.updateBooking(bookingId, bookingInfo)
     )
 
     override suspend fun deleteBooking(
