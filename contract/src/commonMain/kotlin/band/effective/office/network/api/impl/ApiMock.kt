@@ -33,7 +33,8 @@ class ApiMock(private val realApi: Api, mockFactory: MockFactory) : Api {
             }
         }
 
-    private fun <T> Either<ErrorResponse, T>.requestNotExist() = this is Either.Error && error.code in 600..699
+    private fun <T> Either<ErrorResponse, T>.requestNotExist() =
+        this is Either.Error && error.code in 600..699
 
     override suspend fun getWorkspace(id: String): Either<ErrorResponse, WorkspaceDTO> = response(
         mock = (workspaces + meetingRooms).firstOrNull() { it.id == id },
@@ -75,11 +76,10 @@ class ApiMock(private val realApi: Api, mockFactory: MockFactory) : Api {
         )
 
     override suspend fun updateBooking(
-        bookingId: String,
         bookingInfo: BookingInfo
     ): Either<ErrorResponse, SuccessResponse> = response(
-        mock = successResponse.apply { bookings.update { it.map { element -> if (element.id == bookingId) bookingInfo else element } } },
-        realResponse = realApi.updateBooking(bookingId, bookingInfo)
+        mock = successResponse.apply { bookings.update { it.map { element -> if (element.id == bookingInfo.id) bookingInfo else element } } },
+        realResponse = realApi.updateBooking(bookingInfo)
     )
 
     override suspend fun deleteBooking(
@@ -108,7 +108,10 @@ class ApiMock(private val realApi: Api, mockFactory: MockFactory) : Api {
         flow {
             coroutineScope {
                 launch { bookings.collect { if (!getRealResponse) emit(Either.Success(it.filter { item -> item.workspaceId == workspaceId })) } }
-                launch { realApi.subscribeOnBookingsList(workspaceId).collect { if (getRealResponse) emit(it) } }
+                launch {
+                    realApi.subscribeOnBookingsList(workspaceId)
+                        .collect { if (getRealResponse) emit(it) }
+                }
             }
         }
 }
