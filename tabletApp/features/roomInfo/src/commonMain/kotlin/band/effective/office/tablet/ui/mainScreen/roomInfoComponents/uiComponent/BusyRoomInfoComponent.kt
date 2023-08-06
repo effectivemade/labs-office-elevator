@@ -63,7 +63,7 @@ fun BusyRoomInfoComponent(
             Text(
                 text = MainRes.string.room_occupancy.format(
                     finishTime = event?.finishTime?.time() ?: "",
-                    organizer = event?.organizer ?: ""
+                    organizer = event?.organizer?.fullName ?: ""
                 ),
                 style = MaterialTheme.typography.h5,
                 color = roomInfoColor

@@ -6,13 +6,15 @@ import java.util.GregorianCalendar
 data class EventInfo(
     val startTime: Calendar,
     val finishTime: Calendar,
-    val organizer: String
+    val organizer: Organizer,
+    val id: String
 ){
     companion object{
         val emptyEvent = EventInfo(
             startTime = GregorianCalendar(),
             finishTime = GregorianCalendar(),
-            organizer = ""
+            organizer = Organizer.default,
+            id = ""
         )
     }
 }

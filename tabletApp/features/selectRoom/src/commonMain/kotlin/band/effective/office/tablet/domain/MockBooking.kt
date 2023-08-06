@@ -1,10 +1,8 @@
 package band.effective.office.tablet.domain
 
-import band.effective.office.tablet.domain.model.Booking
-import band.effective.office.tablet.domain.model.EventInfo
-import java.util.Calendar
+//TODO delete this
 
-object MockBooking {
+/*object MockBooking {
     val bookingCheckTime15min = band.effective.office.tablet.domain.model.Booking(
         nameRoom = "Sirius",
         eventInfo = EventInfo(
@@ -46,4 +44,4 @@ object MockBooking {
         currentTime.set(y, m, d, h, min)
         return currentTime
     }
-}
+}*/

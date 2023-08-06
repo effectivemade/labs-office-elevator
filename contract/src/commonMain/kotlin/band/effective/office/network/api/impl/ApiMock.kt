@@ -8,9 +8,10 @@ import band.effective.office.network.dto.WorkspaceDTO
 import band.effective.office.network.model.Either
 import band.effective.office.network.model.ErrorResponse
 import band.effective.office.utils.MockFactory
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -28,12 +29,12 @@ class ApiMock(private val realApi: Api, mockFactory: MockFactory) : Api {
             when {
                 this && !(realResponse.requestNotExist()) -> realResponse
                 mock == null -> Either.Error(ErrorResponse.getResponse(404))
-                realResponse.requestNotExist() -> Either.Success(mock)
                 else -> Either.Success(mock)
             }
         }
 
-    private fun <T> Either<ErrorResponse, T>.requestNotExist() = this is Either.Error && error.code in 600..699
+    private fun <T> Either<ErrorResponse, T>.requestNotExist() =
+        this is Either.Error && error.code in 600..699
 
     override suspend fun getWorkspace(id: String): Either<ErrorResponse, WorkspaceDTO> = response(
         mock = (workspaces + meetingRooms).firstOrNull() { it.id == id },
@@ -95,20 +96,25 @@ class ApiMock(private val realApi: Api, mockFactory: MockFactory) : Api {
         }
 
     override suspend fun subscribeOnOrganizersList(): Flow<Either<ErrorResponse, List<UserDTO>>> =
-        flow {
-            coroutineScope {
-                launch { users.collect { if (!getRealResponse) emit(Either.Success(it)) } }
-                launch {
-                    realApi.subscribeOnOrganizersList().collect { if (getRealResponse) emit(it) }
-                }
+        channelFlow {
+            launch { users.collect { if (!getRealResponse) send(Either.Success(it)) } }
+            launch {
+                realApi.subscribeOnOrganizersList().collect { if (getRealResponse) send(it) }
             }
+            awaitClose()
         }
 
     override suspend fun subscribeOnBookingsList(workspaceId: String): Flow<Either<ErrorResponse, List<BookingInfo>>> =
-        flow {
-            coroutineScope {
-                launch { bookings.collect { if (!getRealResponse) emit(Either.Success(it.filter { item -> item.workspaceId == workspaceId })) } }
-                launch { realApi.subscribeOnBookingsList(workspaceId).collect { if (getRealResponse) emit(it) } }
+        channelFlow {
+            launch {
+                bookings.collect {
+                    if (!getRealResponse) send(Either.Success(it.filter { item -> item.workspaceId == workspaceId }))
+                }
             }
+            launch {
+                realApi.subscribeOnBookingsList(workspaceId)
+                    .collect { if (getRealResponse) send(it) }
+            }
+            awaitClose()
         }
 }

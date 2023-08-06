@@ -2,6 +2,7 @@ package band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store
 
 import band.effective.office.tablet.domain.CurrentEventController
 import band.effective.office.tablet.domain.model.EventInfo
+import band.effective.office.tablet.domain.model.Organizer
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.domain.useCase.CheckBookingUseCase
 import band.effective.office.tablet.domain.useCase.UpdateUseCase
@@ -80,9 +81,9 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             ) {}
 
     private sealed interface Action {
-        data class UpdateOrganizers(val organizers: List<String>) : Action
+        data class UpdateOrganizers(val organizers: List<Organizer>) : Action
         data class Init(
-            val organizers: List<String>,
+            val organizers: List<Organizer>,
             val isBusy: Boolean,
             val busyEvent: EventInfo
         ) : Action
@@ -100,12 +101,12 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
         data class NotCorrectEvent(val busyEvent: EventInfo) : Message
 
-        data class ChangeOrganizer(val newOrganizer: String) : Message
+        data class ChangeOrganizer(val newOrganizer: Organizer) : Message
         object OrganizerError : Message
         object BookingOtherRoom : Message
         object BookingCurrentRoom : Message
 
-        data class UpdateOrganizers(val organizers: List<String>) : Message
+        data class UpdateOrganizers(val organizers: List<Organizer>) : Message
         data class UpdateBusy(
             val isBusy: Boolean,
             val busyEvent: EventInfo
@@ -145,7 +146,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is BookingStore.Intent.OnChangeDate -> changeDate(getState, intent.changeInDay)
                 is BookingStore.Intent.OnChangeLength -> changeLength(getState, intent.change)
                 is BookingStore.Intent.OnChangeOrganizer -> {
-                    dispatch(Message.ChangeOrganizer(intent.newOrganizer))
+                    dispatch(Message.ChangeOrganizer(getState().organizers.firstOrNull() { it.fullName == intent.newOrganizer }
+                        ?: Organizer.default))
                     reset(getState)
                 }
 
@@ -247,7 +249,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         return EventInfo(
             startTime = selectDate.clone() as Calendar,
             finishTime = finishDate,
-            organizer = organizer
+            organizer = organizer,
+            id = "" // TODO think about it
         )
     }
 

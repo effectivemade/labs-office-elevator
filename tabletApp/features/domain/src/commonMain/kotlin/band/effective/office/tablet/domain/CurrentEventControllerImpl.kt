@@ -1,7 +1,7 @@
 package band.effective.office.tablet.domain
 
 import android.os.CountDownTimer
-import band.effective.office.tablet.domain.model.Either
+import band.effective.office.network.model.Either
 import band.effective.office.tablet.domain.useCase.RoomInfoUseCase
 import band.effective.office.tablet.network.repository.CancelRepository
 import kotlinx.coroutines.flow.update

@@ -1,6 +1,7 @@
 package band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store
 
 import band.effective.office.tablet.domain.model.EventInfo
+import band.effective.office.tablet.domain.model.Organizer
 import com.arkivanov.mvikotlin.core.store.Store
 import java.util.Calendar
 import java.util.GregorianCalendar
@@ -24,9 +25,9 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
 
     data class State(
         val length: Int,
-        val organizer: String,
+        val organizer: Organizer,
         val isOrganizerError: Boolean,
-        val organizers: List<String>,
+        val organizers: List<Organizer>,
         val selectDate: Calendar,
         val currentDate: Calendar,
         val isBusy: Boolean,
@@ -45,7 +46,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         companion object {
             val default = State(
                 length = 30,
-                organizer = "",
+                organizer = Organizer.default,
                 organizers = listOf(),
                 selectDate = GregorianCalendar(),
                 currentDate = GregorianCalendar(),
@@ -69,6 +70,6 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
 
         fun validateLength(length: Int) = length > 0
 
-        fun validateOrganizer(organizer: String) = organizer != ""
+        fun validateOrganizer(organizer: Organizer) = organizer.fullName != ""
     }
 }
