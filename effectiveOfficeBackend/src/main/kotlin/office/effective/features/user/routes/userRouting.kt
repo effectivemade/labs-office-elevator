@@ -14,11 +14,10 @@ import office.effective.features.user.converters.UserDTOModelConverter
 import office.effective.features.user.dto.UserDTO
 import office.effective.features.user.facade.UserFacade
 import office.effective.features.user.repository.UserRepository
-import office.effective.features.user.routes.swagger.alterUser
+import office.effective.features.user.routes.swagger.updateUser
 import office.effective.features.user.routes.swagger.returnUserByEmail
 import office.effective.features.user.routes.swagger.returnUserById
 import office.effective.features.user.routes.swagger.returnUsers
-import office.effective.features.user.service.IUserService
 import org.koin.core.context.GlobalContext
 
 fun Route.userRouting() {
@@ -48,10 +47,10 @@ fun Route.userRouting() {
             val userId = call.parameters["user_id"] ?: call.response.status(HttpStatusCode.BadRequest)
             val tokenStr = call.request.header("id_token") ?: call.response.status(HttpStatusCode.Forbidden)
             val user = facade.getUserById(userId as String, tokenStr as String)
-            call.respond(user ?: "No such user. Suggestion: bad id")
+            call.respond(user)
         }
 
-        put("/alter/{user_id}", SwaggerDocument.alterUser()) {
+        put("/{user_id}", SwaggerDocument.updateUser()) {
             val user: UserDTO = call.receive<UserDTO>()
             val tokenStr = call.request.header("id_token") ?: call.response.status(HttpStatusCode.Forbidden)
             call.respond(facade.updateUser(user, tokenStr as String))
