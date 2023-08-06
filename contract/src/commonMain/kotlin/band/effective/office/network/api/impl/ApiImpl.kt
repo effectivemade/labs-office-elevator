@@ -52,7 +52,6 @@ class ApiImpl : Api {
 
     //TODO(Maksim Mishenko): Request not exist in swagger
     override suspend fun updateBooking(
-        bookingId: String,
         bookingInfo: BookingInfo
     ): Either<ErrorResponse, SuccessResponse> =
         Either.Error(ErrorResponse(code = 601, description = "Request not exist in swagger"))
