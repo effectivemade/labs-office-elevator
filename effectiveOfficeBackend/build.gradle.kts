@@ -71,4 +71,5 @@ dependencies {
     testImplementation("org.mockito:mockito-core:$mockito_version")
     testImplementation("org.mockito:mockito-inline:$mockito_version")
     testImplementation("org.mockito.kotlin:mockito-kotlin:$mockito_version")
+    testImplementation("com.h2database:h2:2.2.220")
 }
