@@ -26,15 +26,14 @@ class ApiMock(private val realApi: Api, mockFactory: MockFactory) : Api {
     private fun <T> response(mock: T?, realResponse: Either<ErrorResponse, T>) =
         with(getRealResponse) {
             when {
-                this -> realResponse
+                this && !(realResponse.requestNotExist()) -> realResponse
                 mock == null -> Either.Error(ErrorResponse.getResponse(404))
-                realResponse is Either.Error && realResponse.error.code in 600..699 -> Either.Success(
-                    mock
-                )
-
+                realResponse.requestNotExist() -> Either.Success(mock)
                 else -> Either.Success(mock)
             }
         }
+
+    private fun <T> Either<ErrorResponse, T>.requestNotExist() = this is Either.Error && error.code in 600..699
 
     override suspend fun getWorkspace(id: String): Either<ErrorResponse, WorkspaceDTO> = response(
         mock = (workspaces + meetingRooms).firstOrNull() { it.id == id },
