@@ -9,7 +9,6 @@ import office.effective.model.UserModel
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
 import org.ktorm.entity.*
-import org.ktorm.support.postgresql.insertOrUpdate
 import java.util.*
 import kotlin.collections.List
 
@@ -21,12 +20,7 @@ class BookingRepository(private val database: Database, private val converter: B
      * @author Daniil Zavyalov
      */
     fun existsById(id: UUID): Boolean {
-        var result = false
-        database.from(WorkspaceBooking)
-            .select(exists(database.from(WorkspaceBooking).select().where { WorkspaceBooking.id eq id }))
-            .limit(1)
-            .forEach { row -> result = row.getBoolean(1) }
-        return result
+        return database.workspaceBooking.count { it.id eq id } > 0
     }
 
     /**
@@ -72,6 +66,35 @@ class BookingRepository(private val database: Database, private val converter: B
      */
     fun findAllByWorkspaceId(workspaceId: UUID): List<Booking> {
         val entityList = database.workspaceBooking.filter { it.workspaceId eq workspaceId }.toList()
+        return entityList.map {
+            val participants = findParticipants(it.id)
+            converter.entityToModel(it, participants)
+        }
+    }
+
+    /**
+     * Returns all bookings with the given workspace and owner id
+     *
+     * @author Daniil Zavyalov
+     */
+    fun findAllByOwnerAndWorkspaceId(ownerId: UUID, workspaceId: UUID): List<Booking> {
+        val entityList = database.workspaceBooking
+            .filter { it.ownerId eq ownerId }
+            .filter { it.workspaceId eq workspaceId }.toList()
+
+        return entityList.map {
+            val participants = findParticipants(it.id)
+            converter.entityToModel(it, participants)
+        }
+    }
+
+    /**
+     * Returns all bookings
+     *
+     * @author Daniil Zavyalov
+     */
+    fun findAll(): List<Booking> {
+        val entityList = database.workspaceBooking.toList()
         return entityList.map {
             val participants = findParticipants(it.id)
             converter.entityToModel(it, participants)

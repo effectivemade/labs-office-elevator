@@ -33,14 +33,8 @@ fun Route.bookingRouting() {
 
         get(SwaggerDocument.returnBookings()) {/////
             val userId: String? = call.request.queryParameters["user_id"]
-            userId?.let {
-                return@get call.respond(bookingFacade.findAllByOwnerId(userId))
-            }
             val workspaceId: String? = call.request.queryParameters["workspace_id"]
-            workspaceId?.let {
-                call.respond(bookingFacade.findAllByWorkspaceId(workspaceId))
-            }
-            return@get call.respond(HttpStatusCode.BadRequest)
+            call.respond(bookingFacade.findAll(userId, workspaceId))
         }
         post(SwaggerDocument.postBooking()) {
             val dto = call.receive<BookingDTO>()

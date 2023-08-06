@@ -7,7 +7,6 @@ import office.effective.features.booking.dto.BookingDTO
 import office.effective.features.booking.service.BookingService
 import office.effective.model.Booking
 import office.effective.model.Workspace
-import java.util.*
 
 class BookingFacade(private val bookingService: BookingService,
                     private val transactionManager: DatabaseTransactionManager,
@@ -46,32 +45,15 @@ class BookingFacade(private val bookingService: BookingService,
     }
 
     /**
-     * Retrieves a booking model by its id
-     *
-     * Throws InstanceNotFoundException if booking with the given id doesn't exist in database
+     * Returns all bookings. Bookings can be filtered by owner and workspace id
      *
      * @author Daniil Zavyalov
      */
-    fun findAllByOwnerId(ownerId: String): List<BookingDTO> {
+    fun findAll(userId: String?, workspaceId: String?): List<BookingDTO> {
         val bookingList: List<Booking> = transactionManager.useTransaction({
-            bookingService.findAllByOwnerId(
-                uuidValidator.uuidFromString(ownerId)
-            )
-        })
-        return bookingList.map {
-            bookingConverter.modelToDto(it)
-        }
-    }
-
-    /**
-     * Returns all bookings with the given owner id
-     *
-     * @author Daniil Zavyalov
-     */
-    fun findAllByWorkspaceId(workspaceId: String): List<BookingDTO> {
-        val bookingList: List<Booking> = transactionManager.useTransaction({
-            bookingService.findAllByWorkspaceId(
-                uuidValidator.uuidFromString(workspaceId)
+            bookingService.findAll(
+                userId?.let { uuidValidator.uuidFromString(it) },
+                workspaceId?.let { uuidValidator.uuidFromString(it) }
             )
         })
         return bookingList.map {

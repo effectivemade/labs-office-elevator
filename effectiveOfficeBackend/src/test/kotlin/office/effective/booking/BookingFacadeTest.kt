@@ -113,29 +113,18 @@ class BookingFacadeTest {
     }
 
     @Test
-    fun testFindAllByOwnerId() {
+    fun testFindAll() {
         val existingList = listOf(bookingMock, bookingMock)
         val expectedList = listOf(bookingMockDto, bookingMockDto)
 
         setUpMockTransactionManager()
-        whenever(service.findAllByOwnerId(anyOrNull())).thenReturn(existingList)
+        whenever(service.findAll(anyOrNull(), anyOrNull())).thenReturn(existingList)
         whenever(bookingFacadeConverter.modelToDto(anyOrNull())).thenReturn(expectedList[0], expectedList[1])
 
-        val result = facade.findAllByOwnerId("8896abc1-457b-41e4-b80b-2fe7cfb3dbaf")
-
-        assertEquals(expectedList, result)
-    }
-
-    @Test
-    fun testFindAllByWorkspaceId() {
-        val existingList = listOf(bookingMock, bookingMock)
-        val expectedList = listOf(bookingMockDto, bookingMockDto)
-
-        setUpMockTransactionManager()
-        whenever(service.findAllByWorkspaceId(anyOrNull())).thenReturn(existingList)
-        whenever(bookingFacadeConverter.modelToDto(anyOrNull())).thenReturn(expectedList[0], expectedList[1])
-
-        val result = facade.findAllByWorkspaceId("8896abc1-457b-41e4-b80b-2fe7cfb3dbaf")
+        val result = facade.findAll(
+            "8896abc1-457b-41e4-b80b-2fe7cfb3dbaf",
+            "8896abc2-457b-41e4-b80b-2fe7cfb3dbaf"
+        )
 
         assertEquals(expectedList, result)
     }
