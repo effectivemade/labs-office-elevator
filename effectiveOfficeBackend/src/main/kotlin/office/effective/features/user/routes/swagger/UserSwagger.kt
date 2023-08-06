@@ -10,7 +10,7 @@ fun SwaggerDocument.returnUserByEmail(): OpenApiRoute.() -> Unit = {
     description = "Return user by email"
     tags = listOf("userTests")
     request {
-        queryParameter<String>("email") {
+        pathParameter<String>("email") {
             description = "User`s email"
             example = "user@effective.band"
             required = true
@@ -51,8 +51,17 @@ fun SwaggerDocument.returnUserByEmail(): OpenApiRoute.() -> Unit = {
 }
 
 fun SwaggerDocument.returnUsers(): OpenApiRoute.() -> Unit = {
-    description = "Return all users"
+    description = "Return all users by Tag name"
     tags = listOf("users")
+    request{
+        queryParameter<String>("tag"){
+            description = "Name of the tag"
+            example = "emploee"
+            required = true
+            allowEmptyValue = false
+        }
+
+    }
     response {
         HttpStatusCode.OK to {
             description = "Return users list"
@@ -100,7 +109,7 @@ fun SwaggerDocument.returnUserById(): OpenApiRoute.() -> Unit = {
     description = "Return user by id"
     tags = listOf("users")
     request {
-        queryParameter<String>("id") {
+        pathParameter<String>("id") {
             description = "User id"
             example = "2561471e-2bc6-11ee-be56-0242ac120002"
             required = true
@@ -140,7 +149,7 @@ fun SwaggerDocument.returnUserById(): OpenApiRoute.() -> Unit = {
     }
 }
 
-fun SwaggerDocument.alterUser(): OpenApiRoute.() -> Unit = {
+fun SwaggerDocument.updateUser(): OpenApiRoute.() -> Unit = {
     description = "Change user in db"
     tags = listOf("users")
     response {
