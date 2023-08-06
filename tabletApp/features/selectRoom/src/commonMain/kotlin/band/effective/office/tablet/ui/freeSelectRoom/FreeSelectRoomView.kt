@@ -35,8 +35,8 @@ import band.effective.office.tablet.ui.theme.textButton
 fun FreeSelectRoomView(freeSelectRoomComponent: FreeSelectRoomComponent) {
     val state by freeSelectRoomComponent.state.collectAsState()
     FreeSelectRoomView(
-        onCloseRequest = { freeSelectRoomComponent.sendIntent(FreeSelectStore.Intent.OnCloseWindowRequest()) },
-        onFreeRoomRequest = { freeSelectRoomComponent.sendIntent(FreeSelectStore.Intent.OnFreeSelectRequest()) },
+        onCloseRequest = { freeSelectRoomComponent.sendIntent(FreeSelectStore.Intent.OnCloseWindowRequest) },
+        onFreeRoomRequest = { freeSelectRoomComponent.sendIntent(FreeSelectStore.Intent.OnFreeSelectRequest) },
         isLoading = state.isLoad
     )
 }
