@@ -64,6 +64,7 @@ import band.effective.office.elevator.ui.booking.store.BookingStore
 import band.effective.office.elevator.ui.models.TypesList
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
+import kotlinx.datetime.LocalDate
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -73,6 +74,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
     var showBookPeriod = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     var showBookAccept = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     var showRepeatDialog by remember { mutableStateOf(false) }
+    var showCalendar by remember { mutableStateOf(false) }
 
     LaunchedEffect(bookingComponent) {
         bookingComponent.label.collect { label ->
@@ -91,6 +93,8 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                 is BookingStore.Label.CloseRepeatDialog -> showRepeatDialog = false
                 is BookingStore.Label.OpenBookAccept -> showBookAccept.show()
                 is BookingStore.Label.CloseBookAccept -> showBookAccept.hide()
+                is BookingStore.Label.OpenCalendar -> showCalendar = true
+                is BookingStore.Label.CloseCalendar -> showCalendar = false
             }
         }
     }
@@ -99,14 +103,19 @@ fun BookingScreen(bookingComponent: BookingComponent) {
         showRepeatDialog = showRepeatDialog,
         showBookPeriod = showBookPeriod,
         showBookAccept = showBookAccept,
+        showCalendar = showCalendar,
+        currentDate = list.currentDate,
         onClickCloseChoseZone = {bookingComponent.onEvent(BookingStore.Intent.CloseChooseZone)},
+        onClickCloseCalendar = {bookingComponent.onEvent(BookingStore.Intent.CloseCalendar)},
+        onClickOpenCalendar = {bookingComponent.onEvent(BookingStore.Intent.OpenCalendar)},
         onClickOpenChoseZone = {bookingComponent.onEvent(BookingStore.Intent.OpenChooseZone)},
         onClickCloseRepeatDialog = {bookingComponent.onEvent(BookingStore.Intent.CloseRepeatDialog)},
         onClickOpenRepeatDialog = {bookingComponent.onEvent(BookingStore.Intent.OpenRepeatDialog)},
         onClickCloseBookPeriod = {bookingComponent.onEvent(BookingStore.Intent.CloseBookPeriod)},
         onClickOpenBookPeriod = {bookingComponent.onEvent(BookingStore.Intent.OpenBookPeriod)},
         onClickOpenBookAccept = {bookingComponent.onEvent(BookingStore.Intent.OpenBookAccept)},
-        onClickCloseBookAccept = { bookingComponent.onEvent(BookingStore.Intent.CloseBookAccept) }
+        onClickCloseBookAccept = { bookingComponent.onEvent(BookingStore.Intent.CloseBookAccept) },
+        onClickApplyDate = {date: LocalDate? -> bookingComponent.onEvent(BookingStore.Intent.ApplyDate(date= date))}
     )
 }
 
@@ -124,7 +133,12 @@ private fun BookingScreenContent(
     onClickOpenRepeatDialog: () -> Unit,
     showBookAccept: ModalBottomSheetState,
     onClickOpenBookAccept: () -> Unit,
-    onClickCloseBookAccept: () -> Unit
+    onClickCloseBookAccept: () -> Unit,
+    onClickCloseCalendar: () -> Unit,
+    onClickOpenCalendar: () -> Unit,
+    showCalendar: Boolean,
+    onClickApplyDate: (LocalDate?) -> Unit,
+    currentDate: LocalDate
 ) {
     val  scrollState = rememberLazyListState()
 
@@ -164,14 +178,18 @@ private fun BookingScreenContent(
                     false,
                     closeClick =  onClickCloseBookPeriod,
                     onSwitchChange =  {false},
-                    {},
-                    {},
-                    {},
-                    {},
-                    {},
+                    bookStartDate = onClickOpenCalendar,
+                    bookFinishDate = onClickOpenCalendar,
+                    bookStartTime = {},
+                    confirmBooking = {},
+                    bookFinishTime = {},
                     bookingRepeat =  onClickOpenRepeatDialog,
                     showRepeatDialog = showRepeatDialog,
-                    onClickCloseRepeatDialog = onClickCloseRepeatDialog
+                    onClickCloseRepeatDialog = onClickCloseRepeatDialog,
+                    onClickCloseCalendar = onClickCloseCalendar,
+                    showCalendar = showCalendar,
+                    onClickApplyDate = onClickApplyDate,
+                    currentDate = currentDate
                 )
             }
         }

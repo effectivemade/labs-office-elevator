@@ -1,11 +1,13 @@
 package band.effective.office.elevator.ui.booking.store
 
+import band.effective.office.elevator.utils.getCurrentDate
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDate
 import org.koin.core.component.KoinComponent
 
 class BookingStoreFactory(private val storeFactory: StoreFactory): KoinComponent{
@@ -16,6 +18,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory): KoinComponent
             name = "BookingStore",
             initialState = BookingStore.State(
                 listPlace = listOf(),
+                currentDate = getCurrentDate()
             ),
             executorFactory = ::ExecutorImpl,
             reducer = ReducerImpl,
@@ -23,6 +26,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory): KoinComponent
 
     private sealed interface Msg {
         data class TypeList(val type: String) : Msg
+        data class DateBooking(val date: LocalDate): Msg
     }
 
     private inner class ExecutorImpl:
@@ -79,8 +83,26 @@ class BookingStoreFactory(private val storeFactory: StoreFactory): KoinComponent
                                 publish(BookingStore.Label.CloseBookAccept)
                             }
                         }
+                        is BookingStore.Intent.OpenCalendar -> {
+                            scope.launch {
+                                publish(BookingStore.Label.OpenCalendar)
+                            }
+                        }
+                        is BookingStore.Intent.CloseCalendar -> {
+                            scope.launch{
+                                publish(BookingStore.Label.CloseCalendar)
+                            }
+                        }
+                        is BookingStore.Intent.ApplyDate -> {
+                            publish(BookingStore.Label.CloseCalendar)
+                            intent.date?.let { newDate ->
+                                dispatch(Msg.DateBooking(date = newDate))
+                            }
+                        }
                     }
                 }
+
+
             }
 
     private object ReducerImpl : Reducer<BookingStore.State, Msg> {

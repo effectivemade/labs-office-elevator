@@ -36,9 +36,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.ExtendedTheme
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.components.ModalCalendar
 import band.effective.office.elevator.components.PrimaryButton
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
+import kotlinx.datetime.LocalDate
 
 @Composable
 fun BookingPeriod(
@@ -57,7 +59,11 @@ fun BookingPeriod(
     confirmBooking: () -> Unit,
     bookingRepeat: () -> Unit,
     showRepeatDialog: Boolean,
-    onClickCloseRepeatDialog: () -> Unit
+    onClickCloseRepeatDialog: () -> Unit,
+    onClickCloseCalendar: () -> Unit,
+    showCalendar: Boolean,
+    onClickApplyDate: (LocalDate?) -> Unit,
+    currentDate: LocalDate
 ) {
     val elevation = ButtonDefaults.elevation(
         defaultElevation = 0.dp,
@@ -244,6 +250,13 @@ fun BookingPeriod(
         if(showRepeatDialog){
             BookingRepeatCard (
                 onSelected = onClickCloseRepeatDialog
+            )
+        }
+        if(showCalendar){
+            ModalCalendar(
+               currentDate = currentDate,
+                onClickOk = onClickApplyDate,
+                onClickCansel = onClickCloseCalendar
             )
         }
     }
