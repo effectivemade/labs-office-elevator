@@ -20,8 +20,9 @@ fun Route.workspaceRouting() {
             val id: String = call.parameters["id"] ?: return@get call.respond(HttpStatusCode.BadRequest)
             call.respond(facade.findById(id))
         }
-        get("/{tag}", SwaggerDocument.returnWorkspaceByTag()) {
-            val tag: String = call.request.queryParameters["tag"] ?: return@get call.respond(HttpStatusCode.BadRequest)
+        get(SwaggerDocument.returnWorkspaceByTag()) {
+            val tag: String = call.request.queryParameters["tag"]
+                ?: return@get call.respond(HttpStatusCode.BadRequest)
 
             call.respond(facade.findAllByTag(tag))
         }
