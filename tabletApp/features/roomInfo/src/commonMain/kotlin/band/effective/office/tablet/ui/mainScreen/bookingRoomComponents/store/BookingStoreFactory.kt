@@ -31,7 +31,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): BookingStore =
         object : BookingStore,
-            Store<BookingStore.Intent, BookingStore.State, Nothing> by storeFactory.create(
+            Store<BookingStore.Intent, BookingStore.State, BookingStore.Label> by storeFactory.create(
                 name = "MainStore",
                 initialState = BookingStore.State.default,
                 bootstrapper = coroutineBootstrapper {
@@ -118,7 +118,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
     }
 
     private inner class ExecutorImpl() :
-        CoroutineExecutor<BookingStore.Intent, Action, BookingStore.State, Message, Nothing>() {
+        CoroutineExecutor<BookingStore.Intent, Action, BookingStore.State, Message, BookingStore.Label>() {
         override fun executeIntent(
             intent: BookingStore.Intent,
             getState: () -> BookingStore.State
@@ -128,7 +128,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     booking(
                         isCurrentRoom = true,
                         state = getState(),
-                        booking = intent.booking
+                        booking = { publish(BookingStore.Label.BookingCurrentRoom) }
                     )
                     dispatch(Message.BookingCurrentRoom)
                 }
@@ -137,7 +137,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     booking(
                         isCurrentRoom = false,
                         state = getState(),
-                        booking = intent.booking
+                        booking = { publish(BookingStore.Label.BookingOtherRoom) }
                     )
                     dispatch(Message.BookingOtherRoom)
                 }
@@ -173,18 +173,18 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             }
         }
 
-        fun booking(isCurrentRoom: Boolean, state: BookingStore.State, booking: (() -> Unit)?) =
+        fun booking(isCurrentRoom: Boolean, state: BookingStore.State, booking: () -> Unit) =
             scope.launch {
                 val busyEvent = checkBookingUseCase(state.toEvent()).unbox({ it.saveData })
                 when {
                     !state.isCorrectOrganizer() -> dispatch(Message.OrganizerError)
                     isCurrentRoom && busyEvent != null -> dispatch(Message.NotCorrectEvent(busyEvent))
                     isCurrentRoom -> {
-                        booking?.invoke()
+                        booking()
                     }
 
                     else -> {
-                        booking?.invoke()
+                        booking()
                     }
                 }
             }
@@ -223,6 +223,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     isSelectCurrentTime = newDate.isNow()
                 )
             )
+            publish(BookingStore.Label.ChangeDate)
             reset(getState)
         }
 

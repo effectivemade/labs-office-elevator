@@ -18,7 +18,7 @@ class FreeSelectStoreFactory(private val storeFactory: StoreFactory) : KoinCompo
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): FreeSelectStore =
         object : FreeSelectStore,
-            Store<FreeSelectStore.Intent, FreeSelectStore.State, Nothing> by storeFactory.create(
+            Store<FreeSelectStore.Intent, FreeSelectStore.State, FreeSelectStore.Label> by storeFactory.create(
                 name = "FreeSelectStore",
                 initialState = FreeSelectStore.State.defaultState,
                 bootstrapper = coroutineBootstrapper {},
@@ -32,22 +32,22 @@ class FreeSelectStoreFactory(private val storeFactory: StoreFactory) : KoinCompo
     }
 
     private inner class ExecutorImpl() :
-        CoroutineExecutor<FreeSelectStore.Intent, Nothing, FreeSelectStore.State, Message, Nothing>() {
+        CoroutineExecutor<FreeSelectStore.Intent, Nothing, FreeSelectStore.State, Message, FreeSelectStore.Label>() {
 
         override fun executeIntent(
             intent: FreeSelectStore.Intent,
             getState: () -> FreeSelectStore.State
         ) {
             when (intent) {
-                is FreeSelectStore.Intent.OnFreeSelectRequest -> freeRoom(intent.close)
-                is FreeSelectStore.Intent.OnCloseWindowRequest -> intent.close?.invoke()
+                is FreeSelectStore.Intent.OnFreeSelectRequest -> freeRoom()
+                is FreeSelectStore.Intent.OnCloseWindowRequest -> publish(FreeSelectStore.Label.Close)
             }
         }
 
-        private fun freeRoom(close: (() -> Unit)?) = scope.launch() {
+        private fun freeRoom() = scope.launch() {
             dispatch(Message.Load)
             if (currentEventController.cancelCurrentEvent() is Either.Success) {
-                close?.invoke()
+                publish(FreeSelectStore.Label.Close)
                 dispatch(Message.Success)
             }
             else TODO("Maksim Mishenko: add error handler")
