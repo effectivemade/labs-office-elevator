@@ -8,6 +8,7 @@ import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalTime
 import org.koin.core.component.KoinComponent
 
 class BookingStoreFactory(private val storeFactory: StoreFactory): KoinComponent{
@@ -27,6 +28,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory): KoinComponent
     private sealed interface Msg {
         data class TypeList(val type: String) : Msg
         data class DateBooking(val date: LocalDate): Msg
+        data class TimeBooking(val time: LocalTime): Msg
     }
 
     private inner class ExecutorImpl:
@@ -50,25 +52,17 @@ class BookingStoreFactory(private val storeFactory: StoreFactory): KoinComponent
                         }
                         is BookingStore.Intent.OpenBookPeriod -> {
                             scope.launch {
-                                publish(BookingStore.Label.CloseBookAccept)
                                 publish(BookingStore.Label.OpenBookPeriod)
-
                             }
                         }
                         is BookingStore.Intent.CloseBookPeriod -> {
                             scope.launch {
                                 publish(BookingStore.Label.CloseBookPeriod)
-                                publish(BookingStore.Label.OpenBookAccept)
                             }
                         }
                         is BookingStore.Intent.OpenRepeatDialog-> {
                             scope.launch {
                                 publish(BookingStore.Label.OpenRepeatDialog)
-                            }
-                        }
-                        is BookingStore.Intent.CloseRepeatDialog -> {
-                            scope.launch {
-                                publish(BookingStore.Label.CloseRepeatDialog)
                             }
                         }
 
@@ -94,9 +88,69 @@ class BookingStoreFactory(private val storeFactory: StoreFactory): KoinComponent
                             }
                         }
                         is BookingStore.Intent.ApplyDate -> {
-                            publish(BookingStore.Label.CloseCalendar)
-                            intent.date?.let { newDate ->
-                                dispatch(Msg.DateBooking(date = newDate))
+                            scope.launch {
+                                publish(BookingStore.Label.CloseCalendar)
+                                intent.date?.let { newDate ->
+                                    dispatch(Msg.DateBooking(date = newDate))
+                                }
+                            }
+                        }
+
+                        is BookingStore.Intent.OpenConfirmBooking -> {
+                            scope.launch {
+                                publish(BookingStore.Label.CloseBookAccept)
+                                publish(BookingStore.Label.OpenConfirmBooking)
+                            }
+                        }
+
+                        is BookingStore.Intent.OpenMainScreen -> {
+                            TODO()
+                        }
+                        is BookingStore.Intent.CloseConfirmBooking -> {
+                            scope.launch {
+                                publish(BookingStore.Label.CloseConfirmBooking)
+                            }
+
+                        }
+
+                        is BookingStore.Intent.ApplyTime -> {
+                            scope.launch{
+                            publish(BookingStore.Label.CloseTimeModal)
+                            intent.time?.let { newTime ->
+                                dispatch(Msg.TimeBooking(newTime))
+                            }
+                            }
+                        }
+                        is BookingStore.Intent.CloseTimeModal -> {
+                            scope.launch{
+                                publish(BookingStore.Label.CloseTimeModal)
+                            }
+
+                        }
+                        is BookingStore.Intent.OpenTimeModal -> {
+                            scope.launch {
+                                publish(BookingStore.Label.OpenTimeModal)
+                            }
+
+                        }
+                        is BookingStore.Intent.SearchSuitableOptions -> {
+                            scope.launch {
+                                publish(BookingStore.Label.CloseBookPeriod)
+                            }
+
+                        }
+                        is BookingStore.Intent.OpenBookRepeat ->{
+                            scope.launch {
+                                publish(BookingStore.Label.CloseBookPeriod)
+                                publish(BookingStore.Label.CloseRepeatDialog)
+                                publish(BookingStore.Label.OpenBookRepeat)
+                            }
+
+                        }
+                        is BookingStore.Intent.CloseBookRepeat -> {
+                            scope.launch {
+                                publish(BookingStore.Label.CloseBookRepeat)
+                                publish(BookingStore.Label.OpenBookPeriod)
                             }
                         }
                     }

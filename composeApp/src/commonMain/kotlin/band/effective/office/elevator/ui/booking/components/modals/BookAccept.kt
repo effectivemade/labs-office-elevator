@@ -1,7 +1,7 @@
 package band.effective.office.elevator.ui.booking.components.modals
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,7 +12,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -34,16 +33,16 @@ import band.effective.office.elevator.theme_light_onPrimary
 import band.effective.office.elevator.theme_light_tertiary_color
 import dev.icerock.moko.resources.compose.stringResource
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BookAccept(
     onClickCloseBookAccept: () -> Unit,
-    onClickOpenBookPeriod: () -> Unit
+    confirmBooking: () -> Unit,
 ){
     val booking_place ="Cassipopeia | Table 1"
     val frequency = "Every single day"
     val startTime = "11:00"
     val endTime = "19:00"
+    Box{
         Column (modifier = Modifier.fillMaxWidth().background(Color.White)){
             Spacer(modifier = Modifier.padding(vertical = 10.dp))
             Divider(
@@ -60,8 +59,7 @@ fun BookAccept(
                     )
             )
 
-            Row (modifier= Modifier.padding(top=10.dp, start = 16.dp, end = 16.dp).
-            clickable(onClick = onClickOpenBookPeriod)){
+            Row (modifier= Modifier.padding(top=10.dp, start = 16.dp, end = 16.dp)){
                 IconButton(
                     onClick = onClickCloseBookAccept,
                     modifier = Modifier
@@ -92,7 +90,7 @@ fun BookAccept(
                     )
                 }
             }
-            Button(onClick = onClickCloseBookAccept,
+            Button(onClick = confirmBooking,
                 modifier = Modifier
                     .align(alignment = Alignment.CenterHorizontally)
                     .fillMaxWidth()
@@ -110,4 +108,5 @@ fun BookAccept(
                 )
             }
         }
+    }
 }

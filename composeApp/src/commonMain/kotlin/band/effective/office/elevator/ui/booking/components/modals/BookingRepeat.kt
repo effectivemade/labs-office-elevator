@@ -236,7 +236,7 @@ fun BookingRepeat(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 54.dp, end = 16.dp, top = 16.dp, bottom = 16.dp)
+                        .padding(start = 54.dp, end = 16.dp, top = 16.dp)
                 ) {
                     Text(
                         text = stringResource(MainRes.strings.when_repeat),
