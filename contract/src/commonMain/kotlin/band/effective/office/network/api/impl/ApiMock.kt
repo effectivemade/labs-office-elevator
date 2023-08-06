@@ -76,11 +76,10 @@ class ApiMock(private val realApi: Api, mockFactory: MockFactory) : Api {
         )
 
     override suspend fun updateBooking(
-        bookingId: String,
         bookingInfo: BookingInfo
     ): Either<ErrorResponse, SuccessResponse> = response(
-        mock = successResponse.apply { bookings.update { it.map { element -> if (element.id == bookingId) bookingInfo else element } } },
-        realResponse = realApi.updateBooking(bookingId, bookingInfo)
+        mock = successResponse.apply { bookings.update { it.map { element -> if (element.id == bookingInfo.id) bookingInfo else element } } },
+        realResponse = realApi.updateBooking(bookingInfo)
     )
 
     override suspend fun deleteBooking(

@@ -30,10 +30,20 @@ kotlin {
             }
         }
     }
-    dependencies{
-        api(Dependencies.Ktor.Client.Core)
-        implementation(Dependencies.KotlinxSerialization.json)
-        implementation(Dependencies.KotlinxDatetime.kotlinxDatetime)
-        implementation("io.ktor:ktor-client-cio:2.3.2")
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                api(Dependencies.Ktor.Client.Core)
+                implementation(Dependencies.KotlinxSerialization.json)
+                implementation(Dependencies.KotlinxDatetime.kotlinxDatetime)
+                implementation(Dependencies.Ktor.Client.CIO)
+
+            }
+        }
+        val androidMain by getting {
+            dependencies {
+
+            }
+        }
     }
 }

@@ -39,7 +39,6 @@ interface Api {
 
     /**Update booking info*/
     suspend fun updateBooking(
-        bookingId: String,
         bookingInfo: BookingInfo
     ): Either<ErrorResponse, SuccessResponse>
 
