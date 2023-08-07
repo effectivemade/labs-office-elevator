@@ -46,8 +46,25 @@ class RoomRepositoryImpl(
         }
 
     override suspend fun getRoomsInfo(): Either<ErrorResponse, List<RoomInfo>> =
-        api.getWorkspaces("") //TODO add tag
-            .map(errorMapper = { it }, successMapper = { it.map { item -> item.toRoomInfo() } })
+        api.getWorkspaces("meeting").run {
+            when (this) {
+                is Either.Error -> this
+                is Either.Success -> {
+                    val roomList = this.data
+                    val ids = roomList.map { it.id }
+                    val events = mutableListOf<List<EventInfo>>()
+                    for (id in ids) {
+                        val loadEvents = loadEvents(id)
+                        if (loadEvents is Either.Success) {
+                            events.add(loadEvents.data.map { it.toEventInfo() })
+                        }
+                    }
+                    Either.Success(roomList.mapIndexed { index, room ->
+                        room.toRoomInfo().addEvents(events[index])
+                    })
+                }
+            }
+        }
 
     override fun subscribeOnUpdates(
         roomId: String

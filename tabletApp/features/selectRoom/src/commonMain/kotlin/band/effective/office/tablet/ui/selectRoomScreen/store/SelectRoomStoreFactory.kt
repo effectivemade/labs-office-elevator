@@ -51,7 +51,7 @@ class SelectRoomStoreFactory(private val storeFactory: StoreFactory) : KoinCompo
         private fun bookingRoom(state: SelectRoomStore.State) =
             scope.launch {
                 dispatch(Message.StartLoading)
-                dispatch(Message.BookingRoom(bookingUseCase(state.booking.eventInfo) is Either.Success))
+                dispatch(Message.BookingRoom(bookingUseCase(state.booking.eventInfo, state.booking.nameRoom) is Either.Success))
             }
     }
 

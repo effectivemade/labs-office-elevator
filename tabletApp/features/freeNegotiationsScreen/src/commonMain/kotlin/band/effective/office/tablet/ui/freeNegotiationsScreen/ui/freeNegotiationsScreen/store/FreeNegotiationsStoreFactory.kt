@@ -1,5 +1,6 @@
 package band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.store
 
+import band.effective.office.network.model.Either
 import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.domain.useCase.RoomInfoUseCase
@@ -36,59 +37,18 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
                 initialState = FreeNegotiationsStore.State.defaultState,
                 bootstrapper = coroutineBootstrapper {
                     launch() {
-                        var error = false
-                        val pluto = roomInfoUseCase.invoke(room = "Pluto").unbox(
-                            errorHandler = {
-                                error = true
-                                dispatch(Action.ResponseError)
-                                it.saveData ?: RoomInfo.defaultValue
-                            },
-                            successHandler = {
-                                it
+                        val response = roomInfoUseCase.getOtherRoom("Sirius")
+                        when(response){
+                            is Either.Error -> TODO("Maksim Mishenko add error handler")
+                            is Either.Success -> {
+                                dispatch(Action.GetFreeRoomsInfo(response.data))
+                                timer.subscribe {
+                                    dispatch(
+                                        Action.UpdateChangeEventTime
+                                    )
+                                }
+                                timer.startTimer()
                             }
-                        )
-
-                        val moon = roomInfoUseCase.invoke(room = "Moon").unbox(
-                            errorHandler = {
-                                error = true
-                                dispatch(Action.ResponseError)
-                                it.saveData ?: RoomInfo.defaultValue
-                            },
-                            successHandler = {
-                                it
-                            }
-                        )
-
-                        val antares = roomInfoUseCase.invoke(room = "Antares").unbox(
-                            errorHandler = {
-                                error = true
-                                dispatch(Action.ResponseError)
-                                it.saveData ?: RoomInfo.defaultValue
-                            },
-                            successHandler = {
-                                it
-                            }
-                        )
-
-                        val sun = roomInfoUseCase.invoke(room = "Sun").unbox(
-                            errorHandler = {
-                                error = true
-                                dispatch(Action.ResponseError)
-                                it.saveData ?: RoomInfo.defaultValue
-                            },
-                            successHandler = {
-                                it
-                            }
-                        )
-
-                        if (!error) {
-                            dispatch(Action.GetFreeRoomsInfo(listOf(pluto, moon, antares, sun)))
-                            timer.subscribe {
-                                dispatch(
-                                    Action.UpdateChangeEventTime
-                                )
-                            }
-                            timer.startTimer()
                         }
                     }
                 },
@@ -105,7 +65,7 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
     private sealed interface Message {
         data class GetFreeRoomsInfo(val roomsInfo: List<RoomInfoUiState>) : Message
         data class SetBooking(val bookingInfo: Booking) : Message
-        data class BookRoom(val nameRoom: String, val maxDuration: Int) : Message
+        data class BookRoom(val nameRoom: RoomInfoUiState, val maxDuration: Int) : Message
         object CloseModal : Message
         data class UpdateChangeEventTime(val roomsInfo: List<RoomInfoUiState>) : Message
         object ResponseError : Message

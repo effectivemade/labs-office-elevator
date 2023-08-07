@@ -52,13 +52,14 @@ class FreeNegotiationsComponentImpl(
             storeFactory = storeFactory,
             onBookingRoom = {
                 Booking(
-                    nameRoom = state.value.nameBookingRoom,
+                    nameRoom = state.value.nameBookingRoom.room.name,
                     eventInfo = EventInfo(
                         startTime = state.value.currentTime,
                         finishTime = getFinishTime(state.value.currentTime, state.value.realDurationBooking),
                         organizer = state.value.organizer,
                         id = "" //TODO
-                    )
+                    ),
+                    roomId = state.value.nameBookingRoom.room.id
                 )
             },
             onBookingOtherRoom = {},

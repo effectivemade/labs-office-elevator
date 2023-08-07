@@ -2,16 +2,13 @@ package band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiatio
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.graphics.Color
 import band.effective.office.tablet.domain.model.Booking
-import band.effective.office.tablet.domain.model.EventInfo
+import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.roomUiState.RoomInfoUiState
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.store.FreeNegotiationsStore
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.uiComponents.LoaderView
-import band.effective.office.tablet.ui.mainScreen.mainScreen.uiComponents.LoadMainScreen
 
 
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -31,7 +28,7 @@ fun FreeNegotiationsScreen(component: FreeNegotiationsComponent) {
                 onMainScreen = { reset: Boolean ->
                     component.onIntent(FreeNegotiationsStore.Intent.OnMainScreen(reset))},
                 onBookRoom =  {
-                        name: String, maxDuration: Int ->
+                        name: RoomInfoUiState, maxDuration: Int ->
                     component.onIntent(FreeNegotiationsStore.Intent.OnBookingRoom(name, maxDuration))
                 }
             )

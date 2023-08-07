@@ -59,7 +59,8 @@ class BookingRoomComponent(
                 finishTime = finishDate,
                 organizer = state.value.organizer,
                 id = "" // TODO
-            )
+            ),
+            roomId = state.value.roomName
         )
     }
 
