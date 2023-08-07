@@ -1,21 +1,60 @@
-CREATE TABLE hockeyPlayer (
-  player_number INTEGER NOT NULL,
-  full_name TEXT NOT NULL
+CREATE TABLE profileData (
+    idToken TEXT NOT NULL DEFAULT '',
+    name TEXT NOT NULL DEFAULT '',
+    post TEXT NOT NULL DEFAULT '',
+    email TEXT NOT NULL DEFAULT '',
+    phoneNumber TEXT NOT NULL DEFAULT '',
+    telegramNick TEXT NOT NULL DEFAULT '',
+    imageUrl TEXT NOT NULL DEFAULT ''
 );
 
-CREATE INDEX hockeyPlayer_full_name ON hockeyPlayer(full_name);
-
-INSERT INTO hockeyPlayer (player_number, full_name)
-VALUES (15, 'Ryan Getzlaf');
+CREATE INDEX idTokenIndex ON profileData(idToken);
 
 selectAll:
-SELECT *
-FROM hockeyPlayer;
+SELECT * FROM profileData;
+
+selectIdToken:
+SELECT idToken FROM profileData;
+
+selectName:
+SELECT name FROM profileData;
+
+selectPost:
+SELECT post FROM profileData;
+
+selectEmail:
+SELECT email FROM profileData;
+
+selectPhoneNumber:
+SELECT phoneNumber FROM profileData;
+
+selectTelegramNick:
+SELECT telegramNick FROM profileData;
+
+selectImageUrl:
+SELECT imageUrl FROM profileData;
+
+updateToken:
+UPDATE profileData SET idToken = ? WHERE idToken = ?;
+
+updateName:
+UPDATE profileData SET name = ? WHERE idToken = ?;
+
+updatePost:
+UPDATE profileData SET post = ? WHERE idToken = ?;
+
+updateEmail:
+UPDATE profileData SET email = ? WHERE idToken = ?;
+
+updatePhoneNumber:
+UPDATE profileData SET phoneNumber = ? WHERE idToken = ?;
+
+updateTelegramNick:
+UPDATE profileData SET telegramNick = ? WHERE idToken = ?;
+
+updateImageUrl:
+UPDATE profileData SET imageUrl = ? WHERE idToken = ?;
 
 insert:
-INSERT INTO hockeyPlayer(player_number, full_name)
-VALUES (?, ?);
-
-insertFullPlayerObject:
-INSERT INTO hockeyPlayer(player_number, full_name)
-VALUES ?;
+INSERT INTO profileData(idToken, name, post, email, phoneNumber, telegramNick, imageUrl)
+VALUES (?, ?, ?, ?, ?, ?, ?);
