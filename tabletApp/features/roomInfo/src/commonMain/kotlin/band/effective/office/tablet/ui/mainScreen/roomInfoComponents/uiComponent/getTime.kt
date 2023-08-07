@@ -4,8 +4,8 @@ import band.effective.office.tablet.features.roomInfo.MainRes
 import band.effective.office.tablet.utils.getCorrectDeclension
 
 internal fun Int.getDuration(): String {
-    val min = this % 60000
-    val hours = this / 60000
+    val min = this % 60
+    val hours = this / 60
     val minStr = "$min ${
         getCorrectDeclension(
             number = min,
@@ -14,9 +14,9 @@ internal fun Int.getDuration(): String {
             genitivePlural = MainRes.string.minuit_plural
         )
     }"
-    val hourStr = "$min ${
+    val hourStr = "$hours ${
         getCorrectDeclension(
-            number = min,
+            number = hours,
             nominativeCase = MainRes.string.hour_nominative,
             genitive = MainRes.string.hour_genitive,
             genitivePlural = MainRes.string.hour_plural

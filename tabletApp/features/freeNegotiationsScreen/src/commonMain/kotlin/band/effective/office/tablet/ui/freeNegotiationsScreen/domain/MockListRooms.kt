@@ -1,6 +1,7 @@
 package band.effective.office.tablet.ui.freeNegotiationsScreen.domain
 
 import band.effective.office.tablet.domain.model.EventInfo
+import band.effective.office.tablet.domain.model.Organizer
 import band.effective.office.tablet.domain.model.RoomInfo
 import java.util.Calendar
 
@@ -15,10 +16,12 @@ object MockListRooms {
                 EventInfo(
                     startTime = addTime(0, 0, 30),
                     finishTime = addTime(0, 1, 0),
-                    organizer = "Ольга Белозёрова"
+                    organizer = "Ольга Белозёрова".toOrg(),
+                    id = ""
                 )
             ),
-            currentEvent = null
+            currentEvent = null,
+            id = ""
         ),
 
         RoomInfo(
@@ -30,10 +33,12 @@ object MockListRooms {
                 EventInfo(
                     startTime = addTime(1, 2, 30),
                     finishTime = addTime(1, 3, 30),
-                    organizer = "Ольга Белозёрова"
+                    organizer = "Ольга Белозёрова".toOrg(),
+                    id = ""
                 )
             ),
-            currentEvent = null
+            currentEvent = null,
+            id = ""
         ),
 
         RoomInfo(
@@ -45,14 +50,17 @@ object MockListRooms {
                 EventInfo(
                     startTime = addTime(0, 0 , 0),
                     finishTime = addTime(0, 1, 15),
-                    organizer = "Ольга Белозёрова"
+                    organizer = "Ольга Белозёрова".toOrg(),
+                    id = ""
                 )
             ),
             currentEvent = EventInfo(
                 startTime = addTime(0, 0 , 0),
                 finishTime = addTime(0, 1, 15),
-                organizer = "Ольга Белозёрова"
-            )
+                organizer = "Ольга Белозёрова".toOrg(),
+                id = ""
+            ),
+            id = ""
         ),
 
         RoomInfo(
@@ -64,14 +72,17 @@ object MockListRooms {
                 EventInfo(
                     startTime = addTime(0, 0 , 0),
                     finishTime = addTime(0, 0, 45),
-                    organizer = "Коровянский А."
+                    organizer = "Коровянский А.".toOrg(),
+                    id = ""
                 )
             ),
             currentEvent = EventInfo(
                 startTime = addTime(0, 0 , 0),
                 finishTime = addTime(0, 0, 45),
-                organizer = "Коровянский А."
-            )
+                organizer = "Коровянский А.".toOrg(),
+                id = ""
+            ),
+            id = ""
         )
     )
 
@@ -83,3 +94,5 @@ object MockListRooms {
         return currentTime
     }
 }
+
+private fun String.toOrg(): Organizer = Organizer(fullName = this, id = this)

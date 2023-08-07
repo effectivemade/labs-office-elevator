@@ -60,8 +60,10 @@ class BookingRoomComponent(
             eventInfo = EventInfo(
                 startTime = startDate,
                 finishTime = finishDate,
-                organizer = state.value.organizer
-            )
+                organizer = state.value.organizer,
+                id = "" 
+            ),
+            roomId = state.value.roomName
         )
     }
 

@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import band.effective.office.tablet.domain.model.Organizer
 import band.effective.office.tablet.features.roomInfo.MainRes
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.h8
@@ -37,9 +38,9 @@ import io.github.skeptick.libres.compose.painterResource
 @Composable
 fun EventOrganizerView(
     modifier: Modifier = Modifier,
-    organizers: List<String>,
+    organizers: List<Organizer>,
     expanded: Boolean,
-    selectedItem: String,
+    selectedItem: Organizer,
     onExpandedChange: () -> Unit,
     onSelectItem: (String) -> Unit,
 
@@ -67,7 +68,7 @@ fun EventOrganizerView(
             ) {
                 TextField(
                     modifier = Modifier.fillMaxWidth(0.8f),
-                    value = selectedItem,
+                    value = selectedItem.fullName,
                     onValueChange = { onSelectItem(it) },
                     placeholder = {
                         Text(
@@ -85,7 +86,7 @@ fun EventOrganizerView(
                         onDone = {
                             defaultKeyboardAction(ImeAction.Done)
                             focusManager.clearFocus()
-                            onSelectItem(if (organizers.contains(selectedItem)) selectedItem else "")
+                            onSelectItem(if (organizers.contains(selectedItem)) selectedItem.fullName else "")
                             onExpandedChange()
                         }
                     ),
@@ -112,15 +113,15 @@ fun EventOrganizerView(
                     )
                 ) {
                     organizers.forEach { organizer ->
-                        if (!organizer.lowercase()
-                                .contains(selectedItem.lowercase())
+                        if (!organizer.fullName.lowercase()
+                                .contains(selectedItem.fullName.lowercase())
                         ) return@forEach
                         DropdownMenuItem(onClick = {
-                            onSelectItem(organizer)
+                            onSelectItem(organizer.fullName)
                             onExpandedChange()
                             focusManager.clearFocus()
                         }) {
-                            Text(text = organizer)
+                            Text(text = organizer.fullName)
                         }
                     }
                 }

@@ -50,7 +50,7 @@ fun RoomEventListComponent(modifier: Modifier = Modifier, eventsList: List<Event
                             color = LocalCustomColorsPalette.current.primaryTextAndIcon
                         )
                         Text(
-                            text = " · ${event.organizer}",
+                            text = " · ${event.organizer.fullName}",
                             style = MaterialTheme.typography.h7,
                             color = LocalCustomColorsPalette.current.secondaryTextAndIcon
                         )

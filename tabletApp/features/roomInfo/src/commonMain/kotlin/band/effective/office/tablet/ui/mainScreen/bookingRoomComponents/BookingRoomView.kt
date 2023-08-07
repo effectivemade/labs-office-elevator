@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
+import band.effective.office.tablet.domain.model.Organizer
 import band.effective.office.tablet.features.roomInfo.MainRes
 import band.effective.office.tablet.ui.buttons.alert.AlertButton
 import band.effective.office.tablet.ui.buttons.success.SuccessButton
@@ -83,8 +84,8 @@ fun BookingRoomView(
     incrementDuration: () -> Unit,
     decrementDuration: () -> Unit,
     isBusy: Boolean,
-    organizers: List<String>,
-    selectOrganizer: String,
+    organizers: List<Organizer>,
+    selectOrganizer: Organizer,
     isExpandedOrganizersList: Boolean,
     onExpandedChange: () -> Unit,
     onSelectOrganizer: (String) -> Unit,

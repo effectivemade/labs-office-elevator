@@ -37,7 +37,7 @@ fun BusyRoomInfoComponent(
     capacity: Int,
     isHaveTv: Boolean,
     electricSocketCount: Int,
-    event: EventInfo?,
+    event: EventInfo,
     onButtonClick: () -> Unit,
     timeToFinish: Int,
     isError: Boolean
@@ -62,8 +62,8 @@ fun BusyRoomInfoComponent(
         ) {
             Text(
                 text = MainRes.string.room_occupancy.format(
-                    finishTime = event?.finishTime?.time() ?: "",
-                    organizer = event?.organizer ?: ""
+                    finishTime = event.finishTime.time(),
+                    organizer = event.organizer.fullName
                 ),
                 style = MaterialTheme.typography.h5,
                 color = roomInfoColor

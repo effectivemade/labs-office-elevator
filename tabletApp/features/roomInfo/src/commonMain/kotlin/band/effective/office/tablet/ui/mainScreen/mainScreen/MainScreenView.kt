@@ -21,8 +21,6 @@ import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingR
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingRoomView
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.pickerDateTime.DateTimePickerComponent
 import band.effective.office.tablet.ui.mainScreen.mainScreen.uiComponents.Disconnect
-import band.effective.office.tablet.ui.mainScreen.mockComponets.MockSettingView
-import band.effective.office.tablet.ui.mainScreen.mockComponets.MockSettingsComponent
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.RoomInfoComponent
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponent
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomScreen
@@ -65,7 +63,6 @@ fun MainScreenView(
                     dateTimePickerComponent = dateTimePickerComponent,
                 )
                 Box() {
-                    MockSettingView(mockComponent)
                     Disconnect(visible = isDisconnect)
                 }
             }
