@@ -1,4 +1,4 @@
-package band.effective.office.elevator.domain.repository.impl
+package band.effective.office.elevator.data.repository
 
 import band.effective.office.elevator.domain.models.EmployeeInfo
 import band.effective.office.elevator.domain.repository.EmployeeRepository

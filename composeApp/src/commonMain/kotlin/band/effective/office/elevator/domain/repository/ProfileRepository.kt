@@ -1,4 +1,4 @@
-package band.effective.office.elevator.domain
+package band.effective.office.elevator.domain.repository
 
 import band.effective.office.elevator.domain.models.User
 import kotlinx.coroutines.flow.Flow
