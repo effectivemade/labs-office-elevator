@@ -32,7 +32,8 @@ fun DateTimeView(
     modifier: Modifier,
     selectDate: Calendar,
     increment: () -> Unit,
-    decrement: () -> Unit
+    decrement: () -> Unit,
+    onOpenDateTimePickerModal: () -> Unit
 ) {
     Column(modifier = modifier) {
         Text(
@@ -58,7 +59,7 @@ fun DateTimeView(
             Spacer(modifier = Modifier.width(10.dp))
             Button(
                 modifier = Modifier.fillMaxHeight().weight(4f).clip(RoundedCornerShape(15.dp)),
-                onClick = { },
+                onClick = { onOpenDateTimePickerModal() },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = LocalCustomColorsPalette.current.elevationBackground
                 )

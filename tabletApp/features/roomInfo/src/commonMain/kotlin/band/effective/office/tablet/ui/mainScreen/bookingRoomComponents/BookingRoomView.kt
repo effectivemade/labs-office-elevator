@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
+import band.effective.office.tablet.domain.model.Organizer
 import band.effective.office.tablet.features.roomInfo.MainRes
 import band.effective.office.tablet.ui.buttons.alert.AlertButton
 import band.effective.office.tablet.ui.buttons.success.SuccessButton
@@ -28,13 +29,19 @@ import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiCompon
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.DateTimeView
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.EventDurationView
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.EventOrganizerView
+import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.pickerDateTime.DateTimePickerComponent
+import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.pickerDateTime.DateTimePickerStore
 import band.effective.office.tablet.ui.theme.h7
 import io.github.skeptick.libres.compose.painterResource
 import java.util.Calendar
 
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable
-fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: BookingRoomComponent) {
+fun BookingRoomView(
+    modifier: Modifier = Modifier,
+    bookingRoomComponent: BookingRoomComponent,
+    dateTimePickerComponent: DateTimePickerComponent
+) {
     val state by bookingRoomComponent.state.collectAsState()
     BookingRoomView(
         modifier = modifier,
@@ -59,6 +66,7 @@ fun BookingRoomView(modifier: Modifier = Modifier, bookingRoomComponent: Booking
         isOrganizerError = state.isOrganizerError,
         onRequestBookingCurrentRoom = { bookingRoomComponent.sendIntent(BookingStore.Intent.OnBookingCurrentRoom) },
         onRequestBookingOtherRoom = { bookingRoomComponent.sendIntent(BookingStore.Intent.OnBookingOtherRoom) },
+        onOpenDateTimePickerModal = { dateTimePickerComponent.sendIntent(DateTimePickerStore.Intent.OnDateTimePickerModal)},
         roomName = state.roomName
     )
 }
@@ -76,14 +84,15 @@ fun BookingRoomView(
     incrementDuration: () -> Unit,
     decrementDuration: () -> Unit,
     isBusy: Boolean,
-    organizers: List<String>,
-    selectOrganizer: String,
+    organizers: List<Organizer>,
+    selectOrganizer: Organizer,
     isExpandedOrganizersList: Boolean,
     onExpandedChange: () -> Unit,
     onSelectOrganizer: (String) -> Unit,
     isOrganizerError: Boolean,
     onRequestBookingCurrentRoom: () -> Unit,
     onRequestBookingOtherRoom: () -> Unit,
+    onOpenDateTimePickerModal: () -> Unit,
     roomName: String
 ) {
     Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
@@ -98,7 +107,8 @@ fun BookingRoomView(
                 modifier = Modifier.fillMaxWidth().height(100.dp),
                 selectDate = if (isSelectCurrentTime) currentDate else selectDate,
                 increment = { incrementDay() },
-                decrement = { decrementDay() }
+                decrement = { decrementDay() },
+                onOpenDateTimePickerModal = { onOpenDateTimePickerModal() }
             )
             Spacer(modifier = Modifier.height(25.dp))
             EventDurationView(

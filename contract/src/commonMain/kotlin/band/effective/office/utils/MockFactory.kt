@@ -42,7 +42,7 @@ class MockFactory {
         count = 1,
         iconUrl = "",
         id = "",
-        name = "place"
+        name = "tv"
     )
 
     private fun user(name: String, role: String) = UserDTO(

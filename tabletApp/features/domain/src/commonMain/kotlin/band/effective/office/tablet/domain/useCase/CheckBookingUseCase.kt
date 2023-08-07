@@ -1,6 +1,6 @@
 package band.effective.office.tablet.domain.useCase
 
-import band.effective.office.tablet.domain.model.Either
+import band.effective.office.network.model.Either
 import band.effective.office.tablet.domain.model.ErrorWithData
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
