@@ -31,7 +31,7 @@ fun Route.bookingRouting() {
             call.respond(bookingFacade.findById(id))
         }
 
-        get(SwaggerDocument.returnBookings()) {/////
+        get(SwaggerDocument.returnBookings()) {
             val userId: String? = call.request.queryParameters["user_id"]
             val workspaceId: String? = call.request.queryParameters["workspace_id"]
             call.respond(bookingFacade.findAll(userId, workspaceId))

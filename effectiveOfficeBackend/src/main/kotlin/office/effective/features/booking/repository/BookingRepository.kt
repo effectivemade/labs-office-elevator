@@ -31,6 +31,7 @@ class BookingRepository(private val database: Database, private val converter: B
      * @author Daniil Zavyalov
      */
     fun deleteById(id: UUID) {
+        database.bookingParticipants.removeIf { it.bookingId eq id }
         database.workspaceBooking.removeIf { it.id eq id }
     }
 
