@@ -33,7 +33,6 @@ fun MainScreenView(
     showBookingModal: Boolean,
     showFreeRoomModal: Boolean,
     showDateTimePickerModal: Boolean,
-    mockComponent: MockSettingsComponent,
     bookingRoomComponent: BookingRoomComponent,
     selectRoomComponent: SelectRoomComponent,
     freeSelectRoomComponent: FreeSelectRoomComponent,
