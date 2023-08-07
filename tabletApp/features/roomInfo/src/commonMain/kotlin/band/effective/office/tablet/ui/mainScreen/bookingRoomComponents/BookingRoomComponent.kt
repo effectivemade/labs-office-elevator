@@ -4,6 +4,9 @@ import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store.BookingStore
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store.BookingStoreFactory
+import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.pickerDateTime.DateTimePickerComponent
+import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.pickerDateTime.DateTimePickerStore
+import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
 import band.effective.office.tablet.utils.componentCoroutineScope
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
@@ -20,7 +23,7 @@ class BookingRoomComponent(
     storeFactory: StoreFactory,
     private val onCurrentBookingRoom: () -> Unit,
     private val onBookingOtherRoom: () -> Unit,
-    private val onChangeDate: (Calendar) -> Unit
+    private val onChangeDate: (Calendar) -> Unit,
 ) :
     ComponentContext by componentContext {
 

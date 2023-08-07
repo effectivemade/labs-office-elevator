@@ -26,10 +26,12 @@ fun MainScreen(component: MainComponent) {
             MainScreenView(
                 showBookingModal = state.showBookingModal,
                 showFreeRoomModal = state.showFreeModal,
+                showDateTimePickerModal = state.showDateTimePickerModal,
                 bookingRoomComponent = component.bookingRoomComponent,
                 selectRoomComponent = component.selectRoomComponent,
                 roomInfoComponent = component.roomInfoComponent,
                 freeSelectRoomComponent = component.freeSelectRoomComponent,
+                dateTimePickerComponent = component.dateTimePickerComponent,
                 showModal = state.showModal(),
                 isDisconnect = state.isDisconnect
             )

@@ -2,6 +2,7 @@ package band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store
 
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.Organizer
+import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.pickerDateTime.DateTimePickerComponent
 import com.arkivanov.mvikotlin.core.store.Store
 import java.util.Calendar
 import java.util.GregorianCalendar
@@ -11,10 +12,16 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         object OnBookingCurrentRoom : Intent
         object OnBookingOtherRoom : Intent
         data class OnChangeDate(val changeInDay: Int) : Intent
+        data class OnSetDate(val changedDay: Int, val changedMonth: Int) : Intent
         data class OnChangeLength(val change: Int) : Intent
         data class OnChangeOrganizer(val newOrganizer: String) : Intent
         object OnChangeExpanded : Intent
         data class OnChangeIsActive(val reset: Boolean): Intent
+
+        object OnChangeIsCurrentSelectTime: Intent
+
+        data class OnDateTimePickerModal(val close: (() -> Unit)? = null): Intent
+        data class CloseModal(val close: (() -> Unit)? = null) : Intent
     }
 
     sealed interface Label{
