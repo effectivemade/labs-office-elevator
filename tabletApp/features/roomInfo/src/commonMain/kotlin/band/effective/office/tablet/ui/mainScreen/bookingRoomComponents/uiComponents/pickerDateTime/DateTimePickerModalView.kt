@@ -2,7 +2,6 @@ package band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiCompo
 
 import android.annotation.SuppressLint
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -18,8 +17,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingRoomComponent
-import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store.BookingStore
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import epicarchitect.calendar.compose.basis.EpicMonth
 import epicarchitect.calendar.compose.basis.config.rememberBasisEpicCalendarConfig
@@ -33,11 +30,12 @@ import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun DateTimePickerModalView(bookingRoomComponent: BookingRoomComponent) {
+fun DateTimePickerModalView(dateTimePickerComponent: DateTimePickerComponent, currentDate: Calendar) {
     DateTimePickerModalView(
-        bookingRoomComponent = bookingRoomComponent,
-        onCloseRequest = { bookingRoomComponent.sendIntent(BookingStore.Intent.CloseModal()) },
-        onSetDate = { day: Int, month: Int -> bookingRoomComponent.sendIntent(BookingStore.Intent.OnSetDate(day, month)) }
+        dateTimePickerComponent = dateTimePickerComponent,
+        currentDate = currentDate,
+        onCloseRequest = { dateTimePickerComponent.sendIntent(DateTimePickerStore.Intent.CloseModal()) },
+        onSetDate = { day: Int, month: Int -> dateTimePickerComponent.sendIntent(DateTimePickerStore.Intent.OnSetDate(day, month)) }
     )
 }
 
@@ -45,11 +43,12 @@ fun DateTimePickerModalView(bookingRoomComponent: BookingRoomComponent) {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DateTimePickerModalView(
-    bookingRoomComponent: BookingRoomComponent,
+    dateTimePickerComponent: DateTimePickerComponent,
+    currentDate: Calendar,
     onCloseRequest: () -> Unit,
     onSetDate: (changedDay: Int, changedMonth: Int) -> Unit
 ) {
-    val stateDateTime by bookingRoomComponent.state.collectAsState()
+    val stateDateTime by dateTimePickerComponent.state.collectAsState()
     val selectedDateTime by remember { mutableStateOf(stateDateTime.selectDate) }
 
 
@@ -63,18 +62,18 @@ fun DateTimePickerModalView(
             ),
             selectionContainerColor = LocalCustomColorsPalette.current.pressedPrimaryButton,
         ),
-        selectedDates =
+        selectedDates = /*TODO Here problem with date*/
         listOf(
             LocalDate(
-                selectedDateTime[Calendar.YEAR],
-                selectedDateTime[Calendar.MONTH] + 1,
-                selectedDateTime[Calendar.DAY_OF_MONTH]
+                currentDate[Calendar.YEAR],
+                currentDate[Calendar.MONTH] + 1,
+                currentDate[Calendar.DAY_OF_MONTH]
             )
         ),
         selectionMode = EpicDatePickerState.SelectionMode.Single(1),
         initialMonth = EpicMonth(
-            year = stateDateTime.selectDate[Calendar.YEAR],
-            month = Month(stateDateTime.selectDate[Calendar.MONTH] + 1))
+            year = currentDate[Calendar.YEAR],
+            month = Month(currentDate[Calendar.MONTH] + 1))
     )
 
     Dialog(
@@ -117,6 +116,12 @@ fun DateTimePickerModalView(
                         } else {
                             selectedDateTime[Calendar.MONTH] - 1
                         }
+
+//                        val changeInYear = if (epicDatePickerState.selectedDates.isNotEmpty()) {
+//                            epicDatePickerState.selectedDates.first().year
+//                        } else {
+//                            selectedDateTime[Calendar.YEAR]
+//                        }
 
                         onSetDate(changeInDay, changeInMonth)
                         onCloseRequest()

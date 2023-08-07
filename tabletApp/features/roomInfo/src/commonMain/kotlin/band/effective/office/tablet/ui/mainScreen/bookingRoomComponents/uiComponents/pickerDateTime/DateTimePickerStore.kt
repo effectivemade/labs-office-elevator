@@ -1,5 +1,6 @@
 package band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.pickerDateTime
 
+import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingRoomComponent
 import com.arkivanov.mvikotlin.core.store.Store
 import java.util.Calendar
 import java.util.GregorianCalendar
@@ -8,7 +9,7 @@ import java.util.GregorianCalendar
 interface DateTimePickerStore: Store<DateTimePickerStore.Intent, DateTimePickerStore.State, Nothing> {
     sealed interface Intent {
         data class OnSetDate(val changedDay: Int, val changedMonth: Int) : Intent
-        data class OnDateTimePickerModal(val close: (() -> Unit)? = null): Intent
+        object OnDateTimePickerModal: Intent
         data class CloseModal(val close: (() -> Unit)? = null) : Intent
     }
 

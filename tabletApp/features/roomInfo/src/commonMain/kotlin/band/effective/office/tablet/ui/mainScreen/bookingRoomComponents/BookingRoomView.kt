@@ -39,6 +39,7 @@ import java.util.Calendar
 fun BookingRoomView(
     modifier: Modifier = Modifier,
     bookingRoomComponent: BookingRoomComponent,
+    dateTimePickerComponent: DateTimePickerComponent
 ) {
     val state by bookingRoomComponent.state.collectAsState()
     BookingRoomView(
@@ -62,9 +63,9 @@ fun BookingRoomView(
             )
         },
         isOrganizerError = state.isOrganizerError,
-        onRequestBookingCurrentRoom = { bookingRoomComponent.sendIntent(BookingStore.Intent.OnBookingCurrentRoom()) },
-        onRequestBookingOtherRoom = { bookingRoomComponent.sendIntent(BookingStore.Intent.OnBookingOtherRoom()) },
-        onOpenDateTimePickerModal = { bookingRoomComponent.sendIntent(BookingStore.Intent.OnDateTimePickerModal()) },
+        onRequestBookingCurrentRoom = { bookingRoomComponent.sendIntent(BookingStore.Intent.OnBookingCurrentRoom) },
+        onRequestBookingOtherRoom = { bookingRoomComponent.sendIntent(BookingStore.Intent.OnBookingOtherRoom) },
+        onOpenDateTimePickerModal = { dateTimePickerComponent.sendIntent(DateTimePickerStore.Intent.OnDateTimePickerModal)},
         roomName = state.roomName
     )
 }

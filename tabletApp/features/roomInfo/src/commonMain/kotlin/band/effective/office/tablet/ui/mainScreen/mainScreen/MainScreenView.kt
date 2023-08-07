@@ -28,7 +28,7 @@ import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponent
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomScreen
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.pickerDateTime.DateTimePickerModalView
 
-@SuppressLint("NewApi")
+@SuppressLint("NewApi", "StateFlowValueCalledInComposition")
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable
 fun MainScreenView(
@@ -39,6 +39,7 @@ fun MainScreenView(
     bookingRoomComponent: BookingRoomComponent,
     selectRoomComponent: SelectRoomComponent,
     freeSelectRoomComponent: FreeSelectRoomComponent,
+    dateTimePickerComponent: DateTimePickerComponent,
     roomInfoComponent: RoomInfoComponent,
     showModal: Boolean,
     isDisconnect: Boolean,
@@ -61,6 +62,7 @@ fun MainScreenView(
                         .fillMaxSize()
                         .padding(25.dp),
                     bookingRoomComponent = bookingRoomComponent,
+                    dateTimePickerComponent = dateTimePickerComponent,
                 )
                 Box() {
                     MockSettingView(mockComponent)
@@ -75,7 +77,7 @@ fun MainScreenView(
             when {
                 showBookingModal -> SelectRoomScreen(component = selectRoomComponent)
                 showFreeRoomModal -> FreeSelectRoomView(freeSelectRoomComponent = freeSelectRoomComponent)
-                showDateTimePickerModal -> DateTimePickerModalView(bookingRoomComponent = bookingRoomComponent)
+                showDateTimePickerModal -> DateTimePickerModalView(dateTimePickerComponent = dateTimePickerComponent, currentDate = bookingRoomComponent.state.value.selectDate)
 
             }
         }

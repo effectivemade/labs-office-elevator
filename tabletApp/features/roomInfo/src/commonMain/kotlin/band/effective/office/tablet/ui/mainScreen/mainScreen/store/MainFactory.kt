@@ -41,7 +41,6 @@ class MainFactory(private val storeFactory: StoreFactory) : KoinComponent {
         object CloseModal : Message
         object OpenFreeModal : Message
         object OpenDateTimePickerModal : Message
-
         data class Load(val isSuccess: Boolean) : Message
         data class UpdateDisconnect(val newValue: Boolean) : Message
         object Reboot : Message

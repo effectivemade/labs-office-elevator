@@ -24,8 +24,6 @@ class BookingRoomComponent(
     private val onCurrentBookingRoom: () -> Unit,
     private val onBookingOtherRoom: () -> Unit,
     private val onChangeDate: (Calendar) -> Unit,
-    private val onOpenDateTimePickerModal: () -> Unit,
-    private val onCloseRequest: () -> Unit
 ) :
     ComponentContext by componentContext {
 
@@ -50,15 +48,6 @@ class BookingRoomComponent(
     init {
         collectLabels()
     }
-
-    val dateTimePickerComponent: DateTimePickerComponent =
-        DateTimePickerComponent(
-            componentContext = componentContext,
-            storeFactory = storeFactory,
-            onOpenDateTimePickerModal = { DateTimePickerStore.Intent.OnDateTimePickerModal() },
-            onCloseRequest = { DateTimePickerStore.Intent.CloseModal() },
-            changeDate = { day: Int, month: Int -> bookingStore.accept(BookingStore.Intent.OnSetDate(day, month)) }
-        )
 
     fun getBooking(): Booking {
         val startDate =

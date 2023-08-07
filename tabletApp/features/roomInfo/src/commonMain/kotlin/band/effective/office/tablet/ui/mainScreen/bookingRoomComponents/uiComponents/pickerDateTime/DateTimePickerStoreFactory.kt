@@ -55,8 +55,8 @@ class DateTimePickerStoreFactory(private val storeFactory: StoreFactory) : KoinC
             when (intent) {
                 is DateTimePickerStore.Intent.OnSetDate -> {
                     setNewDate(getState(), intent.changedDay, intent.changedMonth)
-
                 }
+
                 is DateTimePickerStore.Intent.CloseModal -> intent.close?.invoke()
                 else -> {}
             }
@@ -104,6 +104,25 @@ class DateTimePickerStoreFactory(private val storeFactory: StoreFactory) : KoinC
                 )
             )
             reset()
+        }
+
+        fun syncNewDate(state: DateTimePickerStore.State, syncedState: BookingStore.State) {
+            val syncDate = state.selectDate.clone() as Calendar
+            val newDate = (state.selectDate.clone() as Calendar).apply {
+                set(
+                    syncDate[Calendar.YEAR],
+                    syncDate[Calendar.MONTH],
+                    syncDate[Calendar.DAY_OF_MONTH]
+                )
+            }
+            dispatch(
+                Message.ChangeEvent(
+                    selectDate = newDate,
+                    isSelectCurrentTime = newDate.isNow()
+                )
+            )
+            reset()
+             syncedState.selectDate
         }
     }
 
