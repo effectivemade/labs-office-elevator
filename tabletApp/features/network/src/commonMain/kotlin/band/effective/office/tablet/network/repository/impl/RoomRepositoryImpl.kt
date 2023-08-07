@@ -40,10 +40,7 @@ class RoomRepositoryImpl(private val api: Api) : RoomRepository {
     }
 
     override suspend fun getRoomInfo(room: String): Either<ErrorWithData<RoomInfo>, RoomInfo> =
-        if (roomInfo.value == null)
             loadRoomInfo(room)
-        else
-            roomInfo.value!!
 
     override fun subscribeOnUpdates(
         scope: CoroutineScope,

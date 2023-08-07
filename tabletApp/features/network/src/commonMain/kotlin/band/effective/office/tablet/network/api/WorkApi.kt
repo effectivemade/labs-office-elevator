@@ -15,16 +15,98 @@ import java.util.GregorianCalendar
 
 class WorkApi : Api {
     val mutableRoomInfo = MutableStateFlow(RoomInfo.defaultValue)
+    lateinit var otherRoomInfo: MutableMap<String, RoomInfo>
 
-    // NOTE(Maksim Mishenko) add other room here
-    var otherRoomInfo: MutableMap<String, RoomInfo> =
-        mutableMapOf("default" to RoomInfo.defaultValue)
     val mutableOrgList =
         MutableStateFlow(listOf("Ольга Белозерова", "Матвей Авгуль", "Лилия Акентьева"))
 
     var isSuccess = MutableStateFlow(true)
     override suspend fun getRoomInfo(room: String): Either<ErrorResponse, RoomInfo> {
-        delay(5000L)
+        if(room == "Sirius") {
+            delay(5000L)
+        } else {
+            otherRoomInfo =
+                mutableMapOf(
+                    "Pluto" to RoomInfo(
+                        name = "Pluto",
+                        capacity = 3,
+                        isHaveTv = false,
+                        socketCount = 0,
+                        eventList = listOf(
+                            EventInfo(
+                                startTime = addTime(0, 0, 2),
+                                finishTime = addTime( 0, 0, 32),
+                                organizer = "Ольга Белозёрова"
+                            )
+                        ),
+                        currentEvent = null
+                    ),
+                    "Moon" to RoomInfo(
+                        name = "Moon",
+                        capacity = 8,
+                        isHaveTv = false,
+                        socketCount = 0,
+                        eventList = listOf(
+                            EventInfo(
+                                startTime = addTime(1, 2, 30),
+                                finishTime = addTime(1, 3, 30),
+                                organizer = "Ольга Белозёрова"
+                            )
+                        ),
+                        currentEvent = null
+                    ),
+                    "Antares" to RoomInfo(
+                        name = "Antares",
+                        capacity = 3,
+                        isHaveTv = false,
+                        socketCount = 14,
+                        eventList = listOf(
+                            EventInfo(
+                                startTime = addTime(0, 0 , 0),
+                                finishTime = addTime( 0, 1, 15),
+                                organizer = "Ольга Белозёрова"
+                            )
+                        ),
+                        currentEvent = EventInfo(
+                            startTime = addTime(0, 0 , 0),
+                            finishTime = addTime(0, 1, 15),
+                            organizer = "Ольга Белозёрова"
+                        )
+                    ),
+                    "Sun" to RoomInfo(
+                        name = "Sun",
+                        capacity = 8,
+                        isHaveTv = false,
+                        socketCount = 0,
+                        eventList = listOf(
+                            EventInfo(
+                                startTime = addTime(0, 0 , 0),
+                                finishTime = addTime( 0, 0, 45),
+                                organizer = "Коровянский А."
+                            )
+                        ),
+                        currentEvent = EventInfo(
+                            startTime = addTime(0, 0 , 0),
+                            finishTime = addTime(0, 0, 45),
+                            organizer = "Коровянский А."
+                        )
+                    ),
+
+                    "Pluto_upd" to RoomInfo(
+                        name = "Pluto",
+                        capacity = 3,
+                        isHaveTv = false,
+                        socketCount = 0,
+                        eventList = listOf(),
+                        currentEvent = EventInfo(
+                            startTime = addTime(0, 0, 0),
+                            finishTime = addTime( 0, 0, 30),
+                            organizer = "Ольга Белозёрова"
+                        )
+                    )
+                )
+            delay(1500L)
+        }
         return when {
             !isSuccess.value -> Either.Error(ErrorResponse(0, ""))
             mutableRoomInfo.value.name == room -> Either.Success(mutableRoomInfo.value)
@@ -190,5 +272,13 @@ class WorkApi : Api {
         val calendar = GregorianCalendar()
         calendar.add(Calendar.MINUTE, 20)
         currentTime.time = calendar.time
+    }
+
+    private fun addTime(d: Int, h: Int, min: Int): Calendar {
+        val currentTime = Calendar.getInstance()
+        currentTime.add(Calendar.DAY_OF_MONTH, d)
+        currentTime.add(Calendar.HOUR, h)
+        currentTime.add(Calendar.MINUTE, min)
+        return currentTime
     }
 }
