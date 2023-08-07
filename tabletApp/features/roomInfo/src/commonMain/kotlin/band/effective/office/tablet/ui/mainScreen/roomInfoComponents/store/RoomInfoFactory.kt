@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.Calendar
+import java.util.GregorianCalendar
 
 class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
 
@@ -126,7 +127,8 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
                     dispatch(
                         Message.UpdateRoomInfo(
                             roomInfo = this,
-                            nextEvent = eventList.firstOrNull() ?: EventInfo.emptyEvent
+                            nextEvent = eventList.firstOrNull { it.startTime > GregorianCalendar() }
+                                ?: EventInfo.emptyEvent
                         )
                     )
                 }

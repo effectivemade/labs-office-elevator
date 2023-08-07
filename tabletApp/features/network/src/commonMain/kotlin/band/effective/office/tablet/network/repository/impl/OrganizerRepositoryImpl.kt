@@ -39,7 +39,7 @@ class OrganizerRepositoryImpl(private val api: Api) : OrganizerRepository {
             if (this is Either.Error && error.error.code == 0) loadOrganizersList()
             else {
                 coroutineScope { launch { loadOrganizersList() } }
-                orgList.value
+                this
             }
         }
 
@@ -62,11 +62,8 @@ class OrganizerRepositoryImpl(private val api: Api) : OrganizerRepository {
             )
         },
             successMapper = { user ->
-                user.filter { it.role == "ADMIN" }.map {
-                    Organizer(
-                        fullName = it.fullName,
-                        id = it.id
-                    )
-                }
+                user.filter { it.role == "ADMIN" }.map { it.toOrganizer() }
             })
 }
+
+private fun UserDTO.toOrganizer() = Organizer(fullName = fullName, id = id)

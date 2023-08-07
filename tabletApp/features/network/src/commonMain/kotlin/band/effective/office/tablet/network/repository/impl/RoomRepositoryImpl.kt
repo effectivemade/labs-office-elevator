@@ -58,14 +58,14 @@ class RoomRepositoryImpl(
                 api.subscribeOnWorkspaceUpdates(roomId).collect {
                     send(
                         it.convert(roomInfo.value).addEvents(loadEvents(roomId))
-                            .apply { roomInfo.update { it } })
+                            .apply { roomInfo.update { this } })
                 }
             }
             launch {
                 api.subscribeOnBookingsList(roomId).collect {
                     send(
                         getRoomInfo(roomId).addEvents(it)
-                            .apply { roomInfo.update { it } })
+                            .apply { roomInfo.update { this } })
                 }
             }
             awaitClose()
@@ -115,9 +115,17 @@ class RoomRepositoryImpl(
             when (this) {
                 is Either.Error -> this
                 is Either.Success -> if (data.eventList.isEmpty() && data.currentEvent == null) Either.Success(
-                    data.copy(eventList = loadEvents.data.map { it.toEventInfo() })
+                    data.addEvents(loadEvents.data.map { it.toEventInfo() })
                 ) else this
             }
         } else this
 
+    private fun RoomInfo.addEvents(events: List<EventInfo>): RoomInfo =
+        with(GregorianCalendar()) {
+            copy(
+                eventList = events.filter { event -> !(this >= event.startTime && this <= event.finishTime) }
+                    .sortedBy { it.startTime },
+                currentEvent = events.firstOrNull { event -> this >= event.startTime && this <= event.finishTime })
+        }
 }
+
