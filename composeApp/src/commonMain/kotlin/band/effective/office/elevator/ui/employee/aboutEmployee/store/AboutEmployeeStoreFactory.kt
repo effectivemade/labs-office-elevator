@@ -77,7 +77,6 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory) : KoinCo
 }
 private val mokValueUser = User("1","1","Ivanov Ivan", "Android-developer","67","@ivanov","employee@effective.com")
 
-private val mokValueUser = User("1","1","Ivanov Ivan", "Android-developer","67","@ivanov","employee@effective.com")
 private val mokValue = listOf(
     ReservedSeat(
         bookingId = 1,

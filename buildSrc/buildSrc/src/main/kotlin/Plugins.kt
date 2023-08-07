@@ -36,7 +36,7 @@ object Plugins {
     }
 
     object MultiplatformCompose {
-        const val implementation = "org.jetbrains.compose:compose-gradle-plugin:1.4.0"
+        const val implementation = "org.jetbrains.compose:compose-gradle-plugin:1.5.0-beta01"
         const val plugin = "org.jetbrains.compose"
     }
 

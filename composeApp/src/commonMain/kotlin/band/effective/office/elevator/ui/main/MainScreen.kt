@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.ModalCalendar
 import band.effective.office.elevator.components.TitlePage
@@ -103,14 +104,16 @@ fun MainScreen(component: MainComponent) {
             }
         )
         if (showModalCalendar) {
-            ModalCalendar(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .align(Alignment.Center),
-                onClickCansel = { component.onEvent(MainStore.Intent.OnClickCloseCalendar) },
-                onClickOk = { component.onEvent(MainStore.Intent.OnClickApplyDate(it)) },
-                currentDate = state.currentDate
-            )
+            Dialog(onDismissRequest = {component.onEvent(MainStore.Intent.OnClickCloseCalendar)}){
+                ModalCalendar(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .align(Alignment.Center),
+                    onClickCansel = { component.onEvent(MainStore.Intent.OnClickCloseCalendar) },
+                    onClickOk = { component.onEvent(MainStore.Intent.OnClickApplyDate(it)) },
+                    currentDate = state.currentDate
+                )
+            }
         }
         SnackBarErrorMessage(
             modifier = Modifier.align(Alignment.BottomCenter),
