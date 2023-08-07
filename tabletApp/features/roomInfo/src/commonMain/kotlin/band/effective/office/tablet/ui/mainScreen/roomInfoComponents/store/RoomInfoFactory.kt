@@ -102,7 +102,7 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
     }
 
     private sealed interface Message {
-        data class UpdateRoomInfo(val roomInfo: RoomInfo) : Message
+        data class UpdateRoomInfo(val roomInfo: RoomInfo, val nextEvent: EventInfo) : Message
         data class UpdateChangeEventTime(val newValue: Int) : Message
         data class UpdateDate(val newValue: Calendar, val eventList: List<EventInfo>) : Message
         data class OnResponse(val isSuccess: Boolean) : Message
@@ -122,13 +122,14 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
 
         override fun executeAction(action: Action, getState: () -> RoomInfoStore.State) {
             when (action) {
-                is Action.UpdateRoomInfo -> dispatch(
-                    Message.UpdateRoomInfo(
-                        action.roomInfo.filter(
-                            getState().selectDate
+                is Action.UpdateRoomInfo -> with(action.roomInfo.filter(getState().selectDate)) {
+                    dispatch(
+                        Message.UpdateRoomInfo(
+                            roomInfo = this,
+                            nextEvent = eventList.firstOrNull() ?: EventInfo.emptyEvent
                         )
                     )
-                )
+                }
 
                 is Action.UpdateChangeEventTime -> dispatch(Message.UpdateChangeEventTime(action.newValue))
                 is Action.OnResponse -> dispatch(Message.OnResponse(action.isSuccess))
@@ -168,7 +169,11 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
                     roomInfo = roomInfo.copy(eventList = message.eventList)
                 )
 
-                is Message.UpdateRoomInfo -> copy(roomInfo = message.roomInfo)
+                is Message.UpdateRoomInfo -> copy(
+                    roomInfo = message.roomInfo,
+                    nextEvent = message.nextEvent
+                )
+
                 is Message.OnResponse -> copy(isError = !message.isSuccess)
             }
     }
