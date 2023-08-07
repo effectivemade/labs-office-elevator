@@ -19,8 +19,6 @@ import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomView
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingRoomComponent
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingRoomView
 import band.effective.office.tablet.ui.mainScreen.mainScreen.uiComponents.Disconnect
-import band.effective.office.tablet.ui.mainScreen.mockComponets.MockSettingView
-import band.effective.office.tablet.ui.mainScreen.mockComponets.MockSettingsComponent
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.RoomInfoComponent
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponent
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomScreen
@@ -30,7 +28,6 @@ import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomScreen
 fun MainScreenView(
     showBookingModal: Boolean,
     showFreeRoomModal: Boolean,
-    mockComponent: MockSettingsComponent,
     bookingRoomComponent: BookingRoomComponent,
     selectRoomComponent: SelectRoomComponent,
     freeSelectRoomComponent: FreeSelectRoomComponent,
@@ -57,7 +54,6 @@ fun MainScreenView(
                     bookingRoomComponent = bookingRoomComponent
                 )
                 Box() {
-                    MockSettingView(mockComponent)
                     Disconnect(visible = isDisconnect)
                 }
             }

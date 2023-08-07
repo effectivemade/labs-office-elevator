@@ -250,7 +250,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             startTime = selectDate.clone() as Calendar,
             finishTime = finishDate,
             organizer = organizer,
-            id = "" // TODO think about it
+            id = ""
         )
     }
 

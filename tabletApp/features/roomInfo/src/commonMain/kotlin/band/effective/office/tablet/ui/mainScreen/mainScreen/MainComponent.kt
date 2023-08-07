@@ -5,8 +5,6 @@ import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingR
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store.BookingStore
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainFactory
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
-import band.effective.office.tablet.ui.mainScreen.mockComponets.MockSettingsComponent
-import band.effective.office.tablet.ui.mainScreen.mockComponets.RealMockSettingsComponent
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.RoomInfoComponent
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.store.RoomInfoStore
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponentImpl
@@ -25,10 +23,6 @@ class MainComponent(
     private val OnSelectOtherRoomRequest: () -> Unit
 ) : ComponentContext by componentContext {
 
-    val mockSettingsComponent: MockSettingsComponent =
-        RealMockSettingsComponent(
-            componentContext = childContext(key = "mock")
-        )
     val roomInfoComponent: RoomInfoComponent = RoomInfoComponent(
         componentContext = childContext(key = "roomInfoComponent"),
         storeFactory = storeFactory,
