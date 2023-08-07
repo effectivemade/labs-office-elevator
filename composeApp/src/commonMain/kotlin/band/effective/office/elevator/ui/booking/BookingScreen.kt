@@ -54,8 +54,12 @@ import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.borderPurple
 import band.effective.office.elevator.components.ModalCalendar
+import band.effective.office.elevator.components.MultiBottomSheet
 import band.effective.office.elevator.components.TimePickerModal
 import band.effective.office.elevator.components.TitlePage
+import band.effective.office.elevator.components.bottomSheet.BottomSheetItem
+import band.effective.office.elevator.components.bottomSheet.MultiBottomSheetController
+import band.effective.office.elevator.components.bottomSheet.rememberMultiBottomSheetController
 import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.textInBorderPurple
 import band.effective.office.elevator.ui.booking.components.BookingCard
@@ -66,8 +70,11 @@ import band.effective.office.elevator.ui.booking.components.modals.BookingRepeat
 import band.effective.office.elevator.ui.booking.components.modals.BookingRepeatCard
 import band.effective.office.elevator.ui.booking.components.modals.BookingSuccess
 import band.effective.office.elevator.ui.booking.components.modals.ChooseZone
+import band.effective.office.elevator.ui.booking.models.BottomSheetNames
 import band.effective.office.elevator.ui.booking.store.BookingStore
 import band.effective.office.elevator.ui.models.TypesList
+import band.effective.office.elevator.utils.Stack
+import band.effective.office.elevator.utils.stackOf
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.datetime.LocalDate
@@ -76,11 +83,68 @@ import kotlinx.datetime.LocalTime
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BookingScreen(bookingComponent: BookingComponent) {
+
     val list by bookingComponent.state.collectAsState()
+
     var showChooseZone = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     var showBookPeriod = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     var showBookAccept = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     var showBookRepeat = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+
+    val stackRemember: Stack<String> by remember { mutableStateOf(stackOf()) }
+
+    val multiBottomSheetController = rememberMultiBottomSheetController(
+        sheetStack = stackRemember,
+        sheetContents = mapOf(
+            BottomSheetNames.CHOOSE_ZONE.name to BottomSheetItem(
+                bottomSheetContentState = showChooseZone
+            ) {
+                ChooseZone(
+                    true,
+                    onClickCloseChoseZone = { bookingComponent.onEvent(BookingStore.Intent.CloseChooseZone) }
+                )
+            },
+            BottomSheetNames.BOOK_ACCEPT.name to BottomSheetItem(
+                bottomSheetContentState = showBookAccept
+            ) {
+                BookAccept(
+                    onClickCloseBookAccept = { bookingComponent.onEvent(BookingStore.Intent.CloseBookAccept) },
+                    confirmBooking = { bookingComponent.onEvent(BookingStore.Intent.OpenConfirmBooking) }
+                )
+            },
+            BottomSheetNames.BOOK_PERIOD.name to BottomSheetItem(
+                bottomSheetContentState = showBookPeriod
+            ) {
+                BookingPeriod(
+                    startDate = "Чт, 27 июл. 2023 г.",
+                    startTime = "10:30",
+                    finishDate = "Чт, 27 июл. 2023 г.",
+                    finishTime = "15:30",
+                    repeatBooking = "Бронирование не повторяется",
+                    false,
+                    closeClick = { bookingComponent.onEvent(BookingStore.Intent.CloseBookPeriod) },
+                    onSwitchChange = { false },
+                    bookStartDate = { bookingComponent.onEvent(BookingStore.Intent.OpenCalendar) },
+                    bookFinishDate = { bookingComponent.onEvent(BookingStore.Intent.OpenCalendar) },
+                    bookStartTime = { bookingComponent.onEvent(BookingStore.Intent.OpenTimeModal) },
+                    bookFinishTime = { bookingComponent.onEvent(BookingStore.Intent.OpenTimeModal) },
+                    bookingRepeat = { bookingComponent.onEvent(BookingStore.Intent.OpenRepeatDialog) },
+                    onClickSearchSuitableOptions = { bookingComponent.onEvent(BookingStore.Intent.SearchSuitableOptions) }
+                )
+            },
+            BottomSheetNames.BOOK_REPEAT.name to BottomSheetItem(
+                bottomSheetContentState = showBookRepeat
+            ) {
+                BookingRepeat(
+                    backButtonClicked = { bookingComponent.onEvent(BookingStore.Intent.CloseBookRepeat) },
+                    dropDownClick = {},
+                    confirmBooking = {},
+                    onSelected = {},
+                    onDaySelected = {}
+                )
+            },
+        )
+    )
 
     var showRepeatDialog by remember { mutableStateOf(false) }
     var showCalendar by remember { mutableStateOf(false) }
@@ -90,160 +154,125 @@ fun BookingScreen(bookingComponent: BookingComponent) {
     LaunchedEffect(bookingComponent) {
         bookingComponent.label.collect { label ->
             when (label) {
-               is BookingStore.Label.OpenChooseZone -> showChooseZone.show()
-                is BookingStore.Label.CloseChooseZone -> showChooseZone.hide()
-                is BookingStore.Label.OpenBookPeriod -> showBookPeriod.show()
-                is BookingStore.Label.CloseBookPeriod -> showBookPeriod.hide()
+                is BookingStore.Label.OpenChooseZone -> multiBottomSheetController.showSheet(
+                    BottomSheetNames.CHOOSE_ZONE.name
+                )
+
+                is BookingStore.Label.CloseChooseZone -> multiBottomSheetController.closeCurrentSheet()
+                is BookingStore.Label.OpenBookPeriod -> multiBottomSheetController.showSheet(
+                    BottomSheetNames.BOOK_PERIOD.name
+                )
+
+                is BookingStore.Label.CloseBookPeriod -> multiBottomSheetController.closeCurrentSheet()
                 is BookingStore.Label.OpenRepeatDialog -> showRepeatDialog = true
                 is BookingStore.Label.CloseRepeatDialog -> showRepeatDialog = false
-                is BookingStore.Label.OpenBookAccept -> showBookAccept.show()
-                is BookingStore.Label.CloseBookAccept -> showBookAccept.hide()
+                is BookingStore.Label.OpenBookAccept -> multiBottomSheetController.showSheet(
+                    BottomSheetNames.BOOK_ACCEPT.name
+                )
+
+                is BookingStore.Label.CloseBookAccept -> multiBottomSheetController.closeCurrentSheet()
                 is BookingStore.Label.OpenCalendar -> showCalendar = true
                 is BookingStore.Label.CloseCalendar -> showCalendar = false
                 is BookingStore.Label.OpenConfirmBooking -> showConfirm = true
                 is BookingStore.Label.CloseConfirmBooking -> showConfirm = false
                 is BookingStore.Label.OpenTimeModal -> showTimePicker = true
                 is BookingStore.Label.CloseTimeModal -> showTimePicker = false
-                is BookingStore.Label.OpenBookRepeat -> showBookRepeat.show()
-                is BookingStore.Label.CloseBookRepeat -> showBookRepeat.hide()
+                is BookingStore.Label.OpenBookRepeat -> multiBottomSheetController.showSheet(
+                    BottomSheetNames.BOOK_REPEAT.name
+                )
+
+                is BookingStore.Label.CloseBookRepeat -> multiBottomSheetController.closeCurrentSheet()
             }
         }
     }
+
     BookingScreenContent(
-        showBookRepeat = showBookRepeat,
-        showChooseZone = showChooseZone,
+        multiBottomSheetController = multiBottomSheetController,
         showRepeatDialog = showRepeatDialog,
-        showBookPeriod = showBookPeriod,
-        showBookAccept = showBookAccept,
         showCalendar = showCalendar,
         showConfirm = showConfirm,
         showTimePicker = showTimePicker,
         currentDate = list.currentDate,
-        onClickOpenBookRepeat = {bookingComponent.onEvent(BookingStore.Intent.OpenBookRepeat)},
-        onClickCloseBookRepeat = {bookingComponent.onEvent(BookingStore.Intent.CloseBookRepeat)},
-        onClickSearchSuitableOptions = {bookingComponent.onEvent(BookingStore.Intent.SearchSuitableOptions)},
-        onClickOpenTimeModal = {bookingComponent.onEvent(BookingStore.Intent.OpenTimeModal)},
-        onClickCloseTimeModal = {bookingComponent.onEvent(BookingStore.Intent.CloseTimeModal)},
-        onClickSelectTime = {time: LocalTime -> bookingComponent.onEvent(BookingStore.Intent.ApplyTime(time = time))},
-        onClickCloseBookingConfirm = {bookingComponent.onEvent(BookingStore.Intent.CloseConfirmBooking)},
-        onClickOpenBookingConfirm = {bookingComponent.onEvent(BookingStore.Intent.OpenConfirmBooking)},
-        onClickCloseChoseZone = {bookingComponent.onEvent(BookingStore.Intent.CloseChooseZone)},
-        onClickCloseCalendar = {bookingComponent.onEvent(BookingStore.Intent.CloseCalendar)},
-        onClickOpenCalendar = {bookingComponent.onEvent(BookingStore.Intent.OpenCalendar)},
-        onClickOpenChoseZone = {bookingComponent.onEvent(BookingStore.Intent.OpenChooseZone)},
-        onClickOpenRepeatDialog = {bookingComponent.onEvent(BookingStore.Intent.OpenRepeatDialog)},
-        onClickCloseBookPeriod = {bookingComponent.onEvent(BookingStore.Intent.CloseBookPeriod)},
-        onClickOpenBookPeriod = {bookingComponent.onEvent(BookingStore.Intent.OpenBookPeriod)},
+        onClickOpenBookRepeat = { bookingComponent.onEvent(BookingStore.Intent.OpenBookRepeat) },
+        onClickCloseTimeModal = { bookingComponent.onEvent(BookingStore.Intent.CloseTimeModal) },
+        onClickSelectTime = { time: LocalTime ->
+            bookingComponent.onEvent(
+                BookingStore.Intent.ApplyTime(
+                    time = time
+                )
+            )
+        },
+        onClickCloseBookingConfirm = { bookingComponent.onEvent(BookingStore.Intent.CloseConfirmBooking) },
+        onClickCloseCalendar = { bookingComponent.onEvent(BookingStore.Intent.CloseCalendar) },
+        onClickOpenChoseZone = { bookingComponent.onEvent(BookingStore.Intent.OpenChooseZone) },
+        onClickOpenBookPeriod = { bookingComponent.onEvent(BookingStore.Intent.OpenBookPeriod) },
         onClickMainScreen = {},
-        onClickOpenBookAccept = {bookingComponent.onEvent(BookingStore.Intent.OpenBookAccept)},
-        onClickCloseBookAccept = { bookingComponent.onEvent(BookingStore.Intent.CloseBookAccept) },
-        onClickApplyDate = {date: LocalDate? -> bookingComponent.onEvent(BookingStore.Intent.ApplyDate(date= date))}
+        onClickOpenBookAccept = { bookingComponent.onEvent(BookingStore.Intent.OpenBookAccept) },
+        onClickApplyDate = { date: LocalDate? ->
+            bookingComponent.onEvent(
+                BookingStore.Intent.ApplyDate(
+                    date = date
+                )
+            )
+        }
     )
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun BookingScreenContent(
-    showChooseZone: ModalBottomSheetState,
-    showBookPeriod: ModalBottomSheetState,
+    multiBottomSheetController: MultiBottomSheetController,
     onClickOpenBookPeriod: () -> Unit,
-    onClickCloseBookPeriod: () -> Unit,
     onClickOpenChoseZone: () -> Unit,
-    onClickCloseChoseZone: () -> Unit,
     showRepeatDialog: Boolean,
-    onClickOpenRepeatDialog: () -> Unit,
-    showBookAccept: ModalBottomSheetState,
     onClickOpenBookAccept: () -> Unit,
-    onClickCloseBookAccept: () -> Unit,
     onClickCloseCalendar: () -> Unit,
-    onClickOpenCalendar: () -> Unit,
     showCalendar: Boolean,
     onClickApplyDate: (LocalDate?) -> Unit,
     currentDate: LocalDate,
-    onClickOpenBookingConfirm: () -> Unit,
     onClickCloseBookingConfirm: () -> Unit,
     showConfirm: Boolean,
     onClickMainScreen: () -> Unit,
     showTimePicker: Boolean,
-    onClickOpenTimeModal: () -> Unit,
     onClickCloseTimeModal: () -> Unit,
     onClickSelectTime: (LocalTime) -> Unit,
-    onClickSearchSuitableOptions: () -> Unit,
-    showBookRepeat: ModalBottomSheetState,
     onClickOpenBookRepeat: () -> Unit,
-    onClickCloseBookRepeat: () -> Unit
 ) {
-    val  scrollState = rememberLazyListState()
+    val scrollState = rememberLazyListState()
 
     var timeTitle by remember { mutableStateOf(MainRes.strings.take_from) }
 
     var isExpandedCard by rememberSaveable { mutableStateOf(true) }
     val iconRotationStateCard by animateFloatAsState(targetValue = if (isExpandedCard) 90F else 270F)
+
     var isExpandedOptions by rememberSaveable { mutableStateOf(true) }
     val iconRotationStateOptions by animateFloatAsState(targetValue = if (isExpandedOptions) 90F else 270F)
-    if(scrollState.isScrollInProgress){
-        isExpandedCard = false
-        isExpandedOptions = false
+
+    LaunchedEffect(scrollState) {
+        if (scrollState.isScrollInProgress) {
+            isExpandedCard = false
+            isExpandedOptions = false
+        }
     }
-    Box{
-        ModalBottomSheetLayout(
-            sheetState = AddSheetState(
-                showBookPeriod = showBookPeriod,
-                showBookAccept = showBookAccept,
-                showChooseZone = showChooseZone,
-                showBookRepeat = showBookRepeat
-            ),
-            sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-            sheetContent = {
-                if(showBookPeriod.targetValue == ModalBottomSheetValue.Expanded){
-                    BookingPeriod(
-                        startDate = "Чт, 27 июл. 2023 г.",
-                        startTime = "10:30",
-                        finishDate = "Чт, 27 июл. 2023 г.",
-                        finishTime =  "15:30",
-                        repeatBooking = "Бронирование не повторяется",
-                        false,
-                        closeClick =  onClickCloseBookPeriod,
-                        onSwitchChange =  {false},
-                        bookStartDate = onClickOpenCalendar,
-                        bookFinishDate = onClickOpenCalendar,
-                        bookStartTime = {onClickOpenTimeModal()
-                            timeTitle = MainRes.strings.take_from},
-                        bookFinishTime = {onClickOpenTimeModal()
-                            timeTitle = MainRes.strings.take_before},
-                        bookingRepeat =  onClickOpenRepeatDialog,
-                        onClickSearchSuitableOptions = onClickSearchSuitableOptions
-                    )
-                }else if (showBookAccept.targetValue == ModalBottomSheetValue.Expanded){
-                    BookAccept(
-                        onClickCloseBookAccept = onClickCloseBookAccept,
-                        confirmBooking = onClickOpenBookingConfirm
-                    )
-                }else if (showBookRepeat.targetValue == ModalBottomSheetValue.Expanded){
-                    BookingRepeat(
-                        backButtonClicked = onClickCloseBookRepeat,
-                        dropDownClick = {},
-                        confirmBooking = {},
-                        onSelected = {},
-                        onDaySelected = {}
-                    )
-                }else {
-                    ChooseZone(
-                        true,
-                        onClickCloseChoseZone
-                    )
-                }
-            }
-        ) {
+
+    MultiBottomSheet(
+        multiBottomSheetController = multiBottomSheetController
+    ) {
+        Box {
             Scaffold(
                 topBar = {
                     Box {
-                        Column (modifier = Modifier.clip(
-                            RoundedCornerShape(bottomEnd = 16.dp, bottomStart = 16.dp)).background(
-                            Color.White).padding(bottom = 24.dp)){
+                        Column(
+                            modifier = Modifier.clip(
+                                RoundedCornerShape(bottomEnd = 16.dp, bottomStart = 16.dp)
+                            ).background(
+                                Color.White
+                            ).padding(bottom = 24.dp)
+                        ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.background(Color.White).padding(horizontal = 16.dp)
+                                modifier = Modifier.background(Color.White)
+                                    .padding(horizontal = 16.dp)
                                     .padding(top = 48.dp)
                             ) {
                                 TitlePage(
@@ -251,14 +280,18 @@ private fun BookingScreenContent(
                                 )
                                 Spacer(modifier = Modifier.weight(.1f))
                                 OutlineButtonPurple(
-                                    onClick = { isExpandedCard =!isExpandedCard},
+                                    onClick = { isExpandedCard = !isExpandedCard },
                                     icon1 = MainRes.images.icon_map,
                                     icon2 = MainRes.images.back_button,
                                     title = MainRes.strings.show_map,
                                     rotate = iconRotationStateCard
                                 )
                             }
-                            OptionMenu( isExpandedCard = isExpandedCard, isExpandedOptions =  isExpandedOptions, onClickOpenBookPeriod = onClickOpenBookPeriod)
+                            OptionMenu(
+                                isExpandedCard = isExpandedCard,
+                                isExpandedOptions = isExpandedOptions,
+                                onClickOpenBookPeriod = onClickOpenBookPeriod
+                            )
                         }
                         Box(
                             modifier = Modifier.align(Alignment.BottomCenter)
@@ -267,7 +300,7 @@ private fun BookingScreenContent(
                                 }
                         ) {
                             Button(
-                                onClick = {isExpandedOptions = !isExpandedOptions},
+                                onClick = { isExpandedOptions = !isExpandedOptions },
                                 shape = CircleShape,
                                 border = BorderStroke(
                                     width = 1.dp,
@@ -282,7 +315,8 @@ private fun BookingScreenContent(
                                 Image(
                                     painter = painterResource(MainRes.images.back_button),
                                     contentDescription = null,
-                                    modifier = Modifier.size(24.dp).rotate(iconRotationStateOptions),
+                                    modifier = Modifier.size(24.dp)
+                                        .rotate(iconRotationStateOptions),
                                     contentScale = ContentScale.Crop
                                 )
                             }
@@ -291,9 +325,12 @@ private fun BookingScreenContent(
                 }
             ) {
                 Column {
-                    Row(modifier = Modifier.fillMaxWidth().background(MaterialTheme.colors.onBackground).
-                    padding(horizontal = 16.dp),
-                        verticalAlignment = Alignment.Top) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                            .background(MaterialTheme.colors.onBackground)
+                            .padding(horizontal = 16.dp),
+                        verticalAlignment = Alignment.Top
+                    ) {
                         Text(
                             modifier = Modifier.padding(top = 16.dp),
                             text = stringResource(MainRes.strings.suitable_options),
@@ -326,66 +363,51 @@ private fun BookingScreenContent(
                     ListBooking(scrollState, onClickOpenBookAccept)
                 }
             }
-        }
 
-        if(showRepeatDialog){
-            BookingRepeatCard (
-                onSelected = onClickOpenBookRepeat,
-                 modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
-            )
-        }
-        if(showCalendar){
-            ModalCalendar(
-                currentDate = currentDate,
-                onClickOk = onClickApplyDate,
-                onClickCansel = onClickCloseCalendar,
-                 modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
-            )
-        }
+            if (showRepeatDialog) {
+                BookingRepeatCard(
+                    onSelected = onClickOpenBookRepeat,
+                    modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
+                )
+            }
+            if (showCalendar) {
+                ModalCalendar(
+                    currentDate = currentDate,
+                    onClickOk = onClickApplyDate,
+                    onClickCansel = onClickCloseCalendar,
+                    modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
+                )
+            }
 
-        if (showTimePicker){
-            TimePickerModal(
-                titleText = stringResource(timeTitle),
-                modifier = Modifier.padding(horizontal = 16.dp).clip(shape = RoundedCornerShape(16.dp)).
-                background(Color.White).align(Alignment.Center),
-                onClickCansel = onClickCloseTimeModal,
-                onClickOk = onClickSelectTime
-            )
+            if (showTimePicker) {
+                TimePickerModal(
+                    titleText = stringResource(timeTitle),
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                        .clip(shape = RoundedCornerShape(16.dp)).background(Color.White)
+                        .align(Alignment.Center),
+                    onClickCansel = onClickCloseTimeModal,
+                    onClickOk = onClickSelectTime
+                )
+            }
+
+            if (showConfirm) {
+                BookingSuccess(
+                    onMain = onClickMainScreen,
+                    close = onClickCloseBookingConfirm,
+                    modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
+                )
+            }
         }
-
-        if (showConfirm){
-            BookingSuccess(
-                onMain = onClickMainScreen,
-                close = onClickCloseBookingConfirm,
-                modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
-            )
-        }
-    }
-
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-fun AddSheetState(
-    showBookPeriod: ModalBottomSheetState,
-    showBookAccept: ModalBottomSheetState,
-    showChooseZone: ModalBottomSheetState,
-    showBookRepeat: ModalBottomSheetState
-): ModalBottomSheetState {
-    return if (showBookAccept.targetValue == ModalBottomSheetValue.Expanded){
-        showBookAccept
-    }else if (showBookRepeat.targetValue == ModalBottomSheetValue.Expanded) {
-      showBookRepeat
-    }else if( showBookPeriod.targetValue == ModalBottomSheetValue.Expanded){
-        showBookPeriod
-    }else{
-        showChooseZone
     }
 }
 
 @Composable
 private fun ListBooking(scrollState: LazyListState, onClickOpenBookAccept: () -> Unit) {
-    LazyColumn(modifier =  Modifier.background(MaterialTheme.colors.onBackground).padding(horizontal = 16.dp),
-        state = scrollState) {
+    LazyColumn(
+        modifier = Modifier.background(MaterialTheme.colors.onBackground)
+            .padding(horizontal = 16.dp),
+        state = scrollState
+    ) {
         val listSeats = listOf(
             "Cassipopea | Стол 1",
             "Cassipopea | Стол 2",
@@ -409,17 +431,21 @@ private fun ListBooking(scrollState: LazyListState, onClickOpenBookAccept: () ->
 
 
 @Composable
-private fun  OptionMenu(
+private fun OptionMenu(
     isExpandedCard: Boolean,
     isExpandedOptions: Boolean,
     onClickOpenBookPeriod: () -> Unit
 ) {
     Column {
-        AnimatedVisibility(visible = isExpandedCard){
-            Column(modifier = Modifier.fillMaxWidth().padding(top = 16.dp).
-            background(MaterialTheme.colors.onBackground)
+        AnimatedVisibility(visible = isExpandedCard) {
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
+                    .background(MaterialTheme.colors.onBackground)
             ) {
-                Row (horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
                     Image(
                         modifier = Modifier.padding(vertical = 20.dp),
                         painter = painterResource(MainRes.images.icon_map), //TODO(Заменить карту!")
@@ -429,21 +455,30 @@ private fun  OptionMenu(
             }
         }
 
-        AnimatedVisibility(visible = isExpandedOptions){
-            Column(modifier = Modifier.padding(top = 16.dp).padding(horizontal = 16.dp)){
+        AnimatedVisibility(visible = isExpandedOptions) {
+            Column(modifier = Modifier.padding(top = 16.dp).padding(horizontal = 16.dp)) {
                 Text(
                     text = stringResource(MainRes.strings.type_booking),
                     style = MaterialTheme.typography.subtitle1,
                     color = Color.Black
                 )
-                Row (modifier = Modifier.padding(top = 8.dp).fillMaxWidth(), horizontalArrangement  = Arrangement.Center ){
+                Row(
+                    modifier = Modifier.padding(top = 8.dp).fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
                     val types = listOf(
-                        TypesList(name = MainRes.strings.workplace, icon = MainRes.images.table_icon),
-                        TypesList(name = MainRes.strings.meeting_room, icon = MainRes.images.icon_meet)
+                        TypesList(
+                            name = MainRes.strings.workplace,
+                            icon = MainRes.images.table_icon
+                        ),
+                        TypesList(
+                            name = MainRes.strings.meeting_room,
+                            icon = MainRes.images.icon_meet
+                        )
                     )
                     val selectedType = remember { mutableStateOf(types[0]) }
 
-                    types.forEach {type ->
+                    types.forEach { type ->
                         val selected = selectedType.value == type
                         Box(
                             modifier = Modifier.padding(
@@ -453,15 +488,19 @@ private fun  OptionMenu(
                                 shape = RoundedCornerShape(8.dp),
                                 color = MaterialTheme.colors.secondary
                             ).background(
-                                color = if(selected){MaterialTheme.colors.background}else{Color.White}
+                                color = if (selected) {
+                                    MaterialTheme.colors.background
+                                } else {
+                                    Color.White
+                                }
                             ).selectable(
                                 selected = selected,
                                 onClick = {
                                     selectedType.value = type
                                 }
                             )
-                        ){
-                            Row (modifier = Modifier.padding(horizontal = 12.dp, vertical = 24.dp)){
+                        ) {
+                            Row(modifier = Modifier.padding(horizontal = 12.dp, vertical = 24.dp)) {
                                 Icon(
                                     painter = painterResource(type.icon),
                                     contentDescription = null,
@@ -477,15 +516,19 @@ private fun  OptionMenu(
                     }
                 }
                 Text(
-                    modifier = Modifier.padding(top= 12.dp),
+                    modifier = Modifier.padding(top = 12.dp),
                     text = stringResource(MainRes.strings.booking_period),
                     style = MaterialTheme.typography.subtitle1,
                     color = Color.Black
                 )
-                Row (modifier = Modifier.padding(top = 8.dp).clickable(onClick = onClickOpenBookPeriod), verticalAlignment = Alignment.CenterVertically){
+                Row(
+                    modifier = Modifier.padding(top = 8.dp)
+                        .clickable(onClick = onClickOpenBookPeriod),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     IconButton(
                         onClick = onClickOpenBookPeriod
-                    ){
+                    ) {
                         Icon(
                             modifier = Modifier.size(24.dp),
                             painter = painterResource(MainRes.images.material_calendar_ic),

@@ -27,7 +27,11 @@ import dev.icerock.moko.resources.compose.painterResource
 
 @Composable
 fun BookingCard(roomText: String, onClickOpenBookAccept: () -> Unit) {
-    Column (modifier = Modifier.padding(bottom = 16.dp).clickable {  onClickOpenBookAccept()}){
+    Column(
+        modifier = Modifier
+            .padding(bottom = 16.dp)
+            .clickable { onClickOpenBookAccept() }
+    ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
