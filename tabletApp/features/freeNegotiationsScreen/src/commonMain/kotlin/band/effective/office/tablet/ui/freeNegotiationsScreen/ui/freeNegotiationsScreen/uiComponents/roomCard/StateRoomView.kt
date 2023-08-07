@@ -53,7 +53,7 @@ fun RoomIsFree() {
 @Composable
 fun RoomIsBusy(changeEventTime: Int, timeFinish: Calendar, organizer: String) {
     InfoStateRoom(
-        state = infoEvent(timeFinish),
+        state = MainRes.string.before_time.format(time = infoEvent(timeFinish)),
         color = LocalCustomColorsPalette.current.busyStatus
     )
     Spacer(modifier = Modifier.height(20.dp))
@@ -77,7 +77,7 @@ fun RoomIsSoonBusy(changeEventTime: Int, timeStart: Calendar, organizer: String)
 fun getDuration(changeEventTime: Int): String {
     val days = (changeEventTime / 60) / 24
     val hours = (changeEventTime / 60) % 24
-    val minutes = changeEventTime % 60 + 1
+    val minutes = changeEventTime % 60
 
     val daysString = if (days != 0) MainRes.string.days.format(days = days.toString()) else ""
     val hoursString = if (hours != 0) MainRes.string.hours.format(hours = hours.toString()) else ""

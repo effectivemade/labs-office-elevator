@@ -10,6 +10,8 @@ import androidx.compose.ui.graphics.Color
 import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.store.FreeNegotiationsStore
+import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.uiComponents.LoaderView
+import band.effective.office.tablet.ui.mainScreen.mainScreen.uiComponents.LoadMainScreen
 
 
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -34,7 +36,13 @@ fun FreeNegotiationsScreen(component: FreeNegotiationsComponent) {
                 }
             )
         }
-        state.isLoad -> {}
+        state.isLoad -> {
+            LoaderView(
+                nameRoomCurrent = state.nameCurrentRoom,
+                onMainScreen = { reset: Boolean ->
+                    component.onIntent(FreeNegotiationsStore.Intent.OnMainScreen(reset))},
+            )
+        }
         state.error != null -> {}
     }
 }
