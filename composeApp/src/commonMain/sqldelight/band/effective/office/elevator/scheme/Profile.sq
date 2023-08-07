@@ -13,26 +13,29 @@ CREATE INDEX idTokenIndex ON profileData(idToken);
 selectAll:
 SELECT * FROM profileData;
 
+selectUser:
+SELECT * FROM profileData WHERE idToken = ?;
+
 selectIdToken:
-SELECT idToken FROM profileData;
+SELECT idToken FROM profileData WHERE idToken = ?;
 
 selectName:
-SELECT name FROM profileData;
+SELECT name FROM profileData WHERE idToken = ?;
 
 selectPost:
-SELECT post FROM profileData;
+SELECT post FROM profileData WHERE idToken = ?;
 
 selectEmail:
-SELECT email FROM profileData;
+SELECT email FROM profileData WHERE idToken = ?;
 
 selectPhoneNumber:
-SELECT phoneNumber FROM profileData;
+SELECT phoneNumber FROM profileData WHERE idToken = ?;
 
 selectTelegramNick:
-SELECT telegramNick FROM profileData;
+SELECT telegramNick FROM profileData WHERE idToken = ?;
 
 selectImageUrl:
-SELECT imageUrl FROM profileData;
+SELECT imageUrl FROM profileData WHERE idToken = ?;
 
 updateToken:
 UPDATE profileData SET idToken = ? WHERE idToken = ?;

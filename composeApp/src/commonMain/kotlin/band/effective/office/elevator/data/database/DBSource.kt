@@ -1,23 +1,25 @@
 package band.effective.office.elevator.data.database
 
-import band.effective.office.elevator.domain.models.User
+import band.effective.office.elevator.scheme.ProfileData
 
 interface DBSource {
-    fun getIdToken(): String
+    fun getIdToken(idToken: String): String
 
-    fun getName(): String
+    fun getName(idToken: String): String
 
-    fun getPost(): String
+    fun getPost(idToken: String): String
 
-    fun getEmail(): String
+    fun getEmail(idToken: String): String
 
-    fun getPhoneNumber(): String
+    fun getPhoneNumber(idToken: String): String
 
-    fun getTelegramNick(): String
+    fun getTelegramNick(idToken: String): String
 
-    fun getImageUrl(): String?
+    fun getImageUrl(idToken: String): String?
 
-    fun getUser(): User
+    fun getUser(idToken: String): ProfileData
+
+    fun getAll(): List<ProfileData>
 
     fun updateToken(idToken: String)
 
@@ -33,5 +35,5 @@ interface DBSource {
 
     fun updateImageUrl(imageUrl: String, idToken: String)
 
-    fun insertUser(user: User)
+    fun insertUser(profileData: ProfileData)
 }

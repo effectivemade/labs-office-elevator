@@ -2,6 +2,7 @@ package band.effective.office.elevator.data.database
 
 import band.effective.office.elevator.Database
 import band.effective.office.elevator.domain.models.User
+import band.effective.office.elevator.scheme.ProfileData
 
 class DBSourceImpl(
     val database: Database
@@ -9,32 +10,41 @@ class DBSourceImpl(
 
     private val profileQueries = database.profileQueries
 
-    override fun getIdToken(): String = profileQueries.selectIdToken().executeAsOne()
+    override fun getIdToken(idToken: String): String =
+        profileQueries.selectIdToken(idToken = idToken).executeAsOne()
 
-    override fun getName(): String = profileQueries.selectName().executeAsOne()
+    override fun getName(idToken: String): String =
+        profileQueries.selectName(idToken = idToken).executeAsOne()
 
-    override fun getPost(): String = profileQueries.selectPost().executeAsOne()
+    override fun getPost(idToken: String): String =
+        profileQueries.selectPost(idToken = idToken).executeAsOne()
 
-    override fun getEmail(): String = profileQueries.selectEmail().executeAsOne()
+    override fun getEmail(idToken: String): String =
+        profileQueries.selectEmail(idToken = idToken).executeAsOne()
 
-    override fun getPhoneNumber(): String = profileQueries.selectPhoneNumber().executeAsOne()
+    override fun getPhoneNumber(idToken: String): String =
+        profileQueries.selectPhoneNumber(idToken = idToken).executeAsOne()
 
-    override fun getTelegramNick(): String = profileQueries.selectTelegramNick().executeAsOne()
+    override fun getTelegramNick(idToken: String): String =
+        profileQueries.selectTelegramNick(idToken = idToken).executeAsOne()
 
-    override fun getImageUrl(): String = profileQueries.selectImageUrl().executeAsOne()
+    override fun getImageUrl(idToken: String): String =
+        profileQueries.selectImageUrl(idToken = idToken).executeAsOne()
 
-    override fun getUser(): User =
-        with(profileQueries.selectAll().executeAsOne()) {
-            User(
-                id = idToken,
+    override fun getUser(idToken: String): ProfileData =
+        with(profileQueries.selectUser(idToken = idToken).executeAsOne()) {
+            ProfileData(
+                idToken = idToken,
                 phoneNumber = phoneNumber,
                 post = post,
-                userName = name,
-                telegram = telegramNick,
+                name = name,
+                telegramNick = telegramNick,
                 email = email,
                 imageUrl = imageUrl
             )
         }
+
+    override fun getAll(): List<ProfileData> = profileQueries.selectAll().executeAsList()
 
     override fun updateToken(idToken: String) {
         profileQueries.updateToken(idToken = idToken, idToken_ = idToken)
@@ -64,15 +74,15 @@ class DBSourceImpl(
         profileQueries.updateImageUrl(imageUrl = imageUrl, idToken = idToken)
     }
 
-    override fun insertUser(user: User) {
-        with(user) {
+    override fun insertUser(profileData: ProfileData) {
+        with(profileData) {
             profileQueries.insert(
-                idToken = id,
-                name = userName,
+                idToken = idToken,
+                name = name,
                 post = post,
                 email = email,
                 phoneNumber = phoneNumber,
-                telegramNick = telegram,
+                telegramNick = telegramNick,
                 imageUrl = imageUrl
             )
         }
