@@ -11,6 +11,7 @@ import band.effective.office.tablet.utils.componentCoroutineScope
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
+import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -34,11 +35,20 @@ class BookingRoomComponent(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val state = bookingStore.stateFlow
+    val labels = bookingStore.labels
+
+    private fun collectLabels() = componentContext.componentCoroutineScope().launch {
+        labels.collect{
+            when(it){
+                is BookingStore.Label.BookingCurrentRoom -> onCurrentBookingRoom()
+                is BookingStore.Label.BookingOtherRoom -> onBookingOtherRoom()
+                is BookingStore.Label.ChangeDate -> onChangeDate(state.value.selectDate.clone() as Calendar)
+            }
+        }
+    }
 
     init {
-        componentContext.componentCoroutineScope().launch {
-            state.collect { onChangeDate(state.value.selectDate.clone() as Calendar) }
-        }
+        collectLabels()
     }
 
     val dateTimePickerComponent: DateTimePickerComponent =
@@ -67,26 +77,6 @@ class BookingRoomComponent(
     }
 
     fun sendIntent(intent: BookingStore.Intent) {
-        when (intent) {
-            is BookingStore.Intent.OnBookingCurrentRoom -> {
-                bookingStore.accept(intent.copy(onCurrentBookingRoom))
-            }
-
-            is BookingStore.Intent.OnBookingOtherRoom -> {
-                bookingStore.accept(intent.copy(onBookingOtherRoom))
-            }
-
-            is BookingStore.Intent.OnChangeIsActive -> {
-                bookingStore.accept(intent)
-            }
-
-            is BookingStore.Intent.OnDateTimePickerModal -> onOpenDateTimePickerModal()
-
-            is BookingStore.Intent.CloseModal -> bookingStore.accept(intent.copy(onCloseRequest))
-
-            is BookingStore.Intent.OnChangeIsCurrentSelectTime -> bookingStore.accept(BookingStore.Intent.OnChangeIsCurrentSelectTime)
-
-            else -> bookingStore.accept(intent)
-        }
+        bookingStore.accept(intent)
     }
 }

@@ -14,8 +14,8 @@ interface UserIntegrationEntity : Entity<UserIntegrationEntity> {
 }
 
 object UsersIntegrations : Table<UserIntegrationEntity>("users_integrations") {
-    val userId = uuid("user_id").references(Users) { it.userId }
-    val integrationId = uuid("integration_id").references(Integrations) { it.integrationId }
+    val userId = uuid("user_id").references(Users) { it.userId }.primaryKey()
+    val integrationId = uuid("integration_id").references(Integrations) { it.integrationId }.primaryKey()
     val valueStr = varchar("value").bindTo { it.valueStr }
 }
 

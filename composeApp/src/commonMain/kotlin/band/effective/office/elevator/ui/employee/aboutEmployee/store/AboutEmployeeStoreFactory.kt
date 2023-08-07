@@ -1,11 +1,11 @@
 package band.effective.office.elevator.ui.employee.aboutEmployee.store
 
+import band.effective.office.elevator.domain.models.User
 import band.effective.office.elevator.expects.makeCall
 import band.effective.office.elevator.expects.pickSBP
 import band.effective.office.elevator.expects.pickTelegram
 import band.effective.office.elevator.ui.employee.aboutEmployee.store.AboutEmployeeStore.*
 import band.effective.office.elevator.ui.models.ReservedSeat
-import band.effective.office.elevator.ui.models.User
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -76,15 +76,7 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory) : KoinCo
     }
 }
 
-private val mokValueUser =
-    User(
-        "1",
-        "Ivanov Ivan",
-        "Android-developer",
-        "+79136476225",
-        "gull192",
-        "employee@effective.com"
-    )
+private val mokValueUser = User("1","1","Ivanov Ivan", "Android-developer","67","@ivanov","employee@effective.com")
 private val mokValue = listOf(
     ReservedSeat(
         bookingId = 1,

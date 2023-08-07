@@ -5,10 +5,10 @@ import com.arkivanov.mvikotlin.core.store.Store
 import java.util.Calendar
 import java.util.GregorianCalendar
 
-interface BookingStore : Store<BookingStore.Intent, BookingStore.State, Nothing> {
+interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingStore.Label> {
     sealed interface Intent {
-        data class OnBookingCurrentRoom(val booking: (() -> Unit)? = null) : Intent
-        data class OnBookingOtherRoom(val booking: (() -> Unit)? = null) : Intent
+        object OnBookingCurrentRoom : Intent
+        object OnBookingOtherRoom : Intent
         data class OnChangeDate(val changeInDay: Int) : Intent
         data class OnSetDate(val changedDay: Int, val changedMonth: Int) : Intent
         data class OnChangeLength(val change: Int) : Intent
@@ -20,6 +20,12 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, Nothing>
 
         data class OnDateTimePickerModal(val close: (() -> Unit)? = null): Intent
         data class CloseModal(val close: (() -> Unit)? = null) : Intent
+    }
+
+    sealed interface Label{
+        object BookingCurrentRoom: Label
+        object BookingOtherRoom: Label
+        object ChangeDate: Label
     }
 
     data class State(
