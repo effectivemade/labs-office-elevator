@@ -53,7 +53,7 @@ fun RoomIsFree() {
 @Composable
 fun RoomIsBusy(changeEventTime: Int, timeFinish: Calendar, organizer: String) {
     InfoStateRoom(
-        state = infoEvent(timeFinish),
+        state = MainRes.string.before_time.format(time = infoEvent(timeFinish)),
         color = LocalCustomColorsPalette.current.busyStatus
     )
     Spacer(modifier = Modifier.height(20.dp))
