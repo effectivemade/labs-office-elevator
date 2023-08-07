@@ -15,73 +15,7 @@ import java.util.GregorianCalendar
 
 class WorkApi : Api {
     val mutableRoomInfo = MutableStateFlow(RoomInfo.defaultValue)
-    var otherRoomInfo: MutableMap<String, RoomInfo> =
-        mutableMapOf(
-            "Pluto" to RoomInfo(
-                name = "Pluto",
-                capacity = 3,
-                isHaveTv = false,
-                socketCount = 0,
-                eventList = listOf(
-                    EventInfo(
-                        startTime = addTime(0, 0, 30),
-                        finishTime = addTime(0, 1, 0),
-                        organizer = "Ольга Белозёрова"
-                    )
-                ),
-                currentEvent = null
-            ),
-            "Moon" to RoomInfo(
-                name = "Moon",
-                capacity = 8,
-                isHaveTv = false,
-                socketCount = 0,
-                eventList = listOf(
-                    EventInfo(
-                        startTime = addTime(1, 2, 30),
-                        finishTime = addTime(1, 3, 30),
-                        organizer = "Ольга Белозёрова"
-                    )
-                ),
-                currentEvent = null
-            ),
-            "Antares" to RoomInfo(
-                name = "Antares",
-                capacity = 3,
-                isHaveTv = false,
-                socketCount = 14,
-                eventList = listOf(
-                    EventInfo(
-                        startTime = addTime(0, 0 , 0),
-                        finishTime = addTime(0, 1, 15),
-                        organizer = "Ольга Белозёрова"
-                    )
-                ),
-                currentEvent = EventInfo(
-                    startTime = addTime(0, 0 , 0),
-                    finishTime = addTime(0, 1, 15),
-                    organizer = "Ольга Белозёрова"
-                )
-            ),
-            "Sun" to RoomInfo(
-                name = "Sun",
-                capacity = 8,
-                isHaveTv = false,
-                socketCount = 0,
-                eventList = listOf(
-                    EventInfo(
-                        startTime = addTime(0, 0 , 0),
-                        finishTime = addTime(0, 0, 45),
-                        organizer = "Коровянский А."
-                    )
-                ),
-                currentEvent = EventInfo(
-                    startTime = addTime(0, 0 , 0),
-                    finishTime = addTime(0, 0, 45),
-                    organizer = "Коровянский А."
-                )
-            )
-        )
+    lateinit var otherRoomInfo: MutableMap<String, RoomInfo>
 
     val mutableOrgList =
         MutableStateFlow(listOf("Ольга Белозерова", "Матвей Авгуль", "Лилия Акентьева"))
@@ -91,6 +25,86 @@ class WorkApi : Api {
         if(room == "Sirius") {
             delay(5000L)
         } else {
+            otherRoomInfo =
+                mutableMapOf(
+                    "Pluto" to RoomInfo(
+                        name = "Pluto",
+                        capacity = 3,
+                        isHaveTv = false,
+                        socketCount = 0,
+                        eventList = listOf(
+                            EventInfo(
+                                startTime = addTime(0, 0, 2),
+                                finishTime = addTime( 0, 0, 32),
+                                organizer = "Ольга Белозёрова"
+                            )
+                        ),
+                        currentEvent = null
+                    ),
+                    "Moon" to RoomInfo(
+                        name = "Moon",
+                        capacity = 8,
+                        isHaveTv = false,
+                        socketCount = 0,
+                        eventList = listOf(
+                            EventInfo(
+                                startTime = addTime(1, 2, 30),
+                                finishTime = addTime(1, 3, 30),
+                                organizer = "Ольга Белозёрова"
+                            )
+                        ),
+                        currentEvent = null
+                    ),
+                    "Antares" to RoomInfo(
+                        name = "Antares",
+                        capacity = 3,
+                        isHaveTv = false,
+                        socketCount = 14,
+                        eventList = listOf(
+                            EventInfo(
+                                startTime = addTime(0, 0 , 0),
+                                finishTime = addTime( 0, 1, 15),
+                                organizer = "Ольга Белозёрова"
+                            )
+                        ),
+                        currentEvent = EventInfo(
+                            startTime = addTime(0, 0 , 0),
+                            finishTime = addTime(0, 1, 15),
+                            organizer = "Ольга Белозёрова"
+                        )
+                    ),
+                    "Sun" to RoomInfo(
+                        name = "Sun",
+                        capacity = 8,
+                        isHaveTv = false,
+                        socketCount = 0,
+                        eventList = listOf(
+                            EventInfo(
+                                startTime = addTime(0, 0 , 0),
+                                finishTime = addTime( 0, 0, 45),
+                                organizer = "Коровянский А."
+                            )
+                        ),
+                        currentEvent = EventInfo(
+                            startTime = addTime(0, 0 , 0),
+                            finishTime = addTime(0, 0, 45),
+                            organizer = "Коровянский А."
+                        )
+                    ),
+
+                    "Pluto_upd" to RoomInfo(
+                        name = "Pluto",
+                        capacity = 3,
+                        isHaveTv = false,
+                        socketCount = 0,
+                        eventList = listOf(),
+                        currentEvent = EventInfo(
+                            startTime = addTime(0, 0, 0),
+                            finishTime = addTime( 0, 0, 30),
+                            organizer = "Ольга Белозёрова"
+                        )
+                    )
+                )
             delay(1500L)
         }
         return when {

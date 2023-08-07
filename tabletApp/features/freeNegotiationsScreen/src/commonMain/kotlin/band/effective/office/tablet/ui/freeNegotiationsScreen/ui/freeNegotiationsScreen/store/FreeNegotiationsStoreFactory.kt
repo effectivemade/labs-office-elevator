@@ -16,7 +16,9 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.Calendar
@@ -105,7 +107,7 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
         data class SetBooking(val bookingInfo: Booking) : Message
         data class BookRoom(val nameRoom: String, val maxDuration: Int) : Message
         object CloseModal : Message
-        object UpdateChangeEventTime : Message
+        data class UpdateChangeEventTime(val roomsInfo: List<RoomInfoUiState>) : Message
         object ResponseError : Message
 
     }
@@ -153,7 +155,10 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
                 }
 
                 is Action.UpdateChangeEventTime -> {
-                    dispatch(Message.UpdateChangeEventTime)
+                    scope.launch {
+                        val listRooms = updateTimeEvent(getState().listRooms, getState())
+                        dispatch(Message.UpdateChangeEventTime(listRooms))
+                    }
                 }
 
                 is Action.ResponseError -> {
@@ -162,6 +167,55 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
             }
         }
 
+        suspend fun updateTimeEvent(
+            listRooms: List<RoomInfoUiState>,
+            state: FreeNegotiationsStore.State
+        ): List<RoomInfoUiState> {
+            val newListRooms = mutableListOf<RoomInfoUiState>()
+            listRooms.forEach {
+                if (it.changeEventTime > 0) {
+                    val roomNewTime = it.copy(changeEventTime = it.changeEventTime - 1)
+                    newListRooms.add(updateState(roomNewTime, state))
+                } else {
+                    newListRooms.add(it)
+                }
+            }
+            return newListRooms.toList().sortedBy { it.state.codeState }
+        }
+
+        suspend fun updateState(
+            roomInfo: RoomInfoUiState,
+            state: FreeNegotiationsStore.State
+        ): RoomInfoUiState {
+            if (roomInfo.state == RoomState.FREE && roomInfo.room.eventList.isNotEmpty() && !checkDuration
+                    (
+                    roomInfo.room.eventList.first().startTime,
+                    state.chosenDurationBooking
+                )
+            ) {
+                return roomInfo.copy(state = RoomState.SOON_BUSY)
+            }
+            if (roomInfo.changeEventTime == 0) {
+                return withContext(Dispatchers.IO) {
+                    val room = roomInfoUseCase.invoke(room = "Pluto_upd").unbox(
+                        errorHandler = {
+                            it.saveData ?: RoomInfo.defaultValue
+                        },
+                        successHandler = {
+                            it
+                        }
+                    )
+                    val roomState = getStateBusyRoom(room, state)
+                    return@withContext RoomInfoUiState(
+                        room = room,
+                        state = roomState,
+                        changeEventTime = getChangeEventTime(roomState, room)
+                    )
+                }
+            } else {
+            return roomInfo
+            }
+        }
     }
 
     fun getStateBusyRoom(room: RoomInfo, state: FreeNegotiationsStore.State): RoomState {
@@ -218,7 +272,7 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
 
                 is Message.CloseModal -> copy(showBookingModal = false)
                 is Message.UpdateChangeEventTime -> copy(
-                    listRooms = updateTimeEvent(this.listRooms)
+                    listRooms = message.roomsInfo
                 )
 
                 is Message.ResponseError -> copy(
@@ -226,31 +280,5 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
                     error = ""
                 )
             }
-
-        fun updateTimeEvent(
-            listRooms: List<RoomInfoUiState>
-        ): List<RoomInfoUiState> {
-            val newListRooms = mutableListOf<RoomInfoUiState>()
-            listRooms.forEach {
-                if (it.changeEventTime > 0) {
-                    val roomNewTime = it.copy(changeEventTime = it.changeEventTime - 1)
-                    newListRooms.add(roomNewTime)
-                } else {
-                    newListRooms.add(it)
-                }
-            }
-            return newListRooms.toList()
-        }
-
-        fun updateState(
-            roomInfo: RoomInfoUiState
-        ): RoomInfoUiState {
-            when {
-                (roomInfo.state == RoomState.BUSY && roomInfo.changeEventTime == 0) -> {
-                    //TODO(take info room from back)
-                }
-            }
-            return roomInfo
-        }
     }
 }
