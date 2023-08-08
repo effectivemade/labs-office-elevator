@@ -11,8 +11,10 @@ fun Application.configureValidation() {
                 ValidationResult.Invalid("beginBooking should be non-negative")
             else if (booking.endBooking < 0L)
                 ValidationResult.Invalid("endBooking should be non-negative")
-            else if (booking.beginBooking < booking.endBooking)
-                ValidationResult.Invalid("beginBooking should be greater than endBooking")
+            else if (booking.endBooking <= booking.beginBooking)
+                ValidationResult.Invalid(
+                    "endBooking (${booking.endBooking}) should be greater than beginBooking (${booking.beginBooking})"
+                )
             else ValidationResult.Valid
         }
     }

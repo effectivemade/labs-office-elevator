@@ -292,7 +292,7 @@ fun SwaggerDocument.postBooking(): OpenApiRoute.() -> Unit = {
             }
         }
         HttpStatusCode.BadRequest to {
-            description = "Invalid request body"
+            description = "Invalid request body or workspace can't be booked in a given period"
         }
         HttpStatusCode.NotFound to {
             description = "User or workspace with the given id doesn't exist"
@@ -410,7 +410,7 @@ fun SwaggerDocument.putBooking(): OpenApiRoute.() -> Unit = {
             }
         }
         HttpStatusCode.BadRequest to {
-            description = "Invalid request body"
+            description = "Invalid request body or workspace can't be booked in a given period"
         }
         HttpStatusCode.NotFound to {
             description = "Booking, user or workspace with the given id doesn't exist"

@@ -2,6 +2,7 @@ package office.effective.features.booking.repository
 
 import office.effective.common.exception.InstanceNotFoundException
 import office.effective.common.exception.MissingIdException
+import office.effective.common.exception.WorkspaceUnavailableException
 import office.effective.features.booking.converters.BookingRepositoryConverter
 import office.effective.features.user.repository.*
 import office.effective.model.Booking
@@ -117,8 +118,21 @@ class BookingRepository(private val database: Database, private val converter: B
     }
 
     /**
+     * Checks whether the workspace is available for booking for the given period
+     *
+     * @author Daniil Zavyalov
+     */
+    private fun workspaceAvailableForBooking(bookingEntity: WorkspaceBookingEntity): Boolean {
+        return database.workspaceBooking.none {
+            (it.workspaceId eq bookingEntity.workspace.id) and (it.beginBooking lt bookingEntity.endBooking) and (it.endBooking gt bookingEntity.beginBooking)
+        }
+    }
+
+    /**
      * Saves a given booking. If given model will have an id, it will be ignored.
      * Use the returned model for further operations
+     *
+     * Throws WorkspaceUnavailableException if workspace can't be booked in a given period
      *
      * @author Daniil Zavyalov
      */
@@ -126,6 +140,10 @@ class BookingRepository(private val database: Database, private val converter: B
         val id = UUID.randomUUID()
         booking.id = id
         val entity = converter.modelToEntity(booking)
+
+        if (!workspaceAvailableForBooking(entity))
+            throw WorkspaceUnavailableException("Workspace with id ${entity.workspace.id} " +
+                    "unavailable at time between ${entity.beginBooking} and ${entity.endBooking}")
 
         database.workspaceBooking.add(converter.modelToEntity(booking))
 
@@ -140,9 +158,22 @@ class BookingRepository(private val database: Database, private val converter: B
     }
 
     /**
+     * Checks whether the booking can be updated with the given booking period
+     *
+     * @author Daniil Zavyalov
+     */
+    private fun bookingCanBeUpdated(entity: WorkspaceBookingEntity): Boolean {
+        return database.workspaceBooking.none {
+            (it.id neq entity.id) and (it.workspaceId eq entity.workspace.id) and (it.beginBooking lt entity.endBooking) and (it.endBooking gt entity.beginBooking)
+        }
+    }
+
+    /**
      * Updates a given booking. Use the returned model for further operations
      *
      * Throws InstanceNotFoundException if booking given id doesn't exist in the database
+     *
+     * Throws WorkspaceUnavailableException if workspace can't be booked in a given period
      *
      * @author Daniil Zavyalov
      */
@@ -153,6 +184,11 @@ class BookingRepository(private val database: Database, private val converter: B
         }
 
         val entity = converter.modelToEntity(booking)
+
+        if (!bookingCanBeUpdated(entity))
+            throw WorkspaceUnavailableException("Workspace with id ${entity.workspace.id} " +
+                    "unavailable at time between ${entity.beginBooking} and ${entity.endBooking}")
+
         database.workspaceBooking.update(entity)
 
         database.bookingParticipants.removeIf { it.bookingId eq entity.id }
