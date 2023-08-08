@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,7 +28,7 @@ import band.effective.office.elevator.components.PrimaryButton
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
-fun BookingSuccess(onMain: () -> Unit, close: () -> Unit) {
+fun BookingSuccess(onMain: () -> Unit, close: () -> Unit, modifier: Modifier) {
     val elevation = ButtonDefaults.elevation(
         defaultElevation = 0.dp,
         pressedElevation = 0.dp,
@@ -40,7 +40,7 @@ fun BookingSuccess(onMain: () -> Unit, close: () -> Unit) {
     Column(
         verticalArrangement = Arrangement.spacedBy(32.dp, Alignment.Top),
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
             .clip(shape = RoundedCornerShape(size = 16.dp))

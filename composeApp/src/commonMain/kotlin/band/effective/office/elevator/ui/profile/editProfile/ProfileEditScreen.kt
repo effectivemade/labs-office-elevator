@@ -137,7 +137,7 @@ private fun FieldsItemStyle(item:FieldsData){
         OutlinedTextField(
             value = item.value.value,
             modifier = Modifier.fillMaxWidth(),
-            onValueChange = { newText -> item.value.value = newText},
+            onValueChange = { item.value.value = it},
             shape = RoundedCornerShape(12.dp),
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = item.keyboardType),

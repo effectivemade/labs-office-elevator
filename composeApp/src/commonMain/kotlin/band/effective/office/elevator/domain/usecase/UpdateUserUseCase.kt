@@ -1,6 +1,6 @@
-package band.effective.office.elevator.domain.usecase
+package band.effective.office.elevator.domain.useCase
 
-import band.effective.office.elevator.domain.ProfileRepository
+import band.effective.office.elevator.domain.repository.ProfileRepository
 import band.effective.office.elevator.domain.models.User
 
 class UpdateUserUseCase (private val profileRepository: ProfileRepository) {

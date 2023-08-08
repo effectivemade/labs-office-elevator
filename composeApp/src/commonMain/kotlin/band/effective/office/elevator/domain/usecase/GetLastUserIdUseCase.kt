@@ -1,6 +1,6 @@
-package band.effective.office.elevator.domain.usecase
+package band.effective.office.elevator.domain.useCase
 
-import band.effective.office.elevator.domain.UserRepository
+import band.effective.office.elevator.domain.repository.UserRepository
 
 class GetLastUserIdUseCase (private val userRepository: UserRepository){
     suspend fun execute():String{

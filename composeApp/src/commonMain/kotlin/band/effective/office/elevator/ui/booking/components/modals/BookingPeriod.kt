@@ -2,7 +2,6 @@ package band.effective.office.elevator.ui.booking.components.modals
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -54,10 +53,8 @@ fun BookingPeriod(
     bookStartTime: () -> Unit,
     bookFinishDate: () -> Unit,
     bookFinishTime: () -> Unit,
-    confirmBooking: () -> Unit,
     bookingRepeat: () -> Unit,
-    showRepeatDialog: Boolean,
-    onClickCloseRepeatDialog: () -> Unit
+    onClickSearchSuitableOptions: () -> Unit
 ) {
     val elevation = ButtonDefaults.elevation(
         defaultElevation = 0.dp,
@@ -66,186 +63,177 @@ fun BookingPeriod(
         hoveredElevation = 0.dp,
         focusedElevation = 0.dp
     )
-    Box{
+    Column(
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .background(
+                color = Color.White,
+                shape = RoundedCornerShape(
+                    topStart = 16.dp,
+                    topEnd = 16.dp,
+                    bottomEnd = 0.dp,
+                    bottomStart = 0.dp
+                )
+            )
+            .padding(bottom = 16.dp)
+    ) {
+        Spacer(modifier = Modifier.height(height = 8.dp))
+        Divider(
+            modifier = Modifier
+                .fillMaxWidth(fraction = .3f)
+                .height(height = 4.dp)
+                .background(
+                    color = ExtendedTheme.colors.dividerColor,
+                    shape = RoundedCornerShape(size = 16.dp)
+                )
+                .padding(
+                    bottom = 8.dp,
+                    top = 8.dp
+                )
+        )
 
-        Column(
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.Start),
+            verticalAlignment = Alignment.Top,
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .background(
-                    color = Color.White,
-                    shape = RoundedCornerShape(
-                        topStart = 16.dp,
-                        topEnd = 16.dp,
-                        bottomEnd = 0.dp,
-                        bottomStart = 0.dp
-                    )
-                )
-                .padding(bottom = 16.dp)
+                .padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 16.dp)
         ) {
-            Spacer(modifier = Modifier.height(height = 8.dp))
-            Divider(
-                modifier = Modifier
-                    .fillMaxWidth(fraction = .3f)
-                    .height(height = 4.dp)
-                    .background(
-                        color = ExtendedTheme.colors.dividerColor,
-                        shape = RoundedCornerShape(size = 16.dp)
-                    )
-                    .padding(
-                        bottom = 8.dp,
-                        top = 8.dp
-                    )
-            )
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.Start),
-                verticalAlignment = Alignment.Top,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 16.dp)
+            IconButton(
+                onClick = closeClick,
             ) {
-                IconButton(
-                    onClick = closeClick,
-                ) {
-                    Icon(imageVector = Icons.Default.Close, contentDescription = "close booking")
-                }
-                Text(
-                    text = stringResource(resource = MainRes.strings.booking_period),
-                    style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight(500))
-                )
+                Icon(imageVector = Icons.Default.Close, contentDescription = "close booking")
             }
-
-            Divider(
-                modifier = Modifier
-                    .fillMaxWidth(fraction = 1.0f)
-                    .height(height = 1.dp)
-                    .background(
-                        color = ExtendedTheme.colors._66x
-                    )
+            Text(
+                text = stringResource(resource = MainRes.strings.booking_period),
+                style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight(500))
             )
+        }
 
-            //Booking area
+        Divider(
+            modifier = Modifier
+                .fillMaxWidth(fraction = 1.0f)
+                .height(height = 1.dp)
+                .background(
+                    color = ExtendedTheme.colors._66x
+                )
+        )
+
+        //Booking area
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Top),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Top),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(0.dp, Alignment.Top),
+                horizontalAlignment = Alignment.Start,
             ) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(0.dp, Alignment.Top),
-                    horizontalAlignment = Alignment.Start,
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .padding(all = 16.dp)
                 ) {
                     Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.Start),
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                            .padding(all = 16.dp)
                     ) {
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.Start),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(size = 24.dp),
-                                painter = painterResource(MainRes.images.material_calendar_ic),
-                                contentDescription = "calendar"
-                            )
-                            Text(
-                                text = stringResource(MainRes.strings.whole_day_booking),
-                                style = MaterialTheme.typography.button.merge(
-                                    other = TextStyle(
-                                        fontWeight = FontWeight(400)
-                                    )
-                                ),
-                                modifier = Modifier.wrapContentSize()
-                            )
-                        }
-
-                        Switch(
-                            checked = switchChecked,
-                            onCheckedChange = onSwitchChange,
-                            colors = SwitchDefaults.colors(
-                                checkedThumbColor = MaterialTheme.colors.primary,
-                                uncheckedThumbColor = ExtendedTheme.colors.switchColor,
-                                uncheckedBorderColor = Color.Transparent,
-                                checkedBorderColor = Color.Transparent
-                            )
+                        Icon(
+                            modifier = Modifier.size(size = 24.dp),
+                            painter = painterResource(MainRes.images.material_calendar_ic),
+                            contentDescription = "calendar"
+                        )
+                        Text(
+                            text = stringResource(MainRes.strings.whole_day_booking),
+                            style = MaterialTheme.typography.button.merge(
+                                other = TextStyle(
+                                    fontWeight = FontWeight(400)
+                                )
+                            ),
+                            modifier = Modifier.wrapContentSize()
                         )
                     }
 
-                    //Start booking date
-                    TimeLine(
-                        date = startDate,
-                        time = startTime,
-                        elevation = elevation,
-                        onPickDate = bookStartDate,
-                        onPickTime = bookStartTime
+                    Switch(
+                        checked = switchChecked,
+                        onCheckedChange = onSwitchChange,
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = MaterialTheme.colors.primary,
+                            uncheckedThumbColor = ExtendedTheme.colors.switchColor,
+                            uncheckedBorderColor = Color.Transparent,
+                            checkedBorderColor = Color.Transparent
+                        )
                     )
-
-                    //Finish booking date
-                    TimeLine(
-                        date = finishDate,
-                        time = finishTime,
-                        elevation = elevation,
-                        onPickDate = bookFinishDate,
-                        onPickTime = bookFinishTime
-                    )
-
-                    //Book period
-                    Button(
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = Color.Transparent
-                        ),
-                        elevation = elevation,
-                        onClick = bookingRepeat
-                    ) {
-                        Row(
-                            horizontalArrangement = Arrangement.Start,
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.fillMaxWidth().wrapContentHeight()
-                                .padding(vertical = 16.dp)
-                        ) {
-
-                            Icon(
-                                modifier = Modifier.size(size = 24.dp),
-                                imageVector = Icons.Rounded.Repeat,
-                                contentDescription = "repeat booking date"
-                            )
-                            Text(
-                                text = repeatBooking,
-                                style = MaterialTheme.typography.button.copy(
-                                    fontWeight = FontWeight(weight = 400),
-                                    color = Color.Black
-                                )
-                            )
-                        }
-                    }
                 }
 
-                PrimaryButton(
-                    text = stringResource(MainRes.strings.confirm_booking),
-                    cornerValue = 40.dp,
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    contentTextSize = 16.sp,
-                    paddingValues = PaddingValues(all = 10.dp),
+                //Start booking date
+                TimeLine(
+                    date = startDate,
+                    time = startTime,
                     elevation = elevation,
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = MaterialTheme.colors.primary
-                    ),
-                    border = null,
-                    onButtonClick = confirmBooking
+                    onPickDate = bookStartDate,
+                    onPickTime = bookStartTime,
                 )
+
+                //Finish booking date
+                TimeLine(
+                    date = finishDate,
+                    time = finishTime,
+                    elevation = elevation,
+                    onPickDate = bookFinishDate,
+                    onPickTime = bookFinishTime
+                )
+
+                //Book period
+                Button(
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color.Transparent
+                    ),
+                    elevation = elevation,
+                    onClick = bookingRepeat
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth().wrapContentHeight()
+                            .padding(vertical = 16.dp)
+                    ) {
+
+                        Icon(
+                            modifier = Modifier.size(size = 24.dp),
+                            imageVector = Icons.Rounded.Repeat,
+                            contentDescription = "repeat booking date"
+                        )
+                        Text(
+                            text = repeatBooking,
+                            style = MaterialTheme.typography.button.copy(
+                                fontWeight = FontWeight(weight = 400),
+                                color = Color.Black
+                            )
+                        )
+                    }
+                }
             }
-        }
-        if(showRepeatDialog){
-            BookingRepeatCard (
-                onSelected = onClickCloseRepeatDialog
+
+            PrimaryButton(
+                text = stringResource(MainRes.strings.confirm_booking),
+                cornerValue = 40.dp,
+                modifier = Modifier.padding(horizontal = 16.dp),
+                contentTextSize = 16.sp,
+                paddingValues = PaddingValues(all = 10.dp),
+                elevation = elevation,
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = MaterialTheme.colors.primary
+                ),
+                border = null,
+                onButtonClick = onClickSearchSuitableOptions
             )
         }
     }
-
 }

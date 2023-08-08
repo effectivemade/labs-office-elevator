@@ -11,17 +11,26 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedTheme
+import band.effective.office.elevator.radioButtonColor
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
-fun BookingRepeatElement(selected: Boolean, bookingText: String, onSelect: () -> Unit) {
+fun BookingRepeatElement(
+    selected: Boolean,
+    bookingText: String,
+    onSelect: () -> Unit,
+    onSelected: () -> Unit
+) {
+    val coroutineScope = rememberCoroutineScope()
+
     Button(
         colors = ButtonDefaults.buttonColors(
             backgroundColor = Color.Transparent
@@ -34,7 +43,13 @@ fun BookingRepeatElement(selected: Boolean, bookingText: String, onSelect: () ->
             focusedElevation = 0.dp
         ),
         modifier = Modifier.fillMaxWidth().wrapContentHeight(),
-        onClick = onSelect
+        onClick = {
+            coroutineScope.launch {
+                onSelect()
+                delay(100)
+                onSelected()
+            }
+        }
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.Start),
@@ -45,7 +60,7 @@ fun BookingRepeatElement(selected: Boolean, bookingText: String, onSelect: () ->
                 selected = selected,
                 onClick = { },
                 colors = RadioButtonDefaults.colors(
-                    disabledSelectedColor = MaterialTheme.colors.primary
+                    disabledSelectedColor = radioButtonColor,
                 )
             )
             Text(

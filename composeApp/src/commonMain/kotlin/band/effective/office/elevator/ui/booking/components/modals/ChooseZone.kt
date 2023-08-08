@@ -67,8 +67,7 @@ fun ChooseZone(zone: Boolean, onClickCloseChoseZone: () -> Unit) {
     if (zone) {
         highListNames = highZonesNames
         lowListNames = lowZonesNames
-    }
-    else {
+    } else {
         highListNames = highRoomsNames
         lowListNames = lowRoomsNames
     }
@@ -81,7 +80,8 @@ fun ChooseZone(zone: Boolean, onClickCloseChoseZone: () -> Unit) {
                 .height(4.dp)
                 .background(
                     color = ExtendedTheme.colors.dividerColor,
-                    shape = RoundedCornerShape(size = 16.dp))
+                    shape = RoundedCornerShape(size = 16.dp)
+                )
                 .padding(
                     bottom = 8.dp
                 )
@@ -123,7 +123,8 @@ fun ChooseZone(zone: Boolean, onClickCloseChoseZone: () -> Unit) {
                 top = 16.dp,
                 bottom = 6.dp,
                 start = 16.dp
-            ).fillMaxWidth()) {
+            ).fillMaxWidth()
+        ) {
             LazyRow {
                 items(highListNames) { highListName ->
                     WorkingZones(highListName)
@@ -144,7 +145,6 @@ fun ChooseZone(zone: Boolean, onClickCloseChoseZone: () -> Unit) {
             shape = RoundedCornerShape(32.dp),
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = LocalExtendedColors.current.trinidad_600,
-                contentColor = Color.White
             )
         ) {
             Text(
@@ -182,7 +182,6 @@ fun WorkingZones(text: StringResource) {
                     .align(Alignment.CenterVertically),
                 contentDescription = "galochka"
             )
-            //Spacer(modifier = Modifier.padding(horizontal = 5.dp))
             Text(
                 text = stringResource(text),
                 fontSize = 16.sp,

@@ -1,6 +1,6 @@
 package band.effective.office.elevator.domain.useCase
 
-import band.effective.office.elevator.domain.BookingRepository
+import band.effective.office.elevator.domain.repository.BookingRepository
 import band.effective.office.elevator.domain.models.toUIModel
 import band.effective.office.elevator.ui.models.ReservedSeat
 import kotlinx.coroutines.CoroutineScope

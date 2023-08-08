@@ -2,8 +2,8 @@ package band.effective.office.elevator.ui.profile.mainProfile.store
 
 import band.effective.office.elevator.domain.GoogleSignIn
 import band.effective.office.elevator.domain.models.User
-import band.effective.office.elevator.domain.usecase.GetLastUserIdUseCase
-import band.effective.office.elevator.domain.usecase.GetUserByIdUseCase
+import band.effective.office.elevator.domain.useCase.GetLastUserIdUseCase
+import band.effective.office.elevator.domain.useCase.GetUserByIdUseCase
 import band.effective.office.elevator.ui.profile.mainProfile.store.ProfileStore.*
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store

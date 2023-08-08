@@ -5,7 +5,7 @@ import band.effective.office.elevator.data.NetworkClient
 import band.effective.office.elevator.data.database.DBSource
 import band.effective.office.elevator.data.database.DBSourceImpl
 import band.effective.office.elevator.domain.repository.EmployeeRepository
-import band.effective.office.elevator.domain.repository.impl.EmployeeRepositoryImpl
+import band.effective.office.elevator.data.repository.EmployeeRepositoryImpl
 import org.koin.dsl.module
 
 internal val dataModuleDI = module {
