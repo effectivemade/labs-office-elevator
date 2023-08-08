@@ -37,6 +37,7 @@ import band.effective.office.elevator.ui.booking.components.modals.BookingRepeat
 import band.effective.office.elevator.ui.booking.components.modals.BookingSuccess
 import band.effective.office.elevator.ui.booking.components.modals.ChooseZone
 import band.effective.office.elevator.ui.booking.models.BottomSheetNames
+import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import band.effective.office.elevator.ui.booking.store.BookingStore
 import band.effective.office.elevator.utils.Stack
@@ -66,8 +67,13 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                 bottomSheetContentState = showChooseZone
             ) {
                 ChooseZone(
-                    true,
-                    onClickCloseChoseZone = { bookingComponent.onEvent(BookingStore.Intent.CloseChooseZone) }
+                    sheetTile = stringResource(
+                        if (state.workSpacesType == WorkSpaceType.WORK_PLACE) MainRes.strings.selection_zones
+                        else MainRes.strings.selection_rooms
+                    ),
+                    workSpacecZone = state.workSpacecZone,
+                    onClickCloseChoseZone = { bookingComponent.onEvent(BookingStore.Intent.CloseChooseZone) },
+                    onClickConfirmSelectedZone = {}
                 )
             },
             BottomSheetNames.BOOK_ACCEPT.name to BottomSheetItem(
@@ -185,7 +191,6 @@ fun BookingScreen(bookingComponent: BookingComponent) {
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun BookingScreenContent(
     workSpaces: List<WorkSpaceUI>,
@@ -239,8 +244,8 @@ private fun BookingScreenContent(
                 onClickOpenBookAccept = onClickOpenBookAccept,
                 onClickOpenBookPeriod = onClickOpenBookPeriod,
                 onClickOpenChoseZone = onClickOpenChoseZone,
-                onClickExpandedMap = {isExpandedCard = !isExpandedCard},
-                onClickExpandedOption = { isExpandedOptions = !isExpandedOptions}
+                onClickExpandedMap = { isExpandedCard = !isExpandedCard },
+                onClickExpandedOption = { isExpandedOptions = !isExpandedOptions }
             )
         }
 

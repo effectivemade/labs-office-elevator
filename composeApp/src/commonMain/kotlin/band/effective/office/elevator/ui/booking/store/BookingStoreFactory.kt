@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.booking.store
 
+import band.effective.office.elevator.ui.booking.models.WorkSpaceZone
 import band.effective.office.elevator.utils.getCurrentDate
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
@@ -18,18 +19,21 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         object : BookingStore,
             Store<BookingStore.Intent, BookingStore.State, BookingStore.Label> by storeFactory.create(
                 name = "BookingStore",
-                initialState = BookingStore.State(
-                    workSpaces = listOf(),
-                    currentDate = getCurrentDate()
-                ),
+                initialState = BookingStore.State.initState,
                 executorFactory = ::ExecutorImpl,
-                reducer = ReducerImpl,
+                reducer = ReducerImpl
             ) {}
 
     private sealed interface Msg {
+        data class BeginningBookingTime(val time: LocalTime)
+        data class BeginningBookingDate(val date: LocalDate)
+        data class EndBookingTime(val time: LocalTime)
+        data class EndBookingDate(val date: LocalDate)
         data class TypeList(val type: String) : Msg
         data class DateBooking(val date: LocalDate) : Msg
         data class TimeBooking(val time: LocalTime) : Msg
+
+        data class ChangeSelectedWorkSpacesZone(val workSpacesZone: List<WorkSpaceZone>) : Msg
     }
 
     private inner class ExecutorImpl :
@@ -171,16 +175,22 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                         publish(BookingStore.Label.OpenBookPeriod)
                     }
                 }
+
+                is BookingStore.Intent.ChangeSelectedWorkSpacesZone -> {
+                    dispatch(Msg.ChangeSelectedWorkSpacesZone(intent.workSpaceZone))
+                }
             }
         }
-
-
     }
 
     private object ReducerImpl : Reducer<BookingStore.State, Msg> {
         override fun BookingStore.State.reduce(msg: Msg): BookingStore.State {
-            TODO("Not yet implemented")
+            return when(msg) {
+                is Msg.ChangeSelectedWorkSpacesZone -> copy(workSpacecZone = msg.workSpacesZone)
+                is Msg.DateBooking -> TODO()
+                is Msg.TimeBooking -> TODO()
+                is Msg.TypeList -> TODO()
+            }
         }
-
     }
 }
