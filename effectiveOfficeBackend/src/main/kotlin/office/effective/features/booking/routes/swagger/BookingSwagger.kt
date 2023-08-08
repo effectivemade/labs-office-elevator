@@ -33,7 +33,7 @@ fun SwaggerDocument.returnBookingById(): OpenApiRoute.() -> Unit = {
                             active = true,
                             role = "employee",
                             avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                            integrations = listOf(IntegrationDTO("email", "123@effective.band"))
+                            integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "123@effective.band"))
                         ),
                         participants = listOf(
                             UserDTO(
@@ -42,7 +42,7 @@ fun SwaggerDocument.returnBookingById(): OpenApiRoute.() -> Unit = {
                                 active = true,
                                 role = "employee",
                                 avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                                integrations = listOf(IntegrationDTO("email", "123@effective.band"))
+                                integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "123@effective.band"))
                             ),
                             UserDTO(
                                 id = "207b9634-2bc4-11ee-be56-0242ac120002",
@@ -50,7 +50,7 @@ fun SwaggerDocument.returnBookingById(): OpenApiRoute.() -> Unit = {
                                 active = true,
                                 role = "guest",
                                 avatarUrl = "https://img.freepik.com/free-photo/capybara-in-the-nature-habitat-of-northern-pantanal_475641-1029.jpg",
-                                integrations = listOf(IntegrationDTO("email", "somemail@gmail.com"))
+                                integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "somemail@gmail.com"))
                             )
                         ),
                         workspace = WorkspaceDTO(
@@ -114,7 +114,7 @@ fun SwaggerDocument.returnBookings(): OpenApiRoute.() -> Unit = {
                                 active = true,
                                 role = "employee",
                                 avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                                integrations = listOf(IntegrationDTO("email", "123@effective.band"))
+                                integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "123@effective.band"))
                             ),
                             participants = listOf(
                                 UserDTO(
@@ -123,7 +123,7 @@ fun SwaggerDocument.returnBookings(): OpenApiRoute.() -> Unit = {
                                     active = true,
                                     role = "employee",
                                     avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                                    integrations = listOf(IntegrationDTO("email", "123@effective.band"))
+                                    integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "123@effective.band"))
                                 ),
                                 UserDTO(
                                     id = "207b9634-2bc4-11ee-be56-0242ac120002",
@@ -131,7 +131,7 @@ fun SwaggerDocument.returnBookings(): OpenApiRoute.() -> Unit = {
                                     active = true,
                                     role = "guest",
                                     avatarUrl = "https://img.freepik.com/free-photo/capybara-in-the-nature-habitat-of-northern-pantanal_475641-1029.jpg",
-                                    integrations = listOf(IntegrationDTO("email", "somemail@gmail.com"))
+                                    integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "somemail@gmail.com"))
                                 )
                             ),
                             workspace = WorkspaceDTO(
@@ -159,7 +159,7 @@ fun SwaggerDocument.returnBookings(): OpenApiRoute.() -> Unit = {
                                 active = true,
                                 role = "employee",
                                 avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                                integrations = listOf(IntegrationDTO("email", "123@effective.band"))
+                                integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "123@effective.band"))
                             ),
                             participants = listOf(
                                 UserDTO(
@@ -168,7 +168,7 @@ fun SwaggerDocument.returnBookings(): OpenApiRoute.() -> Unit = {
                                     active = true,
                                     role = "employee",
                                     avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                                    integrations = listOf(IntegrationDTO("email", "123@effective.band"))
+                                    integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "123@effective.band"))
                                 )
                             ),
                             workspace = WorkspaceDTO(
@@ -211,7 +211,7 @@ fun SwaggerDocument.postBooking(): OpenApiRoute.() -> Unit = {
                         active = true,
                         role = "employee",
                         avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                        integrations = listOf(IntegrationDTO("email", "123@effective.band"))
+                        integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "123@effective.band"))
                     ),
                     participants = listOf(
                         UserDTO(
@@ -220,7 +220,7 @@ fun SwaggerDocument.postBooking(): OpenApiRoute.() -> Unit = {
                             active = true,
                             role = "employee",
                             avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                            integrations = listOf(IntegrationDTO("email", "123@effective.band"))
+                            integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "123@effective.band"))
                         )
                     ),
                     workspace = WorkspaceDTO(
@@ -257,7 +257,7 @@ fun SwaggerDocument.postBooking(): OpenApiRoute.() -> Unit = {
                             active = true,
                             role = "employee",
                             avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                            integrations = listOf(IntegrationDTO("email", "123@effective.band"))
+                            integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "123@effective.band"))
                         ),
                         participants = listOf(
                             UserDTO(
@@ -266,7 +266,7 @@ fun SwaggerDocument.postBooking(): OpenApiRoute.() -> Unit = {
                                 active = true,
                                 role = "employee",
                                 avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                                integrations = listOf(IntegrationDTO("email", "123@effective.band"))
+                                integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "123@effective.band"))
                             )
                         ),
                         workspace = WorkspaceDTO(
@@ -313,7 +313,7 @@ fun SwaggerDocument.putBooking(): OpenApiRoute.() -> Unit = {
                         active = true,
                         role = "employee",
                         avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                        integrations = listOf(IntegrationDTO("email", "123@effective.band"))
+                        integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "123@effective.band"))
                     ),
                     participants = listOf(
                         UserDTO(
@@ -322,7 +322,7 @@ fun SwaggerDocument.putBooking(): OpenApiRoute.() -> Unit = {
                             active = true,
                             role = "employee",
                             avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                            integrations = listOf(IntegrationDTO("email", "123@effective.band"))
+                            integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "123@effective.band"))
                         ),
                         UserDTO(
                             id = "207b9634-2bc4-11ee-be56-0242ac120002",
@@ -330,7 +330,7 @@ fun SwaggerDocument.putBooking(): OpenApiRoute.() -> Unit = {
                             active = true,
                             role = "guest",
                             avatarUrl = "https://img.freepik.com/free-photo/capybara-in-the-nature-habitat-of-northern-pantanal_475641-1029.jpg",
-                            integrations = listOf(IntegrationDTO("email", "somemail@gmail.com"))
+                            integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "somemail@gmail.com"))
                         )
                     ),
                     workspace = WorkspaceDTO(
@@ -367,7 +367,7 @@ fun SwaggerDocument.putBooking(): OpenApiRoute.() -> Unit = {
                             active = true,
                             role = "employee",
                             avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                            integrations = listOf(IntegrationDTO("email", "123@effective.band"))
+                            integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "123@effective.band"))
                         ),
                         participants = listOf(
                             UserDTO(
@@ -376,7 +376,7 @@ fun SwaggerDocument.putBooking(): OpenApiRoute.() -> Unit = {
                                 active = true,
                                 role = "employee",
                                 avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                                integrations = listOf(IntegrationDTO("email", "123@effective.band"))
+                                integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "123@effective.band"))
                             ),
                             UserDTO(
                                 id = "207b9634-2bc4-11ee-be56-0242ac120002",
@@ -384,7 +384,7 @@ fun SwaggerDocument.putBooking(): OpenApiRoute.() -> Unit = {
                                 active = true,
                                 role = "guest",
                                 avatarUrl = "https://img.freepik.com/free-photo/capybara-in-the-nature-habitat-of-northern-pantanal_475641-1029.jpg",
-                                integrations = listOf(IntegrationDTO("email", "somemail@gmail.com"))
+                                integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "somemail@gmail.com"))
                             )
                         ),
                         workspace = WorkspaceDTO(
