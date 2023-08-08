@@ -36,7 +36,7 @@ fun ExitButtonView(
         Button(
             modifier = Modifier
                 .fillMaxWidth(0.15f),
-            contentPadding = PaddingValues(horizontal = 0.dp),
+            contentPadding = PaddingValues(horizontal = 0.dp, vertical = 10.dp),
             elevation = ButtonDefaults.elevation(0.dp),
             colors = ButtonDefaults.buttonColors(MaterialTheme.colors.background),
             onClick = {}
