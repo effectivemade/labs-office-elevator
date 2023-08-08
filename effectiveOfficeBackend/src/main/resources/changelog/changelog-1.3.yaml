@@ -45,6 +45,7 @@ databaseChangeLog:
             referencedTableName: workspaces
             referencedColumnNames: id
             constraintName: fk_booking_workspace_id
+        - sql: ALTER TABLE workspace_booking ADD CONSTRAINT check_booking_end_gt_begin CHECK (end_booking > begin_booking);
 
   - changeSet:
       id: create-booking_participants-table
