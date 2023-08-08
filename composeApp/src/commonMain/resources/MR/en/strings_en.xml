@@ -32,6 +32,7 @@
     <string name="none_booking_seat">You dont have any bookings yet</string>
 
     <string name="cansel">Cansel</string>
+    <string name="delete">Delete</string>
     <string name="ok">Ok</string>
     <!--Booking-->
     <string name="type_booking">Type booking</string>
@@ -71,6 +72,7 @@
     <string name="booking_2">time</string>
     <string name="week">Week</string>
     <string name="month">Month</string>
+    <string name="year">Year</string>
 
     <string name="Monday">Mon</string>
     <string name="Tuesday">Tue</string>
@@ -79,6 +81,8 @@
     <string name="Friday">Fri</string>
     <string name="Saturday">Sat</string>
     <string name="Sunday">Sun</string>
+
+    <string name="delete_booking">Delete booked room</string>
 
     <string name="take_from">Take from</string>
     <string name="take_before">Take before</string>

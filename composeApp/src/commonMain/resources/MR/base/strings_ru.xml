@@ -68,6 +68,7 @@
     <string name="booking_2">раза</string>
     <string name="week">Неделя</string>
     <string name="month">Месяц</string>
+    <string name="year">Год</string>
 
     <string name="Monday">Пн</string>
     <string name="Tuesday">Вт</string>
@@ -76,6 +77,8 @@
     <string name="Friday">Пт</string>
     <string name="Saturday">Сб</string>
     <string name="Sunday">Вс</string>
+
+    <string name="delete_booking">Удалить бронь</string>
 
     <string name="take_from">Занять с</string>
     <string name="take_before">Занять до</string>
@@ -86,6 +89,7 @@
     <string name="reset_filter">Сбросить</string>
 
     <string name="cansel">Отмена</string>
+    <string name="delete">Удалить</string>
     <string name="ok">Ок</string>
 
     <!--Booking-->
