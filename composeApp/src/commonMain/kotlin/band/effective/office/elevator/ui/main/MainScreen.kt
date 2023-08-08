@@ -9,22 +9,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.BottomSheetScaffold
-import androidx.compose.material.BottomSheetScaffoldState
-import androidx.compose.material.BottomSheetState
-import androidx.compose.material.BottomSheetValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetState
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Snackbar
 import androidx.compose.material.Text
-import androidx.compose.material.rememberBottomSheetScaffoldState
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,7 +40,6 @@ import band.effective.office.elevator.ui.models.ReservedSeat
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -53,9 +50,8 @@ fun MainScreen(component: MainComponent) {
     var isSuccessMessageVisible by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf(MainRes.strings.something_went_wrong) }
     var showModalCalendar by remember { mutableStateOf(false) }
-    val bottomSheetState =
-        rememberBottomSheetScaffoldState(bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed))
-    val coroutineScope = rememberCoroutineScope()
+    var bottomSheetState =
+        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 
     LaunchedEffect(component) {
         component.label.collect { label ->
@@ -77,6 +73,8 @@ fun MainScreen(component: MainComponent) {
                 MainStore.Label.ShowOptions -> {}
                 MainStore.Label.OpenCalendar -> showModalCalendar = true
                 MainStore.Label.CloseCalendar -> showModalCalendar = false
+                MainStore.Label.OpenFiltersBottomDialog -> bottomSheetState.show()
+                MainStore.Label.CloseFiltersBottomDialog -> bottomSheetState.hide()
             }
         }
     }
@@ -93,14 +91,8 @@ fun MainScreen(component: MainComponent) {
             onClickShowOptions = { component.onEvent(MainStore.Intent.OnClickShowOption) },
             onClickShowMap = { component.onOutput(MainComponent.Output.OpenMap) },
             onClickOpenCalendar = { component.onEvent(MainStore.Intent.OnClickOpenCalendar) },
-            onClickOpenBottomDialog = {
-                coroutineScope.launch {
-                    if (bottomSheetState.bottomSheetState.isCollapsed)
-                        bottomSheetState.bottomSheetState.expand()
-                    else
-                        bottomSheetState.bottomSheetState.collapse()
-                }
-            }
+            onClickOpenBottomDialog = { component.onEvent(MainStore.Intent.OpenFiltersBottomDialog) },
+            onClickCloseBottomDialog = { component.onEvent(MainStore.Intent.CloseFiltersBottomDialog)}
         )
         if (showModalCalendar) {
             ModalCalendar(
@@ -149,24 +141,26 @@ private fun SnackBarSuccessMessage(modifier: Modifier, isVisible: Boolean) {
 @Composable
 fun MainScreenContent(
     modifier: Modifier = Modifier,
-    bottomSheetState: BottomSheetScaffoldState,
+    bottomSheetState: ModalBottomSheetState,
     reservedSeats: List<ReservedSeat>,
     onClickBook: () -> Unit,
     onClickShowMap: () -> Unit,
     onClickShowOptions: () -> Unit,
     onClickOpenCalendar: () -> Unit,
-    onClickOpenBottomDialog: () -> Unit
+    onClickOpenBottomDialog: () -> Unit,
+    onClickCloseBottomDialog: () -> Unit
 ) {
-    BottomSheetScaffold(
+    ModalBottomSheetLayout(
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-        scaffoldState = bottomSheetState,
+        sheetState = bottomSheetState,
         sheetContent = {
             BottomDialog(
                 Modifier,
-                stringResource(MainRes.strings.filter_by_category)
+                stringResource(MainRes.strings.filter_by_category),
+                onClickCloseBottomDialog
             )
-        },
-        sheetPeekHeight = 0.dp
+        }
+        //,sheetPeekHeight = 0.dp
     ) {
         Column(
             modifier = modifier.fillMaxSize()

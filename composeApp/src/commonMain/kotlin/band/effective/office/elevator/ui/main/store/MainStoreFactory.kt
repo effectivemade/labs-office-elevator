@@ -99,6 +99,18 @@ internal class MainStoreFactory(
                         changeBookingsByDate(date = newDate)
                     }
                 }
+
+                MainStore.Intent.OpenFiltersBottomDialog -> {
+                    scope.launch {
+                        publish(MainStore.Label.OpenFiltersBottomDialog)
+                    }
+                }
+
+                MainStore.Intent.CloseFiltersBottomDialog -> {
+                    scope.launch {
+                        publish(MainStore.Label.CloseFiltersBottomDialog)
+                    }
+                }
             }
         }
 

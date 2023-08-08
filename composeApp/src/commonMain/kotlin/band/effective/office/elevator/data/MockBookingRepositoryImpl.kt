@@ -5,13 +5,9 @@ import band.effective.office.elevator.domain.models.BookingIfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
@@ -25,7 +21,7 @@ class MockBookingRepositoryImpl: BookingRepository {
             seatName = "Seat A1",
             dateOfStart = LocalDateTime(
                 date = LocalDate(year = 2023, monthNumber = 7, dayOfMonth = 13),
-                time =  LocalTime(hour = 14, minute = 0, second = 0, nanosecond = 0)
+                time =  LocalTime(hour = 14, minute = 15, second = 0, nanosecond = 0)
             ),
             dateOfEnd = LocalDateTime(
                 date = LocalDate(year = 2023, monthNumber = 7, dayOfMonth = 13),
@@ -38,7 +34,7 @@ class MockBookingRepositoryImpl: BookingRepository {
             seatName = "Seat A2",
             dateOfStart = LocalDateTime(
                 date = LocalDate(year = 2023, monthNumber = 7, dayOfMonth = 13),
-                time =  LocalTime(hour = 14, minute = 0, second = 0, nanosecond = 0)
+                time =  LocalTime(hour = 14, minute = 15, second = 0, nanosecond = 0)
             ),
             dateOfEnd = LocalDateTime(
                 date = LocalDate(year = 2023, monthNumber = 7, dayOfMonth = 13),
@@ -51,7 +47,7 @@ class MockBookingRepositoryImpl: BookingRepository {
             seatName = "Seat A2",
             dateOfStart = LocalDateTime(
                 date = LocalDate(year = 2023, monthNumber = 7, dayOfMonth = 14),
-                time =  LocalTime(hour = 14, minute = 0, second = 0, nanosecond = 0)
+                time =  LocalTime(hour = 14, minute = 15, second = 0, nanosecond = 0)
             ),
             dateOfEnd = LocalDateTime(
                 date = LocalDate(year = 2023, monthNumber = 7, dayOfMonth = 14),
@@ -64,7 +60,7 @@ class MockBookingRepositoryImpl: BookingRepository {
             seatName = "Seat A2",
             dateOfStart = LocalDateTime(
                 date = LocalDate(year = 2023, monthNumber = 7, dayOfMonth = 15),
-                time =  LocalTime(hour = 14, minute = 0, second = 0, nanosecond = 0)
+                time =  LocalTime(hour = 14, minute = 15, second = 0, nanosecond = 0)
             ),
             dateOfEnd = LocalDateTime(
                 date = LocalDate(year = 2023, monthNumber = 7, dayOfMonth = 15),
@@ -77,7 +73,7 @@ class MockBookingRepositoryImpl: BookingRepository {
             seatName = "Seat A2",
             dateOfStart = LocalDateTime(
                 date = LocalDate(year = 2023, monthNumber = 8, dayOfMonth = 3),
-                time =  LocalTime(hour = 14, minute = 0, second = 0, nanosecond = 0)
+                time =  LocalTime(hour = 14, minute = 15, second = 0, nanosecond = 0)
             ),
             dateOfEnd = LocalDateTime(
                 date = LocalDate(year = 2023, monthNumber = 8, dayOfMonth = 3),
@@ -90,7 +86,7 @@ class MockBookingRepositoryImpl: BookingRepository {
             seatName = "Seat A2",
             dateOfStart = LocalDateTime(
                 date = LocalDate(year = 2023, monthNumber = 8, dayOfMonth = 3),
-                time =  LocalTime(hour = 14, minute = 0, second = 0, nanosecond = 0)
+                time =  LocalTime(hour = 14, minute = 15, second = 0, nanosecond = 0)
             ),
             dateOfEnd = LocalDateTime(
                 date = LocalDate(year = 2023, monthNumber = 8, dayOfMonth = 3),

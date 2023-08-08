@@ -17,9 +17,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -260,13 +260,18 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
                     color = textInBorderGray
                 )
                 Spacer(modifier = Modifier.padding(0.dp, 8.dp))
-                Button(
+                OutlinedButton(
                     onClick = { isExpanded = !isExpanded },
                     colors = ButtonDefaults.buttonColors(theme_light_onPrimary),
                     modifier = Modifier
                         .border(1.dp, stateColorBorder, RoundedCornerShape(12.dp)),
                     shape = RoundedCornerShape(12.dp),
-                    elevation = ButtonDefaults.elevation(0.dp, 2.dp, 0.dp)
+                    elevation = ButtonDefaults.elevation(
+                        defaultElevation = 0.dp,
+                        pressedElevation = 2.dp,
+                        disabledElevation = 0.dp,
+                        hoveredElevation = 0.dp
+                    )
                 ) {
                     Text(
                         text = "•   " + emp.state,

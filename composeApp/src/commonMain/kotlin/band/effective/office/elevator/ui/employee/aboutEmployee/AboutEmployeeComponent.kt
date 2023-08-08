@@ -5,8 +5,10 @@ import band.effective.office.elevator.ui.employee.aboutEmployee.store.AboutEmplo
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
+import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 
@@ -25,6 +27,7 @@ class AboutEmployeeComponent(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val state: StateFlow<AboutEmployeeStore.State> = aboutEmployeeStore.stateFlow
+    val label: Flow<AboutEmployeeStore.Label> = aboutEmployeeStore.labels
 
     fun onEvent(event: AboutEmployeeStore.Intent) {
         aboutEmployeeStore.accept(event)
