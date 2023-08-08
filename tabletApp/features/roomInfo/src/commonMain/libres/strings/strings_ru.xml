@@ -38,4 +38,6 @@
     <string name="disconnect">Нет соединения с сервером</string>
     <string name="reset">Перезагрузите приложение</string>
     <string name="reset_button">Перезагрузить приложение</string>
+    <string name="exit">Выход</string>
+    <string name="rooms">Переговорки</string>
 </resources>
