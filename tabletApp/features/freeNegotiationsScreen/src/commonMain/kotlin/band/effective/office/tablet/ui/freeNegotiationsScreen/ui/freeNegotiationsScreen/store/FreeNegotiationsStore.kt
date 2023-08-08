@@ -27,7 +27,8 @@ interface FreeNegotiationsStore :
         val organizer: Organizer,
         val nameBookingRoom: RoomInfoUiState,
         val showBookingModal: Boolean,
-        val currentTime: Calendar
+        val currentTime: Calendar,
+        val failLoad: Boolean
     ) {
         companion object {
             val defaultState =
@@ -42,7 +43,8 @@ interface FreeNegotiationsStore :
                     realDurationBooking = 0,
                     organizer = Organizer.default,
                     showBookingModal = false,
-                    currentTime = Calendar.getInstance()
+                    currentTime = Calendar.getInstance(),
+                    failLoad = false
                 )
         }
     }
