@@ -249,7 +249,8 @@ fun EditBooking(
         }
         if (showRepeatDialog) {
             BookingRepeatCard(
-                onSelected = onClickCloseRepeatDialog
+                onSelected = onClickCloseRepeatDialog,
+                modifier = Modifier
             )
         }
     }
