@@ -132,7 +132,7 @@ class BookingRepository(private val database: Database, private val converter: B
      * Saves a given booking. If given model will have an id, it will be ignored.
      * Use the returned model for further operations
      *
-     * Throws WorkspaceUnavailableException if workspace can't be booked in a given period
+     * @throws WorkspaceUnavailableException if workspace can't be booked in a given period
      *
      * @author Daniil Zavyalov
      */
@@ -171,9 +171,9 @@ class BookingRepository(private val database: Database, private val converter: B
     /**
      * Updates a given booking. Use the returned model for further operations
      *
-     * Throws InstanceNotFoundException if booking given id doesn't exist in the database
+     * @throws InstanceNotFoundException if booking given id doesn't exist in the database
      *
-     * Throws WorkspaceUnavailableException if workspace can't be booked in a given period
+     * @throws WorkspaceUnavailableException if workspace can't be booked in a given period
      *
      * @author Daniil Zavyalov
      */

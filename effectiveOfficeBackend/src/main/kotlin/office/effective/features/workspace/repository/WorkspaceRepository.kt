@@ -33,7 +33,7 @@ class WorkspaceRepository(private val database: Database, private val converter:
     /**
      * Returns all workspace utilities by workspace id
      *
-     * Throws InstanceNotFoundException if workspace with given id doesn't exist in the database
+     * @throws InstanceNotFoundException if workspace with given id doesn't exist in the database
      *
      * @author Daniil Zavyalov
      */
@@ -76,7 +76,7 @@ class WorkspaceRepository(private val database: Database, private val converter:
     /**
      * Returns all workspaces with the given tag
      *
-     * Throws InstanceNotFoundException if tag doesn't exist in the database
+     * @throws InstanceNotFoundException if tag doesn't exist in the database
      *
      * @author Daniil Zavyalov
      */
@@ -95,7 +95,7 @@ class WorkspaceRepository(private val database: Database, private val converter:
      * Adds utility to workspace by their id.
      * If the utility has already been added to the workspace, the count value will be overwritten
      *
-     * Throws InstanceNotFoundException if workspace or utility with given id doesn't exist in the database
+     * @throws InstanceNotFoundException if workspace or utility with given id doesn't exist in the database
      *
      * @author Daniil Zavyalov
      */

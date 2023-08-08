@@ -30,7 +30,7 @@ class BookingFacade(private val bookingService: BookingService,
     /**
      * Retrieves a booking model by its id
      *
-     * Throws InstanceNotFoundException if booking with the given id doesn't exist in database
+     * @throws InstanceNotFoundException if booking with the given id doesn't exist in database
      *
      * @author Daniil Zavyalov
      */

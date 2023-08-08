@@ -51,7 +51,7 @@ class BookingService(private val bookingRepository: BookingRepository,
     /**
      * Returns all bookings. Bookings can be filtered by owner and workspace id
      *
-     * Throws InstanceNotFoundException if user or workspace with the given id doesn't exist in database
+     * @throws InstanceNotFoundException if user or workspace with the given id doesn't exist in database
      *
      * @author Daniil Zavyalov
      */
@@ -83,7 +83,7 @@ class BookingService(private val bookingRepository: BookingRepository,
      * Adds integrations and utilities to related user and workspace models.
      * Use the returned booking list for further operations
      *
-     * Throws MissingIdException if user or workspace doesn't have an id
+     * @throws MissingIdException if user or workspace doesn't have an id
      *
      * @author Daniil Zavyalov
      */
@@ -101,7 +101,7 @@ class BookingService(private val bookingRepository: BookingRepository,
     /**
      * Retrieves all integrations for a given user model
      *
-     * Throws MissingIdException if user model doesn't have an id
+     * @throws MissingIdException if user model doesn't have an id
      *
      * @author Daniil Zavyalov
      */
@@ -114,7 +114,7 @@ class BookingService(private val bookingRepository: BookingRepository,
     /**
      * Retrieves all utilities for a given workspace model
      *
-     * Throws MissingIdException if workspace doesn't have an id
+     * @throws MissingIdException if workspace doesn't have an id
      *
      * @author Daniil Zavyalov
      */

@@ -28,7 +28,7 @@ class WorkspaceRepositoryConverter(private val database: Database) {
      * Converts Workspace and WorkspaceTagEntity to WorkspaceEntity with random UUID.
      * Use database connection to find tag
      *
-     * Throws InstanceNotFoundException if tag doesn't exist in the database
+     * @throws InstanceNotFoundException if tag doesn't exist in the database
      *
      * @author Daniil Zavyalov
      */
