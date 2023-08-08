@@ -36,4 +36,6 @@ interface DBSource {
     fun updateImageUrl(imageUrl: String, idToken: String)
 
     fun insertUser(profileData: ProfileData)
+
+    fun update(profileData: ProfileData)
 }

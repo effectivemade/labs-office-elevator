@@ -58,6 +58,11 @@ UPDATE profileData SET telegramNick = ? WHERE idToken = ?;
 updateImageUrl:
 UPDATE profileData SET imageUrl = ? WHERE idToken = ?;
 
+update:
+INSERT OR REPLACE
+INTO profileData(idToken, name, post, email, phoneNumber, telegramNick, imageUrl)
+VALUES (?,?,?,?,?,?,?);
+
 insert:
 INSERT INTO profileData(idToken, name, post, email, phoneNumber, telegramNick, imageUrl)
 VALUES (?, ?, ?, ?, ?, ?, ?);

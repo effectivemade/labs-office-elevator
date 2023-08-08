@@ -87,4 +87,18 @@ class DBSourceImpl(
             )
         }
     }
+
+    override fun update(profileData: ProfileData) {
+        with(profileData) {
+            profileQueries.update(
+                idToken = idToken,
+                name = name,
+                post = post,
+                email = email,
+                phoneNumber = phoneNumber,
+                telegramNick = telegramNick,
+                imageUrl = imageUrl
+            )
+        }
+    }
 }
