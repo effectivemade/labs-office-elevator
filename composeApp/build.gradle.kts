@@ -160,6 +160,10 @@ android {
         resources.excludes.add("META-INF/**")
     }
 
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.0"
+    }
+
     signingConfigs {
         getByName("debug") {
             keyPassword = "android"
