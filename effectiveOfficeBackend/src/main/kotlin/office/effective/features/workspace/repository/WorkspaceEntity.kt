@@ -15,7 +15,7 @@ interface WorkspaceEntity: Entity<WorkspaceEntity> {
     var id: UUID
     var name: String
     var tag: WorkspaceTagEntity
-    val zone: WorkspaceZoneEntity?
+    var zone: WorkspaceZoneEntity?
 }
 
 object Workspaces: Table<WorkspaceEntity>("workspaces") {

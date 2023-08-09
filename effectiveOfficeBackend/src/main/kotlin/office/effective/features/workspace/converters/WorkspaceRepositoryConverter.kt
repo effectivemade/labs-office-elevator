@@ -1,12 +1,10 @@
 package office.effective.features.workspace.converters
 
 import office.effective.common.exception.InstanceNotFoundException
-import office.effective.features.workspace.repository.UtilityEntity
-import office.effective.features.workspace.repository.WorkspaceEntity
-import office.effective.features.workspace.repository.WorkspaceTagEntity
-import office.effective.features.workspace.repository.workspaceTags
+import office.effective.features.workspace.repository.*
 import office.effective.model.Utility
 import office.effective.model.Workspace
+import office.effective.model.WorkspaceZone
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.entity.find
@@ -21,7 +19,31 @@ class WorkspaceRepositoryConverter(private val database: Database) {
      * @author Daniil Zavyalov
      */
     fun entityToModel(entity: WorkspaceEntity, utilities: List<Utility>): Workspace {
-        return Workspace(entity.id, entity.name, entity.tag.name, utilities)
+        return Workspace(
+            entity.id,
+            entity.name,
+            entity.tag.name,
+            utilities,
+            entity.zone?.let { (zoneEntityToModel(it)) }
+        )
+    }
+
+    /**
+     * Converts UtilityEntity to Utility with given count
+     *
+     * @author Daniil Zavyalov
+     */
+    fun utilityEntityToModel(entity: UtilityEntity, count: Int): Utility {
+        return Utility(entity.id, entity.name, entity.iconUrl, count)
+    }
+
+    /**
+     * Converts WorkspaceZoneEntity to WorkspaceZone model
+     *
+     * @author Daniil Zavyalov
+     */
+    fun zoneEntityToModel(zoneEntity: WorkspaceZoneEntity): WorkspaceZone {
+        return WorkspaceZone(zoneEntity.id, zoneEntity.name)
     }
 
     /**
@@ -43,15 +65,19 @@ class WorkspaceRepositoryConverter(private val database: Database) {
             id = UUID.randomUUID()
             name = model.name
             tag = tagEntity
+            zone = model.zone?.let{ zoneModelToEntity(it) }
         }
     }
 
     /**
-     * Converts UtilityEntity to Utility with given count
+     * Converts WorkspaceZoneEntity to WorkspaceZone model
      *
      * @author Daniil Zavyalov
      */
-    fun utilityEntityToModel(entity: UtilityEntity, count: Int): Utility {
-        return Utility(entity.id, entity.name, entity.iconUrl, count)
+    fun zoneModelToEntity(zoneModel: WorkspaceZone): WorkspaceZoneEntity {
+        return WorkspaceZoneEntity {
+            id = zoneModel.id
+            name = zoneModel.name
+        }
     }
 }
