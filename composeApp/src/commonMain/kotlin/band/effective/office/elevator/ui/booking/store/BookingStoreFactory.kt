@@ -1,7 +1,6 @@
 package band.effective.office.elevator.ui.booking.store
 
 import band.effective.office.elevator.ui.booking.models.WorkSpaceZone
-import band.effective.office.elevator.utils.getCurrentDate
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -186,7 +185,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
     private object ReducerImpl : Reducer<BookingStore.State, Msg> {
         override fun BookingStore.State.reduce(msg: Msg): BookingStore.State {
             return when(msg) {
-                is Msg.ChangeSelectedWorkSpacesZone -> copy(workSpacecZone = msg.workSpacesZone)
+                is Msg.ChangeSelectedWorkSpacesZone -> copy(workSpacesZone = msg.workSpacesZone)
                 is Msg.DateBooking -> TODO()
                 is Msg.TimeBooking -> TODO()
                 is Msg.TypeList -> TODO()

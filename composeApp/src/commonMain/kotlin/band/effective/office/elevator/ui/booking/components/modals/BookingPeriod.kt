@@ -43,15 +43,13 @@ import dev.icerock.moko.resources.compose.stringResource
 fun BookingPeriod(
     startDate: String,
     startTime: String,
-    finishDate: String,
     finishTime: String,
     repeatBooking: String,
     switchChecked: Boolean,
     closeClick: () -> Unit,
-    onSwitchChange: (Boolean) -> Unit,
+    onSelectAllDay: (Boolean) -> Unit,
     bookStartDate: () -> Unit,
     bookStartTime: () -> Unit,
-    bookFinishDate: () -> Unit,
     bookFinishTime: () -> Unit,
     bookingRepeat: () -> Unit,
     onClickSearchSuitableOptions: () -> Unit
@@ -162,7 +160,7 @@ fun BookingPeriod(
 
                     Switch(
                         checked = switchChecked,
-                        onCheckedChange = onSwitchChange,
+                        onCheckedChange = onSelectAllDay,
                         colors = SwitchDefaults.colors(
                             checkedThumbColor = MaterialTheme.colors.primary,
                             uncheckedThumbColor = ExtendedTheme.colors.switchColor,
@@ -175,19 +173,12 @@ fun BookingPeriod(
                 //Start booking date
                 TimeLine(
                     date = startDate,
-                    time = startTime,
-                    elevation = elevation,
+                    statTime = startTime,
+                    endTime = finishTime,
                     onPickDate = bookStartDate,
-                    onPickTime = bookStartTime,
-                )
-
-                //Finish booking date
-                TimeLine(
-                    date = finishDate,
-                    time = finishTime,
-                    elevation = elevation,
-                    onPickDate = bookFinishDate,
-                    onPickTime = bookFinishTime
+                    onPickStartTime = bookStartTime,
+                    selectTimeActive = !switchChecked,
+                    onPickEndTime = bookFinishTime,
                 )
 
                 //Book period

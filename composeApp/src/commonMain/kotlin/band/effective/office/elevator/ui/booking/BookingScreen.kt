@@ -71,9 +71,15 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                         if (state.workSpacesType == WorkSpaceType.WORK_PLACE) MainRes.strings.selection_zones
                         else MainRes.strings.selection_rooms
                     ),
-                    workSpacecZone = state.workSpacecZone,
+                    workSpacecZone = state.workSpacesZone,
                     onClickCloseChoseZone = { bookingComponent.onEvent(BookingStore.Intent.CloseChooseZone) },
-                    onClickConfirmSelectedZone = {}
+                    onClickConfirmSelectedZone = {
+                        bookingComponent.onEvent(
+                            BookingStore.Intent.ChangeSelectedWorkSpacesZone(
+                                it
+                            )
+                        )
+                    }
                 )
             },
             BottomSheetNames.BOOK_ACCEPT.name to BottomSheetItem(
@@ -90,14 +96,12 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                 BookingPeriod(
                     startDate = "Чт, 27 июл. 2023 г.",
                     startTime = "10:30",
-                    finishDate = "Чт, 27 июл. 2023 г.",
                     finishTime = "15:30",
                     repeatBooking = "Бронирование не повторяется",
-                    false,
+                    switchChecked = false,
                     closeClick = { bookingComponent.onEvent(BookingStore.Intent.CloseBookPeriod) },
-                    onSwitchChange = { false },
+                    onSelectAllDay = { false },
                     bookStartDate = { bookingComponent.onEvent(BookingStore.Intent.OpenCalendar) },
-                    bookFinishDate = { bookingComponent.onEvent(BookingStore.Intent.OpenCalendar) },
                     bookStartTime = { bookingComponent.onEvent(BookingStore.Intent.OpenTimeModal) },
                     bookFinishTime = { bookingComponent.onEvent(BookingStore.Intent.OpenTimeModal) },
                     bookingRepeat = { bookingComponent.onEvent(BookingStore.Intent.OpenRepeatDialog) },

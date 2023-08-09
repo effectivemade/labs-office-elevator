@@ -15,10 +15,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -47,6 +49,7 @@ import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.textInBorderGray
 import band.effective.office.elevator.textInBorderPurple
 import band.effective.office.elevator.theme_light_primary_color
+import band.effective.office.elevator.ui.booking.components.HorizontalGirdItems
 import band.effective.office.elevator.ui.booking.models.WorkSpaceZone
 import dev.icerock.moko.resources.compose.stringResource
 
@@ -60,19 +63,8 @@ fun ChooseZone(
     val selectedZones: MutableList<WorkSpaceZone> = mutableListOf()
     selectedZones.addAll(workSpacecZone)
 
-    val maxCountItemInRow = 3
-
-    val currentIndex = 0
-
-    val list: MutableList<List<WorkSpaceZone>> = mutableListOf()
-
-    while (currentIndex < workSpacecZone.size) {
-        list.
-    }
-
-
-
-    Column(modifier = Modifier
+    Column(
+        modifier = Modifier
             .fillMaxWidth()
             .background(Color.White)
     ) {
@@ -119,12 +111,32 @@ fun ChooseZone(
                     color = ExtendedTheme.colors._66x
                 )
         )
-        Column {
 
+        Spacer(modifier = Modifier.height(16.dp))
+
+        HorizontalGirdItems(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            countItemsInRow = 3,
+            listItems = workSpacecZone,
+            horizontalPaddingContent = 12.dp,
+            verticalPaddingContent = 12.dp
+        ) { workSpaceZone, columnIndex, rowIndex ->
+            val currentIndex = 3 * columnIndex + rowIndex
+            //TODO(Artem Gruzdev) refactor this code
+            WorkingZones(
+                workSpaceZone = workSpaceZone,
+                onClickZone = { workSpaceZone1 ->
+                    val isSelected = !workSpaceZone.isSelected
+                    selectedZones[currentIndex] = workSpaceZone.copy(isSelected = isSelected)
+                }
+            )
         }
 
         Button(
-            onClick = { onClickConfirmSelectedZone(selectedZones) },
+            onClick = {
+                onClickConfirmSelectedZone(selectedZones)
+                onClickCloseChoseZone()
+            },
             modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
                 .fillMaxWidth()
                 .height(60.dp)
@@ -148,19 +160,24 @@ fun WorkingZones(
     workSpaceZone: WorkSpaceZone,
     onClickZone: (WorkSpaceZone) -> Unit,
 ) {
+    var isSelected by remember { mutableStateOf(workSpaceZone.isSelected) }
+
     Button(
-        onClick = { onClickZone(workSpaceZone) },
+        onClick = {
+            isSelected = !isSelected
+            onClickZone(workSpaceZone)
+          },
         colors = ButtonDefaults.buttonColors(theme_light_primary_color),
         modifier = modifier
             .padding(end = 10.dp),
         border = BorderStroke(
             width = 1.dp,
-            color = if (workSpaceZone.isSelected) textInBorderPurple else textInBorderGray
+            color = if (isSelected) textInBorderPurple else textInBorderGray
         ),
         shape = RoundedCornerShape(12.dp),
         elevation = ButtonDefaults.elevation(0.dp, 2.dp, 0.dp)
     ) {
-        if (workSpaceZone.isSelected) {
+        if (isSelected) {
             Icon(
                 imageVector = Icons.Rounded.Done,
                 tint = textInBorderPurple,
@@ -174,7 +191,7 @@ fun WorkingZones(
             text = workSpaceZone.name,
             fontSize = 16.sp,
             fontWeight = FontWeight(500),
-            color = if (workSpaceZone.isSelected) textInBorderPurple
+            color = if (isSelected) textInBorderPurple
             else textInBorderGray
         )
     }

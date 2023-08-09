@@ -45,7 +45,7 @@ interface BookingStore: Store<BookingStore.Intent,BookingStore.State, BookingSto
         val creatingBookModel: CreatingBookModel,
         val currentDate: LocalDate,
         val workSpacesType: WorkSpaceType,
-        val workSpacecZone: List<WorkSpaceZone>
+        val workSpacesZone: List<WorkSpaceZone>
     ){
         companion object {
             val initState = State(
@@ -59,7 +59,7 @@ interface BookingStore: Store<BookingStore.Intent,BookingStore.State, BookingSto
                     typeOfEndPeriod = TypeEndPeriodBooking.Never
                 ),
                 workSpacesType = WorkSpaceType.WORK_PLACE,
-                workSpacecZone = allBookingZone
+                workSpacesZone = allBookingZone
             )
         }
     }
