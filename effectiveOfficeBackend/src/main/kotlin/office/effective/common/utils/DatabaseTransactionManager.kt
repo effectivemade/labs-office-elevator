@@ -10,6 +10,10 @@ class DatabaseTransactionManager(database: Database) {
         transactionManager = database.transactionManager
     }
 
+    /**
+     * Executes code in a database transaction.
+     * Cancels the transaction if an exception was thrown.
+     */
     fun <T> useTransaction(serviceCall: () -> T,
                            isolation: TransactionIsolation = TransactionIsolation.READ_COMMITTED): T {
 

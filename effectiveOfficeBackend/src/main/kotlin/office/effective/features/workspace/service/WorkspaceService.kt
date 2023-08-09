@@ -6,10 +6,20 @@ import java.util.UUID
 
 class WorkspaceService(private val repository: WorkspaceRepository) {
 
+    /**
+     * Retrieves a workspace model by its id
+     *
+     * @author Daniil Zavyalov
+     */
     fun findById(id: UUID): Workspace? {
         return repository.findById(id)
     }
 
+    /**
+     * Returns all workspaces with the given tag
+     *
+     * @author Daniil Zavyalov
+     */
     fun findAllByTag(tag: String): List<Workspace> {
         return repository.findAllByTag(tag)
     }

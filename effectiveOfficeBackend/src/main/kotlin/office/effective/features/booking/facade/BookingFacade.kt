@@ -7,7 +7,6 @@ import office.effective.features.booking.dto.BookingDTO
 import office.effective.features.booking.service.BookingService
 import office.effective.model.Booking
 import office.effective.model.Workspace
-import java.util.*
 
 class BookingFacade(private val bookingService: BookingService,
                     private val transactionManager: DatabaseTransactionManager,
@@ -15,6 +14,11 @@ class BookingFacade(private val bookingService: BookingService,
                     private val bookingConverter: BookingFacadeConverter
 ) {
 
+    /**
+     * Deletes the booking with the given id
+     *
+     * @author Daniil Zavyalov
+     */
     fun deleteById(id: String) {
         transactionManager.useTransaction({
             bookingService.deleteById(
@@ -23,6 +27,13 @@ class BookingFacade(private val bookingService: BookingService,
         })
     }
 
+    /**
+     * Retrieves a booking model by its id
+     *
+     * @throws InstanceNotFoundException if booking with the given id doesn't exist in database
+     *
+     * @author Daniil Zavyalov
+     */
     fun findById(id: String): BookingDTO {
         val uuid = uuidValidator.uuidFromString(id)
         val dto: BookingDTO = transactionManager.useTransaction({
@@ -33,17 +44,28 @@ class BookingFacade(private val bookingService: BookingService,
         return dto
     }
 
-    fun findAllByOwnerId(ownerId: String): List<BookingDTO> {
-        val workspaceList: List<Booking> = transactionManager.useTransaction({
-            bookingService.findAllByOwnerId(
-                uuidValidator.uuidFromString(ownerId)
+    /**
+     * Returns all bookings. Bookings can be filtered by owner and workspace id
+     *
+     * @author Daniil Zavyalov
+     */
+    fun findAll(userId: String?, workspaceId: String?): List<BookingDTO> {
+        val bookingList: List<Booking> = transactionManager.useTransaction({
+            bookingService.findAll(
+                userId?.let { uuidValidator.uuidFromString(it) },
+                workspaceId?.let { uuidValidator.uuidFromString(it) }
             )
         })
-        return workspaceList.map {
+        return bookingList.map {
             bookingConverter.modelToDto(it)
         }
     }
 
+    /**
+     * Saves a given booking. Use the returned model for further operations
+     *
+     * @author Daniil Zavyalov
+     */
     fun post(bookingDTO: BookingDTO): BookingDTO {
         val model = bookingConverter.dtoToModel(bookingDTO)
         val dto: BookingDTO = transactionManager.useTransaction({
@@ -53,6 +75,11 @@ class BookingFacade(private val bookingService: BookingService,
         return dto
     }
 
+    /**
+     * Updates a given booking. Use the returned model for further operations
+     *
+     * @author Daniil Zavyalov
+     */
     fun put(bookingDTO: BookingDTO): BookingDTO {
         val model = bookingConverter.dtoToModel(bookingDTO)
         val dto: BookingDTO = transactionManager.useTransaction({
