@@ -10,7 +10,7 @@ fun SwaggerDocument.returnWorkspaceById(): OpenApiRoute.() -> Unit = {
     description = "Return workspace by id"
     tags = listOf("workspaces")
     request {
-        queryParameter<String>("id") {
+        pathParameter<String>("id") {
             description = "Workspace id"
             example = "2561471e-2bc6-11ee-be56-0242ac120002"
             required = true
@@ -62,7 +62,7 @@ fun SwaggerDocument.returnWorkspaceByTag(): OpenApiRoute.() -> Unit = {
     }
     response {
         HttpStatusCode.OK to {
-            description = "Returns workspace found by tag"
+            description = "Returns all workspaces found by tag"
             body<List<WorkspaceDTO>> {
                 example(
                     "Workspace", listOf(
@@ -94,8 +94,11 @@ fun SwaggerDocument.returnWorkspaceByTag(): OpenApiRoute.() -> Unit = {
                 ) {}
             }
         }
+        HttpStatusCode.BadRequest to {
+            description = "Bad request"
+        }
         HttpStatusCode.NotFound to {
-            description = "Workspace with this tag was not found"
+            description = "Provided tag doesn't exist"
         }
     }
 }
