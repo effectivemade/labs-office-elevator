@@ -1,30 +1,51 @@
 package office.effective.plugins
 
 import io.ktor.http.*
+import io.ktor.http.auth.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
-import io.ktor.server.plugins.*
 import io.ktor.server.request.*
 import office.effective.features.user.TokenVerifier
-import org.koin.core.context.GlobalContext
-import io.ktor.server.application.hooks.CallSetup
 import io.ktor.server.response.*
+import office.effective.features.user.ApiKeyVerifier
 import office.effective.features.user.ITokenVerifier
 
 
 val VerificationPlugin = createApplicationPlugin(name = "VerificationPlugin") {
-    val verifier: ITokenVerifier = TokenVerifier()
+    val verifierOAuth: ITokenVerifier = TokenVerifier()
+    val verifierLine = ApiKeyVerifier()
     val pluginOn: Boolean = System.getenv("VERIFICATION_PLUGIN_ENABLE").equals("true")
     println("Verification plugin mode enabled?: $pluginOn")
     println("==========================[ verification plugin installed ]==========================")
-    if (pluginOn) {
-        onCall {
-            run {
+
+
+    onCall {
+        run {
+            if (pluginOn) {
+                val token = it.request.parseAuthorizationHeader()?.render()?.split("Bearer ")?.last()?: it.response.status(HttpStatusCode.Forbidden)//it.request.header("id_token") ?: it.response.status(HttpStatusCode.Forbidden)
+                var exOAuth: Exception? = null
+                var exLine: Exception? = null
+
+                //Checks verification through OAuth
                 try {
-                    val token = it.request.header("id_token") ?: it.response.status(HttpStatusCode.Forbidden)
-                    val email = verifier.isCorrectToken(token as String)
+                    val email = verifierOAuth.isCorrectToken(token as String)
+                    exOAuth = null
                 } catch (ex: Exception) {
-                    it.respond("verification error. \nCause by $ex")
+                    exOAuth = ex
+                }
+
+                //Checks verification through Line (for tablets usage). Should be replaced by jwt
+                try {
+                    val line = verifierLine.isCorrectToken(token as String)
+                    exLine = null
+                } catch (ex: Exception) {
+                    exLine = ex
+                }
+
+                //If both authentications ways cannot verify header containment, this condition must throw 401 Unauthorised
+                if (exOAuth != null && exLine != null) {
+                    it.response.status(HttpStatusCode.Unauthorized)
+                    it.respond("verification error. \nCause by:\nOAuth exception: $exOAuth\nLine exception: $exLine")
                 }
             }
         }
