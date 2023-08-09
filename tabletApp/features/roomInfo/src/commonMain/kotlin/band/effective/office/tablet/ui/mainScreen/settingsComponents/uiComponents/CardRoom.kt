@@ -22,7 +22,8 @@ import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 @Composable
 fun CardRoom(
     modifier: Modifier,
-    nameRoom: String
+    nameRoom: String,
+    currentNameRoom: String
 ) {
     Box(
         modifier = modifier,
@@ -35,7 +36,7 @@ fun CardRoom(
         ) {
             RadioButton(
                 modifier = Modifier.scale(1.4f),
-                selected = nameRoom == "Sirius",
+                selected = nameRoom == currentNameRoom,
                 onClick = null,
                 colors = RadioButtonDefaults.colors(
                     selectedColor = MaterialTheme.colors.primary,

@@ -19,10 +19,11 @@ import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 
 @Composable
 fun GridRooms(
-    modifier: Modifier
+    modifier: Modifier,
+    data: List<String>,
+    currentName: String,
+    onChangeCurrentName: (name: String) -> Unit
 ){
-    val data = listOf("Pluto", "Sirius", "Moon", "Antares", "Sun")
-
     LazyVerticalGrid(
         modifier = modifier,
         columns = GridCells.Fixed(2),
@@ -36,9 +37,12 @@ fun GridRooms(
                         .background(LocalCustomColorsPalette.current.elevationBackground)
                         .selectable(
                             selected = false,
-                            onClick = { }
+                            onClick = {
+                                onChangeCurrentName(item)
+                            }
                         ),
-                    nameRoom = item
+                    nameRoom = item,
+                    currentNameRoom = currentName
                 )
             }
         }

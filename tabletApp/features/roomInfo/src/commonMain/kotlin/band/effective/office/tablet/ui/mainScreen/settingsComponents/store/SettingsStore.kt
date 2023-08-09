@@ -6,16 +6,19 @@ import com.arkivanov.mvikotlin.core.store.Store
 interface SettingsStore: Store<SettingsStore.Intent, SettingsStore.State, Nothing> {
     sealed interface Intent{
         object OnExitApp: Intent
-        data class SaveData(val nameRoom: String): Intent
+        data class ChangeCurrentNameRoom(val nameRoom: String): Intent
+        object SaveData: Intent
     }
 
     data class State(
-        val rooms: List<String>
+        val rooms: List<String>,
+        val currentName: String
     ) {
         companion object {
             val defaultState =
                 State(
-                    rooms = RoomsEnum.values().map { room -> room.nameRoom }.toList()
+                    rooms = RoomsEnum.values().map { room -> room.nameRoom }.toList(),
+                    currentName = ""
                 )
         }
     }

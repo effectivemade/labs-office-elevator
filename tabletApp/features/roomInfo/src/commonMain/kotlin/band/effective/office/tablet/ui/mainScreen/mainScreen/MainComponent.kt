@@ -4,7 +4,6 @@ import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomComponent
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingRoomComponent
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store.BookingStore
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.pickerDateTime.DateTimePickerComponent
-import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.pickerDateTime.DateTimePickerStore
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainFactory
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.RoomInfoComponent
@@ -22,7 +21,8 @@ import kotlinx.coroutines.launch
 class MainComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
-    private val OnSelectOtherRoomRequest: () -> Unit
+    private val OnSelectOtherRoomRequest: () -> Unit,
+    val onSettings: () -> Unit
 ) : ComponentContext by componentContext {
 
     val roomInfoComponent: RoomInfoComponent = RoomInfoComponent(
@@ -48,7 +48,7 @@ class MainComponent(
             onMainScreen = {
                 mainStore.accept(MainStore.Intent.CloseModal)
                 bookingRoomComponent.sendIntent(BookingStore.Intent.OnChangeIsActive(true))
-                           },
+            },
             onCloseRequest = {
                 mainStore.accept(MainStore.Intent.CloseModal)
                 bookingRoomComponent.sendIntent(BookingStore.Intent.OnChangeIsActive(false))
@@ -67,8 +67,14 @@ class MainComponent(
             storeFactory = storeFactory,
             onOpenDateTimePickerModal = { mainStore.accept(MainStore.Intent.OnOpenDateTimePickerModal) },
             onCloseRequest = { mainStore.accept(MainStore.Intent.CloseModal) },
-            setNewDate = {
-                    day: Int, month: Int -> bookingRoomComponent.sendIntent(BookingStore.Intent.OnSetDate(day, month)) },
+            setNewDate = { day: Int, month: Int ->
+                bookingRoomComponent.sendIntent(
+                    BookingStore.Intent.OnSetDate(
+                        day,
+                        month
+                    )
+                )
+            },
         )
 
     private val mainStore = instanceKeeper.getStore {

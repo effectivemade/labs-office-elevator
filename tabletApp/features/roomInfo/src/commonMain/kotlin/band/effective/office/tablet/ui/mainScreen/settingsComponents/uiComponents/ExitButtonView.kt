@@ -27,7 +27,8 @@ import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 
 @Composable
 fun ExitButtonView(
-    modifier: Modifier
+    modifier: Modifier,
+    onExitApp: () -> Unit
 ){
     Box(
         modifier = modifier,
@@ -39,7 +40,9 @@ fun ExitButtonView(
             contentPadding = PaddingValues(horizontal = 0.dp, vertical = 10.dp),
             elevation = ButtonDefaults.elevation(0.dp),
             colors = ButtonDefaults.buttonColors(MaterialTheme.colors.background),
-            onClick = {}
+            onClick = {
+                onExitApp()
+            }
         ) {
             Box(
                 modifier = Modifier

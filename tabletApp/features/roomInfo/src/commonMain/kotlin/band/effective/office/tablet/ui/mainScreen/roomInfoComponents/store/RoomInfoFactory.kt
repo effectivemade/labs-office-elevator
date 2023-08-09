@@ -3,6 +3,7 @@ package band.effective.office.tablet.ui.mainScreen.roomInfoComponents.store
 import band.effective.office.tablet.domain.CurrentEventController
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
+import band.effective.office.tablet.domain.useCase.CheckSettingsUseCase
 import band.effective.office.tablet.domain.useCase.UpdateUseCase
 import band.effective.office.tablet.utils.oneDay
 import band.effective.office.tablet.utils.unbox
@@ -23,6 +24,7 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
 
     private val updateUseCase: UpdateUseCase by inject()
     private val currentEventController: CurrentEventController by inject()
+    private val checkSettingsUseCase: CheckSettingsUseCase by inject()
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): RoomInfoStore =
@@ -44,6 +46,11 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
                                         it
                                     }
                                 )
+                            )
+                        )
+                        dispatch(
+                            Action.UpdateNameRoom(
+                                checkSettingsUseCase.invoke()
                             )
                         )
                     }
@@ -99,6 +106,7 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
     private sealed interface Action {
         data class UpdateRoomInfo(val roomInfo: RoomInfo) : Action
         data class UpdateChangeEventTime(val newValue: Int) : Action
+        data class UpdateNameRoom(val nameRoom: String): Action
         data class OnResponse(val isSuccess: Boolean) : Action
     }
 
@@ -106,6 +114,7 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
         data class UpdateRoomInfo(val roomInfo: RoomInfo, val nextEvent: EventInfo) : Message
         data class UpdateChangeEventTime(val newValue: Int) : Message
         data class UpdateDate(val newValue: Calendar, val eventList: List<EventInfo>) : Message
+        data class UpdateNameRoom(val nameRoom: String): Message
         data class OnResponse(val isSuccess: Boolean) : Message
     }
 
@@ -135,6 +144,7 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
 
                 is Action.UpdateChangeEventTime -> dispatch(Message.UpdateChangeEventTime(action.newValue))
                 is Action.OnResponse -> dispatch(Message.OnResponse(action.isSuccess))
+                is Action.UpdateNameRoom -> dispatch(Message.UpdateNameRoom(action.nameRoom))
             }
         }
 
@@ -174,6 +184,10 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
                 is Message.UpdateRoomInfo -> copy(
                     roomInfo = message.roomInfo,
                     nextEvent = message.nextEvent
+                )
+
+                is Message.UpdateNameRoom -> copy(
+                    roomInfo = roomInfo.copy(name = message.nameRoom)
                 )
 
                 is Message.OnResponse -> copy(isError = !message.isSuccess)

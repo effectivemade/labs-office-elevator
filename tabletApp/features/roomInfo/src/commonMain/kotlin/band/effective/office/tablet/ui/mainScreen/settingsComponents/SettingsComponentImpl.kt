@@ -11,7 +11,9 @@ import org.koin.core.component.KoinComponent
 
 class SettingsComponentImpl(
     componentContext: ComponentContext,
-    storeFactory: StoreFactory
+    storeFactory: StoreFactory,
+    val onExitApp: () -> Unit,
+    val onMainScreen: () -> Unit
 ): ComponentContext by componentContext, SettingsComponent, KoinComponent {
     private val settingsStore = instanceKeeper.getStore {
         SettingsStoreFactory(storeFactory).create()
@@ -21,6 +23,17 @@ class SettingsComponentImpl(
     override val state = settingsStore.stateFlow
 
     override fun onIntent(intent: SettingsStore.Intent){
-
+        when(intent) {
+            is SettingsStore.Intent.ChangeCurrentNameRoom -> {
+                settingsStore.accept(intent)
+            }
+            is SettingsStore.Intent.OnExitApp -> {
+                onExitApp()
+            }
+            is SettingsStore.Intent.SaveData -> {
+                settingsStore.accept(intent)
+                onMainScreen()
+            }
+        }
     }
 }

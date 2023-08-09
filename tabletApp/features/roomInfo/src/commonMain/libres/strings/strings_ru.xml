@@ -40,4 +40,5 @@
     <string name="reset_button">Перезагрузить приложение</string>
     <string name="exit">Выход</string>
     <string name="rooms">Переговорки</string>
+    <string name="choose_room">Выбрать ${nameRoom}</string>
 </resources>

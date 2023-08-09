@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import band.effective.office.tablet.features.roomInfo.MainRes
 import band.effective.office.tablet.ui.theme.CustomDarkColors
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.h6_button
@@ -21,7 +22,8 @@ import band.effective.office.tablet.ui.theme.h6_button
 @Composable
 fun ChooseButtonView(
     modifier: Modifier,
-    nameRoom: String
+    nameRoom: String,
+    onSaveData: () -> Unit
 ){
     val isPressed = remember { mutableStateOf(false) }
     val colorButton = if (isPressed.value)
@@ -40,10 +42,13 @@ fun ChooseButtonView(
             shape = RoundedCornerShape(100),
             onClick = {
                 isPressed.value = !isPressed.value
+                onSaveData()
             }
         ) {
             Text(
-                text = "Выбрать $nameRoom",
+                text = MainRes.string.choose_room.format(
+                    nameRoom = nameRoom
+                ),
                 style = MaterialTheme.typography.h6_button,
                 color = when (LocalCustomColorsPalette.current) {
                     CustomDarkColors -> LocalCustomColorsPalette.current.primaryTextAndIcon
