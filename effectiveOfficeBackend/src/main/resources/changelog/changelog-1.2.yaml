@@ -81,7 +81,6 @@ databaseChangeLog:
                   constraints:
                     unique: true
                     nullable: false
-                    checkConstraint:
               - column:
                   name: icon_url
                   type: varchar(255)

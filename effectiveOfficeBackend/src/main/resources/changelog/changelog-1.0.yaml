@@ -46,6 +46,26 @@ databaseChangeLog:
                     nullable: false
 
   - changeSet:
+      id: create-workspace-zones-table
+      author: zavyalov-daniil
+      changes:
+        - createTable:
+            tableName: workspace_zones
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_workspace_zones
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+
+  - changeSet:
       id: create-workspaces-table
       author: zavyalov-daniil
       changes:
