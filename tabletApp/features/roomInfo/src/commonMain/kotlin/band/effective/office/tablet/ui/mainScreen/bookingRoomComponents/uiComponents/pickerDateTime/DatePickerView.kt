@@ -28,6 +28,7 @@ import epicarchitect.calendar.compose.basis.BasisDayOfMonthContent
 import epicarchitect.calendar.compose.basis.BasisDayOfWeekContent
 import epicarchitect.calendar.compose.basis.config.LocalBasisEpicCalendarConfig
 import epicarchitect.calendar.compose.basis.contains
+import epicarchitect.calendar.compose.basis.epicMonth
 import epicarchitect.calendar.compose.basis.localized
 import epicarchitect.calendar.compose.basis.state.LocalBasisEpicCalendarState
 import epicarchitect.calendar.compose.datepicker.EpicDatePicker
@@ -36,11 +37,13 @@ import epicarchitect.calendar.compose.datepicker.state.LocalEpicDatePickerState
 import epicarchitect.calendar.compose.pager.state.EpicCalendarPagerState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.datetime.number
+import java.util.Locale
 
 @Composable
 fun DatePickerView(epicDatePickerState: EpicDatePickerState) {
     val coroutineScope = rememberCoroutineScope()
-    Box(modifier = Modifier.fillMaxWidth(0.35f)) {
+    Box(modifier = Modifier.fillMaxWidth(0.4f)) {
         Column {
             DatePickerTitleView(
                 epicDatePickerState = epicDatePickerState,
@@ -48,6 +51,7 @@ fun DatePickerView(epicDatePickerState: EpicDatePickerState) {
                     scrollMonth(
                         coroutineScope = coroutineScope,
                         pagerState = epicDatePickerState.pagerState,
+                        epicDatePickerState = epicDatePickerState,
                         amount = 1
                     )
                 },
@@ -55,8 +59,10 @@ fun DatePickerView(epicDatePickerState: EpicDatePickerState) {
                     scrollMonth(
                         coroutineScope = coroutineScope,
                         pagerState = epicDatePickerState.pagerState,
+                        epicDatePickerState = epicDatePickerState,
                         amount = -1
                     )
+
                 }
             )
             EpicDatePicker(
@@ -128,10 +134,12 @@ private fun DatePickerTitleView(
 private fun scrollMonth(
     coroutineScope: CoroutineScope,
     pagerState: EpicCalendarPagerState,
+    epicDatePickerState: EpicDatePickerState,
     amount: Int
 ) {
     coroutineScope.launch {
         pagerState.scrollMonths(amount)
+        //epicDatePickerState.selectedDates.single().monthNumber.plus(+1)
     }
 }
 

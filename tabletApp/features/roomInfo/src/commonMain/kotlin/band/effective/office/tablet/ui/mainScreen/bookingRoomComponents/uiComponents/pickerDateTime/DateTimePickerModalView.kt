@@ -6,9 +6,10 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Text
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults.buttonColors
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,7 +18,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import band.effective.office.tablet.ui.selectRoomScreen.uiComponents.CrossButtonView
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
+import band.effective.office.tablet.ui.theme.header4
+import band.effective.office.tablet.ui.theme.header6
+import band.effective.office.tablet.ui.theme.header8
+import band.effective.office.tablet.utils.date
+import band.effective.office.tablet.utils.time24
 import epicarchitect.calendar.compose.basis.EpicMonth
 import epicarchitect.calendar.compose.basis.config.rememberBasisEpicCalendarConfig
 import epicarchitect.calendar.compose.datepicker.config.rememberEpicDatePickerConfig
@@ -35,7 +42,8 @@ fun DateTimePickerModalView(dateTimePickerComponent: DateTimePickerComponent, cu
         dateTimePickerComponent = dateTimePickerComponent,
         currentDate = currentDate,
         onCloseRequest = { dateTimePickerComponent.sendIntent(DateTimePickerStore.Intent.CloseModal()) },
-        onSetDate = { day: Int, month: Int -> dateTimePickerComponent.sendIntent(DateTimePickerStore.Intent.OnSetDate(day, month)) }
+        onSetDate = { day: Int, month: Int, year: Int, hour: Int, minute: Int ->
+            dateTimePickerComponent.sendIntent(DateTimePickerStore.Intent.OnSetDate(day, month, year, hour, minute)) }
     )
 }
 
@@ -46,7 +54,7 @@ fun DateTimePickerModalView(
     dateTimePickerComponent: DateTimePickerComponent,
     currentDate: Calendar,
     onCloseRequest: () -> Unit,
-    onSetDate: (changedDay: Int, changedMonth: Int) -> Unit
+    onSetDate: (changedDay: Int, changedMonth: Int, changedYear: Int, changedHour: Int, changedMinute: Int) -> Unit
 ) {
     val stateDateTime by dateTimePickerComponent.state.collectAsState()
     val selectedDateTime by remember { mutableStateOf(stateDateTime.selectDate) }
@@ -65,9 +73,9 @@ fun DateTimePickerModalView(
         selectedDates = /*TODO Here problem with date*/
         listOf(
             LocalDate(
-                currentDate[Calendar.YEAR],
-                currentDate[Calendar.MONTH] + 1,
-                currentDate[Calendar.DAY_OF_MONTH]
+                year = currentDate[Calendar.YEAR],
+                monthNumber = currentDate[Calendar.MONTH] + 1,
+                dayOfMonth = currentDate[Calendar.DAY_OF_MONTH],
             )
         ),
         selectionMode = EpicDatePickerState.SelectionMode.Single(1),
@@ -84,28 +92,35 @@ fun DateTimePickerModalView(
     ) {
         Box(
             modifier = Modifier
-                .padding(16.dp)
-                //.size(800.dp,562.dp)
                 .fillMaxHeight(0.6f)
-                .fillMaxWidth(0.9f)
+                .fillMaxWidth(0.8f)
                 .clip(RoundedCornerShape(3))
                 .background(LocalCustomColorsPalette.current.elevationBackground)
         ) {
             Column(
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier.padding(30.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Row(modifier = Modifier.padding(16.dp)) {
+                CrossButtonView(
+                    onDismissRequest = onCloseRequest,
+                    modifier = Modifier.fillMaxWidth(1f)
+                )
+                Row(modifier = Modifier.padding(16.dp)
+                        ,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
                     DatePickerView(epicDatePickerState = epicDatePickerState)
+                    Spacer(modifier = Modifier.width(40.dp))
+                    TimePickerView(currentDate = currentDate, selectedTime = selectedDateTime)
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(30.dp))
 
                 Button(
+                    modifier = Modifier
+                        .fillMaxHeight(1f)
+                        .fillMaxWidth(0.3f),
                     onClick = {
-                        val updatedCalendar = Calendar.getInstance()
-                        updatedCalendar.timeInMillis = selectedDateTime.timeInMillis
-
                         val changeInDay = if (epicDatePickerState.selectedDates.isNotEmpty()) {
                             epicDatePickerState.selectedDates.first().dayOfMonth
                         } else {
@@ -114,23 +129,33 @@ fun DateTimePickerModalView(
                         val changeInMonth = if (epicDatePickerState.selectedDates.isNotEmpty()) {
                             epicDatePickerState.selectedDates.first().monthNumber - 1
                         } else {
-                            selectedDateTime[Calendar.MONTH] - 1
+                            selectedDateTime[Calendar.MONTH]
                         }
 
-//                        val changeInYear = if (epicDatePickerState.selectedDates.isNotEmpty()) {
-//                            epicDatePickerState.selectedDates.first().year
-//                        } else {
-//                            selectedDateTime[Calendar.YEAR]
-//                        }
+                        val changeInYear = if (epicDatePickerState.selectedDates.isNotEmpty()) {
+                            epicDatePickerState.selectedDates.first().year
+                        } else {
+                            selectedDateTime[Calendar.YEAR]
+                        }
+                        val changeInHour = selectedDateTime[Calendar.HOUR_OF_DAY]
+                        val changeInMinute = selectedDateTime[Calendar.MINUTE]
 
-                        onSetDate(changeInDay, changeInMonth)
+                        onSetDate(changeInDay, changeInMonth, changeInYear, changeInHour, changeInMinute)
                         onCloseRequest()
                     },
                     colors = buttonColors(
-                        contentColor = Color.White
+                        containerColor = LocalCustomColorsPalette.current.pressedPrimaryButton
                     )
                 ) {
-                    Text("OK")
+                    Text(
+                        text = if (epicDatePickerState.selectedDates.isNotEmpty()) {
+                            "${(epicDatePickerState.selectedDates.first().month.name)} ${epicDatePickerState.selectedDates.first().dayOfMonth}"
+                        } else {
+                            selectedDateTime.date()
+                        } + " с ${selectedDateTime.time24()}",
+                        style = header8,
+                        color = LocalCustomColorsPalette.current.primaryTextAndIcon,
+                    )
                 }
             }
         }

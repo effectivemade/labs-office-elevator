@@ -54,7 +54,7 @@ class DateTimePickerStoreFactory(private val storeFactory: StoreFactory) : KoinC
         ) {
             when (intent) {
                 is DateTimePickerStore.Intent.OnSetDate -> {
-                    setNewDate(getState(), intent.changedDay, intent.changedMonth)
+                    setNewDate(getState(), intent.changedDay, intent.changedMonth, intent.changedYear, intent.changedHour, intent.changedMinute)
                 }
 
                 is DateTimePickerStore.Intent.CloseModal -> intent.close?.invoke()
@@ -89,12 +89,14 @@ class DateTimePickerStoreFactory(private val storeFactory: StoreFactory) : KoinC
             }
         }
 
-        fun setNewDate(state: DateTimePickerStore.State, changeDay: Int, changeMonth: Int) = scope.launch() {
+        fun setNewDate(state: DateTimePickerStore.State, changeDay: Int, changeMonth: Int, changeYear: Int, changeHour: Int, changeMinute: Int) = scope.launch() {
             val newDate = (state.selectDate.clone() as Calendar).apply {
                 set(
-                    this[Calendar.YEAR],
+                    changeYear,
                     changeMonth,
-                    changeDay
+                    changeDay,
+                    changeHour,
+                    changeMinute
                 )
             }
             dispatch(

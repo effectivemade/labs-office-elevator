@@ -68,7 +68,9 @@ class MainComponent(
             onOpenDateTimePickerModal = { mainStore.accept(MainStore.Intent.OnOpenDateTimePickerModal) },
             onCloseRequest = { mainStore.accept(MainStore.Intent.CloseModal) },
             setNewDate = {
-                    day: Int, month: Int -> bookingRoomComponent.sendIntent(BookingStore.Intent.OnSetDate(day, month)) },
+                    day: Int, month: Int, year: Int, hour: Int, minute: Int ->
+                        bookingRoomComponent.sendIntent(BookingStore.Intent.OnSetDate(day, month, year, hour, minute))
+            },
         )
 
     private val mainStore = instanceKeeper.getStore {

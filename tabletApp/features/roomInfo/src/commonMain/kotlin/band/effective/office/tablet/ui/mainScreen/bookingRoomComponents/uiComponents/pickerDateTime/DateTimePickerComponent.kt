@@ -12,7 +12,7 @@ class DateTimePickerComponent(
     private val storeFactory: StoreFactory,
     private val onOpenDateTimePickerModal: () -> Unit,
     private val onCloseRequest: () -> Unit,
-    private val setNewDate: (Int, Int) -> Unit,
+    private val setNewDate: (Int, Int, Int, Int, Int) -> Unit,
 ) : ComponentContext by componentContext {
 
     private val dateTimePickerStore = instanceKeeper.getStore {
@@ -26,7 +26,15 @@ class DateTimePickerComponent(
         when (intent) {
             is DateTimePickerStore.Intent.OnDateTimePickerModal -> onOpenDateTimePickerModal()
             is DateTimePickerStore.Intent.CloseModal -> onCloseRequest()
-            is DateTimePickerStore.Intent.OnSetDate -> { setNewDate(intent.changedDay, intent.changedMonth) }
+            is DateTimePickerStore.Intent.OnSetDate -> {
+                setNewDate(
+                    intent.changedDay,
+                    intent.changedMonth,
+                    intent.changedYear,
+                    intent.changedHour,
+                    intent.changedMinute
+                )
+            }
         }
     }
 }
