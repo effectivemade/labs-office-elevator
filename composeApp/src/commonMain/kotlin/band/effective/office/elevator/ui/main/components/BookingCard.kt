@@ -64,7 +64,7 @@ fun BookingCard(
 }
 
 @Composable
-private fun SeatTitle(seat: ReservedSeat) {
+fun SeatTitle(seat: ReservedSeat) {
     Column {
         Text(
             text = seat.seatName,

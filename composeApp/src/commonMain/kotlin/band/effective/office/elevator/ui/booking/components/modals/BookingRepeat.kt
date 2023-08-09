@@ -49,10 +49,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.ExtendedTheme
 import band.effective.office.elevator.MainRes
-import band.effective.office.elevator.components.PrimaryButton
+import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.textInBorderGray
 import band.effective.office.elevator.textInBorderPurple
 import band.effective.office.elevator.theme_light_primary_color
@@ -76,14 +75,6 @@ fun BookingRepeat(
     val selected3 = remember {
         mutableStateOf(false)
     }
-
-    val elevation = ButtonDefaults.elevation(
-        defaultElevation = 0.dp,
-        pressedElevation = 0.dp,
-        disabledElevation = 0.dp,
-        hoveredElevation = 0.dp,
-        focusedElevation = 0.dp
-    )
 
     val weekNames = listOf(
         MainRes.strings.Monday,
@@ -443,18 +434,10 @@ fun BookingRepeat(
                     Spacer(modifier = Modifier.width(width = 48.dp))
                 }
 
-                PrimaryButton(
-                    text = stringResource(MainRes.strings.confirm_booking),
-                    cornerValue = 40.dp,
+                EffectiveButton(
+                    buttonText = stringResource(MainRes.strings.confirm_booking),
+                    onClick = confirmBooking,
                     modifier = Modifier.padding(horizontal = 16.dp),
-                    contentTextSize = 16.sp,
-                    paddingValues = PaddingValues(all = 10.dp),
-                    elevation = elevation,
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = MaterialTheme.colors.primary
-                    ),
-                    border = null,
-                    onButtonClick = confirmBooking
                 )
             }
         }

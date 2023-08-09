@@ -34,8 +34,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.ExtendedTheme
-import band.effective.office.elevator.LocalExtendedColors
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.textInBorderGray
 import band.effective.office.elevator.textInBorderPurple
 import band.effective.office.elevator.theme_light_primary_color
@@ -136,22 +136,12 @@ fun ChooseZone(zone: Boolean, onClickCloseChoseZone: () -> Unit) {
                 }
             }
         }
-        Button(
+        Spacer(modifier  = Modifier.height(18.dp))
+        EffectiveButton(
+            buttonText = stringResource(MainRes.strings.confirm_booking),
             onClick = onClickCloseChoseZone,
-            modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
-                .fillMaxWidth()
-                .height(60.dp)
-                .padding(horizontal = 15.dp, vertical = 10.dp),
-            shape = RoundedCornerShape(32.dp),
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = LocalExtendedColors.current.trinidad_600,
-            )
-        ) {
-            Text(
-                text = stringResource(MainRes.strings.confirm_booking),
-                style = MaterialTheme.typography.button
-            )
-        }
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 11.dp)
+        )
     }
 }
 

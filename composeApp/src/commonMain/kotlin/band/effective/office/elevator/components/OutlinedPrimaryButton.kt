@@ -12,17 +12,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import band.effective.office.elevator.ExtendedThemeColors
+import band.effective.office.elevator.ExtendedTheme
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
 
-//use this components for rectangular buttons with 8 dp corners with orange background
+//use this components for rectangular buttons  with white background and orange stroke
 @Composable
-fun OutlinedPrimaryButton (onClick: ()-> Unit, title:StringResource, modifier: Modifier, roundedCorner:Dp){
+fun OutlinedPrimaryButton (onClick: ()-> Unit,
+                           title:StringResource,
+                           modifier: Modifier = Modifier,
+                           roundedCorner:Dp = 40.dp,
+                           padding:Dp = 14.dp){
     OutlinedButton(
-        contentPadding = PaddingValues(all = 12.dp),
+        contentPadding = PaddingValues(padding),
         onClick = onClick,
-        border = BorderStroke(1.dp, ExtendedThemeColors.colors.trinidad_700),
+        border = BorderStroke(1.dp, ExtendedTheme.colors.trinidad_700),
         modifier = modifier,
         shape = RoundedCornerShape(roundedCorner)
     )

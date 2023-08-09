@@ -58,7 +58,6 @@ class FullEmployeeComponent (
     private fun employeeOutput(output: AboutEmployeeComponent.Output) {
         when(output){
             is AboutEmployeeComponent.Output.OpenAllEmployee -> navigation.replaceAll(Config.AllEmployee)
-            is AboutEmployeeComponent.Output.OpenMap -> TODO()
         }
     }
 
