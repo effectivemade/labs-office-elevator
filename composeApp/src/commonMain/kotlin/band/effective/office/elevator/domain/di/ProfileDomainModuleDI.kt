@@ -1,9 +1,9 @@
 package band.effective.office.elevator.domain.di
 
-import band.effective.office.elevator.data.ProfileRepositoryImpl
-import band.effective.office.elevator.data.UserRepositoryImpl
-import band.effective.office.elevator.domain.ProfileRepository
-import band.effective.office.elevator.domain.UserRepository
+import band.effective.office.elevator.data.repository.ProfileRepositoryImpl
+import band.effective.office.elevator.data.repository.UserRepositoryImpl
+import band.effective.office.elevator.domain.repository.ProfileRepository
+import band.effective.office.elevator.domain.repository.UserRepository
 import band.effective.office.elevator.domain.useCase.GetLastUserIdUseCase
 import band.effective.office.elevator.domain.useCase.GetUserByIdUseCase
 import band.effective.office.elevator.domain.useCase.UpdateUserUseCase

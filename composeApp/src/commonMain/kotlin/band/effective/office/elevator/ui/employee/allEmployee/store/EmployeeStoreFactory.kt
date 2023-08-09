@@ -2,7 +2,7 @@ package band.effective.office.elevator.ui.employee.allEmployee.store
 
 
 import band.effective.office.elevator.domain.models.EmployeeInfo
-import band.effective.office.elevator.domain.repository.impl.EmployeeRepositoryImpl
+import band.effective.office.elevator.data.repository.EmployeeRepositoryImpl
 import band.effective.office.elevator.domain.useCase.EmployeeUseCase
 import band.effective.office.elevator.ui.employee.allEmployee.models.mappers.toUI
 import band.effective.office.elevator.utils.changeEmployeeShowedList

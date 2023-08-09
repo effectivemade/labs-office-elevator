@@ -23,11 +23,16 @@ import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedTheme
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.textInBorderPurple
+import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import dev.icerock.moko.resources.compose.painterResource
 
 @Composable
-fun BookingCard(roomText: String, onClickOpenBookAccept: () -> Unit) {
-    Column (modifier = Modifier.padding(bottom = 16.dp).clickable {  onClickOpenBookAccept()}){
+fun BookingCard(workSpace: WorkSpaceUI, onClickOpenBookAccept: (String) -> Unit) {
+    Column(
+        modifier = Modifier
+            .padding(bottom = 16.dp)
+            .clickable { onClickOpenBookAccept(workSpace.workSpaceId) }
+    ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -55,7 +60,7 @@ fun BookingCard(roomText: String, onClickOpenBookAccept: () -> Unit) {
                     )
                 }
                 Text(
-                    text = roomText,
+                    text = workSpace.workSpaceName,
                     style = MaterialTheme.typography.subtitle1.copy(
                         fontWeight = FontWeight(500)
                     )

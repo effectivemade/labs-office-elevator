@@ -116,16 +116,16 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory) : KoinCo
 private val mokValueUser = User("1","1","Ivanov Ivan", "Android-developer","67","@ivanov","employee@effective.com")
 private val mokValue = listOf(
     ReservedSeat(
-        bookingId = 1,
-        ownerId = 1,
+        bookingId = "1",
+        ownerId = "1",
         seatName = "Рабочее масто А2",
         bookingDay = "Ср, 16 августа",
         bookingTime = "12:00 - 14:00",
         bookingDate = LocalDate(month = Month.AUGUST, year = 2023, dayOfMonth = 16)
     ),
     ReservedSeat(
-        bookingId = 1,
-        ownerId = 1,
+        bookingId = "1",
+        ownerId = "1",
         seatName = "Переговорная Sun",
         bookingDay = "Чт, 17 августа",
         bookingTime = "14:00 - 16:00",

@@ -1,6 +1,6 @@
 package band.effective.office.elevator.ui.booking.store
 
-import band.effective.office.elevator.ui.models.Place
+import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import com.arkivanov.mvikotlin.core.store.Store
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
@@ -34,7 +34,7 @@ interface BookingStore: Store<BookingStore.Intent,BookingStore.State, BookingSto
     }
 
     data class State(
-        val listPlace : List<Place>,
+        val workSpaces : List<WorkSpaceUI>,
         val currentDate: LocalDate
     )
 

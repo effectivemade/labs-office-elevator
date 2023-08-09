@@ -1,14 +1,11 @@
-package band.effective.office.elevator.data
+package band.effective.office.elevator.data.repository
 
 
-import band.effective.office.elevator.domain.ProfileRepository
+import band.effective.office.elevator.domain.repository.ProfileRepository
 import band.effective.office.elevator.domain.models.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import org.koin.core.component.KoinComponent
 
