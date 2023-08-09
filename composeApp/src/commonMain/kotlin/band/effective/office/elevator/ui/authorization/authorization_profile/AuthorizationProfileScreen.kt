@@ -40,7 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import band.effective.office.elevator.ExtendedThemeColors
+import band.effective.office.elevator.ExtendedTheme
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.OutlinedTextColorsSetup
 import band.effective.office.elevator.components.PrimaryButton
@@ -210,7 +210,7 @@ fun AuthorizationProfileComponent(
                                 .height(20.dp)
                                 .width(2.dp)
                                 .clip(RoundedCornerShape(4.dp))
-                                .background(if (state.isErrorName) ExtendedThemeColors.colors.error else borderColor1.value)
+                                .background(if (state.isErrorName) ExtendedTheme.colors.error else borderColor1.value)
                                 .padding(vertical = 14.dp)
                         )
                     }
@@ -291,7 +291,7 @@ fun AuthorizationProfileComponent(
                                 .height(20.dp)
                                 .width(2.dp)
                                 .clip(RoundedCornerShape(4.dp))
-                                .background(if (state.isErrorPost) ExtendedThemeColors.colors.error else borderColor2.value)
+                                .background(if (state.isErrorPost) ExtendedTheme.colors.error else borderColor2.value)
                                 .padding(vertical = 14.dp)
                         )
                     }
