@@ -60,6 +60,18 @@ fun SwaggerDocument.returnWorkspaceByTag(): OpenApiRoute.() -> Unit = {
             required = true
             allowEmptyValue = false
         }
+        queryParameter<Long>("free_from") {
+            description = "Timestamp from which the workspace should be free"
+            example = 1691591501000L
+            required = false
+            allowEmptyValue = false
+        }
+        queryParameter<Long>("free_until") {
+            description = "Timestamp before which the workspace should be free."
+            example = 1691591578000L
+            required = false
+            allowEmptyValue = false
+        }
     }
     response {
         HttpStatusCode.OK to {
@@ -96,7 +108,8 @@ fun SwaggerDocument.returnWorkspaceByTag(): OpenApiRoute.() -> Unit = {
             }
         }
         HttpStatusCode.BadRequest to {
-            description = "Bad request"
+            description = "Tag shouldn't be null, free_from " +
+                    "and free_until should be numbers from 0 to 2147483647000 (max timestamp)"
         }
         HttpStatusCode.NotFound to {
             description = "Provided tag doesn't exist"
