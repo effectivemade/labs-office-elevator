@@ -39,17 +39,6 @@ fun BookingCardUser(
             SeatTitle(seat)
         }
         Spacer(modifier = Modifier.height(24.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            EffectiveOutlinedButton(
-                icon = null,
-                text = MainRes.strings.show_map,
-                onClickShowMap,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
     }
 }
 
