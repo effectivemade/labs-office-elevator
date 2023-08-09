@@ -18,12 +18,12 @@ import band.effective.office.tablet.ui.theme.h7
 fun ButtonBookingView(
     modifier: Modifier,
     roomInfo: RoomInfoUiState,
-    onBookRoom: (name: String, maxDuration: Int) -> Unit
+    onBookRoom: (name: RoomInfoUiState, maxDuration: Int) -> Unit
 ) {
     Button(
         modifier = modifier,
         onClick = {
-            onBookRoom(roomInfo.room.name, roomInfo.changeEventTime)
+            onBookRoom(roomInfo, roomInfo.changeEventTime)
         },
         elevation = ButtonDefaults.elevation(0.dp),
         colors = ButtonDefaults.buttonColors(

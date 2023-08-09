@@ -8,6 +8,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
+import band.effective.office.elevator.textInBorderPurple
 
 @Composable
 fun ElevatorUpButton(
@@ -17,7 +18,7 @@ fun ElevatorUpButton(
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = MaterialTheme.colors.primary,
+            backgroundColor = textInBorderPurple,
             contentColor = MaterialTheme.colors.background
         ),
         shape = RoundedCornerShape(48.dp),

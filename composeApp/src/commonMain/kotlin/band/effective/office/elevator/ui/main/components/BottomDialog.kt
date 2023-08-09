@@ -35,6 +35,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.ExtendedTheme
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.PrimaryButton
 import band.effective.office.elevator.getDefaultFont
@@ -43,7 +44,7 @@ import band.effective.office.elevator.textInBorderPurple
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
-fun BottomDialog(modifier: Modifier, title: String, onClickCloseBottomDialog:() -> Unit) {
+fun BottomDialog(modifier: Modifier, title: String,  onClickCloseBottomDialog:() -> Unit) {
     val elevation = ButtonDefaults.elevation(
         defaultElevation = 0.dp,
         pressedElevation = 0.dp,
@@ -51,6 +52,7 @@ fun BottomDialog(modifier: Modifier, title: String, onClickCloseBottomDialog:() 
         hoveredElevation = 0.dp,
         focusedElevation = 0.dp
     )
+
     var isExpanded by remember { mutableStateOf(true) }
     var isExpandedScBtn by remember { mutableStateOf(true) }
 
@@ -71,7 +73,6 @@ fun BottomDialog(modifier: Modifier, title: String, onClickCloseBottomDialog:() 
                 onClick = { if(isExpandedScBtn) isExpanded = !isExpanded },
                 border = BorderStroke(1.dp, if(isExpanded) textInBorderPurple else textInBorderGray),//ExtendedTheme.colors.purple_heart_800
                 modifier = Modifier.fillMaxWidth(0.5f),
-                shape = RoundedCornerShape(12.dp),
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -97,7 +98,8 @@ fun BottomDialog(modifier: Modifier, title: String, onClickCloseBottomDialog:() 
             Spacer(modifier = Modifier.width(8.dp))
 
             OutlinedIconButton(
-                onClick = { if(isExpanded) isExpandedScBtn =!isExpandedScBtn},
+                onClick = {
+                    if(isExpanded) isExpandedScBtn =!isExpandedScBtn},
                 border = BorderStroke(1.dp, if(isExpandedScBtn) textInBorderPurple else textInBorderGray),
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
@@ -129,46 +131,21 @@ fun BottomDialog(modifier: Modifier, title: String, onClickCloseBottomDialog:() 
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
-
-            OutlinedButton(
+            OutlinedPrimaryButton(
                 onClick = {
                     isExpanded = true
                     isExpandedScBtn = true
-
                 },
-                border = BorderStroke(1.dp, ExtendedTheme.colors.trinidad_700),
-                modifier = Modifier.fillMaxWidth(0.5f),
-                shape = RoundedCornerShape(8.dp)
+                title = MainRes.strings.reset_filter,
+                modifier = Modifier.weight(.1f),
+                roundedCorner = 8.dp
             )
-            {
-                Text(
-                    text = stringResource(MainRes.strings.reset_filter),
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        lineHeight = 19.5.sp,
-                        fontFamily = getDefaultFont(),
-                        fontWeight = FontWeight(500),
-                        color = Color(0xFFC2410C),
-                        textAlign = TextAlign.Center,
-                        letterSpacing = 0.1.sp,
-                    )
-                )
-            }
-
-            Spacer(modifier = Modifier.width(8.dp))
-
+            Spacer(modifier = Modifier.width(16.dp))
             PrimaryButton(
                 text = stringResource(MainRes.strings.ok),
-                modifier = Modifier.fillMaxWidth(),
-                contentTextSize = 15.sp,
-                cornerValue = 8.dp,
-                paddingValues = PaddingValues(all = 8.dp),
-                elevation = elevation,
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = MaterialTheme.colors.primary
-                ),
-                border = null,
-                onButtonClick = onClickCloseBottomDialog
+                modifier = Modifier.weight(.1f),
+                onButtonClick = onClickCloseBottomDialog,
+                roundedCorner = 8.dp
             )
         }
     }

@@ -34,6 +34,8 @@ kotlin {
 
                 //Libres
                 implementation(Dependencies.Libres.libresCompose)
+
+                api(project(":contract"))
             }
         }
     }
