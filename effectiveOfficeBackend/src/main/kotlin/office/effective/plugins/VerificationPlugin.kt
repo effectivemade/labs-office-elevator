@@ -22,7 +22,9 @@ val VerificationPlugin = createApplicationPlugin(name = "VerificationPlugin") {
     onCall {
         run {
             if (pluginOn) {
-                val token = it.request.parseAuthorizationHeader()?.render()?.split("Bearer ")?.last()?: it.response.status(HttpStatusCode.Forbidden)//it.request.header("id_token") ?: it.response.status(HttpStatusCode.Forbidden)
+                val token = it.request.parseAuthorizationHeader()?.render()?.split("Bearer ")?.last() ?: it.respond(
+                    HttpStatusCode.Unauthorized
+                )
                 var exOAuth: Exception? = null
                 var exLine: Exception? = null
 
