@@ -39,7 +39,6 @@ class MainComponent(
     }
 
     sealed interface Output {
-        object OpenMap : Output
 
         object OpenBookingScreen : Output
 

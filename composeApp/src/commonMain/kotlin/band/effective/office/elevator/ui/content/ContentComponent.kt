@@ -46,7 +46,6 @@ class ContentComponent(
     private fun mainScreenOutput(output: MainComponent.Output){
         when(output){
             is MainComponent.Output.OpenBookingScreen -> navigation.bringToFront(Config.Booking)
-            else -> {}
         }
     }
 
