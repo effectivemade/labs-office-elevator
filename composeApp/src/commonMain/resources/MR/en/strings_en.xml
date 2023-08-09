@@ -3,7 +3,7 @@
     <string name="app_name">Office Elevator</string>
     <string name="sign_in_google">Sign in to Effective email</string>
     <string name="something_went_wrong">Something went wrong. Please try again</string>
-    <string name="company_name">effective\noffice</string>
+    <string name="company_name_">effective\noffice</string>
 
     <string name="search_employee">Search employee</string>
     <string name="employee_in_office">In office</string>
@@ -13,20 +13,20 @@
     <!--Auth strings-->
     <string name="_continue">Continue</string>
     <string name="input_number">Enter number</string>
-    <string name="select_number">Specify a number to which colleagues could transfer money to you using SBP</string>
-    <string name="number_hint">Phone number</string>
+    <string name="select_number">Enter the phone number associated with the SBP</string>
+    <string name="number_hint">955-555-55-55</string>
     <string name="input_profile">Fill in your profile</string>
     <string name="select_profile">This is necessary for employees to recognize you</string>
-    <string name="profile_hint">Last Name First Name</string>
-    <string name="profile_hint_">Occupation</string>
-    <string name="input_employee">Specify contacts</string>
+    <string name="profile_hint">Ivan Ivanov</string>
+    <string name="profile_hint_">Android-developer</string>
+    <string name="input_employee">Specify Telegram</string>
     <string name="select_employee">This is necessary for colleagues to be able to contact you conveniently</string>
-    <string name="employee_hint">Telegram nickname</string>
+    <string name="employee_hint">telegramnick</string>
 
     <string name="by_date"> By date </string>
     <string name="show_map">Show on map</string>
     <string name="book_a_seat">Book a seat</string>
-    <string name="nearest_bookings">Your\nupcoming\nbookings</string>
+    <string name="nearest_bookings">Bookings</string>
     <string name="none_booking_seat">You dont have any bookings yet</string>
 
     <string name="filter_by_category">Filter by category</string>

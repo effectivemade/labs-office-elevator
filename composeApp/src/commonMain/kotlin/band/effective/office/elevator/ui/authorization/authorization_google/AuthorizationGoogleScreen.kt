@@ -69,7 +69,7 @@ private fun AuthorizationGoogleScreenContent(onEvent: (AuthorizationGoogleStore.
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
-                    text = stringResource(MainRes.strings.company_name),
+                    text = stringResource(MainRes.strings.company_name_),
                     color = companyColor,
                     style = MaterialTheme.typography.h4
                 )

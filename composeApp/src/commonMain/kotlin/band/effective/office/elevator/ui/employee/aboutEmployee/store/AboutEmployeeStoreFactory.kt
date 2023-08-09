@@ -23,7 +23,7 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory) : KoinCo
         object : AboutEmployeeStore, Store<Intent, State, Nothing> by storeFactory.create(
             name = "AboutEmployeeStore",
             initialState = State(
-                mokValueUser,
+                user = User("", "", "", "", "", "", ""),
                 reservedSeats = mokValue
             ),
             bootstrapper = coroutineBootstrapper {
@@ -36,7 +36,7 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory) : KoinCo
     private object ReducerImpl : Reducer<State, Msg> {
         override fun State.reduce(msg: Msg): State =
             when (msg) {
-                is Msg.ProfileData -> copy(user = mokValueUser)
+                is Msg.ProfileData -> copy(user = User("", "", "", "", "", "", ""))
                 is Msg.UpdateSeatsReservation -> {
                     val reservedSeats = mokValue
                     copy(reservedSeats = reservedSeats)
