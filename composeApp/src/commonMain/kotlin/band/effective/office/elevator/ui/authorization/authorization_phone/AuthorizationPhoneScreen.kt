@@ -3,7 +3,6 @@ package band.effective.office.elevator.ui.authorization.authorization_phone
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -15,7 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -39,12 +37,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.components.OutlinedTextColorsSetup
-import band.effective.office.elevator.components.PrimaryButton
-import band.effective.office.elevator.ui.models.PhoneMaskTransformation
 import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.theme_light_primary_stroke
@@ -52,6 +48,7 @@ import band.effective.office.elevator.ui.authorization.authorization_phone.store
 import band.effective.office.elevator.ui.authorization.components.AuthSubTitle
 import band.effective.office.elevator.ui.authorization.components.AuthTabRow
 import band.effective.office.elevator.ui.authorization.components.AuthTitle
+import band.effective.office.elevator.ui.models.PhoneMaskTransformation
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
@@ -89,13 +86,6 @@ private fun AuthorizationPhoneComponent(
     onEvent: (AuthorizationPhoneStore.Intent) -> Unit,
     state: AuthorizationPhoneStore.State
 ) {
-    val elevation = ButtonDefaults.elevation(
-        defaultElevation = 0.dp,
-        pressedElevation = 0.dp,
-        disabledElevation = 0.dp,
-        hoveredElevation = 0.dp,
-        focusedElevation = 0.dp
-    )
 
     val closeIcon = remember { mutableStateOf(false) }
     val borderColor = remember { mutableStateOf(textGrayColor) }
@@ -230,20 +220,12 @@ private fun AuthorizationPhoneComponent(
             )
 
             Spacer(modifier = Modifier.height(16.dp))
-
-            PrimaryButton(
-                text = stringResource(MainRes.strings._continue),
-                cornerValue = 40.dp,
-                contentTextSize = 16.sp,
-                paddingValues = PaddingValues(all = 10.dp),
-                elevation = elevation,
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = MaterialTheme.colors.primary
-                ),
-                border = null,
-                onButtonClick = {
+            EffectiveButton(
+                buttonText = stringResource(MainRes.strings._continue),
+                onClick = {
                     onEvent(AuthorizationPhoneStore.Intent.ContinueButtonClicked)
-                }
+                },
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }

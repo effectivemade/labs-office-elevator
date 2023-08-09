@@ -4,7 +4,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.OutlinedPrimaryButton
@@ -119,24 +117,17 @@ fun BottomDialog(modifier: Modifier, title: String) {
         ) {
             OutlinedPrimaryButton(
                 onClick = {},
-                title = MainRes.strings.reset_filter
+                title = MainRes.strings.reset_filter,
+                modifier = Modifier.weight(.1f),
+                roundedCorner = 8.dp
             )
-            Spacer(modifier = Modifier.width(8.dp))
-
+            Spacer(modifier = Modifier.width(16.dp))
             PrimaryButton(
                 text = stringResource(MainRes.strings.ok),
-                modifier = Modifier.fillMaxWidth(),
-                contentTextSize = 15.sp,
-                cornerValue = 8.dp,
-                paddingValues = PaddingValues(all = 12.dp),
-                elevation = elevation,
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = MaterialTheme.colors.primary
-                ),
-                border = null,
+                modifier = Modifier.weight(.1f),
                 onButtonClick = {
-
-                }
+                },
+                roundedCorner = 8.dp
             )
         }
     }
