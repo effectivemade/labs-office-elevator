@@ -12,6 +12,7 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
+import com.arkivanov.decompose.router.stack.replaceAll
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import kotlinx.android.parcel.Parcelize
@@ -41,7 +42,8 @@ class RootComponent(componentContext: ComponentContext, private val storeFactory
                         navigation.push(Config.SelectRoom)
                     },
                     onSettings = {
-                        navigation.push(Config.Settings)
+                       // navigation.push(Config.Settings)
+                        navigation.replaceAll(Config.Settings)
                     },
                     storeFactory = storeFactory
                 )
@@ -73,10 +75,11 @@ class RootComponent(componentContext: ComponentContext, private val storeFactory
                     componentContext = componentContext,
                     storeFactory = storeFactory,
                     onMainScreen = {
-                        navigation.pop()
+                       /* navigation.pop()
                         (childStack.value.active.instance as Child.MainChild).component.sendIntent(
                             MainStore.Intent.RebootRequest
-                        )
+                        )*/
+                        navigation.push(Config.Main)
                     },
                     onExitApp = {}
                 )

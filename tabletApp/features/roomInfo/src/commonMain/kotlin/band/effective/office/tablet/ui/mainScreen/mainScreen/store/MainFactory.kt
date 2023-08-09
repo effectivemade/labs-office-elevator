@@ -1,6 +1,7 @@
 package band.effective.office.tablet.ui.mainScreen.mainScreen.store
 
 import band.effective.office.network.model.Either
+import band.effective.office.tablet.domain.model.Settings
 import band.effective.office.tablet.domain.useCase.CheckSettingsUseCase
 import band.effective.office.tablet.domain.useCase.RoomInfoUseCase
 import com.arkivanov.mvikotlin.core.store.Reducer
@@ -26,12 +27,13 @@ class MainFactory(private val storeFactory: StoreFactory) : KoinComponent {
                 initialState = MainStore.State.defaultState,
                 bootstrapper = coroutineBootstrapper {
                     launch {
-                        if(checkSettingsUseCase.invoke().isEmpty()){
+                       // Settings.current.removeNameRoom()
+                        if(checkSettingsUseCase().isEmpty()){
                             dispatch(Action.OnSettings)
                         } else {
                             dispatch(
                                 Action.OnLoad(
-                                    roomInfoUseCase() is Either.Success
+                                    roomInfoUseCase(checkSettingsUseCase()) is Either.Success
                                 )
                             )
                         }
@@ -74,7 +76,7 @@ class MainFactory(private val storeFactory: StoreFactory) : KoinComponent {
 
         fun reboot() = scope.launch {
             dispatch(Message.Reboot)
-            dispatch(Message.Load(roomInfoUseCase() is Either.Success))
+            dispatch(Message.Load(roomInfoUseCase(checkSettingsUseCase()) is Either.Success))
         }
 
         override fun executeAction(action: Action, getState: () -> MainStore.State) {

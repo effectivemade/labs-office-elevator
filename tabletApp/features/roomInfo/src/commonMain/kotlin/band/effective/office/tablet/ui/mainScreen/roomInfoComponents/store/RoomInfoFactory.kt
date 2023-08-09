@@ -35,6 +35,11 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
                 bootstrapper = coroutineBootstrapper {
                     launch {
                         dispatch(
+                            Action.UpdateNameRoom(
+                                checkSettingsUseCase()
+                            )
+                        )
+                        dispatch(
                             Action.UpdateRoomInfo(
                                 updateUseCase.getRoomInfo().unbox(
                                     errorHandler = {
@@ -46,11 +51,6 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
                                         it
                                     }
                                 )
-                            )
-                        )
-                        dispatch(
-                            Action.UpdateNameRoom(
-                                checkSettingsUseCase.invoke()
                             )
                         )
                     }

@@ -1,5 +1,6 @@
 package band.effective.office.tablet.ui.mainScreen.settingsComponents.store
 
+import band.effective.office.tablet.domain.model.Settings
 import band.effective.office.tablet.domain.useCase.SetRoomUseCase
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
@@ -20,7 +21,9 @@ class SettingsStoreFactory(private val storeFactory: StoreFactory) : KoinCompone
             Store<SettingsStore.Intent, SettingsStore.State, Nothing> by storeFactory.create(
                 name = "SettingsStore",
                 initialState = SettingsStore.State.defaultState,
-                bootstrapper = coroutineBootstrapper {},
+                bootstrapper = coroutineBootstrapper {
+                    Settings.current.removeNameRoom()
+                },
                 executorFactory = ::ExecutorImpl,
                 reducer = ReducerImpl
             ) {}
@@ -45,7 +48,7 @@ class SettingsStoreFactory(private val storeFactory: StoreFactory) : KoinCompone
                     dispatch(Message.ChangeCurrentNameRoom(intent.nameRoom))
                 }
                 is SettingsStore.Intent.SaveData -> {
-                    setRoomUseCase.invoke(getState().currentName)
+                    setRoomUseCase(getState().currentName)
                 }
             }
         }

@@ -13,8 +13,8 @@ class Settings(private val nameCurrentRoom: String) {
     fun checkCurrentRoom() = current.getRoom()
 
     fun updateSettings(newNameCurrentRoom: String) {
-        SharedPref.sharedPref.updateRoom(newNameCurrentRoom)
         current = Settings(nameCurrentRoom = newNameCurrentRoom)
+        SharedPref.sharedPref.updateRoom(newNameCurrentRoom)
     }
 
     fun removeNameRoom() {
