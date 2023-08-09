@@ -118,12 +118,6 @@ fun SwaggerDocument.returnAllZones(): OpenApiRoute.() -> Unit = {
                 ) {}
             }
         }
-        HttpStatusCode.BadRequest to {
-            description = "Bad request"
-        }
-        HttpStatusCode.NotFound to {
-            description = "Provided tag doesn't exist"
-        }
     }
 }
 
