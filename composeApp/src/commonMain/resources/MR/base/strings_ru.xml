@@ -70,6 +70,11 @@
     <string name="month">Месяц</string>
     <string name="year">Год</string>
 
+    <string name="show_map">Показать карту</string>
+    <string name="extend_booking">Продлить</string>
+    <string name="repeat_booking">Повторить</string>
+    <string name="delete_booking">Удалить</string>
+
     <string name="Monday">Пн</string>
     <string name="Tuesday">Вт</string>
     <string name="Wednesday">Ср</string>

@@ -34,6 +34,7 @@
     <string name="cansel">Cansel</string>
     <string name="delete">Delete</string>
     <string name="ok">Ok</string>
+
     <!--Booking-->
     <string name="type_booking">Type booking</string>
     <string name="workplace">Workplace</string>
@@ -73,6 +74,11 @@
     <string name="week">Week</string>
     <string name="month">Month</string>
     <string name="year">Year</string>
+
+    <string name="show_map">Show map</string>
+    <string name="extend_booking">Extend</string>
+    <string name="repeat_booking">Repeat</string>
+    <string name="delete_booking">Delete</string>
 
     <string name="Monday">Mon</string>
     <string name="Tuesday">Tue</string>
