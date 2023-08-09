@@ -37,7 +37,7 @@ class WorkspaceFacadeConverter(private val uuidValidator: UuidValidator) {
         return Workspace(
             id = uuidValidator.uuidFromString(dto.id),
             name = dto.name,
-            tag = "", //Это, наверное, не правильно
+            tag = "", //This is probably wrong
             utilities = utilities
         )
     }
