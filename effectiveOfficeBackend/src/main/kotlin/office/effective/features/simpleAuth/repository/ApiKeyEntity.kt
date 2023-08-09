@@ -15,7 +15,7 @@ interface ApiKeyEntity : Entity<ApiKeyEntity> {
     var keyValue : String
 }
 
-object ApiKeys : Table<ApiKeyEntity>("apikeys"){
+object ApiKeys : Table<ApiKeyEntity>("api_keys"){
     val id = uuid("id").bindTo { it.id }.primaryKey()
     val value = varchar("value").bindTo { it.keyValue }
 }
