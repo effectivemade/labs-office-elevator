@@ -5,6 +5,7 @@ import io.ktor.http.*
 import office.effective.common.swagger.SwaggerDocument
 import office.effective.features.workspace.dto.UtilityDTO
 import office.effective.features.workspace.dto.WorkspaceDTO
+import office.effective.features.workspace.dto.WorkspaceZoneDTO
 
 fun SwaggerDocument.returnWorkspaceById(): OpenApiRoute.() -> Unit = {
     description = "Return workspace by id"
@@ -102,6 +103,32 @@ fun SwaggerDocument.returnWorkspaceByTag(): OpenApiRoute.() -> Unit = {
         }
     }
 }
+
+fun SwaggerDocument.returnAllZones(): OpenApiRoute.() -> Unit = {
+    description = "Returns all workspace zones"
+    tags = listOf("workspaces")
+    response {
+        HttpStatusCode.OK to {
+            description = "Returns all workspaces found by tag"
+            body<List<WorkspaceZoneDTO>> {
+                example(
+                    "Zones", listOf(
+                        zoneExample1, zoneExample2
+                    )
+                ) {}
+            }
+        }
+        HttpStatusCode.BadRequest to {
+            description = "Bad request"
+        }
+        HttpStatusCode.NotFound to {
+            description = "Provided tag doesn't exist"
+        }
+    }
+}
+
+private val zoneExample1 = WorkspaceZoneDTO("3ca26fe0-f837-4939-b586-dd4195d2a504","Cassiopeia")
+private val zoneExample2 = WorkspaceZoneDTO("6cb3c60d-3c29-4a45-80e6-fac14fb0569b","Sirius")
 
 enum class WorkspaceTag(val tagName: String) {
     meeting("meeting"), regular("regular")

@@ -8,6 +8,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import office.effective.common.swagger.SwaggerDocument
 import office.effective.features.workspace.facade.WorkspaceFacade
+import office.effective.features.workspace.routes.swagger.returnAllZones
 import office.effective.features.workspace.routes.swagger.returnWorkspaceById
 import office.effective.features.workspace.routes.swagger.returnWorkspaceByTag
 import org.koin.core.context.GlobalContext
@@ -25,6 +26,9 @@ fun Route.workspaceRouting() {
                 ?: return@get call.respond(HttpStatusCode.BadRequest)
 
             call.respond(facade.findAllByTag(tag))
+        }
+        get("/zones", SwaggerDocument.returnAllZones()) {
+            call.respond(facade.findAllZones())
         }
     }
 }

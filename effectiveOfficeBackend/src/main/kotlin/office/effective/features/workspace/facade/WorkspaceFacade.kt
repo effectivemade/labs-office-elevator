@@ -5,6 +5,7 @@ import office.effective.common.utils.DatabaseTransactionManager
 import office.effective.common.utils.UuidValidator
 import office.effective.features.workspace.converters.WorkspaceFacadeConverter
 import office.effective.features.workspace.dto.WorkspaceDTO
+import office.effective.features.workspace.dto.WorkspaceZoneDTO
 import office.effective.features.workspace.service.WorkspaceService
 import office.effective.model.Workspace
 
@@ -43,5 +44,14 @@ class WorkspaceFacade(private val service: WorkspaceService,
             workspaceList.map { converter.modelToDto(it) }
         })
         return result
+    }
+
+    /**
+     * Returns all workspace zones
+     *
+     * @author Daniil Zavyalov
+     */
+    fun findAllZones(): List<WorkspaceZoneDTO> {
+        return service.findAllZones().map { converter.zoneModelToDto(it) }
     }
 }

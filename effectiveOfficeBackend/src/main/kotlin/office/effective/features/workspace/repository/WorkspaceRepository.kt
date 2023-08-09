@@ -4,6 +4,7 @@ import office.effective.common.exception.InstanceNotFoundException
 import office.effective.features.workspace.converters.WorkspaceRepositoryConverter
 import office.effective.model.Utility
 import office.effective.model.Workspace
+import office.effective.model.WorkspaceZone
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
 import org.ktorm.entity.*
@@ -89,6 +90,15 @@ class WorkspaceRepository(private val database: Database, private val converter:
             val utilities: List<Utility> = findUtilityModels(it.id)
             converter.entityToModel(it, utilities)
         }
+    }
+
+    /**
+     * Returns all workspace zones
+     *
+     * @author Daniil Zavyalov
+     */
+    fun findAllZones(): List<WorkspaceZone> {
+        return database.workspaceZones.map { converter.zoneEntityToModel(it) }
     }
 
     /**

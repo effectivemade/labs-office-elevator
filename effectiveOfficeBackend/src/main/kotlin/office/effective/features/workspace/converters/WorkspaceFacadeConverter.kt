@@ -39,7 +39,7 @@ class WorkspaceFacadeConverter(private val uuidValidator: UuidValidator) {
      *
      * @author Daniil Zavyalov
      */
-    private fun zoneModelToDto(model: WorkspaceZone): WorkspaceZoneDTO {
+    fun zoneModelToDto(model: WorkspaceZone): WorkspaceZoneDTO {
         return WorkspaceZoneDTO(model.id.toString(), model.name)
     }
 
