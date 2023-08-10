@@ -47,6 +47,10 @@ kotlin {
                 //Koin
                 api(Dependencies.Koin.core)
 
+                //WheelTimePicker
+                implementation(Dependencies.KotlinxDatetime.kotlinxDatetime)
+                implementation(project(":wheel-picker-compose"))
+
                 api(project(":contract"))
             }
         }

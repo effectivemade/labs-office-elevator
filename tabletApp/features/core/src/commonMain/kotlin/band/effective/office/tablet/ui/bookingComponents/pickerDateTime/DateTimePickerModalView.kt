@@ -1,27 +1,22 @@
 package band.effective.office.tablet.ui.bookingComponents.pickerDateTime
 
-import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.Text
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults.buttonColors
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import band.effective.office.tablet.ui.selectRoomScreen.uiComponents.CrossButtonView
+import band.effective.office.tablet.ui.common.CrossButtonView
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
-import band.effective.office.tablet.ui.theme.header4
-import band.effective.office.tablet.ui.theme.header6
 import band.effective.office.tablet.ui.theme.header8
 import band.effective.office.tablet.utils.date
 import band.effective.office.tablet.utils.time24
@@ -31,7 +26,6 @@ import epicarchitect.calendar.compose.datepicker.config.rememberEpicDatePickerCo
 import epicarchitect.calendar.compose.datepicker.state.EpicDatePickerState
 import epicarchitect.calendar.compose.datepicker.state.rememberEpicDatePickerState
 import epicarchitect.calendar.compose.pager.config.rememberEpicCalendarPagerConfig
-import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month
 import java.util.*

@@ -1,4 +1,4 @@
-package band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.pickerDateTime
+package band.effective.office.tablet.ui.bookingComponents.pickerDateTime
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -16,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import band.effective.office.tablet.features.roomInfo.MainRes
+import band.effective.office.tablet.features.core.MainRes
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.header6
 import com.commandiron.wheel_picker_compose.WheelTimePicker

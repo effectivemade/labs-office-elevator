@@ -4,7 +4,6 @@ import band.effective.office.tablet.ui.bookingComponents.pickerDateTime.DateTime
 import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomComponent
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingRoomComponent
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store.BookingStore
-import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.pickerDateTime.DateTimePickerComponent
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainFactory
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.RoomInfoComponent
@@ -69,17 +68,16 @@ class MainComponent(
             storeFactory = storeFactory,
             onOpenDateTimePickerModal = { mainStore.accept(MainStore.Intent.OnOpenDateTimePickerModal) },
             onCloseRequest = { mainStore.accept(MainStore.Intent.CloseModal) },
-            setNewDate = { day: Int, month: Int ->
+            setNewDate = { day: Int, month: Int, year: Int, hour: Int, minute: Int ->
                 bookingRoomComponent.sendIntent(
                     BookingStore.Intent.OnSetDate(
-                        changedDay = day,
-                        changedMonth = month
+                        day,
+                        month,
+                        year,
+                        hour,
+                        minute
                     )
                 )
-            },
-            setNewDate = {
-                    day: Int, month: Int, year: Int, hour: Int, minute: Int ->
-                        bookingRoomComponent.sendIntent(BookingStore.Intent.OnSetDate(day, month, year, hour, minute))
             },
         )
 

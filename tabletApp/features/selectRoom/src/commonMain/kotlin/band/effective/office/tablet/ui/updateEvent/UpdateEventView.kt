@@ -28,8 +28,8 @@ import band.effective.office.tablet.ui.bookingComponents.EventDurationView
 import band.effective.office.tablet.ui.bookingComponents.EventOrganizerView
 import band.effective.office.tablet.ui.buttons.alert.AlertButton
 import band.effective.office.tablet.ui.buttons.success.SuccessButton
+import band.effective.office.tablet.ui.common.CrossButtonView
 import band.effective.office.tablet.ui.loader.Loader
-import band.effective.office.tablet.ui.selectRoomScreen.uiComponents.CrossButtonView
 import band.effective.office.tablet.ui.updateEvent.store.UpdateEventStore
 import java.util.Calendar
 

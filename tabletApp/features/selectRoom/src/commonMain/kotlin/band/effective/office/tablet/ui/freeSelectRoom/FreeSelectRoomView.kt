@@ -27,9 +27,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import band.effective.office.tablet.features.selectRoom.MainRes
+import band.effective.office.tablet.ui.common.CrossButtonView
 import band.effective.office.tablet.ui.freeSelectRoom.store.FreeSelectStore
 import band.effective.office.tablet.ui.loader.Loader
-import band.effective.office.tablet.ui.selectRoomScreen.uiComponents.CrossButtonView
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.textButton
 

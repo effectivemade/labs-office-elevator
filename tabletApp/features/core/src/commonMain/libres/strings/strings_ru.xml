@@ -12,4 +12,5 @@
     <string name="short_minuets">мин</string>
     <string name="short_hours">ч</string>
     <string name="selectbox_organizer_title">Выберите организатора</string>
+    <string name="timepicker_view_title"> Занять с </string>
 </resources>

@@ -1,7 +1,6 @@
 package band.effective.office.tablet.ui.bookingComponents.pickerDateTime
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,12 +26,10 @@ import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.header4
 import band.effective.office.tablet.ui.theme.header6
-import band.effective.office.tablet.utils.date
 import epicarchitect.calendar.compose.basis.BasisDayOfMonthContent
 import epicarchitect.calendar.compose.basis.BasisDayOfWeekContent
 import epicarchitect.calendar.compose.basis.config.LocalBasisEpicCalendarConfig
 import epicarchitect.calendar.compose.basis.contains
-import epicarchitect.calendar.compose.basis.epicMonth
 import epicarchitect.calendar.compose.basis.localized
 import epicarchitect.calendar.compose.basis.state.LocalBasisEpicCalendarState
 import epicarchitect.calendar.compose.datepicker.EpicDatePicker
@@ -42,11 +39,7 @@ import epicarchitect.calendar.compose.pager.state.EpicCalendarPagerState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.atStartOfDayIn
-import kotlinx.datetime.number
-import java.text.SimpleDateFormat
 import java.time.format.TextStyle
-import java.util.Calendar
 import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
