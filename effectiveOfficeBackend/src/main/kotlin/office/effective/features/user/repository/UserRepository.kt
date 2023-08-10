@@ -144,10 +144,9 @@ class UserRepository(private val db: Database, private val converter: UserModelE
      */
     fun updateUser(model: UserModel): UserModel {
         val userId = model.id?.let {
-            if(!existsById(it))
-                throw InstanceNotFoundException(UserEntity::class, "User with id $it not wound", it)
+            if (!existsById(it)) throw InstanceNotFoundException(UserEntity::class, "User with id $it not wound", it)
             it
-        } ?: throw MissingIdException("User with name ${ model.fullName } doesn't have an id")
+        } ?: throw MissingIdException("User with name ${model.fullName} doesn't have an id")
 
         val ent = db.users.find { it.id eq userId }
         ent?.tag = model.tag
@@ -177,13 +176,11 @@ class UserRepository(private val db: Database, private val converter: UserModelE
         db.usersinegrations.removeIf { it.userId eq userId }
         for (integration in integrationModels) {
             val integrationId: UUID = integration.id
-                ?: throw MissingIdException("Integration with name ${ integration.name } doesn't have an id")
+                ?: throw MissingIdException("Integration with name ${integration.name} doesn't have an id")
 
-            db.integrations.find { it.id eq integrationId }
-                ?: throw InstanceNotFoundException(
-                    IntegrationEntity::class,
-                    "User with id $integrationId not found",
-                    integrationId)
+            db.integrations.find { it.id eq integrationId } ?: throw InstanceNotFoundException(
+                IntegrationEntity::class, "User with id $integrationId not found", integrationId
+            )
             db.insert(UsersIntegrations) {
                 set(it.userId, userId)
                 set(it.integrationId, integrationId)
