@@ -136,6 +136,15 @@ class UserRepository(private val db: Database, private val converter: UserModelE
         return UserTagModel(tag.id, tag.name)
     }
 
+    /**
+     * Updates a given user. Use the returned model for further operations
+     *
+     * @throws MissingIdException if the user or integration id is null
+     *
+     * @throws InstanceNotFoundException if the given user or integration don't exist
+     *
+     * @author Daniil Zavyalov
+     */
     fun updateUser(model: UserModel): UserModel {
         val userId = model.id?.let {
             if(!existsById(it))
@@ -153,17 +162,37 @@ class UserRepository(private val db: Database, private val converter: UserModelE
 
         val integrations: Set<IntegrationModel>? = model.integrations
         if (!integrations.isNullOrEmpty()) {
-            val converter: IntegrationModelEntityConverter = GlobalContext.get().get()
-            db.usersinegrations.removeIf { it.userId eq userId }
-            for (i in integrations) {
-                db.insert(UsersIntegrations) {
-                    set(it.userId, userId)
-                    set(it.integrationId, i.id)
-                    set(it.valueStr, i.valueStr)
-                }
-            }
+            saveIntegrations(integrations, userId)
         }
         return findById(userId)
+    }
+
+    /**
+     * Adds many-to-many relationship between user and its integrations
+     *
+     * @throws MissingIdException if the integration id is null
+     *
+     * @throws InstanceNotFoundException if the given integration don't exist
+     *
+     * @author Daniil Zavyalov
+     */
+    private fun saveIntegrations(integrationModels: Set<IntegrationModel>, userId: UUID) {
+        db.usersinegrations.removeIf { it.userId eq userId }
+        for (integration in integrationModels) {
+            val integrationId: UUID = integration.id
+                ?: throw MissingIdException("Integration with name ${ integration.name } doesn't have an id")
+
+            db.integrations.find { it.id eq integrationId }
+                ?: throw InstanceNotFoundException(
+                    IntegrationEntity::class,
+                    "User with id $integrationId not found",
+                    integrationId)
+            db.insert(UsersIntegrations) {
+                set(it.userId, userId)
+                set(it.integrationId, integrationId)
+                set(it.valueStr, integration.valueStr)
+            }
+        }
     }
 
     /**

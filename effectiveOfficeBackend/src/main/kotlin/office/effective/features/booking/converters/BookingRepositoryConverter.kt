@@ -60,9 +60,9 @@ class BookingRepositoryConverter(private val database: Database,
     /**
      * Returns the user entity for the given model
      *
-     * Throws MissingIdException if the user id is null
+     * @throws MissingIdException if the user id is null
      *
-     * Throws InstanceNotFoundException if the given user don't exist
+     * @throws InstanceNotFoundException if the given user don't exist
      */
     private fun findOwnerEntity(ownerModel: UserModel): UserEntity {
         val ownerId: UUID = ownerModel.id
