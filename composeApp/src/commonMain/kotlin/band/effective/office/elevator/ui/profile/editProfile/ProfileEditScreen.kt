@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -32,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -110,7 +112,9 @@ private fun ProfileEditScreenContent(
                             item = item,
                             text = phoneNumberText,
                             error =  isErrorPhone,
-                            visualTransformation = PhoneMaskTransformation())
+                            visualTransformation = PhoneMaskTransformation(),
+                            keyboardType = KeyboardType.Phone
+                        )
                     }
                     UserDataEditProfile.Person -> {
                         FieldsItemStyle(
@@ -159,6 +163,7 @@ private fun FieldsItemStyle(
     error: Boolean,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     text: MutableState<String>,
+    keyboardType: KeyboardType = KeyboardType.Text
 ){
     Column(
         modifier = Modifier.padding(top = 16.dp).fillMaxWidth()
@@ -202,7 +207,8 @@ private fun FieldsItemStyle(
                 leadingIconColor = textGrayColor,
                 trailingIconColor = textGrayColor),
             isError = error,
-            visualTransformation = visualTransformation
+            visualTransformation = visualTransformation,
+            keyboardOptions = KeyboardOptions(keyboardType = keyboardType)
         )
     }
 }
