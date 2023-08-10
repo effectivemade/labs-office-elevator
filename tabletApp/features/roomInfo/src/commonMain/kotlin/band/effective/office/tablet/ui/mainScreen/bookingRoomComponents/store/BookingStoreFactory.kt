@@ -164,12 +164,6 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     reset(getState)
                 }
 
-                is BookingStore.Intent.OnSetDate -> setNewDate(
-                    getState,
-                    intent.changedDay,
-                    intent.changedMonth
-                )
-
                 is BookingStore.Intent.OnSetDate -> setNewDate(getState, intent.changedDay, intent.changedMonth, intent.changedYear, intent.changedHour, intent.changedMinute)
                 is BookingStore.Intent.CloseModal -> intent.close?.invoke()
                 is BookingStore.Intent.OnChangeIsCurrentSelectTime -> changeIsSelectCurrentTime(
@@ -391,7 +385,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             selectDate = GregorianCalendar(),
             length = BookingStore.State.default.length,
             isSelectCurrentTime = BookingStore.State.default.isSelectCurrentTime,
-            isOrganizerError = BookingStore.State.default.isOrganizerError
+            isOrganizerError = BookingStore.State.default.isOrganizerError,
+            inputText = BookingStore.State.default.inputText
         )
 
     }
