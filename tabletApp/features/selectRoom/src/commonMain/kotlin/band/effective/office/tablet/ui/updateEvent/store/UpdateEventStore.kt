@@ -6,7 +6,8 @@ import com.arkivanov.mvikotlin.core.store.Store
 import java.util.Calendar
 import java.util.GregorianCalendar
 
-interface UpdateEventStore : Store<UpdateEventStore.Intent, UpdateEventStore.State, UpdateEventStore.Label> {
+interface UpdateEventStore :
+    Store<UpdateEventStore.Intent, UpdateEventStore.State, UpdateEventStore.Label> {
     sealed interface Intent {
         data class OnUpdateLength(val update: Int) : Intent
         data class OnUpdateDate(val updateInDays: Int) : Intent
@@ -15,8 +16,8 @@ interface UpdateEventStore : Store<UpdateEventStore.Intent, UpdateEventStore.Sta
         object OnUpdateEvent : Intent
         object OnDeleteEvent : Intent
         data class OnInit(val event: EventInfo) : Intent
-        data class OnInput(val input: String): Intent
-        object OnDoneInput: Intent
+        data class OnInput(val input: String) : Intent
+        object OnDoneInput : Intent
     }
 
     data class State(
@@ -27,9 +28,11 @@ interface UpdateEventStore : Store<UpdateEventStore.Intent, UpdateEventStore.Sta
         val selectOrganizer: Organizer,
         val expanded: Boolean,
         val event: EventInfo,
-        val isLoad: Boolean,
-        val isError: Boolean,
-        val inputText: String
+        val isLoadUpdate: Boolean,
+        val isErrorUpdate: Boolean,
+        val inputText: String,
+        val isLoadDelete: Boolean,
+        val isErrorDelete: Boolean
     ) {
         companion object {
             val defaultValue = State(
@@ -40,9 +43,11 @@ interface UpdateEventStore : Store<UpdateEventStore.Intent, UpdateEventStore.Sta
                 selectOrganizer = Organizer.default,
                 expanded = false,
                 event = EventInfo.emptyEvent,
-                isLoad = false,
-                isError = false,
-                inputText = ""
+                isLoadUpdate = false,
+                isErrorUpdate = false,
+                inputText = "",
+                isLoadDelete = false,
+                isErrorDelete = false
             )
         }
     }

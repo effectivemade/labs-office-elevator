@@ -4,6 +4,7 @@ import band.effective.office.network.model.Either
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.Organizer
 import band.effective.office.tablet.domain.useCase.BookingUseCase
+import band.effective.office.tablet.domain.useCase.CancelUseCase
 import band.effective.office.tablet.domain.useCase.OrganizersInfoUseCase
 import band.effective.office.tablet.utils.unbox
 import com.arkivanov.mvikotlin.core.store.Reducer
@@ -21,6 +22,7 @@ class UpdateEventStoreFactory(private val storeFactory: StoreFactory) : KoinComp
 
     val bookingUseCase: BookingUseCase by inject()
     val organizersInfoUseCase: OrganizersInfoUseCase by inject()
+    val cancelUseCase: CancelUseCase by inject()
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): UpdateEventStore =
@@ -61,10 +63,12 @@ class UpdateEventStoreFactory(private val storeFactory: StoreFactory) : KoinComp
             val newOrganizer: Organizer
         ) : Message
 
-        object Load : Message
-        object Fail : Message
+        object LoadUpdate : Message
+        object FailUpdate : Message
         data class Input(val newInput: String, val newList: List<Organizer>) : Message
         data class UpdateOrganizer(val newValue: Organizer) : Message
+        object LoadDelete : Message
+        object FailDelete : Message
     }
 
     private sealed interface Action {
@@ -79,7 +83,7 @@ class UpdateEventStoreFactory(private val storeFactory: StoreFactory) : KoinComp
         ) {
             val state = getState()
             when (intent) {
-                is UpdateEventStore.Intent.OnDeleteEvent -> TODO()
+                is UpdateEventStore.Intent.OnDeleteEvent -> cancel(state)
                 is UpdateEventStore.Intent.OnExpandedChange -> dispatch(Message.ExpandedChange(!state.expanded))
                 is UpdateEventStore.Intent.OnSelectOrganizer -> dispatch(
                     Message.UpdateOrganizer(
@@ -104,6 +108,15 @@ class UpdateEventStoreFactory(private val storeFactory: StoreFactory) : KoinComp
             }
         }
 
+        fun cancel(state: UpdateEventStore.State) = scope.launch {
+            dispatch(Message.LoadDelete)
+            if (cancelUseCase(state.event) is Either.Success) {
+                publish(UpdateEventStore.Label.Close)
+            } else {
+                dispatch(Message.FailDelete)
+            }
+        }
+
         fun onDone(state: UpdateEventStore.State) {
             val input = state.inputText.lowercase()
             val organizer =
@@ -120,11 +133,11 @@ class UpdateEventStoreFactory(private val storeFactory: StoreFactory) : KoinComp
         }
 
         fun updateEvent(state: UpdateEventStore.State) = scope.launch {
-            dispatch(Message.Load)
+            dispatch(Message.LoadUpdate)
             if (bookingUseCase.update(state.toEventInfo()) is Either.Success) {
                 publish(UpdateEventStore.Label.Close)
             } else {
-                dispatch(Message.Fail)
+                dispatch(Message.FailUpdate)
             }
         }
 
@@ -203,13 +216,16 @@ class UpdateEventStoreFactory(private val storeFactory: StoreFactory) : KoinComp
                     selectOrganizer = msg.newOrganizer
                 )
 
-                is Message.Fail -> copy(isError = true, isLoad = false)
-                is Message.Load -> copy(isError = false, isLoad = true)
+                is Message.FailUpdate -> copy(isErrorUpdate = true, isLoadUpdate = false)
+                is Message.LoadUpdate -> copy(isErrorUpdate = false, isLoadUpdate = true)
                 is Message.Input -> copy(inputText = msg.newInput, selectOrganizers = msg.newList)
                 is Message.UpdateOrganizer -> copy(
                     selectOrganizer = msg.newValue,
                     inputText = msg.newValue.fullName,
                 )
+
+                is Message.FailDelete -> copy(isErrorDelete = true, isLoadDelete = false)
+                is Message.LoadDelete -> copy(isErrorDelete = false, isLoadDelete = true)
             }
     }
 }

@@ -65,7 +65,7 @@ fun UpdateEventView(
         organizers = state.selectOrganizers,
         expended = state.expanded,
         onUpdateEvent = { component.sendIntent(UpdateEventStore.Intent.OnUpdateEvent) },
-        onDeleteEvent = {},
+        onDeleteEvent = { component.sendIntent(UpdateEventStore.Intent.OnDeleteEvent) },
         inputText = state.inputText,
         onInput = { component.sendIntent(UpdateEventStore.Intent.OnInput(it)) },
         onDoneInput = { component.sendIntent(UpdateEventStore.Intent.OnDoneInput) }
