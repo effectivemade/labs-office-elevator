@@ -1,7 +1,5 @@
 package band.effective.office.elevator.ui.main.components
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,11 +8,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
 import androidx.compose.material3.IconButton
 import androidx.compose.material.MaterialTheme
@@ -30,12 +26,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.ui.models.ReservedSeat
-import dev.icerock.moko.resources.compose.painterResource
-import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun BookingCard(
@@ -43,32 +35,35 @@ fun BookingCard(
     onClickShowMap: () -> Unit,
     onClickShowOptions: () -> Unit
 ) {
-    Row() {
-        Column(
+    Row(
+        modifier = Modifier
+            .clip(RoundedCornerShape(16.dp))
+            .background(Color.White)
+            .padding(horizontal = 16.dp, vertical = 24.dp)
+            .fillMaxWidth()
+    ) {
+        SeatIcon()
+        Spacer(modifier = Modifier.width(12.dp))
+        SeatTitle(seat)
+        Spacer(modifier = Modifier.height(24.dp))
+        Row(
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .clip(RoundedCornerShape(16.dp))
-                .background(Color.White)
-                .padding(horizontal = 16.dp, vertical = 24.dp)
                 .fillMaxWidth()
         ) {
-            Row {
-                SeatIcon()
-                Spacer(modifier = Modifier.width(12.dp))
-                SeatTitle(seat)
-                Spacer(modifier = Modifier.height(24.dp))
-                IconButton(
-                    onClick = onClickShowOptions,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(80.dp)),
-                    colors = IconButtonDefaults.iconButtonColors(),
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.MoreVert,
-                        contentDescription = "show option menu",
-                        modifier = Modifier.align(Alignment.CenterVertically),
-                        tint = MaterialTheme.colors.secondaryVariant
-                    )
-                }
+            IconButton(
+                onClick = onClickShowOptions,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(80.dp)),
+                colors = IconButtonDefaults.iconButtonColors(),
+            ) {
+                Icon(
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = "show option menu",
+                    modifier = Modifier,
+                    tint = MaterialTheme.colors.secondaryVariant
+                )
             }
         }
     }
@@ -76,18 +71,24 @@ fun BookingCard(
 
 @Composable
 private fun SeatTitle(seat: ReservedSeat) {
-    Column {
+    Column(
+        modifier = Modifier.wrapContentSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.Start
+    ) {
         Text(
             text = seat.seatName,
             style = MaterialTheme.typography.subtitle1.copy(color = Color.Black)
         )
         Spacer(modifier = Modifier.height(12.dp))
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.wrapContentSize()
         ) {
             Text(
                 text = seat.bookingDay,
-                style = MaterialTheme.typography.subtitle1.copy(color = textGrayColor)
+                style = MaterialTheme.typography.subtitle1.copy(color = textGrayColor),
+                modifier = Modifier.wrapContentSize()
             )
             Divider(
                 modifier = Modifier
@@ -97,7 +98,8 @@ private fun SeatTitle(seat: ReservedSeat) {
             )
             Text(
                 text = seat.bookingTime,
-                style = MaterialTheme.typography.subtitle1.copy(color = textGrayColor)
+                style = MaterialTheme.typography.subtitle1.copy(color = textGrayColor),
+                modifier = Modifier.wrapContentSize()
             )
         }
     }
