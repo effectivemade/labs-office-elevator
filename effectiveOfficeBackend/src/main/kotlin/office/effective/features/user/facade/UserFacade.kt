@@ -14,28 +14,37 @@ class UserFacade(
     private val transactionManager: DatabaseTransactionManager
 ) {
     fun getUsersByTag(tagStr: String, token: String): Set<UserDTO> {
-        val models: Set<UserModel> = transactionManager.useTransaction({ service.getUsersByTag(tagStr) })
+        val models: Set<UserModel> =
+            transactionManager.useTransaction<Set<UserModel>>({ service.getUsersByTag(tagStr) })
         val dtos: MutableSet<UserDTO> = mutableSetOf()
         models.forEach { dtos.add(converterDTO.modelToDTO(it)) }
         return dtos.toSet()
     }
 
     fun getUserById(userIdStr: String, token: String): UserDTO {
-        return converterDTO.modelToDTO(transactionManager.useTransaction({ service.getUserById(userIdStr) }))
+        return transactionManager.useTransaction<UserDTO>({
+            converterDTO.modelToDTO(service.getUserById(userIdStr))
+        })
+
     }
 
-    fun updateUser(user: UserDTO, token: String): UserDTO {
-        return converterDTO.modelToDTO(transactionManager.useTransaction({
-            service.updateUser(
-                converterDTO.dTOToModel(
-                    user
+    /**
+     * Updates a given user. Use the returned model for further operations
+     *
+     * @author Danil Kiselev
+     */
+    fun updateUser(user: UserDTO): UserDTO {
+        return transactionManager.useTransaction({
+            converterDTO.modelToDTO(
+                service.updateUser(
+                    converterDTO.dTOToModel(user)
                 )
             )
-        }))
+        })
     }
 
     fun getUserByToken(tokenStr: String): UserDTO {
         val userEmail = verifier.isCorrectToken(tokenStr)
-        return converterDTO.modelToDTO(transactionManager.useTransaction({ service.getUserByEmail(userEmail) }))
+        return converterDTO.modelToDTO(transactionManager.useTransaction<UserModel>({ service.getUserByEmail(userEmail) }))
     }
 }
