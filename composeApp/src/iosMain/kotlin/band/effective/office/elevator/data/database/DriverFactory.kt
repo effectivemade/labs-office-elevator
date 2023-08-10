@@ -6,6 +6,6 @@ import band.effective.office.elevator.Database
 
 actual class DriverFactory {
     actual fun createDriver(): SqlDriver {
-        return NativeSqliteDriver(Database.Schema, "test.db")
+        return NativeSqliteDriver(Database.Schema, "user.db")
     }
 }
