@@ -1,4 +1,4 @@
-package band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents
+package band.effective.office.tablet.ui.bookingComponents
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -19,7 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import band.effective.office.tablet.features.roomInfo.MainRes
+import band.effective.office.tablet.features.core.MainRes
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.h8
 import band.effective.office.tablet.utils.CalendarStringConverter
@@ -65,7 +65,7 @@ fun DateTimeView(
                 )
             ) {
                 Text(
-                    text =  selectDate.dateTime(),
+                    text = selectDate.dateTime(),
                     style = MaterialTheme.typography.h6
                 )
                 Spacer(Modifier.width(5.dp))

@@ -1,8 +1,7 @@
-package band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.pickerDateTime
+package band.effective.office.tablet.ui.bookingComponents.pickerDateTime
 
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
-import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store.BookingStore
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -30,7 +29,7 @@ class DateTimePickerStoreFactory(private val storeFactory: StoreFactory) : KoinC
             ) {}
 
     private sealed interface Action {
-        object Init:  Action
+        object Init: Action
         data class UpdateEvents(val newData: RoomInfo) : Action
         object UpdateSelectTime : Action
     }
@@ -79,7 +78,7 @@ class DateTimePickerStoreFactory(private val storeFactory: StoreFactory) : KoinC
                     dispatch(
                         Message.ChangeEvent(
                             selectDate = defaultEvent.startTime,
-                            isSelectCurrentTime = BookingStore.State.default.isSelectCurrentTime
+                            isSelectCurrentTime = true
                         )
                     )
                 }
@@ -105,25 +104,6 @@ class DateTimePickerStoreFactory(private val storeFactory: StoreFactory) : KoinC
             )
             reset()
         }
-
-        fun syncNewDate(state: DateTimePickerStore.State, syncedState: BookingStore.State) {
-            val syncDate = state.selectDate.clone() as Calendar
-            val newDate = (state.selectDate.clone() as Calendar).apply {
-                set(
-                    syncDate[Calendar.YEAR],
-                    syncDate[Calendar.MONTH],
-                    syncDate[Calendar.DAY_OF_MONTH]
-                )
-            }
-            dispatch(
-                Message.ChangeEvent(
-                    selectDate = newDate,
-                    isSelectCurrentTime = newDate.isNow()
-                )
-            )
-            reset()
-             syncedState.selectDate
-        }
     }
 
     private object ReducerImpl : Reducer<DateTimePickerStore.State, Message> {
@@ -140,7 +120,7 @@ class DateTimePickerStoreFactory(private val storeFactory: StoreFactory) : KoinC
 
         fun DateTimePickerStore.State.reset() = copy(
             selectDate = GregorianCalendar(),
-            isSelectCurrentTime = BookingStore.State.default.isSelectCurrentTime,
+            isSelectCurrentTime = true,
         )
 
     }

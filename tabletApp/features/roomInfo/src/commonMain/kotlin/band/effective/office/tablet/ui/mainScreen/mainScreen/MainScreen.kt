@@ -33,7 +33,18 @@ fun MainScreen(component: MainComponent) {
                 freeSelectRoomComponent = component.freeSelectRoomComponent,
                 dateTimePickerComponent = component.dateTimePickerComponent,
                 showModal = state.showModal(),
-                isDisconnect = state.isDisconnect
+                isDisconnect = state.isDisconnect,
+                onEventUpdateRequest = {
+                    component.sendIntent(
+                        MainStore.Intent.OnChangeEventRequest(
+                            eventInfo = it
+                        )
+                    )
+                },
+                updatedEvent = state.updatedEvent,
+                showUpdateModal = state.showUpdateModal,
+                updateEventComponent = component.updateEventComponent,
+                closeModal = { component.sendIntent(MainStore.Intent.CloseModal) }
             )
         }
     }

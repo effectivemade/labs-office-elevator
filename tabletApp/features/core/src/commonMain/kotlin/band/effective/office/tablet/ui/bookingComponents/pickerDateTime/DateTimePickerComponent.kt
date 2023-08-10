@@ -1,6 +1,5 @@
-package band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.pickerDateTime
+package band.effective.office.tablet.ui.bookingComponents.pickerDateTime
 
-import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingRoomComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory

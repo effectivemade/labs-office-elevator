@@ -1,4 +1,4 @@
-package band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents
+package band.effective.office.tablet.ui.bookingComponents
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.alertColor
 
 @Composable

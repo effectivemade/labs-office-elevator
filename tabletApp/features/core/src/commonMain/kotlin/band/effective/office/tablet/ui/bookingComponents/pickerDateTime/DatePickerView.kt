@@ -1,4 +1,4 @@
-package band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.pickerDateTime
+package band.effective.office.tablet.ui.bookingComponents.pickerDateTime
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

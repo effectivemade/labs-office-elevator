@@ -1,4 +1,4 @@
-package band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.pickerDateTime
+package band.effective.office.tablet.ui.bookingComponents.pickerDateTime
 
 import android.annotation.SuppressLint
 import android.os.Build

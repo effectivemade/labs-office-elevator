@@ -17,4 +17,5 @@
     <string name="failure_text">Вас кто-то опередил</string>
     <string name="select_other_room">Выберите другую переговорку</string>
     <string name="try_again">Попробовать ещё раз</string>
+    <string name="booking_view_title">Занять</string>
 </resources>
