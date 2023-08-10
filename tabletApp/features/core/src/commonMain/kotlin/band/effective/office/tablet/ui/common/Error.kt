@@ -1,4 +1,4 @@
-package band.effective.office.tablet.ui.mainScreen.mainScreen.uiComponents
+package band.effective.office.tablet.ui.common
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,7 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import band.effective.office.tablet.features.roomInfo.MainRes
+import band.effective.office.tablet.features.core.MainRes
 import band.effective.office.tablet.ui.buttons.success.SuccessButton
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.h8

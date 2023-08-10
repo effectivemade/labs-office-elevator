@@ -16,4 +16,5 @@
     <string name="see_free_room">Смотреть другие переговорки</string>
     <string name="failure_text">Вас кто-то опередил</string>
     <string name="select_other_room">Выберите другую переговорку</string>
+    <string name="try_again">Попробовать ещё раз</string>
 </resources>

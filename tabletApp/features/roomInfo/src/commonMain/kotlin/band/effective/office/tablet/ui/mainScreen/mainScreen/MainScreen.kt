@@ -5,8 +5,8 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import band.effective.office.tablet.ui.common.ErrorMainScreen
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
-import band.effective.office.tablet.ui.mainScreen.mainScreen.uiComponents.ErrorMainScreen
 import band.effective.office.tablet.ui.mainScreen.mainScreen.uiComponents.LoadMainScreen
 import band.effective.office.tablet.ui.mainScreen.settingsComponents.SettingsScreen
 import band.effective.office.tablet.ui.mainScreen.settingsComponents.SettingsView
