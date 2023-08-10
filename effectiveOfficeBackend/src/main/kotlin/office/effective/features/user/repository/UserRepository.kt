@@ -143,7 +143,7 @@ class UserRepository(private val db: Database, private val converter: UserModelE
      *
      * @throws InstanceNotFoundException if the given user or integration don't exist
      *
-     * @author Daniil Zavyalov
+     * @author Danil Kiselev, Daniil Zavyalov
      */
     fun updateUser(model: UserModel): UserModel {
         val userId = model.id?.let {
