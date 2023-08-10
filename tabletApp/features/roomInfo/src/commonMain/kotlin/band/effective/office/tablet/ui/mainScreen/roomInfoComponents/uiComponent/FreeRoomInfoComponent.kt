@@ -21,9 +21,9 @@ fun FreeRoomInfoComponent(
     capacity: Int,
     isHaveTv: Boolean,
     electricSocketCount: Int,
-    nextEvent: EventInfo?,
+    nextEvent: EventInfo,
     timeToNextEvent: Int,
-    isError: Boolean
+    isError: Boolean,
 ) {
     CommonRoomInfoComponent(
         modifier = modifier,
@@ -34,19 +34,21 @@ fun FreeRoomInfoComponent(
         backgroundColor = LocalCustomColorsPalette.current.freeStatus,
         isError = isError
     ) {
-        Text(
-            text = MainRes.string.free_room_occupancy.format(
-                time = nextEvent?.startTime?.time() ?: ""
-            ),
-            style = MaterialTheme.typography.h5,
-            color = roomInfoColor
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        Text(
-            text = "${MainRes.string.free_duration_string} ${timeToNextEvent.getDuration()}",
-            style = MaterialTheme.typography.h5,
-            color = roomInfoColor
-        )
+        if (nextEvent != EventInfo.emptyEvent){
+            Text(
+                text = MainRes.string.free_room_occupancy.format(
+                    time = nextEvent.startTime.time()
+                ),
+                style = MaterialTheme.typography.h5,
+                color = roomInfoColor
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = "${MainRes.string.free_duration_string} ${timeToNextEvent.getDuration()}",
+                style = MaterialTheme.typography.h5,
+                color = roomInfoColor
+            )
+        }
     }
 }
 private fun Calendar.time() = CalendarStringConverter.calendarToString(this, "HH:mm")

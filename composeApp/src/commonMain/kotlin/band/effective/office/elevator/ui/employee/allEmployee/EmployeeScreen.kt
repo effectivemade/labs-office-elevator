@@ -1,9 +1,9 @@
 package band.effective.office.elevator.ui.employee.allEmployee
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -262,16 +262,15 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: (String) -> Unit) {
                 Spacer(modifier = Modifier.padding(0.dp, 8.dp))
                 OutlinedButton(
                     onClick = { isExpanded = !isExpanded },
-                    colors = ButtonDefaults.buttonColors(theme_light_onPrimary),
-                    modifier = Modifier
-                        .border(1.dp, stateColorBorder, RoundedCornerShape(12.dp)),
-                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = theme_light_onPrimary),
                     elevation = ButtonDefaults.elevation(
                         defaultElevation = 0.dp,
                         pressedElevation = 2.dp,
                         disabledElevation = 0.dp,
                         hoveredElevation = 0.dp
-                    )
+                    ),
+                    shape = RoundedCornerShape(12.dp),
+                    border = BorderStroke(width = 1.dp, color = stateColorBorder)
                 ) {
                     Text(
                         text = "•   " + emp.state,

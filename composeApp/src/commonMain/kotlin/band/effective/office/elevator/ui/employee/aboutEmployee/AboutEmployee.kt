@@ -88,7 +88,6 @@ fun AboutEmployee (component: AboutEmployeeComponent){
             reservedSeats = state.reservedSeats,
             filtrationOnReserves = state.filtrationOnReserves,
             bottomSheetState = bottomSheetState,
-            onClickOpenMap = { component.onOutput(AboutEmployeeComponent.Output.OpenMap) },
             onClickOpenPhone = { component.onEvent(AboutEmployeeStore.Intent.TelephoneClicked) },
             onClickOpenTelegram = { component.onEvent(AboutEmployeeStore.Intent.TelegramClicked) },
             onClickOpenSpb = { component.onEvent(AboutEmployeeStore.Intent.TransferMoneyClicked) },
@@ -123,7 +122,6 @@ private fun AboutEmployeeContent(
     filtrationOnReserves: Boolean,
     bottomSheetState: ModalBottomSheetState,
     onClickBack: () -> Unit,
-    onClickOpenMap: () ->Unit,
     onClickOpenPhone: () ->Unit,
     onClickOpenTelegram: () ->Unit,
     onClickOpenSpb: () ->Unit,
@@ -234,7 +232,7 @@ private fun AboutEmployeeContent(
                 Text(
                     text = stringResource(MainRes.strings.upcoming_bookings),
                     style = MaterialTheme.typography.body1,
-                    modifier = Modifier.padding(vertical = 24.dp)
+                    modifier = Modifier.padding(vertical = 24.dp).padding(end = 16.dp)
                 )
                 Row (
                     horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.End),
@@ -248,7 +246,6 @@ private fun AboutEmployeeContent(
                 true -> NoReservationsThisDate(noThisDayReservations = filtrationOnReserves)
                 false-> ReservationsOnThisDate(
                     reservedSeats =  reservedSeats,
-                    onClickOpenMap = onClickOpenMap
                 )
             }
             //TODO:()
@@ -275,15 +272,14 @@ fun NoReservationsThisDate(noThisDayReservations: Boolean){
 }
 
 @Composable
-fun ReservationsOnThisDate(reservedSeats: List<ReservedSeat>,onClickOpenMap: () ->Unit,){
+fun ReservationsOnThisDate(reservedSeats: List<ReservedSeat>){
     LazyColumn(
         modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(18.dp)
     ) {
         items(reservedSeats) { seat ->
             BookingCardUser(
-                seat,
-                onClickOpenMap
+                seat
             )
         }
     }

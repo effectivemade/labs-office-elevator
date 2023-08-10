@@ -16,10 +16,10 @@ import band.effective.office.tablet.network.repository.impl.RoomRepositoryImpl
 import org.koin.dsl.module
 
 val domainModule = module {
-    single<RoomRepository> { RoomRepositoryImpl(get()) }
     single<OrganizerRepository> { OrganizerRepositoryImpl(get()) }
     single<CancelRepository> { CancelRepositoryImpl(get()) }
     single<BookingRepository> { BookingRepositoryImpl(get()) }
+    single<RoomRepository> { RoomRepositoryImpl(get(),get()) }
 
     single<RoomInfoUseCase> { RoomInfoUseCase(get()) }
     single<OrganizersInfoUseCase> { OrganizersInfoUseCase(get()) }

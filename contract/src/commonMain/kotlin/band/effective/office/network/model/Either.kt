@@ -1,4 +1,4 @@
-package band.effective.office.tablet.domain.model
+package band.effective.office.network.model
 
 sealed interface Either<out ErrorType, out DataType> {
     data class Error<out ErrorType>(val error: ErrorType) : Either<ErrorType, Nothing>

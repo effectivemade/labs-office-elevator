@@ -39,7 +39,6 @@ class AboutEmployeeComponent(
         output(output)
     }
     sealed interface Output {
-        object OpenMap : Output
         object OpenAllEmployee : Output
     }
 
