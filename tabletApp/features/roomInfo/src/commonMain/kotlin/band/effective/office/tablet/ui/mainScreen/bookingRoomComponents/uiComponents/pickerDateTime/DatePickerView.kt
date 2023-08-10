@@ -1,5 +1,8 @@
 package band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.pickerDateTime
 
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,10 +27,12 @@ import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.header4
 import band.effective.office.tablet.ui.theme.header6
+import band.effective.office.tablet.utils.date
 import epicarchitect.calendar.compose.basis.BasisDayOfMonthContent
 import epicarchitect.calendar.compose.basis.BasisDayOfWeekContent
 import epicarchitect.calendar.compose.basis.config.LocalBasisEpicCalendarConfig
 import epicarchitect.calendar.compose.basis.contains
+import epicarchitect.calendar.compose.basis.epicMonth
 import epicarchitect.calendar.compose.basis.localized
 import epicarchitect.calendar.compose.basis.state.LocalBasisEpicCalendarState
 import epicarchitect.calendar.compose.datepicker.EpicDatePicker
@@ -36,11 +41,19 @@ import epicarchitect.calendar.compose.datepicker.state.LocalEpicDatePickerState
 import epicarchitect.calendar.compose.pager.state.EpicCalendarPagerState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.number
+import java.text.SimpleDateFormat
+import java.time.format.TextStyle
+import java.util.Calendar
+import java.util.Locale
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DatePickerView(epicDatePickerState: EpicDatePickerState) {
     val coroutineScope = rememberCoroutineScope()
-    Box(modifier = Modifier.fillMaxWidth(0.35f)) {
+    Box(modifier = Modifier.fillMaxWidth(0.4f)) {
         Column {
             DatePickerTitleView(
                 epicDatePickerState = epicDatePickerState,
@@ -50,6 +63,7 @@ fun DatePickerView(epicDatePickerState: EpicDatePickerState) {
                         pagerState = epicDatePickerState.pagerState,
                         amount = 1
                     )
+
                 },
                 onClickPreviousMonth = {
                     scrollMonth(
@@ -69,6 +83,7 @@ fun DatePickerView(epicDatePickerState: EpicDatePickerState) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun DatePickerTitleView(
     epicDatePickerState: EpicDatePickerState,
@@ -98,10 +113,9 @@ private fun DatePickerTitleView(
         }
         Text(
             text = if (epicDatePickerState.selectedDates.isNotEmpty()) {
-                epicDatePickerState.selectedDates.firstOrNull()!!.month.name.toLowerCase() +
-                        ", " + epicDatePickerState.selectedDates.firstOrNull()!!.dayOfMonth.toString()
+                stringFormat(epicDatePickerState.selectedDates.firstOrNull())
             } else {
-                epicDatePickerState.pagerState.currentMonth.month.name.toLowerCase()
+                epicDatePickerState.pagerState.currentMonth.month.getDisplayName(TextStyle.FULL_STANDALONE, Locale("ru")).lowercase() ?: ""
             },
             style = header6,
             color = LocalCustomColorsPalette.current.primaryTextAndIcon,
@@ -176,4 +190,10 @@ private val CustomDayOfMonthContent: BasisDayOfMonthContent = { date ->
         color = if (isSelected) pickerState.config.selectionContentColor
         else pickerState.config.pagerConfig.basisConfig.contentColor
     )
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+private fun stringFormat(date: LocalDate?): String {
+    val monthName = date?.month?.getDisplayName(TextStyle.FULL, Locale("ru")) ?: ""
+    return "${date?.dayOfMonth} $monthName".lowercase()
 }
