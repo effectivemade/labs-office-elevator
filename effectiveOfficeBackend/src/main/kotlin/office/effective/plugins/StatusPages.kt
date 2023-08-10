@@ -9,6 +9,7 @@ import io.ktor.server.response.*
 import office.effective.common.exception.InstanceNotFoundException
 import office.effective.common.exception.MissingIdException
 import office.effective.common.exception.ValidationException
+import office.effective.common.exception.WorkspaceUnavailableException
 
 fun Application.configureExceptionHandling() {
     install(StatusPages) {
@@ -19,7 +20,10 @@ fun Application.configureExceptionHandling() {
             call.respondText(text = "400: $cause", status = HttpStatusCode.BadRequest)
         }
         exception<ValidationException> { call, cause ->
-            call.respondText(text = "404: $cause", status = HttpStatusCode.NotFound)
+            call.respondText(text = "400: $cause", status = HttpStatusCode.BadRequest)
+        }
+        exception<WorkspaceUnavailableException> { call, cause ->
+            call.respondText(text = "400: $cause", status = HttpStatusCode.BadRequest)
         }
         exception<RequestValidationException> { call, cause ->
             call.respondText(text = "400: ${cause.reasons.joinToString()}", status = HttpStatusCode.BadRequest)

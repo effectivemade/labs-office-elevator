@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="disconnect">Нет соединения с сервером</string>
+    <string name="reset">Перезагрузите приложение</string>
+    <string name="reset_button">Перезагрузить приложение</string>
+</resources>

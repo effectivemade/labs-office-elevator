@@ -5,6 +5,7 @@ import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.Organizer
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.domain.useCase.CheckBookingUseCase
+import band.effective.office.tablet.domain.useCase.CheckSettingsUseCase
 import band.effective.office.tablet.domain.useCase.UpdateUseCase
 import band.effective.office.tablet.utils.unbox
 import com.arkivanov.mvikotlin.core.store.Reducer
@@ -28,6 +29,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
     val checkBookingUseCase: CheckBookingUseCase by inject()
     val updateUseCase: UpdateUseCase by inject()
     val currentEventController: CurrentEventController by inject()
+    private val checkSettingsUseCase: CheckSettingsUseCase by inject()
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): BookingStore =
@@ -45,7 +47,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                                     organizers = updateUseCase.getOrganizersList()
                                         .unbox({ it.saveData ?: listOf() }),
                                     isBusy = busyEvent != null,
-                                    busyEvent = busyEvent ?: EventInfo.emptyEvent
+                                    busyEvent = busyEvent ?: EventInfo.emptyEvent,
+                                    nameRoom = checkSettingsUseCase()
                                 )
                             )
                             dispatch(
@@ -85,7 +88,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         data class Init(
             val organizers: List<Organizer>,
             val isBusy: Boolean,
-            val busyEvent: EventInfo
+            val busyEvent: EventInfo,
+            val nameRoom: String
         ) : Action
 
         data class UpdateEvents(val newData: RoomInfo) : Action
@@ -102,6 +106,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         data class NotCorrectEvent(val busyEvent: EventInfo) : Message
 
         data class ChangeOrganizer(val newOrganizer: Organizer) : Message
+        data class ChangeNameRoom(val nameRoom: String): Message
         object OrganizerError : Message
         object BookingOtherRoom : Message
         object BookingCurrentRoom : Message
@@ -208,6 +213,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                             isSelectCurrentTime = BookingStore.State.default.isSelectCurrentTime
                         )
                     )
+                    dispatch(Message.ChangeNameRoom(action.nameRoom))
+
                 }
 
                 is Action.UpdateEvents -> reset(getState)
@@ -323,6 +330,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is Message.OnChangeExpanded -> copy(isExpandedOrganizersList = !isExpandedOrganizersList)
                 is Message.UpdateTime -> copy(currentDate = GregorianCalendar())
                 is Message.OnChangeIsActive -> copy(isActive = true)
+                is Message.ChangeNameRoom -> copy(roomName = msg.nameRoom)
             }
 
         fun BookingStore.State.reset() = copy(

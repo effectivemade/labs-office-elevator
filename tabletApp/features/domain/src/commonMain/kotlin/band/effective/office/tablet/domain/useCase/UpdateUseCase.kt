@@ -13,10 +13,11 @@ import kotlinx.coroutines.launch
 class UpdateUseCase(
     private val roomInfoUseCase: RoomInfoUseCase,
     private val organizersInfoUseCase: OrganizersInfoUseCase,
+    private val checkSettingsUseCase: CheckSettingsUseCase,
     private val currentEventController: CurrentEventController
 ) {
     /**Get fresh room info*/
-    suspend fun getRoomInfo() = roomInfoUseCase()
+    suspend fun getRoomInfo(nameRoom: String) = roomInfoUseCase(nameRoom)
 
     /**Get fresh org list*/
     suspend fun getOrganizersList() = organizersInfoUseCase()
@@ -30,7 +31,7 @@ class UpdateUseCase(
         roomUpdateHandler: (Either<ErrorWithData<RoomInfo>, RoomInfo>) -> Unit,
         organizerUpdateHandler: (Either<ErrorWithData<List<Organizer>>, List<Organizer>>) -> Unit
     ) {
-        scope.launch { roomInfoUseCase.subscribe().collect { roomUpdateHandler(it) } }
+        scope.launch { roomInfoUseCase.subscribe(checkSettingsUseCase()).collect { roomUpdateHandler(it) } }
         scope.launch { organizersInfoUseCase.subscribe().collect() { organizerUpdateHandler(it) } }
         currentEventController.start(scope)
         currentEventController.subscribe {

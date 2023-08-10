@@ -2,6 +2,7 @@ package band.effective.office.tablet.domain
 
 import android.os.CountDownTimer
 import band.effective.office.network.model.Either
+import band.effective.office.tablet.domain.model.Settings
 import band.effective.office.tablet.domain.useCase.RoomInfoUseCase
 import band.effective.office.tablet.network.repository.CancelRepository
 import kotlinx.coroutines.flow.update
@@ -14,7 +15,7 @@ class CurrentEventControllerImpl(
 ) : CurrentEventController(roomUseCase, cancelRepository) {
     private val timer = SingletonCountDownTimer()
     override fun update() = scope.launch {
-        val roomInfo = when (val response = roomUseCase()) {
+        val roomInfo = when (val response = roomUseCase(Settings.current.checkCurrentRoom())) {
             is Either.Error -> null
             is Either.Success -> response.data
         } //get actual room info

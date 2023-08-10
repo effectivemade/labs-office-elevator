@@ -20,7 +20,7 @@ interface FreeSelectStore : Store<FreeSelectStore.Intent, FreeSelectStore.State,
             val defaultState =
                 State(
                     isLoad = false,
-                    isSuccess = false
+                    isSuccess = true
                 )
         }
     }

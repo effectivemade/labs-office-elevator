@@ -43,7 +43,9 @@ class BookingRepositoryConverter(private val database: Database,
     /**
      * Converts booking model to entity
      *
-     * Throws MissingIdException if booking id is null
+     * @throws MissingIdException if the booking, owner or workspace id is null
+     *
+     * @throws InstanceNotFoundException if the given user or workspace don't exist
      */
     fun modelToEntity(bookingModel: Booking): WorkspaceBookingEntity {
         return WorkspaceBookingEntity {
@@ -55,6 +57,13 @@ class BookingRepositoryConverter(private val database: Database,
         }
     }
 
+    /**
+     * Returns the user entity for the given model
+     *
+     * @throws MissingIdException if the user id is null
+     *
+     * @throws InstanceNotFoundException if the given user don't exist
+     */
     private fun findOwnerEntity(ownerModel: UserModel): UserEntity {
         val ownerId: UUID = ownerModel.id
             ?: throw MissingIdException("User with name ${ ownerModel.fullName } doesn't have an id")
@@ -63,6 +72,13 @@ class BookingRepositoryConverter(private val database: Database,
             ?: throw InstanceNotFoundException(UserEntity::class, "User with id $ownerId not found", ownerId)
     }
 
+    /**
+     * Returns the workspace entity for the given model
+     *
+     * @throws MissingIdException if the workspace id is null
+     *
+     * @throws InstanceNotFoundException if the given workspace don't exist
+     */
     private fun findWorkspaceEntity(workspaceModel: Workspace): WorkspaceEntity {
         val workspaceId: UUID = workspaceModel.id
             ?: throw MissingIdException("Workspace with name ${ workspaceModel.name } doesn't have an id")
