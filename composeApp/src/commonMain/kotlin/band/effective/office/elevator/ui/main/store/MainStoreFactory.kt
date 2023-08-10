@@ -4,6 +4,7 @@ import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.data.ApiResponse
 import band.effective.office.elevator.domain.useCase.ElevatorCallUseCase
 import band.effective.office.elevator.domain.useCase.GetBookingsUseCase
+import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.ui.models.ElevatorState
 import band.effective.office.elevator.ui.models.ReservedSeat
 import band.effective.office.elevator.utils.getCurrentDate
@@ -98,6 +99,19 @@ internal class MainStoreFactory(
                     intent.date?.let { newDate ->
                         changeBookingsByDate(date = newDate)
                     }
+                }
+
+                MainStore.Intent.OnClickShowMap -> {
+                    showToast("map")
+                }
+                is MainStore.Intent.OnClickDeleteBooking -> {
+                    showToast("delete")
+                }
+                is MainStore.Intent.OnClickExtendBooking -> {
+                    showToast("extend")
+                }
+                is MainStore.Intent.OnClickRepeatBooking -> {
+                    showToast("repeat")
                 }
             }
         }

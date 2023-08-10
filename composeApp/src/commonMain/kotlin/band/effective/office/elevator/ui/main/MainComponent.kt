@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.main
 
+import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.ui.main.store.MainStore
 import band.effective.office.elevator.ui.main.store.MainStoreFactory
 import com.arkivanov.decompose.ComponentContext
@@ -31,14 +32,23 @@ class MainComponent(componentContext: ComponentContext, storeFactory: StoreFacto
     }
 
     fun onOutput(output: Output) {
-        when(output) {
+        when (output) {
             is Output.OpenBookingScreen -> TODO()
-            is Output.OpenMap -> TODO()
+            is Output.OpenMap -> showToast("map")
+            Output.DeleteBooking -> showToast("delete")
+            Output.ExtendBooking -> showToast("extend")
+            Output.RepeatBooking -> showToast("repeat")
         }
     }
 
     sealed interface Output {
         object OpenMap : Output
+
+        object ExtendBooking : Output
+
+        object RepeatBooking : Output
+
+        object DeleteBooking : Output
 
         object OpenBookingScreen : Output
 

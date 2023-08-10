@@ -13,7 +13,7 @@ import band.effective.office.elevator.ui.models.ReservedSeat
 fun BookingInformation(
     reservedSeats: List<ReservedSeat>,
     onClickBook: () -> Unit,
-    onClickShowMap: () -> Unit,
+    onClickOptionMenu: (Int) -> Unit,
     onClickShowOptions: () -> Unit,
     onClickOpenCalendar: () -> Unit,
     onClickOpenBottomDialog: () -> Unit
@@ -28,7 +28,7 @@ fun BookingInformation(
         SeatsReservation(
             reservedSeats = reservedSeats,
             onClickBook = onClickBook,
-            onClickShowMap = onClickShowMap,
+            onClickOptionMenu = onClickOptionMenu,
             onClickShowOptions = onClickShowOptions
         )
     }

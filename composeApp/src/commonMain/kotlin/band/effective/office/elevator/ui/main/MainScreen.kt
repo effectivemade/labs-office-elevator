@@ -91,7 +91,14 @@ fun MainScreen(component: MainComponent) {
             bottomSheetState = bottomSheetState,
             onClickBook = { component.onOutput(MainComponent.Output.OpenBookingScreen) },
             onClickShowOptions = { component.onEvent(MainStore.Intent.OnClickShowOption) },
-            onClickShowMap = { component.onOutput(MainComponent.Output.OpenMap) },
+            onClickOptionMenu = { index ->
+                when (index){
+                    0 -> component.onOutput(MainComponent.Output.OpenMap)
+                    1 -> component.onOutput(MainComponent.Output.ExtendBooking)
+                    2 -> component.onOutput(MainComponent.Output.RepeatBooking)
+                    3 -> component.onOutput(MainComponent.Output.DeleteBooking)
+                }
+            },
             onClickOpenCalendar = { component.onEvent(MainStore.Intent.OnClickOpenCalendar) },
             onClickOpenBottomDialog = {
                 coroutineScope.launch {
@@ -152,7 +159,7 @@ fun MainScreenContent(
     bottomSheetState: BottomSheetScaffoldState,
     reservedSeats: List<ReservedSeat>,
     onClickBook: () -> Unit,
-    onClickShowMap: () -> Unit,
+    onClickOptionMenu: (Int) -> Unit,
     onClickShowOptions: () -> Unit,
     onClickOpenCalendar: () -> Unit,
     onClickOpenBottomDialog: () -> Unit
@@ -193,7 +200,7 @@ fun MainScreenContent(
                 BookingInformation(
                     reservedSeats = reservedSeats,
                     onClickBook = onClickBook,
-                    onClickShowMap = onClickShowMap,
+                    onClickOptionMenu = onClickOptionMenu,
                     onClickShowOptions = onClickShowOptions,
                     onClickOpenCalendar = onClickOpenCalendar,
                     onClickOpenBottomDialog = onClickOpenBottomDialog

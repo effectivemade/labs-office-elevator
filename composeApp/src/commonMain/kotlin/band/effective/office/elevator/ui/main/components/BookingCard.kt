@@ -33,12 +33,13 @@ import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.expects.showPopupMenu
 import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.textGrayColor
+import band.effective.office.elevator.ui.main.store.MainStore
 import band.effective.office.elevator.ui.models.ReservedSeat
 
 @Composable
 fun BookingCard(
     seat: ReservedSeat,
-    onClickShowMap: () -> Unit,
+    onClickOptionMenu: (Int) -> Unit,
     onClickShowOptions: () -> Unit
 ) {
     var expand = remember { mutableStateOf(false) }
@@ -76,7 +77,7 @@ fun BookingCard(
                 )
                 if (expand.value)
                     showPopupMenu(expand = expand) { index ->
-
+                            onClickOptionMenu(index)
                     }
             }
         }

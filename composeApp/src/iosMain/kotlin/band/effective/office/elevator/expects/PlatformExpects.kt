@@ -25,6 +25,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedTheme
+import band.effective.office.elevator.ui.main.store.MainStore
+import band.effective.office.elevator.ui.models.ReservedSeat
 import band.effective.office.elevator.ui.uiViewController
 import io.github.aakira.napier.Napier
 import platform.UIKit.UIAlertController
@@ -91,16 +93,16 @@ actual fun showPopupMenu(expand: MutableState<Boolean>, onItemSelected: (Int) ->
             dropDownList.forEachIndexed { index, stringResource ->
                 Column {
                     DropdownMenuItem(
-                        text = {
-                            Text(
-                                text = stringResource,
-                                style = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary)
-                            )
-                        },
                         onClick = {
-                            onItemSelected(index)
                             expand.value = !expand.value
-                        })
+                            onItemSelected(index)
+                        }
+                    ) {
+                        Text(
+                            text = stringResource,
+                            style = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary)
+                        )
+                    }
                 }
             }
         }

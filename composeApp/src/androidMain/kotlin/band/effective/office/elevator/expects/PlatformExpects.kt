@@ -34,6 +34,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.AndroidApp
 import band.effective.office.elevator.ExtendedTheme
+import band.effective.office.elevator.ui.main.components.PopupItem
+import band.effective.office.elevator.ui.main.store.MainStore
+import band.effective.office.elevator.ui.models.ReservedSeat
 
 actual fun showToast(message: String) {
     Toast.makeText(AndroidApp.INSTANCE.applicationContext, message, Toast.LENGTH_SHORT).show()
@@ -130,13 +133,6 @@ actual fun showPopupMenu(expand: MutableState<Boolean>, onItemSelected: (Int) ->
                             style = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary)
                         )
                     }
-                    if (index == dropDownList.size)
-                        Divider(
-                            modifier = Modifier
-                                .height(1.dp)
-                                .fillMaxWidth()
-                                .background(color = ExtendedTheme.colors._66x)
-                        )
                 }
             }
         }
