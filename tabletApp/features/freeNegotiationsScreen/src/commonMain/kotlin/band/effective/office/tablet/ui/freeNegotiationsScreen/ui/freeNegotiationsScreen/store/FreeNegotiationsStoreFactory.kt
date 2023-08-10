@@ -41,7 +41,7 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
                     launch() {
                         val response = roomInfoUseCase.getOtherRoom(checkSettingsUseCase())
                         when(response){
-                            is Either.Error -> TODO("Maksim Mishenko add error handler")
+                            is Either.Error -> dispatch(Action.FailLoad)
                             is Either.Success -> {
                                 dispatch(Action.GetFreeRoomsInfo(response.data))
                                 timer.subscribe {
@@ -62,6 +62,7 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
         data class GetFreeRoomsInfo(val roomsInfo: List<RoomInfo>) : Action
         object UpdateChangeEventTime : Action
         object ResponseError : Action
+        object FailLoad : Action
     }
 
     private sealed interface Message {
@@ -126,6 +127,8 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
                 is Action.ResponseError -> {
                     dispatch(Message.ResponseError)
                 }
+
+                Action.FailLoad -> dispatch(Message.ResponseError)
             }
         }
 
@@ -159,7 +162,7 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
             }
             if (roomInfo.changeEventTime == 0) {
                 return withContext(Dispatchers.IO) {
-                    val room = roomInfoUseCase.invoke(room = "Pluto_upd").unbox(
+                    val room = roomInfoUseCase(roomInfo.room.name).unbox(
                         errorHandler = {
                             it.saveData ?: RoomInfo.defaultValue
                         },
