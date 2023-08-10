@@ -20,7 +20,8 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, Nothing> {
         val showBookingModal: Boolean,
         val showFreeModal: Boolean,
         val showDateTimePickerModal: Boolean,
-        val isDisconnect: Boolean
+        val isDisconnect: Boolean,
+        val isSettings: Boolean
     ) {
         fun showModal() = showFreeModal || showBookingModal || showDateTimePickerModal
 
@@ -33,7 +34,8 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, Nothing> {
                     showBookingModal = false,
                     showFreeModal = false,
                     showDateTimePickerModal = false,
-                    isDisconnect = false
+                    isDisconnect = false,
+                    isSettings = false
                 )
         }
     }

@@ -8,6 +8,8 @@ import androidx.compose.runtime.getValue
 import band.effective.office.tablet.ui.common.ErrorMainScreen
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
 import band.effective.office.tablet.ui.mainScreen.mainScreen.uiComponents.LoadMainScreen
+import band.effective.office.tablet.ui.mainScreen.settingsComponents.SettingsScreen
+import band.effective.office.tablet.ui.mainScreen.settingsComponents.SettingsView
 
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable
@@ -35,6 +37,10 @@ fun MainScreen(component: MainComponent) {
                 showModal = state.showModal(),
                 isDisconnect = state.isDisconnect
             )
+        }
+
+        state.isSettings -> {
+            component.onSettings()
         }
     }
 }
