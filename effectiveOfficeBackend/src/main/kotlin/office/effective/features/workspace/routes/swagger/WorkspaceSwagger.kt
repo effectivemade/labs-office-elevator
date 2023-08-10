@@ -5,6 +5,7 @@ import io.ktor.http.*
 import office.effective.common.swagger.SwaggerDocument
 import office.effective.features.workspace.dto.UtilityDTO
 import office.effective.features.workspace.dto.WorkspaceDTO
+import office.effective.features.workspace.dto.WorkspaceZoneDTO
 
 fun SwaggerDocument.returnWorkspaceById(): OpenApiRoute.() -> Unit = {
     description = "Return workspace by id"
@@ -59,6 +60,18 @@ fun SwaggerDocument.returnWorkspaceByTag(): OpenApiRoute.() -> Unit = {
             required = true
             allowEmptyValue = false
         }
+        queryParameter<Long>("free_from") {
+            description = "Timestamp from which the workspace should be free"
+            example = 1691591501000L
+            required = false
+            allowEmptyValue = false
+        }
+        queryParameter<Long>("free_until") {
+            description = "Timestamp before which the workspace should be free."
+            example = 1691591578000L
+            required = false
+            allowEmptyValue = false
+        }
     }
     response {
         HttpStatusCode.OK to {
@@ -95,13 +108,34 @@ fun SwaggerDocument.returnWorkspaceByTag(): OpenApiRoute.() -> Unit = {
             }
         }
         HttpStatusCode.BadRequest to {
-            description = "Bad request"
+            description = "Tag shouldn't be null, free_from " +
+                    "and free_until should be numbers from 0 to 2147483647000 (max timestamp)"
         }
         HttpStatusCode.NotFound to {
             description = "Provided tag doesn't exist"
         }
     }
 }
+
+fun SwaggerDocument.returnAllZones(): OpenApiRoute.() -> Unit = {
+    description = "Returns all workspace zones"
+    tags = listOf("workspaces")
+    response {
+        HttpStatusCode.OK to {
+            description = "Returns all workspaces found by tag"
+            body<List<WorkspaceZoneDTO>> {
+                example(
+                    "Zones", listOf(
+                        zoneExample1, zoneExample2
+                    )
+                ) {}
+            }
+        }
+    }
+}
+
+private val zoneExample1 = WorkspaceZoneDTO("3ca26fe0-f837-4939-b586-dd4195d2a504","Cassiopeia")
+private val zoneExample2 = WorkspaceZoneDTO("6cb3c60d-3c29-4a45-80e6-fac14fb0569b","Sirius")
 
 enum class WorkspaceTag(val tagName: String) {
     meeting("meeting"), regular("regular")

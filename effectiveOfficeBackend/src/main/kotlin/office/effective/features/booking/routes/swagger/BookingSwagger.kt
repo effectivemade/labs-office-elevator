@@ -26,52 +26,7 @@ fun SwaggerDocument.returnBookingById(): OpenApiRoute.() -> Unit = {
             description = "Returns booking found by id"
             body<BookingDTO> {
                 example(
-                    "Bookings", BookingDTO(
-                        owner = UserDTO(
-                            id = "2c77feee-2bc1-11ee-be56-0242ac120002",
-                            fullName = "Ivan Ivanov",
-                            active = true,
-                            role = "employee",
-                            avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                            integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "123@effective.band"))
-                        ),
-                        participants = listOf(
-                            UserDTO(
-                                id = "2c77feee-2bc1-11ee-be56-0242ac120002",
-                                fullName = "Ivan Ivanov",
-                                active = true,
-                                role = "employee",
-                                avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                                integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "123@effective.band"))
-                            ),
-                            UserDTO(
-                                id = "207b9634-2bc4-11ee-be56-0242ac120002",
-                                fullName = "Grzegorz Brzęczyszczykiewicz",
-                                active = true,
-                                role = "guest",
-                                avatarUrl = "https://img.freepik.com/free-photo/capybara-in-the-nature-habitat-of-northern-pantanal_475641-1029.jpg",
-                                integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "somemail@gmail.com"))
-                            )
-                        ),
-                        workspace = WorkspaceDTO(
-                            id = "2561471e-2bc6-11ee-be56-0242ac120002", name = "Sun", utilities = listOf(
-                                UtilityDTO(
-                                    id = "50d89406-2bc6-11ee-be56-0242ac120002",
-                                    name = "Sockets",
-                                    iconUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                                    count = 8
-                                ), UtilityDTO(
-                                    id = "a62a86c6-2bc6-11ee-be56-0242ac120002",
-                                    name = "Projectors",
-                                    iconUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                                    count = 1
-                                )
-                            )
-                        ),
-                        id = "c48c2a3d-bbfd-4801-b121-973ae3cf4cd9",
-                        beginBooking = 1691299526000,
-                        endBooking = 1691310326000,
-                    )
+                    "Bookings", bookingExample1
                 ) {}
             }
         }
@@ -107,84 +62,7 @@ fun SwaggerDocument.returnBookings(): OpenApiRoute.() -> Unit = {
             body<List<BookingDTO>> {
                 example(
                     "Workspace", listOf(
-                        BookingDTO(
-                            owner = UserDTO(
-                                id = "2c77feee-2bc1-11ee-be56-0242ac120002",
-                                fullName = "Ivan Ivanov",
-                                active = true,
-                                role = "employee",
-                                avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                                integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "123@effective.band"))
-                            ),
-                            participants = listOf(
-                                UserDTO(
-                                    id = "2c77feee-2bc1-11ee-be56-0242ac120002",
-                                    fullName = "Ivan Ivanov",
-                                    active = true,
-                                    role = "employee",
-                                    avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                                    integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "123@effective.band"))
-                                ),
-                                UserDTO(
-                                    id = "207b9634-2bc4-11ee-be56-0242ac120002",
-                                    fullName = "Grzegorz Brzęczyszczykiewicz",
-                                    active = true,
-                                    role = "guest",
-                                    avatarUrl = "https://img.freepik.com/free-photo/capybara-in-the-nature-habitat-of-northern-pantanal_475641-1029.jpg",
-                                    integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "somemail@gmail.com"))
-                                )
-                            ),
-                            workspace = WorkspaceDTO(
-                                id = "2561471e-2bc6-11ee-be56-0242ac120002", name = "Sun", utilities = listOf(
-                                    UtilityDTO(
-                                        id = "50d89406-2bc6-11ee-be56-0242ac120002",
-                                        name = "Sockets",
-                                        iconUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                                        count = 8
-                                    ), UtilityDTO(
-                                        id = "a62a86c6-2bc6-11ee-be56-0242ac120002",
-                                        name = "Projectors",
-                                        iconUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                                        count = 1
-                                    )
-                                )
-                            ),
-                            id = "c48c2a3d-bbfd-4801-b121-973ae3cf4cd9",
-                            beginBooking = 1691299526000,
-                            endBooking = 1691310326000,
-                        ), BookingDTO(
-                            owner = UserDTO(
-                                id = "2c77feee-2bc1-11ee-be56-0242ac120002",
-                                fullName = "Ivan Ivanov",
-                                active = true,
-                                role = "employee",
-                                avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                                integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "123@effective.band"))
-                            ),
-                            participants = listOf(
-                                UserDTO(
-                                    id = "2c77feee-2bc1-11ee-be56-0242ac120002",
-                                    fullName = "Ivan Ivanov",
-                                    active = true,
-                                    role = "employee",
-                                    avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                                    integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "123@effective.band"))
-                                )
-                            ),
-                            workspace = WorkspaceDTO(
-                                id = "00f9b35d-08c3-4f4b-8d09-1fbb3a3673c5", name = "Moon", utilities = listOf(
-                                    UtilityDTO(
-                                        id = "a62a86c6-2bc6-11ee-be56-0242ac120002",
-                                        name = "Projectors",
-                                        iconUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                                        count = 1
-                                    )
-                                )
-                            ),
-                            id = "d703c8a6-f58d-49d8-a074-19e75a9910e7",
-                            beginBooking = 1691409670000,
-                            endBooking = 1691420470000,
-                        )
+                        bookingExample1, bookingExample2
                     )
                 ) {}
             }
@@ -250,44 +128,7 @@ fun SwaggerDocument.postBooking(): OpenApiRoute.() -> Unit = {
             description = "Returns saved booking"
             body<BookingDTO> {
                 example(
-                    "Bookings", BookingDTO(
-                        owner = UserDTO(
-                            id = "2c77feee-2bc1-11ee-be56-0242ac120002",
-                            fullName = "Ivan Ivanov",
-                            active = true,
-                            role = "employee",
-                            avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                            integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "123@effective.band"))
-                        ),
-                        participants = listOf(
-                            UserDTO(
-                                id = "2c77feee-2bc1-11ee-be56-0242ac120002",
-                                fullName = "Ivan Ivanov",
-                                active = true,
-                                role = "employee",
-                                avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                                integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "123@effective.band"))
-                            )
-                        ),
-                        workspace = WorkspaceDTO(
-                            id = "2561471e-2bc6-11ee-be56-0242ac120002", name = "Sun", utilities = listOf(
-                                UtilityDTO(
-                                    id = "50d89406-2bc6-11ee-be56-0242ac120002",
-                                    name = "Sockets",
-                                    iconUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                                    count = 8
-                                ), UtilityDTO(
-                                    id = "a62a86c6-2bc6-11ee-be56-0242ac120002",
-                                    name = "Projectors",
-                                    iconUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                                    count = 1
-                                )
-                            )
-                        ),
-                        id = "c48c2a3d-bbfd-4801-b121-973ae3cf4cd9",
-                        beginBooking = 1691299526000,
-                        endBooking = 1691310326000,
-                    )
+                    "Bookings", bookingExample2
                 ) {}
             }
         }
@@ -306,52 +147,7 @@ fun SwaggerDocument.putBooking(): OpenApiRoute.() -> Unit = {
     request {
         body<BookingDTO> {
             example(
-                "Bookings", BookingDTO(
-                    owner = UserDTO(
-                        id = "2c77feee-2bc1-11ee-be56-0242ac120002",
-                        fullName = "Ivan Ivanov",
-                        active = true,
-                        role = "employee",
-                        avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                        integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "123@effective.band"))
-                    ),
-                    participants = listOf(
-                        UserDTO(
-                            id = "2c77feee-2bc1-11ee-be56-0242ac120002",
-                            fullName = "Ivan Ivanov",
-                            active = true,
-                            role = "employee",
-                            avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                            integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "123@effective.band"))
-                        ),
-                        UserDTO(
-                            id = "207b9634-2bc4-11ee-be56-0242ac120002",
-                            fullName = "Grzegorz Brzęczyszczykiewicz",
-                            active = true,
-                            role = "guest",
-                            avatarUrl = "https://img.freepik.com/free-photo/capybara-in-the-nature-habitat-of-northern-pantanal_475641-1029.jpg",
-                            integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "somemail@gmail.com"))
-                        )
-                    ),
-                    workspace = WorkspaceDTO(
-                        id = "2561471e-2bc6-11ee-be56-0242ac120002", name = "Sun", utilities = listOf(
-                            UtilityDTO(
-                                id = "50d89406-2bc6-11ee-be56-0242ac120002",
-                                name = "Sockets",
-                                iconUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                                count = 8
-                            ), UtilityDTO(
-                                id = "a62a86c6-2bc6-11ee-be56-0242ac120002",
-                                name = "Projectors",
-                                iconUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                                count = 1
-                            )
-                        )
-                    ),
-                    id = "c48c2a3d-bbfd-4801-b121-973ae3cf4cd9",
-                    beginBooking = 1691399526000,
-                    endBooking = 1691410326000,
-                )
+                "Bookings", bookingExample1
             )
         }
     }
@@ -360,52 +156,7 @@ fun SwaggerDocument.putBooking(): OpenApiRoute.() -> Unit = {
             description = "Returns saved booking"
             body<BookingDTO> {
                 example(
-                    "Bookings", BookingDTO(
-                        owner = UserDTO(
-                            id = "2c77feee-2bc1-11ee-be56-0242ac120002",
-                            fullName = "Ivan Ivanov",
-                            active = true,
-                            role = "employee",
-                            avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                            integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "123@effective.band"))
-                        ),
-                        participants = listOf(
-                            UserDTO(
-                                id = "2c77feee-2bc1-11ee-be56-0242ac120002",
-                                fullName = "Ivan Ivanov",
-                                active = true,
-                                role = "employee",
-                                avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                                integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "123@effective.band"))
-                            ),
-                            UserDTO(
-                                id = "207b9634-2bc4-11ee-be56-0242ac120002",
-                                fullName = "Grzegorz Brzęczyszczykiewicz",
-                                active = true,
-                                role = "guest",
-                                avatarUrl = "https://img.freepik.com/free-photo/capybara-in-the-nature-habitat-of-northern-pantanal_475641-1029.jpg",
-                                integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "somemail@gmail.com"))
-                            )
-                        ),
-                        workspace = WorkspaceDTO(
-                            id = "2561471e-2bc6-11ee-be56-0242ac120002", name = "Sun", utilities = listOf(
-                                UtilityDTO(
-                                    id = "50d89406-2bc6-11ee-be56-0242ac120002",
-                                    name = "Sockets",
-                                    iconUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                                    count = 8
-                                ), UtilityDTO(
-                                    id = "a62a86c6-2bc6-11ee-be56-0242ac120002",
-                                    name = "Projectors",
-                                    iconUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                                    count = 1
-                                )
-                            )
-                        ),
-                        id = "c48c2a3d-bbfd-4801-b121-973ae3cf4cd9",
-                        beginBooking = 1691399526000,
-                        endBooking = 1691410326000,
-                    )
+                    "Bookings", bookingExample1
                 ) {}
             }
         }
@@ -438,3 +189,89 @@ fun SwaggerDocument.deleteBookingById(): OpenApiRoute.() -> Unit = {
         }
     }
 }
+
+private val bookingExample1 = BookingDTO(
+    owner = UserDTO(
+        id = "2c77feee-2bc1-11ee-be56-0242ac120002",
+        fullName = "Ivan Ivanov",
+        active = true,
+        role = "employee",
+        avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
+        integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "123@effective.band"))
+    ),
+    participants = listOf(
+        UserDTO(
+            id = "2c77feee-2bc1-11ee-be56-0242ac120002",
+            fullName = "Ivan Ivanov",
+            active = true,
+            role = "employee",
+            avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
+            integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "123@effective.band"))
+        ),
+        UserDTO(
+            id = "207b9634-2bc4-11ee-be56-0242ac120002",
+            fullName = "Grzegorz Brzęczyszczykiewicz",
+            active = true,
+            role = "guest",
+            avatarUrl = "https://img.freepik.com/free-photo/capybara-in-the-nature-habitat-of-northern-pantanal_475641-1029.jpg",
+            integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "somemail@gmail.com"))
+        )
+    ),
+    workspace = WorkspaceDTO(
+        id = "2561471e-2bc6-11ee-be56-0242ac120002", name = "Sun", utilities = listOf(
+            UtilityDTO(
+                id = "50d89406-2bc6-11ee-be56-0242ac120002",
+                name = "Sockets",
+                iconUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
+                count = 8
+            ), UtilityDTO(
+                id = "a62a86c6-2bc6-11ee-be56-0242ac120002",
+                name = "Projectors",
+                iconUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
+                count = 1
+            )
+        )
+    ),
+    id = "c48c2a3d-bbfd-4801-b121-973ae3cf4cd9",
+    beginBooking = 1691299526000,
+    endBooking = 1691310326000,
+)
+
+private val bookingExample2 = BookingDTO(
+    owner = UserDTO(
+        id = "2c77feee-2bc1-11ee-be56-0242ac120002",
+        fullName = "Ivan Ivanov",
+        active = true,
+        role = "employee",
+        avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
+        integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "123@effective.band"))
+    ),
+    participants = listOf(
+        UserDTO(
+            id = "2c77feee-2bc1-11ee-be56-0242ac120002",
+            fullName = "Ivan Ivanov",
+            active = true,
+            role = "employee",
+            avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
+            integrations = listOf(IntegrationDTO("c717cf6e-28b3-4148-a469-032991e5d9e9", "email", "123@effective.band"))
+        )
+    ),
+    workspace = WorkspaceDTO(
+        id = "2561471e-2bc6-11ee-be56-0242ac120002", name = "Sun", utilities = listOf(
+            UtilityDTO(
+                id = "50d89406-2bc6-11ee-be56-0242ac120002",
+                name = "Sockets",
+                iconUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
+                count = 8
+            ), UtilityDTO(
+                id = "a62a86c6-2bc6-11ee-be56-0242ac120002",
+                name = "Projectors",
+                iconUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
+                count = 1
+            )
+        )
+    ),
+    id = "c48c2a3d-bbfd-4801-b121-973ae3cf4cd9",
+    beginBooking = 1691299526000,
+    endBooking = 1691310326000,
+)

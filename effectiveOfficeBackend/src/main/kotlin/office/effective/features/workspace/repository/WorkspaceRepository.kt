@@ -1,13 +1,16 @@
 package office.effective.features.workspace.repository
 
 import office.effective.common.exception.InstanceNotFoundException
+import office.effective.features.booking.repository.WorkspaceBooking
 import office.effective.features.workspace.converters.WorkspaceRepositoryConverter
 import office.effective.model.Utility
 import office.effective.model.Workspace
+import office.effective.model.WorkspaceZone
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
 import org.ktorm.entity.*
 import org.ktorm.support.postgresql.insertOrUpdate
+import java.time.Instant
 import java.util.UUID
 
 class WorkspaceRepository(private val database: Database, private val converter: WorkspaceRepositoryConverter) {
@@ -89,6 +92,43 @@ class WorkspaceRepository(private val database: Database, private val converter:
             val utilities: List<Utility> = findUtilityModels(it.id)
             converter.entityToModel(it, utilities)
         }
+    }
+
+    /**
+     * Returns all workspaces with the given tag which are free during the given period
+     *
+     * @throws InstanceNotFoundException if tag doesn't exist in the database
+     *
+     * @author Daniil Zavyalov
+     */
+    fun findAllFreeByPeriod(tag: String, beginTimestamp: Instant, endTimestamp: Instant): List<Workspace> {
+        if (database.workspaceTags.count { it.name eq tag } == 0)
+            throw InstanceNotFoundException(WorkspaceTagEntity::class, "Workspace tag $tag not found")
+
+        return database.from(Workspaces)
+            .innerJoin(right = WorkspaceTags, on = WorkspaceTags.id eq Workspaces.tagId)
+            .innerJoin(right = WorkspaceZones, on = WorkspaceZones.id eq Workspaces.zoneId)
+            .leftJoin(
+                right = WorkspaceBooking,
+                on = (Workspaces.id eq WorkspaceBooking.workspaceId)
+                    .and(WorkspaceBooking.beginBooking lt endTimestamp)
+                    .and(WorkspaceBooking.endBooking gt beginTimestamp)
+            )
+            .select()
+            .where(WorkspaceBooking.workspaceId.isNull() and (WorkspaceTags.name eq tag))
+            .map { row ->
+                val entity = Workspaces.createEntity(row)
+                converter.entityToModel(entity, findUtilitiesByWorkspaceId(entity.id))
+            }.toList()
+    }
+
+    /**
+     * Returns all workspace zones
+     *
+     * @author Daniil Zavyalov
+     */
+    fun findAllZones(): List<WorkspaceZone> {
+        return database.workspaceZones.map { converter.zoneEntityToModel(it) }
     }
 
     /**
