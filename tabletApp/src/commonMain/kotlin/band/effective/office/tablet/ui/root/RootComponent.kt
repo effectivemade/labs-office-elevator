@@ -74,13 +74,13 @@ class RootComponent(componentContext: ComponentContext, private val storeFactory
                     componentContext = componentContext,
                     storeFactory = storeFactory,
                     onMainScreen = {
-                       /* navigation.pop()
-                        (childStack.value.active.instance as Child.MainChild).component.sendIntent(
-                            MainStore.Intent.RebootRequest
-                        )*/
                         navigation.push(Config.Main)
                     },
-                    onExitApp = {}
+                    onExitApp = {
+                        /*(Margarita Djinjolia)
+                         https://stackoverflow.com/a/21576676 */
+                        android.os.Process.killProcess(android.os.Process.myPid())
+                    }
                 )
             )
         }
