@@ -43,7 +43,7 @@ fun Route.userRouting() {
             call.respond(users ?: "no such users")
         }
         get("/{user_id}", SwaggerDocument.returnUserById()) {
-            val userId = call.parameters["user_id"] ?: return@get call.respond(HttpStatusCode.BadRequest)
+            val userId : String = call.parameters["user_id"] ?: return@get call.respond(HttpStatusCode.BadRequest)
             val user = facade.getUserById(userId, "zsd")
             call.respond(user)
         }
