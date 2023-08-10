@@ -11,7 +11,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         object OnBookingCurrentRoom : Intent
         object OnBookingOtherRoom : Intent
         data class OnChangeDate(val changeInDay: Int) : Intent
-        data class OnSetDate(val changedDay: Int, val changedMonth: Int) : Intent
+        data class OnSetDate(val changedDay: Int, val changedMonth: Int, val changedYear: Int, val changedHour: Int, val changedMinute: Int) : Intent
         data class OnChangeLength(val change: Int) : Intent
         data class OnChangeOrganizer(val newOrganizer: Organizer) : Intent
         object OnChangeExpanded : Intent

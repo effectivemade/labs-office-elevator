@@ -52,6 +52,10 @@ kotlin {
                 //EpicDatePicker
                 implementation(Dependencies.Calendar.composeDatePicker)
 
+                //WheelTimePicker
+                implementation(Dependencies.KotlinxDatetime.kotlinxDatetime)
+                implementation(project(":wheel-picker-compose"))
+
                 implementation(project(":tabletApp:features:core"))
                 implementation(project(":tabletApp:features:network"))
                 implementation(project(":tabletApp:features:domain"))

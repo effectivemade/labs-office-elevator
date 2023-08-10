@@ -4,6 +4,7 @@ import band.effective.office.tablet.ui.bookingComponents.pickerDateTime.DateTime
 import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomComponent
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingRoomComponent
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store.BookingStore
+import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.pickerDateTime.DateTimePickerComponent
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainFactory
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.RoomInfoComponent
@@ -22,7 +23,8 @@ import kotlinx.coroutines.launch
 class MainComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
-    private val OnSelectOtherRoomRequest: () -> Unit
+    private val OnSelectOtherRoomRequest: () -> Unit,
+    val onSettings: () -> Unit
 ) : ComponentContext by componentContext {
 
     val roomInfoComponent: RoomInfoComponent = RoomInfoComponent(
@@ -74,6 +76,10 @@ class MainComponent(
                         changedMonth = month
                     )
                 )
+            },
+            setNewDate = {
+                    day: Int, month: Int, year: Int, hour: Int, minute: Int ->
+                        bookingRoomComponent.sendIntent(BookingStore.Intent.OnSetDate(day, month, year, hour, minute))
             },
         )
 

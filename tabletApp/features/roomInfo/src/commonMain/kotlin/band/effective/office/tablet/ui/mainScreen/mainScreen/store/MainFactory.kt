@@ -2,6 +2,8 @@ package band.effective.office.tablet.ui.mainScreen.mainScreen.store
 
 import band.effective.office.network.model.Either
 import band.effective.office.tablet.domain.model.EventInfo
+import band.effective.office.tablet.domain.model.Settings
+import band.effective.office.tablet.domain.useCase.CheckSettingsUseCase
 import band.effective.office.tablet.domain.useCase.RoomInfoUseCase
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
@@ -16,6 +18,7 @@ import org.koin.core.component.inject
 class MainFactory(private val storeFactory: StoreFactory) : KoinComponent {
 
     private val roomInfoUseCase: RoomInfoUseCase by inject()
+    private val checkSettingsUseCase: CheckSettingsUseCase by inject()
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): MainStore =
@@ -25,11 +28,15 @@ class MainFactory(private val storeFactory: StoreFactory) : KoinComponent {
                 initialState = MainStore.State.defaultState,
                 bootstrapper = coroutineBootstrapper {
                     launch {
-                        dispatch(
-                            Action.OnLoad(
-                                roomInfoUseCase() is Either.Success
+                        if(checkSettingsUseCase().isEmpty()){
+                            dispatch(Action.OnSettings)
+                        } else {
+                            dispatch(
+                                Action.OnLoad(
+                                    roomInfoUseCase(checkSettingsUseCase()) is Either.Success
+                                )
                             )
-                        )
+                        }
                     }
                 },
                 executorFactory = ::ExecutorImpl,
@@ -47,10 +54,12 @@ class MainFactory(private val storeFactory: StoreFactory) : KoinComponent {
         object Reboot : Message
 
         data class OpenUpdateModal(val eventInfo: EventInfo) : Message
+        object OnSettings : Message
     }
 
     private sealed interface Action {
         data class OnLoad(val isSuccess: Boolean) : Action
+        object OnSettings : Action
     }
 
     private inner class ExecutorImpl() :
@@ -70,12 +79,13 @@ class MainFactory(private val storeFactory: StoreFactory) : KoinComponent {
 
         fun reboot() = scope.launch {
             dispatch(Message.Reboot)
-            dispatch(Message.Load(roomInfoUseCase() is Either.Success))
+            dispatch(Message.Load(roomInfoUseCase(checkSettingsUseCase()) is Either.Success))
         }
 
         override fun executeAction(action: Action, getState: () -> MainStore.State) {
             when (action) {
                 is Action.OnLoad -> dispatch(Message.Load(action.isSuccess))
+                is Action.OnSettings -> dispatch(Message.OnSettings)
             }
         }
     }
@@ -100,9 +110,18 @@ class MainFactory(private val storeFactory: StoreFactory) : KoinComponent {
 
                 is Message.OpenFreeModal -> copy(showFreeModal = true)
                 is Message.UpdateDisconnect -> copy(isDisconnect = message.newValue)
-                is Message.Reboot -> copy(isError = false, isLoad = true)
+                is Message.Reboot -> copy(
+                    isError = false,
+                    isLoad = true
+                )
                 is Message.OpenDateTimePickerModal -> copy(showDateTimePickerModal = true)
                 is Message.OpenUpdateModal -> copy(showUpdateModal = true, updatedEvent = message.eventInfo)
+                is Message.OnSettings -> copy(
+                    isError = false,
+                    isLoad = false,
+                    isData = false,
+                    isSettings = true
+                )
             }
     }
 }

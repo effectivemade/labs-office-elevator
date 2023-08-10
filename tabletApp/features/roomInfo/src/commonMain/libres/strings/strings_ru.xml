@@ -15,6 +15,7 @@
     <string name="minuit_genitive">минуты</string>
     <string name="minuit_plural">минут</string>
     <string name="booking_view_title">Занять</string>
+    <string name="timepicker_view_title"> Занять с </string>
     <string name="booking_button_text">Занять ${roomName}</string>
     <string name="busy_duration_string">До конца</string>
     <string name="free_duration_string">Будет занята через</string>
@@ -32,4 +33,7 @@
     <string name="disconnect">Нет соединения с сервером</string>
     <string name="reset">Перезагрузите приложение</string>
     <string name="reset_button">Перезагрузить приложение</string>
+    <string name="exit">Выход</string>
+    <string name="rooms">Переговорки</string>
+    <string name="choose_room">Выбрать ${nameRoom}</string>
 </resources>
