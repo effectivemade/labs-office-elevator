@@ -36,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.MainRes
@@ -232,7 +233,8 @@ private fun AboutEmployeeContent(
                 Text(
                     text = stringResource(MainRes.strings.upcoming_bookings),
                     style = MaterialTheme.typography.body1,
-                    modifier = Modifier.padding(vertical = 24.dp).padding(end = 16.dp)
+                    modifier = Modifier.padding(vertical = 24.dp).padding(end = 16.dp),
+                    fontWeight = FontWeight(500)
                 )
                 Row (
                     horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.End),
@@ -248,7 +250,6 @@ private fun AboutEmployeeContent(
                     reservedSeats =  reservedSeats,
                 )
             }
-            //TODO:()
         }
     }
     }

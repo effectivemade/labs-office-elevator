@@ -26,7 +26,7 @@
     <string name="by_date"> By date </string>
     <string name="show_map">Show on map</string>
     <string name="book_a_seat">Book a seat</string>
-    <string name="nearest_bookings">Your\nupcoming\nbookings</string>
+    <string name="nearest_bookings">Bookings</string>
     <string name="none_booking_seat">You dont have any bookings yet</string>
 
     <string name="filter_by_category">Filter by category</string>

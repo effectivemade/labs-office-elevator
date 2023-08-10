@@ -43,7 +43,7 @@
     <string name="by_date">По дате</string>
     <string name="show_map">Карта</string>
     <string name="book_a_seat">Забронировать место</string>
-    <string name="nearest_bookings">Ваши\nближайшие\nброни</string>
+    <string name="nearest_bookings">Брони</string>
     <string name="none_booking_seat">У вас пока нет бронирований</string>
     <string name="place_booked">Место забронировано</string>
     <string name="good_working_day">Хорошего рабочего дня!</string>
