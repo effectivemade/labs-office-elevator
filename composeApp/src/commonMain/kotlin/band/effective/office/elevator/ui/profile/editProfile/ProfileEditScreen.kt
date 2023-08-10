@@ -22,11 +22,11 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -91,6 +91,11 @@ private fun ProfileEditScreenContent(
     isErrorPost: Boolean,
     isErrorTelegram: Boolean
 ) {
+    val userNameText = rememberSaveable { mutableStateOf(userName) }
+    val phoneNumberText = rememberSaveable { mutableStateOf(phoneNumber) }
+    val postText = rememberSaveable { mutableStateOf(post) }
+    val telegramText = rememberSaveable { mutableStateOf(telegram) }
+
     Column (
         modifier = Modifier.fillMaxSize().background(Color.White).padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -99,47 +104,52 @@ private fun ProfileEditScreenContent(
         ProfileEditHeader(onReturnToProfile)
         LazyColumn(modifier = Modifier.padding(top= 28.dp)){
             items(getAllUserDataEditProfile()){item->
-                var text by remember{ mutableStateOf("") }
-                var error = false
-                var visualTransformation = VisualTransformation.None
                     when(item){
                     UserDataEditProfile.Phone -> {
-                        text = phoneNumber
-                        error = isErrorPhone
-                        visualTransformation = PhoneMaskTransformation()
+                        FieldsItemStyle(
+                            item = item,
+                            text = phoneNumberText,
+                            error =  isErrorPhone,
+                            visualTransformation = PhoneMaskTransformation())
                     }
                     UserDataEditProfile.Person -> {
-                        text = userName
-                        error = isErrorName
+                        FieldsItemStyle(
+                            item = item,
+                            text = userNameText,
+                            error =  isErrorName
+                        )
                     }
                     UserDataEditProfile.Post -> {
-                        text = post
-                        error = isErrorPost
+                        FieldsItemStyle(
+                            item = item,
+                            text = postText,
+                            error =  isErrorPost
+                        )
                     }
                     UserDataEditProfile.Telegram ->{
-                        text = telegram
-                        error = isErrorTelegram
+                        FieldsItemStyle(
+                            item = item,
+                            text = telegramText,
+                            error =  isErrorTelegram
+                        )
                     }
                 }
-                FieldsItemStyle(item = item,text = text, error =  error, visualTransformation = visualTransformation)
             }
             item {
-                for (item in getAllUserDataEditProfile()){
-                    EffectiveButton(
-                        onClick = {onSaveChange(
-                            userName,
-                            post,
-                            phoneNumber,
-                            telegram
-                        )},
-                        buttonText = stringResource(MainRes.strings.save),
-                        modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp, top = 32.dp)
+                EffectiveButton(
+                    onClick = {onSaveChange(
+                        userNameText.value,
+                        postText.value,
+                        phoneNumberText.value,
+                        telegramText.value
+                    )},
+                    buttonText = stringResource(MainRes.strings.save),
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp, top = 32.dp)
                     )
                 }
             }
         }
     }
-}
 
 
 
@@ -147,10 +157,9 @@ private fun ProfileEditScreenContent(
 private fun FieldsItemStyle(
     item: UserDataEditProfile,
     error: Boolean,
-    visualTransformation: VisualTransformation,
-    text: String
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    text: MutableState<String>,
 ){
-
     Column(
         modifier = Modifier.padding(top = 16.dp).fillMaxWidth()
     ) {
@@ -161,9 +170,9 @@ private fun FieldsItemStyle(
             color = Color.Black
         )
         OutlinedTextField(
-            value = text,
+            value = text.value,
             modifier = Modifier.fillMaxWidth(),
-            onValueChange = {  text = it},
+            onValueChange = { text.value = it},
             shape = RoundedCornerShape(12.dp),
             singleLine = true,
             textStyle = TextStyle(fontSize = 16.sp),
@@ -181,7 +190,7 @@ private fun FieldsItemStyle(
                 }
                           },
             trailingIcon = {
-                IconButton(onClick = {message = ""}){
+                IconButton(onClick = {text.value = ""}){
                     Icon(
                         painter = painterResource(MainRes.images.clear_icon),
                         contentDescription = null,
@@ -195,7 +204,7 @@ private fun FieldsItemStyle(
             isError = error,
             visualTransformation = visualTransformation
         )
-        }
+    }
 }
 
 
