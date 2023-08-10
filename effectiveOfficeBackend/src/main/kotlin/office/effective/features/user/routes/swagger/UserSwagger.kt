@@ -109,9 +109,9 @@ fun SwaggerDocument.returnUserById(): OpenApiRoute.() -> Unit = {
     description = "Return user by id"
     tags = listOf("users")
     request {
-        pathParameter<String>("id") {
+        pathParameter<String>("user_id") {
             description = "User id"
-            example = "2561471e-2bc6-11ee-be56-0242ac120002"
+            example = "87e66ee0-2550-4188-8d79-75560125836a"
             required = true
             allowEmptyValue = false
         }
