@@ -28,6 +28,7 @@ import band.effective.office.tablet.ui.bookingComponents.EventDurationView
 import band.effective.office.tablet.ui.bookingComponents.EventOrganizerView
 import band.effective.office.tablet.ui.buttons.alert.AlertButton
 import band.effective.office.tablet.ui.buttons.success.SuccessButton
+import band.effective.office.tablet.ui.loader.Loader
 import band.effective.office.tablet.ui.selectRoomScreen.uiComponents.CrossButtonView
 import band.effective.office.tablet.ui.updateEvent.store.UpdateEventStore
 import java.util.Calendar
@@ -68,7 +69,11 @@ fun UpdateEventView(
         onDeleteEvent = { component.sendIntent(UpdateEventStore.Intent.OnDeleteEvent) },
         inputText = state.inputText,
         onInput = { component.sendIntent(UpdateEventStore.Intent.OnInput(it)) },
-        onDoneInput = { component.sendIntent(UpdateEventStore.Intent.OnDoneInput) }
+        onDoneInput = { component.sendIntent(UpdateEventStore.Intent.OnDoneInput) },
+        isUpdateError = state.isErrorUpdate,
+        isUpdateLoad = state.isLoadUpdate,
+        isDeleteError = state.isErrorDelete,
+        isDeleteLoad = state.isLoadDelete
     )
 }
 
@@ -92,7 +97,11 @@ fun UpdateEventView(
     onDeleteEvent: () -> Unit,
     inputText: String,
     onInput: (String) -> Unit,
-    onDoneInput: (String) -> Unit
+    onDoneInput: (String) -> Unit,
+    isUpdateError: Boolean,
+    isUpdateLoad: Boolean,
+    isDeleteError: Boolean,
+    isDeleteLoad: Boolean
 ) {
     Dialog(
         onDismissRequest = onDismissRequest
@@ -144,12 +153,42 @@ fun UpdateEventView(
             SuccessButton(
                 modifier = Modifier.fillMaxWidth().height(60.dp),
                 onClick = onUpdateEvent
-            ) {}
+            ) {
+                when {
+                    isUpdateLoad -> Loader()
+                    isUpdateError -> Text(
+                        text = MainRes.string.try_again,
+                        style = MaterialTheme.typography.h6
+                    )
+
+                    else -> {
+                        Text(
+                            text = MainRes.string.try_again,
+                            style = MaterialTheme.typography.h6
+                        )
+                    }
+                }
+            }
             Spacer(modifier = Modifier.height(10.dp))
             AlertButton(
                 modifier = Modifier.fillMaxWidth().height(60.dp),
                 onClick = onDeleteEvent
-            ) {}
+            ) {
+                when {
+                    isDeleteLoad -> Loader()
+                    isDeleteError -> Text(
+                        text = MainRes.string.update_button,
+                        style = MaterialTheme.typography.h6
+                    )
+
+                    else -> {
+                        Text(
+                            text = MainRes.string.delete_button,
+                            style = MaterialTheme.typography.h6
+                        )
+                    }
+                }
+            }
         }
     }
 }
