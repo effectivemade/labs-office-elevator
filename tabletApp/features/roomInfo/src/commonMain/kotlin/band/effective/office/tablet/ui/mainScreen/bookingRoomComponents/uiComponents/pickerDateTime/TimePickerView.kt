@@ -7,12 +7,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.features.roomInfo.MainRes
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
@@ -47,18 +49,18 @@ fun TimePickerView(currentDate: Calendar, selectedTime: Calendar) {
             }
 
             WheelTimePicker(
-                modifier = Modifier.fillMaxWidth(1f)
-                ,
+                modifier = Modifier.fillMaxWidth(1f),
+                size = DpSize(248.dp, 260.dp),
                 textStyle = header6,
                 textColor = LocalCustomColorsPalette.current.primaryTextAndIcon,
-                rowCount = 3,
+                rowCount = 7,
                 startTime = LocalTime(
                     currentDate[Calendar.HOUR_OF_DAY],
                     currentDate[Calendar.MINUTE]
                 ),
                 onSnappedTime = { time ->
-                    selectedTime[Calendar.HOUR_OF_DAY] = time.hour
-                    selectedTime[Calendar.MINUTE] = time.minute
+                    selectedTime.set(Calendar.HOUR_OF_DAY, time.hour)
+                    selectedTime.set(Calendar.MINUTE, time.minute)
                 }
             )
         }
