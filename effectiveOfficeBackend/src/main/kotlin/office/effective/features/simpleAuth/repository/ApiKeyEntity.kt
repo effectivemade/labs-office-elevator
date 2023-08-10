@@ -17,7 +17,7 @@ interface ApiKeyEntity : Entity<ApiKeyEntity> {
 
 object ApiKeys : Table<ApiKeyEntity>("api_keys"){
     val id = uuid("id").bindTo { it.id }.primaryKey()
-    val value = varchar("value").bindTo { it.keyValue }
+    val value = varchar("key_   value").bindTo { it.keyValue }
 }
 
 val Database.apikeys get() = this.sequenceOf(ApiKeys)
