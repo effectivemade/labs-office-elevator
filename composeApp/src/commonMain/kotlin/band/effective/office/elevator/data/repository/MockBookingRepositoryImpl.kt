@@ -83,7 +83,7 @@ class MockBookingRepositoryImpl: BookingRepository {
         ),
         BookingInfo(
             id = "2222L",
-            ownerId = "1L",
+            ownerId = "1H",
             seatName = "Seat A2",
             dateOfStart = LocalDateTime(
                 date = LocalDate(year = 2023, monthNumber = 8, dayOfMonth = 3),
@@ -106,12 +106,13 @@ class MockBookingRepositoryImpl: BookingRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getBookingsForUser(): StateFlow<List<BookingInfo>> {
-        TODO("Not yet implemented")
+    override suspend fun getBookingsForUser(ownerId:String): StateFlow<List<BookingInfo>> {
+        bookings.update { initLis.filter { it.ownerId == ownerId } }
+        return bookings
     }
 
-    override suspend fun getBookingsByDate(date: LocalDate): StateFlow<List<BookingInfo>> {
-        bookings.update { initLis.filter { it.dateOfStart.date == date } }
+    override suspend fun getBookingsByDate(date: LocalDate,ownerId:String): StateFlow<List<BookingInfo>> {
+        bookings.update { initLis.filter { it.dateOfStart.date == date && it.ownerId == ownerId} }
         return bookings
     }
 

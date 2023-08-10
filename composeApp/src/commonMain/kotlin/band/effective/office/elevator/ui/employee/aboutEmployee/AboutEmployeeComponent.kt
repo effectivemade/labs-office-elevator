@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.employee.aboutEmployee
 
+import band.effective.office.elevator.domain.models.EmployeeInfo
 import band.effective.office.elevator.ui.employee.aboutEmployee.store.AboutEmployeeStore
 import band.effective.office.elevator.ui.employee.aboutEmployee.store.AboutEmployeeStoreFactory
 import com.arkivanov.decompose.ComponentContext
@@ -15,13 +16,15 @@ import kotlinx.coroutines.flow.StateFlow
 class AboutEmployeeComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
-    private val output: (Output) -> Unit
+    private val output: (Output) -> Unit,
+    employee: EmployeeInfo
 ) :
     ComponentContext by componentContext {
 
     private val aboutEmployeeStore = instanceKeeper.getStore {
         AboutEmployeeStoreFactory(
-            storeFactory = storeFactory
+            storeFactory = storeFactory,
+            employee = employee
         ).create()
     }
 

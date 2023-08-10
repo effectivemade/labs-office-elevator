@@ -72,7 +72,7 @@ fun EmployeeScreen(component: EmployeeComponent) {
     LaunchedEffect(component) {
         component.employLabel.collect { label ->
             when (label) {
-                EmployeeStore.Label.ShowProfileScreen -> component.onOutput(EmployeeComponent.Output.OpenProfileScreen)
+                is EmployeeStore.Label.ShowProfileScreen -> component.onOutput(EmployeeComponent.Output.OpenProfileScreen(label.employee))
             }
         }
     }
@@ -81,7 +81,7 @@ fun EmployeeScreen(component: EmployeeComponent) {
         employeesCount = employeesCount,
         employeesInOfficeCount = employeesInOfficeCount,
         userMessageState = userMessageState,
-        onCardClick = { component.onEvent(EmployeeStore.Intent.OnClickOnEmployee) },
+        onCardClick = { component.onEvent(EmployeeStore.Intent.OnClickOnEmployee(it)) },
         onTextFieldUpdate = { component.onEvent(EmployeeStore.Intent.OnTextFieldUpdate(it)) })
 }
 
@@ -91,7 +91,7 @@ fun EmployeeScreenContent(
     employeesCount: String,
     employeesInOfficeCount: String,
     userMessageState: String,
-    onCardClick: () -> Unit,
+    onCardClick: (String) -> Unit,
     onTextFieldUpdate: (String) -> Unit
 ) {
 
@@ -191,7 +191,7 @@ fun EmployeeScreenContent(
 
 @Composable
 
-fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
+fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: (String) -> Unit) {
     var isExpanded by remember { mutableStateOf(false) }
     val stateColorBorder: Color
     val stateColorText: Color
@@ -210,7 +210,7 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
 
     }
     if (isExpanded) {
-        onCardClick()
+        onCardClick(emp.id)
     }
 
     Surface(
