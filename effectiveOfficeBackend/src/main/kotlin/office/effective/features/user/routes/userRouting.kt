@@ -50,7 +50,7 @@ fun Route.userRouting() {
 
         put("/{user_id}", SwaggerDocument.updateUser()) {
             val user: UserDTO = call.receive<UserDTO>()
-            call.respond(facade.updateUser(user, "ad"))
+            call.respond(facade.updateUser(user))
         }
     }
 }

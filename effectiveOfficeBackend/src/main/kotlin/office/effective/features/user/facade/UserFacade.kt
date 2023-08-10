@@ -28,13 +28,16 @@ class UserFacade(
 
     }
 
-    fun updateUser(user: UserDTO, token: String): UserDTO {
-        return transactionManager.useTransaction<UserDTO>({
+    /**
+     * Updates a given user. Use the returned model for further operations
+     *
+     * @author Danil Kiselev
+     */
+    fun updateUser(user: UserDTO): UserDTO {
+        return transactionManager.useTransaction({
             converterDTO.modelToDTO(
                 service.updateUser(
-                    converterDTO.dTOToModel(
-                        user
-                    )
+                    converterDTO.dTOToModel(user)
                 )
             )
         })
