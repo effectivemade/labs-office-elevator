@@ -1,13 +1,10 @@
 package office.effective.features.user.repository
 
 import office.effective.common.exception.*
-import office.effective.features.booking.repository.WorkspaceBookingEntity
-import office.effective.features.user.converters.IntegrationModelEntityConverter
 import office.effective.features.user.converters.UserModelEntityConverter
 import office.effective.model.IntegrationModel
 import office.effective.model.UserModel
 import office.effective.model.UserTagModel
-import org.koin.core.context.GlobalContext
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
 import org.ktorm.entity.*
@@ -106,7 +103,7 @@ class UserRepository(private val db: Database, private val converter: UserModelE
         }
         val usersIntegrationsSet: Set<UserIntegrationEntity> =
             db.usersinegrations.filter { it.userId eq userId }.toSet()
-        var modelsSet: MutableSet<IntegrationModel> = mutableSetOf()
+        val modelsSet: MutableSet<IntegrationModel> = mutableSetOf()
 
         usersIntegrationsSet.forEach {
             val integrationEntity = findIntegrationById(it.integrationId.id!!)
