@@ -1,4 +1,5 @@
 package office.effective.features.booking.facade
+import io.ktor.server.plugins.*
 import office.effective.common.exception.InstanceNotFoundException
 import office.effective.common.utils.DatabaseTransactionManager
 import office.effective.common.utils.UuidValidator
@@ -78,9 +79,12 @@ class BookingFacade(private val bookingService: BookingService,
     /**
      * Updates a given booking. Use the returned model for further operations
      *
+     * @throws BadRequestException if booking id is null
+     *
      * @author Daniil Zavyalov
      */
     fun put(bookingDTO: BookingDTO): BookingDTO {
+        if (bookingDTO.id == null) throw BadRequestException("Missing booking id")
         val model = bookingConverter.dtoToModel(bookingDTO)
         val dto: BookingDTO = transactionManager.useTransaction({
             val savedModel = bookingService.update(model)
