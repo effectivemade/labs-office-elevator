@@ -38,7 +38,7 @@ import io.github.skeptick.libres.compose.painterResource
 @Composable
 fun EventOrganizerView(
     modifier: Modifier = Modifier,
-    organizers: List<Organizer>,
+    selectOrganizers: List<Organizer>,
     expanded: Boolean,
     selectedItem: Organizer,
     onExpandedChange: () -> Unit,
@@ -114,10 +114,7 @@ fun EventOrganizerView(
                         shape = RoundedCornerShape(15.dp)
                     )
                 ) {
-                    organizers.forEach { organizer ->
-                        if (!organizer.fullName.lowercase()
-                                .contains(selectedItem.fullName.lowercase())
-                        ) return@forEach
+                    selectOrganizers.forEach { organizer ->
                         DropdownMenuItem(onClick = {
                             onSelectItem(organizer)
                             onExpandedChange()

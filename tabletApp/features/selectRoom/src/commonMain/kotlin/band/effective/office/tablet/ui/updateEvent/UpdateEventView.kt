@@ -58,14 +58,17 @@ fun UpdateEventView(
         incrementDuration = { component.sendIntent(UpdateEventStore.Intent.OnUpdateLength(30)) },
         decrementDuration = { component.sendIntent(UpdateEventStore.Intent.OnUpdateLength(-15)) },
         onExpandedChange = { component.sendIntent(UpdateEventStore.Intent.OnExpandedChange) },
-        onSelectOrganizer = {},
+        onSelectOrganizer = { component.sendIntent(UpdateEventStore.Intent.OnSelectOrganizer(it)) },
         selectData = state.date,
         selectDuration = state.duration,
         selectOrganizer = state.selectOrganizer,
-        organizers = state.organizers,
+        organizers = state.selectOrganizers,
         expended = state.expanded,
         onUpdateEvent = { component.sendIntent(UpdateEventStore.Intent.OnUpdateEvent) },
-        onDeleteEvent = {}
+        onDeleteEvent = {},
+        inputText = state.inputText,
+        onInput = { component.sendIntent(UpdateEventStore.Intent.OnInput(it)) },
+        onDoneInput = { component.sendIntent(UpdateEventStore.Intent.OnDoneInput) }
     )
 }
 
@@ -86,7 +89,10 @@ fun UpdateEventView(
     organizers: List<Organizer>,
     expended: Boolean,
     onUpdateEvent: () -> Unit,
-    onDeleteEvent: () -> Unit
+    onDeleteEvent: () -> Unit,
+    inputText: String,
+    onInput: (String) -> Unit,
+    onDoneInput: (String) -> Unit
 ) {
     Dialog(
         onDismissRequest = onDismissRequest
@@ -125,14 +131,14 @@ fun UpdateEventView(
             Spacer(modifier = Modifier.height(15.dp))
             EventOrganizerView(
                 modifier = Modifier.fillMaxWidth().height(100.dp),
-                organizers = organizers,
+                selectOrganizers = organizers,
                 expanded = expended,
                 selectedItem = selectOrganizer,
                 onExpandedChange = onExpandedChange,
                 onSelectItem = onSelectOrganizer,
-                onInput = {},
-                onDoneInput = {},
-                inputText = ""
+                onInput = onInput,
+                onDoneInput = onDoneInput,
+                inputText = inputText
             )
             Spacer(modifier = Modifier.height(25.dp))
             SuccessButton(

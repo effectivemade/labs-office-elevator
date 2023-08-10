@@ -63,6 +63,8 @@ class UpdateEventStoreFactory(private val storeFactory: StoreFactory) : KoinComp
 
         object Load : Message
         object Fail : Message
+        data class Input(val newInput: String, val newList: List<Organizer>) : Message
+        data class UpdateOrganizer(val newValue: Organizer) : Message
     }
 
     private sealed interface Action {
@@ -79,7 +81,12 @@ class UpdateEventStoreFactory(private val storeFactory: StoreFactory) : KoinComp
             when (intent) {
                 is UpdateEventStore.Intent.OnDeleteEvent -> TODO()
                 is UpdateEventStore.Intent.OnExpandedChange -> dispatch(Message.ExpandedChange(!state.expanded))
-                is UpdateEventStore.Intent.OnSelectOrganizer -> TODO()
+                is UpdateEventStore.Intent.OnSelectOrganizer -> dispatch(
+                    Message.UpdateOrganizer(
+                        intent.newOrganizer
+                    )
+                )
+
                 is UpdateEventStore.Intent.OnUpdateDate -> updateInfo(
                     state = state,
                     changeData = intent.updateInDays
@@ -92,7 +99,24 @@ class UpdateEventStoreFactory(private val storeFactory: StoreFactory) : KoinComp
                 )
 
                 is UpdateEventStore.Intent.OnInit -> init(intent.event)
+                is UpdateEventStore.Intent.OnDoneInput -> onDone(state)
+                is UpdateEventStore.Intent.OnInput -> onInput(intent.input, state)
             }
+        }
+
+        fun onDone(state: UpdateEventStore.State) {
+            val input = state.inputText.lowercase()
+            val organizer =
+                state.selectOrganizers.firstOrNull { it.fullName.lowercase().contains(input) }
+                    ?: state.event.organizer
+            dispatch(Message.UpdateOrganizer(organizer))
+        }
+
+        fun onInput(input: String, state: UpdateEventStore.State) {
+            val newList = state.organizers
+                .filter { it.fullName.lowercase().contains(input.lowercase()) }
+                .sortedBy { it.fullName.lowercase().indexOf(input.lowercase()) }
+            dispatch(Message.Input(input, newList))
         }
 
         fun updateEvent(state: UpdateEventStore.State) = scope.launch {
@@ -158,12 +182,18 @@ class UpdateEventStoreFactory(private val storeFactory: StoreFactory) : KoinComp
     private object ReducerImpl : Reducer<UpdateEventStore.State, Message> {
         override fun UpdateEventStore.State.reduce(msg: Message): UpdateEventStore.State =
             when (msg) {
-                is Message.LoadOrganizers -> copy(organizers = msg.orgList)
+                is Message.LoadOrganizers -> copy(
+                    organizers = msg.orgList,
+                    selectOrganizers = msg.orgList
+                )
+
                 is Message.Init -> UpdateEventStore.State.defaultValue.copy(
                     date = msg.date,
                     duration = msg.duration,
                     selectOrganizer = msg.organizer,
-                    event = msg.event
+                    inputText = msg.organizer.fullName,
+                    event = msg.event,
+                    organizers = organizers
                 )
 
                 is Message.ExpandedChange -> copy(expanded = msg.newValue)
@@ -175,6 +205,11 @@ class UpdateEventStoreFactory(private val storeFactory: StoreFactory) : KoinComp
 
                 is Message.Fail -> copy(isError = true, isLoad = false)
                 is Message.Load -> copy(isError = false, isLoad = true)
+                is Message.Input -> copy(inputText = msg.newInput, selectOrganizers = msg.newList)
+                is Message.UpdateOrganizer -> copy(
+                    selectOrganizer = msg.newValue,
+                    inputText = msg.newValue.fullName,
+                )
             }
     }
 }

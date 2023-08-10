@@ -130,7 +130,7 @@ fun BookingRoomView(
             Spacer(modifier = Modifier.height(25.dp))
             EventOrganizerView(
                 modifier = Modifier.fillMaxWidth().height(100.dp),
-                organizers = organizers,
+                selectOrganizers = organizers,
                 expanded = isExpandedOrganizersList,
                 selectedItem = selectOrganizer,
                 onExpandedChange = { onExpandedChange() },

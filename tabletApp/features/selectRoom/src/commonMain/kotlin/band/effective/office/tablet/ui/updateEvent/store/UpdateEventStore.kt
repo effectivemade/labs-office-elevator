@@ -11,32 +11,38 @@ interface UpdateEventStore : Store<UpdateEventStore.Intent, UpdateEventStore.Sta
         data class OnUpdateLength(val update: Int) : Intent
         data class OnUpdateDate(val updateInDays: Int) : Intent
         object OnExpandedChange : Intent
-        object OnSelectOrganizer : Intent
+        data class OnSelectOrganizer(val newOrganizer: Organizer) : Intent
         object OnUpdateEvent : Intent
         object OnDeleteEvent : Intent
         data class OnInit(val event: EventInfo) : Intent
+        data class OnInput(val input: String): Intent
+        object OnDoneInput: Intent
     }
 
     data class State(
         val duration: Int,
         val date: Calendar,
         val organizers: List<Organizer>,
+        val selectOrganizers: List<Organizer>,
         val selectOrganizer: Organizer,
         val expanded: Boolean,
         val event: EventInfo,
         val isLoad: Boolean,
-        val isError: Boolean
+        val isError: Boolean,
+        val inputText: String
     ) {
         companion object {
             val defaultValue = State(
                 duration = 30,
                 date = GregorianCalendar(),
                 organizers = listOf(),
+                selectOrganizers = listOf(),
                 selectOrganizer = Organizer.default,
                 expanded = false,
                 event = EventInfo.emptyEvent,
                 isLoad = false,
-                isError = false
+                isError = false,
+                inputText = ""
             )
         }
     }
