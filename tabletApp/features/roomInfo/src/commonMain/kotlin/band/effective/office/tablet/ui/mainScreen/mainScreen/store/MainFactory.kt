@@ -27,7 +27,6 @@ class MainFactory(private val storeFactory: StoreFactory) : KoinComponent {
                 initialState = MainStore.State.defaultState,
                 bootstrapper = coroutineBootstrapper {
                     launch {
-                       // Settings.current.removeNameRoom()
                         if(checkSettingsUseCase().isEmpty()){
                             dispatch(Action.OnSettings)
                         } else {
@@ -103,8 +102,7 @@ class MainFactory(private val storeFactory: StoreFactory) : KoinComponent {
                 is Message.UpdateDisconnect -> copy(isDisconnect = message.newValue)
                 is Message.Reboot -> copy(
                     isError = false,
-                    isLoad = true,
-                    isSettings = false
+                    isLoad = true
                 )
                 is Message.OpenDateTimePickerModal -> copy(showDateTimePickerModal = true)
                 is Message.OnSettings -> copy(

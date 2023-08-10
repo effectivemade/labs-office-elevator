@@ -21,9 +21,7 @@ class SettingsStoreFactory(private val storeFactory: StoreFactory) : KoinCompone
             Store<SettingsStore.Intent, SettingsStore.State, Nothing> by storeFactory.create(
                 name = "SettingsStore",
                 initialState = SettingsStore.State.defaultState,
-                bootstrapper = coroutineBootstrapper {
-                    Settings.current.removeNameRoom()
-                },
+                bootstrapper = coroutineBootstrapper {},
                 executorFactory = ::ExecutorImpl,
                 reducer = ReducerImpl
             ) {}
