@@ -1,5 +1,5 @@
 CREATE TABLE profileData (
-    idToken TEXT NOT NULL DEFAULT '',
+    idToken TEXT PRIMARY KEY,
     name TEXT NOT NULL DEFAULT '',
     post TEXT NOT NULL DEFAULT '',
     email TEXT NOT NULL DEFAULT '',
@@ -16,53 +16,7 @@ SELECT * FROM profileData;
 selectUser:
 SELECT * FROM profileData WHERE idToken = ?;
 
-selectIdToken:
-SELECT idToken FROM profileData WHERE idToken = ?;
-
-selectName:
-SELECT name FROM profileData WHERE idToken = ?;
-
-selectPost:
-SELECT post FROM profileData WHERE idToken = ?;
-
-selectEmail:
-SELECT email FROM profileData WHERE idToken = ?;
-
-selectPhoneNumber:
-SELECT phoneNumber FROM profileData WHERE idToken = ?;
-
-selectTelegramNick:
-SELECT telegramNick FROM profileData WHERE idToken = ?;
-
-selectImageUrl:
-SELECT imageUrl FROM profileData WHERE idToken = ?;
-
-updateToken:
-UPDATE profileData SET idToken = ? WHERE idToken = ?;
-
-updateName:
-UPDATE profileData SET name = ? WHERE idToken = ?;
-
-updatePost:
-UPDATE profileData SET post = ? WHERE idToken = ?;
-
-updateEmail:
-UPDATE profileData SET email = ? WHERE idToken = ?;
-
-updatePhoneNumber:
-UPDATE profileData SET phoneNumber = ? WHERE idToken = ?;
-
-updateTelegramNick:
-UPDATE profileData SET telegramNick = ? WHERE idToken = ?;
-
-updateImageUrl:
-UPDATE profileData SET imageUrl = ? WHERE idToken = ?;
-
 update:
 INSERT OR REPLACE
 INTO profileData(idToken, name, post, email, phoneNumber, telegramNick, imageUrl)
 VALUES (?,?,?,?,?,?,?);
-
-insert:
-INSERT INTO profileData(idToken, name, post, email, phoneNumber, telegramNick, imageUrl)
-VALUES (?, ?, ?, ?, ?, ?, ?);
