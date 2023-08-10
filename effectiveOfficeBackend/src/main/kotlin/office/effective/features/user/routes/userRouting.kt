@@ -30,7 +30,7 @@ fun Route.userRouting() {
             val repo: UserRepository = GlobalContext.get().get()
             val model =
                 repo.findByEmail(
-                    (call.parameters["email"] ?: call.response.status(HttpStatusCode.BadRequest)) as String
+                    call.parameters["email"] ?: return@get call.respond(HttpStatusCode.BadRequest)
                 )
             val converterDTO: UserDTOModelConverter = GlobalContext.get().get()
             call.respond(converterDTO.modelToDTO(model))
@@ -38,22 +38,19 @@ fun Route.userRouting() {
     }
     route("users", {}) {
         get("", SwaggerDocument.returnUsers()) {
-            var tagStr = call.request.queryParameters["tag"] ?: call.response.status(HttpStatusCode.BadRequest)
-            val tokenStr = call.request.header("id_token") ?: call.response.status(HttpStatusCode.Forbidden)
-            val users: Set<UserDTO>? = facade.getUsersByTag(tagStr as String, tokenStr as String)
+            var tagStr = call.request.queryParameters["tag"] ?: return@get call.respond(HttpStatusCode.BadRequest)
+            val users: Set<UserDTO>? = facade.getUsersByTag(tagStr as String, "tokenStr as String")
             call.respond(users ?: "no such users")
         }
         get("/{user_id}", SwaggerDocument.returnUserById()) {
-            val userId = call.parameters["user_id"] ?: call.response.status(HttpStatusCode.BadRequest)
-            val tokenStr = call.request.header("id_token") ?: call.response.status(HttpStatusCode.Forbidden)
-            val user = facade.getUserById(userId as String, tokenStr as String)
+            val userId = call.parameters["user_id"] ?: return@get call.respond(HttpStatusCode.BadRequest)
+            val user = facade.getUserById(userId, "zsd")
             call.respond(user)
         }
 
         put("/{user_id}", SwaggerDocument.updateUser()) {
             val user: UserDTO = call.receive<UserDTO>()
-            val tokenStr = call.request.header("id_token") ?: call.response.status(HttpStatusCode.Forbidden)
-            call.respond(facade.updateUser(user, tokenStr as String))
+            call.respond(facade.updateUser(user, "ad"))
         }
     }
 }
