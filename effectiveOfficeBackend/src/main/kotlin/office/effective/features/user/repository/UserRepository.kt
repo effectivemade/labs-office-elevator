@@ -1,6 +1,7 @@
 package office.effective.features.user.repository
 
 import office.effective.common.exception.*
+import office.effective.features.booking.repository.WorkspaceBookingEntity
 import office.effective.features.user.converters.IntegrationModelEntityConverter
 import office.effective.features.user.converters.UserModelEntityConverter
 import office.effective.model.IntegrationModel
@@ -93,11 +94,13 @@ class UserRepository(private val db: Database, private val converter: UserModelE
     }
 
     fun updateUser(model: UserModel): UserModel {
-        val userid: UUID = model.id ?: throw UserNotFoundException("No id in the model")
-        if (!existsById(userid)) {
-            throw UserNotFoundException("User ${model.fullName} with id:${userid} does not exists")
-        }
-        var ent = db.users.find { it.id eq userid }
+        val userId = model.id?.let {
+            if(!existsById(it))
+                throw InstanceNotFoundException(UserEntity::class, "User with id $it not wound", it)
+            it
+        } ?: throw MissingIdException("User with name ${ model.fullName } doesn't have an id")
+
+        val ent = db.users.find { it.id eq userId }
         ent?.tag = model.tag
         ent?.fullName = model.fullName
         ent?.active = model.active
@@ -108,16 +111,16 @@ class UserRepository(private val db: Database, private val converter: UserModelE
         val integrations: Set<IntegrationModel>? = model.integrations
         if (!integrations.isNullOrEmpty()) {
             val converter: IntegrationModelEntityConverter = GlobalContext.get().get()
-            db.usersinegrations.filter { it.userId eq userid }.forEach { it.delete() }
+            db.usersinegrations.removeIf { it.userId eq userId }
             for (i in integrations) {
                 db.insert(UsersIntegrations) {
-                    set(it.userId, userid)
+                    set(it.userId, userId)
                     set(it.integrationId, i.id)
                     set(it.valueStr, i.valueStr)
                 }
             }
         }
-        return findById(userid)
+        return findById(userId)
     }
 
     fun findTagByUserOrNull(userId: UUID): UsersTagEntity? {
