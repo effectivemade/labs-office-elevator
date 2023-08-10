@@ -42,7 +42,6 @@ class RootComponent(componentContext: ComponentContext, private val storeFactory
                         navigation.push(Config.SelectRoom)
                     },
                     onSettings = {
-                       // navigation.push(Config.Settings)
                         navigation.replaceAll(Config.Settings)
                     },
                     storeFactory = storeFactory

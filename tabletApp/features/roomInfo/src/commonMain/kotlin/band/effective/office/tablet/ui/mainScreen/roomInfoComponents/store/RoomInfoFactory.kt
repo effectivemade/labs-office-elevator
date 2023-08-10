@@ -41,7 +41,7 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
                         )
                         dispatch(
                             Action.UpdateRoomInfo(
-                                updateUseCase.getRoomInfo().unbox(
+                                updateUseCase.getRoomInfo(checkSettingsUseCase()).unbox(
                                     errorHandler = {
                                         dispatch(Action.OnResponse(false))
                                         it.saveData ?: RoomInfo.defaultValue
@@ -66,7 +66,7 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
                     launch() {
                         dispatch(
                             Action.UpdateRoomInfo(
-                                updateUseCase.getRoomInfo()
+                                updateUseCase.getRoomInfo(checkSettingsUseCase())
                                     .unbox(
                                         errorHandler = {
                                             dispatch(Action.OnResponse(false))
@@ -125,7 +125,10 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
             getState: () -> RoomInfoStore.State
         ) {
             when (intent) {
-                is RoomInfoStore.Intent.OnChangeSelectDate -> updateDate(intent.newValue)
+                is RoomInfoStore.Intent.OnChangeSelectDate -> updateDate(
+                    newDate = intent.newValue,
+                    nameRoom = getState().roomInfo.name
+                )
                 else -> {}
             }
         }
@@ -151,11 +154,11 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
         private fun RoomInfo.filter(date: Calendar): RoomInfo =
             copy(eventList = eventList.filter { eventInfo -> eventInfo.startTime.oneDay(date) })
 
-        private fun updateDate(newDate: Calendar) = scope.launch {
+        private fun updateDate(newDate: Calendar, nameRoom: String) = scope.launch {
             dispatch(
                 Message.UpdateDate(
                     newValue = newDate,
-                    eventList = updateUseCase.getRoomInfo()
+                    eventList = updateUseCase.getRoomInfo(nameRoom)
                         .unbox(
                             errorHandler = {
                                 dispatch(Message.OnResponse(false))

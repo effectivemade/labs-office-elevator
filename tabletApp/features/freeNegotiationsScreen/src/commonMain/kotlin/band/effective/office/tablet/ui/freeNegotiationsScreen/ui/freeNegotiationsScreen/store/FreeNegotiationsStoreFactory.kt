@@ -3,6 +3,7 @@ package band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiatio
 import band.effective.office.network.model.Either
 import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.domain.model.RoomInfo
+import band.effective.office.tablet.domain.useCase.CheckSettingsUseCase
 import band.effective.office.tablet.domain.useCase.RoomInfoUseCase
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.roomUiState.RoomInfoUiState
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.roomUiState.RoomState
@@ -28,6 +29,7 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
 
     private val timer = Timer()
     private val roomInfoUseCase: RoomInfoUseCase by inject()
+    private val checkSettingsUseCase: CheckSettingsUseCase by inject()
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): FreeNegotiationsStore =
@@ -37,7 +39,7 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
                 initialState = FreeNegotiationsStore.State.defaultState,
                 bootstrapper = coroutineBootstrapper {
                     launch() {
-                        val response = roomInfoUseCase.getOtherRoom("Sirius")
+                        val response = roomInfoUseCase.getOtherRoom(checkSettingsUseCase())
                         when(response){
                             is Either.Error -> TODO("Maksim Mishenko add error handler")
                             is Either.Success -> {
