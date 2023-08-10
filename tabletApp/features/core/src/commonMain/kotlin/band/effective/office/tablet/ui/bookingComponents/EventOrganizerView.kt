@@ -42,9 +42,11 @@ fun EventOrganizerView(
     expanded: Boolean,
     selectedItem: Organizer,
     onExpandedChange: () -> Unit,
-    onSelectItem: (String) -> Unit,
-
-    ) {
+    onSelectItem: (Organizer) -> Unit,
+    onInput: (String) -> Unit,
+    onDoneInput: (String) -> Unit,
+    inputText: String
+) {
     val focusManager = LocalFocusManager.current
     Column(modifier = modifier) {
         Text(
@@ -68,8 +70,8 @@ fun EventOrganizerView(
             ) {
                 TextField(
                     modifier = Modifier.fillMaxWidth(0.8f),
-                    value = selectedItem.fullName,
-                    onValueChange = { onSelectItem(it) },
+                    value = inputText,
+                    onValueChange = { onInput(it) },
                     placeholder = {
                         Text(
                             text = MainRes.string.selectbox_organizer_title,
@@ -86,7 +88,7 @@ fun EventOrganizerView(
                         onDone = {
                             defaultKeyboardAction(ImeAction.Done)
                             focusManager.clearFocus()
-                            onSelectItem(if (organizers.contains(selectedItem)) selectedItem.fullName else "")
+                            onDoneInput(inputText)
                             onExpandedChange()
                         }
                     ),
@@ -117,7 +119,7 @@ fun EventOrganizerView(
                                 .contains(selectedItem.fullName.lowercase())
                         ) return@forEach
                         DropdownMenuItem(onClick = {
-                            onSelectItem(organizer.fullName)
+                            onSelectItem(organizer)
                             onExpandedChange()
                             focusManager.clearFocus()
                         }) {

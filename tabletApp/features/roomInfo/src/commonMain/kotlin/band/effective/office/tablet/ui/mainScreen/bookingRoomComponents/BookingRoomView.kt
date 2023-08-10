@@ -54,7 +54,7 @@ fun BookingRoomView(
         incrementDuration = { bookingRoomComponent.sendIntent(BookingStore.Intent.OnChangeLength(30)) },
         decrementDuration = { bookingRoomComponent.sendIntent(BookingStore.Intent.OnChangeLength(-15)) },
         isBusy = state.isBusy,
-        organizers = state.organizers,
+        organizers = state.selectOrganizers,
         selectOrganizer = state.organizer,
         isExpandedOrganizersList = state.isExpandedOrganizersList,
         onExpandedChange = { bookingRoomComponent.sendIntent(BookingStore.Intent.OnChangeExpanded) },
@@ -66,8 +66,11 @@ fun BookingRoomView(
         isOrganizerError = state.isOrganizerError,
         onRequestBookingCurrentRoom = { bookingRoomComponent.sendIntent(BookingStore.Intent.OnBookingCurrentRoom) },
         onRequestBookingOtherRoom = { bookingRoomComponent.sendIntent(BookingStore.Intent.OnBookingOtherRoom) },
-        onOpenDateTimePickerModal = { dateTimePickerComponent.sendIntent(DateTimePickerStore.Intent.OnDateTimePickerModal)},
-        roomName = state.roomName
+        onOpenDateTimePickerModal = { dateTimePickerComponent.sendIntent(DateTimePickerStore.Intent.OnDateTimePickerModal) },
+        roomName = state.roomName,
+        inputText = state.inputText,
+        onInput = { bookingRoomComponent.sendIntent(BookingStore.Intent.OnInput(it)) },
+        onDoneInput = { bookingRoomComponent.sendIntent(BookingStore.Intent.OnDoneInput) }
     )
 }
 
@@ -88,12 +91,15 @@ fun BookingRoomView(
     selectOrganizer: Organizer,
     isExpandedOrganizersList: Boolean,
     onExpandedChange: () -> Unit,
-    onSelectOrganizer: (String) -> Unit,
+    onSelectOrganizer: (Organizer) -> Unit,
     isOrganizerError: Boolean,
     onRequestBookingCurrentRoom: () -> Unit,
     onRequestBookingOtherRoom: () -> Unit,
     onOpenDateTimePickerModal: () -> Unit,
-    roomName: String
+    roomName: String,
+    inputText: String,
+    onInput: (String) -> Unit,
+    onDoneInput: (String) -> Unit
 ) {
     Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -128,7 +134,10 @@ fun BookingRoomView(
                 expanded = isExpandedOrganizersList,
                 selectedItem = selectOrganizer,
                 onExpandedChange = { onExpandedChange() },
-                onSelectItem = { onSelectOrganizer(it) }
+                onSelectItem = { onSelectOrganizer(it) },
+                onInput = onInput,
+                onDoneInput = onDoneInput,
+                inputText = inputText
             )
             if (isOrganizerError) {
                 Spacer(Modifier.height(10.dp))

@@ -79,7 +79,7 @@ fun UpdateEventView(
     incrementDuration: () -> Unit,
     decrementDuration: () -> Unit,
     onExpandedChange: () -> Unit,
-    onSelectOrganizer: (String) -> Unit,
+    onSelectOrganizer: (Organizer) -> Unit,
     selectData: Calendar,
     selectDuration: Int,
     selectOrganizer: Organizer,
@@ -129,7 +129,10 @@ fun UpdateEventView(
                 expanded = expended,
                 selectedItem = selectOrganizer,
                 onExpandedChange = onExpandedChange,
-                onSelectItem = onSelectOrganizer
+                onSelectItem = onSelectOrganizer,
+                onInput = {},
+                onDoneInput = {},
+                inputText = ""
             )
             Spacer(modifier = Modifier.height(25.dp))
             SuccessButton(
