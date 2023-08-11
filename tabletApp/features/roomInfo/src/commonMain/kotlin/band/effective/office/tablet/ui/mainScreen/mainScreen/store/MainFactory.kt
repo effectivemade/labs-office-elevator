@@ -1,6 +1,6 @@
 package band.effective.office.tablet.ui.mainScreen.mainScreen.store
 
-import band.effective.office.tablet.domain.model.Either
+import band.effective.office.network.model.Either
 import band.effective.office.tablet.domain.useCase.RoomInfoUseCase
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
@@ -40,7 +40,7 @@ class MainFactory(private val storeFactory: StoreFactory) : KoinComponent {
         object BookingOtherRoom : Message
         object CloseModal : Message
         object OpenFreeModal : Message
-
+        object OpenDateTimePickerModal : Message
         data class Load(val isSuccess: Boolean) : Message
         data class UpdateDisconnect(val newValue: Boolean) : Message
         object Reboot : Message
@@ -58,6 +58,7 @@ class MainFactory(private val storeFactory: StoreFactory) : KoinComponent {
                 is MainStore.Intent.OnBookingOtherRoomRequest -> dispatch(Message.BookingOtherRoom)
                 is MainStore.Intent.CloseModal -> dispatch(Message.CloseModal)
                 is MainStore.Intent.OnOpenFreeRoomModal -> dispatch(Message.OpenFreeModal)
+                is MainStore.Intent.OnOpenDateTimePickerModal -> dispatch(Message.OpenDateTimePickerModal)
                 is MainStore.Intent.OnDisconnectChange -> dispatch(Message.UpdateDisconnect(intent.newValue))
                 is MainStore.Intent.RebootRequest -> reboot()
             }
@@ -80,7 +81,7 @@ class MainFactory(private val storeFactory: StoreFactory) : KoinComponent {
             when (message) {
                 is Message.BookingCurrentRoom -> copy(showBookingModal = true)
                 is Message.BookingOtherRoom -> copy()
-                is Message.CloseModal -> copy(showBookingModal = false, showFreeModal = false)
+                is Message.CloseModal -> copy(showBookingModal = false, showFreeModal = false, showDateTimePickerModal = false)
                 is Message.Load -> copy(
                     isLoad = false,
                     isData = message.isSuccess,
@@ -90,6 +91,7 @@ class MainFactory(private val storeFactory: StoreFactory) : KoinComponent {
                 is Message.OpenFreeModal -> copy(showFreeModal = true)
                 is Message.UpdateDisconnect -> copy(isDisconnect = message.newValue)
                 is Message.Reboot -> copy(isError = false, isLoad = true)
+                is Message.OpenDateTimePickerModal -> copy(showDateTimePickerModal = true)
             }
     }
 }

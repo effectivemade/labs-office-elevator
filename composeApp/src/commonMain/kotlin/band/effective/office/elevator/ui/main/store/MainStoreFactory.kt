@@ -99,6 +99,18 @@ internal class MainStoreFactory(
                         changeBookingsByDate(date = newDate)
                     }
                 }
+
+                MainStore.Intent.OpenFiltersBottomDialog -> {
+                    scope.launch {
+                        publish(MainStore.Label.OpenFiltersBottomDialog)
+                    }
+                }
+
+                MainStore.Intent.CloseFiltersBottomDialog -> {
+                    scope.launch {
+                        publish(MainStore.Label.CloseFiltersBottomDialog)
+                    }
+                }
             }
         }
 
@@ -152,7 +164,7 @@ internal class MainStoreFactory(
         fun getBookingsForUserByDate(date: LocalDate) {
             scope.launch(Dispatchers.IO) {
                 bookingsUseCase
-                    .getBookingsByDate(date = date, coroutineScope = this)
+                    .getBookingsByDate(date = date, ownerId = "1L", coroutineScope = this)
                     .collect { bookings ->
                         withContext(Dispatchers.Main) {
                             dispatch(Msg.UpdateSeatsReservation(reservedSeats = bookings))
@@ -164,7 +176,7 @@ internal class MainStoreFactory(
         fun changeBookingsByDate(date: LocalDate) {
             scope.launch(Dispatchers.IO) {
                 bookingsUseCase
-                    .getBookingsByDate(date = date, coroutineScope = this)
+                    .getBookingsByDate(date = date, ownerId = "1L", coroutineScope = this)
                     .collect { bookings ->
                         withContext(Dispatchers.Main) {
                             dispatch(

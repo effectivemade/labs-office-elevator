@@ -13,17 +13,19 @@ class GetBookingsUseCase(
     private val repository: BookingRepository
 ) {
     suspend fun getBookingsForUser(
+        ownerId:String,
         coroutineScope: CoroutineScope
     ): StateFlow<List<ReservedSeat>> =
-        repository.getBookingsForUser()
+        repository.getBookingsForUser(ownerId = ownerId)
             .map { bookingsList -> bookingsList.toUIModel() }
             .stateIn(coroutineScope)
 
     suspend fun getBookingsByDate(
         date: LocalDate,
+        ownerId:String,
         coroutineScope: CoroutineScope
     ): StateFlow<List<ReservedSeat>> =
-        repository.getBookingsByDate(date = date)
+        repository.getBookingsByDate(date = date, ownerId = ownerId)
             .map { bookingsList -> bookingsList.toUIModel() }
             .stateIn(coroutineScope)
 }

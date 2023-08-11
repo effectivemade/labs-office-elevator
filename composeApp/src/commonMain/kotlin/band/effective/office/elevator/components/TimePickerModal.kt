@@ -1,6 +1,5 @@
 package band.effective.office.elevator.components
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -62,27 +60,18 @@ fun TimePickerModal(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            EffectiveButton(
-                modifier = Modifier
-                    .fillMaxWidth(.5f),
-                buttonText = stringResource(MainRes.strings.cansel),
+            OutlinedPrimaryButton(
+                modifier =Modifier.weight(.1f),
+                title = MainRes.strings.cansel,
                 onClick = onClickCansel,
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color.White,
-                    contentColor = MaterialTheme.colors.primary
-                ),
-                border = BorderStroke(width = 1.dp, color = MaterialTheme.colors.primary),
-                contentPadding = 0.dp,
-                shape = RoundedCornerShape(40.dp)
+                padding = 12.dp
             )
             Spacer(modifier = Modifier.width(16.dp))
             EffectiveButton(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.weight(.1f),
                 onClick = { onClickOk(currentTime) },
                 buttonText = stringResource(MainRes.strings.ok),
-                contentPadding = 0.dp,
-                shape = RoundedCornerShape(40.dp)
+                contentPadding = 12.dp
             )
         }
     }

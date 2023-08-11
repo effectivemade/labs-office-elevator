@@ -6,6 +6,7 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, Nothing> {
     sealed interface Intent {
         object OnOpenFreeRoomModal : Intent
         object CloseModal : Intent
+        object OnOpenDateTimePickerModal : Intent
         object OnBookingCurrentRoomRequest : Intent
         object OnBookingOtherRoomRequest : Intent
         data class OnDisconnectChange(val newValue: Boolean) : Intent
@@ -18,9 +19,10 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, Nothing> {
         val isError: Boolean,
         val showBookingModal: Boolean,
         val showFreeModal: Boolean,
+        val showDateTimePickerModal: Boolean,
         val isDisconnect: Boolean
     ) {
-        fun showModal() = showFreeModal || showBookingModal
+        fun showModal() = showFreeModal || showBookingModal || showDateTimePickerModal
 
         companion object {
             val defaultState =
@@ -30,6 +32,7 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, Nothing> {
                     isError = false,
                     showBookingModal = false,
                     showFreeModal = false,
+                    showDateTimePickerModal = false,
                     isDisconnect = false
                 )
         }

@@ -4,10 +4,14 @@ import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store.BookingStore
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store.BookingStoreFactory
+import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.pickerDateTime.DateTimePickerComponent
+import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.pickerDateTime.DateTimePickerStore
+import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
 import band.effective.office.tablet.utils.componentCoroutineScope
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
+import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -19,7 +23,7 @@ class BookingRoomComponent(
     storeFactory: StoreFactory,
     private val onCurrentBookingRoom: () -> Unit,
     private val onBookingOtherRoom: () -> Unit,
-    private val onChangeDate: (Calendar) -> Unit
+    private val onChangeDate: (Calendar) -> Unit,
 ) :
     ComponentContext by componentContext {
 
@@ -29,11 +33,20 @@ class BookingRoomComponent(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val state = bookingStore.stateFlow
+    val labels = bookingStore.labels
+
+    private fun collectLabels() = componentContext.componentCoroutineScope().launch {
+        labels.collect{
+            when(it){
+                is BookingStore.Label.BookingCurrentRoom -> onCurrentBookingRoom()
+                is BookingStore.Label.BookingOtherRoom -> onBookingOtherRoom()
+                is BookingStore.Label.ChangeDate -> onChangeDate(state.value.selectDate.clone() as Calendar)
+            }
+        }
+    }
 
     init {
-        componentContext.componentCoroutineScope().launch {
-            state.collect { onChangeDate(state.value.selectDate.clone() as Calendar) }
-        }
+        collectLabels()
     }
 
     fun getBooking(): Booking {
@@ -47,26 +60,14 @@ class BookingRoomComponent(
             eventInfo = EventInfo(
                 startTime = startDate,
                 finishTime = finishDate,
-                organizer = state.value.organizer
-            )
+                organizer = state.value.organizer,
+                id = "" 
+            ),
+            roomId = state.value.roomName
         )
     }
 
     fun sendIntent(intent: BookingStore.Intent) {
-        when (intent) {
-            is BookingStore.Intent.OnBookingCurrentRoom -> {
-                bookingStore.accept(intent.copy(onCurrentBookingRoom))
-            }
-
-            is BookingStore.Intent.OnBookingOtherRoom -> {
-                bookingStore.accept(intent.copy(onBookingOtherRoom))
-            }
-
-            is BookingStore.Intent.OnChangeIsActive -> {
-                bookingStore.accept(intent)
-            }
-
-            else -> bookingStore.accept(intent)
-        }
+        bookingStore.accept(intent)
     }
 }

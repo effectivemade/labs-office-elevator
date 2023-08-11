@@ -67,9 +67,9 @@ internal class EmployeeStoreFactory(private val storeFactory: StoreFactory):Koin
                         dispatch(Msg.UpdateEmployees(query = employeesNameFilter, employeesInfo = employList.value))
                     }
                 }
-                EmployeeStore.Intent.OnClickOnEmployee ->{
+                is EmployeeStore.Intent.OnClickOnEmployee ->{
                     scope.launch {
-                        publish(EmployeeStore.Label.ShowProfileScreen)
+                        publish(EmployeeStore.Label.ShowProfileScreen(employList.value.filter { it.id == intent.employeeId }[0]))
                     }
                 }
 

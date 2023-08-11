@@ -3,7 +3,6 @@ package band.effective.office.elevator.ui.authorization.authorization_profile
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -39,11 +38,10 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.ExtendedTheme
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.components.OutlinedTextColorsSetup
-import band.effective.office.elevator.components.PrimaryButton
 import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.theme_light_primary_stroke
@@ -311,19 +309,12 @@ fun AuthorizationProfileComponent(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            PrimaryButton(
-                text = stringResource(MainRes.strings._continue),
-                cornerValue = 40.dp,
-                contentTextSize = 16.sp,
-                paddingValues = PaddingValues(all = 10.dp),
-                elevation = elevation,
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = MaterialTheme.colors.primary
-                ),
-                border = null,
-                onButtonClick = {
+            EffectiveButton(
+                buttonText = stringResource(MainRes.strings._continue),
+                onClick = {
                     onEvent(AuthorizationProfileStore.Intent.ContinueButtonClicked)
-                }
+                },
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }

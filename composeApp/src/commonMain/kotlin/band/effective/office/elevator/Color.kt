@@ -147,6 +147,7 @@ data class ExtendedColors(
     val dividerColor: Color,
     val radioTextColor: Color,
     val switchColor: Color,
+    val backgroundTextColor: Color,
 
 //    region::Trinidad
     val trinidad_50: Color,
@@ -176,8 +177,7 @@ data class ExtendedColors(
     val purple_heart_950: Color,
 //    endregion
 
-    val error: Color,
-    val backgroundTextColor :Color
+    val error: Color
 )
 
 val LocalExtendedColors = staticCompositionLocalOf {
@@ -220,8 +220,8 @@ internal val seed = Color(0xFF2C3639)
 
 // Non Material specified colors
 internal val lightGray = Color(0xFFEBEBEB)
-internal val textInBorderGray = Color(0xFF808080)
-internal val borderGray = Color(0xFF666666)
+internal val textInBorderGray = Color (0xFF808080)
+internal val borderGray = Color (0xFF666666)
 internal val successGreen = Color(0xFF4BB543)
 
 internal val borderGreen = Color(0xFF34C759)
@@ -231,4 +231,5 @@ internal val textGrayColor = Color(0x80000000)
 
 internal val companyColor = Color(0xFF323E48)
 
+internal val calendarColor = Color(0x14ACACAC)
 internal val radioButtonColor = Color(0xFF6750A4)

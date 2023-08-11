@@ -1,10 +1,14 @@
 package band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store
 
+import android.util.Log
 import band.effective.office.tablet.domain.CurrentEventController
 import band.effective.office.tablet.domain.model.EventInfo
+import band.effective.office.tablet.domain.model.Organizer
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.domain.useCase.CheckBookingUseCase
 import band.effective.office.tablet.domain.useCase.UpdateUseCase
+import band.effective.office.tablet.ui.selectRoomScreen.store.SelectRoomStoreFactory
+import band.effective.office.tablet.utils.date
 import band.effective.office.tablet.utils.unbox
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
@@ -31,7 +35,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): BookingStore =
         object : BookingStore,
-            Store<BookingStore.Intent, BookingStore.State, Nothing> by storeFactory.create(
+            Store<BookingStore.Intent, BookingStore.State, BookingStore.Label> by storeFactory.create(
                 name = "MainStore",
                 initialState = BookingStore.State.default,
                 bootstrapper = coroutineBootstrapper {
@@ -80,9 +84,9 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             ) {}
 
     private sealed interface Action {
-        data class UpdateOrganizers(val organizers: List<String>) : Action
+        data class UpdateOrganizers(val organizers: List<Organizer>) : Action
         data class Init(
-            val organizers: List<String>,
+            val organizers: List<Organizer>,
             val isBusy: Boolean,
             val busyEvent: EventInfo
         ) : Action
@@ -100,12 +104,12 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
         data class NotCorrectEvent(val busyEvent: EventInfo) : Message
 
-        data class ChangeOrganizer(val newOrganizer: String) : Message
+        data class ChangeOrganizer(val newOrganizer: Organizer) : Message
         object OrganizerError : Message
         object BookingOtherRoom : Message
         object BookingCurrentRoom : Message
 
-        data class UpdateOrganizers(val organizers: List<String>) : Message
+        data class UpdateOrganizers(val organizers: List<Organizer>) : Message
         data class UpdateBusy(
             val isBusy: Boolean,
             val busyEvent: EventInfo
@@ -118,7 +122,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
     }
 
     private inner class ExecutorImpl() :
-        CoroutineExecutor<BookingStore.Intent, Action, BookingStore.State, Message, Nothing>() {
+        CoroutineExecutor<BookingStore.Intent, Action, BookingStore.State, Message, BookingStore.Label>() {
         override fun executeIntent(
             intent: BookingStore.Intent,
             getState: () -> BookingStore.State
@@ -128,7 +132,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     booking(
                         isCurrentRoom = true,
                         state = getState(),
-                        booking = intent.booking
+                        booking = { publish(BookingStore.Label.BookingCurrentRoom) }
                     )
                     dispatch(Message.BookingCurrentRoom)
                 }
@@ -137,7 +141,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     booking(
                         isCurrentRoom = false,
                         state = getState(),
-                        booking = intent.booking
+                        booking = { publish(BookingStore.Label.BookingOtherRoom) }
                     )
                     dispatch(Message.BookingOtherRoom)
                 }
@@ -145,7 +149,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is BookingStore.Intent.OnChangeDate -> changeDate(getState, intent.changeInDay)
                 is BookingStore.Intent.OnChangeLength -> changeLength(getState, intent.change)
                 is BookingStore.Intent.OnChangeOrganizer -> {
-                    dispatch(Message.ChangeOrganizer(intent.newOrganizer))
+                    dispatch(Message.ChangeOrganizer(getState().organizers.firstOrNull() { it.fullName == intent.newOrganizer }
+                        ?: Organizer.default))
                     reset(getState)
                 }
 
@@ -156,8 +161,13 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     dispatch(Message.OnChangeIsActive)
                     reset(getState)
                 }
+                is BookingStore.Intent.OnSetDate -> setNewDate(getState, intent.changedDay, intent.changedMonth)
+                is BookingStore.Intent.CloseModal -> intent.close?.invoke()
+                is BookingStore.Intent.OnChangeIsCurrentSelectTime -> changeIsSelectCurrentTime(getState)
 
                 BookingStore.Intent.OnChangeExpanded -> dispatch(Message.OnChangeExpanded)
+
+                else -> {}
             }
         }
 
@@ -173,18 +183,18 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             }
         }
 
-        fun booking(isCurrentRoom: Boolean, state: BookingStore.State, booking: (() -> Unit)?) =
+        fun booking(isCurrentRoom: Boolean, state: BookingStore.State, booking: () -> Unit) =
             scope.launch {
                 val busyEvent = checkBookingUseCase(state.toEvent()).unbox({ it.saveData })
                 when {
                     !state.isCorrectOrganizer() -> dispatch(Message.OrganizerError)
                     isCurrentRoom && busyEvent != null -> dispatch(Message.NotCorrectEvent(busyEvent))
                     isCurrentRoom -> {
-                        booking?.invoke()
+                        booking()
                     }
 
                     else -> {
-                        booking?.invoke()
+                        booking()
                     }
                 }
             }
@@ -223,6 +233,26 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     isSelectCurrentTime = newDate.isNow()
                 )
             )
+            publish(BookingStore.Label.ChangeDate)
+            reset(getState)
+        }
+
+        fun setNewDate(getState: () -> BookingStore.State, changeDay: Int, changeMonth: Int) = scope.launch() {
+            val state = getState()
+            val newDate = (state.selectDate.clone() as Calendar).apply {
+                set(
+                    /* year = */ this[Calendar.YEAR],
+                    /* month = */ changeMonth,
+                    /* date = */ changeDay
+                )
+            }
+            dispatch(
+                Message.ChangeEvent(
+                    selectDate = newDate,
+                    length = state.length,
+                    isSelectCurrentTime = newDate.isNow()
+                )
+            )
             reset(getState)
         }
 
@@ -238,6 +268,18 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             )
             reset(getState)
         }
+
+        fun changeIsSelectCurrentTime(getState: () -> BookingStore.State) {
+            val state = getState()
+            dispatch(
+                Message.ChangeEvent(
+                    selectDate = state.selectDate,
+                    length = state.length,
+                    isSelectCurrentTime = !state.isSelectCurrentTime
+                )
+            )
+            reset(getState)
+        }
     }
 
     private fun BookingStore.State.toEvent(): EventInfo {
@@ -246,7 +288,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         return EventInfo(
             startTime = selectDate.clone() as Calendar,
             finishTime = finishDate,
-            organizer = organizer
+            organizer = organizer,
+            id = ""
         )
     }
 

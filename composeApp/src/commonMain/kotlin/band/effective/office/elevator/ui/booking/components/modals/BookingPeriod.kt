@@ -3,7 +3,6 @@ package band.effective.office.elevator.ui.booking.components.modals
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,10 +31,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.ExtendedTheme
 import band.effective.office.elevator.MainRes
-import band.effective.office.elevator.components.PrimaryButton
+import band.effective.office.elevator.components.EffectiveButton
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 
@@ -220,19 +218,10 @@ fun BookingPeriod(
                     }
                 }
             }
-
-            PrimaryButton(
-                text = stringResource(MainRes.strings.confirm_booking),
-                cornerValue = 40.dp,
-                modifier = Modifier.padding(horizontal = 16.dp),
-                contentTextSize = 16.sp,
-                paddingValues = PaddingValues(all = 10.dp),
-                elevation = elevation,
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = MaterialTheme.colors.primary
-                ),
-                border = null,
-                onButtonClick = onClickSearchSuitableOptions
+            EffectiveButton(
+                buttonText = stringResource(MainRes.strings.confirm_booking),
+                onClick = onClickSearchSuitableOptions,
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
             )
         }
     }

@@ -1,12 +1,13 @@
 package band.effective.office.elevator.ui.employee.allEmployee.store
 
+import band.effective.office.elevator.domain.models.EmployeeInfo
 import band.effective.office.elevator.ui.employee.allEmployee.models.mappers.EmployeeCard
 import com.arkivanov.mvikotlin.core.store.Store
 
 interface EmployeeStore: Store<EmployeeStore.Intent, EmployeeStore.State, EmployeeStore.Label> {
     sealed interface Intent{
         data class OnTextFieldUpdate(val query: String): Intent
-        object OnClickOnEmployee: Intent
+        data class OnClickOnEmployee(val employeeId:String): Intent
     }
 
     data class State(
@@ -17,7 +18,7 @@ interface EmployeeStore: Store<EmployeeStore.Intent, EmployeeStore.State, Employ
     )
 
     sealed interface Label{
-        object ShowProfileScreen: Label
+        data class ShowProfileScreen(val employee:EmployeeInfo): Label
     }
 
 }
