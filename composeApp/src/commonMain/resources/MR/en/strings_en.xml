@@ -79,6 +79,7 @@
     <string name="month">Month</string>
     <string name="year">Year</string>
 
+    <string name="map">Map</string>
     <string name="show_map">Show map</string>
     <string name="extend_booking">Extend</string>
     <string name="repeat_booking">Repeat</string>

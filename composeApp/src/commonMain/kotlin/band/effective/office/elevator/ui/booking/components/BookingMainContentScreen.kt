@@ -77,7 +77,7 @@ fun BookingMainContentScreen(
                             onClick = onClickExpandedMap,
                             icon1 = MainRes.images.icon_map,
                             icon2 = MainRes.images.back_button,
-                            title = MainRes.strings.show_map,
+                            title = MainRes.strings.map,
                             rotate = iconRotationStateCard
                         )
                     }

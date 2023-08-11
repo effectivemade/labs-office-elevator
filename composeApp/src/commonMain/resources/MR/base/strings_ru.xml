@@ -65,6 +65,7 @@
     <string name="month">Месяц</string>
     <string name="year">Год</string>
 
+    <string name="map">Карта</string>
     <string name="show_map">Показать карту</string>
     <string name="extend_booking">Продлить</string>
     <string name="repeat_booking">Повторить</string>
