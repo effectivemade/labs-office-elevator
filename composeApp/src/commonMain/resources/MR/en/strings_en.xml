@@ -3,14 +3,13 @@
     <string name="app_name">Office Elevator</string>
     <string name="sign_in_google">Sign in to Effective email</string>
     <string name="something_went_wrong">Something went wrong. Please try again</string>
-    <string name="company_name_">effective\noffice</string>
+    <string name="company_name">effective\noffice</string>
 
     <string name="search_employee">Search employee</string>
     <string name="employee_in_office">In office</string>
     <string name="employee_soon_in_office">Will be today</string>
     <string name="employee_not_soon_in_office">No reservations</string>
 
-    <string name="company_name">Effective</string>
 
     <!--Auth strings-->
     <string name="_continue">Continue</string>

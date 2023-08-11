@@ -10,7 +10,6 @@
 
     <!--Auth strings-->
     <string name="_continue">Продолжить</string>
-    <string name="company_name">Effective</string>
 
     <string name="input_number">Введите номер</string>
     <string name="select_number">Укажите номер телефона, привязанный к СБП</string>
