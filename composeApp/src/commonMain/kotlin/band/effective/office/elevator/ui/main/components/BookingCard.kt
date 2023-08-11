@@ -69,7 +69,7 @@ fun BookingCard(
 }
 
 @Composable
-private fun SeatTitle(seat: ReservedSeat) {
+fun SeatTitle(seat: ReservedSeat) {
     Column(
         modifier = Modifier.wrapContentSize(),
         verticalArrangement = Arrangement.Center,
