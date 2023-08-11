@@ -1,6 +1,6 @@
 package band.effective.office.elevator.components
 
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -8,16 +8,17 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-
-//use this components for rectangular buttons with 40 dp corners with orange background
+//use this components for rectangular buttons with orange background
 @Composable
 fun EffectiveButton(
     buttonText: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    contentPadding: Dp = 14.dp,
+    roundedCorner: Dp = 40.dp
 ) {
     Button(
         onClick = onClick,
@@ -25,13 +26,20 @@ fun EffectiveButton(
             backgroundColor = MaterialTheme.colors.primary,
             contentColor = MaterialTheme.colors.background
         ),
+        contentPadding = PaddingValues(contentPadding),
+        elevation = ButtonDefaults.elevation(
+            defaultElevation = 0.dp,
+            pressedElevation = 0.dp,
+            disabledElevation = 0.dp,
+            hoveredElevation = 0.dp,
+            focusedElevation = 0.dp,
+        ),
+        shape = RoundedCornerShape(roundedCorner),
         modifier = modifier
-            .clip(RoundedCornerShape(40.dp))
     ) {
         Text(
             text = buttonText,
             style = MaterialTheme.typography.button,
-            modifier = Modifier.padding(vertical = 10.dp)
         )
     }
 }

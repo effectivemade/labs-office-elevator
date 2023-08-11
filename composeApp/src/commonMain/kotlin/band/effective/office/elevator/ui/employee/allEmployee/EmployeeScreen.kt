@@ -1,9 +1,9 @@
 package band.effective.office.elevator.ui.employee.allEmployee
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,9 +17,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -72,7 +72,7 @@ fun EmployeeScreen(component: EmployeeComponent) {
     LaunchedEffect(component) {
         component.employLabel.collect { label ->
             when (label) {
-                EmployeeStore.Label.ShowProfileScreen -> component.onOutput(EmployeeComponent.Output.OpenProfileScreen)
+                is EmployeeStore.Label.ShowProfileScreen -> component.onOutput(EmployeeComponent.Output.OpenProfileScreen(label.employee))
             }
         }
     }
@@ -81,7 +81,7 @@ fun EmployeeScreen(component: EmployeeComponent) {
         employeesCount = employeesCount,
         employeesInOfficeCount = employeesInOfficeCount,
         userMessageState = userMessageState,
-        onCardClick = { component.onEvent(EmployeeStore.Intent.OnClickOnEmployee) },
+        onCardClick = { component.onEvent(EmployeeStore.Intent.OnClickOnEmployee(it)) },
         onTextFieldUpdate = { component.onEvent(EmployeeStore.Intent.OnTextFieldUpdate(it)) })
 }
 
@@ -91,7 +91,7 @@ fun EmployeeScreenContent(
     employeesCount: String,
     employeesInOfficeCount: String,
     userMessageState: String,
-    onCardClick: () -> Unit,
+    onCardClick: (String) -> Unit,
     onTextFieldUpdate: (String) -> Unit
 ) {
 
@@ -191,7 +191,7 @@ fun EmployeeScreenContent(
 
 @Composable
 
-fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
+fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: (String) -> Unit) {
     var isExpanded by remember { mutableStateOf(false) }
     val stateColorBorder: Color
     val stateColorText: Color
@@ -210,7 +210,7 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
 
     }
     if (isExpanded) {
-        onCardClick()
+        onCardClick(emp.id)
     }
 
     Surface(
@@ -260,13 +260,17 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
                     color = textInBorderGray
                 )
                 Spacer(modifier = Modifier.padding(0.dp, 8.dp))
-                Button(
+                OutlinedButton(
                     onClick = { isExpanded = !isExpanded },
-                    colors = ButtonDefaults.buttonColors(theme_light_onPrimary),
-                    modifier = Modifier
-                        .border(1.dp, stateColorBorder, RoundedCornerShape(12.dp)),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = theme_light_onPrimary),
+                    elevation = ButtonDefaults.elevation(
+                        defaultElevation = 0.dp,
+                        pressedElevation = 2.dp,
+                        disabledElevation = 0.dp,
+                        hoveredElevation = 0.dp
+                    ),
                     shape = RoundedCornerShape(12.dp),
-                    elevation = ButtonDefaults.elevation(0.dp, 2.dp, 0.dp)
+                    border = BorderStroke(width = 1.dp, color = stateColorBorder)
                 ) {
                     Text(
                         text = "•   " + emp.state,

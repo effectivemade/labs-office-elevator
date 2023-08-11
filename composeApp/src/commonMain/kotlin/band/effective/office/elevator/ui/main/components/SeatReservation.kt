@@ -51,7 +51,7 @@ fun EmptyReservation(onClickBook: () -> Unit) {
         EffectiveButton(
             buttonText = stringResource(MainRes.strings.book_a_seat),
             onClick = onClickBook,
-            modifier = Modifier.width(280.dp)
+            modifier = Modifier.width(280.dp),
         )
     }
 }

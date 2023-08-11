@@ -37,6 +37,56 @@
     <string name="cansel">Cansel</string>
     <string name="ok">OK</string>
 
+    <!--Booking-->
+    <string name="type_booking">Type booking</string>
+    <string name="workplace">Workplace</string>
+    <string name="meeting_room">Meeting room</string>
+    <string name="booking_period">Booking period</string>
+    <string name="suitable_options">Suitable options</string>
+    <string name="select_zones">Select zones</string>
+    <string name="selection_zones">Selection zones</string>
+    <string name="selection_rooms">Selection meeting rooms</string>
+    <string name="no_repeat">No repeats</string>
+    <string name="every_work_day_repeat">Every working day</string>
+    <string name="every_week_repeat">Every week</string>
+    <string name="every_month_repeat">Every month</string>
+    <string name="other_repeat">Other</string>
+
+
+    <!--Booking period-->
+    <string name="place_booked">Place reserved</string>
+    <string name="good_working_day">Have a good working day!</string>
+    <string name="move_to_main_from_booking">Go to main</string>
+    <string name="close_booking">Close</string>
+    <string name="booking_period">Booking period</string>
+    <string name="whole_day_booking">Whole day</string>
+    <string name="confirm_booking">Confirm</string>
+    <string name="do_not_repeat">Do not repeat</string>
+    <string name="every_work_day">Every work day</string>
+    <string name="every_week">Every week</string>
+    <string name="every_month">Every month</string>
+    <string name="another">Other...</string>
+    <string name="booking_repeat">Repeat booking</string>
+    <string name="booking_repeat_in">Repeats every:</string>
+    <string name="when_repeat">When it repeats:</string>
+    <string name="book_finish">Finish:</string>
+    <string name="never">Never</string>
+    <string name="booking_1">After</string>
+    <string name="booking_2">time</string>
+    <string name="week">Week</string>
+    <string name="month">Month</string>
+
+    <string name="Monday">Mon</string>
+    <string name="Tuesday">Tue</string>
+    <string name="Wednesday">Wed</string>
+    <string name="Thursday">Thu</string>
+    <string name="Friday">Fri</string>
+    <string name="Saturday">Sat</string>
+    <string name="Sunday">Sun</string>
+
+    <string name="take_from">Take from</string>
+    <string name="take_before">Take before</string>
+
     <!--Main Screen-->
     <string name="filter">Filters</string>
 
@@ -83,6 +133,8 @@
 
     <!-- Employee -->
     <string name="about_the_employee">About the employee</string>
-    <string name="upcoming_bookings">Upcoming bookings</string>
+    <string name="upcoming_bookings">Employee reservations</string>
     <string name="transfer">Transfer</string>
+    <string name="none_booking_seats_by_the_employee">This employee dont have any bookings yet</string>
+    <string name="none_booking_seats_on_this_date">This employee dont have bookings on this date</string>
 </resources>

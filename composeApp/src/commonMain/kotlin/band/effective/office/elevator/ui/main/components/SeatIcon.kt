@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import band.effective.office.elevator.ExtendedThemeColors
+import band.effective.office.elevator.ExtendedTheme
 import band.effective.office.elevator.MainRes
 import dev.icerock.moko.resources.compose.painterResource
 
@@ -20,7 +20,7 @@ fun SeatIcon() {
         modifier = Modifier
             .clip(RoundedCornerShape(48.dp))
             .size(44.dp)
-            .background(ExtendedThemeColors.colors.purple_heart_100)
+            .background(ExtendedTheme.colors.purple_heart_100)
     ) {
         Image(
             painter = painterResource(MainRes.images.seat_ic),

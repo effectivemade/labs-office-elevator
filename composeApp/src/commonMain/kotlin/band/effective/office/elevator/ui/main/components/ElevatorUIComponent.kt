@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.ElevatorUpButton
@@ -22,7 +23,8 @@ fun ElevatorUIComponent(
         Text(
             text = stringResource(MainRes.strings.elevator),
             style = MaterialTheme.typography.subtitle1,
-            color = Color.Black //this color doesn't in Theme
+            color = Color.Black, //this color doesn't in Theme
+            fontWeight = FontWeight(500)
         )
         Spacer(Modifier.weight(.1f))
         ActionCall(onClickCallElevator)

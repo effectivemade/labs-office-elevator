@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -37,7 +38,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import band.effective.office.elevator.ExtendedThemeColors
+import band.effective.office.elevator.ExtendedTheme
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.components.OutlinedTextColorsSetup
@@ -93,6 +94,13 @@ fun AuthorizationProfileComponent(
     val borderColor2 = remember { mutableStateOf(textGrayColor) }
     val leadingColor2 = remember { mutableStateOf(textGrayColor) }
 
+    val elevation = ButtonDefaults.elevation(
+        defaultElevation = 0.dp,
+        pressedElevation = 0.dp,
+        disabledElevation = 0.dp,
+        hoveredElevation = 0.dp,
+        focusedElevation = 0.dp
+    )
 
     Column(
         horizontalAlignment = Alignment.Start,
@@ -200,7 +208,7 @@ fun AuthorizationProfileComponent(
                                 .height(20.dp)
                                 .width(2.dp)
                                 .clip(RoundedCornerShape(4.dp))
-                                .background(if (state.isErrorName) ExtendedThemeColors.colors.error else borderColor1.value)
+                                .background(if (state.isErrorName) ExtendedTheme.colors.error else borderColor1.value)
                                 .padding(vertical = 14.dp)
                         )
                     }
@@ -281,7 +289,7 @@ fun AuthorizationProfileComponent(
                                 .height(20.dp)
                                 .width(2.dp)
                                 .clip(RoundedCornerShape(4.dp))
-                                .background(if (state.isErrorPost) ExtendedThemeColors.colors.error else borderColor2.value)
+                                .background(if (state.isErrorPost) ExtendedTheme.colors.error else borderColor2.value)
                                 .padding(vertical = 14.dp)
                         )
                     }
