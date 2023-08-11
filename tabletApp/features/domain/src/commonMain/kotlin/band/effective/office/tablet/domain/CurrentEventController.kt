@@ -1,7 +1,9 @@
 package band.effective.office.tablet.domain
 
-import band.effective.office.tablet.domain.model.Either
+import band.effective.office.network.model.Either
+import band.effective.office.network.model.ErrorResponse
 import band.effective.office.tablet.domain.model.EventInfo
+import band.effective.office.tablet.domain.model.Settings
 import band.effective.office.tablet.domain.useCase.RoomInfoUseCase
 import band.effective.office.tablet.network.repository.CancelRepository
 import kotlinx.coroutines.CoroutineScope
@@ -9,7 +11,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import network.model.ErrorResponse
 
 /**Class for control start/finish event in room*/
 abstract class CurrentEventController(
@@ -27,14 +28,14 @@ abstract class CurrentEventController(
     fun start(scope: CoroutineScope) {
         this.scope = scope
         job?.cancel()
-        stopUpdate()
         job = update()
-        roomUseCase.subscribe(scope) { onServerUpdate() }
+        scope.launch { roomUseCase.subscribe(Settings.current.checkCurrentRoom())
+            .collect() { onServerUpdate() } }
     }
 
     /**Finish current event*/
     suspend fun cancelCurrentEvent(): Either<ErrorResponse, String> {
-        val result = cancelRepository.cancelEvent()
+        val result = cancelRepository.cancelEvent(currentEvent!!)
         if (result is Either.Success) {
             onServerUpdate()
         }
@@ -44,9 +45,8 @@ abstract class CurrentEventController(
     /**Reloading current event state change handler*/
     private fun onServerUpdate() {
         scope.launch {
-            stopUpdate()
             job?.cancel()
-            currentEvent = when (val response = roomUseCase()) {
+            currentEvent = when (val response = roomUseCase(Settings.current.checkCurrentRoom())) {
                 is Either.Error -> null
                 is Either.Success -> response.data.currentEvent
             }
@@ -62,5 +62,4 @@ abstract class CurrentEventController(
     /**Update current event*/
     protected abstract fun update(): Job
 
-    protected abstract fun stopUpdate()
 }

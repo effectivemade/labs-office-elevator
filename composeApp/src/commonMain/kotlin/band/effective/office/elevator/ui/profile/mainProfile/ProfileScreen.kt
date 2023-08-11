@@ -37,7 +37,8 @@ import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.borderPurple
 import band.effective.office.elevator.components.TitlePage
 import band.effective.office.elevator.textGrayColor
-import band.effective.office.elevator.ui.models.FieldsDataForProfile
+import band.effective.office.elevator.ui.models.UserData
+import band.effective.office.elevator.ui.models.getAllUserDataProfile
 import band.effective.office.elevator.ui.profile.mainProfile.store.ProfileStore
 import com.seiko.imageloader.model.ImageRequest
 import com.seiko.imageloader.rememberAsyncImagePainter
@@ -69,6 +70,7 @@ fun ProfileScreen(component: MainProfileComponent) {
     )
 }
 
+
 @Composable
 internal fun ProfileScreenContent(
     imageUrl: String,
@@ -80,7 +82,6 @@ internal fun ProfileScreenContent(
     onEditProfile: (id: String) -> Unit,
     id: String
 ) {
-    val fieldsList = prepareFieldsData(telegram, phoneNumber)
     Column(
         modifier = Modifier.fillMaxSize().background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -116,8 +117,8 @@ internal fun ProfileScreenContent(
         ProfileInfoAboutUser(imageUrl, userName, post, {onEditProfile(id)},id)
         LazyColumn(modifier = Modifier.fillMaxSize().padding(top = 24.dp))
         {
-            items(fieldsList){item ->
-                FieldsItemStyle(item = item, { onEditProfile(id) },id)
+            items(getAllUserDataProfile()){ item ->
+                FieldsItemStyle(item = item, { onEditProfile(id) },id = id, telegram = telegram, phoneNumber = phoneNumber)
             }
         }
     }
@@ -172,7 +173,13 @@ fun ProfileInfoAboutUser(imageUrl: String, userName: String, post: String, onEdi
 
 
 @Composable
-private fun FieldsItemStyle(item: FieldsDataForProfile, onEditProfile: (id: String) -> Unit,  id: String) {
+private fun FieldsItemStyle(
+    item: UserData,
+    onEditProfile: (id: String) -> Unit,
+    id: String,
+    phoneNumber: String,
+    telegram: String
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier
             .padding(horizontal = 16.dp).fillMaxWidth()
@@ -189,8 +196,12 @@ private fun FieldsItemStyle(item: FieldsDataForProfile, onEditProfile: (id: Stri
             modifier = Modifier.padding(start = 12.dp)
         )
         Spacer(modifier = Modifier.weight(.1f))
+        var text = when(item){
+            UserData.Phone -> phoneNumber
+            UserData.Telegram -> telegram
+        }
         Text(
-            item.value,
+            text = text,
             style = MaterialTheme.typography.subtitle1,
             color = Color.Black
         )
@@ -203,29 +214,4 @@ private fun FieldsItemStyle(item: FieldsDataForProfile, onEditProfile: (id: Stri
     }
     }
     Divider(color = textGrayColor, thickness = 1.dp)
-}
-
-
-
-
-private fun prepareFieldsData(telegram: String, phoneNumber: String) : List<FieldsDataForProfile>{
-
-    val fieldsList = mutableListOf<FieldsDataForProfile>()
-
-    fieldsList.add(
-        FieldsDataForProfile(
-            icon = MainRes.images.icon_call,
-            title = MainRes.strings.phone_number,
-            value = phoneNumber,
-        )
-    )
-
-    fieldsList.add(
-        FieldsDataForProfile(
-            icon = MainRes.images.icon_telegram,
-            title = MainRes.strings.telegram,
-            value =telegram,
-        )
-    )
-    return fieldsList
 }

@@ -29,7 +29,7 @@ import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 fun RoomsView(
     modifier: Modifier,
     listRooms: List<RoomInfoUiState>,
-    onBookRoom: (name: String, maxDuration: Int) -> Unit
+    onBookRoom: (name: RoomInfoUiState, maxDuration: Int) -> Unit
     ) {
     Box(
         modifier = modifier

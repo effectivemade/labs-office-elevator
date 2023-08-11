@@ -13,5 +13,7 @@ fun checkDuration(startEvent: Calendar, newEventDuration: Int): Boolean{
 fun getDurationRelativeCurrentTime(time: Calendar): Int{
     val currentTime = Calendar.getInstance()
     val ml = time.timeInMillis - currentTime.timeInMillis
-    return ml.toInt() / 60000
+    return ml.toInt() / 60000 + (ml.toInt() % 60 > 30).toInt()
 }
+
+private fun Boolean.toInt() = if (this) 1 else 0

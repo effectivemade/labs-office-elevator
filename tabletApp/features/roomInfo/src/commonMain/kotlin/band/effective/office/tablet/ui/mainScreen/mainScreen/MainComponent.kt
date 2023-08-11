@@ -1,15 +1,15 @@
 package band.effective.office.tablet.ui.mainScreen.mainScreen
 
+import band.effective.office.tablet.ui.bookingComponents.pickerDateTime.DateTimePickerComponent
 import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomComponent
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingRoomComponent
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store.BookingStore
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainFactory
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
-import band.effective.office.tablet.ui.mainScreen.mockComponets.MockSettingsComponent
-import band.effective.office.tablet.ui.mainScreen.mockComponets.RealMockSettingsComponent
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.RoomInfoComponent
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.store.RoomInfoStore
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponentImpl
+import band.effective.office.tablet.ui.updateEvent.UpdateEventComponent
 import band.effective.office.tablet.utils.componentCoroutineScope
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.childContext
@@ -22,13 +22,10 @@ import kotlinx.coroutines.launch
 class MainComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
-    private val OnSelectOtherRoomRequest: () -> Unit
+    private val OnSelectOtherRoomRequest: () -> Unit,
+    val onSettings: () -> Unit
 ) : ComponentContext by componentContext {
 
-    val mockSettingsComponent: MockSettingsComponent =
-        RealMockSettingsComponent(
-            componentContext = childContext(key = "mock")
-        )
     val roomInfoComponent: RoomInfoComponent = RoomInfoComponent(
         componentContext = childContext(key = "roomInfoComponent"),
         storeFactory = storeFactory,
@@ -40,7 +37,7 @@ class MainComponent(
         onCurrentBookingRoom = { mainStore.accept(MainStore.Intent.OnBookingCurrentRoomRequest) },
         storeFactory = storeFactory,
         onBookingOtherRoom = { OnSelectOtherRoomRequest() },
-        onChangeDate = { roomInfoComponent.sendIntent(RoomInfoStore.Intent.OnChangeSelectDate(it)) }
+        onChangeDate = { roomInfoComponent.sendIntent(RoomInfoStore.Intent.OnChangeSelectDate(it)) },
     )
 
     val selectRoomComponent: SelectRoomComponentImpl =
@@ -52,7 +49,7 @@ class MainComponent(
             onMainScreen = {
                 mainStore.accept(MainStore.Intent.CloseModal)
                 bookingRoomComponent.sendIntent(BookingStore.Intent.OnChangeIsActive(true))
-                           },
+            },
             onCloseRequest = {
                 mainStore.accept(MainStore.Intent.CloseModal)
                 bookingRoomComponent.sendIntent(BookingStore.Intent.OnChangeIsActive(false))
@@ -65,11 +62,36 @@ class MainComponent(
             storeFactory = storeFactory,
             onCloseRequest = { mainStore.accept(MainStore.Intent.CloseModal) })
 
+    val dateTimePickerComponent: DateTimePickerComponent =
+        DateTimePickerComponent(
+            componentContext = componentContext,
+            storeFactory = storeFactory,
+            onOpenDateTimePickerModal = { mainStore.accept(MainStore.Intent.OnOpenDateTimePickerModal) },
+            onCloseRequest = { mainStore.accept(MainStore.Intent.CloseModal) },
+            setNewDate = { day: Int, month: Int, year: Int, hour: Int, minute: Int ->
+                bookingRoomComponent.sendIntent(
+                    BookingStore.Intent.OnSetDate(
+                        day,
+                        month,
+                        year,
+                        hour,
+                        minute
+                    )
+                )
+            },
+        )
+
+    val updateEventComponent = UpdateEventComponent(
+        componentContext = componentContext,
+        storeFactory = storeFactory
+    )
+
     private val mainStore = instanceKeeper.getStore {
         MainFactory(
             storeFactory = storeFactory
         ).create()
     }
+
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val state = mainStore.stateFlow

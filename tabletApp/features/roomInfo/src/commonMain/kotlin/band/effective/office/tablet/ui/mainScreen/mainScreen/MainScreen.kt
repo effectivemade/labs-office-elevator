@@ -5,9 +5,11 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import band.effective.office.tablet.ui.common.ErrorMainScreen
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
-import band.effective.office.tablet.ui.mainScreen.mainScreen.uiComponents.ErrorMainScreen
 import band.effective.office.tablet.ui.mainScreen.mainScreen.uiComponents.LoadMainScreen
+import band.effective.office.tablet.ui.mainScreen.settingsComponents.SettingsScreen
+import band.effective.office.tablet.ui.mainScreen.settingsComponents.SettingsView
 
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable
@@ -26,14 +28,30 @@ fun MainScreen(component: MainComponent) {
             MainScreenView(
                 showBookingModal = state.showBookingModal,
                 showFreeRoomModal = state.showFreeModal,
-                mockComponent = component.mockSettingsComponent,
+                showDateTimePickerModal = state.showDateTimePickerModal,
                 bookingRoomComponent = component.bookingRoomComponent,
                 selectRoomComponent = component.selectRoomComponent,
                 roomInfoComponent = component.roomInfoComponent,
                 freeSelectRoomComponent = component.freeSelectRoomComponent,
+                dateTimePickerComponent = component.dateTimePickerComponent,
                 showModal = state.showModal(),
-                isDisconnect = state.isDisconnect
+                isDisconnect = state.isDisconnect,
+                onEventUpdateRequest = {
+                    component.sendIntent(
+                        MainStore.Intent.OnChangeEventRequest(
+                            eventInfo = it
+                        )
+                    )
+                },
+                updatedEvent = state.updatedEvent,
+                showUpdateModal = state.showUpdateModal,
+                updateEventComponent = component.updateEventComponent,
+                closeModal = { component.sendIntent(MainStore.Intent.CloseModal) }
             )
+        }
+
+        state.isSettings -> {
+            component.onSettings()
         }
     }
 }

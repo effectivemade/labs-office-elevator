@@ -1,6 +1,5 @@
 package band.effective.office.elevator.components
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -11,9 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import band.effective.office.elevator.MainRes
 
+
+//use this components for rectangular buttons with 40 dp corners with orange background
 @Composable
 fun EffectiveButton(
     buttonText: String,
@@ -27,7 +26,7 @@ fun EffectiveButton(
             contentColor = MaterialTheme.colors.background
         ),
         modifier = modifier
-            .clip(RoundedCornerShape(48.dp))
+            .clip(RoundedCornerShape(40.dp))
     ) {
         Text(
             text = buttonText,

@@ -76,7 +76,7 @@ val LocalCustomColorsPalette = staticCompositionLocalOf { CustomColorsPalette() 
 
 @Composable
 fun AppTheme(
-    useDarkTheme: Boolean = isSystemInDarkTheme(),
+    useDarkTheme: Boolean = true,
     content: @Composable () -> Unit
 ) {
    val colors = if (!useDarkTheme) {
@@ -90,9 +90,6 @@ fun AppTheme(
     } else {
         CustomDarkColors
     }
-
-   // val colors = darkColors
-  //  val customColorsPalette = CustomDarkColors
 
     val typography = Typography(
         h1 = header1,

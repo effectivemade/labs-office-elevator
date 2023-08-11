@@ -15,12 +15,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.features.selectRoom.MainRes
+import band.effective.office.tablet.ui.common.CrossButtonView
 import band.effective.office.tablet.ui.selectRoomScreen.successBooking.uiComponents.DateTimeView
 import band.effective.office.tablet.ui.selectRoomScreen.successBooking.uiComponents.IconSuccess
 import band.effective.office.tablet.ui.selectRoomScreen.successBooking.uiComponents.OrganizerEventView
 import band.effective.office.tablet.ui.selectRoomScreen.successBooking.uiComponents.SuccessText
 import band.effective.office.tablet.ui.selectRoomScreen.uiComponents.BookingButtonView
-import band.effective.office.tablet.ui.selectRoomScreen.uiComponents.CrossButtonView
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 
 @Composable

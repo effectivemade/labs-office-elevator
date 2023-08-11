@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import band.effective.office.tablet.domain.model.EventInfo
-import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.roomUiState.RoomInfoUiState
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.uiComponents.PanelView
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.uiComponents.RoomsView
@@ -26,7 +24,7 @@ fun FreeNegotiationsView(
     showBookingModal: Boolean,
     selectRoomComponent: SelectRoomComponent,
     onMainScreen: (reset: Boolean) -> Unit,
-    onBookRoom: (name: String, maxDuration: Int) -> Unit
+    onBookRoom: (name: RoomInfoUiState, maxDuration: Int) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize()

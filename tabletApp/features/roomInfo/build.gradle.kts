@@ -6,7 +6,6 @@ plugins {
     id(Plugins.Libres.plugin)
 }
 
-
 android {
     compileSdk = 33
     sourceSets["main"].apply {
@@ -31,6 +30,9 @@ kotlin {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material)
+                implementation(compose.material3)
+
+
 
                 // Decompose
                 implementation(Dependencies.Decompose.decompose)
@@ -46,6 +48,13 @@ kotlin {
                 api(Dependencies.MviKotlin.mviKotlin)
                 api(Dependencies.MviKotlin.mviKotlinMain)
                 api(Dependencies.MviKotlin.mviKotlinExtensionsCoroutines)
+
+                //EpicDatePicker
+                implementation(Dependencies.Calendar.composeDatePicker)
+
+                //WheelTimePicker
+                implementation(Dependencies.KotlinxDatetime.kotlinxDatetime)
+                implementation(project(":wheel-picker-compose"))
 
                 implementation(project(":tabletApp:features:core"))
                 implementation(project(":tabletApp:features:network"))

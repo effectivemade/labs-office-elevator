@@ -47,7 +47,7 @@
     <string name="reset_filter">Сбросить</string>
 
     <string name="cansel">Отмена</string>
-    <string name="ok">Ок</string>
+    <string name="ok">ОK</string>
 
     <!--Tab titles-->
     <string name="profile">Профиль</string>
@@ -75,7 +75,7 @@
     <string name="elevator_called_successfully">Лифт успешно вызван!</string>
 
     <!-- Profile specifics-->
-    <string name="exit">Выход</string>
+    <string name="exit">Выйти</string>
     <string name="phone">Телефон</string>
     <string name="telegram">Telegram</string>
 
