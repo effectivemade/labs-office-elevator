@@ -244,9 +244,10 @@ private fun AboutEmployeeContent(
                         FilterButton(onClickOpenBottomSheetDialog = onClickOpenBottomDialog)
                 }
             }
-            when(reservedSeats.isEmpty()){
-                true -> NoReservationsThisDate(noThisDayReservations = filtrationOnReserves)
-                false-> ReservationsOnThisDate(
+            if(reservedSeats.isEmpty()){
+                NoReservationsThisDate(noThisDayReservations = filtrationOnReserves)
+            }else{
+                ReservationsOnThisDate(
                     reservedSeats =  reservedSeats,
                 )
             }
