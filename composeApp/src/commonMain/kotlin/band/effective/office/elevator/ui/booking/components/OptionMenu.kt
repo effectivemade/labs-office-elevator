@@ -48,7 +48,7 @@ fun OptionMenu(
                 ) {
                     Image(
                         modifier = Modifier.padding(vertical = 20.dp),
-                        painter = painterResource(MainRes.images.icon_map), //TODO(Заменить карту!")
+                        painter = painterResource(MainRes.images.icon_map), //TODO(Olesia Shinkarenko): replace map
                         contentDescription = null
                     )
                 }
@@ -137,7 +137,7 @@ fun OptionMenu(
                         )
                     }
                     Text(
-                        text = "Пт, 30 июня 12:00 — 14:00", //TODO("Получать текст из календаря")
+                        text = "Пт, 30 июня 12:00 — 14:00", //TODO(Olesia Shinkarenko): get from calendar
                         modifier = Modifier.padding(start = 8.dp),
                         style = MaterialTheme.typography.body2
                     )

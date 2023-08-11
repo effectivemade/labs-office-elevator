@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-//use this components for rectangular buttons with orange background
+
 @Composable
 fun EffectiveButton(
     buttonText: String,

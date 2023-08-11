@@ -55,7 +55,7 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory, private 
                     copy(
                         user = msg.user,
                         reservedSeats = msg.reservedSeats
-                )//mokValueUser
+                )
                 is Msg.UpdateSeatsReservation -> {
                     copy(
                         reservedSeats = msg.reservedSeats,
@@ -81,32 +81,32 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory, private 
                 Intent.TelegramClicked -> pickTelegram(getState().user.telegram!!)
                 Intent.TelephoneClicked -> makeCall(getState().user.phoneNumber!!)
                 Intent.TransferMoneyClicked -> pickSBP(getState().user.phoneNumber!!)
-                AboutEmployeeStore.Intent.OpenCalendarClicked -> {
+                Intent.OpenCalendarClicked -> {
                     scope.launch {
-                        publish(AboutEmployeeStore.Label.OpenCalendar)
+                        publish(Label.OpenCalendar)
                     }
                 }
-                AboutEmployeeStore.Intent.CloseCalendarClicked -> {
+                Intent.CloseCalendarClicked -> {
                     scope.launch {
-                        publish(AboutEmployeeStore.Label.CloseCalendar)
+                        publish(Label.CloseCalendar)
                     }
                 }
-                is AboutEmployeeStore.Intent.OnClickApplyDate ->{
+                is Intent.OnClickApplyDate ->{
                     scope.launch {
-                        publish(AboutEmployeeStore.Label.CloseCalendar)
+                        publish(Label.CloseCalendar)
                         intent.date?.let { newDate ->
                             fetchUserInfoByDate(date=newDate, ownerId = mokValueUser.id)
                         }
                     }
                 }
-                AboutEmployeeStore.Intent.OpenBottomDialog ->{
+                Intent.OpenBottomDialog ->{
                     scope.launch {
-                        publish(AboutEmployeeStore.Label.OpenBottomDialog)
+                        publish(Label.OpenBottomDialog)
                     }
                 }
-                AboutEmployeeStore.Intent.CloseBottomDialog ->{
+                Intent.CloseBottomDialog ->{
                     scope.launch {
-                        publish(AboutEmployeeStore.Label.CloseBottomDialog)
+                        publish(Label.CloseBottomDialog)
                     }
                 }
             }
