@@ -23,15 +23,18 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.MainRes
@@ -39,8 +42,9 @@ import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.components.TitlePage
 import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.textGrayColor
-import band.effective.office.elevator.ui.models.FieldsData
 import band.effective.office.elevator.ui.models.PhoneMaskTransformation
+import band.effective.office.elevator.ui.models.UserDataEditProfile
+import band.effective.office.elevator.ui.models.getAllUserDataEditProfile
 import band.effective.office.elevator.ui.profile.editProfile.store.ProfileEditStore
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
@@ -89,15 +93,11 @@ private fun ProfileEditScreenContent(
     isErrorPost: Boolean,
     isErrorTelegram: Boolean
 ) {
-    val fieldsList =  prepareFieldsData(
-        userName = userName,
-        post = post,
-        telegram = telegram,
-        phoneNumber = phoneNumber,
-        isErrorPhone  = isErrorPhone,
-        isErrorName = isErrorName,
-        isErrorPost = isErrorPost,
-        isErrorTelegram = isErrorTelegram)
+    val userNameText = rememberSaveable { mutableStateOf(userName) }
+    val phoneNumberText = rememberSaveable { mutableStateOf(phoneNumber) }
+    val postText = rememberSaveable { mutableStateOf(post) }
+    val telegramText = rememberSaveable { mutableStateOf(telegram) }
+
     Column (
         modifier = Modifier.fillMaxSize().background(Color.White).padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -105,26 +105,66 @@ private fun ProfileEditScreenContent(
     ){
         ProfileEditHeader(onReturnToProfile)
         LazyColumn(modifier = Modifier.padding(top= 28.dp)){
-            items(fieldsList){item->
-                FieldsItemStyle(item = item)
+            items(getAllUserDataEditProfile()){item->
+                    when(item){
+                    UserDataEditProfile.Phone -> {
+                        FieldsItemStyle(
+                            item = item,
+                            text = phoneNumberText,
+                            error =  isErrorPhone,
+                            visualTransformation = PhoneMaskTransformation(),
+                            keyboardType = KeyboardType.Phone
+                        )
+                    }
+                    UserDataEditProfile.Person -> {
+                        FieldsItemStyle(
+                            item = item,
+                            text = userNameText,
+                            error =  isErrorName
+                        )
+                    }
+                    UserDataEditProfile.Post -> {
+                        FieldsItemStyle(
+                            item = item,
+                            text = postText,
+                            error =  isErrorPost
+                        )
+                    }
+                    UserDataEditProfile.Telegram ->{
+                        FieldsItemStyle(
+                            item = item,
+                            text = telegramText,
+                            error =  isErrorTelegram
+                        )
+                    }
+                }
+            }
+            item {
+                EffectiveButton(
+                    onClick = {onSaveChange(
+                        userNameText.value,
+                        postText.value,
+                        phoneNumberText.value,
+                        telegramText.value
+                    )},
+                    buttonText = stringResource(MainRes.strings.save),
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp, top = 32.dp)
+                    )
+                }
             }
         }
-        Spacer(modifier = Modifier.weight(.1f))
-        EffectiveButton(
-            onClick = {onSaveChange(
-                fieldsList[0].value.value,
-                fieldsList[1].value.value,
-                fieldsList[2].value.value,
-                fieldsList[3].value.value
-            )},
-            buttonText = stringResource(MainRes.strings.save),
-            modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
-        )
     }
-}
+
+
 
 @Composable
-private fun FieldsItemStyle(item:FieldsData){
+private fun FieldsItemStyle(
+    item: UserDataEditProfile,
+    error: Boolean,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    text: MutableState<String>,
+    keyboardType: KeyboardType = KeyboardType.Text
+){
     Column(
         modifier = Modifier.padding(top = 16.dp).fillMaxWidth()
     ) {
@@ -135,13 +175,11 @@ private fun FieldsItemStyle(item:FieldsData){
             color = Color.Black
         )
         OutlinedTextField(
-            value = item.value.value,
+            value = text.value,
             modifier = Modifier.fillMaxWidth(),
-            onValueChange = { newText -> item.value.value = newText},
+            onValueChange = { text.value = it},
             shape = RoundedCornerShape(12.dp),
             singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = item.keyboardType),
-            isError =   item.isError,
             textStyle = TextStyle(fontSize = 16.sp),
             leadingIcon = {
                 Row(
@@ -157,7 +195,7 @@ private fun FieldsItemStyle(item:FieldsData){
                 }
                           },
             trailingIcon = {
-                IconButton(onClick = {item.value.value = ""}){
+                IconButton(onClick = {text.value = ""}){
                     Icon(
                         painter = painterResource(MainRes.images.clear_icon),
                         contentDescription = null,
@@ -168,60 +206,13 @@ private fun FieldsItemStyle(item:FieldsData){
                 textColor = textGrayColor,
                 leadingIconColor = textGrayColor,
                 trailingIconColor = textGrayColor),
-            visualTransformation = item.visualTransformation
+            isError = error,
+            visualTransformation = visualTransformation,
+            keyboardOptions = KeyboardOptions(keyboardType = keyboardType)
         )
-        }
+    }
 }
 
-private fun prepareFieldsData(
-    userName: String,
-    post: String,
-    telegram: String,
-    phoneNumber: String,
-    isErrorPhone: Boolean,
-    isErrorName: Boolean,
-    isErrorPost: Boolean,
-    isErrorTelegram: Boolean
-) : List<FieldsData> {
-
-    val fieldsList = mutableListOf<FieldsData>()
-
-    fieldsList.add(
-        FieldsData(
-            icon = MainRes.images.person_ic,
-            title = MainRes.strings.last_name_and_first_name,
-            value = mutableStateOf(userName),
-            isError = isErrorName
-        )
-    )
-    fieldsList.add(
-        FieldsData(
-            icon = MainRes.images.symbols_work,
-            title = MainRes.strings.post,
-            value = mutableStateOf(post),
-            isError = isErrorPost
-        )
-    )
-    fieldsList.add(
-        FieldsData(
-            icon = MainRes.images.mask_number,
-            title = MainRes.strings.phone_number,
-            value = mutableStateOf(phoneNumber),
-            isError = isErrorPhone,
-            visualTransformation = PhoneMaskTransformation(),
-            keyboardType = KeyboardType.Phone
-        )
-    )
-    fieldsList.add(
-        FieldsData(
-            icon = MainRes.images.mask_commercial_at,
-            title = MainRes.strings.telegram,
-            value = mutableStateOf(telegram),
-            isError = isErrorTelegram
-        )
-    )
-    return fieldsList
-}
 
 @Composable
 fun ProfileEditHeader(onReturnToProfile: () -> Unit) {

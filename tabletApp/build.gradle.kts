@@ -12,14 +12,15 @@ android {
 
     defaultConfig {
         applicationId = "band.effective.office.tablet"
-        versionCode = 1
-        versionName = "0.0.1"
+        versionCode = 2
+        versionName = "0.1.0"
 
         minSdk = 26
         targetSdk = 33
     }
     sourceSets["main"].apply {
         manifest.srcFile("src/androidMain/AndroidManifest.xml")
+        res.srcDirs("src/androidMain/resources")
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8

@@ -2,10 +2,14 @@ package band.effective.office.tablet.ui.freeSelectRoom.store
 
 import com.arkivanov.mvikotlin.core.store.Store
 
-interface FreeSelectStore : Store<FreeSelectStore.Intent, FreeSelectStore.State, Nothing> {
+interface FreeSelectStore : Store<FreeSelectStore.Intent, FreeSelectStore.State, FreeSelectStore.Label> {
     sealed interface Intent {
-        data class OnFreeSelectRequest(val close: (() -> Unit)? = null) : Intent
-        data class OnCloseWindowRequest(val close: (() -> Unit)? = null) : Intent
+        object OnFreeSelectRequest : Intent
+        object OnCloseWindowRequest : Intent
+    }
+
+    sealed interface Label {
+        object Close : Label
     }
 
     data class State(
@@ -16,7 +20,7 @@ interface FreeSelectStore : Store<FreeSelectStore.Intent, FreeSelectStore.State,
             val defaultState =
                 State(
                     isLoad = false,
-                    isSuccess = false
+                    isSuccess = true
                 )
         }
     }

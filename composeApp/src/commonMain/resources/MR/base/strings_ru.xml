@@ -75,7 +75,7 @@
     <string name="elevator_called_successfully">Лифт успешно вызван!</string>
 
     <!-- Profile specifics-->
-    <string name="exit">Выход</string>
+    <string name="exit">Выйти</string>
     <string name="phone">Телефон</string>
     <string name="telegram">Telegram</string>
 

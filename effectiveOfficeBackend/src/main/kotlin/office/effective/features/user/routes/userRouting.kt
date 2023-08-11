@@ -12,16 +12,16 @@ import office.effective.common.swagger.SwaggerDocument
 import office.effective.features.user.ITokenVerifier
 import office.effective.features.user.converters.UserDTOModelConverter
 import office.effective.features.user.dto.UserDTO
+import office.effective.features.user.facade.UserFacade
 import office.effective.features.user.repository.UserRepository
-import office.effective.features.user.routes.swagger.alterUser
+import office.effective.features.user.routes.swagger.updateUser
 import office.effective.features.user.routes.swagger.returnUserByEmail
 import office.effective.features.user.routes.swagger.returnUserById
 import office.effective.features.user.routes.swagger.returnUsers
-import office.effective.features.user.service.IUserService
 import org.koin.core.context.GlobalContext
 
 fun Route.userRouting() {
-    val service: IUserService = GlobalContext.get().get()
+    val facade: UserFacade = GlobalContext.get().get()
     val verifier: ITokenVerifier = GlobalContext.get().get()
 
     route("userTests", {
@@ -30,30 +30,27 @@ fun Route.userRouting() {
             val repo: UserRepository = GlobalContext.get().get()
             val model =
                 repo.findByEmail(
-                    (call.parameters["email"] ?: call.response.status(HttpStatusCode.BadRequest)) as String
+                    call.parameters["email"] ?: return@get call.respond(HttpStatusCode.BadRequest)
                 )
-            val converterDTO = UserDTOModelConverter()
+            val converterDTO: UserDTOModelConverter = GlobalContext.get().get()
             call.respond(converterDTO.modelToDTO(model))
         }
     }
     route("users", {}) {
         get("", SwaggerDocument.returnUsers()) {
-            var tagStr = call.request.queryParameters["tag"] ?: call.response.status(HttpStatusCode.BadRequest)
-            val tokenStr = call.request.header("id_token") ?: call.response.status(HttpStatusCode.Forbidden)
-            val users: Set<UserDTO>? = service.getUsersByTag(tagStr as String, tokenStr as String)
+            var tagStr = call.request.queryParameters["tag"] ?: return@get call.respond(HttpStatusCode.BadRequest)
+            val users: Set<UserDTO>? = facade.getUsersByTag(tagStr as String, "tokenStr as String")
             call.respond(users ?: "no such users")
         }
         get("/{user_id}", SwaggerDocument.returnUserById()) {
-            val userId = call.parameters["user_id"] ?: call.response.status(HttpStatusCode.BadRequest)
-            val tokenStr = call.request.header("id_token") ?: call.response.status(HttpStatusCode.Forbidden)
-            val user = service.getUserById(userId as String, tokenStr as String)
-            call.respond(user ?: "No such user. Suggestion: bad id")
+            val userId : String = call.parameters["user_id"] ?: return@get call.respond(HttpStatusCode.BadRequest)
+            val user = facade.getUserById(userId, "zsd")
+            call.respond(user)
         }
 
-        put("/alter/{user_id}", SwaggerDocument.alterUser()) {
+        put("/{user_id}", SwaggerDocument.updateUser()) {
             val user: UserDTO = call.receive<UserDTO>()
-            val tokenStr = call.request.header("id_token") ?: call.response.status(HttpStatusCode.Forbidden)
-            call.respond(service.updateUser(user, tokenStr as String))
+            call.respond(facade.updateUser(user))
         }
     }
 }

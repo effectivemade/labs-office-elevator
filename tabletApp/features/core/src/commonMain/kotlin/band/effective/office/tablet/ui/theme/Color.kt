@@ -16,7 +16,7 @@ internal val md_theme_dark_onSuccess = Color(0xFF22B44B)
 internal val md_theme_dark_secondaryButton = Color(0xFFFEFEFE)
 internal val md_theme_dark_primaryTextAndIcon = Color(0xFFF9F9F9)
 internal val md_theme_dark_secondaryTextAndIcon = Color(0xFF808080)
-internal val md_theme_dark_tertiaryTextAndIcon = Color(0xFF777777)
+internal val md_theme_dark_tertiaryTextAndIcon = Color(0xFF6E6E6E)
 internal val md_theme_dark_pressedPrimaryButton = Color(0xFFEC6521)
 internal val md_theme_dark_disabledPrimaryButton = Color(0xFF483E38)
 

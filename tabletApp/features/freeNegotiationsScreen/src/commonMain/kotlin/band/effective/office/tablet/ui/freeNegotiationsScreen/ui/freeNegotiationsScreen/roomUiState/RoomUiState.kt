@@ -6,7 +6,16 @@ data class RoomInfoUiState(
     val room: RoomInfo,
     val changeEventTime: Int,
     val state: RoomState
-)
+){
+    companion object {
+        val defaultValue =
+            RoomInfoUiState(
+                room = RoomInfo.defaultValue,
+                state = RoomState.FREE,
+                changeEventTime = 0
+            )
+    }
+}
 
 enum class RoomState(val codeState: Int) {
     FREE(0),
