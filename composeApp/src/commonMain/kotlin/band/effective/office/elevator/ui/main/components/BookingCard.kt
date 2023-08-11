@@ -20,20 +20,29 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import band.effective.office.elevator.expects.showPopupMenu
+import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.textGrayColor
+import band.effective.office.elevator.ui.main.store.MainStore
 import band.effective.office.elevator.ui.models.ReservedSeat
 
 @Composable
 fun BookingCard(
     seat: ReservedSeat,
+    onClickOptionMenu: (Int) -> Unit,
     onClickShowOptions: () -> Unit
 ) {
+    var expand = remember { mutableStateOf(false) }
     Row(
         modifier = Modifier
             .clip(RoundedCornerShape(16.dp))
@@ -52,7 +61,10 @@ fun BookingCard(
                 .fillMaxWidth()
         ) {
             IconButton(
-                onClick = onClickShowOptions,
+                onClick = {
+                    expand.value = !expand.value
+                    onClickShowOptions()
+                },
                 modifier = Modifier
                     .clip(RoundedCornerShape(80.dp)),
                 colors = IconButtonDefaults.iconButtonColors(),
@@ -63,6 +75,10 @@ fun BookingCard(
                     modifier = Modifier,
                     tint = MaterialTheme.colors.secondaryVariant
                 )
+                if (expand.value)
+                    showPopupMenu(expand = expand) { index ->
+                            onClickOptionMenu(index)
+                    }
             }
         }
     }

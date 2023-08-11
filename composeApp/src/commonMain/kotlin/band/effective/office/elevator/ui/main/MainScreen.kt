@@ -40,6 +40,7 @@ import band.effective.office.elevator.ui.models.ReservedSeat
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -89,6 +90,14 @@ fun MainScreen(component: MainComponent) {
             bottomSheetState = bottomSheetState,
             onClickBook = { component.onOutput(MainComponent.Output.OpenBookingScreen) },
             onClickShowOptions = { component.onEvent(MainStore.Intent.OnClickShowOption) },
+            onClickOptionMenu = { index ->
+                when (index){
+                    0 -> component.onOutput(MainComponent.Output.OpenMap)
+                    1 -> component.onOutput(MainComponent.Output.ExtendBooking)
+                    2 -> component.onOutput(MainComponent.Output.RepeatBooking)
+                    3 -> component.onOutput(MainComponent.Output.DeleteBooking)
+                }
+            },
             onClickOpenCalendar = { component.onEvent(MainStore.Intent.OnClickOpenCalendar) },
             onClickOpenBottomDialog = { component.onEvent(MainStore.Intent.OpenFiltersBottomDialog) },
             onClickCloseBottomDialog = { component.onEvent(MainStore.Intent.CloseFiltersBottomDialog)}
@@ -143,6 +152,7 @@ fun MainScreenContent(
     bottomSheetState: ModalBottomSheetState,
     reservedSeats: List<ReservedSeat>,
     onClickBook: () -> Unit,
+    onClickOptionMenu: (Int) -> Unit,
     onClickShowOptions: () -> Unit,
     onClickOpenCalendar: () -> Unit,
     onClickOpenBottomDialog: () -> Unit,
@@ -185,6 +195,7 @@ fun MainScreenContent(
                 BookingInformation(
                     reservedSeats = reservedSeats,
                     onClickBook = onClickBook,
+                    onClickOptionMenu = onClickOptionMenu,
                     onClickShowOptions = onClickShowOptions,
                     onClickOpenCalendar = onClickOpenCalendar,
                     onClickOpenBottomDialog = onClickOpenBottomDialog

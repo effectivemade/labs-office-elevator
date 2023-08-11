@@ -7,6 +7,8 @@
 
     <string name="search_employee">Search employee</string>
     <string name="employee_in_office">In office</string>
+    <string name="employee_soon_in_office">Will be today</string>
+    <string name="employee_not_soon_in_office">No reservations</string>
 
     <string name="company_name">Effective</string>
 
@@ -35,8 +37,8 @@
     <string name="reset_filter">Reset</string>
 
     <string name="cansel">Cansel</string>
+    <string name="delete">Delete</string>
     <string name="ok">OK</string>
-
     <!--Booking-->
     <string name="type_booking">Type booking</string>
     <string name="workplace">Workplace</string>
@@ -75,6 +77,12 @@
     <string name="booking_2">time</string>
     <string name="week">Week</string>
     <string name="month">Month</string>
+    <string name="year">Year</string>
+
+    <string name="show_map">Show map</string>
+    <string name="extend_booking">Extend</string>
+    <string name="repeat_booking">Repeat</string>
+    <string name="delete_booking">Delete</string>
 
     <string name="Monday">Mon</string>
     <string name="Tuesday">Tue</string>
@@ -83,6 +91,8 @@
     <string name="Friday">Fri</string>
     <string name="Saturday">Sat</string>
     <string name="Sunday">Sun</string>
+
+    <string name="delete_booking">Delete booked room</string>
 
     <string name="take_from">Take from</string>
     <string name="take_before">Take before</string>
