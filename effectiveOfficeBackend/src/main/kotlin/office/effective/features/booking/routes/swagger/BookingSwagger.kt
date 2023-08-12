@@ -152,7 +152,7 @@ fun SwaggerDocument.putBooking(): OpenApiRoute.() -> Unit = {
         }
     }
     response {
-        HttpStatusCode.Created to {
+        HttpStatusCode.OK to {
             description = "Returns saved booking"
             body<BookingDTO> {
                 example(

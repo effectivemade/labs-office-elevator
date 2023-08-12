@@ -6,20 +6,33 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - db_postgres
-    profiles:
-      - dev
+      db_postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
+      DATABASE_HOST: "db_postgres"            # The name of the service in the same network
+      DATABASE_USERNAME: ${POSTGRES_USER}
+      DATABASE_PORT: "5432"
+      DATABASE_NAME: ${POSTGRES_DB}
 
   db_postgres:
     container_name: postgresForKtor
     image: postgres:15.2-alpine
     volumes:
-      - ./sql/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
-    env_file: .env
+      - pgdata:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=${DOCKER_DB_NAME}
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=${DOCKER_DB_PASSWORD}
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
     ports:
-      - "15432:5432"
-    restart: 'no'
+      - "5432:5432"
+    restart: "always"
+    healthcheck:
+       test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
+       interval: 1s
+       timeout: 5s
+       retries: 10
+
+
+volumes:
+  pgdata: {}

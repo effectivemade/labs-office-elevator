@@ -17,8 +17,8 @@ val userDIModule = module(createdAtStart = true) {
     single<IUserService> { UserService(get()) }
     single<IntegrationModelEntityConverter> { IntegrationModelEntityConverter() }
     single<UserModelEntityConverter> { UserModelEntityConverter() }
-    single<UserDTOModelConverter> { UserDTOModelConverter(get(), get()) }
+    single<UserDTOModelConverter> { UserDTOModelConverter(get(), get(), get()) }
     single<UserRepository> { UserRepository(get(), get()) }
     single<UserFacade> { UserFacade(get(), get(), get(), get()) }
-    single<IntegrationDTOModelConverter> { IntegrationDTOModelConverter() }
+    single<IntegrationDTOModelConverter> { IntegrationDTOModelConverter(get()) }
 }
