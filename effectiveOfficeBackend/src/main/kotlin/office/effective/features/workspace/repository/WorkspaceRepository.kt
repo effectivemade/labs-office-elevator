@@ -65,6 +65,25 @@ class WorkspaceRepository(private val database: Database, private val converter:
             }
     }
 
+
+    fun findAllUtilitiesByWorkspaceId(ids: Collection<UUID>): HashMap<UUID, MutableList<Utility>> {
+        val result = hashMapOf<UUID, MutableList<Utility>>()
+        database
+            .from(WorkspaceUtilities)
+            .innerJoin(right = Utilities, on = WorkspaceUtilities.utilityId eq Utilities.id)
+            .select()
+            .where { WorkspaceUtilities.workspaceId inList ids }
+            .forEach { row ->
+                val workspaceId: UUID = row[WorkspaceUtilities.workspaceId] ?: return@forEach
+                val utility = converter.utilityEntityToModel(
+                    Utilities.createEntity(row), row[WorkspaceUtilities.count] ?: 0
+                )
+                val set: MutableList<Utility> = result.getOrPut(workspaceId) { mutableListOf() }
+                set.add(utility)
+            }
+        return result
+    }
+
     /**
      * Retrieves a workspace model by its id
      *
