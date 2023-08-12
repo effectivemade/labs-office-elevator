@@ -1,6 +1,7 @@
 package band.effective.office.tv.screen.duolingo.components
 
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
@@ -20,7 +21,7 @@ import band.effective.office.tv.R
 import band.effective.office.tv.screen.duolingo.model.FlagInfo
 
 @Composable
-fun GirdItem (
+fun GirdItem(
     modifier: Modifier = Modifier,
     name: String,
     indicatorUsers: String,
@@ -28,54 +29,53 @@ fun GirdItem (
     flags: List<FlagInfo>,
     photo: String,
     place: Int
-){
+) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
-    ){
-        Text(
-            text = place.toString(),
-            fontStyle = MaterialTheme.typography.h2.fontStyle,
-            fontWeight = FontWeight.SemiBold,
-            fontSize = MaterialTheme.typography.h2.fontSize,
-            textAlign = TextAlign.Center,
-            color = Color.Black
-        )
-        Spacer(modifier = Modifier.width(30.dp))
-        AsyncImage(
-            model = photo,
-            contentDescription = null,
-            modifier = Modifier
-                .size(32.dp)
-                .clip(CircleShape),
-            contentScale = ContentScale.Crop,
-            placeholder = painterResource(id = R.drawable.duolingo_logo),
-            error = painterResource(id = R.drawable.duolingo_logo)
-        )
-        Spacer(modifier = Modifier.width(15.dp))
-        Column {
+    ) {
+        Row(){
             Text(
-                modifier = Modifier.width(100.dp),
-                text = name,
+                text = place.toString(),
                 fontStyle = MaterialTheme.typography.h2.fontStyle,
-                fontSize = MaterialTheme.typography.h2.fontSize,
                 fontWeight = FontWeight.SemiBold,
-                color = Color.Black,
-                textAlign = TextAlign.Start,
-                maxLines = 1
+                fontSize = MaterialTheme.typography.h2.fontSize,
+                textAlign = TextAlign.Center,
+                color = Color.Black
             )
-            Row {
-                flags.forEach { flag ->
-                    Flag(modifier = Modifier.size(25.dp), drawableFlagId = flag.drawableId)
-                    Spacer(modifier = Modifier.width(15.dp))
+            Spacer(modifier = Modifier.width(30.dp))
+            AsyncImage(
+                model = photo,
+                contentDescription = null,
+                modifier = Modifier
+                    .size(32.dp)
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop,
+                placeholder = painterResource(id = R.drawable.duolingo_logo),
+                error = painterResource(id = R.drawable.duolingo_logo)
+            )
+            Spacer(modifier = Modifier.width(15.dp))
+            Column {
+                Text(
+                    modifier = Modifier.width(100.dp),
+                    text = name,
+                    fontStyle = MaterialTheme.typography.h2.fontStyle,
+                    fontSize = MaterialTheme.typography.h2.fontSize,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.Black,
+                    textAlign = TextAlign.Start,
+                    maxLines = 1
+                )
+                Row {
+                    flags.forEach { flag ->
+                        Flag(modifier = Modifier.size(15.dp), drawableFlagId = flag.drawableId)
+                        Spacer(modifier = Modifier.width(5.dp))
+                    }
                 }
             }
         }
-
-        Spacer(modifier = Modifier.width(25.dp))
         Text(
-            modifier = Modifier.width(150.dp),
             text = indicatorUsers,
             fontStyle = MaterialTheme.typography.h2.fontStyle,
             fontSize = MaterialTheme.typography.h2.fontSize,
