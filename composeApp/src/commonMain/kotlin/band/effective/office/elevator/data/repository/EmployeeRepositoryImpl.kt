@@ -9,15 +9,7 @@ import kotlinx.coroutines.flow.flow
 class EmployeeRepositoryImpl: EmployeeRepository{
     object EmployeesData {
         val initial=listOf(
-            EmployeeInfo(
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-            ""))
+            EmployeeInfo.defaultEmployee)
     }
     override suspend fun getEmployeesInfo(): Flow<List<EmployeeInfo>> {
         return flow<List<EmployeeInfo>> {
