@@ -25,7 +25,10 @@ class PrimaryMessageViewModel @Inject constructor(
     val state = mutableState.asStateFlow()
 
     init {
-        viewModelScope.launch() { bot.start(viewModelScope) }
+        viewModelScope.launch() {
+            bot.start(viewModelScope)
+            timer.process.collect { progress -> mutableState.update { it.copy(messageProcess = progress) } }
+        }
         timer.init(
             scope = viewModelScope,
             callbackToEnd = {
@@ -64,10 +67,11 @@ class PrimaryMessageViewModel @Inject constructor(
                 if (state.value.currentMessage + 1 < state.value.messagesList.size) {
                     mutableState.update { it.copy(currentMessage = it.currentMessage + 1) }
                 } else {
-                    mutableState.update { it.copy(currentMessage = 0, ) }
+                    mutableState.update { it.copy(currentMessage = 0) }
                 }
                 timer.startTimer()
             }
+
             is PrimaryMessageScreenEvents.OnClickPrevButton -> {
                 if (state.value.currentMessage == 0) {
                     mutableState.update { it.copy(currentMessage = it.messagesList.size - 1) }
@@ -76,14 +80,17 @@ class PrimaryMessageViewModel @Inject constructor(
                 }
                 timer.startTimer()
             }
+
             is PrimaryMessageScreenEvents.OnClickPlayButton -> {
                 mutableState.update { it.copy(isPlay = !it.isPlay) }
-                if (state.value.isPlay){
+                if (state.value.isPlay) {
                     timer.startTimer()
                 }
             }
         }
     }
 
-    fun endShow(){mutableState.update { PrimaryMessageScreenState.empty }}
+    fun endShow() {
+        mutableState.update { PrimaryMessageScreenState.empty }
+    }
 }

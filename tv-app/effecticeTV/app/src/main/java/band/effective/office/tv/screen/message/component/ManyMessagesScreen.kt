@@ -1,13 +1,17 @@
 package band.effective.office.tv.screen.message.component
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import band.effective.office.tv.domain.model.message.BotMessage
 import band.effective.office.tv.screen.components.ProgressIndicator
 import coil.ImageLoader
@@ -19,7 +23,8 @@ fun ManyMessagesScreen(
     messagesList: List<BotMessage>,
     currentIndex: Int = 0,
     textColor: Color = Color.Black,
-    onClickButton: (() -> Unit)? = null
+    onClickButton: (() -> Unit)? = null,
+    messageProcess: Float
 ) {
     Box(modifier = modifier) {
         Box(
@@ -28,9 +33,10 @@ fun ManyMessagesScreen(
         ) {
             ProgressIndicator(
                 modifier = Modifier,
-                elementModifier = Modifier.clip(CircleShape),
+                elementModifier = Modifier.width(1.dp).clip(CircleShape),
                 count = messagesList.size,
-                currentIndex = currentIndex
+                currentIndex = currentIndex,
+                progress = messageProcess
             )
         }
         Box(

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.screen.autoplayController.AutoplayController
 import band.effective.office.tv.screen.autoplayController.model.AutoplayState
+import band.effective.office.tv.screen.navigation.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,7 +23,7 @@ class AutoplayViewModel @Inject constructor(val autoplayController: AutoplayCont
         autoplayController.start(viewModelScope)
     }
 
-    fun load() = viewModelScope.launch {
+    private fun load() = viewModelScope.launch {
         autoplayController.state.collect {
             mutableState.update { autoplayController.state.value.toUiState() }
         }
@@ -32,6 +33,6 @@ class AutoplayViewModel @Inject constructor(val autoplayController: AutoplayCont
         isLoading = isLoading,
         isLoaded = isData,
         isError = isError,
-        currentScreen = screensList[currentScreenNumber]
+        currentScreen = screensList.getOrNull(currentScreenNumber) ?: Screen.Menu
     )
 }
