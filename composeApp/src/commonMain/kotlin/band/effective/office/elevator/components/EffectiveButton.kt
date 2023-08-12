@@ -27,13 +27,7 @@ fun EffectiveButton(
             contentColor = MaterialTheme.colors.background
         ),
         contentPadding = PaddingValues(contentPadding),
-        elevation = ButtonDefaults.elevation(
-            defaultElevation = 0.dp,
-            pressedElevation = 0.dp,
-            disabledElevation = 0.dp,
-            hoveredElevation = 0.dp,
-            focusedElevation = 0.dp,
-        ),
+        elevation = Elevation(),
         shape = RoundedCornerShape(roundedCorner),
         modifier = modifier
     ) {

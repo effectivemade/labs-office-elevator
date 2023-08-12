@@ -25,18 +25,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedTheme
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.components.Elevation
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun BoxScope.BookingContextMenu(onClick: (Int) -> Unit) {
-    val elevation = ButtonDefaults.elevation(
-        defaultElevation = 0.dp,
-        pressedElevation = 0.dp,
-        disabledElevation = 0.dp,
-        hoveredElevation = 0.dp,
-        focusedElevation = 0.dp
-    )
-
     val dropDownList =
         listOf(
             MainRes.strings.show_map,
@@ -69,7 +62,7 @@ fun BoxScope.BookingContextMenu(onClick: (Int) -> Unit) {
                                 backgroundColor = Color.Transparent,
                                 contentColor = MaterialTheme.colors.secondary
                             ),
-                            elevation = elevation,
+                            elevation = Elevation(),
                             modifier = Modifier
                                 .fillMaxWidth(fraction = 0.3f)
                                 .wrapContentHeight(),

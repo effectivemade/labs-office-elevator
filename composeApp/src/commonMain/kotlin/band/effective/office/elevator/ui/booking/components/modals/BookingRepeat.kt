@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedTheme
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
+import band.effective.office.elevator.components.Elevation
 import band.effective.office.elevator.textInBorderGray
 import band.effective.office.elevator.textInBorderPurple
 import band.effective.office.elevator.theme_light_primary_color
@@ -336,13 +337,7 @@ fun BookingRepeat(
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = Color.Transparent
                     ),
-                    elevation = ButtonDefaults.elevation(
-                        defaultElevation = 0.dp,
-                        pressedElevation = 0.dp,
-                        disabledElevation = 0.dp,
-                        hoveredElevation = 0.dp,
-                        focusedElevation = 0.dp
-                    ),
+                    elevation = Elevation(),
                     modifier = Modifier.fillMaxWidth().wrapContentHeight(),
                     onClick = {
                         selected1.value = !selected1.value

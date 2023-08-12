@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -93,14 +92,6 @@ fun AuthorizationProfileComponent(
     val closeIcon2 = remember { mutableStateOf(false) }
     val borderColor2 = remember { mutableStateOf(textGrayColor) }
     val leadingColor2 = remember { mutableStateOf(textGrayColor) }
-
-    val elevation = ButtonDefaults.elevation(
-        defaultElevation = 0.dp,
-        pressedElevation = 0.dp,
-        disabledElevation = 0.dp,
-        hoveredElevation = 0.dp,
-        focusedElevation = 0.dp
-    )
 
     Column(
         horizontalAlignment = Alignment.Start,

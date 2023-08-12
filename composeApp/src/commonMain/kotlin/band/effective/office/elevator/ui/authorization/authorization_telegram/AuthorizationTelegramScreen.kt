@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -87,14 +86,6 @@ private fun AuthorizationTelegramComponent(
     onEvent: (AuthorizationTelegramStore.Intent) -> Unit,
     state: AuthorizationTelegramStore.State
 ) {
-    val elevation = ButtonDefaults.elevation(
-        defaultElevation = 0.dp,
-        pressedElevation = 0.dp,
-        disabledElevation = 0.dp,
-        hoveredElevation = 0.dp,
-        focusedElevation = 0.dp
-    )
-
     val closeIcon = remember { mutableStateOf(false) }
     val borderColor = remember { mutableStateOf(textGrayColor) }
     val leadingColor = remember { mutableStateOf(textGrayColor) }

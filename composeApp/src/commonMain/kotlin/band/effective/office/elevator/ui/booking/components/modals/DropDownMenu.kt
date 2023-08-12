@@ -21,18 +21,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.components.Elevation
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun BoxScope.DropDownMenu(onClick: (Int) -> Unit) {
-
-    val elevation = ButtonDefaults.elevation(
-        defaultElevation = 0.dp,
-        pressedElevation = 0.dp,
-        disabledElevation = 0.dp,
-        hoveredElevation = 0.dp,
-        focusedElevation = 0.dp
-    )
 
     val dropDownList =
         listOf(MainRes.strings.week, MainRes.strings.month, MainRes.strings.year)
@@ -59,7 +52,7 @@ fun BoxScope.DropDownMenu(onClick: (Int) -> Unit) {
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = Color.Transparent
                         ),
-                        elevation = elevation,
+                        elevation = Elevation(),
                         modifier = Modifier
                             .fillMaxWidth(fraction = 0.3f)
                             .wrapContentHeight(),

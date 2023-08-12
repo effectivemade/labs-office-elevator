@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedTheme
+import band.effective.office.elevator.components.Elevation
 import band.effective.office.elevator.radioButtonColor
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -35,13 +36,7 @@ fun BookingRepeatElement(
         colors = ButtonDefaults.buttonColors(
             backgroundColor = Color.Transparent
         ),
-        elevation = ButtonDefaults.elevation(
-            defaultElevation = 0.dp,
-            pressedElevation = 0.dp,
-            disabledElevation = 0.dp,
-            hoveredElevation = 0.dp,
-            focusedElevation = 0.dp
-        ),
+        elevation = Elevation(),
         modifier = Modifier.fillMaxWidth().wrapContentHeight(),
         onClick = {
             coroutineScope.launch {

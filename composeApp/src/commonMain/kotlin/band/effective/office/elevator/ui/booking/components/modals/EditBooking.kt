@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedTheme
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
+import band.effective.office.elevator.components.Elevation
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 
@@ -60,14 +61,6 @@ fun EditBooking(
     showRepeatDialog: Boolean,
     onClickCloseRepeatDialog: () -> Unit
 ) {
-    val elevation = ButtonDefaults.elevation(
-        defaultElevation = 0.dp,
-        pressedElevation = 0.dp,
-        disabledElevation = 0.dp,
-        hoveredElevation = 0.dp,
-        focusedElevation = 0.dp
-    )
-
     Box {
 
         Column(
@@ -185,7 +178,7 @@ fun EditBooking(
                     TimeLine(
                         date = startDate,
                         time = startTime,
-                        elevation = elevation,
+                        elevation = Elevation(),
                         onPickDate = bookStartDate,
                         onPickTime = bookStartTime
                     )
@@ -194,7 +187,7 @@ fun EditBooking(
                     TimeLine(
                         date = finishDate,
                         time = finishTime,
-                        elevation = elevation,
+                        elevation = Elevation(),
                         onPickDate = bookFinishDate,
                         onPickTime = bookFinishTime
                     )
@@ -204,7 +197,7 @@ fun EditBooking(
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = Color.Transparent
                         ),
-                        elevation = elevation,
+                        elevation = Elevation(),
                         onClick = bookingRepeat
                     ) {
                         Row(
