@@ -5,8 +5,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -46,13 +48,13 @@ fun TimePickerView(currentDate: Calendar, selectedTime: Calendar) {
                     color = LocalCustomColorsPalette.current.primaryTextAndIcon
                 )
             }
-
+            Spacer(modifier = Modifier.height(15.dp))
             WheelTimePicker(
-                modifier = Modifier.fillMaxWidth(1f),
+                modifier = Modifier.fillMaxWidth(1f).fillMaxHeight(0.65f),
                 size = DpSize(248.dp, 260.dp),
                 textStyle = header6,
                 textColor = LocalCustomColorsPalette.current.primaryTextAndIcon,
-                rowCount = 7,
+                rowCount = 5,
                 startTime = LocalTime(
                     currentDate[Calendar.HOUR_OF_DAY],
                     currentDate[Calendar.MINUTE]

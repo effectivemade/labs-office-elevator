@@ -88,7 +88,7 @@ fun DateTimePickerModalView(
     ) {
         Box(
             modifier = Modifier
-                .fillMaxHeight(0.6f)
+                .fillMaxHeight(0.7f)
                 .fillMaxWidth(0.8f)
                 .clip(RoundedCornerShape(3))
                 .background(LocalCustomColorsPalette.current.elevationBackground)
@@ -112,16 +112,20 @@ fun DateTimePickerModalView(
                 /*TODO LOGIC MUST BE IN COMPONENT OR STORE */
                 selectedDateTime.set(
                     /* year = */  if (epicDatePickerState.selectedDates.isNotEmpty()) epicDatePickerState.selectedDates.first().year else selectedDateTime[Calendar.YEAR],
-                    /* month = */ if (epicDatePickerState.selectedDates.isNotEmpty()) epicDatePickerState.selectedDates.first().monthNumber - 1  else selectedDateTime[Calendar.MONTH],
-                    /* date = */  if (epicDatePickerState.selectedDates.isNotEmpty()) epicDatePickerState.selectedDates.first().dayOfMonth else selectedDateTime[Calendar.DATE],
-                    /* hourOfDay = */  selectedDateTime[Calendar.HOUR_OF_DAY],
-                    /* minute = */selectedDateTime[Calendar.MINUTE]
+                    /* month = */
+                    if (epicDatePickerState.selectedDates.isNotEmpty()) epicDatePickerState.selectedDates.first().monthNumber - 1 else selectedDateTime[Calendar.MONTH],
+                    /* date = */
+                    if (epicDatePickerState.selectedDates.isNotEmpty()) epicDatePickerState.selectedDates.first().dayOfMonth else selectedDateTime[Calendar.DATE],
+                    /* hourOfDay = */
+                    selectedDateTime[Calendar.HOUR_OF_DAY],
+                    /* minute = */
+                    selectedDateTime[Calendar.MINUTE]
                 )
-                Spacer(modifier = Modifier.height(10.dp))
 
+                Spacer(modifier = Modifier.height(30.dp))
                 Button(
                     modifier = Modifier
-                        //.fillMaxHeight(1f)
+                        .fillMaxHeight(0.5f)
                         .fillMaxWidth(0.3f),
                     onClick = {
                         onSetDate(
