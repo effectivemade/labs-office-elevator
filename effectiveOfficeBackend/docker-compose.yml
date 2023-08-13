@@ -14,6 +14,7 @@ services:
       DATABASE_USERNAME: ${POSTGRES_USER}
       DATABASE_PORT: "5432"
       DATABASE_NAME: ${POSTGRES_DB}
+      VERIFICATION_PLUGIN_ENABLE: ${VERIFICATION_PLUGIN_ENABLE}
 
   db_postgres:
     container_name: postgresForKtor
@@ -25,7 +26,7 @@ services:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
     ports:
-      - "5432:5432"
+      - "15432:5432"
     restart: "always"
     healthcheck:
        test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
