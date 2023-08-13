@@ -21,13 +21,13 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.Month
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory, private val employee: EmployeeInfo) : KoinComponent {
 
     private val aboutEmployeeUseCase: AboutEmployeeUseCase by inject()
+    private var mokValueUser = EmployeeInfo.defaultEmployee.toUIAbout()
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): AboutEmployeeStore =
@@ -134,29 +134,9 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory, private 
             scope.launch (Dispatchers.IO){
                 aboutEmployeeUseCase.getBookingsForUser(ownerId = employee.id, coroutineScope = this)
                     .collect{newList -> withContext(Dispatchers.Main){
-                        dispatch(Msg.ProfileData(user = employee, reservedSeats = newList))//false
+                        dispatch(Msg.ProfileData(user = employee, reservedSeats = newList))
                     } }
             }
         }
     }
 }
-
-private var mokValueUser = User("1L","1","Ivanov Ivan", "Android-developer","67","@ivanov","employee@effective.com")
-private val mokValue = listOf(
-    ReservedSeat(
-        bookingId = "1",
-        ownerId = "1",
-        seatName = "Рабочее масто А2",
-        bookingDay = "Ср, 16 августа",
-        bookingTime = "12:00 - 14:00",
-        bookingDate = LocalDate(month = Month.AUGUST, year = 2023, dayOfMonth = 16)
-    ),
-    ReservedSeat(
-        bookingId = "1",
-        ownerId = "1",
-        seatName = "Переговорная Sun",
-        bookingDay = "Чт, 17 августа",
-        bookingTime = "14:00 - 16:00",
-        bookingDate = LocalDate(month = Month.AUGUST, year = 2023, dayOfMonth = 17)
-    ),
-)

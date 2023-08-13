@@ -93,6 +93,19 @@ class MockBookingRepositoryImpl: BookingRepository {
                 date = LocalDate(year = 2023, monthNumber = 8, dayOfMonth = 3),
                 time =  LocalTime(hour = 15, minute = 30, second = 0, nanosecond = 0)
             )
+        ),
+        BookingInfo(
+            id = "358L",
+            ownerId = "1H",
+            seatName= "Переговорная Sun",
+            dateOfStart = LocalDateTime(
+                date = LocalDate(year = 2023, monthNumber = 8, dayOfMonth = 17),
+                time = LocalTime(hour = 14, minute = 10, second = 0, nanosecond = 0)
+            ),
+            dateOfEnd = LocalDateTime(
+                date = LocalDate(year = 2023, monthNumber = 8, dayOfMonth = 17),
+                time = LocalTime(hour = 16, minute = 10, second = 0, nanosecond = 0)
+            )
         )
     )
 
