@@ -1,8 +1,11 @@
-package band.effective.office.network.dto
+package office.effective.dto
 
-// TODO(Mishnko Maksim): tablet must get events list in workspace
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class WorkspaceDTO(
     val id: String,
     val name: String,
-    val utilities: List<UtilityDTO>
+    val utilities: List<UtilityDTO>,
+    val zone: WorkspaceZoneDTO? = null
 )

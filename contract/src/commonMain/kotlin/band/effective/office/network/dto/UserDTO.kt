@@ -1,10 +1,13 @@
-package band.effective.office.network.dto
+package office.effective.dto
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class UserDTO(
-    val active: Boolean,
-    val avatarUrl: String,
+    val id: String,         // UUIDv4
     val fullName: String,
-    val id: String,
-    val integrations: List<IntegrationDTO>,
-    val role: String
+    val active: Boolean,
+    val role: String,
+    val avatarUrl: String,
+    val integrations: List<IntegrationDTO>?
 )
