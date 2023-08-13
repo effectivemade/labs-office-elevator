@@ -1,6 +1,7 @@
 package band.effective.office.network.api.impl
 
 import band.effective.office.network.api.Api
+import band.effective.office.network.dto.BookingDTO
 import band.effective.office.network.dto.BookingInfo
 import band.effective.office.network.dto.SuccessResponse
 import band.effective.office.network.dto.UserDTO
@@ -57,15 +58,15 @@ class ApiMock(private val realApi: Api, mockFactory: MockFactory) : Api {
         realResponse = realApi.getUsers()
     )
 
-    override suspend fun getBookingsByUser(userId: String): Either<ErrorResponse, List<BookingInfo>> =
+    override suspend fun getBookingsByUser(userId: String): Either<ErrorResponse, List<BookingDTO>> =
         response(
-            mock = bookings.value.filter { it.ownerId == userId },
+            mock = bookings.value.filter { it.ownerId == userId }.map { it.toDto() },
             realResponse = realApi.getBookingsByUser(userId = userId)
         )
 
-    override suspend fun getBookingsByWorkspaces(workspaceId: String): Either<ErrorResponse, List<BookingInfo>> =
+    override suspend fun getBookingsByWorkspaces(workspaceId: String): Either<ErrorResponse, List<BookingDTO>> =
         response(
-            mock = bookings.value.filter { it.workspaceId == workspaceId },
+            mock = bookings.value.filter { it.workspaceId == workspaceId }.map { it.toDto() },
             realResponse = realApi.getBookingsByWorkspaces(workspaceId = workspaceId)
         )
 
@@ -103,11 +104,11 @@ class ApiMock(private val realApi: Api, mockFactory: MockFactory) : Api {
             awaitClose()
         }
 
-    override suspend fun subscribeOnBookingsList(workspaceId: String): Flow<Either<ErrorResponse, List<BookingInfo>>> =
+    override suspend fun subscribeOnBookingsList(workspaceId: String): Flow<Either<ErrorResponse, List<BookingDTO>>> =
         channelFlow {
             launch {
                 bookings.collect {
-                    if (!getRealResponse) send(Either.Success(it.filter { item -> item.workspaceId == workspaceId }))
+                    if (!getRealResponse) send(Either.Success(it.filter { item -> item.workspaceId == workspaceId }.map { it.toDto() }))
                 }
             }
             launch {
@@ -116,4 +117,14 @@ class ApiMock(private val realApi: Api, mockFactory: MockFactory) : Api {
             }
             awaitClose()
         }
+
+    private fun BookingInfo.toDto() = BookingDTO(
+        owner = users.value.first { it.id == ownerId },
+        participants = listOf(),
+        workspace = (workspaces + meetingRooms).first { it.id == workspaceId },
+        id = id,
+        beginBooking = begin,
+        endBooking = end
+    )
+
 }

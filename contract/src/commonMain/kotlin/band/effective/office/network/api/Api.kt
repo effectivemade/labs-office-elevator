@@ -1,5 +1,6 @@
 package band.effective.office.network.api
 
+import band.effective.office.network.dto.BookingDTO
 import band.effective.office.network.dto.BookingInfo
 import band.effective.office.network.dto.SuccessResponse
 import band.effective.office.network.dto.UserDTO
@@ -29,10 +30,10 @@ interface Api {
     suspend fun getUsers(): Either<ErrorResponse, List<UserDTO>>
 
     /**Get user's bookings*/
-    suspend fun getBookingsByUser(userId: String): Either<ErrorResponse, List<BookingInfo>>
+    suspend fun getBookingsByUser(userId: String): Either<ErrorResponse, List<BookingDTO>>
 
     /**Get bookings in workspace*/
-    suspend fun getBookingsByWorkspaces(workspaceId: String): Either<ErrorResponse, List<BookingInfo>>
+    suspend fun getBookingsByWorkspaces(workspaceId: String): Either<ErrorResponse, List<BookingDTO>>
 
     /**Booking workspace*/
     suspend fun createBooking(bookingInfo: BookingInfo): Either<ErrorResponse, SuccessResponse>
@@ -54,5 +55,5 @@ interface Api {
     suspend fun subscribeOnOrganizersList(): Flow<Either<ErrorResponse, List<UserDTO>>>
 
     /**Subscribe on bookings list updates*/
-    suspend fun subscribeOnBookingsList(workspaceId: String): Flow<Either<ErrorResponse, List<BookingInfo>>>
+    suspend fun subscribeOnBookingsList(workspaceId: String): Flow<Either<ErrorResponse, List<BookingDTO>>>
 }
