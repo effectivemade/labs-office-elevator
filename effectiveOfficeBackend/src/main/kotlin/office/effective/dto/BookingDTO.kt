@@ -6,10 +6,10 @@ import office.effective.dto.WorkspaceDTO
 
 @Serializable
 data class BookingDTO (
-    var owner: UserDTO,
-    var participants: List<UserDTO>,
-    var workspace: WorkspaceDTO,
-    var id: String?,
-    var beginBooking: Long,
-    var endBooking: Long
+    val owner: UserDTO,
+    val participants: List<UserDTO>,
+    val workspace: WorkspaceDTO,
+    val id: String?,
+    val beginBooking: Long,
+    val endBooking: Long
 )
