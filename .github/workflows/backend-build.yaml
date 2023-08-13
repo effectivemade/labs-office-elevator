@@ -51,6 +51,7 @@ jobs:
     - name: Build and push the Docker image
       uses: docker/build-push-action@v4
       with:
+        provenance: false
         cache-from: type=registry,ref=${{ vars.DOCKERHUB_BACKEND_IMAGE }}
         cache-to: type=registry,ref=${{ vars.DOCKERHUB_BACKEND_IMAGE }}
         context: "effectiveOfficeBackend" # FIXME: hardcoded context
