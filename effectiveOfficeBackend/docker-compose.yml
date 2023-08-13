@@ -15,6 +15,7 @@ services:
       DATABASE_PORT: "5432"
       DATABASE_NAME: ${POSTGRES_DB}
       VERIFICATION_PLUGIN_ENABLE: ${VERIFICATION_PLUGIN_ENABLE}
+      MIGRATIONS_ENABLE: ${MIGRATIONS_ENABLE}
 
   db_postgres:
     container_name: postgresForKtor
