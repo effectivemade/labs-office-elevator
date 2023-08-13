@@ -66,7 +66,7 @@ class WorkspaceRepository(private val database: Database, private val converter:
     }
 
 
-    fun findAllUtilitiesByWorkspaceId(ids: Collection<UUID>): HashMap<UUID, MutableList<Utility>> {
+    fun findAllUtilitiesByWorkspaceIds(ids: Collection<UUID>): HashMap<UUID, MutableList<Utility>> {
         val result = hashMapOf<UUID, MutableList<Utility>>()
         database
             .from(WorkspaceUtilities)
@@ -78,8 +78,8 @@ class WorkspaceRepository(private val database: Database, private val converter:
                 val utility = converter.utilityEntityToModel(
                     Utilities.createEntity(row), row[WorkspaceUtilities.count] ?: 0
                 )
-                val set: MutableList<Utility> = result.getOrPut(workspaceId) { mutableListOf() }
-                set.add(utility)
+                val utilities: MutableList<Utility> = result.getOrPut(workspaceId) { mutableListOf() }
+                utilities.add(utility)
             }
         return result
     }

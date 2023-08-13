@@ -130,9 +130,14 @@ class BookingService(
                     ?: throw MissingIdException("Workspace with name ${booking.workspace.name} doesn't have an id")
             )
         }
-        val utilities = workspaceRepository.findAllUtilitiesWorkspaceById(workspaceIds)
+        val utilities = workspaceRepository.findAllUtilitiesByWorkspaceIds(workspaceIds)
+        val integrations = userRepository.findAllIntegrationsByUserIds(userIds)
         for (booking in bookingList) {
             booking.workspace.utilities = utilities[booking.workspace.id] ?: listOf()
+            booking.owner.integrations = integrations[booking.owner.id] ?: setOf()
+            for (participant in booking.participants) {
+                participant.integrations = integrations[participant.id]
+            }
         }
         return bookingList
     }

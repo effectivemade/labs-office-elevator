@@ -1,6 +1,7 @@
 package office.effective.features.user.repository
 
 import office.effective.common.exception.*
+import office.effective.features.user.converters.IntegrationModelEntityConverter
 import office.effective.features.user.converters.UserModelEntityConverter
 import office.effective.model.IntegrationModel
 import office.effective.model.UserModel
@@ -10,7 +11,10 @@ import org.ktorm.dsl.*
 import org.ktorm.entity.*
 import java.util.*
 
-class UserRepository(private val db: Database, private val converter: UserModelEntityConverter) {
+class UserRepository(private val db: Database,
+                     private val converter: UserModelEntityConverter,
+                     private val integrationConverter: IntegrationModelEntityConverter
+) {
 
     /**
      * Checks existence of user by id, using count
@@ -117,6 +121,24 @@ class UserRepository(private val db: Database, private val converter: UserModelE
             )
         }
         return modelsSet;
+    }
+
+    fun findAllIntegrationsByUserIds(ids: Collection<UUID>): HashMap<UUID, MutableSet<IntegrationModel>> {
+        val result = hashMapOf<UUID, MutableSet<IntegrationModel>>()
+        db
+            .from(UsersIntegrations)
+            .innerJoin(right = Integrations, on = UsersIntegrations.integrationId eq Integrations.id)
+            .select()
+            .where { UsersIntegrations.integrationId inList ids }
+            .forEach { row ->
+                val userId: UUID = row[UsersIntegrations.integrationId] ?: return@forEach
+                val utility = integrationConverter.entityToModel(
+                        Integrations.createEntity(row), row[UsersIntegrations.valueStr] ?: ""
+                )
+                val integrations: MutableSet<IntegrationModel> = result.getOrPut(userId) { mutableSetOf() }
+                integrations.add(utility)
+            }
+        return result
     }
 
     /**
