@@ -1,6 +1,7 @@
 package band.effective.office.network.api.impl
 
 import band.effective.office.network.api.Api
+import band.effective.office.network.dto.BookingDTO
 import band.effective.office.network.dto.BookingInfo
 import band.effective.office.network.dto.SuccessResponse
 import band.effective.office.network.dto.UserDTO
@@ -39,11 +40,11 @@ class ApiImpl : Api {
         client.securityResponse("$baseUrl/users")
 
     //TODO(Maksim Mishenko): Request not exist in swagger
-    override suspend fun getBookingsByUser(userId: String): Either<ErrorResponse, List<BookingInfo>> =
+    override suspend fun getBookingsByUser(userId: String): Either<ErrorResponse, List<BookingDTO>> =
         Either.Error(ErrorResponse(code = 601, description = "Request not exist in swagger"))
 
     //TODO(Maksim Mishenko): Request not exist in swagger
-    override suspend fun getBookingsByWorkspaces(workspaceId: String): Either<ErrorResponse, List<BookingInfo>> =
+    override suspend fun getBookingsByWorkspaces(workspaceId: String): Either<ErrorResponse, List<BookingDTO>> =
         Either.Error(ErrorResponse(code = 601, description = "Request not exist in swagger"))
 
     //TODO(Maksim Mishenko): Request not exist in swagger
@@ -87,7 +88,7 @@ class ApiImpl : Api {
         }
 
     //TODO(Maksim Mрегьюлар воркспейсамishenko): Request not exist in swagger
-    override suspend fun subscribeOnBookingsList(workspaceId: String): Flow<Either<ErrorResponse, List<BookingInfo>>> =
+    override suspend fun subscribeOnBookingsList(workspaceId: String): Flow<Either<ErrorResponse, List<BookingDTO>>> =
         flow {
             emit(
                 Either.Error(
