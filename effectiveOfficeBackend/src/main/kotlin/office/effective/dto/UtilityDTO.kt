@@ -1,4 +1,4 @@
-package office.effective.features.workspace.dto
+package office.effective.dto
 
 import kotlinx.serialization.Serializable
 

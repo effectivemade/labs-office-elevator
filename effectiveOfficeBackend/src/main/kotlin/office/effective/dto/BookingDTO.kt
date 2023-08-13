@@ -1,8 +1,8 @@
-package office.effective.features.booking.dto
+package office.effective.dto
 
 import kotlinx.serialization.Serializable
-import office.effective.features.user.dto.UserDTO
-import office.effective.features.workspace.dto.WorkspaceDTO
+import office.effective.dto.UserDTO
+import office.effective.dto.WorkspaceDTO
 
 @Serializable
 data class BookingDTO (

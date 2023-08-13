@@ -1,14 +1,12 @@
 package office.effective.features.user.converters
 
 import office.effective.common.utils.UuidValidator
-import office.effective.features.user.dto.IntegrationDTO
-import office.effective.features.user.dto.UserDTO
+import office.effective.dto.IntegrationDTO
+import office.effective.dto.UserDTO
 import office.effective.features.user.repository.UserRepository
 import office.effective.features.user.repository.UsersTagEntity
 import office.effective.model.IntegrationModel
 import office.effective.model.UserModel
-import org.koin.core.context.GlobalContext
-import java.util.UUID
 
 class UserDTOModelConverter(
     private val repository: UserRepository,
