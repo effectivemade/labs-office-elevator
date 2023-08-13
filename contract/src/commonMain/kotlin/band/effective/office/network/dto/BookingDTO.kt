@@ -1,4 +1,4 @@
-package office.effective.dto
+package band.effective.office.network.dto
 
 import kotlinx.serialization.Serializable
 import office.effective.dto.UserDTO
