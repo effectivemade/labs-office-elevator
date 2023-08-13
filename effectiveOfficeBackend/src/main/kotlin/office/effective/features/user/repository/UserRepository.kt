@@ -123,7 +123,18 @@ class UserRepository(private val db: Database,
         return modelsSet;
     }
 
+    /**
+     * Returns a HashMap that maps user ids and their integrations
+     * @return HashMap<UUID, MutableSet<IntegrationModel>>
+     * @throws InstanceNotFoundException if user with the given id doesn't exist in the database
+     *
+     * @author Daniil Zavyalov
+     * */
     fun findAllIntegrationsByUserIds(ids: Collection<UUID>): HashMap<UUID, MutableSet<IntegrationModel>> {
+        for (id in ids) {
+            if (!existsById(id))
+                throw InstanceNotFoundException(UserEntity::class, "User with id $id not found")
+        }
         val result = hashMapOf<UUID, MutableSet<IntegrationModel>>()
         db
             .from(UsersIntegrations)

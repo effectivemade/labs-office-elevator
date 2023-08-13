@@ -101,17 +101,6 @@ class BookingService(
      * @author Daniil Zavyalov
      */
     private fun addIntegrationsAndUtilities(bookingList: List<Booking>): List<Booking> {
-        for (booking in bookingList) {
-            for (participant in booking.participants) {
-                participant.integrations = findIntegrations(participant)
-            }
-            booking.owner.integrations = findIntegrations(booking.owner)
-            booking.workspace.utilities = findUtilities(booking.workspace)
-        }
-        return bookingList
-    }
-
-    private fun addIntegrationsAndUtilities2(bookingList: List<Booking>): List<Booking> {
         val userIds = mutableSetOf<UUID>()
         val workspaceIds = mutableSetOf<UUID>()
         for (booking in bookingList) {
@@ -138,6 +127,26 @@ class BookingService(
             for (participant in booking.participants) {
                 participant.integrations = integrations[participant.id]
             }
+        }
+        return bookingList
+    }
+
+    /**
+     * Adds integrations and utilities to related user and workspace models.
+     * Use the returned booking list for further operations
+     *
+     * @throws MissingIdException if user or workspace doesn't have an id
+     *
+     * @author Daniil Zavyalov
+     */
+    @Deprecated("Too many database requests")
+    private fun findIntegrationsAndUtilities(bookingList: List<Booking>): List<Booking> {
+        for (booking in bookingList) {
+            for (participant in booking.participants) {
+                participant.integrations = findIntegrations(participant)
+            }
+            booking.owner.integrations = findIntegrations(booking.owner)
+            booking.workspace.utilities = findUtilities(booking.workspace)
         }
         return bookingList
     }
