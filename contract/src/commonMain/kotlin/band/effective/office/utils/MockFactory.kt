@@ -1,6 +1,6 @@
 package band.effective.office.utils
 
-import band.effective.office.network.dto.BookingInfo
+import band.effective.office.network.dto.BookingDTO
 import band.effective.office.network.dto.SuccessResponse
 import band.effective.office.network.dto.UserDTO
 import band.effective.office.network.dto.UtilityDTO
@@ -54,14 +54,14 @@ class MockFactory {
         role = role
     )
 
-    private fun booking(owner: String, start: Pair<Int, Int>, finish: Pair<Int, Int>, workspace: String) =
-        BookingInfo(
+    private fun booking(owner: UserDTO, start: Pair<Int, Int>, finish: Pair<Int, Int>, workspace: WorkspaceDTO) =
+        BookingDTO(
             id = "${Random.nextInt(10000)}",
-            begin = getTime(start.first, start.second),
-            end = getTime(finish.first, finish.second),
-            ownerId = owner,
+            beginBooking = getTime(start.first, start.second),
+            endBooking = getTime(finish.first, finish.second),
+            owner = owner,
             participants = listOf(),
-            workspaceId = workspace
+            workspace = workspace
         )
 
     fun workspaces() = listOf<WorkspaceDTO>()
@@ -94,12 +94,12 @@ class MockFactory {
 
     fun users() = names.map { user(it, "ADMIN") }
 
-    fun bookings() = names.mapIndexed { index, name ->
+    fun bookings(workspaceDTO: WorkspaceDTO, owner: List<UserDTO>) = owner.mapIndexed { index, name ->
         booking(
             owner = name,
             start = Pair(11 + index, (index % 2) * 30),
             finish = Pair(12 + index, (index % 2) * 30),
-            workspace = "Sirius"
+            workspace = workspaceDTO
         )
     }
 
