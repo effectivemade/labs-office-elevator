@@ -24,13 +24,13 @@ fun RoomCard(
         ) {
             NameRoom(roomInfo.room.name)
             Spacer(modifier = Modifier.height(10.dp))
-            StateRoomView(roomInfo)
-            Spacer(modifier = Modifier.height(20.dp))
             IconCharacteristicsRoom(
                 modifier = Modifier
-                   .padding(horizontal = 10.dp),
+                    .padding(horizontal = 10.dp),
                 roomInfo = roomInfo
             )
+            Spacer(modifier = Modifier.height(20.dp))
+            StateRoomView(roomInfo)
         }
     }
 }

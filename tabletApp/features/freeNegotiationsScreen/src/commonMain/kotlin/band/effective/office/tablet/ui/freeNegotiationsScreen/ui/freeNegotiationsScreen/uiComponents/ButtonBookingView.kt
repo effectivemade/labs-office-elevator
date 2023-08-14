@@ -28,7 +28,7 @@ fun ButtonBookingView(
         elevation = ButtonDefaults.elevation(0.dp),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = MaterialTheme.colors.background,
-            contentColor = MaterialTheme.colors.primary,
+            contentColor = LocalCustomColorsPalette.current.primaryTextAndIcon,
             disabledBackgroundColor = MaterialTheme.colors.background,
             disabledContentColor = LocalCustomColorsPalette.current.disabledPrimaryButton
         ),
