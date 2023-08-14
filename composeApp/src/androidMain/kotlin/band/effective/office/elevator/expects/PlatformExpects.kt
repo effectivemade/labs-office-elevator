@@ -93,6 +93,7 @@ actual fun pickSBP(phoneNumber: String) {
     }
 }
 
+/*
 @Composable
 actual fun showPopupMenu(expand: MutableState<Boolean>, onItemSelected: (Int) -> Unit) {
 
@@ -138,3 +139,4 @@ actual fun showPopupMenu(expand: MutableState<Boolean>, onItemSelected: (Int) ->
         }
     }
 }
+*/
