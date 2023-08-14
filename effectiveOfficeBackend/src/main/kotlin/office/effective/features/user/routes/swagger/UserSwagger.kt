@@ -153,6 +153,12 @@ fun SwaggerDocument.updateUser(): OpenApiRoute.() -> Unit = {
     description = "Changes user by id"
     tags = listOf("users")
     request {
+        pathParameter<String>("user_id") {
+            description = "User id"
+            example = "87e66ee0-2550-4188-8d79-75560125836a"
+            required = true
+            allowEmptyValue = false
+        }
         body<UserDTO> {
             example(
                 "User",
