@@ -9,26 +9,31 @@ import office.effective.config
 import java.sql.DriverManager
 
 fun Application.configureMigration() {
-    val url: String = config.propertyOrNull("database.url")
-        ?.getString() ?: "jdbc:postgresql://localhost:15432/effectiveOfficeBackendDB"
-    val username: String = config.propertyOrNull("database.username")?.getString() ?: "postgres"
-    val password: String =
-        System.getenv("DATABASE_PASSWORD")
+    val host: String? = System.getenv("DATABASE_HOST")
+    val port: String? = System.getenv("DATABASE_PORT")
+    val databaseName: String? = System.getenv("DATABASE_NAME")
+    
+    val url: String = String.format("jdbc:postgresql://%s:%s/%s", host, port, databaseName)
+    val username: String? = System.getenv("DATABASE_USERNAME")
+    val password: String? = System.getenv("DATABASE_PASSWORD")
 
     val changelogFile: String = config.propertyOrNull("liquibase.changelogFile")
         ?.getString() ?: "changelog/changelog-master.yaml"
     val defaultSchemaName: String = config.propertyOrNull("liquibase.defaultSchemaName")
         ?.getString() ?: "public"
+    val migrationsEnable: Boolean = System.getenv("MIGRATIONS_ENABLE").equals("true")
 
-    val connection = DriverManager.getConnection(
-        url,
-        username,
-        password
-    )
-    val databaseConnection = JdbcConnection(connection)
-    val database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(databaseConnection)
-    database.defaultSchemaName = defaultSchemaName
-    val liquibase = Liquibase(changelogFile, ClassLoaderResourceAccessor(), database)
-    liquibase.update("")
-    liquibase.database.close()
+    if (migrationsEnable) {
+        val connection = DriverManager.getConnection(
+            url,
+            username,
+            password
+        )
+        val databaseConnection = JdbcConnection(connection)
+        val database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(databaseConnection)
+        database.defaultSchemaName = defaultSchemaName
+        val liquibase = Liquibase(changelogFile, ClassLoaderResourceAccessor(), database)
+        liquibase.update("")
+        liquibase.database.close()
+    }
 }

@@ -1,9 +1,8 @@
 package office.effective.features.user.converters
 
 import office.effective.common.utils.UuidValidator
-import office.effective.features.user.dto.IntegrationDTO
+import office.effective.dto.IntegrationDTO
 import office.effective.model.IntegrationModel
-import java.util.*
 
 class IntegrationDTOModelConverter(
     private val uuidConverter : UuidValidator
