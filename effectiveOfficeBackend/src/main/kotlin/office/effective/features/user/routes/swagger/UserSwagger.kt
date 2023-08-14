@@ -160,6 +160,7 @@ fun SwaggerDocument.updateUser(): OpenApiRoute.() -> Unit = {
             allowEmptyValue = false
         }
         body<UserDTO> {
+            required = true
             example(
                 "User",
                 UserDTO(
