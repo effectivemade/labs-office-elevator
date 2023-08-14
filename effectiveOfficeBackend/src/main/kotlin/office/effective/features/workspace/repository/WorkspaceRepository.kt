@@ -2,7 +2,6 @@ package office.effective.features.workspace.repository
 
 import office.effective.common.exception.InstanceNotFoundException
 import office.effective.features.booking.repository.WorkspaceBooking
-import office.effective.features.user.repository.UserEntity
 import office.effective.features.workspace.converters.WorkspaceRepositoryConverter
 import office.effective.model.Utility
 import office.effective.model.Workspace
