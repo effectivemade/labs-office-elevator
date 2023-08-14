@@ -54,7 +54,7 @@ fun SwaggerDocument.returnWorkspaceByTag(): OpenApiRoute.() -> Unit = {
     description = "Return all workspaces by tag"
     tags = listOf("workspaces")
     request {
-        queryParameter<WorkspaceTag>("tag") {
+        queryParameter<WorkspaceTag>("workspace_tag") {
             description = "Workspace tag"
             example = "meeting"
             required = true

@@ -172,7 +172,7 @@ fun SwaggerDocument.deleteBookingById(): OpenApiRoute.() -> Unit = {
     description = "Deletes a booking with the given id. If the booking is not found in the database it is silently ignored"
     tags = listOf("bookings")
     request {
-        queryParameter<String>("id") {
+        pathParameter<String>("id") {
             description = "Booking id"
             example = "c48c2a3d-bbfd-4801-b121-973ae3cf4cd9"
             required = true
