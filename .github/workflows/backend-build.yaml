@@ -14,9 +14,13 @@ on:
         required: false
         type: string
 
+env:
+  BACKEND_ROOT: effectiveOfficeBackend
+
 jobs:
   build:
-    runs-on: ubuntu-latest
+    name: Build
+    runs-on: ubuntu-22.04
 
     steps:
     - uses: actions/checkout@v3
@@ -54,10 +58,35 @@ jobs:
         provenance: false
         cache-from: type=registry,ref=${{ vars.DOCKERHUB_BACKEND_IMAGE }}
         cache-to: type=registry,ref=${{ vars.DOCKERHUB_BACKEND_IMAGE }}
-        context: "effectiveOfficeBackend" # FIXME: hardcoded context
+        context: ${{ env.BACKEND_ROOT }}
         push: true
         tags: |
           ${{ vars.DOCKERHUB_BACKEND_IMAGE }}:${{ steps.commit_properties.outputs.branch }}
           ${{ vars.DOCKERHUB_BACKEND_IMAGE }}:${{ steps.commit_properties.outputs.short_hash }}
           ${{ vars.DOCKERHUB_BACKEND_IMAGE }}:${{ steps.commit_properties.outputs.full_hash }}
           ${{ vars.YACLOUD_BACKEND_IMAGE }}:${{ steps.commit_properties.outputs.branch }}
+
+  migrations:
+    name: Run migrations
+    runs-on: ubuntu-22.04
+    needs: build
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.hash || env.GITHUB_REF }}
+      
+      - name: Run migrations against current master changelog
+        uses: liquibase-github-actions/update@v4.23.0
+        with:
+          changelogFile: changelog/changelog-master.yaml
+          searchPath: ${{ env.BACKEND_ROOT }}/src/main/resources/
+
+          # The JDBC database connection URL
+          url: ${{ vars.DATABASE_URL }}
+          username: ${{ vars.DATABASE_USERNAME }}
+          password: ${{ secrets.DATABASE_PASSWORD }}
+
+          rollbackOnError: true
+
+          showSummary: "summary"
