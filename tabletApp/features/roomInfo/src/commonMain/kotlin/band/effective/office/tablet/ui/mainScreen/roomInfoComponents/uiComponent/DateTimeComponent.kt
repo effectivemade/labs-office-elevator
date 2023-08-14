@@ -15,7 +15,9 @@ import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable
-fun DateTimeComponent(modifier: Modifier = Modifier) {
+fun DateTimeComponent(
+    modifier: Modifier = Modifier
+) {
     val colorClock = LocalCustomColorsPalette.current.primaryTextAndIcon.toArgb()
     Row(
         modifier = modifier,
