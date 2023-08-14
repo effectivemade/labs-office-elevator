@@ -15,9 +15,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import band.effective.office.elevator.textInBorderPurple
+import band.effective.office.elevator.ExtendedThemeColors
 import dev.icerock.moko.resources.ImageResource
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.painterResource
@@ -35,26 +34,26 @@ fun OutlineButtonPurple(
         modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
         onClick = onClick,
         shape = RoundedCornerShape(size = 8.dp),
-        border = BorderStroke(1.dp, textInBorderPurple),
-        colors =  ButtonDefaults.buttonColors(backgroundColor = Color.White)
+        border = BorderStroke(1.dp, ExtendedThemeColors.colors.purple_heart_800),
+        colors =  ButtonDefaults.buttonColors(backgroundColor = ExtendedThemeColors.colors.whiteColor)
     ){
         Row (verticalAlignment = Alignment.CenterVertically){
             Icon(
                 painter = painterResource(icon1),
                 contentDescription = null,
-                tint = textInBorderPurple
+                tint = ExtendedThemeColors.colors.purple_heart_800
             )
             Text(
                 modifier = Modifier.padding(start = 8.dp),
                 text = stringResource(title),
-                color = textInBorderPurple,
+                color = ExtendedThemeColors.colors.purple_heart_800,
                 style = MaterialTheme.typography.body2
             )
             Icon(
                 modifier = Modifier.padding(start = 8.dp).size(24.dp).rotate(rotate),
                 painter =  painterResource(icon2),
                 contentDescription = null,
-                tint = textInBorderPurple
+                tint = ExtendedThemeColors.colors.purple_heart_800
             )
         }
     }

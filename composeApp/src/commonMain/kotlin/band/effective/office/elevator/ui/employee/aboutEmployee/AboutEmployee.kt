@@ -39,6 +39,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveOutlinedButton
 import band.effective.office.elevator.components.InfoAboutUserUIComponent
@@ -184,7 +185,7 @@ private fun AboutEmployeeContent(
                 Surface(
                     modifier = Modifier.size(88.dp),
                     shape = CircleShape,
-                    color = Color(0xFFEBE4FF)
+                    color = ExtendedThemeColors.colors.purple_heart_100
                 ) {
                     Image(
                         modifier = Modifier.fillMaxSize(),

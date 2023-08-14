@@ -37,6 +37,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.components.TitlePage
@@ -99,7 +100,7 @@ private fun ProfileEditScreenContent(
     val telegramText = rememberSaveable { mutableStateOf(telegram) }
 
     Column (
-        modifier = Modifier.fillMaxSize().background(Color.White).padding(horizontal = 16.dp),
+        modifier = Modifier.fillMaxSize().background(ExtendedThemeColors.colors.whiteColor).padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ){
@@ -172,7 +173,7 @@ private fun FieldsItemStyle(
             stringResource(item.title),
             modifier = Modifier.padding(bottom = 8.dp),
             style = MaterialTheme.typography.body1,
-            color = Color.Black
+            color = ExtendedThemeColors.colors.blackColor
         )
         OutlinedTextField(
             value = text.value,
@@ -224,7 +225,7 @@ fun ProfileEditHeader(onReturnToProfile: () -> Unit) {
             Icon(
                 painter = painterResource(MainRes.images.back_button),
                 contentDescription = null,
-                tint = Color.Black
+                tint = ExtendedThemeColors.colors.blackColor
             )
         }
         TitlePage(

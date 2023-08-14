@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import band.effective.office.elevator.ExtendedTheme
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.Elevation
 import dev.icerock.moko.resources.compose.stringResource
@@ -72,7 +72,7 @@ fun BoxScope.BookingContextMenu(onClick: (Int) -> Unit) {
                         if (!dropDownList.indexOf(item).equals(dropDownList.last()))
                             Divider(
                                 modifier = Modifier.height(1.dp).fillMaxWidth()
-                                    .background(color = ExtendedTheme.colors._66x)
+                                    .background(color = ExtendedThemeColors.colors._66x)
                             )
                     }
                 }

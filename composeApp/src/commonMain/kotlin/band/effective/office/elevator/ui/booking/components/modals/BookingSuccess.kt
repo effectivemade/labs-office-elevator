@@ -18,7 +18,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import band.effective.office.elevator.ExtendedTheme
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.components.OutlinedPrimaryButton
@@ -33,7 +33,7 @@ fun BookingSuccess(onMain: () -> Unit, close: () -> Unit, modifier: Modifier) {
             .fillMaxWidth()
             .wrapContentHeight()
             .clip(shape = RoundedCornerShape(size = 16.dp))
-            .background(color = Color.White)
+            .background(color = ExtendedThemeColors.colors.whiteColor)
             .padding(start = 16.dp, top = 24.dp, end = 16.dp, bottom = 24.dp)
     ) {
         Column(
@@ -60,7 +60,7 @@ fun BookingSuccess(onMain: () -> Unit, close: () -> Unit, modifier: Modifier) {
                 ),
                 style = MaterialTheme.typography.body1.merge(
                     other = TextStyle(
-                        color = ExtendedTheme.colors._66x
+                        color = ExtendedThemeColors.colors._66x
                     )
                 ),
                 textAlign = TextAlign.Center

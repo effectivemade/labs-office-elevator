@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import band.effective.office.elevator.ExtendedTheme
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.components.Elevation
 import band.effective.office.elevator.radioButtonColor
 import kotlinx.coroutines.delay
@@ -34,7 +34,7 @@ fun BookingRepeatElement(
 
     Button(
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = Color.Transparent
+            backgroundColor = ExtendedThemeColors.colors.transparentColor
         ),
         elevation = Elevation(),
         modifier = Modifier.fillMaxWidth().wrapContentHeight(),
@@ -61,7 +61,7 @@ fun BookingRepeatElement(
             Text(
                 text = bookingText,
                 style = MaterialTheme.typography.button.copy(
-                    color = ExtendedTheme.colors.radioTextColor,
+                    color = ExtendedThemeColors.colors.radioTextColor,
                     fontWeight = FontWeight(400)
                 ),
                 modifier = Modifier.fillMaxWidth().wrapContentHeight()

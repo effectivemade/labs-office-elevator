@@ -17,8 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -49,13 +47,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import band.effective.office.elevator.ExtendedTheme
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.components.Elevation
-import band.effective.office.elevator.textInBorderGray
-import band.effective.office.elevator.textInBorderPurple
-import band.effective.office.elevator.theme_light_primary_color
 import dev.icerock.moko.resources.compose.stringResource
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -67,6 +62,7 @@ fun BookingRepeat(
     onSelected: () -> Unit,
     onDaySelected: (Int) -> Unit
 ) {
+
     val selected1 = remember {
         mutableStateOf(true)
     }
@@ -112,7 +108,7 @@ fun BookingRepeat(
                 .fillMaxWidth(fraction = .3f)
                 .height(height = 4.dp)
                 .background(
-                    color = ExtendedTheme.colors.dividerColor,
+                    color = ExtendedThemeColors.colors.dividerColor,
                     shape = RoundedCornerShape(size = 16.dp)
                 )
                 .padding(
@@ -149,7 +145,7 @@ fun BookingRepeat(
                 .fillMaxWidth(fraction = 1.0f)
                 .height(height = 1.dp)
                 .background(
-                    color = ExtendedTheme.colors._66x
+                    color = ExtendedThemeColors.colors._66x
                 )
         )
 
@@ -242,7 +238,7 @@ fun BookingRepeat(
                         )
                     }
 
-                    LazyVerticalStaggeredGrid(
+                    /* LazyVerticalStaggeredGrid(
                         columns = StaggeredGridCells.Fixed(count = 4),
                         verticalItemSpacing = 12.dp,
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -301,151 +297,152 @@ fun BookingRepeat(
                         dropDownClick(item)
                     })
                 }
-            }
+             */
+                }
 
-            Divider(
-                modifier = Modifier
-                    .fillMaxWidth(fraction = 1.0f)
-                    .height(height = 1.dp)
-                    .background(
-                        color = ExtendedTheme.colors._66x
-                    )
-            )
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.Start),
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 54.dp, end = 16.dp, top = 16.dp, bottom = 8.dp)
-            ) {
-                Text(
-                    text = stringResource(MainRes.strings.book_finish),
-                    style = MaterialTheme.typography.button.copy(fontWeight = FontWeight(weight = 400)),
-                    textAlign = TextAlign.Start
+                Divider(
+                    modifier = Modifier
+                        .fillMaxWidth(fraction = 1.0f)
+                        .height(height = 1.dp)
+                        .background(
+                            color = ExtendedThemeColors.colors._66x
+                        )
                 )
-            }
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(0.dp, Alignment.Start),
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 54.dp, end = 16.dp, top = 16.dp)
-            ) {
-                Button(
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color.Transparent
-                    ),
-                    elevation = Elevation(),
-                    modifier = Modifier.fillMaxWidth().wrapContentHeight(),
-                    onClick = {
-                        selected1.value = !selected1.value
-                        selected2.value = false
-                        selected3.value = false
-                    }.also { onSelected() },
-                    contentPadding = PaddingValues(all = 0.dp)
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.Start),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 54.dp, end = 16.dp, top = 16.dp, bottom = 8.dp)
                 ) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(0.dp, Alignment.Start),
-                        verticalAlignment = Alignment.CenterVertically,
+                    Text(
+                        text = stringResource(MainRes.strings.book_finish),
+                        style = MaterialTheme.typography.button.copy(fontWeight = FontWeight(weight = 400)),
+                        textAlign = TextAlign.Start
+                    )
+                }
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(0.dp, Alignment.Start),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 54.dp, end = 16.dp, top = 16.dp)
+                ) {
+                    Button(
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color.Transparent
+                        ),
+                        elevation = Elevation(),
+                        modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+                        onClick = {
+                            selected1.value = !selected1.value
+                            selected2.value = false
+                            selected3.value = false
+                        }.also { onSelected() },
+                        contentPadding = PaddingValues(all = 0.dp)
                     ) {
-                        RadioButton(
-                            enabled = false,
-                            selected = selected1.value,
-                            onClick = { },
-                            colors = RadioButtonDefaults.colors(
-                                disabledSelectedColor = MaterialTheme.colors.primary,
-                                disabledUnselectedColor = Color.Black
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(0.dp, Alignment.Start),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            RadioButton(
+                                enabled = false,
+                                selected = selected1.value,
+                                onClick = { },
+                                colors = RadioButtonDefaults.colors(
+                                    disabledSelectedColor = MaterialTheme.colors.primary,
+                                    disabledUnselectedColor = Color.Black
+                                )
                             )
-                        )
-                        Text(
-                            text = stringResource(MainRes.strings.never),
-                            style = MaterialTheme.typography.button.copy(
-                                color = ExtendedTheme.colors.radioTextColor,
-                                fontWeight = FontWeight(400)
-                            ),
-                            modifier = Modifier.fillMaxWidth().wrapContentHeight()
-                        )
+                            Text(
+                                text = stringResource(MainRes.strings.never),
+                                style = MaterialTheme.typography.button.copy(
+                                    color = ExtendedThemeColors.colors.radioTextColor,
+                                    fontWeight = FontWeight(400)
+                                ),
+                                modifier = Modifier.fillMaxWidth().wrapContentHeight()
+                            )
+                        }
                     }
                 }
-            }
 
-            Row(
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 54.dp, end = 16.dp, top = 8.dp)
-            ) {
-                RadioButton(selected = selected2.value, onClick = {
-                    selected2.value = !selected2.value
-                    selected1.value = false
-                    selected3.value = false
-                }.also { onSelected() })
-
-                Spacer(modifier = Modifier.width(width = 16.dp))
-
-                OutlinedTextField(
-                    value = "01.01.2023",
-                    onValueChange = {
-
-                    },
-                    shape = RoundedCornerShape(8.dp),
+                Row(
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .padding(top = 12.dp, bottom = 12.dp)
-                        .weight(0.4f)
-                )
+                        .fillMaxWidth()
+                        .padding(start = 54.dp, end = 16.dp, top = 8.dp)
+                ) {
+                    RadioButton(selected = selected2.value, onClick = {
+                        selected2.value = !selected2.value
+                        selected1.value = false
+                        selected3.value = false
+                    }.also { onSelected() })
 
-                Spacer(modifier = Modifier.width(width = 48.dp))
-            }
+                    Spacer(modifier = Modifier.width(width = 16.dp))
 
-            Row(
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 54.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
-            ) {
-                RadioButton(selected = selected3.value, onClick = {
-                    selected3.value = !selected3.value
-                    selected1.value = false
-                    selected2.value = false
-                }.also { onSelected() })
-                Text(
-                    text = stringResource(MainRes.strings.booking_1),
-                    style = MaterialTheme.typography.button.copy(
-                        color = ExtendedTheme.colors.radioTextColor,
-                        fontWeight = FontWeight(400)
-                    ),
-                    modifier = Modifier.wrapContentWidth()
-                )
-                Spacer(modifier = Modifier.width(width = 16.dp))
+                    OutlinedTextField(
+                        value = "01.01.2023",
+                        onValueChange = {
 
-                OutlinedTextField(
-                    value = "1",
-                    onValueChange = {
+                        },
+                        shape = RoundedCornerShape(8.dp),
+                        modifier = Modifier
+                            .padding(top = 12.dp, bottom = 12.dp)
+                            .weight(0.4f)
+                    )
 
-                    },
-                    shape = RoundedCornerShape(8.dp),
+                    Spacer(modifier = Modifier.width(width = 48.dp))
+                }
+
+                Row(
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .padding(top = 12.dp, bottom = 12.dp)
-                        .weight(weight = 0.1f)
-                )
+                        .fillMaxWidth()
+                        .padding(start = 54.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
+                ) {
+                    RadioButton(selected = selected3.value, onClick = {
+                        selected3.value = !selected3.value
+                        selected1.value = false
+                        selected2.value = false
+                    }.also { onSelected() })
+                    Text(
+                        text = stringResource(MainRes.strings.booking_1),
+                        style = MaterialTheme.typography.button.copy(
+                            color = ExtendedThemeColors.colors.radioTextColor,
+                            fontWeight = FontWeight(400)
+                        ),
+                        modifier = Modifier.wrapContentWidth()
+                    )
+                    Spacer(modifier = Modifier.width(width = 16.dp))
 
-                Spacer(modifier = Modifier.width(width = 16.dp))
+                    OutlinedTextField(
+                        value = "1",
+                        onValueChange = {
 
-                Text(
-                    text = stringResource(MainRes.strings.booking_2),
-                    style = MaterialTheme.typography.button.copy(
-                        color = ExtendedTheme.colors.radioTextColor,
-                        fontWeight = FontWeight(400)
-                    ),
-                    modifier = Modifier.wrapContentWidth().wrapContentHeight()
-                )
+                        },
+                        shape = RoundedCornerShape(8.dp),
+                        modifier = Modifier
+                            .padding(top = 12.dp, bottom = 12.dp)
+                            .weight(weight = 0.1f)
+                    )
 
-                Spacer(modifier = Modifier.width(width = 48.dp))
-            }
+                    Spacer(modifier = Modifier.width(width = 16.dp))
+
+                    Text(
+                        text = stringResource(MainRes.strings.booking_2),
+                        style = MaterialTheme.typography.button.copy(
+                            color = ExtendedThemeColors.colors.radioTextColor,
+                            fontWeight = FontWeight(400)
+                        ),
+                        modifier = Modifier.wrapContentWidth().wrapContentHeight()
+                    )
+
+                    Spacer(modifier = Modifier.width(width = 48.dp))
+                }
 
                 EffectiveButton(
                     buttonText = stringResource(MainRes.strings.confirm_booking),
@@ -455,3 +452,4 @@ fun BookingRepeat(
             }
         }
     }
+}

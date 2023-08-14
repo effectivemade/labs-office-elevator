@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -40,16 +41,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.borderGray
 import band.effective.office.elevator.borderGreen
-import band.effective.office.elevator.borderPurple
 import band.effective.office.elevator.textInBorderGray
-import band.effective.office.elevator.textInBorderPurple
-import band.effective.office.elevator.theme_light_background
-import band.effective.office.elevator.theme_light_onBackground
 import band.effective.office.elevator.theme_light_onPrimary
-import band.effective.office.elevator.theme_light_tertiary_color
 import band.effective.office.elevator.ui.employee.allEmployee.models.mappers.EmployeeCard
 import band.effective.office.elevator.ui.employee.allEmployee.store.EmployeeStore
 import band.effective.office.elevator.utils.generateImageLoader
@@ -106,7 +103,7 @@ fun EmployeeScreenContent(
                 text = stringResource(MainRes.strings.employees),
                 fontSize = 20.sp,
                 fontWeight = FontWeight(600),//?
-                color = theme_light_tertiary_color,
+                color = ExtendedThemeColors.colors.blackColor,
                 modifier = Modifier.padding(start = 20.dp, top = 55.dp, end = 15.dp, bottom = 25.dp)
             )
             TextField(
@@ -117,15 +114,15 @@ fun EmployeeScreenContent(
                     .height(70.dp)
                     .padding(start = 20.dp, top = 10.dp, end = 20.dp, bottom = 5.dp),
                 textStyle = TextStyle(
-                    color = theme_light_tertiary_color,
+                    color = ExtendedThemeColors.colors.trinidad_400,
                     fontSize = 16.sp,
                     fontWeight = FontWeight(500)
                 ),
                 colors = TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    backgroundColor = theme_light_background
+                    focusedIndicatorColor = ExtendedThemeColors.colors.transparentColor,
+                    disabledIndicatorColor = ExtendedThemeColors.colors.transparentColor,
+                    unfocusedIndicatorColor = ExtendedThemeColors.colors.transparentColor,
+                    backgroundColor = MaterialTheme.colors.background
                 ),
                 placeholder = {
                     Text(
@@ -150,7 +147,7 @@ fun EmployeeScreenContent(
         }
         Column(
             modifier = Modifier
-                .background(theme_light_onBackground)
+                .background(MaterialTheme.colors.background)
                 .fillMaxSize()
                 .padding(start = 20.dp, top = 25.dp, end = 20.dp)
         ) {
@@ -159,20 +156,20 @@ fun EmployeeScreenContent(
                     text = stringResource(MainRes.strings.employees) + " ",
                     fontSize = 16.sp,
                     fontWeight = FontWeight(500),
-                    color = theme_light_tertiary_color//???
+                    color = ExtendedThemeColors.colors.blackColor
                 )
                 Text(
                     text = "($employeesCount)",
                     fontSize = 16.sp,
                     fontWeight = FontWeight(400),
-                    color = textInBorderPurple
+                    color = ExtendedThemeColors.colors.purple_heart_800
                 )
                 Text(
                     text = stringResource(MainRes.strings.employee_in_office)
                             + ": $employeesInOfficeCount",
                     fontSize = 16.sp,
                     fontWeight = FontWeight(400),
-                    color = textInBorderPurple,
+                    color = ExtendedThemeColors.colors.purple_heart_800,
                     textAlign = TextAlign.End,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -201,8 +198,8 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: (String) -> Unit) {
     } else {
         if (emp.state == "Will be today") {
 
-            stateColorBorder = borderPurple
-            stateColorText = textInBorderPurple
+            stateColorBorder = ExtendedThemeColors.colors.purple_heart_700
+            stateColorText = ExtendedThemeColors.colors.purple_heart_800
         } else {
             stateColorBorder = borderGray
             stateColorText = textInBorderGray
@@ -220,7 +217,7 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: (String) -> Unit) {
             .padding(bottom=15.dp)
             .animateContentSize()
             .clickable { isExpanded = !isExpanded },
-        color = theme_light_onPrimary
+        color = MaterialTheme.colors.onPrimary
     ) {
         Row(modifier = Modifier.padding(6.dp, 15.dp)) {
 
@@ -249,7 +246,7 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: (String) -> Unit) {
                     text = emp.name,
                     fontSize = 16.sp,
                     fontWeight = FontWeight(500),
-                    color = theme_light_tertiary_color
+                    color = ExtendedThemeColors.colors.blackColor
                 )
 
                 Spacer(modifier = Modifier.padding(0.dp, 4.dp))
@@ -262,7 +259,8 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: (String) -> Unit) {
                 Spacer(modifier = Modifier.padding(0.dp, 8.dp))
                 OutlinedButton(
                     onClick = { isExpanded = !isExpanded },
-                    colors = ButtonDefaults.buttonColors(backgroundColor = theme_light_onPrimary),
+                    colors = ButtonDefaults.buttonColors(backgroundColor =
+                    MaterialTheme.colors.onPrimary),
                     elevation = ButtonDefaults.elevation(
                         defaultElevation = 0.dp,
                         pressedElevation = 2.dp,

@@ -33,12 +33,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import band.effective.office.elevator.ExtendedTheme
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.textInBorderGray
-import band.effective.office.elevator.textInBorderPurple
-import band.effective.office.elevator.theme_light_primary_color
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
 
@@ -79,7 +77,7 @@ fun ChooseZone(zone: Boolean, onClickCloseChoseZone: () -> Unit) {
                 .fillMaxWidth(fraction = .3f)
                 .height(4.dp)
                 .background(
-                    color = ExtendedTheme.colors.dividerColor,
+                    color = ExtendedThemeColors.colors.dividerColor,
                     shape = RoundedCornerShape(size = 16.dp)
                 )
                 .padding(
@@ -115,7 +113,7 @@ fun ChooseZone(zone: Boolean, onClickCloseChoseZone: () -> Unit) {
                 .fillMaxWidth(fraction = 1.0f)
                 .height(height = 1.dp)
                 .background(
-                    color = ExtendedTheme.colors._66x
+                    color = ExtendedThemeColors.colors._66x
                 )
         )
         Column(
@@ -150,13 +148,13 @@ fun WorkingZones(text: StringResource) {
     var isExpanded by remember { mutableStateOf(false) }
     Button(
         onClick = { isExpanded = !isExpanded },
-        colors = ButtonDefaults.buttonColors(theme_light_primary_color),
+        colors = ButtonDefaults.buttonColors(ExtendedThemeColors.colors.whiteColor),
         modifier = Modifier
             .padding(end = 10.dp)
             .fillMaxWidth(fraction = 0.5f),
         border = BorderStroke(
             width = 1.dp,
-            color = if (!isExpanded) textInBorderPurple else textInBorderGray
+            color = if (!isExpanded) ExtendedThemeColors.colors.purple_heart_800 else textInBorderGray
         ),
         shape = RoundedCornerShape(12.dp),
         elevation = ButtonDefaults.elevation(0.dp, 2.dp, 0.dp)
@@ -164,7 +162,7 @@ fun WorkingZones(text: StringResource) {
         Row {
             Icon(
                 imageVector = Icons.Rounded.Done,
-                tint = textInBorderPurple,
+                tint = ExtendedThemeColors.colors.purple_heart_800,
                 modifier = Modifier.size(
                     if (!isExpanded) 20.dp
                     else 0.dp
@@ -176,7 +174,7 @@ fun WorkingZones(text: StringResource) {
                 text = stringResource(text),
                 fontSize = 16.sp,
                 fontWeight = FontWeight(500),
-                color = if (!isExpanded) textInBorderPurple
+                color = if (!isExpanded) ExtendedThemeColors.colors.purple_heart_800
                 else textInBorderGray
             )
         }

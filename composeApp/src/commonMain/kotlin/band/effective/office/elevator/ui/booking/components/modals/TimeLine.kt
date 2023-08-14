@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import band.effective.office.elevator.ExtendedThemeColors
 
 @Composable
 fun TimeLine(
@@ -35,7 +36,7 @@ fun TimeLine(
     ) {
         Button(
             colors = ButtonDefaults.buttonColors(
-                backgroundColor = Color.Transparent
+                backgroundColor = ExtendedThemeColors.colors.transparentColor
             ),
             elevation = elevation,
             onClick = onPickDate
@@ -53,7 +54,7 @@ fun TimeLine(
         }
         Button(
             colors = ButtonDefaults.buttonColors(
-                backgroundColor = Color.Transparent
+                backgroundColor = ExtendedThemeColors.colors.transparentColor
             ),
             elevation = elevation,
             onClick = onPickTime
@@ -64,7 +65,7 @@ fun TimeLine(
                     fontWeight = FontWeight(
                         weight = 400
                     ),
-                    color = Color.Black
+                    color = ExtendedThemeColors.colors.blackColor
                 )
             )
         }
