@@ -40,10 +40,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import band.effective.office.elevator.ExtendedTheme
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.borderGray
 import band.effective.office.elevator.borderGreen
-import band.effective.office.elevator.borderPurple
 import band.effective.office.elevator.textInBorderGray
 import band.effective.office.elevator.textInBorderPurple
 import band.effective.office.elevator.theme_light_background
@@ -201,8 +201,8 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: (String) -> Unit) {
     } else {
         if (emp.state == "Will be today") {
 
-            stateColorBorder = borderPurple
-            stateColorText = textInBorderPurple
+            stateColorBorder = ExtendedTheme.colors.purple_heart_700
+            stateColorText = ExtendedTheme.colors.purple_heart_800
         } else {
             stateColorBorder = borderGray
             stateColorText = textInBorderGray
