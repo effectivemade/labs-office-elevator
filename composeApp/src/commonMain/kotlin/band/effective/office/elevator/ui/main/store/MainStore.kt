@@ -18,6 +18,17 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, MainStore.Label> 
         object OnClickCloseCalendar : Intent
 
         data class OnClickApplyDate(val date: LocalDate?) : Intent
+
+        object OpenFiltersBottomDialog : Intent
+        object CloseFiltersBottomDialog : Intent
+
+        object OnClickShowMap : Intent
+
+        data class OnClickExtendBooking(val seat: ReservedSeat) : Intent
+
+        data class OnClickRepeatBooking(val seat: ReservedSeat) : Intent
+
+        data class OnClickDeleteBooking(val seat: ReservedSeat) : Intent
     }
 
     sealed interface Label {
@@ -29,6 +40,9 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, MainStore.Label> 
         object CloseCalendar : Label
 
         object OpenCalendar : Label
+
+        object OpenFiltersBottomDialog: Label
+        object CloseFiltersBottomDialog: Label
     }
 
     data class State(

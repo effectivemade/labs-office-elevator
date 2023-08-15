@@ -1,5 +1,6 @@
 package band.effective.office.tablet.ui.mainScreen.mainScreen
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -14,50 +15,62 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import band.effective.office.tablet.domain.model.EventInfo
+import band.effective.office.tablet.ui.bookingComponents.pickerDateTime.DateTimePickerComponent
+import band.effective.office.tablet.ui.bookingComponents.pickerDateTime.DateTimePickerModalView
 import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomComponent
 import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomView
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingRoomComponent
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingRoomView
 import band.effective.office.tablet.ui.mainScreen.mainScreen.uiComponents.Disconnect
-import band.effective.office.tablet.ui.mainScreen.mockComponets.MockSettingView
-import band.effective.office.tablet.ui.mainScreen.mockComponets.MockSettingsComponent
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.RoomInfoComponent
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponent
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomScreen
+import band.effective.office.tablet.ui.updateEvent.UpdateEventComponent
+import band.effective.office.tablet.ui.updateEvent.UpdateEventView
 
+@SuppressLint("NewApi", "StateFlowValueCalledInComposition")
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable
 fun MainScreenView(
     showBookingModal: Boolean,
     showFreeRoomModal: Boolean,
-    mockComponent: MockSettingsComponent,
+    showDateTimePickerModal: Boolean,
     bookingRoomComponent: BookingRoomComponent,
     selectRoomComponent: SelectRoomComponent,
     freeSelectRoomComponent: FreeSelectRoomComponent,
+    dateTimePickerComponent: DateTimePickerComponent,
     roomInfoComponent: RoomInfoComponent,
+    updateEventComponent: UpdateEventComponent,
     showModal: Boolean,
-    isDisconnect: Boolean
+    isDisconnect: Boolean,
+    onEventUpdateRequest: (EventInfo) -> Unit,
+    showUpdateModal: Boolean,
+    updatedEvent: EventInfo,
+    closeModal: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colors.background)) {
         /*NOTE(Maksim Mishenko):
-    * infoViewWidth is part of the width occupied by roomInfoView
-    * infoViewWidth = infoViewFrame.width / mainScreenFrame.width
-    * where infoViewFrame, mainScreenFrame is frames from figma and all width I get from figma*/
+        * infoViewWidth is part of the width occupied by roomInfoView
+        * infoViewWidth = infoViewFrame.width / mainScreenFrame.width
+        * where infoViewFrame, mainScreenFrame is frames from figma and all width I get from figma*/
         val infoViewWidth = 627f / 1133f
         Row(modifier = Modifier.fillMaxSize()) {
             RoomInfoComponent(
                 modifier = Modifier.fillMaxHeight().fillMaxWidth(infoViewWidth),
-                roomInfoComponent = roomInfoComponent
+                roomInfoComponent = roomInfoComponent,
+                onEventUpdateRequest = onEventUpdateRequest
             )
             Box(modifier = Modifier.fillMaxSize()) {
                 BookingRoomView(
-                    modifier = Modifier.background(color = MaterialTheme.colors.surface)
+                    modifier = Modifier
+                        .background(color = MaterialTheme.colors.surface)
                         .fillMaxSize()
                         .padding(25.dp),
-                    bookingRoomComponent = bookingRoomComponent
+                    bookingRoomComponent = bookingRoomComponent,
+                    dateTimePickerComponent = dateTimePickerComponent,
                 )
                 Box() {
-                    MockSettingView(mockComponent)
                     Disconnect(visible = isDisconnect)
                 }
             }
@@ -69,6 +82,15 @@ fun MainScreenView(
             when {
                 showBookingModal -> SelectRoomScreen(component = selectRoomComponent)
                 showFreeRoomModal -> FreeSelectRoomView(freeSelectRoomComponent = freeSelectRoomComponent)
+                showDateTimePickerModal -> DateTimePickerModalView(
+                    dateTimePickerComponent = dateTimePickerComponent,
+                    currentDate = bookingRoomComponent.state.value.selectDate
+                )
+
+                showUpdateModal -> UpdateEventView(
+                    component = updateEventComponent,
+                    event = updatedEvent,
+                    onCloseRequest = closeModal)
             }
         }
     }

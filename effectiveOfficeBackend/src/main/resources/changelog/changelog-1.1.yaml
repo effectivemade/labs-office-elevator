@@ -1,127 +1,46 @@
 databaseChangeLog:
   - changeSet:
-      id: create-users-tags-table
+      id: create-uint-domain
       author: zavyalov-daniil
       changes:
-        - createTable:
-            tableName: users_tags
-            columns:
-              - column:
-                  name: id
-                  type: uuid
-                  constraints:
-                    primaryKey: true
-                    primaryKeyName: pk_users_tags
-              - column:
-                  name: name
-                  type: varchar(255)
-                  remarks: "Student, Worker, etc."
-                  constraints:
-                    nullable: false
+        - sql: CREATE DOMAIN uint_domain AS int CHECK(VALUE >= 0);
 
   - changeSet:
-      id: create-users-table
+      id: create-workspace-utilities-table
       author: zavyalov-daniil
       changes:
         - createTable:
-            tableName: users
+            tableName: workspace_utilities
             columns:
               - column:
-                  name: id
-                  type: uuid
-                  constraints:
-                    primaryKey: true
-                    primaryKeyName: pk_users
-              - column:
-                  name: full_name
-                  type: varchar(255)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: tag_id
+                  name: utility_id
                   type: uuid
                   constraints:
                     nullable: false
               - column:
-                  name: active
-                  type: boolean
-                  defaultValueBoolean: true
-                  constraints:
-                    nullable: false
-              - column:
-                  name: role
-                  type: varchar(255)
-                  remarks: "I. e. Android-developer"
-              - column:
-                  name: avatar_url
-                  type: varchar(255)
-        - addForeignKeyConstraint:
-            baseTableName: users
-            baseColumnNames: tag_id
-            referencedTableName: users_tags
-            referencedColumnNames: id
-            constraintName: fk_users_tag_id
-
-  - changeSet:
-      id: create-integrations-table
-      author: zavyalov-daniil
-      changes:
-        - createTable:
-            tableName: integrations
-            columns:
-              - column:
-                  name: id
-                  type: uuid
-                  constraints:
-                    primaryKey: true
-                    primaryKeyName: pk_integrations
-              - column:
-                  name: name
-                  type: varchar(255)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: icon_url
-                  type: varchar(255)
-                  constraints:
-                    nullable: false
-
-  - changeSet:
-      id: create-users-integrations-table
-      author: zavyalov-daniil
-      changes:
-        - createTable:
-            tableName: users_integrations
-            columns:
-              - column:
-                  name: user_id
+                  name: workspace_id
                   type: uuid
                   constraints:
                     nullable: false
               - column:
-                  name: integration_id
-                  type: uuid
-                  constraints:
-                    nullable: false
-              - column:
-                  name: value
-                  type: varchar(255)
-                  remarks: "For telegram is, for example, user tag @user"
+                  name: count
+                  type: uint_domain
+                  remarks: "> 0"
                   constraints:
                     nullable: false
         - addPrimaryKey:
-            tableName: users_integrations
-            columnNames: integration_id, user_id
-            constraintName: pk_users_integrations
+            tableName: workspace_utilities
+            columnNames: utility_id, workspace_id
+            constraintName: pk_workspace_utilities
         - addForeignKeyConstraint:
-            baseTableName: users_integrations
-            baseColumnNames: integration_id
-            referencedTableName: integrations
+            baseTableName: workspace_utilities
+            baseColumnNames: utility_id
+            referencedTableName: utilities
             referencedColumnNames: id
-            constraintName: fk_user_integration_id
+            constraintName: fk_workspace_utility_id
         - addForeignKeyConstraint:
-            baseTableName: users_integrations
-            baseColumnNames: user_id
-            referencedTableName: users
+            baseTableName: workspace_utilities
+            baseColumnNames: workspace_id
+            referencedTableName: workspaces
             referencedColumnNames: id
-            constraintName: fk_integration_user_id
+            constraintName: fk_utility_workspace_id

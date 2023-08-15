@@ -7,9 +7,10 @@ data class RoomInfo(
     val socketCount: Int,
     val eventList: List<EventInfo>,
     //NOTE(Maksim Mishenko): currentEvent is null if room is free
-    val currentEvent: EventInfo?
-){
-    companion object{
+    val currentEvent: EventInfo?,
+    val id: String
+) {
+    companion object {
         val defaultValue =
             RoomInfo(
                 name = "Default",
@@ -17,7 +18,8 @@ data class RoomInfo(
                 isHaveTv = false,
                 socketCount = 0,
                 eventList = listOf(),
-                currentEvent = null
+                currentEvent = null,
+                id = ""
             )
     }
 }

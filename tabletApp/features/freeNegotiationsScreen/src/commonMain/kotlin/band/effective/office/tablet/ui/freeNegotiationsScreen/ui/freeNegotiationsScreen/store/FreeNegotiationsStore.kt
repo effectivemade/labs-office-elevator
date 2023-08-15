@@ -1,19 +1,19 @@
 package band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.store
 
 import band.effective.office.tablet.domain.model.Booking
-import band.effective.office.tablet.domain.model.EventInfo
-import band.effective.office.tablet.domain.model.RoomInfo
+import band.effective.office.tablet.domain.model.Organizer
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.roomUiState.RoomInfoUiState
 import com.arkivanov.mvikotlin.core.store.Store
 import java.util.Calendar
 
-interface FreeNegotiationsStore : Store< FreeNegotiationsStore.Intent, FreeNegotiationsStore.State, Nothing>{
+interface FreeNegotiationsStore :
+    Store<FreeNegotiationsStore.Intent, FreeNegotiationsStore.State, Nothing> {
 
-    sealed interface Intent{
+    sealed interface Intent {
         data class OnMainScreen(val reset: Boolean) : Intent
         object CloseModal : Intent
-        data class SetBooking(val bookingInfo: Booking): Intent
-        data class OnBookingRoom(val name: String, val maxDuration: Int) : Intent
+        data class SetBooking(val bookingInfo: Booking) : Intent
+        data class OnBookingRoom(val name: RoomInfoUiState, val maxDuration: Int) : Intent
     }
 
     data class State(
@@ -24,25 +24,27 @@ interface FreeNegotiationsStore : Store< FreeNegotiationsStore.Intent, FreeNegot
         val nameCurrentRoom: String,
         val chosenDurationBooking: Int,
         val realDurationBooking: Int,
-        val organizer: String,
-        val nameBookingRoom: String,
+        val organizer: Organizer,
+        val nameBookingRoom: RoomInfoUiState,
         val showBookingModal: Boolean,
-        val currentTime: Calendar
+        val currentTime: Calendar,
+        val failLoad: Boolean
     ) {
         companion object {
             val defaultState =
                 State(
-                    isLoad = false,
-                    isData = true,
+                    isLoad = true,
+                    isData = false,
                     error = null,
                     nameCurrentRoom = "",
-                    nameBookingRoom = "",
+                    nameBookingRoom = RoomInfoUiState.defaultValue,
                     listRooms = listOf(),
                     chosenDurationBooking = 0,
                     realDurationBooking = 0,
-                    organizer = "",
+                    organizer = Organizer.default,
                     showBookingModal = false,
-                    currentTime = Calendar.getInstance()
+                    currentTime = Calendar.getInstance(),
+                    failLoad = false
                 )
         }
     }

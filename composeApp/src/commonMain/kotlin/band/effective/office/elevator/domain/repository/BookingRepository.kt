@@ -10,7 +10,7 @@ interface BookingRepository {
 
     suspend fun createBook(bookingInfo: CreatingBookModel)
 
-    suspend fun getBookingsForUser(): StateFlow<List<BookingInfo>>
+    suspend fun getBookingsForUser(ownerId:String): StateFlow<List<BookingInfo>>
 
-    suspend fun getBookingsByDate(date: LocalDate): StateFlow<List<BookingInfo>>
+    suspend fun getBookingsByDate(date: LocalDate, ownerId:String): StateFlow<List<BookingInfo>>
 }

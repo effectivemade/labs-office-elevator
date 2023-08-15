@@ -43,12 +43,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import band.effective.office.elevator.ExtendedTheme
-import band.effective.office.elevator.LocalExtendedColors
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.textInBorderGray
-import band.effective.office.elevator.textInBorderPurple
-import band.effective.office.elevator.theme_light_primary_color
 import band.effective.office.elevator.ui.booking.components.HorizontalGirdItems
 import band.effective.office.elevator.ui.booking.models.WorkSpaceZone
 import dev.icerock.moko.resources.compose.stringResource
@@ -75,7 +72,7 @@ fun ChooseZone(
                 .fillMaxWidth(fraction = .3f)
                 .height(4.dp)
                 .background(
-                    color = ExtendedTheme.colors.dividerColor,
+                    color = ExtendedThemeColors.colors.dividerColor,
                     shape = RoundedCornerShape(size = 16.dp)
                 )
                 .padding(
@@ -108,7 +105,7 @@ fun ChooseZone(
                 .fillMaxWidth(fraction = 1.0f)
                 .height(height = 1.dp)
                 .background(
-                    color = ExtendedTheme.colors._66x
+                    color = ExtendedThemeColors.colors._66x
                 )
         )
 
@@ -143,7 +140,7 @@ fun ChooseZone(
                 .padding(horizontal = 15.dp, vertical = 10.dp),
             shape = RoundedCornerShape(32.dp),
             colors = ButtonDefaults.buttonColors(
-                backgroundColor = LocalExtendedColors.current.trinidad_600,
+                backgroundColor = ExtendedThemeColors.colors.trinidad_600,
             )
         ) {
             Text(
@@ -167,12 +164,12 @@ fun WorkingZones(
             isSelected = !isSelected
             onClickZone(workSpaceZone)
           },
-        colors = ButtonDefaults.buttonColors(theme_light_primary_color),
+        colors = ButtonDefaults.buttonColors(ExtendedThemeColors.colors.whiteColor),
         modifier = modifier
             .padding(end = 10.dp),
         border = BorderStroke(
             width = 1.dp,
-            color = if (isSelected) textInBorderPurple else textInBorderGray
+            color = if (isSelected)  ExtendedThemeColors.colors.purple_heart_800  else textInBorderGray
         ),
         shape = RoundedCornerShape(12.dp),
         elevation = ButtonDefaults.elevation(0.dp, 2.dp, 0.dp)
@@ -180,7 +177,7 @@ fun WorkingZones(
         if (isSelected) {
             Icon(
                 imageVector = Icons.Rounded.Done,
-                tint = textInBorderPurple,
+                tint = ExtendedThemeColors.colors.purple_heart_800,
                 modifier = Modifier
                     .size(20.dp)
                     .align(Alignment.CenterVertically),
@@ -191,7 +188,7 @@ fun WorkingZones(
             text = workSpaceZone.name,
             fontSize = 16.sp,
             fontWeight = FontWeight(500),
-            color = if (isSelected) textInBorderPurple
+            color = if (isSelected) ExtendedThemeColors.colors.purple_heart_800
             else textInBorderGray
         )
     }

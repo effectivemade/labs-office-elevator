@@ -27,6 +27,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(compose.material)
+                implementation(compose.material3)
 
                 // Decompose
                 implementation(Dependencies.Decompose.decompose)
@@ -34,6 +35,23 @@ kotlin {
 
                 //Libres
                 implementation(Dependencies.Libres.libresCompose)
+
+                //EpicDatePicker
+                implementation(Dependencies.Calendar.composeDatePicker)
+
+                // MVI Kotlin
+                api(Dependencies.MviKotlin.mviKotlin)
+                api(Dependencies.MviKotlin.mviKotlinMain)
+                api(Dependencies.MviKotlin.mviKotlinExtensionsCoroutines)
+
+                //Koin
+                api(Dependencies.Koin.core)
+
+                //WheelTimePicker
+                implementation(Dependencies.KotlinxDatetime.kotlinxDatetime)
+                implementation(project(":wheel-picker-compose"))
+
+                api(project(":contract"))
             }
         }
     }

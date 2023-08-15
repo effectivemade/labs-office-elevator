@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.MainRes
@@ -31,7 +32,8 @@ fun DateSelection(onClickOpenCalendar: () -> Unit, onClickOpenBottomDialog: () -
             text = stringResource(MainRes.strings.nearest_bookings),
             fontSize = 15.sp,
             color = Color.Black,
-            modifier = Modifier.wrapContentWidth()
+            modifier = Modifier.wrapContentWidth(),
+            fontWeight = FontWeight(500)
         )
 
         Row(

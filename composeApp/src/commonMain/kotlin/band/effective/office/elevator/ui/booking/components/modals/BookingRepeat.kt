@@ -54,6 +54,8 @@ import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.components.Elevation
 import band.effective.office.elevator.textInBorderGray
+import band.effective.office.elevator.components.EffectiveButton
+import band.effective.office.elevator.components.Elevation
 import dev.icerock.moko.resources.compose.stringResource
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -77,6 +79,13 @@ fun BookingRepeat(
     }
 
     val isExpandedContextMenu = remember { mutableStateOf(false) }
+    val weekNames = listOf(
+        MainRes.strings.Monday,
+        MainRes.strings.Tuesday,
+        MainRes.strings.Wednesday,
+        MainRes.strings.Thursday,
+        MainRes.strings.Friday,
+    )
 
     Column(
         verticalArrangement = Arrangement.Top,
@@ -109,7 +118,26 @@ fun BookingRepeat(
                     top = 8.dp
                 )
         )
+    val isExpandedContextMenu = remember { mutableStateOf(false) }
 
+    Column(
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .background(
+                color = Color.White,
+                shape = RoundedCornerShape(
+                    topStart = 16.dp,
+                    topEnd = 16.dp,
+                    bottomEnd = 0.dp,
+                    bottomStart = 0.dp
+                )
+            )
+            .padding(bottom = 16.dp)
+    ) {
+        Spacer(modifier = Modifier.height(height = 8.dp))
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.Start),
             verticalAlignment = Alignment.CenterVertically,
@@ -437,5 +465,6 @@ fun BookingRepeat(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
             )
         }
+    }
     }
 }

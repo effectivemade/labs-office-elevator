@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import dev.icerock.moko.resources.compose.stringResource
 
@@ -35,7 +36,7 @@ fun BookingRepeatCard(onSelected: () -> Unit, modifier: Modifier) {
             .padding(all = 24.dp)
             .fillMaxWidth()
             .wrapContentHeight()
-            .background(color = Color.White, shape = RoundedCornerShape(size = 16.dp))
+            .background(color = ExtendedThemeColors.colors.whiteColor, shape = RoundedCornerShape(size = 16.dp))
     ) {
         strings.forEach { frequency ->
             BookingRepeatElement(

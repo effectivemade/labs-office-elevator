@@ -3,7 +3,6 @@ package band.effective.office.elevator.ui.booking.components.modals
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,10 +31,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import band.effective.office.elevator.ExtendedTheme
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
-import band.effective.office.elevator.components.PrimaryButton
+import band.effective.office.elevator.components.EffectiveButton
+import band.effective.office.elevator.components.Elevation
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 
@@ -54,13 +53,6 @@ fun BookingPeriod(
     bookingRepeat: () -> Unit,
     onClickSearchSuitableOptions: () -> Unit
 ) {
-    val elevation = ButtonDefaults.elevation(
-        defaultElevation = 0.dp,
-        pressedElevation = 0.dp,
-        disabledElevation = 0.dp,
-        hoveredElevation = 0.dp,
-        focusedElevation = 0.dp
-    )
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -84,8 +76,9 @@ fun BookingPeriod(
                 .fillMaxWidth(fraction = .3f)
                 .height(height = 4.dp)
                 .background(
-                    color = ExtendedTheme.colors.dividerColor,
-                    shape = RoundedCornerShape(size = 16.dp)
+                   color = ExtendedThemeColors.colors.dividerColor,
+                    shape = RoundedCornerShape(size = 16.dp
+                    )
                 )
                 .padding(
                     bottom = 8.dp,
@@ -117,7 +110,7 @@ fun BookingPeriod(
                 .fillMaxWidth(fraction = 1.0f)
                 .height(height = 1.dp)
                 .background(
-                    color = ExtendedTheme.colors._66x
+                    color = ExtendedThemeColors.colors._66x
                 )
         )
 
@@ -163,9 +156,9 @@ fun BookingPeriod(
                         onCheckedChange = onSelectAllDay,
                         colors = SwitchDefaults.colors(
                             checkedThumbColor = MaterialTheme.colors.primary,
-                            uncheckedThumbColor = ExtendedTheme.colors.switchColor,
-                            uncheckedBorderColor = Color.Transparent,
-                            checkedBorderColor = Color.Transparent
+                            uncheckedThumbColor = ExtendedThemeColors.colors.switchColor,
+                            uncheckedBorderColor = ExtendedThemeColors.colors.transparentColor,
+                            checkedBorderColor = ExtendedThemeColors.colors.transparentColor
                         )
                     )
                 }
@@ -184,9 +177,9 @@ fun BookingPeriod(
                 //Book period
                 Button(
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color.Transparent
+                        backgroundColor = ExtendedThemeColors.colors.transparentColor
                     ),
-                    elevation = elevation,
+                    elevation = Elevation(),
                     onClick = bookingRepeat
                 ) {
                     Row(
@@ -211,19 +204,10 @@ fun BookingPeriod(
                     }
                 }
             }
-
-            PrimaryButton(
-                text = stringResource(MainRes.strings.confirm_booking),
-                cornerValue = 40.dp,
-                modifier = Modifier.padding(horizontal = 16.dp),
-                contentTextSize = 16.sp,
-                paddingValues = PaddingValues(all = 10.dp),
-                elevation = elevation,
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = MaterialTheme.colors.primary
-                ),
-                border = null,
-                onButtonClick = onClickSearchSuitableOptions
+            EffectiveButton(
+                buttonText = stringResource(MainRes.strings.confirm_booking),
+                onClick = onClickSearchSuitableOptions,
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
             )
         }
     }

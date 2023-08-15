@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.common.compose.components.GrayText
 
 @Composable
@@ -106,7 +107,7 @@ fun TimeLine(
                     fontWeight = FontWeight(
                         weight = 400
                     ),
-                    color = Color.Black
+                    color = ExtendedThemeColors.colors.blackColor
                 )
             )
         }

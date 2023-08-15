@@ -1,5 +1,8 @@
 package band.effective.office.elevator.expects
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+
 expect fun showToast(message: String)
 
 expect fun generateVibration(milliseconds: Long)

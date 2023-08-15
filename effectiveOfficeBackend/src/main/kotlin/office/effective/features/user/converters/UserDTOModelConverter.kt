@@ -1,5 +1,6 @@
 package office.effective.features.user.converters
 
+import office.effective.common.utils.UuidValidator
 import office.effective.features.user.dto.IntegrationDTO
 import office.effective.features.user.dto.UserDTO
 import office.effective.features.user.repository.UserRepository
@@ -11,11 +12,12 @@ import java.util.UUID
 
 class UserDTOModelConverter(
     private val repository: UserRepository,
-    private val converter: IntegrationDTOModelConverter
+    private val converter: IntegrationDTOModelConverter,
+    private val uuidConverter : UuidValidator
 ) {
 
     fun dTOToModel(userDTO: UserDTO): UserModel {
-        val userId = UUID.fromString(userDTO.id);
+        val userId = uuidConverter.uuidFromString(userDTO.id)
         val tag: UsersTagEntity? = repository.findTagByUserOrNull(userId);
         val integrations: MutableSet<IntegrationModel> = mutableSetOf()
         userDTO.integrations?.forEach { integrations.add(converter.dTOToModel(it)) }

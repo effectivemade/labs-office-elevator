@@ -1,8 +1,9 @@
 package band.effective.office.tablet.domain.useCase
 
+import band.effective.office.network.model.Either
 import band.effective.office.tablet.domain.CurrentEventController
-import band.effective.office.tablet.domain.model.Either
 import band.effective.office.tablet.domain.model.ErrorWithData
+import band.effective.office.tablet.domain.model.Organizer
 import band.effective.office.tablet.domain.model.RoomInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -12,10 +13,11 @@ import kotlinx.coroutines.launch
 class UpdateUseCase(
     private val roomInfoUseCase: RoomInfoUseCase,
     private val organizersInfoUseCase: OrganizersInfoUseCase,
+    private val checkSettingsUseCase: CheckSettingsUseCase,
     private val currentEventController: CurrentEventController
 ) {
     /**Get fresh room info*/
-    suspend fun getRoomInfo() = roomInfoUseCase()
+    suspend fun getRoomInfo(nameRoom: String) = roomInfoUseCase(nameRoom)
 
     /**Get fresh org list*/
     suspend fun getOrganizersList() = organizersInfoUseCase()
@@ -27,10 +29,10 @@ class UpdateUseCase(
     operator fun invoke(
         scope: CoroutineScope,
         roomUpdateHandler: (Either<ErrorWithData<RoomInfo>, RoomInfo>) -> Unit,
-        organizerUpdateHandler: (Either<ErrorWithData<List<String>>, List<String>>) -> Unit
+        organizerUpdateHandler: (Either<ErrorWithData<List<Organizer>>, List<Organizer>>) -> Unit
     ) {
-        roomInfoUseCase.subscribe(scope) { roomUpdateHandler(it) }
-        organizersInfoUseCase.subscribe(scope) { organizerUpdateHandler(it) }
+        scope.launch { roomInfoUseCase.subscribe(checkSettingsUseCase()).collect { roomUpdateHandler(it) } }
+        scope.launch { organizersInfoUseCase.subscribe().collect() { organizerUpdateHandler(it) } }
         currentEventController.start(scope)
         currentEventController.subscribe {
             scope.launch(Dispatchers.IO) {

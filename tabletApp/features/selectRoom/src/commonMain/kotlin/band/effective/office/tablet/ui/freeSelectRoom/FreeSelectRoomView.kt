@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -25,9 +27,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import band.effective.office.tablet.features.selectRoom.MainRes
+import band.effective.office.tablet.ui.common.CrossButtonView
 import band.effective.office.tablet.ui.freeSelectRoom.store.FreeSelectStore
 import band.effective.office.tablet.ui.loader.Loader
-import band.effective.office.tablet.ui.selectRoomScreen.uiComponents.CrossButtonView
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.textButton
 
@@ -35,9 +37,10 @@ import band.effective.office.tablet.ui.theme.textButton
 fun FreeSelectRoomView(freeSelectRoomComponent: FreeSelectRoomComponent) {
     val state by freeSelectRoomComponent.state.collectAsState()
     FreeSelectRoomView(
-        onCloseRequest = { freeSelectRoomComponent.sendIntent(FreeSelectStore.Intent.OnCloseWindowRequest()) },
-        onFreeRoomRequest = { freeSelectRoomComponent.sendIntent(FreeSelectStore.Intent.OnFreeSelectRequest()) },
-        isLoading = state.isLoad
+        onCloseRequest = { freeSelectRoomComponent.sendIntent(FreeSelectStore.Intent.OnCloseWindowRequest) },
+        onFreeRoomRequest = { freeSelectRoomComponent.sendIntent(FreeSelectStore.Intent.OnFreeSelectRequest) },
+        isLoading = state.isLoad,
+        isFail = !state.isSuccess
     )
 }
 
@@ -46,7 +49,8 @@ fun FreeSelectRoomView(freeSelectRoomComponent: FreeSelectRoomComponent) {
 fun FreeSelectRoomView(
     onCloseRequest: () -> Unit,
     onFreeRoomRequest: () -> Unit,
-    isLoading: Boolean
+    isLoading: Boolean,
+    isFail: Boolean
 ) {
     val shape = RoundedCornerShape(50)
 
@@ -61,7 +65,9 @@ fun FreeSelectRoomView(
     ) {
         Box(
             modifier = Modifier
-                .size(518.dp, 304.dp)
+                //.size(518.dp, 304.dp)
+                .fillMaxWidth(0.9f)
+                .fillMaxHeight(0.6f)
                 .clip(RoundedCornerShape(5))
                 .background(LocalCustomColorsPalette.current.elevationBackground),
         ) {
@@ -101,13 +107,20 @@ fun FreeSelectRoomView(
                 ) {
                     Box(contentAlignment = Alignment.Center)
                     {
-                        if (isLoading) Loader()
-                        else
-                            Text(
+                        when {
+                            isLoading -> Loader()
+                            isFail -> Text(
+                                text = MainRes.string.try_again,
+                                style = MaterialTheme.typography.h6,
+                                color = textButton,
+                            )
+
+                            else -> Text(
                                 text = MainRes.string.free_select_room_button,
                                 style = MaterialTheme.typography.h6,
                                 color = textButton,
                             )
+                        }
                     }
                 }
             }

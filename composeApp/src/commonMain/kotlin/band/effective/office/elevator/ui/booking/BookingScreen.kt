@@ -229,7 +229,6 @@ private fun BookingScreenContent(
 
     LaunchedEffect(scrollState.isScrollInProgress) {
         if (scrollIsDown) {
-            isExpandedCard = false
             isExpandedOptions = false
         }
     }

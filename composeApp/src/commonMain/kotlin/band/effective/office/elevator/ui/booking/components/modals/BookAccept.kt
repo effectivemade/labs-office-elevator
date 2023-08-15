@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -25,12 +23,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import band.effective.office.elevator.ExtendedTheme
-import band.effective.office.elevator.LocalExtendedColors
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.textInBorderGray
-import band.effective.office.elevator.theme_light_onPrimary
-import band.effective.office.elevator.theme_light_tertiary_color
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
@@ -51,7 +47,7 @@ fun BookAccept(
                     .fillMaxWidth(fraction = .3f)
                     .height(4.dp)
                     .background(
-                        color = ExtendedTheme.colors.dividerColor,
+                        color = ExtendedThemeColors.colors.dividerColor,
                         shape = RoundedCornerShape(size = 16.dp)
                     )
                     .padding(
@@ -68,7 +64,7 @@ fun BookAccept(
                     Icon(
                         imageVector = Icons.Rounded.Close,
                         contentDescription = "Krestik",
-                        tint = theme_light_tertiary_color
+                        tint = ExtendedThemeColors.colors.blackColor
                     )
                 }
                 Column(modifier=Modifier.padding(horizontal = 5.dp)){
@@ -77,7 +73,7 @@ fun BookAccept(
                         style = MaterialTheme.typography.subtitle1,
                         fontSize = 20.sp,
                         fontWeight = FontWeight(600),
-                        color = theme_light_tertiary_color,
+                        color = ExtendedThemeColors.colors.blackColor,
                         modifier = Modifier.padding(top = 10.dp, bottom = 5.dp)
                     )
                     Text(
@@ -86,27 +82,15 @@ fun BookAccept(
                         fontSize = 16.sp,
                         fontWeight = FontWeight(400),
                         color = textInBorderGray,
-                        modifier = Modifier.padding(bottom = 10.dp)
+                        modifier = Modifier.padding(bottom = 27.dp)
                     )
                 }
             }
-            Button(onClick = confirmBooking,
-                modifier = Modifier
-                    .align(alignment = Alignment.CenterHorizontally)
-                    .fillMaxWidth()
-                    .height(60.dp)
-                    .padding(horizontal = 15.dp, vertical = 10.dp),
-                shape = RoundedCornerShape(32.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = LocalExtendedColors.current.trinidad_600,
-                    contentColor = theme_light_onPrimary
-                )){
-
-                Text(
-                    text= stringResource(MainRes.strings.confirm_booking),
-                    style = MaterialTheme.typography.button
-                )
-            }
+            EffectiveButton(
+                buttonText = stringResource(MainRes.strings.confirm_booking),
+                onClick = confirmBooking,
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+            )
         }
     }
 }

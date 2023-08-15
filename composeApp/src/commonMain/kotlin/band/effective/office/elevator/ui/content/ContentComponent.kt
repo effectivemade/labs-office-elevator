@@ -1,8 +1,8 @@
 package band.effective.office.elevator.ui.content
 
+import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.ui.booking.BookingComponent
 import band.effective.office.elevator.ui.employee.FullEmployeeComponent
-import band.effective.office.elevator.ui.employee.allEmployee.EmployeeComponent
 import band.effective.office.elevator.ui.main.MainComponent
 import band.effective.office.elevator.ui.profile.ProfileComponent
 import com.arkivanov.decompose.ComponentContext
@@ -31,7 +31,8 @@ class ContentComponent(
     val childStack: Value<ChildStack<*, Child>> = stack
 
     private fun child(config: Config, componentContext: ComponentContext): Child = when (config) {
-        is Config.MainScreen -> Child.Main(MainComponent(componentContext, storeFactory))
+        is Config.MainScreen -> Child.Main(MainComponent(componentContext, storeFactory,
+            ::mainScreenOutput))
         is Config.Profile -> Child.Profile(
             ProfileComponent(
                 componentContext,
@@ -41,6 +42,17 @@ class ContentComponent(
         )
         is Config.Booking -> Child.Booking(BookingComponent(componentContext, storeFactory))
         is Config.Employee -> Child.Employee(FullEmployeeComponent(componentContext, storeFactory))
+    }
+
+    private fun mainScreenOutput(output: MainComponent.Output){
+        when(output){
+            is MainComponent.Output.OpenBookingScreen -> navigation.bringToFront(Config.Booking)
+            is MainComponent.Output.OpenMap -> showToast("map")
+            is MainComponent.Output.DeleteBooking -> showToast("delete")
+            is MainComponent.Output.ExtendBooking -> showToast("extend")
+            is MainComponent.Output.RepeatBooking -> showToast("repeat")
+
+        }
     }
 
     fun onOutput(output: Output) {

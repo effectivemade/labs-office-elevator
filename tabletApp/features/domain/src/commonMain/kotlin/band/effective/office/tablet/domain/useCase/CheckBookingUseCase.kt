@@ -1,13 +1,15 @@
 package band.effective.office.tablet.domain.useCase
 
-import band.effective.office.tablet.domain.model.Either
+import band.effective.office.network.model.Either
 import band.effective.office.tablet.domain.model.ErrorWithData
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
 import java.util.Calendar
 
 /**Use case for checking booking room opportunity*/
-class CheckBookingUseCase(private val roomInfoUseCase: RoomInfoUseCase) {
+class CheckBookingUseCase(
+    private val roomInfoUseCase: RoomInfoUseCase,
+    private val checkSettingsUseCase: CheckSettingsUseCase) {
     /**
      * @return Event busy with room booking, if room free, return null*/
     suspend operator fun invoke(event: EventInfo) =
@@ -23,7 +25,7 @@ class CheckBookingUseCase(private val roomInfoUseCase: RoomInfoUseCase) {
     /**
      * @return All events in current room*/
     private suspend fun eventList(): Either<ErrorWithData<List<EventInfo>>, List<EventInfo>> =
-        when (val response = roomInfoUseCase()) {
+        when (val response = roomInfoUseCase(checkSettingsUseCase())) {
             is Either.Error -> Either.Error(ErrorWithData(response.error.error, response.error.saveData?.getAllEvents()))
             is Either.Success -> {
                 Either.Success(
