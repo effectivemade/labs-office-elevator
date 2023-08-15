@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.main.store
 
+import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsFilter
 import band.effective.office.elevator.ui.models.ElevatorState
 import band.effective.office.elevator.ui.models.ReservedSeat
 import com.arkivanov.mvikotlin.core.store.Store
@@ -20,7 +21,7 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, MainStore.Label> 
         data class OnClickApplyDate(val date: LocalDate?) : Intent
 
         object OpenFiltersBottomDialog : Intent
-        object CloseFiltersBottomDialog : Intent
+        data class CloseFiltersBottomDialog(val bookingsFilter: BookingsFilter) : Intent
 
         object OnClickShowMap : Intent
 

@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.MainRes
@@ -47,6 +48,7 @@ import band.effective.office.elevator.components.TitlePage
 import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.ui.employee.aboutEmployee.components.BookingCardUser
 import band.effective.office.elevator.ui.employee.aboutEmployee.components.ContactUserUIComponent
+import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsFilter
 import band.effective.office.elevator.ui.employee.aboutEmployee.store.AboutEmployeeStore
 import band.effective.office.elevator.ui.main.components.BottomDialog
 import band.effective.office.elevator.ui.main.components.CalendarTitle
@@ -86,7 +88,8 @@ fun AboutEmployee (component: AboutEmployeeComponent){
             post = state.user.post,
             telegram = state.user.telegram,
             email = state.user.email,
-            reservedSeats = state.reservedSeats,
+            reservedSeatsList = state.reservedSeatsList,
+            dateFiltrationOnReserves = state.dateFiltrationOnReserves,
             filtrationOnReserves = state.filtrationOnReserves,
             bottomSheetState = bottomSheetState,
             onClickOpenPhone = { component.onEvent(AboutEmployeeStore.Intent.TelephoneClicked) },
@@ -95,7 +98,7 @@ fun AboutEmployee (component: AboutEmployeeComponent){
             onClickBack = { component.onOutput(AboutEmployeeComponent.Output.OpenAllEmployee) },
             onClickOpenCalendar = { component.onEvent(AboutEmployeeStore.Intent.OpenCalendarClicked) },
             onClickOpenBottomDialog = { component.onEvent(AboutEmployeeStore.Intent.OpenBottomDialog)},
-            onClickCloseBottomDialog = {component.onEvent(AboutEmployeeStore.Intent.CloseBottomDialog)}
+            onClickCloseBottomDialog = {component.onEvent(AboutEmployeeStore.Intent.CloseBottomDialog(it))}
         )
 
         if(showModalCalendar){
@@ -119,7 +122,8 @@ private fun AboutEmployeeContent(
     post: String?,
     telegram: String?,
     email: String?,
-    reservedSeats: List<ReservedSeat>,
+    reservedSeatsList: List<ReservedSeat>,
+    dateFiltrationOnReserves: Boolean,
     filtrationOnReserves: Boolean,
     bottomSheetState: ModalBottomSheetState,
     onClickBack: () -> Unit,
@@ -128,7 +132,7 @@ private fun AboutEmployeeContent(
     onClickOpenSpb: () ->Unit,
     onClickOpenCalendar: () ->Unit,
     onClickOpenBottomDialog: () ->Unit,
-    onClickCloseBottomDialog: () ->Unit
+    onClickCloseBottomDialog: (BookingsFilter) ->Unit
 ){
     ModalBottomSheetLayout(
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
@@ -243,11 +247,11 @@ private fun AboutEmployeeContent(
                         FilterButton(onClickOpenBottomSheetDialog = onClickOpenBottomDialog)
                 }
             }
-            if(reservedSeats.isEmpty()){
-                NoReservationsThisDate(noThisDayReservations = filtrationOnReserves)
+            if(reservedSeatsList.isEmpty()){
+                NoReservationsThisDate(noThisDayReservations = dateFiltrationOnReserves, filtration = filtrationOnReserves)
             }else{
                 ReservationsOnThisDate(
-                    reservedSeats =  reservedSeats,
+                    reservedSeatsList =  reservedSeatsList,
                 )
             }
         }
@@ -256,7 +260,8 @@ private fun AboutEmployeeContent(
 }
 
 @Composable
-fun NoReservationsThisDate(noThisDayReservations: Boolean){
+fun NoReservationsThisDate(noThisDayReservations: Boolean, filtration: Boolean){
+
     Column (
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -264,21 +269,28 @@ fun NoReservationsThisDate(noThisDayReservations: Boolean){
     ) {
         Text(
             text = stringResource(
-                if(noThisDayReservations) MainRes.strings.none_booking_seats_on_this_date
-                else MainRes.strings.none_booking_seats_by_the_employee),
+                if(filtration){
+                    if(noThisDayReservations) MainRes.strings.none_such_booking_seats_on_this_date
+                    else MainRes.strings.none_such_booking_seats_by_the_employee
+                }else{
+                    if(noThisDayReservations) MainRes.strings.none_booking_seats_on_this_date
+                    else MainRes.strings.none_booking_seats_by_the_employee
+                }
+            ),
             fontSize = 15.sp,
-            color = textGrayColor
+            color = textGrayColor,
+            textAlign = TextAlign.Center
         )
     }
 }
 
 @Composable
-fun ReservationsOnThisDate(reservedSeats: List<ReservedSeat>){
+fun ReservationsOnThisDate(reservedSeatsList: List<ReservedSeat>){
     LazyColumn(
         modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(18.dp)
     ) {
-        items(reservedSeats) { seat ->
+        items(reservedSeatsList) { seat ->
             BookingCardUser(
                 seat
             )

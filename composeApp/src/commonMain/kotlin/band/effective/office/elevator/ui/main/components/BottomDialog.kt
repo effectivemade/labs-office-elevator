@@ -33,10 +33,11 @@ import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.components.OutlinedPrimaryButton
 import band.effective.office.elevator.textInBorderGray
 import band.effective.office.elevator.textInBorderPurple
+import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsFilter
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
-fun BottomDialog(modifier: Modifier, title: String,  onClickCloseBottomDialog:() -> Unit) {
+fun BottomDialog(modifier: Modifier, title: String,  onClickCloseBottomDialog:(BookingsFilter) -> Unit) {
 
     var isExpanded by remember { mutableStateOf(true) }
     var isExpandedScBtn by remember { mutableStateOf(true) }
@@ -57,12 +58,12 @@ fun BottomDialog(modifier: Modifier, title: String,  onClickCloseBottomDialog:()
             OutlinedIconButton(
                 onClick = { if(isExpandedScBtn) isExpanded = !isExpanded },
                 border = BorderStroke(1.dp, if(isExpanded) textInBorderPurple else textInBorderGray),//ExtendedTheme.colors.purple_heart_800
-                modifier = Modifier.fillMaxWidth(0.5f),
+                modifier = Modifier.weight(.1f),
+                shape = RoundedCornerShape(12.dp),
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp),
-                    horizontalArrangement = Arrangement.Center
+                    modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.Done,
@@ -72,7 +73,7 @@ fun BottomDialog(modifier: Modifier, title: String,  onClickCloseBottomDialog:()
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = stringResource(MainRes.strings.workplace),
+                        text = stringResource(MainRes.strings.meeting_room),
                         color = if(isExpanded) textInBorderPurple else textInBorderGray,
                         style = MaterialTheme.typography.body2,
                         modifier = Modifier.fillMaxWidth()
@@ -86,7 +87,7 @@ fun BottomDialog(modifier: Modifier, title: String,  onClickCloseBottomDialog:()
                 onClick = {
                     if(isExpanded) isExpandedScBtn =!isExpandedScBtn},
                 border = BorderStroke(1.dp, if(isExpandedScBtn) textInBorderPurple else textInBorderGray),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.weight(.1f),
                 shape = RoundedCornerShape(12.dp),
             ) {
                 Row(
@@ -101,9 +102,10 @@ fun BottomDialog(modifier: Modifier, title: String,  onClickCloseBottomDialog:()
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = stringResource(MainRes.strings.meeting_room),
+                        text = stringResource(MainRes.strings.workplace),
                         color = if(isExpandedScBtn) textInBorderPurple else textInBorderGray,
                         style = MaterialTheme.typography.body2,
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
             }
@@ -127,7 +129,7 @@ fun BottomDialog(modifier: Modifier, title: String,  onClickCloseBottomDialog:()
             Spacer(modifier = Modifier.width(16.dp))
             EffectiveButton(
                 buttonText = stringResource(MainRes.strings.ok),
-                onClick = onClickCloseBottomDialog,
+                onClick = { onClickCloseBottomDialog(BookingsFilter(isExpanded, isExpandedScBtn)) },
                 modifier = Modifier.weight(.1f),
                 roundedCorner = 8.dp,
                 contentPadding = 12.dp

@@ -32,6 +32,7 @@ import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.ModalCalendar
 import band.effective.office.elevator.components.TitlePage
 import band.effective.office.elevator.successGreen
+import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsFilter
 import band.effective.office.elevator.ui.main.components.BookingInformation
 import band.effective.office.elevator.ui.main.components.BottomDialog
 import band.effective.office.elevator.ui.main.components.ElevatorUIComponent
@@ -40,7 +41,6 @@ import band.effective.office.elevator.ui.models.ReservedSeat
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -100,7 +100,7 @@ fun MainScreen(component: MainComponent) {
             },
             onClickOpenCalendar = { component.onEvent(MainStore.Intent.OnClickOpenCalendar) },
             onClickOpenBottomDialog = { component.onEvent(MainStore.Intent.OpenFiltersBottomDialog) },
-            onClickCloseBottomDialog = { component.onEvent(MainStore.Intent.CloseFiltersBottomDialog)}
+            onClickCloseBottomDialog = { component.onEvent(MainStore.Intent.CloseFiltersBottomDialog(it))}
         )
         if (showModalCalendar) {
             ModalCalendar(
@@ -156,7 +156,7 @@ fun MainScreenContent(
     onClickShowOptions: () -> Unit,
     onClickOpenCalendar: () -> Unit,
     onClickOpenBottomDialog: () -> Unit,
-    onClickCloseBottomDialog: () -> Unit
+    onClickCloseBottomDialog: (BookingsFilter) -> Unit
 ) {
     ModalBottomSheetLayout(
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
@@ -168,7 +168,6 @@ fun MainScreenContent(
                 onClickCloseBottomDialog
             )
         }
-        //,sheetPeekHeight = 0.dp
     ) {
         Column(
             modifier = modifier.fillMaxSize()
