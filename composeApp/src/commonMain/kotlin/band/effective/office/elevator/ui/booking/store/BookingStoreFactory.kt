@@ -1,11 +1,14 @@
 package band.effective.office.elevator.ui.booking.store
 
+import band.effective.office.elevator.ui.booking.models.WorkSpaceType
+import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import band.effective.office.elevator.ui.booking.models.WorkSpaceZone
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
+import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
@@ -19,6 +22,11 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             Store<BookingStore.Intent, BookingStore.State, BookingStore.Label> by storeFactory.create(
                 name = "BookingStore",
                 initialState = BookingStore.State.initState,
+                bootstrapper = coroutineBootstrapper {
+                    launch {
+                        dispatch(Action.InitWorkSpaces)
+                    }
+                },
                 executorFactory = ::ExecutorImpl,
                 reducer = ReducerImpl
             ) {}
@@ -33,10 +41,16 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         data class TimeBooking(val time: LocalTime) : Msg
 
         data class ChangeSelectedWorkSpacesZone(val workSpacesZone: List<WorkSpaceZone>) : Msg
+
+        data class ChangeWorkSpacesUI(val workSpacesUI: List<WorkSpaceUI>) : Msg
+    }
+
+    private sealed interface Action {
+        object InitWorkSpaces : Action
     }
 
     private inner class ExecutorImpl :
-        CoroutineExecutor<BookingStore.Intent, Nothing, BookingStore.State, Msg, BookingStore.Label>() {
+        CoroutineExecutor<BookingStore.Intent, Action, BookingStore.State, Msg, BookingStore.Label>() {
         override fun executeIntent(
             intent: BookingStore.Intent,
             getState: () -> BookingStore.State
@@ -178,17 +192,42 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is BookingStore.Intent.ChangeSelectedWorkSpacesZone -> {
                     dispatch(Msg.ChangeSelectedWorkSpacesZone(intent.workSpaceZone))
                 }
+
+                is BookingStore.Intent.ChangeWorkSpacesUI -> {
+                    intent.workSpaces.forEachIndexed { index1, workSpaceUI ->
+                        getState().workSpacesZone.forEachIndexed { index2, workSpaceZone ->
+                            intent.workSpaces.filter { workSpaceUI -> workSpaceUI.workSpaceName == workSpaceZone.name }
+                        }
+                    }
+                    dispatch(Msg.ChangeWorkSpacesUI(workSpacesUI = intent.workSpaces))
+                }
+
+                is BookingStore.Intent.ChangeType -> {
+
+                }
+            }
+        }
+
+        override fun executeAction(action: Action, getState: () -> BookingStore.State) =
+            when (action) {
+                Action.InitWorkSpaces -> initList(getState())
+            }
+
+        private fun initList(state: BookingStore.State) {
+            scope.launch {
+                dispatch(Msg.ChangeWorkSpacesUI(workSpacesUI = state.workSpaces.filter { workSpaceUI -> workSpaceUI.workSpaceType == WorkSpaceType.WORK_PLACE }))
             }
         }
     }
 
     private object ReducerImpl : Reducer<BookingStore.State, Msg> {
         override fun BookingStore.State.reduce(msg: Msg): BookingStore.State {
-            return when(msg) {
+            return when (msg) {
                 is Msg.ChangeSelectedWorkSpacesZone -> copy(workSpacesZone = msg.workSpacesZone)
                 is Msg.DateBooking -> TODO()
                 is Msg.TimeBooking -> TODO()
                 is Msg.TypeList -> TODO()
+                is Msg.ChangeWorkSpacesUI -> copy(workSpaces = msg.workSpacesUI)
             }
         }
     }

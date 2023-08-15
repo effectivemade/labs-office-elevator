@@ -35,6 +35,7 @@ import band.effective.office.elevator.borderPurple
 import band.effective.office.elevator.components.TitlePage
 import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.textInBorderPurple
+import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
@@ -51,7 +52,8 @@ fun BookingMainContentScreen(
     onClickOpenBookPeriod: () -> Unit,
     onClickOpenChoseZone: () -> Unit,
     onClickExpandedMap: () -> Unit,
-    onClickExpandedOption: () -> Unit
+    onClickExpandedOption: () -> Unit,
+    onClickChangeZone: (WorkSpaceType) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -84,7 +86,8 @@ fun BookingMainContentScreen(
                     OptionMenu(
                         isExpandedCard = isExpandedCard,
                         isExpandedOptions = isExpandedOptions,
-                        onClickOpenBookPeriod = onClickOpenBookPeriod
+                        onClickOpenBookPeriod = onClickOpenBookPeriod,
+                        onClickChangeZone = onClickChangeZone
                     )
                 }
                 Box(

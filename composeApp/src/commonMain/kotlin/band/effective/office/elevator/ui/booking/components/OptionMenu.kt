@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.models.TypesList
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
@@ -34,7 +35,8 @@ import dev.icerock.moko.resources.compose.stringResource
 fun OptionMenu(
     isExpandedCard: Boolean,
     isExpandedOptions: Boolean,
-    onClickOpenBookPeriod: () -> Unit
+    onClickOpenBookPeriod: () -> Unit,
+    onClickChangeZone: (WorkSpaceType) -> Unit
 ) {
     Column {
         AnimatedVisibility(visible = isExpandedCard) {
@@ -69,11 +71,13 @@ fun OptionMenu(
                     val types = listOf(
                         TypesList(
                             name = MainRes.strings.workplace,
-                            icon = MainRes.images.table_icon
+                            icon = MainRes.images.table_icon,
+                            type = WorkSpaceType.WORK_PLACE
                         ),
                         TypesList(
                             name = MainRes.strings.meeting_room,
-                            icon = MainRes.images.icon_meet
+                            icon = MainRes.images.icon_meet,
+                            type = WorkSpaceType.MEETING_ROOM
                         )
                     )
                     val selectedType = remember { mutableStateOf(types[0]) }
@@ -97,6 +101,7 @@ fun OptionMenu(
                                 selected = selected,
                                 onClick = {
                                     selectedType.value = type
+                                    onClickChangeZone(type.type)
                                 }
                             )
                         ) {

@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.booking.store
 
+import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.domain.models.CreatingBookModel
 import band.effective.office.elevator.domain.models.TypeEndPeriodBooking
@@ -9,6 +10,7 @@ import band.effective.office.elevator.ui.booking.models.WorkSpaceZone
 import band.effective.office.elevator.utils.getCurrentDate
 import com.arkivanov.mvikotlin.core.store.Store
 import com.commandiron.wheel_picker_compose.utils.getCurrentTime
+import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
@@ -37,7 +39,10 @@ interface BookingStore: Store<BookingStore.Intent,BookingStore.State, BookingSto
         object CloseConfirmBooking: Intent
         data class ChangeSelectedWorkSpacesZone(val workSpaceZone: List<WorkSpaceZone>) : Intent
         data class ApplyDate(val date: LocalDate?) : Intent
-        data class ShowPlace(val type:String): Intent
+        data class ShowPlace(val type: String): Intent
+
+        data class ChangeWorkSpacesUI(val workSpaces: List<WorkSpaceUI>) : Intent
+        data class ChangeType(val type : WorkSpaceType) : Intent
     }
 
     data class State(
@@ -49,7 +54,7 @@ interface BookingStore: Store<BookingStore.Intent,BookingStore.State, BookingSto
     ){
         companion object {
             val initState = State(
-                workSpaces = listOf(),
+                workSpaces = workSpacesUI,
                 currentDate = getCurrentDate(),
                 creatingBookModel = CreatingBookModel(
                     workSpaceId = "",
@@ -86,6 +91,7 @@ interface BookingStore: Store<BookingStore.Intent,BookingStore.State, BookingSto
 }
 
 //TODO(Artem Gruzdev) replace that
+//TODO(Slava) replace with what?
 val allBookingZone = listOf(
     WorkSpaceZone(name = "Sirius", isSelected = true),
     WorkSpaceZone(name = "Antares", isSelected = true),
@@ -100,4 +106,53 @@ val allMeetingRooms = listOf(
     WorkSpaceZone(name = "Mercury", isSelected = true),
     WorkSpaceZone(name = "Pluto", isSelected = true),
     WorkSpaceZone(name = "Sun", isSelected = true)
+)
+
+val workSpacesUI = listOf(
+    WorkSpaceUI(
+        workSpaceId = "",
+        workSpaceName = "Cassiopeia",
+        workSpaceType = WorkSpaceType.MEETING_ROOM
+    ),
+    WorkSpaceUI(
+        workSpaceId = "",
+        workSpaceName = "Arrakis",
+        workSpaceType = WorkSpaceType.MEETING_ROOM
+    ),
+    WorkSpaceUI(
+        workSpaceId = "",
+        workSpaceName = "Mars",
+        workSpaceType = WorkSpaceType.MEETING_ROOM
+    ),
+    WorkSpaceUI(
+        workSpaceId = "",
+        workSpaceName = "Antares",
+        workSpaceType = WorkSpaceType.MEETING_ROOM
+    ),
+    WorkSpaceUI(
+        workSpaceId = "",
+        workSpaceName = "Sirius",
+        workSpaceType = WorkSpaceType.MEETING_ROOM
+    ),
+
+    WorkSpaceUI(
+        workSpaceId = "",
+        workSpaceName = "Moon",
+        workSpaceType = WorkSpaceType.WORK_PLACE
+    ),
+    WorkSpaceUI(
+        workSpaceId = "",
+        workSpaceName = "Sun",
+        workSpaceType = WorkSpaceType.WORK_PLACE
+    ),
+    WorkSpaceUI(
+        workSpaceId = "",
+        workSpaceName = "Mercury",
+        workSpaceType = WorkSpaceType.WORK_PLACE
+    ),
+    WorkSpaceUI(
+        workSpaceId = "",
+        workSpaceName = "Pluto",
+        workSpaceType = WorkSpaceType.WORK_PLACE
+    )
 )
