@@ -95,7 +95,7 @@ fun Modifier.simpleVerticalScrollbar(
         val scrollbarHeight = state.layoutInfo.visibleItemsInfo.size * elementHeight
         val cornerRadius = CornerRadius(x = 36.dp.toPx(), y = 36.dp.toPx())
 
-        if (scrollbarHeight != size.height) {
+        if (scrollbarHeight < size.height) {
             drawRoundRect(
                 color = ScrollBarColor.background,
                 topLeft = Offset(this.size.width - width.toPx(), 0f),

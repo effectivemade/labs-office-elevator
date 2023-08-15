@@ -34,7 +34,7 @@ fun FreeRoomInfoComponent(
         backgroundColor = LocalCustomColorsPalette.current.freeStatus,
         isError = isError
     ) {
-        if (nextEvent != EventInfo.emptyEvent) {
+        if (nextEvent != EventInfo.emptyEvent && timeToNextEvent > 0) {
             Text(
                 text = MainRes.string.free_room_occupancy.format(
                     time = nextEvent.startTime.time(),
