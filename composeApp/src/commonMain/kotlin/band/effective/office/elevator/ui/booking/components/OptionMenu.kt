@@ -29,15 +29,18 @@ import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.models.TypesList
+import band.effective.office.elevator.utils.NumToMonth
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
+import kotlinx.datetime.LocalDate
 
 @Composable
 fun OptionMenu(
     isExpandedCard: Boolean,
     isExpandedOptions: Boolean,
     onClickOpenBookPeriod: () -> Unit,
-    onClickChangeZone: (WorkSpaceType) -> Unit
+    onClickChangeZone: (WorkSpaceType) -> Unit,
+    date: LocalDate
 ) {
     Column {
         AnimatedVisibility(visible = isExpandedCard) {
@@ -145,7 +148,7 @@ fun OptionMenu(
                         )
                     }
                     Text(
-                        text = "Пт, 30 июня 12:00 — 14:00", //TODO(Olesia Shinkarenko): get from calendar
+                        text = "${date.dayOfMonth} ${NumToMonth(month = date.monthNumber)} ${date.year}",
                         modifier = Modifier.padding(start = 8.dp),
                         style = MaterialTheme.typography.body2
                     )

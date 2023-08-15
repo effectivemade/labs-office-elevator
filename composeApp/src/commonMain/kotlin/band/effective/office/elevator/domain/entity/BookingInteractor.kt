@@ -15,18 +15,19 @@ class BookingInteractor(
     private val changeBookingUseCase: ChangeBookingUseCase,
     private val createBookingUseCase: CreateBookingUseCase
 ) {
-    suspend fun getForUser(coroutineScope: CoroutineScope): StateFlow<List<ReservedSeat>> {
+    suspend fun getForUser(ownerId:String, coroutineScope: CoroutineScope): StateFlow<List<ReservedSeat>> {
         val bookingsForUser: StateFlow<List<ReservedSeat>> =
-            getBookingsUseCase.getBookingsForUser(coroutineScope)
+            getBookingsUseCase.getBookingsForUser(ownerId = ownerId, coroutineScope = coroutineScope)
         return bookingsForUser
     }
 
     suspend fun getByDate(
+        ownerId: String,
         date: LocalDate,
         coroutineScope: CoroutineScope
     ): StateFlow<List<ReservedSeat>> {
         val bookingsByDate: StateFlow<List<ReservedSeat>> =
-            getBookingsUseCase.getBookingsByDate(date = date, coroutineScope = coroutineScope)
+            getBookingsUseCase.getBookingsByDate(ownerId = ownerId, date = date, coroutineScope = coroutineScope)
         return bookingsByDate
     }
 

@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.booking.store
 
+import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import band.effective.office.elevator.ui.booking.models.WorkSpaceZone
@@ -32,9 +33,9 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             ) {}
 
     private sealed interface Msg {
-        data class BeginningBookingTime(val time: LocalTime)
+        data class BeginningBookingTime(val time: LocalTime) : Msg
         data class BeginningBookingDate(val date: LocalDate)
-        data class EndBookingTime(val time: LocalTime)
+        data class EndBookingTime(val time: LocalTime) : Msg
         data class EndBookingDate(val date: LocalDate)
         data class TypeList(val type: String) : Msg
         data class DateBooking(val date: LocalDate) : Msg
@@ -43,6 +44,9 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         data class ChangeSelectedWorkSpacesZone(val workSpacesZone: List<WorkSpaceZone>) : Msg
 
         data class ChangeWorkSpacesUI(val workSpacesUI: List<WorkSpaceUI>) : Msg
+
+        data class WholeDay(val wholeDay: Boolean) : Msg
+        data class IsStartTimePicked(val isStart: Boolean) : Msg
     }
 
     private sealed interface Action {
@@ -145,23 +149,26 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                 is BookingStore.Intent.ApplyTime -> {
                     scope.launch {
-                        publish(BookingStore.Label.CloseTimeModal)
-                        intent.time?.let { newTime ->
-                            dispatch(Msg.TimeBooking(newTime))
+                        if (intent.isStart) {
+                            dispatch(Msg.BeginningBookingTime(intent.time))
+                        } else {
+                            dispatch(Msg.EndBookingTime(intent.time))
                         }
+                        publish(BookingStore.Label.CloseStartTimeModal)
                     }
                 }
 
-                is BookingStore.Intent.CloseTimeModal -> {
+                is BookingStore.Intent.CloseStartTimeModal -> {
                     scope.launch {
-                        publish(BookingStore.Label.CloseTimeModal)
+                        publish(BookingStore.Label.CloseStartTimeModal)
                     }
 
                 }
 
-                is BookingStore.Intent.OpenTimeModal -> {
+                is BookingStore.Intent.OpenStartTimeModal -> {
                     scope.launch {
-                        publish(BookingStore.Label.OpenTimeModal)
+                        dispatch(Msg.IsStartTimePicked(isStart = intent.isStart))
+                        publish(BookingStore.Label.OpenStartTimeModal)
                     }
 
                 }
@@ -205,6 +212,23 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is BookingStore.Intent.ChangeType -> {
 
                 }
+
+                is BookingStore.Intent.ChangeWholeDay -> {
+                    dispatch(Msg.WholeDay(wholeDay = intent.wholeDay))
+                }
+
+                BookingStore.Intent.OpenFinishTimeModal -> {
+                    scope.launch {
+                        publish(BookingStore.Label.OpenFinishTimeModal)
+                    }
+                }
+
+                BookingStore.Intent.CloseFinishTimeModal -> {
+                    scope.launch {
+                        publish(BookingStore.Label.CloseFinishTimeModal)
+                    }
+
+                }
             }
         }
 
@@ -224,10 +248,14 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         override fun BookingStore.State.reduce(msg: Msg): BookingStore.State {
             return when (msg) {
                 is Msg.ChangeSelectedWorkSpacesZone -> copy(workSpacesZone = msg.workSpacesZone)
-                is Msg.DateBooking -> copy(selectedDate = msg.date)
-                is Msg.TimeBooking -> copy(selectedTime = msg.time)
+                is Msg.DateBooking -> copy(selectedStartDate = msg.date)
+                is Msg.TimeBooking -> copy(selectedStartTime = msg.time)
                 is Msg.TypeList -> TODO()
                 is Msg.ChangeWorkSpacesUI -> copy(workSpaces = msg.workSpacesUI)
+                is Msg.WholeDay -> copy(wholeDay = msg.wholeDay)
+                is Msg.BeginningBookingTime -> copy(selectedStartTime = msg.time)
+                is Msg.EndBookingTime -> copy(selectedFinishTime = msg.time)
+                is Msg.IsStartTimePicked -> copy(isStart = msg.isStart)
             }
         }
     }

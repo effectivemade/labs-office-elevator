@@ -31,7 +31,7 @@ class ContentComponent(
     val childStack: Value<ChildStack<*, Child>> = stack
 
     private fun child(config: Config, componentContext: ComponentContext): Child = when (config) {
-        is Config.MainScreen -> Child.Main(MainComponent(componentContext, storeFactory))
+        is Config.MainScreen -> Child.Main(MainComponent(componentContext, storeFactory, ::mainOutput))
         is Config.Profile -> Child.Profile(
             ProfileComponent(
                 componentContext,
@@ -46,6 +46,16 @@ class ContentComponent(
     private fun bookingOutput(output: BookingComponent.Output){
         when(output){
             BookingComponent.Output.OpenMainTab -> navigation.bringToFront(Config.MainScreen)
+        }
+    }
+
+    private fun mainOutput(output: MainComponent.Output) {
+        when(output){
+            MainComponent.Output.DeleteBooking -> TODO()
+            MainComponent.Output.ExtendBooking -> TODO()
+            MainComponent.Output.OpenBookingScreen -> TODO()
+            MainComponent.Output.OpenMap -> TODO()
+            MainComponent.Output.RepeatBooking -> TODO()
         }
     }
 

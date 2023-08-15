@@ -101,6 +101,13 @@ internal class MainStoreFactory(
                         changeBookingsByDate(date = newDate)
                     }
                 }
+
+                MainStore.Intent.CloseFiltersBottomDialog -> TODO()
+                is MainStore.Intent.OnClickDeleteBooking -> TODO()
+                is MainStore.Intent.OnClickExtendBooking -> TODO()
+                is MainStore.Intent.OnClickRepeatBooking -> TODO()
+                MainStore.Intent.OnClickShowMap -> TODO()
+                MainStore.Intent.OpenFiltersBottomDialog -> TODO()
             }
         }
 
@@ -154,7 +161,7 @@ internal class MainStoreFactory(
         fun getBookingsForUserByDate(date: LocalDate) {
             scope.launch(Dispatchers.IO) {
                 bookingInteractor
-                    .getByDate(date = date, coroutineScope = this)
+                    .getByDate(ownerId = "", date = date, coroutineScope = this)
                     .collect { bookings ->
                         withContext(Dispatchers.Main) {
                             dispatch(Msg.UpdateSeatsReservation(reservedSeats = bookings))
@@ -166,7 +173,7 @@ internal class MainStoreFactory(
         fun changeBookingsByDate(date: LocalDate) {
             scope.launch(Dispatchers.IO) {
                 bookingInteractor
-                    .getByDate(date = date, coroutineScope = this)
+                    .getByDate(ownerId = "", date = date, coroutineScope = this)
                     .collect { bookings ->
                         withContext(Dispatchers.Main) {
                             dispatch(

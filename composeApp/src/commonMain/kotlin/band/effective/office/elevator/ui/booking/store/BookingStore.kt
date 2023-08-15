@@ -1,6 +1,5 @@
 package band.effective.office.elevator.ui.booking.store
 
-import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.domain.models.CreatingBookModel
 import band.effective.office.elevator.domain.models.TypeEndPeriodBooking
@@ -10,7 +9,6 @@ import band.effective.office.elevator.ui.booking.models.WorkSpaceZone
 import band.effective.office.elevator.utils.getCurrentDate
 import com.arkivanov.mvikotlin.core.store.Store
 import com.commandiron.wheel_picker_compose.utils.getCurrentTime
-import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
@@ -19,9 +17,11 @@ interface BookingStore: Store<BookingStore.Intent,BookingStore.State, BookingSto
 
     sealed interface Intent {
         object OpenChooseZone: Intent
-        object OpenTimeModal: Intent
-        object CloseTimeModal: Intent
-        data class ApplyTime(val time: LocalTime) : Intent
+        data class OpenStartTimeModal(val isStart: Boolean, val time: LocalTime): Intent
+        object OpenFinishTimeModal: Intent
+        object CloseFinishTimeModal: Intent
+        object CloseStartTimeModal: Intent
+        data class ApplyTime(val isStart: Boolean, val time: LocalTime) : Intent
         object CloseChooseZone: Intent
         object OpenRepeatDialog : Intent
         object CloseBookRepeat : Intent
@@ -43,6 +43,8 @@ interface BookingStore: Store<BookingStore.Intent,BookingStore.State, BookingSto
 
         data class ChangeWorkSpacesUI(val workSpaces: List<WorkSpaceUI>) : Intent
         data class ChangeType(val type : WorkSpaceType) : Intent
+
+        data class ChangeWholeDay(val wholeDay: Boolean) : Intent
     }
 
     data class State(
@@ -51,8 +53,11 @@ interface BookingStore: Store<BookingStore.Intent,BookingStore.State, BookingSto
         val currentDate: LocalDate,
         val workSpacesType: WorkSpaceType,
         val workSpacesZone: List<WorkSpaceZone>,
-        val selectedDate: LocalDate,
-        val selectedTime: LocalTime
+        val selectedStartDate: LocalDate,
+        val selectedStartTime: LocalTime,
+        val selectedFinishTime: LocalTime,
+        val wholeDay: Boolean,
+        val isStart: Boolean
     ){
         companion object {
             val initState = State(
@@ -67,8 +72,11 @@ interface BookingStore: Store<BookingStore.Intent,BookingStore.State, BookingSto
                 ),
                 workSpacesType = WorkSpaceType.WORK_PLACE,
                 workSpacesZone = allBookingZone,
-                selectedDate = getCurrentDate(),
-                selectedTime = getCurrentTime()
+                selectedStartDate = getCurrentDate(),
+                selectedStartTime = getCurrentTime(),
+                selectedFinishTime = getCurrentTime(),
+                wholeDay = false,
+                isStart = true
             )
         }
     }
@@ -87,8 +95,10 @@ interface BookingStore: Store<BookingStore.Intent,BookingStore.State, BookingSto
 
         object OpenCalendar : Label
         object CloseConfirmBooking: Label
-        object OpenTimeModal: Label
-        object CloseTimeModal: Label
+        object OpenStartTimeModal: Label
+        object OpenFinishTimeModal: Label
+        object CloseFinishTimeModal: Label
+        object CloseStartTimeModal: Label
         object CloseBookRepeat : Label
         object OpenBookRepeat : Label
     }

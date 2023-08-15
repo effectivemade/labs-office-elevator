@@ -30,15 +30,16 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import band.effective.office.elevator.ExtendedColors.purple_heart_600
 import band.effective.office.elevator.MainRes
-import band.effective.office.elevator.borderPurple
 import band.effective.office.elevator.components.TitlePage
-import band.effective.office.elevator.textGrayColor
-import band.effective.office.elevator.textInBorderPurple
 import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
+import band.effective.office.elevator.ExtendedColors._66x
+import band.effective.office.elevator.ExtendedColors.purple_heart_500
+import kotlinx.datetime.LocalDate
 
 @Composable
 fun BookingMainContentScreen(
@@ -53,7 +54,8 @@ fun BookingMainContentScreen(
     onClickOpenChoseZone: () -> Unit,
     onClickExpandedMap: () -> Unit,
     onClickExpandedOption: () -> Unit,
-    onClickChangeZone: (WorkSpaceType) -> Unit
+    onClickChangeZone: (WorkSpaceType) -> Unit,
+    date: LocalDate
 ) {
     Scaffold(
         topBar = {
@@ -87,7 +89,8 @@ fun BookingMainContentScreen(
                         isExpandedCard = isExpandedCard,
                         isExpandedOptions = isExpandedOptions,
                         onClickOpenBookPeriod = onClickOpenBookPeriod,
-                        onClickChangeZone = onClickChangeZone
+                        onClickChangeZone = onClickChangeZone,
+                        date = date
                     )
                 }
                 Box(
@@ -101,11 +104,11 @@ fun BookingMainContentScreen(
                         shape = CircleShape,
                         border = BorderStroke(
                             width = 1.dp,
-                            color = textGrayColor
+                            color = _66x
                         ),
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = Color.White,
-                            contentColor = textGrayColor
+                            contentColor = _66x
                         ),
                         modifier = Modifier.size(40.dp)
                     ) {
@@ -143,14 +146,14 @@ fun BookingMainContentScreen(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             painter = painterResource(MainRes.images.icon_location),
-                            tint = textInBorderPurple,
+                            tint = purple_heart_500,
                             contentDescription = null
                         )
                         Text(
                             modifier = Modifier.padding(start = 8.dp),
                             text = stringResource(MainRes.strings.select_zones),
                             style = MaterialTheme.typography.subtitle1.copy(
-                                color = borderPurple,
+                                color = purple_heart_600,
                                 fontWeight = FontWeight(400)
                             )
                         )

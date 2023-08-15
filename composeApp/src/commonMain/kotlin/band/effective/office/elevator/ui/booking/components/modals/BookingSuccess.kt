@@ -23,8 +23,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.ExtendedTheme
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
-import band.effective.office.elevator.components.PrimaryButton
+import band.effective.office.elevator.components.EffectiveButton
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
@@ -69,7 +70,7 @@ fun BookingSuccess(onMain: () -> Unit, close: () -> Unit, modifier: Modifier) {
                     resource = MainRes.strings.good_working_day,
                 ),
                 style = MaterialTheme.typography.body1.copy(
-                    color = ExtendedTheme.colors._66x
+                    color = ExtendedThemeColors.colors._66x
                 ),
                 textAlign = TextAlign.Center
             )
@@ -79,33 +80,13 @@ fun BookingSuccess(onMain: () -> Unit, close: () -> Unit, modifier: Modifier) {
             verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
             horizontalAlignment = Alignment.Start,
         ) {
-            PrimaryButton(
-                text = stringResource(resource = MainRes.strings.move_to_main_from_booking),
-                cornerValue = 40.dp,
-                contentTextSize = 16.sp,
-                paddingValues = PaddingValues(all = 10.dp),
-                elevation = elevation,
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xFFE85B0F), //TODO: Replace with material theme Color(0xFFE85B0F)
-                    contentColor = Color.White
-                ),
-                onButtonClick = onMain
+            EffectiveButton(
+                buttonText = stringResource(resource = MainRes.strings.move_to_main_from_booking),
+                onClick = onMain
             )
-            PrimaryButton(
-                text = stringResource(resource = MainRes.strings.close_booking),
-                cornerValue = 40.dp,
-                contentTextSize = 16.sp,
-                paddingValues = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
-                elevation = elevation,
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = MaterialTheme.colors.background,
-                    contentColor = ExtendedTheme.colors.trinidad_700
-                ),
-                border = BorderStroke(
-                    width = 2.dp,
-                    color = ExtendedTheme.colors.trinidad_700
-                ),
-                onButtonClick = close
+            EffectiveButton(
+                buttonText = stringResource(resource = MainRes.strings.close_booking),
+                onClick = close
             )
         }
     }
