@@ -41,6 +41,7 @@ import band.effective.office.elevator.ui.models.ReservedSeat
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.coroutines.delay
+import kotlinx.datetime.LocalDate
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -88,6 +89,8 @@ fun MainScreen(component: MainComponent) {
         MainScreenContent(
             reservedSeats = state.reservedSeats,
             bottomSheetState = bottomSheetState,
+            currentDate = state.currentDate,
+            dateFiltrationOnReserves = state.dateFiltrationOnReserves,
             onClickBook = { component.onOutput(MainComponent.Output.OpenBookingScreen) },
             onClickShowOptions = { component.onEvent(MainStore.Intent.OnClickShowOption) },
             onClickOptionMenu = { index ->
@@ -151,6 +154,8 @@ fun MainScreenContent(
     modifier: Modifier = Modifier,
     bottomSheetState: ModalBottomSheetState,
     reservedSeats: List<ReservedSeat>,
+    currentDate: LocalDate,
+    dateFiltrationOnReserves: Boolean,
     onClickBook: () -> Unit,
     onClickOptionMenu: (Int) -> Unit,
     onClickShowOptions: () -> Unit,
@@ -193,6 +198,8 @@ fun MainScreenContent(
             ) {
                 BookingInformation(
                     reservedSeats = reservedSeats,
+                    currentDate = currentDate,
+                    dateFiltrationOnReserves = dateFiltrationOnReserves,
                     onClickBook = onClickBook,
                     onClickOptionMenu = onClickOptionMenu,
                     onClickShowOptions = onClickShowOptions,

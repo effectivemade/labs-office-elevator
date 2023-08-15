@@ -41,7 +41,7 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory, private 
                 mokValueUser,
                 reservedSeatsList = listOf(),
                 currentDate = getCurrentDate(),
-                dateFiltrationOnReserves = false,
+                dateFiltrationOnReserves = datedList,
                 filtrationOnReserves = false
             ),
             bootstrapper = coroutineBootstrapper {
@@ -64,6 +64,7 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory, private 
                 )
                 is Msg.UpdateSeatsReservation -> {
                     copy(
+                        currentDate=msg.date,
                         reservedSeatsList = msg.reservedSeatsList,
                         dateFiltrationOnReserves=msg.dateFiltrationOnReserves,
                         filtrationOnReserves = msg.filtrationOnReserves)
@@ -81,6 +82,7 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory, private 
             val reservedSeatsList: List<ReservedSeat>,
             val filtrationOnReserves: Boolean) : Msg
         data class UpdateSeatsReservation(
+            val date: LocalDate,
             val reservedSeatsList: List<ReservedSeat>,
             val dateFiltrationOnReserves: Boolean,
             val filtrationOnReserves: Boolean) : Msg
@@ -162,8 +164,9 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory, private 
                         coroutineScope = this)
                     .collect{newList -> withContext(Dispatchers.Main){
                         dispatch(Msg.UpdateSeatsReservation(
+                            date=recentDate,
                             reservedSeatsList = newList,
-                            dateFiltrationOnReserves = true,
+                            dateFiltrationOnReserves = datedList,
                             filtrationOnReserves = !(filtration.workPlace && filtration.meetRoom)))
                         }
                     }

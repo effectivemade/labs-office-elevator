@@ -44,7 +44,8 @@ internal class MainStoreFactory(
                 initialState = MainStore.State(
                     elevatorState = ElevatorState.Below,
                     reservedSeats = listOf(),
-                    currentDate = getCurrentDate()
+                    currentDate = getCurrentDate(),
+                    dateFiltrationOnReserves = updatedList
                 ),
                 executorFactory = ::ExecutorImpl,
                 reducer = ReducerImpl,
@@ -64,7 +65,8 @@ internal class MainStoreFactory(
 
         data class UpdateSeatReservationByDate(
             val date: LocalDate,
-            val reservedSeats: List<ReservedSeat>
+            val reservedSeats: List<ReservedSeat>,
+            val dateFiltrationOnReserves: Boolean
         ) : Msg
     }
 
@@ -217,8 +219,9 @@ internal class MainStoreFactory(
                         withContext(Dispatchers.Main) {
                             dispatch(
                                 Msg.UpdateSeatReservationByDate(
-                                    date = date,
-                                    reservedSeats = bookings
+                                    date = recentDate,
+                                    reservedSeats = bookings,
+                                    dateFiltrationOnReserves = updatedList
                                 )
                             )
                         }
@@ -235,7 +238,8 @@ internal class MainStoreFactory(
                 is Msg.UpdateSeatsReservation -> copy(reservedSeats = message.reservedSeats)
                 is Msg.UpdateSeatReservationByDate -> copy(
                     currentDate = message.date,
-                    reservedSeats = message.reservedSeats
+                    reservedSeats = message.reservedSeats,
+                    dateFiltrationOnReserves = message.dateFiltrationOnReserves
                 )
             }
     }

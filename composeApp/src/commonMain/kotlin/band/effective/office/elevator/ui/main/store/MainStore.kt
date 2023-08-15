@@ -49,7 +49,8 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, MainStore.Label> 
     data class State(
         val reservedSeats: List<ReservedSeat>,
         val elevatorState: ElevatorState,
-        val currentDate: LocalDate
+        val currentDate: LocalDate,
+        val dateFiltrationOnReserves: Boolean
     )
 
     data class ErrorState(val message: StringResource)

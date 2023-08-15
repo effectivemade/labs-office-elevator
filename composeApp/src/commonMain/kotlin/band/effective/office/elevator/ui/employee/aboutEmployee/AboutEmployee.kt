@@ -56,6 +56,7 @@ import band.effective.office.elevator.ui.main.components.FilterButton
 import band.effective.office.elevator.ui.models.ReservedSeat
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
+import kotlinx.datetime.LocalDate
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -91,6 +92,7 @@ fun AboutEmployee (component: AboutEmployeeComponent){
             reservedSeatsList = state.reservedSeatsList,
             dateFiltrationOnReserves = state.dateFiltrationOnReserves,
             filtrationOnReserves = state.filtrationOnReserves,
+            currentDate = state.currentDate,
             bottomSheetState = bottomSheetState,
             onClickOpenPhone = { component.onEvent(AboutEmployeeStore.Intent.TelephoneClicked) },
             onClickOpenTelegram = { component.onEvent(AboutEmployeeStore.Intent.TelegramClicked) },
@@ -126,6 +128,7 @@ private fun AboutEmployeeContent(
     dateFiltrationOnReserves: Boolean,
     filtrationOnReserves: Boolean,
     bottomSheetState: ModalBottomSheetState,
+    currentDate: LocalDate,
     onClickBack: () -> Unit,
     onClickOpenPhone: () ->Unit,
     onClickOpenTelegram: () ->Unit,
@@ -243,8 +246,15 @@ private fun AboutEmployeeContent(
                     horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.End),
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()){
-                        CalendarTitle(onClickOpenCalendar = onClickOpenCalendar)
-                        FilterButton(onClickOpenBottomSheetDialog = onClickOpenBottomDialog)
+                        CalendarTitle(
+                            onClickOpenCalendar = onClickOpenCalendar,
+                            fromMainScreen = false,
+                            currentDate = currentDate,
+                            dateFiltration = dateFiltrationOnReserves
+                        )
+                        FilterButton(
+                            onClickOpenBottomSheetDialog = onClickOpenBottomDialog
+                        )
                 }
             }
             if(reservedSeatsList.isEmpty()){

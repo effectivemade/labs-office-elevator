@@ -25,6 +25,7 @@
     <string name="employee_hint">telegramnick</string>
 
     <string name="by_date"> By date </string>
+    <string name="on_today">On today</string>
     <string name="show_map">Show on map</string>
     <string name="book_a_seat">Book a seat</string>
     <string name="nearest_bookings">Bookings</string>

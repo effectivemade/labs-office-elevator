@@ -35,6 +35,7 @@
     <string name="elevator_button">Поднять</string>
 
     <string name="by_date">По дате</string>
+    <string name="on_today">На сегодня</string>
     <string name="show_map">Карта</string>
     <string name="book_a_seat">Забронировать место</string>
     <string name="nearest_bookings">Брони</string>
