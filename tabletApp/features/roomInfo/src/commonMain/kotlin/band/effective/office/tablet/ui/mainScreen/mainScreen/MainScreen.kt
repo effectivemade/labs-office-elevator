@@ -46,7 +46,8 @@ fun MainScreen(component: MainComponent) {
                 updatedEvent = state.updatedEvent,
                 showUpdateModal = state.showUpdateModal,
                 updateEventComponent = component.updateEventComponent,
-                closeModal = { component.sendIntent(MainStore.Intent.CloseModal) }
+                closeModal = { component.sendIntent(MainStore.Intent.CloseModal) },
+                onSettings = { component.onSettings() }
             )
         }
 

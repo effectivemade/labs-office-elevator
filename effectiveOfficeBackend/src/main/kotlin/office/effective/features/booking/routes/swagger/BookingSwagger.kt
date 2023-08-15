@@ -3,12 +3,11 @@ package office.effective.features.booking.routes.swagger
 import io.github.smiley4.ktorswaggerui.dsl.OpenApiRoute
 import io.ktor.http.*
 import office.effective.common.swagger.SwaggerDocument
-import office.effective.features.booking.dto.BookingDTO
-import office.effective.features.user.dto.IntegrationDTO
-import office.effective.features.user.dto.UserDTO
-import office.effective.features.workspace.dto.UtilityDTO
-import office.effective.features.workspace.dto.WorkspaceDTO
-import office.effective.features.workspace.routes.swagger.WorkspaceTag
+import office.effective.dto.BookingDTO
+import office.effective.dto.IntegrationDTO
+import office.effective.dto.UserDTO
+import office.effective.dto.UtilityDTO
+import office.effective.dto.WorkspaceDTO
 
 fun SwaggerDocument.returnBookingById(): OpenApiRoute.() -> Unit = {
     description = "Returns booking found by id"
@@ -173,7 +172,7 @@ fun SwaggerDocument.deleteBookingById(): OpenApiRoute.() -> Unit = {
     description = "Deletes a booking with the given id. If the booking is not found in the database it is silently ignored"
     tags = listOf("bookings")
     request {
-        queryParameter<String>("id") {
+        pathParameter<String>("id") {
             description = "Booking id"
             example = "c48c2a3d-bbfd-4801-b121-973ae3cf4cd9"
             required = true

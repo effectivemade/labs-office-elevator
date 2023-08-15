@@ -1,9 +1,9 @@
 package office.effective.features.workspace.converters
 
 import office.effective.common.utils.UuidValidator
-import office.effective.features.workspace.dto.UtilityDTO
-import office.effective.features.workspace.dto.WorkspaceDTO
-import office.effective.features.workspace.dto.WorkspaceZoneDTO
+import office.effective.dto.UtilityDTO
+import office.effective.dto.WorkspaceDTO
+import office.effective.dto.WorkspaceZoneDTO
 import office.effective.model.Utility
 import office.effective.model.Workspace
 import office.effective.model.WorkspaceZone

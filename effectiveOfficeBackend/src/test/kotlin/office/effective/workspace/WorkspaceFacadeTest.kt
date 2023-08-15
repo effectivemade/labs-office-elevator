@@ -2,11 +2,10 @@ package office.effective.workspace
 
 import junit.framework.TestCase.assertEquals
 import office.effective.common.exception.InstanceNotFoundException
-import office.effective.common.exception.ValidationException
 import office.effective.common.utils.DatabaseTransactionManager
 import office.effective.common.utils.UuidValidator
 import office.effective.features.workspace.converters.WorkspaceFacadeConverter
-import office.effective.features.workspace.dto.WorkspaceDTO
+import office.effective.dto.WorkspaceDTO
 import office.effective.features.workspace.facade.WorkspaceFacade
 import office.effective.features.workspace.service.WorkspaceService
 import office.effective.model.Workspace

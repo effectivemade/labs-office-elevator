@@ -1,8 +1,6 @@
 package band.effective.office.network.dto
 
-data class UtilityDTO(
-    val count: Int,
-    val iconUrl: String,
-    val id: String,
-    val name: String
-)
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class UtilityDTO(val id: String, val name: String, val iconUrl: String, val count: Int)

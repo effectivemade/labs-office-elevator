@@ -8,9 +8,17 @@ import band.effective.office.tablet.domain.useCase.UpdateUseCase
 import org.koin.dsl.module
 
 val uiModule = module {
-    single<UpdateUseCase> { UpdateUseCase(get(), get(), get(), get()) }
-    single<CheckBookingUseCase> { CheckBookingUseCase(get(), get()) }
-    single<CancelUseCase> { CancelUseCase(get()) }
+    single<UpdateUseCase> { UpdateUseCase(
+        roomInfoUseCase = get(),
+        organizersInfoUseCase = get(),
+        checkSettingsUseCase = get(),
+        currentEventController = get()
+    ) }
     single<CheckSettingsUseCase> { CheckSettingsUseCase() }
+    single<CheckBookingUseCase> { CheckBookingUseCase(
+        roomInfoUseCase = get(),
+        checkSettingsUseCase = get()
+    ) }
+    single<CancelUseCase> { CancelUseCase(cancelRepository = get()) }
     single<SetRoomUseCase> { SetRoomUseCase() }
 }

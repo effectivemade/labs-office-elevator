@@ -5,11 +5,11 @@ import office.effective.common.exception.InstanceNotFoundException
 import office.effective.common.utils.DatabaseTransactionManager
 import office.effective.common.utils.UuidValidator
 import office.effective.features.booking.converters.BookingFacadeConverter
-import office.effective.features.booking.dto.BookingDTO
+import office.effective.dto.BookingDTO
 import office.effective.features.booking.facade.BookingFacade
 import office.effective.features.booking.service.BookingService
-import office.effective.features.user.dto.UserDTO
-import office.effective.features.workspace.dto.WorkspaceDTO
+import office.effective.dto.UserDTO
+import office.effective.dto.WorkspaceDTO
 import office.effective.model.Booking
 import office.effective.model.UserModel
 import office.effective.model.Workspace

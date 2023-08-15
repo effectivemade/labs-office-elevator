@@ -1,7 +1,7 @@
 package office.effective.features.booking.converters
 
 import office.effective.common.utils.UuidValidator
-import office.effective.features.booking.dto.BookingDTO
+import office.effective.dto.BookingDTO
 import office.effective.features.user.converters.UserDTOModelConverter
 import office.effective.features.workspace.converters.WorkspaceFacadeConverter
 import office.effective.model.Booking
