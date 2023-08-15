@@ -61,8 +61,10 @@ fun BookingCard(
         ) {
             IconButton(
                 onClick = {
+                    /*
                     expand.value = !expand.value
                     onClickShowOptions()
+                     */
                 },
                 modifier = Modifier
                     .clip(RoundedCornerShape(80.dp)),
@@ -74,12 +76,7 @@ fun BookingCard(
                     modifier = Modifier,
                     tint = MaterialTheme.colors.secondaryVariant
                 )
-               /* if (expand.value)
-                    showPopupMenu(expand = expand) { index ->
-                            onClickOptionMenu(index)
-                    }
 
-                */
             }
         }
     }

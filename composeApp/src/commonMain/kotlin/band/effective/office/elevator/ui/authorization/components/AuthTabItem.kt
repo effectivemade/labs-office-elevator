@@ -12,17 +12,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import band.effective.office.elevator.textGrayColor
-import band.effective.office.elevator.theme_light_secondary_icon_color
-import band.effective.office.elevator.theme_light_tertiary_icon_color
+import band.effective.office.elevator.ExtendedThemeColors
 
 @Composable
 fun AuthTabItem(selected: Boolean, index: Int) {
 
-    val selectedColor = remember { mutableStateOf(theme_light_secondary_icon_color) }
-    val unselectedColor = remember { mutableStateOf(Color(0x66000000)) }
+    val selectedColor = remember { mutableStateOf(ExtendedThemeColors.colors.purple_heart_700) }
+    val unselectedColor = remember { mutableStateOf(ExtendedThemeColors.colors._66x) }
 
     Tab(
         selectedContentColor = selectedColor.value,

@@ -43,6 +43,11 @@ kotlin {
     targets.getByName<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>("iosX64").compilations.forEach {
         it.kotlinOptions.freeCompilerArgs += arrayOf("-linker-options", "-lsqlite3")
     }
+    targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
+        binaries.all {
+            freeCompilerArgs += "-Xlazy-ir-for-caches=disable"
+        }
+    }
     sourceSets {
         val commonMain by getting {
             dependencies {

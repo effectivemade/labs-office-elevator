@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.ModalCalendar
 import band.effective.office.elevator.components.TitlePage
@@ -83,7 +84,7 @@ fun MainScreen(component: MainComponent) {
 
     Box(
         modifier = Modifier
-            .background(Color.White)
+            .background(ExtendedThemeColors.colors.whiteColor)
             .fillMaxSize()
     ) {
         MainScreenContent(
@@ -138,7 +139,7 @@ private fun SnackBarErrorMessage(modifier: Modifier, isVisible: Boolean, message
 
 @Composable
 private fun SnackBarSuccessMessage(modifier: Modifier, isVisible: Boolean) {
-    AnimatedVisibility(modifier = modifier, visible = isVisible) {
+    /*AnimatedVisibility(modifier = modifier, visible = isVisible) {
         Snackbar(
             modifier.padding(16.dp),
             backgroundColor = successGreen
@@ -146,6 +147,8 @@ private fun SnackBarSuccessMessage(modifier: Modifier, isVisible: Boolean) {
             Text(text = stringResource(MainRes.strings.elevator_called_successfully))
         }
     }
+
+     */
 }
 
 @OptIn(ExperimentalMaterialApi::class)

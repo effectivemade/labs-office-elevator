@@ -43,7 +43,7 @@ fun BottomDialog(modifier: Modifier, title: String,  onClickCloseBottomDialog:(B
 
     Column(
         modifier = Modifier
-            .background(Color.White)
+            .background(ExtendedThemeColors.colors.whiteColor)
             .padding(vertical = 24.dp, horizontal = 16.dp)
             .fillMaxWidth()
             .then(other = modifier)

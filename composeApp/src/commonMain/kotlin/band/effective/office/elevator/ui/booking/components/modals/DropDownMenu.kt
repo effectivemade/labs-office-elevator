@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.Elevation
 import dev.icerock.moko.resources.compose.stringResource
@@ -40,7 +41,7 @@ fun BoxScope.DropDownMenu(onClick: (Int) -> Unit) {
             .align(alignment = Alignment.BottomEnd)
             .wrapContentSize()
             .clip (shape = RoundedCornerShape(8.dp))
-            .background(color = Color.White)
+            .background(color = ExtendedThemeColors.colors.whiteColor)
     ) {
         LazyColumn{
             items(dropDownList) { item ->
@@ -50,7 +51,7 @@ fun BoxScope.DropDownMenu(onClick: (Int) -> Unit) {
                             onClick(dropDownList.indexOf(item))
                         },
                         colors = ButtonDefaults.buttonColors(
-                            backgroundColor = Color.Transparent
+                            backgroundColor = ExtendedThemeColors.colors.transparentColor
                         ),
                         elevation = Elevation(),
                         modifier = Modifier

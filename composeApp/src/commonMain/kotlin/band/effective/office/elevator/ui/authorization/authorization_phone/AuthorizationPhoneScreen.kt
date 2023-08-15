@@ -37,13 +37,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import band.effective.office.elevator.ExtendedTheme
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.components.OutlinedTextColorsSetup
 import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.textGrayColor
-import band.effective.office.elevator.theme_light_primary_stroke
 import band.effective.office.elevator.ui.authorization.authorization_phone.store.AuthorizationPhoneStore
 import band.effective.office.elevator.ui.authorization.components.AuthSubTitle
 import band.effective.office.elevator.ui.authorization.components.AuthTabRow
@@ -109,7 +108,7 @@ private fun AuthorizationPhoneComponent(
             }) {
             Icon(
                 imageVector = Icons.Rounded.ArrowBack,
-                tint = Color.Black,
+                tint = ExtendedThemeColors.colors.blackColor,
                 contentDescription = "back screen arrow"
             )
         }
@@ -142,7 +141,7 @@ private fun AuthorizationPhoneComponent(
                     if (it.isNotEmpty()) {
                         closeIcon.value = true
                         leadingColor.value = Color.Black
-                        borderColor.value = theme_light_primary_stroke
+                        borderColor.value = ExtendedThemeColors.colors.trinidad_400
                     } else {
                         borderColor.value = textGrayColor
                         closeIcon.value = false
@@ -201,7 +200,7 @@ private fun AuthorizationPhoneComponent(
                                 .height(20.dp)
                                 .width(2.dp)
                                 .clip(RoundedCornerShape(4.dp))
-                                .background(if (state.isErrorPhoneNumber) ExtendedTheme.colors.error else borderColor.value)
+                               .background(if (state.isErrorPhoneNumber) ExtendedThemeColors.colors.error else borderColor.value)
                                 .padding(vertical = 14.dp)
                         )
                     }
@@ -211,7 +210,7 @@ private fun AuthorizationPhoneComponent(
                     .wrapContentHeight()
                     .onFocusChanged {
                         if (it.isFocused) {
-                            borderColor.value = theme_light_primary_stroke
+                            borderColor.value = ExtendedThemeColors.colors.trinidad_400
                         } else {
                             borderColor.value = textGrayColor
                             leadingColor.value = textGrayColor

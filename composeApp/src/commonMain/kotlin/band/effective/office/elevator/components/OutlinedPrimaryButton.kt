@@ -12,7 +12,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import band.effective.office.elevator.ExtendedTheme
+import band.effective.office.elevator.ExtendedThemeColors
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
 
@@ -26,7 +26,7 @@ fun OutlinedPrimaryButton (onClick: ()-> Unit,
     OutlinedButton(
         contentPadding = PaddingValues(padding),
         onClick = onClick,
-        border = BorderStroke(1.dp, ExtendedTheme.colors.trinidad_700),
+        border = BorderStroke(1.dp, ExtendedThemeColors.colors.trinidad_700),
         modifier = modifier,
         shape = RoundedCornerShape(roundedCorner)
     )

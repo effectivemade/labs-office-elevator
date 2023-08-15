@@ -18,7 +18,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import band.effective.office.elevator.ExtendedTheme
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.components.OutlinedPrimaryButton
@@ -58,7 +58,7 @@ fun DeleteBooking(place: String, fullDate: String, onMainCLick: () -> Unit, onDe
                 text = place,
                 style = MaterialTheme.typography.body1.merge(
                     other = TextStyle(
-                        color = ExtendedTheme.colors._66x
+                        color = ExtendedThemeColors.colors._66x
                     )
                 ),
                 textAlign = TextAlign.Center
@@ -68,7 +68,7 @@ fun DeleteBooking(place: String, fullDate: String, onMainCLick: () -> Unit, onDe
                 text = fullDate,
                 style = MaterialTheme.typography.body1.merge(
                     other = TextStyle(
-                        color = ExtendedTheme.colors._66x
+                        color = ExtendedThemeColors.colors._66x
                     )
                 ),
                 textAlign = TextAlign.Center
