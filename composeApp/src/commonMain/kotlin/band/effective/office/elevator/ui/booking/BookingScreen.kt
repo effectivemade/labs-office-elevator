@@ -29,6 +29,7 @@ import band.effective.office.elevator.components.TimePickerModal
 import band.effective.office.elevator.components.bottomSheet.BottomSheetItem
 import band.effective.office.elevator.components.bottomSheet.MultiBottomSheetController
 import band.effective.office.elevator.components.bottomSheet.rememberMultiBottomSheetController
+import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.ui.booking.components.BookingMainContentScreen
 import band.effective.office.elevator.ui.booking.components.modals.BookAccept
 import band.effective.office.elevator.ui.booking.components.modals.BookingPeriod
@@ -39,6 +40,7 @@ import band.effective.office.elevator.ui.booking.components.modals.ChooseZone
 import band.effective.office.elevator.ui.booking.models.BottomSheetNames
 import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
+import band.effective.office.elevator.ui.booking.models.WorkSpaceZone
 import band.effective.office.elevator.ui.booking.store.BookingStore
 import band.effective.office.elevator.utils.Stack
 import band.effective.office.elevator.utils.isScrollingDown
@@ -53,10 +55,74 @@ fun BookingScreen(bookingComponent: BookingComponent) {
 
     val state by bookingComponent.state.collectAsState()
 
-    var showChooseZone = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    var showBookPeriod = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    var showBookAccept = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    var showBookRepeat = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    val showChooseZone = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    val showBookPeriod = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    val showBookAccept = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    val showBookRepeat = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+
+    val workSpacesUI = listOf(
+        WorkSpaceUI(
+            workSpaceId = "",
+            workSpaceName = stringResource(MainRes.strings.cassiopeia_zone),
+            workSpaceType = WorkSpaceType.MEETING_ROOM
+        ),
+        WorkSpaceUI(
+            workSpaceId = "",
+            workSpaceName = stringResource(MainRes.strings.arrakis_zone),
+            workSpaceType = WorkSpaceType.MEETING_ROOM
+        ),
+        WorkSpaceUI(
+            workSpaceId = "",
+            workSpaceName = stringResource(MainRes.strings.mars_zone),
+            workSpaceType = WorkSpaceType.MEETING_ROOM
+        ),
+        WorkSpaceUI(
+            workSpaceId = "",
+            workSpaceName = stringResource(MainRes.strings.antares_zone),
+            workSpaceType = WorkSpaceType.MEETING_ROOM
+        ),
+        WorkSpaceUI(
+            workSpaceId = "",
+            workSpaceName = stringResource(MainRes.strings.sirius_zone),
+            workSpaceType = WorkSpaceType.MEETING_ROOM
+        ),
+
+        WorkSpaceUI(
+            workSpaceId = "",
+            workSpaceName = stringResource(MainRes.strings.moon_room),
+            workSpaceType = WorkSpaceType.WORK_PLACE
+        ),
+        WorkSpaceUI(
+            workSpaceId = "",
+            workSpaceName = stringResource(MainRes.strings.sun_room),
+            workSpaceType = WorkSpaceType.WORK_PLACE
+        ),
+        WorkSpaceUI(
+            workSpaceId = "",
+            workSpaceName = stringResource(MainRes.strings.mercury_room),
+            workSpaceType = WorkSpaceType.WORK_PLACE
+        ),
+        WorkSpaceUI(
+            workSpaceId = "",
+            workSpaceName = stringResource(MainRes.strings.pluto_room),
+            workSpaceType = WorkSpaceType.WORK_PLACE
+        )
+    )
+
+    val allBookingZone = listOf(
+        WorkSpaceZone(name = stringResource(MainRes.strings.sirius_zone), isSelected = true),
+        WorkSpaceZone(name = stringResource(MainRes.strings.antares_zone), isSelected = true),
+        WorkSpaceZone(name = stringResource(MainRes.strings.mars_zone), isSelected = true),
+        WorkSpaceZone(name = stringResource(MainRes.strings.cassiopeia_zone), isSelected = true),
+        WorkSpaceZone(name = stringResource(MainRes.strings.arrakis_zone), isSelected = true),
+    )
+
+    val allMeetingRooms = listOf(
+        WorkSpaceZone(name = stringResource(MainRes.strings.moon_room), isSelected = true),
+        WorkSpaceZone(name = stringResource(MainRes.strings.sun_room), isSelected = true),
+        WorkSpaceZone(name = stringResource(MainRes.strings.mercury_room), isSelected = true),
+        WorkSpaceZone(name = stringResource(MainRes.strings.pluto_room), isSelected = true),
+    )
 
     val stackRemember: Stack<String> by remember { mutableStateOf(stackOf()) }
 
@@ -183,7 +249,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
         onClickCloseCalendar = { bookingComponent.onEvent(BookingStore.Intent.CloseCalendar) },
         onClickOpenChoseZone = { bookingComponent.onEvent(BookingStore.Intent.OpenChooseZone) },
         onClickOpenBookPeriod = { bookingComponent.onEvent(BookingStore.Intent.OpenBookPeriod) },
-        onClickMainScreen = {},
+        onClickMainScreen = { bookingComponent.onOutput(BookingComponent.Output.OpenMainTab) },
         onClickOpenBookAccept = { bookingComponent.onEvent(BookingStore.Intent.OpenBookAccept) },
         onClickApplyDate = { date: LocalDate? ->
             bookingComponent.onEvent(
@@ -191,6 +257,16 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                     date = date
                 )
             )
+        },
+        onClickChangeZone = { type ->
+            with(if (type == WorkSpaceType.MEETING_ROOM) allBookingZone else allMeetingRooms) {
+                bookingComponent.onEvent(
+                    BookingStore.Intent.ChangeSelectedWorkSpacesZone(
+                        workSpaceZone = this@with
+                    )
+                )
+                bookingComponent.onEvent(BookingStore.Intent.ChangeWorkSpacesUI(workSpaces = workSpacesUI.filter { workSpaceUI -> workSpaceUI.workSpaceType == type }))
+            }
         }
     )
 }
@@ -214,6 +290,7 @@ private fun BookingScreenContent(
     onClickCloseTimeModal: () -> Unit,
     onClickSelectTime: (LocalTime) -> Unit,
     onClickOpenBookRepeat: () -> Unit,
+    onClickChangeZone: (WorkSpaceType) -> Unit
 ) {
     val scrollState = rememberLazyListState()
     val scrollIsDown = scrollState.isScrollingDown()
@@ -248,7 +325,8 @@ private fun BookingScreenContent(
                 onClickOpenBookPeriod = onClickOpenBookPeriod,
                 onClickOpenChoseZone = onClickOpenChoseZone,
                 onClickExpandedMap = { isExpandedCard = !isExpandedCard },
-                onClickExpandedOption = { isExpandedOptions = !isExpandedOptions }
+                onClickExpandedOption = { isExpandedOptions = !isExpandedOptions },
+                onClickChangeZone = onClickChangeZone
             )
         }
 

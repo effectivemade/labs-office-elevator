@@ -2,9 +2,9 @@ package band.effective.office.elevator.ui.main.store
 
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.data.ApiResponse
+import band.effective.office.elevator.domain.entity.BookingInteractor
 import band.effective.office.elevator.domain.useCase.ElevatorCallUseCase
 import band.effective.office.elevator.domain.useCase.GetBookingsUseCase
-import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.ui.models.ElevatorState
 import band.effective.office.elevator.ui.models.ReservedSeat
 import band.effective.office.elevator.utils.getCurrentDate
@@ -30,7 +30,8 @@ internal class MainStoreFactory(
 ) : KoinComponent {
 
     private val elevatorUseCase: ElevatorCallUseCase by inject()
-    private val bookingsUseCase: GetBookingsUseCase by inject()
+//    private val bookingsUseCase: GetBookingsUseCase by inject()
+    private val bookingInteractor: BookingInteractor by inject()
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): MainStore =
@@ -100,31 +101,6 @@ internal class MainStoreFactory(
                         changeBookingsByDate(date = newDate)
                     }
                 }
-
-                MainStore.Intent.OnClickShowMap -> {
-                    showToast("map")
-                }
-                is MainStore.Intent.OnClickDeleteBooking -> {
-                    showToast("delete")
-                }
-                is MainStore.Intent.OnClickExtendBooking -> {
-                    showToast("extend")
-                }
-                is MainStore.Intent.OnClickRepeatBooking -> {
-                    showToast("repeat")
-                }
-
-                MainStore.Intent.OpenFiltersBottomDialog -> {
-                    scope.launch {
-                        publish(MainStore.Label.OpenFiltersBottomDialog)
-                    }
-                }
-
-                MainStore.Intent.CloseFiltersBottomDialog -> {
-                    scope.launch {
-                        publish(MainStore.Label.CloseFiltersBottomDialog)
-                    }
-                }
             }
         }
 
@@ -177,8 +153,8 @@ internal class MainStoreFactory(
 
         fun getBookingsForUserByDate(date: LocalDate) {
             scope.launch(Dispatchers.IO) {
-                bookingsUseCase
-                    .getBookingsByDate(date = date, ownerId = "1L", coroutineScope = this)
+                bookingInteractor
+                    .getByDate(date = date, coroutineScope = this)
                     .collect { bookings ->
                         withContext(Dispatchers.Main) {
                             dispatch(Msg.UpdateSeatsReservation(reservedSeats = bookings))
@@ -189,8 +165,8 @@ internal class MainStoreFactory(
 
         fun changeBookingsByDate(date: LocalDate) {
             scope.launch(Dispatchers.IO) {
-                bookingsUseCase
-                    .getBookingsByDate(date = date, ownerId = "1L", coroutineScope = this)
+                bookingInteractor
+                    .getByDate(date = date, coroutineScope = this)
                     .collect { bookings ->
                         withContext(Dispatchers.Main) {
                             dispatch(
