@@ -55,12 +55,11 @@ fun BookingSuccess(onMain: () -> Unit, close: () -> Unit, modifier: Modifier) {
                 text = stringResource(
                     resource = MainRes.strings.place_booked,
                 ),
-                style = MaterialTheme.typography.h6.merge(
-                    other = TextStyle(
-                        fontWeight = FontWeight(
-                            weight = 500
-                        )
-                    )
+                style = MaterialTheme.typography.h6.copy(
+                    fontWeight = FontWeight(
+                        weight = 500
+                    ),
+                    color = Color.Black
                 ),
                 textAlign = TextAlign.Center
             )
@@ -69,10 +68,8 @@ fun BookingSuccess(onMain: () -> Unit, close: () -> Unit, modifier: Modifier) {
                 text = stringResource(
                     resource = MainRes.strings.good_working_day,
                 ),
-                style = MaterialTheme.typography.body1.merge(
-                    other = TextStyle(
-                        color = ExtendedTheme.colors._66x
-                    )
+                style = MaterialTheme.typography.body1.copy(
+                    color = ExtendedTheme.colors._66x
                 ),
                 textAlign = TextAlign.Center
             )

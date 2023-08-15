@@ -249,7 +249,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
         onClickCloseCalendar = { bookingComponent.onEvent(BookingStore.Intent.CloseCalendar) },
         onClickOpenChoseZone = { bookingComponent.onEvent(BookingStore.Intent.OpenChooseZone) },
         onClickOpenBookPeriod = { bookingComponent.onEvent(BookingStore.Intent.OpenBookPeriod) },
-        onClickMainScreen = {},
+        onClickMainScreen = { bookingComponent.onOutput(BookingComponent.Output.OpenMainTab) },
         onClickOpenBookAccept = { bookingComponent.onEvent(BookingStore.Intent.OpenBookAccept) },
         onClickApplyDate = { date: LocalDate? ->
             bookingComponent.onEvent(

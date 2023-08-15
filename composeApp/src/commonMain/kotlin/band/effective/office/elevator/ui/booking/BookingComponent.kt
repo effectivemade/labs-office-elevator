@@ -2,6 +2,7 @@ package band.effective.office.elevator.ui.booking
 
 import band.effective.office.elevator.ui.booking.store.BookingStore
 import band.effective.office.elevator.ui.booking.store.BookingStoreFactory
+import band.effective.office.elevator.ui.main.MainComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 class BookingComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
+    private val output: (BookingComponent.Output) -> Unit
 ) :
     ComponentContext by componentContext {
 
@@ -29,5 +31,13 @@ class BookingComponent(
     val label: Flow<BookingStore.Label> = bookingStore.labels
     fun onEvent(event: BookingStore.Intent) {
         bookingStore.accept(event)
+    }
+
+    fun onOutput(output: BookingComponent.Output) {
+        output(output)
+    }
+
+    sealed class Output {
+        object OpenMainTab : Output()
     }
 }

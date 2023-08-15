@@ -39,8 +39,14 @@ class ContentComponent(
                 openAuthorizationFlow
             )
         )
-        is Config.Booking -> Child.Booking(BookingComponent(componentContext, storeFactory))
+        is Config.Booking -> Child.Booking(BookingComponent(componentContext, storeFactory, ::bookingOutput))
         is Config.Employee -> Child.Employee(FullEmployeeComponent(componentContext, storeFactory))
+    }
+
+    private fun bookingOutput(output: BookingComponent.Output){
+        when(output){
+            BookingComponent.Output.OpenMainTab -> navigation.bringToFront(Config.MainScreen)
+        }
     }
 
     fun onOutput(output: Output) {

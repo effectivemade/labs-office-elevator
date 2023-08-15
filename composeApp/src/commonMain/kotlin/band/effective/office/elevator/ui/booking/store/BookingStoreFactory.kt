@@ -224,8 +224,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         override fun BookingStore.State.reduce(msg: Msg): BookingStore.State {
             return when (msg) {
                 is Msg.ChangeSelectedWorkSpacesZone -> copy(workSpacesZone = msg.workSpacesZone)
-                is Msg.DateBooking -> TODO()
-                is Msg.TimeBooking -> TODO()
+                is Msg.DateBooking -> copy(selectedDate = msg.date)
+                is Msg.TimeBooking -> copy(selectedTime = msg.time)
                 is Msg.TypeList -> TODO()
                 is Msg.ChangeWorkSpacesUI -> copy(workSpaces = msg.workSpacesUI)
             }
