@@ -23,15 +23,15 @@ fun StateRoomView(
             RoomState.FREE -> RoomIsFree()
             RoomState.BUSY -> RoomIsBusy(
                 changeEventTime = roomInfo.changeEventTime,
-                timeFinish = roomInfo.room.currentEvent!!.finishTime,
-                organizer = roomInfo.room.currentEvent!!.organizer.fullName
+                timeFinish = roomInfo.state.event!!.finishTime,
+                organizer = roomInfo.state.event!!.organizer.fullName
             )
 
             else -> {
                 RoomIsSoonBusy(
                     changeEventTime = roomInfo.changeEventTime,
-                    timeStart = roomInfo.room.eventList.first().startTime,
-                    organizer = roomInfo.room.eventList.first().organizer.fullName
+                    timeStart = roomInfo.state.event!!.startTime,
+                    organizer = roomInfo.state.event!!.organizer.fullName
                 )
             }
         }

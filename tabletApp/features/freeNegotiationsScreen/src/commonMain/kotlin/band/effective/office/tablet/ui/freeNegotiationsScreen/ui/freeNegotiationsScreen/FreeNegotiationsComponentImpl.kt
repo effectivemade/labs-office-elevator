@@ -54,9 +54,12 @@ class FreeNegotiationsComponentImpl(
                 Booking(
                     nameRoom = state.value.nameBookingRoom.room.name,
                     eventInfo = EventInfo(
-                        startTime = state.value.currentTime,
-                        finishTime = getFinishTime(state.value.currentTime, state.value.realDurationBooking),
-                        organizer = state.value.organizer,
+                        startTime = state.value.booking.eventInfo.startTime,
+                        finishTime = getFinishTime(
+                            startTime = state.value.booking.eventInfo.startTime,
+                            duration = state.value.realDurationBooking
+                        ),
+                        organizer = state.value.booking.eventInfo.organizer,
                         id = ""
                     ),
                     roomId = state.value.nameBookingRoom.room.id

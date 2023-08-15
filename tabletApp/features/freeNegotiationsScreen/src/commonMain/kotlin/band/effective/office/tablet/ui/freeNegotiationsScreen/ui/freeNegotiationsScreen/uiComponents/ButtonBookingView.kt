@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.features.freeNegotiationsScreen.MainRes
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.roomUiState.RoomInfoUiState
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.roomUiState.RoomState
+import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.uiComponents.roomCard.getDuration
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.h7
 
@@ -36,7 +37,9 @@ fun ButtonBookingView(
         enabled = roomInfo.state == RoomState.FREE
     ) {
         Text(
-            text = MainRes.string.occupy,
+            text = if(roomInfo.state == RoomState.SOON_BUSY) MainRes.string.occupy_on.format(
+                getDuration(roomInfo.changeEventTime)
+            ) else MainRes.string.occupy,
             style = MaterialTheme.typography.h7
         )
     }
