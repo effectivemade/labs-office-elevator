@@ -239,6 +239,7 @@ private fun AboutEmployeeContent(
                     ){
                 Text(
                     text = stringResource(MainRes.strings.upcoming_bookings),
+                    color = ExtendedThemeColors.colors.blackColor,
                     style = MaterialTheme.typography.body1,
                     modifier = Modifier.padding(vertical = 24.dp).padding(end = 16.dp),
                     fontWeight = FontWeight(500)

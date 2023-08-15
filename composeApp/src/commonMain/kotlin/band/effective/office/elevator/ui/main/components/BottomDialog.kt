@@ -27,7 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import band.effective.office.elevator.ExtendedTheme
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.components.OutlinedPrimaryButton
@@ -56,7 +56,7 @@ fun BottomDialog(modifier: Modifier, title: String,  onClickCloseBottomDialog:(B
         ) {
             OutlinedIconButton(
                 onClick = { if(isExpandedScBtn) isExpanded = !isExpanded },
-                border = BorderStroke(1.dp, if(isExpanded) ExtendedTheme.colors.purple_heart_800 else textInBorderGray),
+                border = BorderStroke(1.dp, if(isExpanded) ExtendedThemeColors.colors.purple_heart_800 else textInBorderGray),
                 modifier = Modifier.weight(.1f),
                 shape = RoundedCornerShape(12.dp),
             ) {
@@ -67,13 +67,13 @@ fun BottomDialog(modifier: Modifier, title: String,  onClickCloseBottomDialog:(B
                     Icon(
                         imageVector = Icons.Rounded.Done,
                         contentDescription = "done button",
-                        tint = ExtendedTheme.colors.purple_heart_800,
+                        tint = ExtendedThemeColors.colors.purple_heart_800,
                         modifier = Modifier.size(if(isExpanded) 24.dp else 0.dp),
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = stringResource(MainRes.strings.meeting_room),
-                        color = if(isExpanded) ExtendedTheme.colors.purple_heart_800 else textInBorderGray,
+                        color = if(isExpanded) ExtendedThemeColors.colors.purple_heart_800 else textInBorderGray,
                         style = MaterialTheme.typography.body2,
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -85,7 +85,7 @@ fun BottomDialog(modifier: Modifier, title: String,  onClickCloseBottomDialog:(B
             OutlinedIconButton(
                 onClick = {
                     if(isExpanded) isExpandedScBtn =!isExpandedScBtn},
-                border = BorderStroke(1.dp, if(isExpandedScBtn) ExtendedTheme.colors.purple_heart_800 else textInBorderGray),
+                border = BorderStroke(1.dp, if(isExpandedScBtn) ExtendedThemeColors.colors.purple_heart_800 else textInBorderGray),
                 modifier = Modifier.weight(.1f),
                 shape = RoundedCornerShape(12.dp),
             ) {
@@ -96,13 +96,13 @@ fun BottomDialog(modifier: Modifier, title: String,  onClickCloseBottomDialog:(B
                     Icon(
                         imageVector = Icons.Rounded.Done,
                         contentDescription = "done button",
-                        tint = ExtendedTheme.colors.purple_heart_800,
+                        tint = ExtendedThemeColors.colors.purple_heart_800,
                         modifier = Modifier.size(if (isExpandedScBtn)24.dp else 0.dp),
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = stringResource(MainRes.strings.workplace),
-                        color = if(isExpandedScBtn) ExtendedTheme.colors.purple_heart_800 else textInBorderGray,
+                        color = if(isExpandedScBtn) ExtendedThemeColors.colors.purple_heart_800 else textInBorderGray,
                         style = MaterialTheme.typography.body2,
                         modifier = Modifier.fillMaxWidth()
                     )
