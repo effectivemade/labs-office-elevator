@@ -2,6 +2,7 @@ package band.effective.office.elevator.ui.main.store
 
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.data.ApiResponse
+import band.effective.office.elevator.domain.entity.BookingInteractor
 import band.effective.office.elevator.domain.useCase.ElevatorCallUseCase
 import band.effective.office.elevator.domain.useCase.GetBookingsUseCase
 import band.effective.office.elevator.ui.models.ElevatorState
@@ -29,7 +30,8 @@ internal class MainStoreFactory(
 ) : KoinComponent {
 
     private val elevatorUseCase: ElevatorCallUseCase by inject()
-    private val bookingsUseCase: GetBookingsUseCase by inject()
+//    private val bookingsUseCase: GetBookingsUseCase by inject()
+    private val bookingInteractor: BookingInteractor by inject()
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): MainStore =
@@ -151,8 +153,8 @@ internal class MainStoreFactory(
 
         fun getBookingsForUserByDate(date: LocalDate) {
             scope.launch(Dispatchers.IO) {
-                bookingsUseCase
-                    .getBookingsByDate(date = date, coroutineScope = this)
+                bookingInteractor
+                    .getByDate(date = date, coroutineScope = this)
                     .collect { bookings ->
                         withContext(Dispatchers.Main) {
                             dispatch(Msg.UpdateSeatsReservation(reservedSeats = bookings))
@@ -163,8 +165,8 @@ internal class MainStoreFactory(
 
         fun changeBookingsByDate(date: LocalDate) {
             scope.launch(Dispatchers.IO) {
-                bookingsUseCase
-                    .getBookingsByDate(date = date, coroutineScope = this)
+                bookingInteractor
+                    .getByDate(date = date, coroutineScope = this)
                     .collect { bookings ->
                         withContext(Dispatchers.Main) {
                             dispatch(
