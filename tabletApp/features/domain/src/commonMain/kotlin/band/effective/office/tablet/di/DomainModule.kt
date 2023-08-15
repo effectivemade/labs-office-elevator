@@ -16,13 +16,16 @@ import band.effective.office.tablet.network.repository.impl.RoomRepositoryImpl
 import org.koin.dsl.module
 
 val domainModule = module {
-    single<OrganizerRepository> { OrganizerRepositoryImpl(get()) }
-    single<CancelRepository> { CancelRepositoryImpl(get()) }
-    single<BookingRepository> { BookingRepositoryImpl(get()) }
-    single<RoomRepository> { RoomRepositoryImpl(get(),get()) }
+    single<OrganizerRepository> { OrganizerRepositoryImpl(api = get()) }
+    single<CancelRepository> { CancelRepositoryImpl(api = get()) }
+    single<BookingRepository> { BookingRepositoryImpl(api = get()) }
+    single<RoomRepository> { RoomRepositoryImpl(api = get(), organizerRepository = get()) }
 
-    single<RoomInfoUseCase> { RoomInfoUseCase(get()) }
-    single<OrganizersInfoUseCase> { OrganizersInfoUseCase(get()) }
-    single<BookingUseCase> { BookingUseCase(get()) }
-    single<CurrentEventController> { CurrentEventControllerImpl(get(), get()) }
+    single<RoomInfoUseCase> { RoomInfoUseCase(repository = get()) }
+    single<OrganizersInfoUseCase> { OrganizersInfoUseCase(repository = get()) }
+    single<BookingUseCase> { BookingUseCase(repository = get(), roomRepository = get()) }
+    single<CurrentEventController> { CurrentEventControllerImpl(
+        roomUseCase = get(),
+        cancelRepository = get()
+    ) }
 }
