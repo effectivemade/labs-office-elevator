@@ -30,7 +30,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import band.effective.office.elevator.expects.showPopupMenu
 import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.ui.main.store.MainStore
@@ -75,10 +74,12 @@ fun BookingCard(
                     modifier = Modifier,
                     tint = MaterialTheme.colors.secondaryVariant
                 )
-                if (expand.value)
+               /* if (expand.value)
                     showPopupMenu(expand = expand) { index ->
                             onClickOptionMenu(index)
                     }
+
+                */
             }
         }
     }
