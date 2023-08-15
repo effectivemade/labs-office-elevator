@@ -34,7 +34,7 @@ fun ButtonBookingView(
             disabledContentColor = LocalCustomColorsPalette.current.disabledPrimaryButton
         ),
         shape = RoundedCornerShape(100.dp),
-        enabled = roomInfo.state == RoomState.FREE
+        enabled = roomInfo.state != RoomState.BUSY
     ) {
         Text(
             text = if(roomInfo.state == RoomState.SOON_BUSY) MainRes.string.occupy_on.format(

@@ -5,6 +5,7 @@ import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.store.FreeNegotiationsStore
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.store.FreeNegotiationsStoreFactory
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponentImpl
+import band.effective.office.tablet.utils.time24
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.childContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore

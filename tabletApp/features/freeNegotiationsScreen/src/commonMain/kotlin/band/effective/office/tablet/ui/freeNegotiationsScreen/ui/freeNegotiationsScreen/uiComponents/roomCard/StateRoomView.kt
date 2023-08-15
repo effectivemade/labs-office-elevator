@@ -53,7 +53,10 @@ fun RoomIsFree() {
 @Composable
 fun RoomIsBusy(changeEventTime: Int, timeFinish: Calendar, organizer: String) {
     InfoStateRoom(
-        state = MainRes.string.before_time.format(time = infoEvent(timeFinish)),
+        state = MainRes.string.before_time.format(
+            date = infoEventDate(timeFinish),
+            time = infoEventTime(timeFinish)
+        ),
         color = LocalCustomColorsPalette.current.busyStatus
     )
     Spacer(modifier = Modifier.height(20.dp))
@@ -65,7 +68,10 @@ fun RoomIsBusy(changeEventTime: Int, timeFinish: Calendar, organizer: String) {
 @Composable
 fun RoomIsSoonBusy(changeEventTime: Int, timeStart: Calendar, organizer: String) {
     InfoStateRoom(
-        state = MainRes.string.at_time.format(time = infoEvent(timeStart)),
+        state = MainRes.string.at_time.format(
+            date = infoEventDate(timeStart),
+            time = infoEventTime(timeStart)
+        ),
         color = MaterialTheme.colors.secondary
     )
     Spacer(modifier = Modifier.height(20.dp))
@@ -86,16 +92,18 @@ fun getDuration(changeEventTime: Int): String {
     return "${daysString}${hoursString}${minutesString}"
 }
 
-fun infoEvent(time: Calendar): String {
+fun infoEventDate(time: Calendar): String {
     val timeInstance = Calendar.getInstance()
     val dateInstance =
         "${timeInstance.get(Calendar.DAY_OF_MONTH)}.${getMonth(timeInstance.get(Calendar.MONTH))}"
 
     val eventDate = "${time.get(Calendar.DAY_OF_MONTH)}.${getMonth(time.get(Calendar.MONTH))}"
-    val eventTime = time.time24()
 
-    return if (dateInstance == eventDate) eventTime
-    else {
-        "$eventDate $eventTime"
-    }
+    return if (dateInstance == eventDate) ""
+    else "$eventDate "
+
+}
+
+fun infoEventTime(time: Calendar): String {
+   return time.time24()
 }

@@ -171,7 +171,7 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
         private fun RoomInfo.filter(date: Calendar): RoomInfo =
             copy(eventList = eventList.filter { eventInfo -> eventInfo.startTime.oneDay(date) })
 
-        private fun Calendar.isMore(time: Calendar) = (this.timeInMillis - time.timeInMillis) > 0
+        private fun Calendar.isMore(time: Calendar) = (this.timeInMillis - time.timeInMillis) >= 0
 
 
         fun getStateBusyRoomCurrent(room: RoomInfo, state: FreeNegotiationsStore.State): RoomState {
@@ -297,7 +297,7 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
             when (message) {
                 is Message.BookRoom -> copy(
                     nameBookingRoom = message.nameRoom,
-                    realDurationBooking = if (message.maxDuration != -1) {
+                    realDurationBooking = if (message.maxDuration > 0) {
                         chosenDurationBooking.coerceAtMost(message.maxDuration)
                     } else {
                         this.chosenDurationBooking
