@@ -77,8 +77,6 @@
     <string name="Wednesday">Wed</string>
     <string name="Thursday">Thu</string>
     <string name="Friday">Fri</string>
-    <string name="Saturday">Sat</string>
-    <string name="Sunday">Sun</string>
 
     <string name="take_from">Take from</string>
     <string name="take_before">Take before</string>

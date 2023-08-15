@@ -74,8 +74,6 @@
     <string name="Wednesday">Ср</string>
     <string name="Thursday">Чт</string>
     <string name="Friday">Пт</string>
-    <string name="Saturday">Сб</string>
-    <string name="Sunday">Вс</string>
 
     <string name="take_from">Занять с</string>
     <string name="take_before">Занять до</string>
