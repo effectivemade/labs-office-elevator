@@ -26,13 +26,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.ModalCalendar
 import band.effective.office.elevator.components.TitlePage
-import band.effective.office.elevator.successGreen
 import band.effective.office.elevator.ui.main.components.BookingInformation
 import band.effective.office.elevator.ui.main.components.BottomDialog
 import band.effective.office.elevator.ui.main.components.ElevatorUIComponent
@@ -40,8 +38,8 @@ import band.effective.office.elevator.ui.main.store.MainStore
 import band.effective.office.elevator.ui.models.ReservedSeat
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
+import effective.office.modalcustomdialog.Dialog
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -103,16 +101,21 @@ fun MainScreen(component: MainComponent) {
             onClickOpenBottomDialog = { component.onEvent(MainStore.Intent.OpenFiltersBottomDialog) },
             onClickCloseBottomDialog = { component.onEvent(MainStore.Intent.CloseFiltersBottomDialog)}
         )
-        if (showModalCalendar) {
-            ModalCalendar(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .align(Alignment.Center),
-                onClickCansel = { component.onEvent(MainStore.Intent.OnClickCloseCalendar) },
-                onClickOk = { component.onEvent(MainStore.Intent.OnClickApplyDate(it)) },
-                currentDate = state.currentDate
-            )
-        }
+        Dialog(
+            content = {
+                ModalCalendar(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp),
+                    onClickCansel = { component.onEvent(MainStore.Intent.OnClickCloseCalendar) },
+                    onClickOk = { component.onEvent(MainStore.Intent.OnClickApplyDate(it)) },
+                    currentDate = state.currentDate
+                )
+            },
+            onDismissRequest = { component.onEvent(MainStore.Intent.OnClickCloseCalendar) },
+            showDialog = showModalCalendar,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
+
         SnackBarErrorMessage(
             modifier = Modifier.align(Alignment.BottomCenter),
             isVisible = isErrorMessageVisible,

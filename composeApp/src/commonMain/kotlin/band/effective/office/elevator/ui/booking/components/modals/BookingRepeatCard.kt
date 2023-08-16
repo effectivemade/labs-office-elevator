@@ -12,14 +12,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
-fun BookingRepeatCard(onSelected: () -> Unit, modifier: Modifier) {
+fun BookingRepeatCard(onSelected: () -> Unit, modifier: Modifier = Modifier) {
     val strings = listOf(
         MainRes.strings.do_not_repeat,
         MainRes.strings.every_work_day,

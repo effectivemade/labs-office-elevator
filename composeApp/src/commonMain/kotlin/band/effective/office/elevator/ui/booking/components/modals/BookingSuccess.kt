@@ -13,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -25,7 +24,7 @@ import band.effective.office.elevator.components.OutlinedPrimaryButton
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
-fun BookingSuccess(onMain: () -> Unit, close: () -> Unit, modifier: Modifier) {
+fun BookingSuccess(onMain: () -> Unit, close: () -> Unit, modifier: Modifier = Modifier) {
     Column(
         verticalArrangement = Arrangement.spacedBy(32.dp, Alignment.Top),
         horizontalAlignment = Alignment.CenterHorizontally,

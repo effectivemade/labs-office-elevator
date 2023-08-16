@@ -43,6 +43,7 @@ import band.effective.office.elevator.utils.Stack
 import band.effective.office.elevator.utils.isScrollingDown
 import band.effective.office.elevator.utils.stackOf
 import dev.icerock.moko.resources.compose.stringResource
+import effective.office.modalcustomdialog.Dialog
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 
@@ -243,39 +244,56 @@ private fun BookingScreenContent(
             )
         }
 
-        if (showRepeatDialog) {
-            BookingRepeatCard(
-                onSelected = onClickOpenBookRepeat,
-                modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
-            )
-        }
-        if (showCalendar) {
-            ModalCalendar(
-                currentDate = currentDate,
-                onClickOk = onClickApplyDate,
-                onClickCansel = onClickCloseCalendar,
-                modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
-            )
-        }
+        Dialog(
+            content = {
+                BookingRepeatCard(
+                    onSelected = onClickOpenBookRepeat,
+                )
+            },
+            onDismissRequest = {},
+            showDialog = showRepeatDialog,
+            modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
+        )
 
-        if (showTimePicker) {
-            TimePickerModal(
-                titleText = stringResource(timeTitle),
-                modifier = Modifier.padding(horizontal = 16.dp)
-                    .clip(shape = RoundedCornerShape(16.dp)).background(Color.White)
-                    .align(Alignment.Center),
-                onClickCansel = onClickCloseTimeModal,
-                onClickOk = onClickSelectTime
-            )
-        }
+        Dialog(
+            content = {
+                ModalCalendar(
+                    currentDate = currentDate,
+                    onClickOk = onClickApplyDate,
+                    onClickCansel = onClickCloseCalendar,
+                )
+            },
+            onDismissRequest = onClickCloseCalendar,
+            showDialog = showCalendar,
+            modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
+        )
 
-        if (showConfirm) {
-            BookingSuccess(
-                onMain = onClickMainScreen,
-                close = onClickCloseBookingConfirm,
-                modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
-            )
-        }
+        Dialog(
+            content = {
+                TimePickerModal(
+                    titleText = stringResource(timeTitle),
+                    onClickCansel = onClickCloseTimeModal,
+                    onClickOk = onClickSelectTime
+                )
+            },
+            onDismissRequest = onClickCloseTimeModal,
+            showDialog = showTimePicker,
+            modifier = Modifier.padding(horizontal = 16.dp)
+                .clip(shape = RoundedCornerShape(16.dp)).background(Color.White)
+                .align(Alignment.Center)
+        )
+
+        Dialog(
+            content = {
+                BookingSuccess(
+                    onMain = onClickMainScreen,
+                    close = onClickCloseBookingConfirm,
+                )
+            },
+            onDismissRequest = onClickCloseBookingConfirm,
+            showDialog = showConfirm,
+            modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
+        )
     }
 }
 
