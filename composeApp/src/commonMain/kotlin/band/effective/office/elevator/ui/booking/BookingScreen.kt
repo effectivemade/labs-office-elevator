@@ -29,6 +29,7 @@ import band.effective.office.elevator.components.TimePickerModal
 import band.effective.office.elevator.components.bottomSheet.BottomSheetItem
 import band.effective.office.elevator.components.bottomSheet.MultiBottomSheetController
 import band.effective.office.elevator.components.bottomSheet.rememberMultiBottomSheetController
+import band.effective.office.elevator.domain.models.BookingInfo
 import band.effective.office.elevator.ui.booking.components.BookingMainContentScreen
 import band.effective.office.elevator.ui.booking.components.modals.BookAccept
 import band.effective.office.elevator.ui.booking.components.modals.BookingPeriod
@@ -48,6 +49,7 @@ import band.effective.office.elevator.utils.stackOf
 import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
+import kotlinx.datetime.atTime
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -153,7 +155,15 @@ fun BookingScreen(bookingComponent: BookingComponent) {
             ) {
                 BookAccept(
                     onClickCloseBookAccept = { bookingComponent.onEvent(BookingStore.Intent.CloseBookAccept) },
-                    confirmBooking = { bookingComponent.onEvent(BookingStore.Intent.OpenConfirmBooking) }
+                    confirmBooking = { bookingComponent.onEvent(BookingStore.Intent.OpenConfirmBooking) },
+                    bookingInfo = BookingInfo(
+                        id = "",
+                        ownerId = "",
+                        seatName = "",
+                        dateOfStart = state.selectedStartDate.atTime(state.selectedStartTime),
+                        dateOfEnd = state.selectedStartDate.atTime(state.selectedFinishTime)
+                    ),
+                    frequency = state.frequency
                 )
             },
             BottomSheetNames.BOOK_PERIOD.name to BottomSheetItem(
@@ -163,7 +173,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                     startDate = "${state.selectedStartDate.dayOfMonth} ${NumToMonth(month = state.selectedStartDate.monthNumber)} ${state.selectedStartDate.year}",
                     startTime = "${state.selectedStartTime.hour}:${state.selectedStartTime.minute}",
                     finishTime = "${state.selectedFinishTime.hour}:${state.selectedFinishTime.minute}",
-                    repeatBooking = "Бронирование не повторяется",
+                    repeatBooking = state.repeatBooking,
                     switchChecked = state.wholeDay,
                     closeClick = { bookingComponent.onEvent(BookingStore.Intent.CloseBookPeriod) },
                     onSelectAllDay = {
@@ -190,8 +200,11 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                             )
                         )
                     },
-                    bookingRepeat = { bookingComponent.onEvent(BookingStore.Intent.OpenRepeatDialog) },
-                    onClickSearchSuitableOptions = { bookingComponent.onEvent(BookingStore.Intent.SearchSuitableOptions) }
+                    bookingRepeat = {
+                        bookingComponent.onEvent(BookingStore.Intent.OpenRepeatDialog)
+                    },
+                    onClickSearchSuitableOptions = { bookingComponent.onEvent(BookingStore.Intent.SearchSuitableOptions) },
+                    frequency = state.frequency
                 )
             },
             BottomSheetNames.BOOK_REPEAT.name to BottomSheetItem(
@@ -200,7 +213,9 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                 BookingRepeat(
                     backButtonClicked = { bookingComponent.onEvent(BookingStore.Intent.CloseBookRepeat) },
                     dropDownClick = {},
-                    confirmBooking = {},
+                    confirmBooking = { frequency ->
+                        bookingComponent.onEvent(BookingStore.Intent.ChangeFrequency(frequency = frequency))
+                    },
                     onSelected = {},
                     onDaySelected = {}
                 )
@@ -258,7 +273,9 @@ fun BookingScreen(bookingComponent: BookingComponent) {
         showConfirm = showConfirm,
         showTimePicker = showTimePicker,
         currentDate = state.currentDate,
-        onClickOpenBookRepeat = { bookingComponent.onEvent(BookingStore.Intent.OpenBookRepeat) },
+        onClickOpenBookRepeat = { name ->
+            bookingComponent.onEvent(BookingStore.Intent.OpenBookRepeat(name = name))
+        },
         onClickCloseTimeModal = { bookingComponent.onEvent(BookingStore.Intent.CloseStartTimeModal) },
         onClickSelectTime = { time: LocalTime ->
             bookingComponent.onEvent(
@@ -314,7 +331,7 @@ private fun BookingScreenContent(
     showTimePicker: Boolean,
     onClickCloseTimeModal: () -> Unit,
     onClickSelectTime: (LocalTime) -> Unit,
-    onClickOpenBookRepeat: () -> Unit,
+    onClickOpenBookRepeat: (String) -> Unit,
     onClickChangeZone: (WorkSpaceType) -> Unit,
     isStart: Boolean,
     date: LocalDate

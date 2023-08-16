@@ -35,6 +35,7 @@ import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.components.Elevation
+import band.effective.office.elevator.ui.booking.models.Frequency
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 
@@ -51,7 +52,8 @@ fun BookingPeriod(
     bookStartTime: () -> Unit,
     bookFinishTime: () -> Unit,
     bookingRepeat: () -> Unit,
-    onClickSearchSuitableOptions: () -> Unit
+    onClickSearchSuitableOptions: () -> Unit,
+    frequency: Frequency
 ) {
     Column(
         verticalArrangement = Arrangement.Top,
@@ -100,7 +102,7 @@ fun BookingPeriod(
                 Icon(imageVector = Icons.Default.Close, contentDescription = "close booking")
             }
             Text(
-                text = stringResource(resource = MainRes.strings.booking_period),
+                text = stringResource(MainRes.strings.booking_period),
                 style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight(500))
             )
         }
@@ -195,7 +197,7 @@ fun BookingPeriod(
                             contentDescription = "repeat booking date"
                         )
                         Text(
-                            text = repeatBooking,
+                            text = frequency.toString().ifEmpty { repeatBooking },
                             style = MaterialTheme.typography.button.copy(
                                 fontWeight = FontWeight(weight = 400),
                                 color = Color.Black

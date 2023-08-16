@@ -30,13 +30,6 @@ import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun BookingSuccess(onMain: () -> Unit, close: () -> Unit, modifier: Modifier) {
-    val elevation = ButtonDefaults.elevation(
-        defaultElevation = 0.dp,
-        pressedElevation = 0.dp,
-        disabledElevation = 0.dp,
-        hoveredElevation = 0.dp,
-        focusedElevation = 0.dp
-    )
 
     Column(
         verticalArrangement = Arrangement.spacedBy(32.dp, Alignment.Top),

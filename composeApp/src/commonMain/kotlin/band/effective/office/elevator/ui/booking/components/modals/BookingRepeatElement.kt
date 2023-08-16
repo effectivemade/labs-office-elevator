@@ -27,8 +27,8 @@ import kotlinx.coroutines.launch
 fun BookingRepeatElement(
     selected: Boolean,
     bookingText: String,
-    onSelect: () -> Unit,
-    onSelected: () -> Unit
+    onSelect: (String) -> Unit,
+    onSelected: (String) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -40,9 +40,9 @@ fun BookingRepeatElement(
         modifier = Modifier.fillMaxWidth().wrapContentHeight(),
         onClick = {
             coroutineScope.launch {
-                onSelect()
+                onSelect(bookingText)
                 delay(100)
-                onSelected()
+                onSelected(bookingText)
             }
         }
     ) {

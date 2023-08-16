@@ -3,6 +3,7 @@ package band.effective.office.elevator.ui.booking.store
 import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.domain.models.CreatingBookModel
 import band.effective.office.elevator.domain.models.TypeEndPeriodBooking
+import band.effective.office.elevator.ui.booking.models.Frequency
 import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import band.effective.office.elevator.ui.booking.models.WorkSpaceZone
@@ -13,42 +14,46 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 
-interface BookingStore: Store<BookingStore.Intent,BookingStore.State, BookingStore.Label> {
+interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingStore.Label> {
 
     sealed interface Intent {
-        object OpenChooseZone: Intent
-        data class OpenStartTimeModal(val isStart: Boolean, val time: LocalTime): Intent
-        object OpenFinishTimeModal: Intent
-        object CloseFinishTimeModal: Intent
-        object CloseStartTimeModal: Intent
+        object OpenChooseZone : Intent
+        data class OpenStartTimeModal(val isStart: Boolean, val time: LocalTime) : Intent
+        object OpenFinishTimeModal : Intent
+        object CloseFinishTimeModal : Intent
+        object CloseStartTimeModal : Intent
         data class ApplyTime(val isStart: Boolean, val time: LocalTime) : Intent
-        object CloseChooseZone: Intent
+        object CloseChooseZone : Intent
         object OpenRepeatDialog : Intent
         object CloseBookRepeat : Intent
-        object OpenBookRepeat : Intent
-        object OpenBookAccept: Intent
-        object CloseBookAccept: Intent
-        object OpenBookPeriod: Intent
-        object OpenConfirmBooking: Intent
-        object SearchSuitableOptions: Intent
-        object CloseBookPeriod: Intent
+        data class OpenBookRepeat(val name: String) : Intent
+        object OpenBookAccept : Intent
+        object CloseBookAccept : Intent
+        object OpenBookPeriod : Intent
+        object OpenConfirmBooking : Intent
+        object SearchSuitableOptions : Intent
+        object CloseBookPeriod : Intent
         object OpenCalendar : Intent
 
         object CloseCalendar : Intent
-        object OpenMainScreen: Intent
-        object CloseConfirmBooking: Intent
+        object OpenMainScreen : Intent
+        object CloseConfirmBooking : Intent
         data class ChangeSelectedWorkSpacesZone(val workSpaceZone: List<WorkSpaceZone>) : Intent
         data class ApplyDate(val date: LocalDate?) : Intent
-        data class ShowPlace(val type: String): Intent
+        data class ShowPlace(val type: String) : Intent
 
         data class ChangeWorkSpacesUI(val workSpaces: List<WorkSpaceUI>) : Intent
-        data class ChangeType(val type : WorkSpaceType) : Intent
+        data class ChangeType(val type: WorkSpaceType) : Intent
 
         data class ChangeWholeDay(val wholeDay: Boolean) : Intent
+
+        data class ChangeFrequency(val frequency: Frequency) : Intent
+
+        data class ChangeBookingRepeat(val bookingRepeat: String) : Intent
     }
 
     data class State(
-        val workSpaces : List<WorkSpaceUI>,
+        val workSpaces: List<WorkSpaceUI>,
         val creatingBookModel: CreatingBookModel,
         val currentDate: LocalDate,
         val workSpacesType: WorkSpaceType,
@@ -57,8 +62,10 @@ interface BookingStore: Store<BookingStore.Intent,BookingStore.State, BookingSto
         val selectedStartTime: LocalTime,
         val selectedFinishTime: LocalTime,
         val wholeDay: Boolean,
-        val isStart: Boolean
-    ){
+        val isStart: Boolean,
+        val frequency: Frequency,
+        val repeatBooking: String
+    ) {
         companion object {
             val initState = State(
                 workSpaces = workSpacesUI,
@@ -76,29 +83,31 @@ interface BookingStore: Store<BookingStore.Intent,BookingStore.State, BookingSto
                 selectedStartTime = getCurrentTime(),
                 selectedFinishTime = getCurrentTime(),
                 wholeDay = false,
-                isStart = true
+                isStart = true,
+                frequency = Frequency(days = listOf()),
+                repeatBooking = "Бронирование не повторяется"
             )
         }
     }
 
-    sealed interface Label{
+    sealed interface Label {
         object OpenChooseZone : Label
-        object OpenConfirmBooking: Label
+        object OpenConfirmBooking : Label
         object CloseChooseZone : Label
-        object OpenBookPeriod: Label
-        object CloseBookPeriod: Label
+        object OpenBookPeriod : Label
+        object CloseBookPeriod : Label
         object CloseRepeatDialog : Label
         object OpenRepeatDialog : Label
-        object OpenBookAccept: Label
-        object CloseBookAccept: Label
+        object OpenBookAccept : Label
+        object CloseBookAccept : Label
         object CloseCalendar : Label
 
         object OpenCalendar : Label
-        object CloseConfirmBooking: Label
-        object OpenStartTimeModal: Label
-        object OpenFinishTimeModal: Label
-        object CloseFinishTimeModal: Label
-        object CloseStartTimeModal: Label
+        object CloseConfirmBooking : Label
+        object OpenStartTimeModal : Label
+        object OpenFinishTimeModal : Label
+        object CloseFinishTimeModal : Label
+        object CloseStartTimeModal : Label
         object CloseBookRepeat : Label
         object OpenBookRepeat : Label
     }
