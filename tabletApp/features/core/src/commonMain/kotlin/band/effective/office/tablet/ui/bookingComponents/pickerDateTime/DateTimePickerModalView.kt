@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults.buttonColors
@@ -44,7 +45,7 @@ fun DateTimePickerModalView(dateTimePickerComponent: DateTimePickerComponent, cu
                     dayOfMonthViewHeight = 32.dp
                 )
             ),
-            selectionContainerColor = LocalCustomColorsPalette.current.pressedPrimaryButton,
+            selectionContainerColor = MaterialTheme.colors.secondary,
         ),
         selectedDates =
         listOf(
