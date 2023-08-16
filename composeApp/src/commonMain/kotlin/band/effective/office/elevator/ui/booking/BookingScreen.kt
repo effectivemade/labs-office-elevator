@@ -30,6 +30,7 @@ import band.effective.office.elevator.components.bottomSheet.BottomSheetItem
 import band.effective.office.elevator.components.bottomSheet.MultiBottomSheetController
 import band.effective.office.elevator.components.bottomSheet.rememberMultiBottomSheetController
 import band.effective.office.elevator.domain.models.BookingInfo
+import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.ui.booking.components.BookingMainContentScreen
 import band.effective.office.elevator.ui.booking.components.modals.BookAccept
 import band.effective.office.elevator.ui.booking.components.modals.BookingPeriod
@@ -38,6 +39,7 @@ import band.effective.office.elevator.ui.booking.components.modals.BookingRepeat
 import band.effective.office.elevator.ui.booking.components.modals.BookingSuccess
 import band.effective.office.elevator.ui.booking.components.modals.ChooseZone
 import band.effective.office.elevator.ui.booking.models.BottomSheetNames
+import band.effective.office.elevator.ui.booking.models.Frequency
 import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import band.effective.office.elevator.ui.booking.models.WorkSpaceZone
@@ -273,8 +275,8 @@ fun BookingScreen(bookingComponent: BookingComponent) {
         showConfirm = showConfirm,
         showTimePicker = showTimePicker,
         currentDate = state.currentDate,
-        onClickOpenBookRepeat = { name ->
-            bookingComponent.onEvent(BookingStore.Intent.OpenBookRepeat(name = name))
+        onClickOpenBookRepeat = { pair ->
+            bookingComponent.onEvent(BookingStore.Intent.OpenBookRepeat(pair = pair))
         },
         onClickCloseTimeModal = { bookingComponent.onEvent(BookingStore.Intent.CloseStartTimeModal) },
         onClickSelectTime = { time: LocalTime ->
@@ -309,7 +311,8 @@ fun BookingScreen(bookingComponent: BookingComponent) {
             }
         },
         isStart = state.isStart,
-        date = state.selectedStartDate
+        date = state.selectedStartDate,
+        frequency = state.frequency
     )
 }
 
@@ -331,10 +334,11 @@ private fun BookingScreenContent(
     showTimePicker: Boolean,
     onClickCloseTimeModal: () -> Unit,
     onClickSelectTime: (LocalTime) -> Unit,
-    onClickOpenBookRepeat: (String) -> Unit,
+    onClickOpenBookRepeat: (Pair<String, BookingPeriod>) -> Unit,
     onClickChangeZone: (WorkSpaceType) -> Unit,
     isStart: Boolean,
-    date: LocalDate
+    date: LocalDate,
+    frequency: Frequency
 ) {
     val scrollState = rememberLazyListState()
     val scrollIsDown = scrollState.isScrollingDown()
@@ -378,7 +382,8 @@ private fun BookingScreenContent(
         if (showRepeatDialog) {
             BookingRepeatCard(
                 onSelected = onClickOpenBookRepeat,
-                modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
+                modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center),
+                frequency = frequency
             )
         }
         if (showCalendar) {

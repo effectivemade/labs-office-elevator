@@ -3,6 +3,7 @@ package band.effective.office.elevator.data.repository
 import band.effective.office.elevator.domain.repository.BookingRepository
 import band.effective.office.elevator.domain.models.BookingInfo
 import band.effective.office.elevator.domain.models.CreatingBookModel
+import band.effective.office.elevator.expects.showToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -116,7 +117,7 @@ class MockBookingRepositoryImpl: BookingRepository {
     }
 
     override suspend fun createBook(bookingInfo: CreatingBookModel) {
-        TODO("Not yet implemented")
+        showToast(bookingInfo.toString())
     }
 
     override suspend fun getBookingsForUser(ownerId:String): StateFlow<List<BookingInfo>> {

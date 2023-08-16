@@ -16,6 +16,8 @@ sealed class BookingPeriod(val durationPeriod: Int) {
 
     data class Year(val yearPeriod: Int) : BookingPeriod(yearPeriod)
 
+    data class EveryWorkDay(val workPeriod: Int) : BookingPeriod(workPeriod)
+
     data class Week(val weekPeriod: Int, val selectedDayOfWeek: List<DayOfWeek>) :
         BookingPeriod(weekPeriod)
 

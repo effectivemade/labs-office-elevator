@@ -26,7 +26,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         object CloseChooseZone : Intent
         object OpenRepeatDialog : Intent
         object CloseBookRepeat : Intent
-        data class OpenBookRepeat(val name: String) : Intent
+        data class OpenBookRepeat(val pair: Pair<String, BookingPeriod>) : Intent
         object OpenBookAccept : Intent
         object CloseBookAccept : Intent
         object OpenBookPeriod : Intent
@@ -64,7 +64,8 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         val wholeDay: Boolean,
         val isStart: Boolean,
         val frequency: Frequency,
-        val repeatBooking: String
+        val repeatBooking: String,
+        val bookingPeriod: BookingPeriod
     ) {
         companion object {
             val initState = State(
@@ -85,7 +86,8 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
                 wholeDay = false,
                 isStart = true,
                 frequency = Frequency(days = listOf()),
-                repeatBooking = "Бронирование не повторяется"
+                repeatBooking = "Бронирование не повторяется",
+                bookingPeriod = BookingPeriod.NoPeriod
             )
         }
     }
