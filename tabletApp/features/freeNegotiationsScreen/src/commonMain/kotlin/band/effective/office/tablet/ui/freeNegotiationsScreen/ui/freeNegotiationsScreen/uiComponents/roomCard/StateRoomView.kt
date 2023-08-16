@@ -7,6 +7,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import band.effective.office.tablet.domain.model.Organizer
 import band.effective.office.tablet.features.freeNegotiationsScreen.MainRes
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.roomUiState.RoomInfoUiState
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.roomUiState.RoomState
@@ -23,15 +24,15 @@ fun StateRoomView(
             RoomState.FREE -> RoomIsFree()
             RoomState.BUSY -> RoomIsBusy(
                 changeEventTime = roomInfo.changeEventTime,
-                timeFinish = roomInfo.state.event!!.finishTime,
-                organizer = roomInfo.state.event!!.organizer.fullName
+                timeFinish = roomInfo.state.event?.finishTime ?: Calendar.getInstance(),
+                organizer = roomInfo.state.event?.organizer?.fullName ?: Organizer.default.fullName
             )
 
             else -> {
                 RoomIsSoonBusy(
                     changeEventTime = roomInfo.changeEventTime,
-                    timeStart = roomInfo.state.event!!.startTime,
-                    organizer = roomInfo.state.event!!.organizer.fullName
+                    timeStart = roomInfo.state.event?.startTime ?: Calendar.getInstance(),
+                    organizer = roomInfo.state.event?.organizer?.fullName ?: Organizer.default.fullName
                 )
             }
         }

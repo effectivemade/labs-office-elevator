@@ -148,17 +148,20 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
                 val newRoom = it.copy(room = it.room.filter(booking.eventInfo.startTime))
                 val roomState =
                     if (checkCurrentTime(booking.eventInfo.startTime)) getStateBusyRoomCurrent(
-                        it.room,
-                        getState()
+                        room = it.room,
+                        state = getState()
                     )
-                    else getStateBusyRoom(it.room, booking)
+                    else getStateBusyRoom(
+                        room = it.room,
+                        booking = booking
+                    )
                 updateListRooms.add(
                     newRoom.copy(
                         state = roomState,
                         changeEventTime = getChangeEventTime(
-                            roomState,
-                            booking.eventInfo.startTime,
-                            it.room
+                            roomState = roomState,
+                            startTime = booking.eventInfo.startTime,
+                            room = it.room
                         )
                     )
                 )
@@ -185,8 +188,8 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
 
                 room.eventList.isNotEmpty() && !checkDuration
                     (
-                    room.eventList.first().startTime,
-                    state.chosenDurationBooking
+                    startEvent = room.eventList.first().startTime,
+                    newEventDuration = state.chosenDurationBooking
                 ) -> {
                     stateRoom = RoomState.SOON_BUSY
                     stateRoom.event = room.eventList.first()
@@ -259,8 +262,8 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
         ): RoomInfoUiState {
             if (roomInfo.state == RoomState.FREE && roomInfo.room.eventList.isNotEmpty() && !checkDuration
                     (
-                    roomInfo.room.eventList.first().startTime,
-                    state.chosenDurationBooking
+                    startEvent = roomInfo.room.eventList.first().startTime,
+                    newEventDuration = state.chosenDurationBooking
                 )
             ) {
                 return roomInfo.copy(state = RoomState.SOON_BUSY)
@@ -280,9 +283,9 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
                         room = room,
                         state = roomState,
                         changeEventTime = getChangeEventTime(
-                            roomState,
-                            state.booking.eventInfo.startTime,
-                            room
+                            roomState = roomState,
+                            startTime = state.booking.eventInfo.startTime,
+                            room = room
                         )
                     )
                 }
