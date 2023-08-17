@@ -30,7 +30,7 @@ public class DbNotifier {
 
         try (PGConnection connection = (PGConnection) dataSource.getConnection()) {
             Statement statement = connection.createStatement();
-            statement.execute("LISTEN test");
+            statement.execute("LISTEN change_notification");
             statement.close();
             connection.addNotificationListener(listener);
             // it only works if the connection is open. Therefore, we do an endless loop here.

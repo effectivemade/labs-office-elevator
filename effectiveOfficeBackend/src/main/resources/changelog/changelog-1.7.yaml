@@ -1,0 +1,44 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-change-notifications
+      author: zavyalov-daniil
+      changes:
+        - sql:
+            sql: >
+              CREATE OR REPLACE FUNCTION notify_change_users() RETURNS TRIGGER AS $$
+              BEGIN
+              SELECT pg_notify('change_notification', 'users');
+              RETURN NEW;
+              END;
+              $$ LANGUAGE plpgsql;
+        - sql:
+            sql: >
+              CREATE TRIGGER users_change 
+                  AFTER INSERT OR UPDATE OR DELETE ON users
+                  FOR EACH ROW EXECUTE PROCEDURE notify_change_users();
+        - sql:
+            sql: >
+              CREATE OR REPLACE FUNCTION notify_change_workspaces() RETURNS TRIGGER AS $$
+              BEGIN
+              SELECT pg_notify('change_notification', 'workspaces');
+              RETURN NEW;
+              END;
+              $$ LANGUAGE plpgsql;
+        - sql:
+            sql: >
+              CREATE TRIGGER workspaces_change 
+                  AFTER INSERT OR UPDATE OR DELETE ON workspaces
+                  FOR EACH ROW EXECUTE PROCEDURE notify_change_workspaces();
+        - sql:
+            sql: >
+              CREATE OR REPLACE FUNCTION notify_change_bookings() RETURNS TRIGGER AS $$
+              BEGIN
+              SELECT pg_notify('change_notification', 'bookings');
+              RETURN NEW;
+              END;
+              $$ LANGUAGE plpgsql;
+        - sql:
+            sql: >
+              CREATE TRIGGER bookings_change 
+                  AFTER INSERT OR UPDATE OR DELETE ON bookings
+                  FOR EACH ROW EXECUTE PROCEDURE notify_change_bookings();
