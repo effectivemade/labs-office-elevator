@@ -50,8 +50,10 @@ fun MainScreen(component: MainComponent) {
     var isSuccessMessageVisible by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf(MainRes.strings.something_went_wrong) }
     var showModalCalendar by remember { mutableStateOf(false) }
+    var showOptionsMenu by remember { mutableStateOf(false) }
     var bottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+
 
     LaunchedEffect(component) {
         component.label.collect { label ->
@@ -70,11 +72,13 @@ fun MainScreen(component: MainComponent) {
                     isSuccessMessageVisible = false
                 }
 
-                MainStore.Label.ShowOptions -> {}
+                MainStore.Label.ShowOptions -> showOptionsMenu = true
+                MainStore.Label.HideOptions -> showOptionsMenu = false
                 MainStore.Label.OpenCalendar -> showModalCalendar = true
                 MainStore.Label.CloseCalendar -> showModalCalendar = false
                 MainStore.Label.OpenFiltersBottomDialog -> bottomSheetState.show()
                 MainStore.Label.CloseFiltersBottomDialog -> bottomSheetState.hide()
+
             }
         }
     }
@@ -97,6 +101,8 @@ fun MainScreen(component: MainComponent) {
                     3 -> component.onOutput(MainComponent.Output.DeleteBooking)
                 }
             },
+            onClickCloseOptionMenu = {component.onEvent(MainStore.Intent.OnClickHideOption)},
+            showOptionsMenu = showOptionsMenu,
             onClickOpenCalendar = { component.onEvent(MainStore.Intent.OnClickOpenCalendar) },
             onClickOpenBottomDialog = { component.onEvent(MainStore.Intent.OpenFiltersBottomDialog) },
             onClickCloseBottomDialog = { component.onEvent(MainStore.Intent.CloseFiltersBottomDialog)}
@@ -162,7 +168,9 @@ fun MainScreenContent(
     onClickShowOptions: () -> Unit,
     onClickOpenCalendar: () -> Unit,
     onClickOpenBottomDialog: () -> Unit,
-    onClickCloseBottomDialog: () -> Unit
+    onClickCloseBottomDialog: () -> Unit,
+    showOptionsMenu: Boolean,
+    onClickCloseOptionMenu: () -> Unit,
 ) {
     ModalBottomSheetLayout(
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
@@ -204,7 +212,9 @@ fun MainScreenContent(
                     onClickOptionMenu = onClickOptionMenu,
                     onClickShowOptions = onClickShowOptions,
                     onClickOpenCalendar = onClickOpenCalendar,
-                    onClickOpenBottomDialog = onClickOpenBottomDialog
+                    onClickOpenBottomDialog = onClickOpenBottomDialog,
+                    showOptionsMenu = showOptionsMenu,
+                    onClickCloseOptionMenu = onClickCloseOptionMenu,
                 )
             }
         }

@@ -16,7 +16,9 @@ fun BookingInformation(
     onClickOptionMenu: (Int) -> Unit,
     onClickShowOptions: () -> Unit,
     onClickOpenCalendar: () -> Unit,
-    onClickOpenBottomDialog: () -> Unit
+    onClickOpenBottomDialog: () -> Unit,
+    showOptionsMenu: Boolean,
+    onClickCloseOptionMenu: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -29,7 +31,9 @@ fun BookingInformation(
             reservedSeats = reservedSeats,
             onClickBook = onClickBook,
             onClickOptionMenu = onClickOptionMenu,
-            onClickShowOptions = onClickShowOptions
+            onClickShowOptions = onClickShowOptions,
+            showOptionsMenu = showOptionsMenu,
+            onClickCloseOptionMenu = onClickCloseOptionMenu
         )
     }
 }

@@ -25,14 +25,18 @@ fun SeatsReservation(
     reservedSeats: List<ReservedSeat>,
     onClickBook: () -> Unit,
     onClickOptionMenu: (Int) -> Unit,
-    onClickShowOptions: () -> Unit
+    onClickShowOptions: () -> Unit,
+    showOptionsMenu: Boolean,
+    onClickCloseOptionMenu: () -> Unit
 ) {
     when(reservedSeats.isEmpty()) {
         true -> EmptyReservation(onClickBook)
         false -> NonEmptyReservation(
             reservedSeats = reservedSeats,
             onClickOptionMenu = onClickOptionMenu,
-            onClickShowOptions = onClickShowOptions
+            onClickShowOptions = onClickShowOptions,
+            showOptionsMenu = showOptionsMenu,
+            onClickCloseOptionMenu = onClickCloseOptionMenu
         )
     }
 }
@@ -63,17 +67,22 @@ fun NonEmptyReservation(
     reservedSeats: List<ReservedSeat>,
     onClickOptionMenu: (Int) -> Unit,
     onClickShowOptions: () -> Unit,
+    showOptionsMenu: Boolean,
+    onClickCloseOptionMenu: () -> Unit,
 ) {
-    LazyColumn (
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(18.dp)
-    ) {
-        items(reservedSeats) { seat ->
-            BookingCard(
-                seat = seat,
-                onClickOptionMenu = onClickOptionMenu,
-                onClickShowOptions = onClickShowOptions
-            )
+    LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(18.dp)
+        ) {
+            items(reservedSeats) {
+                BookingCard(
+                    seat = it,
+                    onClickOptionMenu = onClickOptionMenu,
+                    onClickShowOptions = onClickShowOptions,
+                    showOptionsMenu = showOptionsMenu,
+                    onClickCloseOptionMenu = onClickCloseOptionMenu
+                )
+            }
         }
-    }
+
 }

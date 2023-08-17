@@ -12,6 +12,7 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, MainStore.Label> 
         object OnClickCallElevator : Intent
 
         object  OnClickShowOption : Intent
+        object  OnClickHideOption : Intent
 
         object OnClickOpenCalendar : Intent
 
@@ -36,6 +37,7 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, MainStore.Label> 
         object ShowSuccess : Label
 
         object ShowOptions : Label
+        object  HideOptions : Label
 
         object CloseCalendar : Label
 

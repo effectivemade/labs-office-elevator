@@ -100,6 +100,11 @@ internal class MainStoreFactory(
                         changeBookingsByDate(date = newDate)
                     }
                 }
+                is MainStore.Intent.OnClickHideOption-> {
+                    scope.launch {
+                        publish(MainStore.Label.HideOptions)
+                    }
+                }
 
                 MainStore.Intent.OnClickShowMap -> {
                     showToast("map")
