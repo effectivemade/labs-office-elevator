@@ -36,7 +36,7 @@ fun ChooseButtonView(
         Button(
             modifier = Modifier
                 .fillMaxWidth(0.5f)
-                .fillMaxHeight(0.3f),
+                .fillMaxHeight(0.4f),
             elevation = ButtonDefaults.elevation(0.dp),
             colors = ButtonDefaults.buttonColors(colorButton),
             shape = RoundedCornerShape(100),

@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 class ApiMock(private val realApi: Api, mockFactory: MockFactory) : Api {
     var getRealResponse: Boolean = false
@@ -102,14 +103,27 @@ class ApiMock(private val realApi: Api, mockFactory: MockFactory) : Api {
 
     override suspend fun createBooking(bookingInfo: BookingDTO): Either<ErrorResponse, SuccessResponse> =
         response(
-            mock = successResponse.apply { bookings.update { it + bookingInfo } },
+            mock = successResponse.apply {
+                bookings.update {
+                    it + bookingInfo.copy(
+                        id = "${Random.nextInt(1000)}"
+                    )
+                }
+            },
             realResponse = realApi.createBooking(bookingInfo)
         )
 
     override suspend fun updateBooking(
         bookingInfo: BookingDTO
     ): Either<ErrorResponse, SuccessResponse> = response(
-        mock = successResponse.apply { bookings.update { it.map { element -> if (element.id == bookingInfo.id) bookingInfo else element } } },
+        mock = successResponse.apply {
+            bookings.update {
+                val a = it
+                a.map { element ->
+                    if (element.id == bookingInfo.id) bookingInfo else element
+                }
+            }
+        },
         realResponse = realApi.updateBooking(bookingInfo)
     )
 
@@ -147,4 +161,5 @@ class ApiMock(private val realApi: Api, mockFactory: MockFactory) : Api {
             }
             awaitClose()
         }
+
 }
