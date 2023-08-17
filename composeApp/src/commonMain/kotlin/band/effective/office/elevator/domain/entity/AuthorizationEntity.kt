@@ -1,8 +1,8 @@
 package band.effective.office.elevator.domain.entity
 
 import band.effective.office.elevator.domain.models.UserData
-import band.effective.office.elevator.domain.usecase.GetUserUseCase
-import band.effective.office.elevator.domain.usecase.PushUserDataUseCase
+import band.effective.office.elevator.domain.useCase.GetUserUseCase
+import band.effective.office.elevator.domain.useCase.PushUserDataUseCase
 
 class AuthorizationEntity(
     private val getUserUseCase: GetUserUseCase,
