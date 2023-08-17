@@ -64,8 +64,8 @@ fun RoomsView(
                             .fillMaxSize()
                             .border(
                                 2.dp,
-                                if (it.state == RoomState.FREE) {
-                                    MaterialTheme.colors.primary
+                                if (it.state != RoomState.BUSY) {
+                                    LocalCustomColorsPalette.current.primaryTextAndIcon
                                 } else {
                                     LocalCustomColorsPalette.current.disabledPrimaryButton
                                 },

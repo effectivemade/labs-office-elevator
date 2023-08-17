@@ -5,15 +5,13 @@ import band.effective.office.elevator.data.OfficeElevatorRepositoryImpl
 import band.effective.office.elevator.domain.BookingRepository
 import band.effective.office.elevator.data.repository.UserProfileRepositoryImpl
 import band.effective.office.elevator.domain.OfficeElevatorRepository
-import band.effective.office.elevator.data.ProfileRepositoryImpl
-import band.effective.office.elevator.domain.ProfileRepository
-import band.effective.office.elevator.domain.usecase.EmployeeUseCase
+import band.effective.office.elevator.domain.useCase.EmployeeUseCase
 import band.effective.office.elevator.domain.useCase.ElevatorCallUseCase
 import band.effective.office.elevator.domain.useCase.GetBookingsUseCase
 import band.effective.office.elevator.domain.entity.AuthorizationEntity
 import band.effective.office.elevator.domain.repository.UserProfileRepository
-import band.effective.office.elevator.domain.usecase.GetUserUseCase
-import band.effective.office.elevator.domain.usecase.PushUserDataUseCase
+import band.effective.office.elevator.domain.useCase.GetUserUseCase
+import band.effective.office.elevator.domain.useCase.PushUserDataUseCase
 import org.koin.dsl.module
 
 internal val domainModuleDI = module {

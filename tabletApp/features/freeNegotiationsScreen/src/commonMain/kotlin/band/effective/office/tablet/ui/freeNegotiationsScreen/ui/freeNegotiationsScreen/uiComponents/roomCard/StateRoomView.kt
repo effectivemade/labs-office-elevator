@@ -7,6 +7,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import band.effective.office.tablet.domain.model.Organizer
 import band.effective.office.tablet.features.freeNegotiationsScreen.MainRes
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.roomUiState.RoomInfoUiState
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.roomUiState.RoomState
@@ -23,15 +24,15 @@ fun StateRoomView(
             RoomState.FREE -> RoomIsFree()
             RoomState.BUSY -> RoomIsBusy(
                 changeEventTime = roomInfo.changeEventTime,
-                timeFinish = roomInfo.room.currentEvent!!.finishTime,
-                organizer = roomInfo.room.currentEvent!!.organizer.fullName
+                timeFinish = roomInfo.state.event?.finishTime ?: Calendar.getInstance(),
+                organizer = roomInfo.state.event?.organizer?.fullName ?: Organizer.default.fullName
             )
 
             else -> {
                 RoomIsSoonBusy(
                     changeEventTime = roomInfo.changeEventTime,
-                    timeStart = roomInfo.room.eventList.first().startTime,
-                    organizer = roomInfo.room.eventList.first().organizer.fullName
+                    timeStart = roomInfo.state.event?.startTime ?: Calendar.getInstance(),
+                    organizer = roomInfo.state.event?.organizer?.fullName ?: Organizer.default.fullName
                 )
             }
         }
@@ -53,7 +54,10 @@ fun RoomIsFree() {
 @Composable
 fun RoomIsBusy(changeEventTime: Int, timeFinish: Calendar, organizer: String) {
     InfoStateRoom(
-        state = MainRes.string.before_time.format(time = infoEvent(timeFinish)),
+        state = MainRes.string.before_time.format(
+            date = infoEventDate(timeFinish),
+            time = infoEventTime(timeFinish)
+        ),
         color = LocalCustomColorsPalette.current.busyStatus
     )
     Spacer(modifier = Modifier.height(20.dp))
@@ -65,7 +69,10 @@ fun RoomIsBusy(changeEventTime: Int, timeFinish: Calendar, organizer: String) {
 @Composable
 fun RoomIsSoonBusy(changeEventTime: Int, timeStart: Calendar, organizer: String) {
     InfoStateRoom(
-        state = MainRes.string.at_time.format(time = infoEvent(timeStart)),
+        state = MainRes.string.at_time.format(
+            date = infoEventDate(timeStart),
+            time = infoEventTime(timeStart)
+        ),
         color = MaterialTheme.colors.secondary
     )
     Spacer(modifier = Modifier.height(20.dp))
@@ -86,16 +93,18 @@ fun getDuration(changeEventTime: Int): String {
     return "${daysString}${hoursString}${minutesString}"
 }
 
-fun infoEvent(time: Calendar): String {
+fun infoEventDate(time: Calendar): String {
     val timeInstance = Calendar.getInstance()
     val dateInstance =
         "${timeInstance.get(Calendar.DAY_OF_MONTH)}.${getMonth(timeInstance.get(Calendar.MONTH))}"
 
     val eventDate = "${time.get(Calendar.DAY_OF_MONTH)}.${getMonth(time.get(Calendar.MONTH))}"
-    val eventTime = time.time24()
 
-    return if (dateInstance == eventDate) eventTime
-    else {
-        "$eventDate $eventTime"
-    }
+    return if (dateInstance == eventDate) ""
+    else "$eventDate "
+
+}
+
+fun infoEventTime(time: Calendar): String {
+   return time.time24()
 }

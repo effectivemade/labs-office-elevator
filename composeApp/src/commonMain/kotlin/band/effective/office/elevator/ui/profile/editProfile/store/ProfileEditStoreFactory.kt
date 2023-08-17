@@ -1,8 +1,8 @@
 package band.effective.office.elevator.ui.profile.editProfile.store
 
 import band.effective.office.elevator.domain.models.User
-import band.effective.office.elevator.domain.usecase.GetUserByIdUseCase
-import band.effective.office.elevator.domain.usecase.UpdateUserUseCase
+import band.effective.office.elevator.domain.useCase.GetUserByIdUseCase
+import band.effective.office.elevator.domain.useCase.UpdateUserUseCase
 import band.effective.office.elevator.ui.models.validator.Validator
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
@@ -21,8 +21,8 @@ internal class ProfileEditStoreFactory(
     private  val user: String,
 ) : KoinComponent {
 
-    private val getUserByIdUseCase:GetUserByIdUseCase by inject()
-    private val updateUserUseCase:UpdateUserUseCase by inject()
+    private val getUserByIdUseCase: GetUserByIdUseCase by inject()
+    private val updateUserUseCase: UpdateUserUseCase by inject()
     private val validator: Validator = Validator()
 
     @OptIn(ExperimentalMviKotlinApi::class)
