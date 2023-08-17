@@ -168,7 +168,7 @@ fun BookingPeriod(
                 //Start booking date
                 TimeLine(
                     date = startDate,
-                    statTime = startTime,
+                    statTime = startTime.padStart(2, '0'),
                     endTime = finishTime,
                     onPickDate = bookStartDate,
                     onPickStartTime = bookStartTime,
