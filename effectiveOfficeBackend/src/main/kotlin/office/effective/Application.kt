@@ -31,5 +31,6 @@ fun Application.module() {
     configureValidation()
     configureExceptionHandling()
     configureSwagger()
+    configureNotification()
     install(VerificationPlugin)
 }
