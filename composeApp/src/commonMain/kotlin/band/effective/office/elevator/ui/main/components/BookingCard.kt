@@ -5,12 +5,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -26,19 +26,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.components.DropDownMenu
 import band.effective.office.elevator.textGrayColor
@@ -50,84 +45,78 @@ fun BookingCard(
     modifier: Modifier = Modifier,
     onClickOptionMenu: (Int) -> Unit,
     onClickShowOptions: () -> Unit,
-    showOptionsMenu: Boolean,
-    onClickCloseOptionMenu: () -> Unit
+    onClickCloseOptionMenu: () -> Unit,
+    showOptionsMenu:Boolean
 )  {
-    var isContextMenuVisible by rememberSaveable {
-        mutableStateOf(false)
-    }
-    var pressOffset by remember {
-        mutableStateOf(DpOffset.Zero)
-    }
-    var itemHeight by remember {
-        mutableStateOf(0.dp)
-    }
+    var expand = remember { mutableStateOf(false) }
     val interactionSource = remember {
         MutableInteractionSource()
     }
-    val density = LocalDensity.current
+    if(!showOptionsMenu){
+        expand.value = false
+    }
     Box(modifier = Modifier
-        .fillMaxWidth()
+        .fillMaxSize()
         .indication(interactionSource, LocalIndication.current)
         .pointerInput(true) {
-            detectTapGestures(onLongPress = {
-                isContextMenuVisible = true
-                pressOffset = DpOffset(it.x.toDp(), it.y.toDp())
-            }, onPress = {
-                val press = PressInteraction.Press(it)
-                interactionSource.emit(press)
-                tryAwaitRelease()
-                interactionSource.emit(PressInteraction.Release(press))
+            detectTapGestures(onPress = {
+                expand.value = false
+                onClickCloseOptionMenu()
             })
         }
        ){
-        Row(
-            modifier = Modifier
-                .clip(RoundedCornerShape(16.dp))
-                .background(Color.White)
-                .padding(horizontal = 16.dp, vertical = 24.dp)
-        ) {
-            SeatIcon()
-            Spacer(modifier = Modifier.width(12.dp))
-            SeatTitle(seat)
-            Spacer(modifier = Modifier.height(24.dp))
+        Column{
             Row(
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color.White)
+                    .padding(horizontal = 16.dp, vertical = 24.dp)
             ) {
-                IconButton(
-                    onClick = {
-                        onClickShowOptions()
-                    },
+                SeatIcon()
+                Spacer(modifier = Modifier.width(12.dp))
+                SeatTitle(seat)
+                Spacer(modifier = Modifier.height(24.dp))
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .clip(RoundedCornerShape(80.dp)),
-                    colors = IconButtonDefaults.iconButtonColors(),
+                        .fillMaxWidth()
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.MoreVert,
-                        contentDescription = "show option menu",
-                        modifier = Modifier,
-                        tint = MaterialTheme.colors.secondaryVariant
-                    )
+                    IconButton(
+                        onClick = {
+                            onClickCloseOptionMenu()
+                            expand.value = true
+                            onClickShowOptions()
+                        },
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(80.dp)),
+                        colors = IconButtonDefaults.iconButtonColors(),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "show option menu",
+                            modifier = Modifier,
+                            tint = MaterialTheme.colors.secondaryVariant
+                        )
+                    }
                 }
             }
         }
 
+
         DropDownMenu(
-            expanded = showOptionsMenu,
-            onDismissRequest = onClickCloseOptionMenu,
-            offset = pressOffset.copy(
-                y = pressOffset.y - itemHeight
-            ),
+            expanded = expand.value && showOptionsMenu,
+            onDismissRequest = {expand.value = false
+                               onClickCloseOptionMenu()
+                               },
              content = {
-                 Column (modifier = Modifier.background(Color.Black)) {
+                 Column (modifier = Modifier.background(Color.Black)
+                   ) {
                      Text("gfg")
                  }
-             }
+             },
+            modifier = Modifier.align(Alignment.BottomEnd)
         )
-
     }
 }
 

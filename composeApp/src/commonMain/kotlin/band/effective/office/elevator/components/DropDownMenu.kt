@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.DpOffset
 
 @Composable
 fun DropDownMenu(
@@ -19,7 +18,6 @@ fun DropDownMenu(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
-    offset: DpOffset,
 ){
     var  interactionSource = remember { MutableInteractionSource() }
     AnimatedVisibility(
@@ -28,12 +26,12 @@ fun DropDownMenu(
         exit = fadeOut(),
         visible = expanded,
         content ={
-            Box(modifier = modifier.fillMaxSize()
+            Box(modifier = Modifier.fillMaxSize()
                 .clickable(onClick = onDismissRequest,
                     indication = null,
                     interactionSource = interactionSource)
             ) {
-                Column(modifier = Modifier.clickable (onClick = {},
+                Column(modifier = modifier.clickable (onClick = {},
                     indication = null,
                     interactionSource = interactionSource))
                 {
