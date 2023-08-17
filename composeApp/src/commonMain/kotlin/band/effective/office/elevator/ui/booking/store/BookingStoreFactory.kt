@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.booking.store
 
+import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.domain.entity.BookingInteractor
 import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.domain.models.CreatingBookModel
@@ -8,6 +9,7 @@ import band.effective.office.elevator.ui.booking.models.Frequency
 import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import band.effective.office.elevator.ui.booking.models.WorkSpaceZone
+import band.effective.office.elevator.ui.models.TypesList
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -45,7 +47,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         data class BeginningBookingDate(val date: LocalDate) : Msg
         data class EndBookingTime(val time: LocalTime) : Msg
         data class EndBookingDate(val date: LocalDate)
-        data class TypeList(val type: String) : Msg
+        data class SelectedTypeList(val type: TypesList) : Msg
         data class DateBooking(val date: LocalDate) : Msg
         data class TimeBooking(val time: LocalTime) : Msg
 
@@ -72,8 +74,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         ) {
             when (intent) {
                 is BookingStore.Intent.ShowPlace -> dispatch(
-                    Msg.TypeList(
-                        type = intent.type
+                    Msg.SelectedTypeList(
+                        type = TypesList(name = MainRes.strings.app_name, icon = MainRes.images.table_icon, type = WorkSpaceType.WORK_PLACE)
                     )
                 )
 
@@ -295,6 +297,10 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                         dispatch(Msg.ChangeBookingRepeat(bookingRepeat = intent.bookingRepeat))
                     }
                 }
+
+                is BookingStore.Intent.ChangeSelectedType -> {
+                    dispatch(Msg.SelectedTypeList(type = intent.selectedType))
+                }
             }
         }
 
@@ -316,7 +322,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is Msg.ChangeSelectedWorkSpacesZone -> copy(workSpacesZone = msg.workSpacesZone)
                 is Msg.DateBooking -> copy(selectedStartDate = msg.date)
                 is Msg.TimeBooking -> copy(selectedStartTime = msg.time)
-                is Msg.TypeList -> TODO()
+                is Msg.SelectedTypeList -> copy(selectedType = msg.type)
                 is Msg.ChangeWorkSpacesUI -> copy(workSpaces = msg.workSpacesUI)
                 is Msg.WholeDay -> copy(wholeDay = msg.wholeDay)
                 is Msg.BeginningBookingTime -> copy(selectedStartTime = msg.time)

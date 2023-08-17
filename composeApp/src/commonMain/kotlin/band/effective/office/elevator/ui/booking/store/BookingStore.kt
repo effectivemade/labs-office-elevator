@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.booking.store
 
+import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.domain.models.CreatingBookModel
 import band.effective.office.elevator.domain.models.TypeEndPeriodBooking
@@ -7,6 +8,7 @@ import band.effective.office.elevator.ui.booking.models.Frequency
 import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import band.effective.office.elevator.ui.booking.models.WorkSpaceZone
+import band.effective.office.elevator.ui.models.TypesList
 import band.effective.office.elevator.utils.getCurrentDate
 import com.arkivanov.mvikotlin.core.store.Store
 import com.commandiron.wheel_picker_compose.utils.getCurrentTime
@@ -50,6 +52,8 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         data class ChangeFrequency(val frequency: Frequency) : Intent
 
         data class ChangeBookingRepeat(val bookingRepeat: String) : Intent
+
+        data class ChangeSelectedType(val selectedType: TypesList) : Intent
     }
 
     data class State(
@@ -65,7 +69,8 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         val isStart: Boolean,
         val frequency: Frequency,
         val repeatBooking: String,
-        val bookingPeriod: BookingPeriod
+        val bookingPeriod: BookingPeriod,
+        val selectedType: TypesList
     ) {
         companion object {
             val initState = State(
@@ -87,7 +92,12 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
                 isStart = true,
                 frequency = Frequency(days = listOf()),
                 repeatBooking = "Бронирование не повторяется",
-                bookingPeriod = BookingPeriod.NoPeriod
+                bookingPeriod = BookingPeriod.NoPeriod,
+                selectedType = TypesList(
+                    name = MainRes.strings.workplace,
+                    icon = MainRes.images.table_icon,
+                    type = WorkSpaceType.WORK_PLACE
+                )
             )
         }
     }

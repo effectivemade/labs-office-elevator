@@ -113,6 +113,7 @@
     <string name="every_week_repeat">Каждую неделю</string>
     <string name="every_month_repeat">Каждый месяц</string>
     <string name="other_repeat">Другое</string>
+    <string name="hide_map">Скрыть карту</string>
 
 
     <!--Tab titles-->

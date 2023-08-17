@@ -44,6 +44,7 @@ import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import band.effective.office.elevator.ui.booking.models.WorkSpaceZone
 import band.effective.office.elevator.ui.booking.store.BookingStore
+import band.effective.office.elevator.ui.models.TypesList
 import band.effective.office.elevator.utils.NumToMonth
 import band.effective.office.elevator.utils.Stack
 import band.effective.office.elevator.utils.isScrollingDown
@@ -312,7 +313,15 @@ fun BookingScreen(bookingComponent: BookingComponent) {
         },
         isStart = state.isStart,
         date = state.selectedStartDate,
-        frequency = state.frequency
+        frequency = state.frequency,
+        onClickChangeSelectedType = {
+            bookingComponent.onEvent(
+                BookingStore.Intent.ChangeSelectedType(
+                    selectedType = it
+                )
+            )
+        },
+        selectedTypesList = state.selectedType
     )
 }
 
@@ -338,7 +347,9 @@ private fun BookingScreenContent(
     onClickChangeZone: (WorkSpaceType) -> Unit,
     isStart: Boolean,
     date: LocalDate,
-    frequency: Frequency
+    frequency: Frequency,
+    onClickChangeSelectedType: (TypesList) -> Unit,
+    selectedTypesList: TypesList
 ) {
     val scrollState = rememberLazyListState()
     val scrollIsDown = scrollState.isScrollingDown()
@@ -375,7 +386,9 @@ private fun BookingScreenContent(
                 onClickExpandedMap = { isExpandedCard = !isExpandedCard },
                 onClickExpandedOption = { isExpandedOptions = !isExpandedOptions },
                 onClickChangeZone = onClickChangeZone,
-                date = date
+                date = date,
+                onClickChangeSelectedType = onClickChangeSelectedType,
+                selectedTypesList = selectedTypesList
             )
         }
 

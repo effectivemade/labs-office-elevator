@@ -40,13 +40,15 @@ fun OptionMenu(
     isExpandedOptions: Boolean,
     onClickOpenBookPeriod: () -> Unit,
     onClickChangeZone: (WorkSpaceType) -> Unit,
-    date: LocalDate
+    date: LocalDate,
+    onClickChangeSelectedType: (TypesList) -> Unit,
+    selectedTypesList: TypesList
 ) {
     Column {
         AnimatedVisibility(visible = isExpandedCard) {
             Column(
                 modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
-                    .background(MaterialTheme.colors.onBackground)
+                    .background(color = Color.White)
             ) {
                 Row(
                     horizontalArrangement = Arrangement.Center,
@@ -54,13 +56,11 @@ fun OptionMenu(
                 ) {
                     Image(
                         modifier = Modifier.padding(vertical = 20.dp),
-                        painter = painterResource(MainRes.images.icon_map), //TODO(Olesia Shinkarenko): replace map
-                        contentDescription = null
+                        painter = painterResource(MainRes.images.super_map),
+                        contentDescription = "office map"
                     )
                 }
             }
-
-
         }
 
         AnimatedVisibility(visible = isExpandedOptions) {
@@ -86,7 +86,7 @@ fun OptionMenu(
                             type = WorkSpaceType.MEETING_ROOM
                         )
                     )
-                    val selectedType = remember { mutableStateOf(types[0]) }
+                    val selectedType = remember { mutableStateOf(selectedTypesList) }
 
                     types.forEach { type ->
                         val selected = selectedType.value == type
@@ -108,6 +108,7 @@ fun OptionMenu(
                                 onClick = {
                                     selectedType.value = type
                                     onClickChangeZone(type.type)
+                                    onClickChangeSelectedType(selectedType.value)
                                 }
                             )
                         ) {

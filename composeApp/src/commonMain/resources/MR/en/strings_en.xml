@@ -52,7 +52,7 @@
     <string name="every_week_repeat">Every week</string>
     <string name="every_month_repeat">Every month</string>
     <string name="other_repeat">Other</string>
-
+    <string name="hide_map">Hide map</string>
 
     <!--Booking period-->
     <string name="place_booked">Place reserved</string>

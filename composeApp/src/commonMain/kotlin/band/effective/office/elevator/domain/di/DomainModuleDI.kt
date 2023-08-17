@@ -1,5 +1,6 @@
 package band.effective.office.elevator.domain.di
 
+import band.effective.office.elevator.data.repository.EmployeeRepositoryImpl
 import band.effective.office.elevator.data.repository.MockBookingRepositoryImpl
 import band.effective.office.elevator.data.repository.OfficeElevatorRepositoryImpl
 import band.effective.office.elevator.data.repository.UserProfileRepositoryImpl
@@ -7,6 +8,7 @@ import band.effective.office.elevator.domain.repository.BookingRepository
 import band.effective.office.elevator.domain.repository.OfficeElevatorRepository
 import band.effective.office.elevator.domain.entity.AuthorizationEntity
 import band.effective.office.elevator.domain.entity.BookingInteractor
+import band.effective.office.elevator.domain.repository.EmployeeRepository
 import band.effective.office.elevator.domain.repository.UserProfileRepository
 import band.effective.office.elevator.domain.useCase.ChangeBookingUseCase
 import band.effective.office.elevator.domain.useCase.CreateBookingUseCase
@@ -20,7 +22,9 @@ import org.koin.dsl.module
 internal val domainModuleDI = module {
     single<OfficeElevatorRepository> { OfficeElevatorRepositoryImpl(get(), get()) }
 
+    single<EmployeeRepository> { EmployeeRepositoryImpl() }
     factory<EmployeeUseCase> { EmployeeUseCase(repository = get()) }
+
     single { GetBookingsUseCase(get()) }
     single { ElevatorCallUseCase(get()) }
     single<BookingRepository> { MockBookingRepositoryImpl() }

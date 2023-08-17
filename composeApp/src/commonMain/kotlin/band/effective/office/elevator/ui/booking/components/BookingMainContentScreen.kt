@@ -39,6 +39,7 @@ import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 import band.effective.office.elevator.ExtendedColors._66x
 import band.effective.office.elevator.ExtendedColors.purple_heart_500
+import band.effective.office.elevator.ui.models.TypesList
 import kotlinx.datetime.LocalDate
 
 @Composable
@@ -55,7 +56,9 @@ fun BookingMainContentScreen(
     onClickExpandedMap: () -> Unit,
     onClickExpandedOption: () -> Unit,
     onClickChangeZone: (WorkSpaceType) -> Unit,
-    date: LocalDate
+    date: LocalDate,
+    onClickChangeSelectedType: (TypesList) -> Unit,
+    selectedTypesList: TypesList
 ) {
     Scaffold(
         topBar = {
@@ -81,7 +84,7 @@ fun BookingMainContentScreen(
                             onClick = onClickExpandedMap,
                             icon1 = MainRes.images.icon_map,
                             icon2 = MainRes.images.back_button,
-                            title = MainRes.strings.show_map,
+                            title = if (isExpandedCard) MainRes.strings.hide_map else MainRes.strings.show_map,
                             rotate = iconRotationStateCard
                         )
                     }
@@ -90,7 +93,9 @@ fun BookingMainContentScreen(
                         isExpandedOptions = isExpandedOptions,
                         onClickOpenBookPeriod = onClickOpenBookPeriod,
                         onClickChangeZone = onClickChangeZone,
-                        date = date
+                        date = date,
+                        onClickChangeSelectedType = onClickChangeSelectedType,
+                        selectedTypesList = selectedTypesList
                     )
                 }
                 Box(
