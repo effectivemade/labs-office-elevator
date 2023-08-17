@@ -29,6 +29,7 @@ import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.domain.models.BookingInfo
 import band.effective.office.elevator.textInBorderGray
 import band.effective.office.elevator.ui.booking.models.Frequency
+import band.effective.office.elevator.utils.NumToMonth
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
@@ -78,18 +79,17 @@ fun BookAccept(
                     )
                     Text(
                         text = with(bookingInfo) {
-                            "" +
-                                    "${frequency.toString()} ${dateOfStart.time.hour.toString()}:${
-                                        with(
-                                            dateOfStart.time
-                                        ) { if (minute.toString().length < 2) "0$minute" else minute.toString() }
-                                    }-${dateOfEnd.time.hour.toString()}:${
-                                        with(
-                                            dateOfStart.time
-                                        ) {
-                                            if (minute.toString().length < 2) "0$minute" else minute.toString()
-                                        }
-                                    }"
+                                    "${frequency.toString()} ${dateOfStart.date.dayOfMonth} " + NumToMonth(dateOfStart.date.monthNumber)+ " ${dateOfStart.time.hour.toString()}:${
+                                with(
+                                    dateOfStart.time
+                                ) { if (minute.toString().length < 2) "0$minute" else minute.toString() }
+                            } - ${dateOfEnd.time.hour.toString()}:${
+                                with(
+                                    dateOfStart.time
+                                ) {
+                                    if (minute.toString().length < 2) "0$minute" else minute.toString()
+                                }
+                            }"
                         },
                         style = MaterialTheme.typography.subtitle1,
                         fontSize = 16.sp,

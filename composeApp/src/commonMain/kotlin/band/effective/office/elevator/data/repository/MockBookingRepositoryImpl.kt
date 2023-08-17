@@ -117,7 +117,7 @@ class MockBookingRepositoryImpl: BookingRepository {
     }
 
     override suspend fun createBook(bookingInfo: CreatingBookModel) {
-        showToast(bookingInfo.toString())
+//        showToast(bookingInfo.toString())
     }
 
     override suspend fun getBookingsForUser(ownerId:String): StateFlow<List<BookingInfo>> {
