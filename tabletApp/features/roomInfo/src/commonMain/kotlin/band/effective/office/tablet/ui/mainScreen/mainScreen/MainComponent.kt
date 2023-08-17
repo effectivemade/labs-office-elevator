@@ -71,11 +71,11 @@ class MainComponent(
             setNewDate = { day: Int, month: Int, year: Int, hour: Int, minute: Int ->
                 bookingRoomComponent.sendIntent(
                     BookingStore.Intent.OnSetDate(
-                        day,
-                        month,
-                        year,
-                        hour,
-                        minute
+                        changedDay = day,
+                        changedMonth = month,
+                        changedYear = year,
+                        changedHour = hour,
+                        changedMinute = minute
                     )
                 )
             },

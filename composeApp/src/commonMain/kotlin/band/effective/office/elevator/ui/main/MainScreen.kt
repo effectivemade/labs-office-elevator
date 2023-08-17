@@ -31,6 +31,8 @@ import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.ModalCalendar
 import band.effective.office.elevator.components.TitlePage
+import band.effective.office.elevator.successGreen
+import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsFilter
 import band.effective.office.elevator.ui.main.components.BookingInformation
 import band.effective.office.elevator.ui.main.components.BottomDialog
 import band.effective.office.elevator.ui.main.components.ElevatorUIComponent
@@ -40,6 +42,8 @@ import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
 import effective.office.modalcustomdialog.Dialog
 import kotlinx.coroutines.delay
+import kotlinx.datetime.LocalDate
+
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -91,6 +95,8 @@ fun MainScreen(component: MainComponent) {
         MainScreenContent(
             reservedSeats = state.reservedSeats,
             bottomSheetState = bottomSheetState,
+            currentDate = state.currentDate,
+            dateFiltrationOnReserves = state.dateFiltrationOnReserves,
             onClickBook = { component.onOutput(MainComponent.Output.OpenBookingScreen) },
             onClickShowOptions = { component.onEvent(MainStore.Intent.OnClickShowOption) },
             onClickOptionMenu = { index ->
@@ -105,7 +111,7 @@ fun MainScreen(component: MainComponent) {
             showOptionsMenu = showOptionsMenu,
             onClickOpenCalendar = { component.onEvent(MainStore.Intent.OnClickOpenCalendar) },
             onClickOpenBottomDialog = { component.onEvent(MainStore.Intent.OpenFiltersBottomDialog) },
-            onClickCloseBottomDialog = { component.onEvent(MainStore.Intent.CloseFiltersBottomDialog)}
+            onClickCloseBottomDialog = { component.onEvent(MainStore.Intent.CloseFiltersBottomDialog(it))}
         )
         Dialog(
             content = {
@@ -163,14 +169,16 @@ fun MainScreenContent(
     modifier: Modifier = Modifier,
     bottomSheetState: ModalBottomSheetState,
     reservedSeats: List<ReservedSeat>,
+    currentDate: LocalDate,
+    dateFiltrationOnReserves: Boolean,
     onClickBook: () -> Unit,
     onClickOptionMenu: (Int) -> Unit,
     onClickShowOptions: () -> Unit,
     onClickOpenCalendar: () -> Unit,
     onClickOpenBottomDialog: () -> Unit,
-    onClickCloseBottomDialog: () -> Unit,
     showOptionsMenu: Boolean,
     onClickCloseOptionMenu: () -> Unit,
+    onClickCloseBottomDialog: (BookingsFilter) -> Unit
 ) {
     ModalBottomSheetLayout(
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
@@ -208,6 +216,8 @@ fun MainScreenContent(
             ) {
                 BookingInformation(
                     reservedSeats = reservedSeats,
+                    currentDate = currentDate,
+                    dateFiltrationOnReserves = dateFiltrationOnReserves,
                     onClickBook = onClickBook,
                     onClickOptionMenu = onClickOptionMenu,
                     onClickShowOptions = onClickShowOptions,

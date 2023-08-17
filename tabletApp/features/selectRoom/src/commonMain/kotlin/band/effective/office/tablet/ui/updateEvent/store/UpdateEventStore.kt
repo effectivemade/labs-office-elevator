@@ -11,6 +11,14 @@ interface UpdateEventStore :
     sealed interface Intent {
         data class OnUpdateLength(val update: Int) : Intent
         data class OnUpdateDate(val updateInDays: Int) : Intent
+        data class OnSetDate(
+            val year: Int,
+            val month: Int,
+            val day: Int,
+            val hour: Int,
+            val minute: Int
+        ): Intent
+
         object OnExpandedChange : Intent
         data class OnSelectOrganizer(val newOrganizer: Organizer) : Intent
         object OnUpdateEvent : Intent
@@ -18,6 +26,8 @@ interface UpdateEventStore :
         data class OnInit(val event: EventInfo) : Intent
         data class OnInput(val input: String) : Intent
         object OnDoneInput : Intent
+        object OnOpenSelectDateDialog : Intent
+        object OnCloseSelectDateDialog : Intent
     }
 
     data class State(
@@ -32,7 +42,8 @@ interface UpdateEventStore :
         val isErrorUpdate: Boolean,
         val inputText: String,
         val isLoadDelete: Boolean,
-        val isErrorDelete: Boolean
+        val isErrorDelete: Boolean,
+        val showSelectDate:Boolean
     ) {
         companion object {
             val defaultValue = State(
@@ -47,7 +58,8 @@ interface UpdateEventStore :
                 isErrorUpdate = false,
                 inputText = "",
                 isLoadDelete = false,
-                isErrorDelete = false
+                isErrorDelete = false,
+                showSelectDate = false
             )
         }
     }

@@ -11,8 +11,8 @@ import org.koin.dsl.module
 
 internal val profileDomainModuleDI = module{
     single<ProfileRepository> { ProfileRepositoryImpl() }
-    single<GetUserByIdUseCase> {GetUserByIdUseCase(get())}
-    single<UpdateUserUseCase> {UpdateUserUseCase(get())}
+    single<GetUserByIdUseCase> { GetUserByIdUseCase(get()) }
+    single<UpdateUserUseCase> { UpdateUserUseCase(get()) }
     single<UserRepository> { UserRepositoryImpl() }
     single { GetLastUserIdUseCase(get()) }
 }

@@ -1,5 +1,6 @@
 package band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.roomUiState
 
+import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
 
 data class RoomInfoUiState(
@@ -17,7 +18,7 @@ data class RoomInfoUiState(
     }
 }
 
-enum class RoomState(val codeState: Int) {
+enum class RoomState(val codeState: Int, var event: EventInfo? = null) {
     FREE(0),
     SOON_BUSY(1),
     BUSY(2);

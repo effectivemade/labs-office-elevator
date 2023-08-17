@@ -11,7 +11,7 @@ import io.ktor.server.routing.*
 import office.effective.common.swagger.SwaggerDocument
 import office.effective.features.user.ITokenVerifier
 import office.effective.features.user.converters.UserDTOModelConverter
-import office.effective.features.user.dto.UserDTO
+import office.effective.dto.UserDTO
 import office.effective.features.user.facade.UserFacade
 import office.effective.features.user.repository.UserRepository
 import office.effective.features.user.routes.swagger.updateUser

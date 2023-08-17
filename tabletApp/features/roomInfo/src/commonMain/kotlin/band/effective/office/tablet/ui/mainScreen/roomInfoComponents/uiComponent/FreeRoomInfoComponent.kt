@@ -34,21 +34,23 @@ fun FreeRoomInfoComponent(
         backgroundColor = LocalCustomColorsPalette.current.freeStatus,
         isError = isError
     ) {
-        if (nextEvent != EventInfo.emptyEvent){
+        if (nextEvent != EventInfo.emptyEvent && timeToNextEvent > 0) {
             Text(
                 text = MainRes.string.free_room_occupancy.format(
-                    time = nextEvent.startTime.time()
+                    time = nextEvent.startTime.time(),
+                    duration = timeToNextEvent.getDuration()
                 ),
                 style = MaterialTheme.typography.h5,
                 color = roomInfoColor
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
-                text = "${MainRes.string.free_duration_string} ${timeToNextEvent.getDuration()}",
+                text = nextEvent.organizer.fullName,
                 style = MaterialTheme.typography.h5,
                 color = roomInfoColor
             )
         }
     }
 }
+
 private fun Calendar.time() = CalendarStringConverter.calendarToString(this, "HH:mm")
