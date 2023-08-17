@@ -3,7 +3,6 @@ package band.effective.office.elevator.ui.main.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -77,16 +76,16 @@ fun NonEmptyReservation(
     val interactionSource = remember {
         MutableInteractionSource()
     }
-    Box(modifier = Modifier.clickable(onClick = onClickCloseOptionMenu,
-        interactionSource = interactionSource,
-        indication = null)){
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().clickable(onClick = onClickCloseOptionMenu,
+                interactionSource = interactionSource,
+                indication = null),
             verticalArrangement = Arrangement.spacedBy(18.dp)
+
         ) {
-            items(reservedSeats) {
+            items(reservedSeats) { seat ->
                 BookingCard(
-                    seat = it,
+                    seat = seat,
                     onClickOptionMenu = onClickOptionMenu,
                     onClickShowOptions = onClickShowOptions,
                     onClickCloseOptionMenu = onClickCloseOptionMenu,
@@ -94,7 +93,4 @@ fun NonEmptyReservation(
                 )
             }
         }
-    }
-
-
 }

@@ -37,36 +37,34 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.components.DropDownMenu
 import band.effective.office.elevator.textGrayColor
+import band.effective.office.elevator.ui.booking.components.modals.BookingContextMenu
 import band.effective.office.elevator.ui.models.ReservedSeat
 
 @Composable
 fun BookingCard(
     seat: ReservedSeat,
-    modifier: Modifier = Modifier,
     onClickOptionMenu: (Int) -> Unit,
     onClickShowOptions: () -> Unit,
     onClickCloseOptionMenu: () -> Unit,
     showOptionsMenu:Boolean
 )  {
-    var expand = remember { mutableStateOf(showOptionsMenu) }
+    var expand = remember { mutableStateOf(false) }
     val interactionSource = remember {
         MutableInteractionSource()
     }
     if(!showOptionsMenu){
         expand.value = false
     }
-
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .indication(interactionSource, LocalIndication.current)
-        .pointerInput(true) {
-            detectTapGestures(onPress = {
-                expand.value = false
-                onClickCloseOptionMenu()
-            })
-        }
-       ){
-        Column{
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .indication(interactionSource, LocalIndication.current)
+            .pointerInput(true) {
+                detectTapGestures(onPress = {
+                    expand.value = false
+                    onClickCloseOptionMenu()
+                })
+            }
+        ){
             Row(
                 modifier = Modifier
                     .clip(RoundedCornerShape(16.dp))
@@ -102,23 +100,21 @@ fun BookingCard(
                     }
                 }
             }
+            Box (modifier = Modifier.align(Alignment.BottomEnd)
+              .fillMaxWidth(0.6f)){
+                DropDownMenu(
+                    expanded = expand.value && showOptionsMenu,
+                    content = {
+                        BookingContextMenu(onClick = {it-> onClickOptionMenu(it)
+                            expand.value = false
+                            onClickCloseOptionMenu()
+                        })
+                    },
+                    modifier = Modifier.padding(end = 28.dp,top = 50.dp)
+                )
+            }
         }
 
-
-        DropDownMenu(
-            expanded = expand.value && showOptionsMenu,
-            onDismissRequest = {expand.value = false
-                               onClickCloseOptionMenu()
-                               },
-             content = {
-                 Column (modifier = Modifier.background(Color.Black)
-                   ) {
-                     Text("gfg")
-                 }
-             },
-            modifier = Modifier.align(Alignment.BottomEnd)
-        )
-    }
 }
 
 @Composable
