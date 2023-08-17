@@ -23,11 +23,9 @@ order to improve workflow and enhance productivity.
 |:---------------------------------------------------:|
 | <img height="500" src="..\assets\main-screen.png"/> |
 
-
 |                        Meeting selection                         |
 |:----------------------------------------------------------------:|
 | <img height="500" src="..\assets\meeting-selection-screen.png"/> |
-
 
 |                        Data Change                         |
 |:----------------------------------------------------------:|
@@ -64,15 +62,16 @@ A list of technologies used within the project:
   and [Coroutines](https://kotlinlang.org/docs/flow.html)
 * Image loading: [Image Loader](https://github.com/qdsfdhvh/compose-imageloader)
 * Network client: [Ktor](https://ktor.io/)
-* REST API:  [Ktor](https://ktor.io/)
 * JSON: [Kotlinx Serialization](https://github.com/Kotlin/kotlinx.serialization)
+* Architecture pattern: [MVI Kotlin](https://github.com/arkivanov/MVIKotlin)
+* UI:[Compose](https://developer.android.com/jetpack/compose/tooling)
 
 ## Authors: :writing_hand:
 
 - [Margarita Ginjolia](https://github.com/MargaritaDj)
 - [Maksim Mishenko](https://github.com/UserNameMax)
 - [Victor Konyshev](https://github.com/DireRaven-exe)
-- [Angelika Semenova](https://github.com/UserNameMax)
+- [Angelika Semenova](https://github.com/Liker4ik26)
 
 ## Guidelines for starting up: :computer:
 
