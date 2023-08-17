@@ -25,17 +25,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import band.effective.office.elevator.ExtendedThemeColors
+import band.effective.office.elevator.ExtendedColors.purple_heart_600
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.TitlePage
-import band.effective.office.elevator.textGrayColor
+import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
+import band.effective.office.elevator.ExtendedColors._66x
+import band.effective.office.elevator.ExtendedColors.purple_heart_500
+import band.effective.office.elevator.ui.models.TypesList
+import kotlinx.datetime.LocalDate
 
 @Composable
 fun BookingMainContentScreen(
@@ -45,11 +50,15 @@ fun BookingMainContentScreen(
     isExpandedOptions: Boolean,
     iconRotationStateCard: Float,
     iconRotationStateOptions: Float,
-    onClickOpenBookAccept: (String) -> Unit,
+    onClickOpenBookAccept: (WorkSpaceUI) -> Unit,
     onClickOpenBookPeriod: () -> Unit,
     onClickOpenChoseZone: () -> Unit,
     onClickExpandedMap: () -> Unit,
-    onClickExpandedOption: () -> Unit
+    onClickExpandedOption: () -> Unit,
+    onClickChangeZone: (WorkSpaceType) -> Unit,
+    date: LocalDate,
+    onClickChangeSelectedType: (TypesList) -> Unit,
+    selectedTypesList: TypesList
 ) {
     Scaffold(
         topBar = {
@@ -58,12 +67,12 @@ fun BookingMainContentScreen(
                     modifier = Modifier.clip(
                         RoundedCornerShape(bottomEnd = 16.dp, bottomStart = 16.dp)
                     ).background(
-                        ExtendedThemeColors.colors.whiteColor
+                        Color.White
                     ).padding(bottom = 24.dp)
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.background(ExtendedThemeColors.colors.whiteColor)
+                        modifier = Modifier.background(Color.White)
                             .padding(horizontal = 16.dp)
                             .padding(top = 48.dp)
                     ) {
@@ -75,14 +84,18 @@ fun BookingMainContentScreen(
                             onClick = onClickExpandedMap,
                             icon1 = MainRes.images.icon_map,
                             icon2 = MainRes.images.back_button,
-                            title = MainRes.strings.map,
+                            title = if (isExpandedCard) MainRes.strings.hide_map else MainRes.strings.show_map,
                             rotate = iconRotationStateCard
                         )
                     }
                     OptionMenu(
                         isExpandedCard = isExpandedCard,
                         isExpandedOptions = isExpandedOptions,
-                        onClickOpenBookPeriod = onClickOpenBookPeriod
+                        onClickOpenBookPeriod = onClickOpenBookPeriod,
+                        onClickChangeZone = onClickChangeZone,
+                        date = date,
+                        onClickChangeSelectedType = onClickChangeSelectedType,
+                        selectedTypesList = selectedTypesList
                     )
                 }
                 Box(
@@ -96,11 +109,11 @@ fun BookingMainContentScreen(
                         shape = CircleShape,
                         border = BorderStroke(
                             width = 1.dp,
-                            color = textGrayColor
+                            color = _66x
                         ),
                         colors = ButtonDefaults.buttonColors(
-                            backgroundColor = ExtendedThemeColors.colors.whiteColor,
-                            contentColor = textGrayColor
+                            backgroundColor = Color.White,
+                            contentColor = _66x
                         ),
                         modifier = Modifier.size(40.dp)
                     ) {
@@ -127,7 +140,7 @@ fun BookingMainContentScreen(
                     modifier = Modifier.padding(top = 16.dp),
                     text = stringResource(MainRes.strings.suitable_options),
                     style = MaterialTheme.typography.subtitle1.copy(
-                        color = ExtendedThemeColors.colors.blackColor,
+                        color = Color.Black,
                         fontWeight = FontWeight(500)
                     )
                 )
@@ -138,14 +151,14 @@ fun BookingMainContentScreen(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             painter = painterResource(MainRes.images.icon_location),
-                            tint = ExtendedThemeColors.colors.purple_heart_800,
+                            tint = purple_heart_500,
                             contentDescription = null
                         )
                         Text(
                             modifier = Modifier.padding(start = 8.dp),
                             text = stringResource(MainRes.strings.select_zones),
                             style = MaterialTheme.typography.subtitle1.copy(
-                                color = ExtendedThemeColors.colors.purple_heart_700,
+                                color = purple_heart_600,
                                 fontWeight = FontWeight(400)
                             )
                         )

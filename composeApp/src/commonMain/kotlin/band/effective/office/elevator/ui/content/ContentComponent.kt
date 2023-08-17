@@ -1,8 +1,8 @@
 package band.effective.office.elevator.ui.content
 
-import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.ui.booking.BookingComponent
 import band.effective.office.elevator.ui.employee.FullEmployeeComponent
+import band.effective.office.elevator.ui.employee.allEmployee.EmployeeComponent
 import band.effective.office.elevator.ui.main.MainComponent
 import band.effective.office.elevator.ui.profile.ProfileComponent
 import com.arkivanov.decompose.ComponentContext
@@ -31,8 +31,7 @@ class ContentComponent(
     val childStack: Value<ChildStack<*, Child>> = stack
 
     private fun child(config: Config, componentContext: ComponentContext): Child = when (config) {
-        is Config.MainScreen -> Child.Main(MainComponent(componentContext, storeFactory,
-            ::mainScreenOutput))
+        is Config.MainScreen -> Child.Main(MainComponent(componentContext, storeFactory, ::mainOutput))
         is Config.Profile -> Child.Profile(
             ProfileComponent(
                 componentContext,
@@ -40,18 +39,23 @@ class ContentComponent(
                 openAuthorizationFlow
             )
         )
-        is Config.Booking -> Child.Booking(BookingComponent(componentContext, storeFactory))
+        is Config.Booking -> Child.Booking(BookingComponent(componentContext, storeFactory, ::bookingOutput))
         is Config.Employee -> Child.Employee(FullEmployeeComponent(componentContext, storeFactory))
     }
 
-    private fun mainScreenOutput(output: MainComponent.Output){
+    private fun bookingOutput(output: BookingComponent.Output){
         when(output){
-            is MainComponent.Output.OpenBookingScreen -> navigation.bringToFront(Config.Booking)
-            is MainComponent.Output.OpenMap -> showToast("map")
-            is MainComponent.Output.DeleteBooking -> showToast("delete")
-            is MainComponent.Output.ExtendBooking -> showToast("extend")
-            is MainComponent.Output.RepeatBooking -> showToast("repeat")
+            BookingComponent.Output.OpenMainTab -> navigation.bringToFront(Config.MainScreen)
+        }
+    }
 
+    private fun mainOutput(output: MainComponent.Output) {
+        when(output){
+            MainComponent.Output.DeleteBooking -> TODO()
+            MainComponent.Output.ExtendBooking -> TODO()
+            MainComponent.Output.OpenBookingScreen -> TODO()
+            MainComponent.Output.OpenMap -> TODO()
+            MainComponent.Output.RepeatBooking -> TODO()
         }
     }
 

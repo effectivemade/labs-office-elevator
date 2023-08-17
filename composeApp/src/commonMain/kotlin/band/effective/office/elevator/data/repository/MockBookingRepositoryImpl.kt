@@ -18,7 +18,7 @@ class MockBookingRepositoryImpl: BookingRepository {
     private val scope = CoroutineScope(Dispatchers.IO)
     private val initLis = listOf(
         BookingInfo(
-            id = "2455W",
+            id = "2455L",
             ownerId = "1L",
             seatName = "Seat A1",
             dateOfStart = LocalDateTime(
@@ -31,7 +31,7 @@ class MockBookingRepositoryImpl: BookingRepository {
             )
         ),
         BookingInfo(
-            id = "303040W",
+            id = "303040L",
             ownerId = "1L",
             seatName = "Seat A2",
             dateOfStart = LocalDateTime(
@@ -44,7 +44,7 @@ class MockBookingRepositoryImpl: BookingRepository {
             )
         ),
         BookingInfo(
-            id = "8989W",
+            id = "8989L",
             ownerId = "1L",
             seatName = "Seat A2",
             dateOfStart = LocalDateTime(
@@ -57,7 +57,7 @@ class MockBookingRepositoryImpl: BookingRepository {
             )
         ),
         BookingInfo(
-            id = "234W",
+            id = "234L",
             ownerId = "1L",
             seatName = "Seat A2",
             dateOfStart = LocalDateTime(
@@ -70,7 +70,7 @@ class MockBookingRepositoryImpl: BookingRepository {
             )
         ),
         BookingInfo(
-            id = "754W",
+            id = "754L",
             ownerId = "1L",
             seatName = "Seat A2",
             dateOfStart = LocalDateTime(
@@ -83,7 +83,7 @@ class MockBookingRepositoryImpl: BookingRepository {
             )
         ),
         BookingInfo(
-            id = "2222W",
+            id = "2222L",
             ownerId = "1H",
             seatName = "Seat A2",
             dateOfStart = LocalDateTime(
@@ -96,9 +96,9 @@ class MockBookingRepositoryImpl: BookingRepository {
             )
         ),
         BookingInfo(
-            id = "358M",
+            id = "358L",
             ownerId = "1H",
-            seatName= "Meeting room Sun",
+            seatName= "Переговорная Sun",
             dateOfStart = LocalDateTime(
                 date = LocalDate(year = 2023, monthNumber = 8, dayOfMonth = 17),
                 time = LocalTime(hour = 14, minute = 10, second = 0, nanosecond = 0)

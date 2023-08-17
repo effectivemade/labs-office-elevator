@@ -43,7 +43,6 @@ import band.effective.office.elevator.utils.Stack
 import band.effective.office.elevator.utils.isScrollingDown
 import band.effective.office.elevator.utils.stackOf
 import dev.icerock.moko.resources.compose.stringResource
-import effective.office.modalcustomdialog.Dialog
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 
@@ -53,10 +52,74 @@ fun BookingScreen(bookingComponent: BookingComponent) {
 
     val state by bookingComponent.state.collectAsState()
 
-    var showChooseZone = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    var showBookPeriod = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    var showBookAccept = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    var showBookRepeat = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    val showChooseZone = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    val showBookPeriod = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    val showBookAccept = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    val showBookRepeat = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+
+    val workSpacesUI = listOf(
+        WorkSpaceUI(
+            workSpaceId = "",
+            workSpaceName = stringResource(MainRes.strings.cassiopeia_zone),
+            workSpaceType = WorkSpaceType.MEETING_ROOM
+        ),
+        WorkSpaceUI(
+            workSpaceId = "",
+            workSpaceName = stringResource(MainRes.strings.arrakis_zone),
+            workSpaceType = WorkSpaceType.MEETING_ROOM
+        ),
+        WorkSpaceUI(
+            workSpaceId = "",
+            workSpaceName = stringResource(MainRes.strings.mars_zone),
+            workSpaceType = WorkSpaceType.MEETING_ROOM
+        ),
+        WorkSpaceUI(
+            workSpaceId = "",
+            workSpaceName = stringResource(MainRes.strings.antares_zone),
+            workSpaceType = WorkSpaceType.MEETING_ROOM
+        ),
+        WorkSpaceUI(
+            workSpaceId = "",
+            workSpaceName = stringResource(MainRes.strings.sirius_zone),
+            workSpaceType = WorkSpaceType.MEETING_ROOM
+        ),
+
+        WorkSpaceUI(
+            workSpaceId = "",
+            workSpaceName = stringResource(MainRes.strings.moon_room),
+            workSpaceType = WorkSpaceType.WORK_PLACE
+        ),
+        WorkSpaceUI(
+            workSpaceId = "",
+            workSpaceName = stringResource(MainRes.strings.sun_room),
+            workSpaceType = WorkSpaceType.WORK_PLACE
+        ),
+        WorkSpaceUI(
+            workSpaceId = "",
+            workSpaceName = stringResource(MainRes.strings.mercury_room),
+            workSpaceType = WorkSpaceType.WORK_PLACE
+        ),
+        WorkSpaceUI(
+            workSpaceId = "",
+            workSpaceName = stringResource(MainRes.strings.pluto_room),
+            workSpaceType = WorkSpaceType.WORK_PLACE
+        )
+    )
+
+    val allBookingZone = listOf(
+        WorkSpaceZone(name = stringResource(MainRes.strings.sirius_zone), isSelected = true),
+        WorkSpaceZone(name = stringResource(MainRes.strings.antares_zone), isSelected = true),
+        WorkSpaceZone(name = stringResource(MainRes.strings.mars_zone), isSelected = true),
+        WorkSpaceZone(name = stringResource(MainRes.strings.cassiopeia_zone), isSelected = true),
+        WorkSpaceZone(name = stringResource(MainRes.strings.arrakis_zone), isSelected = true),
+    )
+
+    val allMeetingRooms = listOf(
+        WorkSpaceZone(name = stringResource(MainRes.strings.moon_room), isSelected = true),
+        WorkSpaceZone(name = stringResource(MainRes.strings.sun_room), isSelected = true),
+        WorkSpaceZone(name = stringResource(MainRes.strings.mercury_room), isSelected = true),
+        WorkSpaceZone(name = stringResource(MainRes.strings.pluto_room), isSelected = true),
+    )
 
     val stackRemember: Stack<String> by remember { mutableStateOf(stackOf()) }
 
@@ -67,8 +130,19 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                 bottomSheetContentState = showChooseZone
             ) {
                 ChooseZone(
-                    true,
-                    onClickCloseChoseZone = { bookingComponent.onEvent(BookingStore.Intent.CloseChooseZone) }
+                    sheetTile = stringResource(
+                        if (state.workSpacesType == WorkSpaceType.WORK_PLACE) MainRes.strings.selection_zones
+                        else MainRes.strings.selection_rooms
+                    ),
+                    workSpacecZone = state.workSpacesZone,
+                    onClickCloseChoseZone = { bookingComponent.onEvent(BookingStore.Intent.CloseChooseZone) },
+                    onClickConfirmSelectedZone = {
+                        bookingComponent.onEvent(
+                            BookingStore.Intent.ChangeSelectedWorkSpacesZone(
+                                it
+                            )
+                        )
+                    }
                 )
             },
             BottomSheetNames.BOOK_ACCEPT.name to BottomSheetItem(
@@ -76,27 +150,56 @@ fun BookingScreen(bookingComponent: BookingComponent) {
             ) {
                 BookAccept(
                     onClickCloseBookAccept = { bookingComponent.onEvent(BookingStore.Intent.CloseBookAccept) },
-                    confirmBooking = { bookingComponent.onEvent(BookingStore.Intent.OpenConfirmBooking) }
+                    confirmBooking = { bookingComponent.onEvent(BookingStore.Intent.OpenConfirmBooking) },
+                    bookingInfo = BookingInfo(
+                        id = state.bookingInfo.id,
+                        ownerId = "",
+                        seatName = state.bookingInfo.seatName,
+                        dateOfStart = state.selectedStartDate.atTime(state.selectedStartTime),
+                        dateOfEnd = state.selectedStartDate.atTime(state.selectedFinishTime)
+                    ),
+                    frequency = state.frequency
                 )
             },
             BottomSheetNames.BOOK_PERIOD.name to BottomSheetItem(
                 bottomSheetContentState = showBookPeriod
             ) {
                 BookingPeriod(
-                    startDate = "Чт, 27 июл. 2023 г.",
-                    startTime = "10:30",
-                    finishDate = "Чт, 27 июл. 2023 г.",
-                    finishTime = "15:30",
-                    repeatBooking = "Бронирование не повторяется",
-                    false,
+                    startDate = "${state.selectedStartDate.dayOfMonth} ${NumToMonth(month = state.selectedStartDate.monthNumber)} ${state.selectedStartDate.year}",
+                    startTime = "${state.selectedStartTime.hour}:${state.selectedStartTime.minute}",
+                    finishTime = "${state.selectedFinishTime.hour}:${state.selectedFinishTime.minute}",
+                    repeatBooking = state.repeatBooking,
+                    switchChecked = state.wholeDay,
                     closeClick = { bookingComponent.onEvent(BookingStore.Intent.CloseBookPeriod) },
-                    onSwitchChange = { false },
+                    onSelectAllDay = {
+                        bookingComponent.onEvent(
+                            BookingStore.Intent.ChangeWholeDay(
+                                wholeDay = !state.wholeDay
+                            )
+                        )
+                    },
                     bookStartDate = { bookingComponent.onEvent(BookingStore.Intent.OpenCalendar) },
-                    bookFinishDate = { bookingComponent.onEvent(BookingStore.Intent.OpenCalendar) },
-                    bookStartTime = { bookingComponent.onEvent(BookingStore.Intent.OpenTimeModal) },
-                    bookFinishTime = { bookingComponent.onEvent(BookingStore.Intent.OpenTimeModal) },
-                    bookingRepeat = { bookingComponent.onEvent(BookingStore.Intent.OpenRepeatDialog) },
-                    onClickSearchSuitableOptions = { bookingComponent.onEvent(BookingStore.Intent.SearchSuitableOptions) }
+                    bookStartTime = {
+                        bookingComponent.onEvent(
+                            BookingStore.Intent.OpenStartTimeModal(
+                                isStart = true,
+                                time = state.selectedStartTime
+                            )
+                        )
+                    },
+                    bookFinishTime = {
+                        bookingComponent.onEvent(
+                            BookingStore.Intent.OpenStartTimeModal(
+                                isStart = false,
+                                time = state.selectedStartTime
+                            )
+                        )
+                    },
+                    bookingRepeat = {
+                        bookingComponent.onEvent(BookingStore.Intent.OpenRepeatDialog)
+                    },
+                    onClickSearchSuitableOptions = { bookingComponent.onEvent(BookingStore.Intent.SearchSuitableOptions) },
+                    frequency = state.frequency
                 )
             },
             BottomSheetNames.BOOK_REPEAT.name to BottomSheetItem(
@@ -105,7 +208,9 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                 BookingRepeat(
                     backButtonClicked = { bookingComponent.onEvent(BookingStore.Intent.CloseBookRepeat) },
                     dropDownClick = {},
-                    confirmBooking = {},
+                    confirmBooking = { frequency ->
+                        bookingComponent.onEvent(BookingStore.Intent.ChangeFrequency(frequency = frequency))
+                    },
                     onSelected = {},
                     onDaySelected = {}
                 )
@@ -133,22 +238,26 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                 is BookingStore.Label.CloseBookPeriod -> multiBottomSheetController.closeCurrentSheet()
                 is BookingStore.Label.OpenRepeatDialog -> showRepeatDialog = true
                 is BookingStore.Label.CloseRepeatDialog -> showRepeatDialog = false
-                is BookingStore.Label.OpenBookAccept -> multiBottomSheetController.showSheet(
-                    BottomSheetNames.BOOK_ACCEPT.name
-                )
+                is BookingStore.Label.OpenBookAccept -> {
+                    multiBottomSheetController.showSheet(
+                        BottomSheetNames.BOOK_ACCEPT.name
+                    )
+                }
 
                 is BookingStore.Label.CloseBookAccept -> multiBottomSheetController.closeCurrentSheet()
                 is BookingStore.Label.OpenCalendar -> showCalendar = true
                 is BookingStore.Label.CloseCalendar -> showCalendar = false
                 is BookingStore.Label.OpenConfirmBooking -> showConfirm = true
                 is BookingStore.Label.CloseConfirmBooking -> showConfirm = false
-                is BookingStore.Label.OpenTimeModal -> showTimePicker = true
-                is BookingStore.Label.CloseTimeModal -> showTimePicker = false
+                is BookingStore.Label.OpenStartTimeModal -> showTimePicker = true
+                is BookingStore.Label.CloseStartTimeModal -> showTimePicker = false
                 is BookingStore.Label.OpenBookRepeat -> multiBottomSheetController.showSheet(
                     BottomSheetNames.BOOK_REPEAT.name
                 )
 
                 is BookingStore.Label.CloseBookRepeat -> multiBottomSheetController.closeCurrentSheet()
+                BookingStore.Label.OpenFinishTimeModal -> showTimePicker = true
+                BookingStore.Label.CloseFinishTimeModal -> showTimePicker = false
             }
         }
     }
@@ -161,12 +270,16 @@ fun BookingScreen(bookingComponent: BookingComponent) {
         showConfirm = showConfirm,
         showTimePicker = showTimePicker,
         currentDate = state.currentDate,
-        onClickOpenBookRepeat = { bookingComponent.onEvent(BookingStore.Intent.OpenBookRepeat) },
-        onClickCloseTimeModal = { bookingComponent.onEvent(BookingStore.Intent.CloseTimeModal) },
+        onClickOpenBookRepeat = { pair ->
+            bookingComponent.onEvent(BookingStore.Intent.OpenBookRepeat(pair = pair))
+        },
+        onClickCloseTimeModal = { bookingComponent.onEvent(BookingStore.Intent.CloseStartTimeModal) },
         onClickSelectTime = { time: LocalTime ->
+            showToast(time.minute.toString())
             bookingComponent.onEvent(
                 BookingStore.Intent.ApplyTime(
-                    time = time
+                    time = time,
+                    isStart = state.isStart
                 )
             )
         },
@@ -174,15 +287,38 @@ fun BookingScreen(bookingComponent: BookingComponent) {
         onClickCloseCalendar = { bookingComponent.onEvent(BookingStore.Intent.CloseCalendar) },
         onClickOpenChoseZone = { bookingComponent.onEvent(BookingStore.Intent.OpenChooseZone) },
         onClickOpenBookPeriod = { bookingComponent.onEvent(BookingStore.Intent.OpenBookPeriod) },
-        onClickMainScreen = {},
-        onClickOpenBookAccept = { bookingComponent.onEvent(BookingStore.Intent.OpenBookAccept) },
+        onClickMainScreen = { bookingComponent.onOutput(BookingComponent.Output.OpenMainTab) },
+        onClickOpenBookAccept = { workSpacesUI ->
+            bookingComponent.onEvent(BookingStore.Intent.OpenBookAccept(value = workSpacesUI))
+        },
         onClickApplyDate = { date: LocalDate? ->
             bookingComponent.onEvent(
                 BookingStore.Intent.ApplyDate(
                     date = date
                 )
             )
-        }
+        },
+        onClickChangeZone = { type ->
+            with(if (type == WorkSpaceType.MEETING_ROOM) allBookingZone else allMeetingRooms) {
+                bookingComponent.onEvent(
+                    BookingStore.Intent.ChangeSelectedWorkSpacesZone(
+                        workSpaceZone = this@with
+                    )
+                )
+                bookingComponent.onEvent(BookingStore.Intent.ChangeWorkSpacesUI(workSpaces = workSpacesUI.filter { workSpaceUI -> workSpaceUI.workSpaceType == type }))
+            }
+        },
+        isStart = state.isStart,
+        date = state.selectedStartDate,
+        frequency = state.frequency,
+        onClickChangeSelectedType = {
+            bookingComponent.onEvent(
+                BookingStore.Intent.ChangeSelectedType(
+                    selectedType = it
+                )
+            )
+        },
+        selectedTypesList = state.selectedType
     )
 }
 
@@ -194,7 +330,7 @@ private fun BookingScreenContent(
     onClickOpenBookPeriod: () -> Unit,
     onClickOpenChoseZone: () -> Unit,
     showRepeatDialog: Boolean,
-    onClickOpenBookAccept: (String) -> Unit,
+    onClickOpenBookAccept: (WorkSpaceUI) -> Unit,
     onClickCloseCalendar: () -> Unit,
     showCalendar: Boolean,
     onClickApplyDate: (LocalDate?) -> Unit,
@@ -205,7 +341,13 @@ private fun BookingScreenContent(
     showTimePicker: Boolean,
     onClickCloseTimeModal: () -> Unit,
     onClickSelectTime: (LocalTime) -> Unit,
-    onClickOpenBookRepeat: () -> Unit,
+    onClickOpenBookRepeat: (Pair<String, BookingPeriod>) -> Unit,
+    onClickChangeZone: (WorkSpaceType) -> Unit,
+    isStart: Boolean,
+    date: LocalDate,
+    frequency: Frequency,
+    onClickChangeSelectedType: (TypesList) -> Unit,
+    selectedTypesList: TypesList
 ) {
     val scrollState = rememberLazyListState()
     val scrollIsDown = scrollState.isScrollingDown()
@@ -239,8 +381,12 @@ private fun BookingScreenContent(
                 onClickOpenBookAccept = onClickOpenBookAccept,
                 onClickOpenBookPeriod = onClickOpenBookPeriod,
                 onClickOpenChoseZone = onClickOpenChoseZone,
-                onClickExpandedMap = {isExpandedCard = !isExpandedCard},
-                onClickExpandedOption = { isExpandedOptions = !isExpandedOptions}
+                onClickExpandedMap = { isExpandedCard = !isExpandedCard },
+                onClickExpandedOption = { isExpandedOptions = !isExpandedOptions },
+                onClickChangeZone = onClickChangeZone,
+                date = date,
+                onClickChangeSelectedType = onClickChangeSelectedType,
+                selectedTypesList = selectedTypesList
             )
         }
 
@@ -248,6 +394,8 @@ private fun BookingScreenContent(
             content = {
                 BookingRepeatCard(
                     onSelected = onClickOpenBookRepeat,
+                    modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center),
+                    frequency = frequency
                 )
             },
             onDismissRequest = {},
@@ -261,6 +409,7 @@ private fun BookingScreenContent(
                     currentDate = currentDate,
                     onClickOk = onClickApplyDate,
                     onClickCansel = onClickCloseCalendar,
+                    modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
                 )
             },
             onDismissRequest = onClickCloseCalendar,
@@ -271,7 +420,10 @@ private fun BookingScreenContent(
         Dialog(
             content = {
                 TimePickerModal(
-                    titleText = stringResource(timeTitle),
+                    titleText = if (isStart) "Занять с" else "Занять до",
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                        .clip(shape = RoundedCornerShape(16.dp)).background(Color.White)
+                        .align(Alignment.Center),
                     onClickCansel = onClickCloseTimeModal,
                     onClickOk = onClickSelectTime
                 )
@@ -288,6 +440,7 @@ private fun BookingScreenContent(
                 BookingSuccess(
                     onMain = onClickMainScreen,
                     close = onClickCloseBookingConfirm,
+                    modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
                 )
             },
             onDismissRequest = onClickCloseBookingConfirm,

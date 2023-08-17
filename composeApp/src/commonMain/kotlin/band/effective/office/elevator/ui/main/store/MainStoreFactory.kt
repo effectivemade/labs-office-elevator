@@ -2,6 +2,7 @@ package band.effective.office.elevator.ui.main.store
 
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.data.ApiResponse
+import band.effective.office.elevator.domain.entity.BookingInteractor
 import band.effective.office.elevator.domain.useCase.ElevatorCallUseCase
 import band.effective.office.elevator.domain.useCase.GetBookingsUseCase
 import band.effective.office.elevator.expects.showToast
@@ -31,10 +32,8 @@ internal class MainStoreFactory(
 ) : KoinComponent {
 
     private val elevatorUseCase: ElevatorCallUseCase by inject()
-    private val bookingsUseCase: GetBookingsUseCase by inject()
-    private var recentDate = LocalDate(2023,8,16)
-    private var filtration = BookingsFilter(meetRoom = true, workPlace = true)
-    private var updatedList = false
+//    private val bookingsUseCase: GetBookingsUseCase by inject()
+    private val bookingInteractor: BookingInteractor by inject()
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): MainStore =
@@ -102,7 +101,7 @@ internal class MainStoreFactory(
 
                 is MainStore.Intent.OnClickApplyDate -> {
                     publish(MainStore.Label.CloseCalendar)
-                    updatedList=true
+                    updatedList = true
                     intent.date?.let { newDate ->
                         changeBookingsByDate(date = newDate, bookingsFilter = filtration)
                     }
@@ -196,8 +195,8 @@ internal class MainStoreFactory(
                 filtration=bookingsFilter
 
             scope.launch(Dispatchers.IO) {
-                bookingsUseCase
-                    .getBookingsByDate(date = date, ownerId = "1L", bookingsFilter = bookingsFilter, coroutineScope = this)
+                bookingInteractor
+                    .getByDate(ownerId = "", date = date, coroutineScope = this)
                     .collect { bookings ->
                         withContext(Dispatchers.Main) {
                             dispatch(Msg.UpdateSeatsReservation(reservedSeats = bookings))
@@ -213,8 +212,8 @@ internal class MainStoreFactory(
                 filtration=bookingsFilter
 
             scope.launch(Dispatchers.IO) {
-                bookingsUseCase
-                    .getBookingsByDate(date = date, ownerId = "1L", bookingsFilter = bookingsFilter, coroutineScope = this)
+                bookingInteractor
+                    .getByDate(ownerId = "", date = date, coroutineScope = this)
                     .collect { bookings ->
                         withContext(Dispatchers.Main) {
                             dispatch(

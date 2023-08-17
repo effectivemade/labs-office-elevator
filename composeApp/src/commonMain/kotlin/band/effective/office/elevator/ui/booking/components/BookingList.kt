@@ -15,7 +15,7 @@ import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 fun WorkSpaceList(
     scrollState: LazyListState,
     workSpaces: List<WorkSpaceUI>,
-    onClickOpenBookAccept: (String) -> Unit
+    onClickOpenBookAccept: (WorkSpaceUI) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.background(MaterialTheme.colors.onBackground)
