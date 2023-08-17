@@ -35,6 +35,7 @@
     <string name="elevator_button">Поднять</string>
 
     <string name="by_date">По дате</string>
+    <string name="on_today">На сегодня</string>
     <string name="show_map">Карта</string>
     <string name="book_a_seat">Забронировать место</string>
     <string name="nearest_bookings">Брони</string>
@@ -84,8 +85,6 @@
     <string name="take_before">Занять до</string>
 
     <string name="filter_by_category">Фильтры по категории</string>
-    <string name="working_place">Рабочее место</string>
-    <string name="meeting_room">Переговорка</string>
     <string name="reset_filter">Сбросить</string>
 
     <string name="cansel">Отмена</string>
@@ -159,5 +158,7 @@
     <string name="upcoming_bookings">Брони сотрудника</string>
     <string name="transfer">Перевод</string>
     <string name="none_booking_seats_by_the_employee">У этого сотрудника пока нет бронирований</string>
+    <string name="none_such_booking_seats_by_the_employee">У этого сотрудника пока нет таких бронирований</string>
     <string name="none_booking_seats_on_this_date">У этого сотрудника нет бронирований на этот день</string>
+    <string name="none_such_booking_seats_on_this_date">У этого сотрудника нет таких бронирований на этот день</string>
 </resources>
