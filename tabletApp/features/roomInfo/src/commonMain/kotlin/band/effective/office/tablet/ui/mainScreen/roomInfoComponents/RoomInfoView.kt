@@ -24,7 +24,11 @@ import java.util.GregorianCalendar
 
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable
-fun RoomInfoComponent(modifier: Modifier, roomInfoComponent: RoomInfoComponent) {
+fun RoomInfoComponent(
+    modifier: Modifier,
+    roomInfoComponent: RoomInfoComponent,
+    onEventUpdateRequest: (EventInfo) -> Unit
+) {
     val state by roomInfoComponent.state.collectAsState()
     RoomInfoComponent(
         modifier = modifier,
@@ -33,7 +37,8 @@ fun RoomInfoComponent(modifier: Modifier, roomInfoComponent: RoomInfoComponent) 
         timeToNextEvent = state.changeEventTime,
         isToday = state.selectDate.isToday(),
         isError = state.isError,
-        nextEvent = state.nextEvent
+        nextEvent = state.nextEvent,
+        onEventUpdateRequest = onEventUpdateRequest
     )
 }
 
@@ -46,7 +51,8 @@ fun RoomInfoComponent(
     timeToNextEvent: Int,
     isToday: Boolean,
     isError: Boolean,
-    nextEvent: EventInfo
+    nextEvent: EventInfo,
+    onEventUpdateRequest: (EventInfo) -> Unit
 ) {
     val paddings = 30.dp
     Column(modifier = modifier) {
@@ -83,7 +89,8 @@ fun RoomInfoComponent(
         RoomEventListComponent(
             modifier = Modifier.padding(paddings),
             eventsList = room.eventList,
-            isToday = isToday
+            isToday = isToday,
+            onItemClick = onEventUpdateRequest
         )
     }
 }

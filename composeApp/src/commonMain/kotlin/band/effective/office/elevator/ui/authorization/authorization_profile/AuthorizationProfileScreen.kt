@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -38,13 +37,12 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import band.effective.office.elevator.ExtendedTheme
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.components.OutlinedTextColorsSetup
 import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.textGrayColor
-import band.effective.office.elevator.theme_light_primary_stroke
 import band.effective.office.elevator.ui.authorization.authorization_profile.store.AuthorizationProfileStore
 import band.effective.office.elevator.ui.authorization.components.AuthSubTitle
 import band.effective.office.elevator.ui.authorization.components.AuthTabRow
@@ -93,14 +91,6 @@ fun AuthorizationProfileComponent(
     val closeIcon2 = remember { mutableStateOf(false) }
     val borderColor2 = remember { mutableStateOf(textGrayColor) }
     val leadingColor2 = remember { mutableStateOf(textGrayColor) }
-
-    val elevation = ButtonDefaults.elevation(
-        defaultElevation = 0.dp,
-        pressedElevation = 0.dp,
-        disabledElevation = 0.dp,
-        hoveredElevation = 0.dp,
-        focusedElevation = 0.dp
-    )
 
     Column(
         horizontalAlignment = Alignment.Start,
@@ -154,7 +144,7 @@ fun AuthorizationProfileComponent(
                     if (it.isNotEmpty()) {
                         closeIcon1.value = true
                         leadingColor1.value = Color.Black
-                        borderColor1.value = theme_light_primary_stroke
+                        borderColor1.value = ExtendedThemeColors.colors.trinidad_400
                     } else {
                         borderColor1.value = textGrayColor
                         closeIcon1.value = false
@@ -208,7 +198,7 @@ fun AuthorizationProfileComponent(
                                 .height(20.dp)
                                 .width(2.dp)
                                 .clip(RoundedCornerShape(4.dp))
-                                .background(if (state.isErrorName) ExtendedTheme.colors.error else borderColor1.value)
+                                .background(if (state.isErrorName) ExtendedThemeColors.colors.error else borderColor1.value)
                                 .padding(vertical = 14.dp)
                         )
                     }
@@ -218,7 +208,7 @@ fun AuthorizationProfileComponent(
                     .wrapContentHeight()
                     .onFocusChanged {
                         if (it.isFocused) {
-                            borderColor1.value = theme_light_primary_stroke
+                            borderColor1.value = ExtendedThemeColors.colors.trinidad_400
                         } else {
                             borderColor1.value = textGrayColor
                             leadingColor1.value = textGrayColor
@@ -234,8 +224,8 @@ fun AuthorizationProfileComponent(
                 onValueChange = {
                     if (it.isNotEmpty()) {
                         closeIcon2.value = true
-                        leadingColor2.value = Color.Black
-                        borderColor2.value = theme_light_primary_stroke
+                        leadingColor2.value = ExtendedThemeColors.colors.blackColor
+                        borderColor2.value = ExtendedThemeColors.colors.trinidad_400
                     } else {
                         borderColor2.value = textGrayColor
                         closeIcon2.value = false
@@ -289,7 +279,7 @@ fun AuthorizationProfileComponent(
                                 .height(20.dp)
                                 .width(2.dp)
                                 .clip(RoundedCornerShape(4.dp))
-                                .background(if (state.isErrorPost) ExtendedTheme.colors.error else borderColor2.value)
+                                .background(if (state.isErrorPost) ExtendedThemeColors.colors.error else borderColor2.value)
                                 .padding(vertical = 14.dp)
                         )
                     }
@@ -299,7 +289,7 @@ fun AuthorizationProfileComponent(
                     .wrapContentHeight()
                     .onFocusChanged {
                         if (it.isFocused) {
-                            borderColor2.value = theme_light_primary_stroke
+                            borderColor2.value = ExtendedThemeColors.colors.trinidad_400
                         } else {
                             borderColor2.value = textGrayColor
                             leadingColor2.value = textGrayColor

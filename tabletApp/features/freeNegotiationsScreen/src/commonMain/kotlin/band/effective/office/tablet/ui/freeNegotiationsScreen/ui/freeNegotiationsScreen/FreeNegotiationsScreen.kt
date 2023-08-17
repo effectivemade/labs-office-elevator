@@ -18,7 +18,7 @@ fun FreeNegotiationsScreen(component: FreeNegotiationsComponent) {
 
     component.onIntent(FreeNegotiationsStore.Intent.SetBooking(Booking.default))
 
-    when{
+    when {
         state.isData -> {
             FreeNegotiationsView(
                 listRooms = state.listRooms,
@@ -26,20 +26,34 @@ fun FreeNegotiationsScreen(component: FreeNegotiationsComponent) {
                 showBookingModal = state.showBookingModal,
                 selectRoomComponent = component.selectRoomComponent,
                 onMainScreen = { reset: Boolean ->
-                    component.onIntent(FreeNegotiationsStore.Intent.OnMainScreen(reset))},
-                onBookRoom =  {
-                        name: RoomInfoUiState, maxDuration: Int ->
-                    component.onIntent(FreeNegotiationsStore.Intent.OnBookingRoom(name, maxDuration))
+                    component.onIntent(FreeNegotiationsStore.Intent.OnMainScreen(reset))
+                },
+                onBookRoom = { name: RoomInfoUiState, maxDuration: Int ->
+                    component.onIntent(
+                        FreeNegotiationsStore.Intent.OnBookingRoom(
+                            name,
+                            maxDuration
+                        )
+                    )
                 }
             )
         }
+
         state.isLoad -> {
             LoaderView(
                 nameRoomCurrent = state.nameCurrentRoom,
                 onMainScreen = { reset: Boolean ->
-                    component.onIntent(FreeNegotiationsStore.Intent.OnMainScreen(reset))},
+                    component.onIntent(FreeNegotiationsStore.Intent.OnMainScreen(reset))
+                },
             )
         }
-        state.error != null -> {}
+
+        state.error != null -> {
+            FreeNegotiationsErrorView(
+                nameRoomCurrent = state.nameCurrentRoom,
+                onMainScreen = { reset: Boolean ->
+                    component.onIntent(FreeNegotiationsStore.Intent.OnMainScreen(reset))
+                })
+        }
     }
 }

@@ -29,6 +29,8 @@ class FreeSelectStoreFactory(private val storeFactory: StoreFactory) : KoinCompo
     private sealed interface Message {
         object Success : Message
         object Load : Message
+        object Fail:Message
+        object Reset: Message
     }
 
     private inner class ExecutorImpl() :
@@ -40,7 +42,10 @@ class FreeSelectStoreFactory(private val storeFactory: StoreFactory) : KoinCompo
         ) {
             when (intent) {
                 is FreeSelectStore.Intent.OnFreeSelectRequest -> freeRoom()
-                is FreeSelectStore.Intent.OnCloseWindowRequest -> publish(FreeSelectStore.Label.Close)
+                is FreeSelectStore.Intent.OnCloseWindowRequest -> {
+                    publish(FreeSelectStore.Label.Close)
+                    dispatch(Message.Reset)
+                }
             }
         }
 
@@ -49,8 +54,9 @@ class FreeSelectStoreFactory(private val storeFactory: StoreFactory) : KoinCompo
             if (currentEventController.cancelCurrentEvent() is Either.Success) {
                 publish(FreeSelectStore.Label.Close)
                 dispatch(Message.Success)
+                dispatch(Message.Reset)
             }
-            else TODO("Maksim Mishenko: add error handler")
+            else dispatch(Message.Fail)
         }
     }
 
@@ -59,6 +65,8 @@ class FreeSelectStoreFactory(private val storeFactory: StoreFactory) : KoinCompo
             when (msg) {
                 is Message.Load -> copy(isLoad = true)
                 is Message.Success -> copy(isLoad = false)
+                is Message.Fail -> copy(isLoad = false, isSuccess = false)
+                is Message.Reset -> FreeSelectStore.State.defaultState
             }
     }
 }

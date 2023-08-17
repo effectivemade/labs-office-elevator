@@ -7,39 +7,39 @@
 
     <string name="search_employee">Search employee</string>
     <string name="employee_in_office">In office</string>
+    <string name="employee_soon_in_office">Will be today</string>
+    <string name="employee_not_soon_in_office">No reservations</string>
 
-    <string name="company_name">Effective</string>
 
     <!--Auth strings-->
     <string name="_continue">Continue</string>
     <string name="input_number">Enter number</string>
-    <string name="select_number">Specify a number to which colleagues could transfer money to you using SBP</string>
-    <string name="number_hint">Phone number</string>
+    <string name="select_number">Enter the phone number associated with the SBP</string>
+    <string name="number_hint">955-555-55-55</string>
     <string name="input_profile">Fill in your profile</string>
     <string name="select_profile">This is necessary for employees to recognize you</string>
-    <string name="profile_hint">Last Name First Name</string>
-    <string name="profile_hint_">Occupation</string>
-    <string name="input_employee">Specify contacts</string>
+    <string name="profile_hint">Ivan Ivanov</string>
+    <string name="profile_hint_">Android-developer</string>
+    <string name="input_employee">Specify Telegram</string>
     <string name="select_employee">This is necessary for colleagues to be able to contact you conveniently</string>
-    <string name="employee_hint">Telegram nickname</string>
+    <string name="employee_hint">telegramnick</string>
 
     <string name="by_date"> By date </string>
+    <string name="on_today">On today</string>
     <string name="show_map">Show on map</string>
     <string name="book_a_seat">Book a seat</string>
     <string name="nearest_bookings">Bookings</string>
     <string name="none_booking_seat">You dont have any bookings yet</string>
 
     <string name="filter_by_category">Filter by category</string>
-    <string name="working_place">Working Place</string>
-    <string name="meeting_room">Meeting Room</string>
     <string name="reset_filter">Reset</string>
 
     <string name="cansel">Cansel</string>
+    <string name="delete">Delete</string>
     <string name="ok">OK</string>
-
     <!--Booking-->
     <string name="type_booking">Type booking</string>
-    <string name="workplace">Workplace</string>
+    <string name="workplace">Working place</string>
     <string name="meeting_room">Meeting room</string>
     <string name="booking_period">Booking period</string>
     <string name="suitable_options">Suitable options</string>
@@ -75,6 +75,13 @@
     <string name="booking_2">time</string>
     <string name="week">Week</string>
     <string name="month">Month</string>
+    <string name="year">Year</string>
+
+    <string name="map">Map</string>
+    <string name="show_map">Show map</string>
+    <string name="extend_booking">Extend</string>
+    <string name="repeat_booking">Repeat</string>
+    <string name="delete_booking">Delete</string>
 
     <string name="Monday">Mon</string>
     <string name="Tuesday">Tue</string>
@@ -83,6 +90,8 @@
     <string name="Friday">Fri</string>
     <string name="Saturday">Sat</string>
     <string name="Sunday">Sun</string>
+
+    <string name="delete_booking">Delete booked room</string>
 
     <string name="take_from">Take from</string>
     <string name="take_before">Take before</string>
@@ -136,5 +145,7 @@
     <string name="upcoming_bookings">Employee reservations</string>
     <string name="transfer">Transfer</string>
     <string name="none_booking_seats_by_the_employee">This employee dont have any bookings yet</string>
+    <string name="none_such_booking_seats_by_the_employee">This employee dont have such bookings yet</string>
     <string name="none_booking_seats_on_this_date">This employee dont have bookings on this date</string>
+    <string name="none_such_booking_seats_on_this_date">This employee dont have such bookings on this date</string>
 </resources>

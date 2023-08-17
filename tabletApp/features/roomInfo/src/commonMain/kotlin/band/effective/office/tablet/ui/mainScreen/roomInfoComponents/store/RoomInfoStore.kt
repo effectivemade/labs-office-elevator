@@ -17,7 +17,7 @@ interface RoomInfoStore : Store<RoomInfoStore.Intent, RoomInfoStore.State, Nothi
         val changeEventTime: Int,
         val selectDate: Calendar,
         val isError: Boolean,
-        val nextEvent: EventInfo
+        val nextEvent: EventInfo,
     ) {
         companion object {
             val defaultState =

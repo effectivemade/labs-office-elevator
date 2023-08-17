@@ -26,12 +26,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.ModalCalendar
 import band.effective.office.elevator.components.TitlePage
 import band.effective.office.elevator.successGreen
+import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsFilter
 import band.effective.office.elevator.ui.main.components.BookingInformation
 import band.effective.office.elevator.ui.main.components.BottomDialog
 import band.effective.office.elevator.ui.main.components.ElevatorUIComponent
@@ -39,7 +40,10 @@ import band.effective.office.elevator.ui.main.store.MainStore
 import band.effective.office.elevator.ui.models.ReservedSeat
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
+import effective.office.modalcustomdialog.Dialog
 import kotlinx.coroutines.delay
+import kotlinx.datetime.LocalDate
+
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -81,28 +85,43 @@ fun MainScreen(component: MainComponent) {
 
     Box(
         modifier = Modifier
-            .background(Color.White)
+            .background(ExtendedThemeColors.colors.whiteColor)
             .fillMaxSize()
     ) {
         MainScreenContent(
             reservedSeats = state.reservedSeats,
             bottomSheetState = bottomSheetState,
+            currentDate = state.currentDate,
+            dateFiltrationOnReserves = state.dateFiltrationOnReserves,
             onClickBook = { component.onOutput(MainComponent.Output.OpenBookingScreen) },
             onClickShowOptions = { component.onEvent(MainStore.Intent.OnClickShowOption) },
+            onClickOptionMenu = { index ->
+                when (index){
+                    0 -> component.onOutput(MainComponent.Output.OpenMap)
+                    1 -> component.onOutput(MainComponent.Output.ExtendBooking)
+                    2 -> component.onOutput(MainComponent.Output.RepeatBooking)
+                    3 -> component.onOutput(MainComponent.Output.DeleteBooking)
+                }
+            },
             onClickOpenCalendar = { component.onEvent(MainStore.Intent.OnClickOpenCalendar) },
             onClickOpenBottomDialog = { component.onEvent(MainStore.Intent.OpenFiltersBottomDialog) },
-            onClickCloseBottomDialog = { component.onEvent(MainStore.Intent.CloseFiltersBottomDialog)}
+            onClickCloseBottomDialog = { component.onEvent(MainStore.Intent.CloseFiltersBottomDialog(it))}
         )
-        if (showModalCalendar) {
-            ModalCalendar(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .align(Alignment.Center),
-                onClickCansel = { component.onEvent(MainStore.Intent.OnClickCloseCalendar) },
-                onClickOk = { component.onEvent(MainStore.Intent.OnClickApplyDate(it)) },
-                currentDate = state.currentDate
-            )
-        }
+        Dialog(
+            content = {
+                ModalCalendar(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp),
+                    onClickCansel = { component.onEvent(MainStore.Intent.OnClickCloseCalendar) },
+                    onClickOk = { component.onEvent(MainStore.Intent.OnClickApplyDate(it)) },
+                    currentDate = state.currentDate
+                )
+            },
+            onDismissRequest = { component.onEvent(MainStore.Intent.OnClickCloseCalendar) },
+            showDialog = showModalCalendar,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
+
         SnackBarErrorMessage(
             modifier = Modifier.align(Alignment.BottomCenter),
             isVisible = isErrorMessageVisible,
@@ -126,7 +145,7 @@ private fun SnackBarErrorMessage(modifier: Modifier, isVisible: Boolean, message
 
 @Composable
 private fun SnackBarSuccessMessage(modifier: Modifier, isVisible: Boolean) {
-    AnimatedVisibility(modifier = modifier, visible = isVisible) {
+    /*AnimatedVisibility(modifier = modifier, visible = isVisible) {
         Snackbar(
             modifier.padding(16.dp),
             backgroundColor = successGreen
@@ -134,6 +153,8 @@ private fun SnackBarSuccessMessage(modifier: Modifier, isVisible: Boolean) {
             Text(text = stringResource(MainRes.strings.elevator_called_successfully))
         }
     }
+
+     */
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -142,11 +163,14 @@ fun MainScreenContent(
     modifier: Modifier = Modifier,
     bottomSheetState: ModalBottomSheetState,
     reservedSeats: List<ReservedSeat>,
+    currentDate: LocalDate,
+    dateFiltrationOnReserves: Boolean,
     onClickBook: () -> Unit,
+    onClickOptionMenu: (Int) -> Unit,
     onClickShowOptions: () -> Unit,
     onClickOpenCalendar: () -> Unit,
     onClickOpenBottomDialog: () -> Unit,
-    onClickCloseBottomDialog: () -> Unit
+    onClickCloseBottomDialog: (BookingsFilter) -> Unit
 ) {
     ModalBottomSheetLayout(
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
@@ -158,7 +182,6 @@ fun MainScreenContent(
                 onClickCloseBottomDialog
             )
         }
-        //,sheetPeekHeight = 0.dp
     ) {
         Column(
             modifier = modifier.fillMaxSize()
@@ -184,7 +207,10 @@ fun MainScreenContent(
             ) {
                 BookingInformation(
                     reservedSeats = reservedSeats,
+                    currentDate = currentDate,
+                    dateFiltrationOnReserves = dateFiltrationOnReserves,
                     onClickBook = onClickBook,
+                    onClickOptionMenu = onClickOptionMenu,
                     onClickShowOptions = onClickShowOptions,
                     onClickOpenCalendar = onClickOpenCalendar,
                     onClickOpenBottomDialog = onClickOpenBottomDialog

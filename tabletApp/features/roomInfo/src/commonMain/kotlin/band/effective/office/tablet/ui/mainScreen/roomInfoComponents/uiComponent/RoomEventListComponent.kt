@@ -1,5 +1,6 @@
 package band.effective.office.tablet.ui.mainScreen.roomInfoComponents.uiComponent
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,7 +29,12 @@ import band.effective.office.tablet.utils.CalendarStringConverter
 import java.util.Calendar
 
 @Composable
-fun RoomEventListComponent(modifier: Modifier = Modifier, eventsList: List<EventInfo>, isToday: Boolean) {
+fun RoomEventListComponent(
+    modifier: Modifier = Modifier,
+    eventsList: List<EventInfo>,
+    isToday: Boolean,
+    onItemClick: (EventInfo) -> Unit
+) {
     Column(modifier = modifier) {
         Text(
             text = "${MainRes.string.list_organizers_title} ${if (isToday) MainRes.string.on_today_string else ""}",
@@ -43,7 +49,7 @@ fun RoomEventListComponent(modifier: Modifier = Modifier, eventsList: List<Event
             ) {
                 items(eventsList) { event ->
                     Spacer(modifier = Modifier.height(30.dp))
-                    Row {
+                    Row(Modifier.clickable { onItemClick(event) }) {
                         Text(
                             text = "${event.startTime.time()} - ${event.finishTime.time()}",
                             style = MaterialTheme.typography.h7,

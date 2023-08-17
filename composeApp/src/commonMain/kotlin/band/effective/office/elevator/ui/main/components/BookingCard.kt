@@ -1,63 +1,82 @@
 package band.effective.office.elevator.ui.main.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Icon
+import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.textGrayColor
-import band.effective.office.elevator.textInBorderPurple
+import band.effective.office.elevator.ui.main.store.MainStore
 import band.effective.office.elevator.ui.models.ReservedSeat
-import dev.icerock.moko.resources.compose.painterResource
 
 @Composable
 fun BookingCard(
     seat: ReservedSeat,
+    onClickOptionMenu: (Int) -> Unit,
     onClickShowOptions: () -> Unit
 ) {
-    Column(
+    var expand = remember { mutableStateOf(false) }
+    Row(
         modifier = Modifier
             .clip(RoundedCornerShape(16.dp))
             .background(Color.White)
-            .padding(horizontal = 16.dp, vertical = 16.dp)
+            .padding(horizontal = 16.dp, vertical = 24.dp)
             .fillMaxWidth()
     ) {
-        Row {
-            SeatIcon()
-            Spacer(modifier = Modifier.width(12.dp))
-            SeatTitle(seat)
-            Spacer(modifier = Modifier.weight(.1f))
-            Button(
-                onClick = onClickShowOptions,
-                elevation = ButtonDefaults.elevation(0.dp, 0.dp, 0.dp, 0.dp),
-                colors = ButtonDefaults.buttonColors(
-                backgroundColor = Color.White,
-                contentColor = MaterialTheme.colors.primary)
+        SeatIcon()
+        Spacer(modifier = Modifier.width(12.dp))
+        SeatTitle(seat)
+        Spacer(modifier = Modifier.height(24.dp))
+        Row(
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            IconButton(
+                onClick = {
+                    /*
+                    expand.value = !expand.value
+                    onClickShowOptions()
+                     */
+                },
+                modifier = Modifier
+                    .clip(RoundedCornerShape(80.dp)),
+                colors = IconButtonDefaults.iconButtonColors(),
             ) {
-            Icon(
-                painter = painterResource(MainRes.images.mi_options_vertical),
-                contentDescription = null,
-                modifier = Modifier.size(20.dp),
-                tint = textInBorderPurple
-            )
+                Icon(
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = "show option menu",
+                    modifier = Modifier,
+                    tint = MaterialTheme.colors.secondaryVariant
+                )
+
             }
         }
     }
@@ -65,31 +84,35 @@ fun BookingCard(
 
 @Composable
 fun SeatTitle(seat: ReservedSeat) {
-    Column {
+    Column(
+        modifier = Modifier.wrapContentSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.Start
+    ) {
         Text(
             text = seat.seatName,
-            style = MaterialTheme.typography.subtitle1.copy(
-                color = Color.Black,
-                fontWeight = FontWeight(500)
-            )
+            style = MaterialTheme.typography.subtitle1.copy(color = Color.Black)
         )
-        Spacer(modifier = Modifier.height(6.dp))
+        Spacer(modifier = Modifier.height(12.dp))
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.wrapContentSize()
         ) {
             Text(
                 text = seat.bookingDay,
-                style = MaterialTheme.typography.subtitle1.copy(
-                    color = textGrayColor,
-                    fontWeight = FontWeight(400)
-                )
+                style = MaterialTheme.typography.subtitle1.copy(color = textGrayColor),
+                modifier = Modifier.wrapContentSize()
+            )
+            Divider(
+                modifier = Modifier
+                    .width(6.dp)
+                    .rotate(90f),
+                thickness = 2.dp,
             )
             Text(
                 text = seat.bookingTime,
-                style = MaterialTheme.typography.subtitle1.copy(
-                    color = textGrayColor,
-                    fontWeight = FontWeight(400)
-                )
+                style = MaterialTheme.typography.subtitle1.copy(color = textGrayColor),
+                modifier = Modifier.wrapContentSize()
             )
         }
     }

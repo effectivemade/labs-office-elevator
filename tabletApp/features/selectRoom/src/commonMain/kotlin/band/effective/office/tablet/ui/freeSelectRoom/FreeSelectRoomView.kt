@@ -27,9 +27,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import band.effective.office.tablet.features.selectRoom.MainRes
+import band.effective.office.tablet.ui.common.CrossButtonView
 import band.effective.office.tablet.ui.freeSelectRoom.store.FreeSelectStore
 import band.effective.office.tablet.ui.loader.Loader
-import band.effective.office.tablet.ui.selectRoomScreen.uiComponents.CrossButtonView
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.textButton
 
@@ -39,7 +39,8 @@ fun FreeSelectRoomView(freeSelectRoomComponent: FreeSelectRoomComponent) {
     FreeSelectRoomView(
         onCloseRequest = { freeSelectRoomComponent.sendIntent(FreeSelectStore.Intent.OnCloseWindowRequest) },
         onFreeRoomRequest = { freeSelectRoomComponent.sendIntent(FreeSelectStore.Intent.OnFreeSelectRequest) },
-        isLoading = state.isLoad
+        isLoading = state.isLoad,
+        isFail = !state.isSuccess
     )
 }
 
@@ -48,7 +49,8 @@ fun FreeSelectRoomView(freeSelectRoomComponent: FreeSelectRoomComponent) {
 fun FreeSelectRoomView(
     onCloseRequest: () -> Unit,
     onFreeRoomRequest: () -> Unit,
-    isLoading: Boolean
+    isLoading: Boolean,
+    isFail: Boolean
 ) {
     val shape = RoundedCornerShape(50)
 
@@ -105,13 +107,20 @@ fun FreeSelectRoomView(
                 ) {
                     Box(contentAlignment = Alignment.Center)
                     {
-                        if (isLoading) Loader()
-                        else
-                            Text(
+                        when {
+                            isLoading -> Loader()
+                            isFail -> Text(
+                                text = MainRes.string.try_again,
+                                style = MaterialTheme.typography.h6,
+                                color = textButton,
+                            )
+
+                            else -> Text(
                                 text = MainRes.string.free_select_room_button,
                                 style = MaterialTheme.typography.h6,
                                 color = textButton,
                             )
+                        }
                     }
                 }
             }

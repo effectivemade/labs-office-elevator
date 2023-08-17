@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.features.selectRoom.MainRes
 import band.effective.office.tablet.ui.buttons.alert.AlertButton
-import band.effective.office.tablet.ui.selectRoomScreen.uiComponents.CrossButtonView
+import band.effective.office.tablet.ui.common.CrossButtonView
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.disconnectColor
 import band.effective.office.tablet.ui.theme.h7

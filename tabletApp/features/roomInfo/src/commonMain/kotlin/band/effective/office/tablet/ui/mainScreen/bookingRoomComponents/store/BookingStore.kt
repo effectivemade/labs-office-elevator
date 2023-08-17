@@ -2,7 +2,6 @@ package band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store
 
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.Organizer
-import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.pickerDateTime.DateTimePickerComponent
 import com.arkivanov.mvikotlin.core.store.Store
 import java.util.Calendar
 import java.util.GregorianCalendar
@@ -12,9 +11,9 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         object OnBookingCurrentRoom : Intent
         object OnBookingOtherRoom : Intent
         data class OnChangeDate(val changeInDay: Int) : Intent
-        data class OnSetDate(val changedDay: Int, val changedMonth: Int) : Intent
+        data class OnSetDate(val changedDay: Int, val changedMonth: Int, val changedYear: Int, val changedHour: Int, val changedMinute: Int) : Intent
         data class OnChangeLength(val change: Int) : Intent
-        data class OnChangeOrganizer(val newOrganizer: String) : Intent
+        data class OnChangeOrganizer(val newOrganizer: Organizer) : Intent
         object OnChangeExpanded : Intent
         data class OnChangeIsActive(val reset: Boolean): Intent
 
@@ -22,6 +21,8 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
 
         data class OnDateTimePickerModal(val close: (() -> Unit)? = null): Intent
         data class CloseModal(val close: (() -> Unit)? = null) : Intent
+        data class OnInput(val newValue: String): Intent
+        object OnDoneInput: Intent
     }
 
     sealed interface Label{
@@ -35,6 +36,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         val organizer: Organizer,
         val isOrganizerError: Boolean,
         val organizers: List<Organizer>,
+        val selectOrganizers: List<Organizer>,
         val selectDate: Calendar,
         val currentDate: Calendar,
         val isBusy: Boolean,
@@ -42,7 +44,8 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         val roomName: String,
         val isExpandedOrganizersList: Boolean,
         val isSelectCurrentTime: Boolean,
-        val isActive: Boolean
+        val isActive: Boolean,
+        val inputText: String
     ) {
         fun isCorrect() = isCorrectOrganizer() && isCorrectLength() && isCorrectDate()
 
@@ -55,6 +58,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
                 length = 30,
                 organizer = Organizer.default,
                 organizers = listOf(),
+                selectOrganizers = listOf(),
                 selectDate = GregorianCalendar(),
                 currentDate = GregorianCalendar(),
                 isBusy = false,
@@ -63,7 +67,8 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
                 isOrganizerError = false,
                 isExpandedOrganizersList = false,
                 isSelectCurrentTime = true,
-                isActive = true
+                isActive = true,
+                inputText = ""
             )
         }
     }

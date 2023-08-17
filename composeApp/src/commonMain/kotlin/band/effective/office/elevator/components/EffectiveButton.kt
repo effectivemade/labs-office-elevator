@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-//use this components for rectangular buttons with orange background
+
 @Composable
 fun EffectiveButton(
     buttonText: String,
@@ -27,13 +27,7 @@ fun EffectiveButton(
             contentColor = MaterialTheme.colors.background
         ),
         contentPadding = PaddingValues(contentPadding),
-        elevation = ButtonDefaults.elevation(
-            defaultElevation = 0.dp,
-            pressedElevation = 0.dp,
-            disabledElevation = 0.dp,
-            hoveredElevation = 0.dp,
-            focusedElevation = 0.dp,
-        ),
+        elevation = Elevation(),
         shape = RoundedCornerShape(roundedCorner),
         modifier = modifier
     ) {

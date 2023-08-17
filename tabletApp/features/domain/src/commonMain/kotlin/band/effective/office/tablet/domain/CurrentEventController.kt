@@ -3,6 +3,7 @@ package band.effective.office.tablet.domain
 import band.effective.office.network.model.Either
 import band.effective.office.network.model.ErrorResponse
 import band.effective.office.tablet.domain.model.EventInfo
+import band.effective.office.tablet.domain.model.Settings
 import band.effective.office.tablet.domain.useCase.RoomInfoUseCase
 import band.effective.office.tablet.network.repository.CancelRepository
 import kotlinx.coroutines.CoroutineScope
@@ -28,7 +29,8 @@ abstract class CurrentEventController(
         this.scope = scope
         job?.cancel()
         job = update()
-        scope.launch { roomUseCase.subscribe().collect() { onServerUpdate() } }
+        scope.launch { roomUseCase.subscribe(Settings.current.checkCurrentRoom())
+            .collect() { onServerUpdate() } }
     }
 
     /**Finish current event*/
@@ -44,7 +46,7 @@ abstract class CurrentEventController(
     private fun onServerUpdate() {
         scope.launch {
             job?.cancel()
-            currentEvent = when (val response = roomUseCase()) {
+            currentEvent = when (val response = roomUseCase(Settings.current.checkCurrentRoom())) {
                 is Either.Error -> null
                 is Either.Success -> response.data.currentEvent
             }

@@ -1,6 +1,7 @@
 package band.effective.office.elevator.ui.employee.aboutEmployee.store
 
 import band.effective.office.elevator.domain.models.User
+import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsFilter
 import band.effective.office.elevator.ui.models.ReservedSeat
 import com.arkivanov.mvikotlin.core.store.Store
 import kotlinx.datetime.LocalDate
@@ -16,13 +17,14 @@ interface AboutEmployeeStore : Store<AboutEmployeeStore.Intent,AboutEmployeeStor
         object CloseCalendarClicked: Intent
         data class OnClickApplyDate(val date: LocalDate?): Intent
         object OpenBottomDialog: Intent
-        object CloseBottomDialog: Intent
+        data class CloseBottomDialog(val bookingsFilter: BookingsFilter): Intent
 
     }
 
     data class State(
         val user: User,
-        val reservedSeats: List<ReservedSeat>,
+        val reservedSeatsList: List<ReservedSeat>,
+        val dateFiltrationOnReserves: Boolean,
         val filtrationOnReserves: Boolean,
         val currentDate: LocalDate
     )

@@ -28,10 +28,13 @@ actual fun pickTelegram(telegramNick: String) {
     val urlString = "https://telegram.me/$telegramNick"
     val url = NSURL.URLWithString(urlString)
     val application = UIApplication.sharedApplication
-    application.openURL(url)
+    if (url != null) {
+        application.openURL(url)
+    }
 }
 
-actual fun pickSBP(phoneNumber: String){
+actual fun pickSBP(phoneNumber: String) {
     val url = NSURL(string = "tel:$phoneNumber")
     UIApplication.sharedApplication.openURL(url)
 }
+

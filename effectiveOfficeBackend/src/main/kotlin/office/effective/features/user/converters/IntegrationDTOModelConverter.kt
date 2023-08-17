@@ -1,12 +1,15 @@
 package office.effective.features.user.converters
 
+import office.effective.common.utils.UuidValidator
 import office.effective.features.user.dto.IntegrationDTO
 import office.effective.model.IntegrationModel
 import java.util.*
 
-class IntegrationDTOModelConverter {
+class IntegrationDTOModelConverter(
+    private val uuidConverter : UuidValidator
+) {
     fun dTOToModel(integrationDTO: IntegrationDTO): IntegrationModel {
-        return IntegrationModel(UUID.fromString(integrationDTO.id), integrationDTO.name, integrationDTO.value, "")
+        return IntegrationModel(uuidConverter.uuidFromString(integrationDTO.id), integrationDTO.name, integrationDTO.value, "")
     }
 
     fun modelToDTO(integrationModel: IntegrationModel): IntegrationDTO {

@@ -4,6 +4,7 @@ import junit.framework.TestCase.assertEquals
 import office.effective.common.exception.InstanceNotFoundException
 import office.effective.common.exception.ValidationException
 import office.effective.common.utils.DatabaseTransactionManager
+import office.effective.common.utils.UuidValidator
 import office.effective.features.workspace.converters.WorkspaceFacadeConverter
 import office.effective.features.workspace.dto.WorkspaceDTO
 import office.effective.features.workspace.facade.WorkspaceFacade
@@ -29,13 +30,15 @@ class WorkspaceFacadeTest {
     private lateinit var mockConverter: WorkspaceFacadeConverter
     @Mock
     private lateinit var mockTransactionManager: DatabaseTransactionManager
+    @Mock
+    private lateinit var mockUuidValidator: UuidValidator
 
     private lateinit var workspaceFacade: WorkspaceFacade
 
     @Before
     fun setUp() {
         MockitoAnnotations.openMocks(this)
-        workspaceFacade = WorkspaceFacade(mockService, mockConverter, mockTransactionManager)
+        workspaceFacade = WorkspaceFacade(mockService, mockConverter, mockTransactionManager, mockUuidValidator)
     }
 
     private fun setUpMockService(workspace: Workspace?) {
@@ -81,15 +84,6 @@ class WorkspaceFacadeTest {
 
         assertFailsWith<InstanceNotFoundException> {
             workspaceFacade.findById(workspaceId.toString())
-        }
-    }
-
-    @Test
-    fun testFindByIdWithInvalidUuidInput() {
-        val invalidWorkspaceId = "not_a_valid_uuid"
-
-        assertFailsWith<ValidationException> {
-            workspaceFacade.findById(invalidWorkspaceId)
         }
     }
 

@@ -20,9 +20,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import band.effective.office.elevator.ExtendedTheme
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
-import band.effective.office.elevator.textInBorderPurple
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import dev.icerock.moko.resources.compose.painterResource
 
@@ -48,7 +47,7 @@ fun BookingCard(workSpace: WorkSpaceUI, onClickOpenBookAccept: (String) -> Unit)
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .clip(shape = RoundedCornerShape(100.dp))
-                        .background(color = ExtendedTheme.colors.purple_heart_100)
+                        .background(color = ExtendedThemeColors.colors.purple_heart_100)
                         .padding(all = 8.dp)
                         .size(44.dp)
                 ) {
@@ -56,7 +55,7 @@ fun BookingCard(workSpace: WorkSpaceUI, onClickOpenBookAccept: (String) -> Unit)
                         painter = painterResource(MainRes.images.table_icon),
                         contentDescription = null,
                         modifier = Modifier,
-                        tint = textInBorderPurple
+                        tint = ExtendedThemeColors.colors.purple_heart_800
                     )
                 }
                 Text(

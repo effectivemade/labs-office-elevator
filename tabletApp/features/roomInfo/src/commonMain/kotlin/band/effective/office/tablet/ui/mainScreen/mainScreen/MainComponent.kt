@@ -1,15 +1,15 @@
 package band.effective.office.tablet.ui.mainScreen.mainScreen
 
+import band.effective.office.tablet.ui.bookingComponents.pickerDateTime.DateTimePickerComponent
 import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomComponent
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingRoomComponent
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store.BookingStore
-import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.pickerDateTime.DateTimePickerComponent
-import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.uiComponents.pickerDateTime.DateTimePickerStore
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainFactory
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.RoomInfoComponent
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.store.RoomInfoStore
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponentImpl
+import band.effective.office.tablet.ui.updateEvent.UpdateEventComponent
 import band.effective.office.tablet.utils.componentCoroutineScope
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.childContext
@@ -22,7 +22,8 @@ import kotlinx.coroutines.launch
 class MainComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
-    private val OnSelectOtherRoomRequest: () -> Unit
+    private val OnSelectOtherRoomRequest: () -> Unit,
+    val onSettings: () -> Unit
 ) : ComponentContext by componentContext {
 
     val roomInfoComponent: RoomInfoComponent = RoomInfoComponent(
@@ -48,7 +49,7 @@ class MainComponent(
             onMainScreen = {
                 mainStore.accept(MainStore.Intent.CloseModal)
                 bookingRoomComponent.sendIntent(BookingStore.Intent.OnChangeIsActive(true))
-                           },
+            },
             onCloseRequest = {
                 mainStore.accept(MainStore.Intent.CloseModal)
                 bookingRoomComponent.sendIntent(BookingStore.Intent.OnChangeIsActive(false))
@@ -67,9 +68,23 @@ class MainComponent(
             storeFactory = storeFactory,
             onOpenDateTimePickerModal = { mainStore.accept(MainStore.Intent.OnOpenDateTimePickerModal) },
             onCloseRequest = { mainStore.accept(MainStore.Intent.CloseModal) },
-            setNewDate = {
-                    day: Int, month: Int -> bookingRoomComponent.sendIntent(BookingStore.Intent.OnSetDate(day, month)) },
+            setNewDate = { day: Int, month: Int, year: Int, hour: Int, minute: Int ->
+                bookingRoomComponent.sendIntent(
+                    BookingStore.Intent.OnSetDate(
+                        day,
+                        month,
+                        year,
+                        hour,
+                        minute
+                    )
+                )
+            },
         )
+
+    val updateEventComponent = UpdateEventComponent(
+        componentContext = componentContext,
+        storeFactory = storeFactory
+    )
 
     private val mainStore = instanceKeeper.getStore {
         MainFactory(

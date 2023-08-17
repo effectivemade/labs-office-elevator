@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.ElevatorUpButton
 import dev.icerock.moko.resources.compose.stringResource
@@ -23,7 +24,7 @@ fun ElevatorUIComponent(
         Text(
             text = stringResource(MainRes.strings.elevator),
             style = MaterialTheme.typography.subtitle1,
-            color = Color.Black, //this color doesn't in Theme
+            color = ExtendedThemeColors.colors.blackColor,
             fontWeight = FontWeight(500)
         )
         Spacer(Modifier.weight(.1f))

@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import band.effective.office.elevator.ExtendedTheme
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import com.commandiron.wheel_picker_compose.WheelTimePicker
 import com.commandiron.wheel_picker_compose.core.WheelPickerDefaults
@@ -43,7 +43,7 @@ fun TimePickerModal(
             modifier = Modifier
                 .clip(RoundedCornerShape(16.dp))
                 .padding(16.dp)
-                .background(color = ExtendedTheme.colors.backgroundTextColor)
+                .background(color = ExtendedThemeColors.colors.backgroundTextColor)
                 .fillMaxWidth(),
             text = titleText,
             style = MaterialTheme.typography.h6

@@ -33,11 +33,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
-import band.effective.office.elevator.borderPurple
 import band.effective.office.elevator.components.TitlePage
 import band.effective.office.elevator.textGrayColor
-import band.effective.office.elevator.ui.models.FieldsDataForProfile
+import band.effective.office.elevator.ui.models.UserData
+import band.effective.office.elevator.ui.models.getAllUserDataProfile
 import band.effective.office.elevator.ui.profile.mainProfile.store.ProfileStore
 import com.seiko.imageloader.model.ImageRequest
 import com.seiko.imageloader.rememberAsyncImagePainter
@@ -69,6 +70,7 @@ fun ProfileScreen(component: MainProfileComponent) {
     )
 }
 
+
 @Composable
 internal fun ProfileScreenContent(
     imageUrl: String,
@@ -80,7 +82,6 @@ internal fun ProfileScreenContent(
     onEditProfile: (id: String) -> Unit,
     id: String
 ) {
-    val fieldsList = prepareFieldsData(telegram, phoneNumber)
     Column(
         modifier = Modifier.fillMaxSize().background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -116,8 +117,8 @@ internal fun ProfileScreenContent(
         ProfileInfoAboutUser(imageUrl, userName, post, {onEditProfile(id)},id)
         LazyColumn(modifier = Modifier.fillMaxSize().padding(top = 24.dp))
         {
-            items(fieldsList){item ->
-                FieldsItemStyle(item = item, { onEditProfile(id) },id)
+            items(getAllUserDataProfile()){ item ->
+                FieldsItemStyle(item = item, { onEditProfile(id) },id = id, telegram = telegram, phoneNumber = phoneNumber)
             }
         }
     }
@@ -136,7 +137,7 @@ fun ProfileInfoAboutUser(imageUrl: String, userName: String, post: String, onEdi
             Surface(
                 modifier = Modifier.size(88.dp).align(Alignment.Center),
                 shape = CircleShape,
-                color = Color(0xFFEBE4FF)
+                color = ExtendedThemeColors.colors.purple_heart_100
             ) {
                 Image(
                     modifier = Modifier.fillMaxSize().align(Alignment.Center),
@@ -172,7 +173,13 @@ fun ProfileInfoAboutUser(imageUrl: String, userName: String, post: String, onEdi
 
 
 @Composable
-private fun FieldsItemStyle(item: FieldsDataForProfile, onEditProfile: (id: String) -> Unit,  id: String) {
+private fun FieldsItemStyle(
+    item: UserData,
+    onEditProfile: (id: String) -> Unit,
+    id: String,
+    phoneNumber: String,
+    telegram: String
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier
             .padding(horizontal = 16.dp).fillMaxWidth()
@@ -189,43 +196,22 @@ private fun FieldsItemStyle(item: FieldsDataForProfile, onEditProfile: (id: Stri
             modifier = Modifier.padding(start = 12.dp)
         )
         Spacer(modifier = Modifier.weight(.1f))
+        var text = when(item){
+            UserData.Phone -> phoneNumber
+            UserData.Telegram -> telegram
+        }
         Text(
-            item.value,
+            text = text,
             style = MaterialTheme.typography.subtitle1,
-            color = Color.Black
+            color = ExtendedThemeColors.colors.blackColor
         )
     IconButton(onClick = { onEditProfile(id) }) {
         Icon(
             painter = painterResource(MainRes.images.next),
             contentDescription = null,
-            tint = borderPurple
+            tint = ExtendedThemeColors.colors.purple_heart_700
         )
     }
     }
     Divider(color = textGrayColor, thickness = 1.dp)
-}
-
-
-
-
-private fun prepareFieldsData(telegram: String, phoneNumber: String) : List<FieldsDataForProfile>{
-
-    val fieldsList = mutableListOf<FieldsDataForProfile>()
-
-    fieldsList.add(
-        FieldsDataForProfile(
-            icon = MainRes.images.icon_call,
-            title = MainRes.strings.phone_number,
-            value = phoneNumber,
-        )
-    )
-
-    fieldsList.add(
-        FieldsDataForProfile(
-            icon = MainRes.images.icon_telegram,
-            title = MainRes.strings.telegram,
-            value =telegram,
-        )
-    )
-    return fieldsList
 }

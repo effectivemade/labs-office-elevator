@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.ui.models.TypesList
 import dev.icerock.moko.resources.compose.painterResource
@@ -48,11 +49,13 @@ fun OptionMenu(
                 ) {
                     Image(
                         modifier = Modifier.padding(vertical = 20.dp),
-                        painter = painterResource(MainRes.images.icon_map), //TODO(Заменить карту!")
+                        painter = painterResource(MainRes.images.icon_map), //TODO(Olesia Shinkarenko): replace map
                         contentDescription = null
                     )
                 }
             }
+
+
         }
 
         AnimatedVisibility(visible = isExpandedOptions) {
@@ -60,7 +63,7 @@ fun OptionMenu(
                 Text(
                     text = stringResource(MainRes.strings.type_booking),
                     style = MaterialTheme.typography.subtitle1,
-                    color = Color.Black
+                    color = ExtendedThemeColors.colors.blackColor
                 )
                 Row(
                     modifier = Modifier.padding(top = 8.dp).fillMaxWidth(),
@@ -91,7 +94,7 @@ fun OptionMenu(
                                 color = if (selected) {
                                     MaterialTheme.colors.background
                                 } else {
-                                    Color.White
+                                    ExtendedThemeColors.colors.whiteColor
                                 }
                             ).selectable(
                                 selected = selected,
@@ -119,7 +122,7 @@ fun OptionMenu(
                     modifier = Modifier.padding(top = 12.dp),
                     text = stringResource(MainRes.strings.booking_period),
                     style = MaterialTheme.typography.subtitle1,
-                    color = Color.Black
+                    color = ExtendedThemeColors.colors.blackColor
                 )
                 Row(
                     modifier = Modifier.padding(top = 8.dp)
@@ -137,7 +140,7 @@ fun OptionMenu(
                         )
                     }
                     Text(
-                        text = "Пт, 30 июня 12:00 — 14:00", //TODO("Получать текст из календаря")
+                        text = "Пт, 30 июня 12:00 — 14:00", //TODO(Olesia Shinkarenko): get from calendar
                         modifier = Modifier.padding(start = 8.dp),
                         style = MaterialTheme.typography.body2
                     )

@@ -31,9 +31,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import band.effective.office.elevator.ExtendedTheme
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
+import band.effective.office.elevator.components.Elevation
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 
@@ -54,13 +55,6 @@ fun BookingPeriod(
     bookingRepeat: () -> Unit,
     onClickSearchSuitableOptions: () -> Unit
 ) {
-    val elevation = ButtonDefaults.elevation(
-        defaultElevation = 0.dp,
-        pressedElevation = 0.dp,
-        disabledElevation = 0.dp,
-        hoveredElevation = 0.dp,
-        focusedElevation = 0.dp
-    )
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -84,8 +78,9 @@ fun BookingPeriod(
                 .fillMaxWidth(fraction = .3f)
                 .height(height = 4.dp)
                 .background(
-                    color = ExtendedTheme.colors.dividerColor,
-                    shape = RoundedCornerShape(size = 16.dp)
+                   color = ExtendedThemeColors.colors.dividerColor,
+                    shape = RoundedCornerShape(size = 16.dp
+                    )
                 )
                 .padding(
                     bottom = 8.dp,
@@ -117,7 +112,7 @@ fun BookingPeriod(
                 .fillMaxWidth(fraction = 1.0f)
                 .height(height = 1.dp)
                 .background(
-                    color = ExtendedTheme.colors._66x
+                    color = ExtendedThemeColors.colors._66x
                 )
         )
 
@@ -163,9 +158,9 @@ fun BookingPeriod(
                         onCheckedChange = onSwitchChange,
                         colors = SwitchDefaults.colors(
                             checkedThumbColor = MaterialTheme.colors.primary,
-                            uncheckedThumbColor = ExtendedTheme.colors.switchColor,
-                            uncheckedBorderColor = Color.Transparent,
-                            checkedBorderColor = Color.Transparent
+                            uncheckedThumbColor = ExtendedThemeColors.colors.switchColor,
+                            uncheckedBorderColor = ExtendedThemeColors.colors.transparentColor,
+                            checkedBorderColor = ExtendedThemeColors.colors.transparentColor
                         )
                     )
                 }
@@ -174,7 +169,7 @@ fun BookingPeriod(
                 TimeLine(
                     date = startDate,
                     time = startTime,
-                    elevation = elevation,
+                    elevation = Elevation(),
                     onPickDate = bookStartDate,
                     onPickTime = bookStartTime,
                 )
@@ -183,7 +178,7 @@ fun BookingPeriod(
                 TimeLine(
                     date = finishDate,
                     time = finishTime,
-                    elevation = elevation,
+                    elevation = Elevation(),
                     onPickDate = bookFinishDate,
                     onPickTime = bookFinishTime
                 )
@@ -191,9 +186,9 @@ fun BookingPeriod(
                 //Book period
                 Button(
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color.Transparent
+                        backgroundColor = ExtendedThemeColors.colors.transparentColor
                     ),
-                    elevation = elevation,
+                    elevation = Elevation(),
                     onClick = bookingRepeat
                 ) {
                     Row(

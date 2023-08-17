@@ -17,8 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -49,23 +47,22 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import band.effective.office.elevator.ExtendedTheme
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
-import band.effective.office.elevator.textInBorderGray
-import band.effective.office.elevator.textInBorderPurple
-import band.effective.office.elevator.theme_light_primary_color
+import band.effective.office.elevator.components.Elevation
 import dev.icerock.moko.resources.compose.stringResource
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun BookingRepeat(
     backButtonClicked: () -> Unit,
-    dropDownClick: () -> Unit,
+    dropDownClick: (Int) -> Unit,
     confirmBooking: () -> Unit,
     onSelected: () -> Unit,
     onDaySelected: (Int) -> Unit
 ) {
+
     val selected1 = remember {
         mutableStateOf(true)
     }
@@ -86,210 +83,229 @@ fun BookingRepeat(
         MainRes.strings.Sunday,
     )
 
-    val dropDownList = listOf(
-        stringResource(MainRes.strings.week),
-        stringResource(MainRes.strings.month)
-    )
+    val isExpandedContextMenu = remember { mutableStateOf(false) }
 
-    Box {
-        Column(
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally,
+    Column(
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .background(
+                color = Color.White,
+                shape = RoundedCornerShape(
+                    topStart = 16.dp,
+                    topEnd = 16.dp,
+                    bottomEnd = 0.dp,
+                    bottomStart = 0.dp
+                )
+            )
+            .padding(bottom = 16.dp)
+    ) {
+        Spacer(modifier = Modifier.height(height = 8.dp))
+        Divider(
+            modifier = Modifier
+                .fillMaxWidth(fraction = .3f)
+                .height(height = 4.dp)
+                .background(
+                    color = ExtendedThemeColors.colors.dividerColor,
+                    shape = RoundedCornerShape(size = 16.dp)
+                )
+                .padding(
+                    bottom = 8.dp,
+                    top = 8.dp
+                )
+        )
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.Start),
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .background(
-                    color = Color.White,
-                    shape = RoundedCornerShape(
-                        topStart = 16.dp,
-                        topEnd = 16.dp,
-                        bottomEnd = 0.dp,
-                        bottomStart = 0.dp
-                    )
-                )
-                .padding(bottom = 16.dp)
+                .padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 16.dp)
         ) {
-            Spacer(modifier = Modifier.height(height = 8.dp))
-            Divider(
-                modifier = Modifier
-                    .fillMaxWidth(fraction = .3f)
-                    .height(height = 4.dp)
-                    .background(
-                        color = ExtendedTheme.colors.dividerColor,
-                        shape = RoundedCornerShape(size = 16.dp)
-                    )
-                    .padding(
-                        bottom = 8.dp,
-                        top = 8.dp
-                    )
+            IconButton(
+                onClick = backButtonClicked,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "back button"
+                )
+            }
+            Text(
+                text = stringResource(resource = MainRes.strings.booking_repeat),
+                style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight(500)),
+                textAlign = TextAlign.Center
             )
+        }
 
+        Divider(
+            modifier = Modifier
+                .fillMaxWidth(fraction = 1.0f)
+                .height(height = 1.dp)
+                .background(
+                    color = ExtendedThemeColors.colors._66x
+                )
+        )
+
+        Column(
+            modifier = Modifier
+        ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.Start),
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 16.dp)
+                    .padding(start = 54.dp, end = 16.dp, top = 16.dp)
             ) {
-                IconButton(
-                    onClick = backButtonClicked,
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "back button"
-                    )
-                }
                 Text(
-                    text = stringResource(resource = MainRes.strings.booking_repeat),
-                    style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight(500)),
-                    textAlign = TextAlign.Center
+                    text = stringResource(resource = MainRes.strings.booking_repeat_in),
+                    style = MaterialTheme.typography.button.copy(fontWeight = FontWeight(400))
                 )
             }
 
-            Divider(
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start),
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .fillMaxWidth(fraction = 1.0f)
-                    .height(height = 1.dp)
-                    .background(
-                        color = ExtendedTheme.colors._66x
-                    )
-            )
-
-            Column(
-                modifier = Modifier
+                    .wrapContentWidth()
+                    .padding(start = 54.dp, end = 16.dp)
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.Start),
-                    verticalAlignment = Alignment.CenterVertically,
+                OutlinedTextField(
+                    value = "1",
+                    onValueChange = {
+
+                    },
+                    shape = RoundedCornerShape(8.dp),
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 54.dp, end = 16.dp, top = 16.dp)
-                ) {
-                    Text(
-                        text = stringResource(resource = MainRes.strings.booking_repeat_in),
-                        style = MaterialTheme.typography.button.copy(fontWeight = FontWeight(400))
-                    )
-                }
+                        .padding(top = 12.dp, bottom = 12.dp)
+                        .weight(.3f)
+                )
+                OutlinedTextField(
+                    enabled = false,
+                    readOnly = true,
+                    value = stringResource(MainRes.strings.week),
+                    onValueChange = {
 
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start),
-                    verticalAlignment = Alignment.CenterVertically,
+                    },
+                    shape = RoundedCornerShape(8.dp),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        disabledTextColor = LocalContentColor.current.copy(LocalContentAlpha.current)
+                    ),
                     modifier = Modifier
-                        .wrapContentWidth()
-                        .padding(start = 54.dp, end = 16.dp)
-                ) {
-                    OutlinedTextField(
-                        value = "1",
-                        onValueChange = {
-
-                        },
-                        shape = RoundedCornerShape(8.dp),
-                        modifier = Modifier
-                            .padding(top = 12.dp, bottom = 12.dp)
-                            .weight(.3f)
-                    )
-                    OutlinedTextField(
-                        enabled = false,
-                        readOnly = true,
-                        value = dropDownList[0],
-                        onValueChange = {
-
-                        },
-                        shape = RoundedCornerShape(8.dp),
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            disabledTextColor = LocalContentColor.current.copy(LocalContentAlpha.current)
-                        ),
-                        modifier = Modifier
-                            .padding(
-                                start = 16.dp,
-                                top = 12.dp,
-                                end = 12.dp,
-                                bottom = 12.dp
+                        .padding(
+                            start = 16.dp,
+                            top = 12.dp,
+                            end = 12.dp,
+                            bottom = 12.dp
+                        )
+                        .weight(.7f),
+                    trailingIcon = {
+                        IconButton(
+                            onClick =
+                            {
+                                isExpandedContextMenu.value = !isExpandedContextMenu.value
+                            }
+                        ) {
+                            Image(
+                                modifier = Modifier,
+                                imageVector = Icons.Default.ArrowDropDown,
+                                contentDescription = "drop down",
+                                contentScale = ContentScale.None
                             )
-                            .weight(.7f),
-                        trailingIcon = {
-                            IconButton(
-                                onClick = dropDownClick
-                            ) {
-                                Image(
-                                    imageVector = Icons.Default.ArrowDropDown,
-                                    contentDescription = "drop down",
-                                    contentScale = ContentScale.None
-                                )
-                            }
-                        }
-                    )
-                }
-
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.Start),
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 54.dp, end = 16.dp, top = 16.dp)
-                ) {
-                    Text(
-                        text = stringResource(MainRes.strings.when_repeat),
-                        style = MaterialTheme.typography.button.copy(fontWeight = FontWeight(weight = 400))
-                    )
-                }
-
-                LazyVerticalStaggeredGrid(
-                    columns = StaggeredGridCells.Fixed(count = 4),
-                    verticalItemSpacing = 12.dp,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 54.dp, end = 16.dp, top = 16.dp, bottom = 16.dp),
-                    content = {
-                        items(weekNames.size) { index ->
-                            var isExpanded by remember { mutableStateOf(false) }
-                            Button(
-                                onClick = {
-                                    isExpanded = !isExpanded
-                                }.also { onDaySelected(index) },
-                                colors = ButtonDefaults.buttonColors(theme_light_primary_color),
-                                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
-                                modifier = Modifier
-                                    .wrapContentWidth(),
-                                border = BorderStroke(
-                                    width = 1.dp,
-                                    color = if (isExpanded) textInBorderPurple else textInBorderGray
-                                ),
-                                shape = RoundedCornerShape(12.dp),
-                                elevation = ButtonDefaults.elevation(0.dp, 2.dp, 0.dp)
-                            ) {
-                                Row {
-                                    androidx.compose.material.Icon(
-                                        imageVector = Icons.Rounded.Done,
-                                        tint = textInBorderPurple,
-                                        modifier = Modifier.size(
-                                            if (isExpanded) 20.dp
-                                            else 0.dp
-                                        )
-                                            .align(Alignment.CenterVertically),
-                                        contentDescription = "done button"
-                                    )
-                                    androidx.compose.material.Text(
-                                        text = stringResource(weekNames[index]),
-                                        style = MaterialTheme.typography.body2.copy(
-                                            color = if (isExpanded) textInBorderPurple
-                                            else textInBorderGray
-                                        ),
-                                    )
-                                }
-                            }
                         }
                     }
                 )
+            }
+
+            Box {
+                Column {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.Start),
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 54.dp, end = 16.dp, top = 16.dp)
+                    ) {
+                        Text(
+                            text = stringResource(MainRes.strings.when_repeat),
+                            style = MaterialTheme.typography.button.copy(
+                                fontWeight = FontWeight(
+                                    weight = 400
+                                )
+                            )
+                        )
+                    }
+
+                    /* LazyVerticalStaggeredGrid(
+                        columns = StaggeredGridCells.Fixed(count = 4),
+                        verticalItemSpacing = 12.dp,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 54.dp, end = 16.dp, top = 16.dp, bottom = 16.dp),
+                        content = {
+                            items(weekNames.size) { index ->
+                                var isExpanded by remember { mutableStateOf(false) }
+                                Button(
+                                    onClick = {
+                                        isExpanded = !isExpanded
+                                    }.also { onDaySelected(index) },
+                                    colors = ButtonDefaults.buttonColors(theme_light_primary_color),
+                                    contentPadding = PaddingValues(
+                                        horizontal = 12.dp,
+                                        vertical = 6.dp
+                                    ),
+                                    modifier = Modifier
+                                        .wrapContentWidth(),
+                                    border = BorderStroke(
+                                        width = 1.dp,
+                                        color = if (isExpanded) textInBorderPurple else textInBorderGray
+                                    ),
+                                    shape = RoundedCornerShape(12.dp),
+                                    elevation = ButtonDefaults.elevation(0.dp, 2.dp, 0.dp)
+                                ) {
+                                    Row {
+                                        androidx.compose.material.Icon(
+                                            imageVector = Icons.Rounded.Done,
+                                            tint = textInBorderPurple,
+                                            modifier = Modifier.size(
+                                                if (isExpanded) 20.dp
+                                                else 0.dp
+                                            )
+                                                .align(Alignment.CenterVertically),
+                                            contentDescription = "done button"
+                                        )
+                                        androidx.compose.material.Text(
+                                            text = stringResource(weekNames[index]),
+                                            style = MaterialTheme.typography.body2.copy(
+                                                color = if (isExpanded) textInBorderPurple
+                                                else textInBorderGray
+                                            ),
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    )
+                }
+
+                if (isExpandedContextMenu.value) {
+                    DropDownMenu(onClick = { item ->
+                        isExpandedContextMenu.value = !isExpandedContextMenu.value
+                        dropDownClick(item)
+                    })
+                }
+             */
+                }
 
                 Divider(
                     modifier = Modifier
                         .fillMaxWidth(fraction = 1.0f)
                         .height(height = 1.dp)
                         .background(
-                            color = ExtendedTheme.colors._66x
+                            color = ExtendedThemeColors.colors._66x
                         )
                 )
 
@@ -318,13 +334,7 @@ fun BookingRepeat(
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = Color.Transparent
                         ),
-                        elevation = ButtonDefaults.elevation(
-                            defaultElevation = 0.dp,
-                            pressedElevation = 0.dp,
-                            disabledElevation = 0.dp,
-                            hoveredElevation = 0.dp,
-                            focusedElevation = 0.dp
-                        ),
+                        elevation = Elevation(),
                         modifier = Modifier.fillMaxWidth().wrapContentHeight(),
                         onClick = {
                             selected1.value = !selected1.value
@@ -349,7 +359,7 @@ fun BookingRepeat(
                             Text(
                                 text = stringResource(MainRes.strings.never),
                                 style = MaterialTheme.typography.button.copy(
-                                    color = ExtendedTheme.colors.radioTextColor,
+                                    color = ExtendedThemeColors.colors.radioTextColor,
                                     fontWeight = FontWeight(400)
                                 ),
                                 modifier = Modifier.fillMaxWidth().wrapContentHeight()
@@ -402,7 +412,7 @@ fun BookingRepeat(
                     Text(
                         text = stringResource(MainRes.strings.booking_1),
                         style = MaterialTheme.typography.button.copy(
-                            color = ExtendedTheme.colors.radioTextColor,
+                            color = ExtendedThemeColors.colors.radioTextColor,
                             fontWeight = FontWeight(400)
                         ),
                         modifier = Modifier.wrapContentWidth()
@@ -425,7 +435,7 @@ fun BookingRepeat(
                     Text(
                         text = stringResource(MainRes.strings.booking_2),
                         style = MaterialTheme.typography.button.copy(
-                            color = ExtendedTheme.colors.radioTextColor,
+                            color = ExtendedThemeColors.colors.radioTextColor,
                             fontWeight = FontWeight(400)
                         ),
                         modifier = Modifier.wrapContentWidth().wrapContentHeight()

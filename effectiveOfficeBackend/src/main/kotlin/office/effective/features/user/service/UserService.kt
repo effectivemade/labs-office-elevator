@@ -14,6 +14,11 @@ class UserService(private val repository: UserRepository) : IUserService {
         return repository.findById(UUID.fromString(userIdStr))
     }
 
+    /**
+     * Updates a given user. Use the returned model for further operations
+     *
+     * @author Danil Kiselev
+     */
     override fun updateUser(user: UserModel): UserModel {
         return repository.updateUser(user)
     }

@@ -6,6 +6,7 @@ import band.effective.office.elevator.domain.useCase.AboutEmployeeUseCase
 import band.effective.office.elevator.expects.makeCall
 import band.effective.office.elevator.expects.pickSBP
 import band.effective.office.elevator.expects.pickTelegram
+import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsFilter
 import band.effective.office.elevator.ui.employee.aboutEmployee.models.toUIAbout
 import band.effective.office.elevator.ui.employee.aboutEmployee.store.AboutEmployeeStore.*
 import band.effective.office.elevator.ui.models.ReservedSeat
@@ -21,13 +22,16 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.Month
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory, private val employee: EmployeeInfo) : KoinComponent {
 
     private val aboutEmployeeUseCase: AboutEmployeeUseCase by inject()
+    private var mokValueUser = EmployeeInfo.defaultEmployee.toUIAbout()
+    private var recentDate = getCurrentDate()
+    private var filtration = BookingsFilter(meetRoom = true, workPlace = true)
+    private var datedList = false
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): AboutEmployeeStore =
@@ -35,8 +39,9 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory, private 
             name = "AboutEmployeeStore",
             initialState = State(
                 mokValueUser,
-                reservedSeats = listOf(),
+                reservedSeatsList = listOf(),
                 currentDate = getCurrentDate(),
+                dateFiltrationOnReserves = datedList,
                 filtrationOnReserves = false
             ),
             bootstrapper = coroutineBootstrapper {
@@ -54,12 +59,15 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory, private 
                 is Msg.ProfileData ->
                     copy(
                         user = msg.user,
-                        reservedSeats = msg.reservedSeats
-                )//mokValueUser
+                        reservedSeatsList = msg.reservedSeatsList,
+                        filtrationOnReserves = msg.filtrationOnReserves
+                )
                 is Msg.UpdateSeatsReservation -> {
                     copy(
-                        reservedSeats = msg.reservedSeats,
-                        filtrationOnReserves=msg.filtrationOnReserves)
+                        currentDate=msg.date,
+                        reservedSeatsList = msg.reservedSeatsList,
+                        dateFiltrationOnReserves=msg.dateFiltrationOnReserves,
+                        filtrationOnReserves = msg.filtrationOnReserves)
                 }
             }
     }
@@ -69,8 +77,15 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory, private 
     }
 
     private sealed interface Msg {
-        data class ProfileData(val user: User, val reservedSeats: List<ReservedSeat>) : Msg
-        data class UpdateSeatsReservation(val reservedSeats: List<ReservedSeat>, val filtrationOnReserves: Boolean) : Msg
+        data class ProfileData(
+            val user: User,
+            val reservedSeatsList: List<ReservedSeat>,
+            val filtrationOnReserves: Boolean) : Msg
+        data class UpdateSeatsReservation(
+            val date: LocalDate,
+            val reservedSeatsList: List<ReservedSeat>,
+            val dateFiltrationOnReserves: Boolean,
+            val filtrationOnReserves: Boolean) : Msg
     }
 
     private inner class ExecutorImpl :
@@ -81,32 +96,48 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory, private 
                 Intent.TelegramClicked -> pickTelegram(getState().user.telegram!!)
                 Intent.TelephoneClicked -> makeCall(getState().user.phoneNumber!!)
                 Intent.TransferMoneyClicked -> pickSBP(getState().user.phoneNumber!!)
-                AboutEmployeeStore.Intent.OpenCalendarClicked -> {
+                Intent.OpenCalendarClicked -> {
                     scope.launch {
-                        publish(AboutEmployeeStore.Label.OpenCalendar)
+                        publish(Label.OpenCalendar)
                     }
                 }
-                AboutEmployeeStore.Intent.CloseCalendarClicked -> {
+                Intent.CloseCalendarClicked -> {
                     scope.launch {
-                        publish(AboutEmployeeStore.Label.CloseCalendar)
+                        publish(Label.CloseCalendar)
                     }
                 }
-                is AboutEmployeeStore.Intent.OnClickApplyDate ->{
+                is Intent.OnClickApplyDate ->{
                     scope.launch {
-                        publish(AboutEmployeeStore.Label.CloseCalendar)
+                        publish(Label.CloseCalendar)
+                        datedList = true
                         intent.date?.let { newDate ->
-                            fetchUserInfoByDate(date=newDate, ownerId = mokValueUser.id)
+                            fetchUserInfoByDate(
+                                date=newDate,
+                                ownerId = mokValueUser.id,
+                                bookingsFilter = filtration)
                         }
                     }
                 }
-                AboutEmployeeStore.Intent.OpenBottomDialog ->{
+                Intent.OpenBottomDialog ->{
                     scope.launch {
-                        publish(AboutEmployeeStore.Label.OpenBottomDialog)
+                        publish(Label.OpenBottomDialog)
                     }
                 }
-                AboutEmployeeStore.Intent.CloseBottomDialog ->{
+                is Intent.CloseBottomDialog ->{
                     scope.launch {
-                        publish(AboutEmployeeStore.Label.CloseBottomDialog)
+                        publish(Label.CloseBottomDialog)
+                        intent.bookingsFilter.let { bookingsFilter ->
+                            if (datedList) {
+                                fetchUserInfoByDate(
+                                    date = recentDate,
+                                    ownerId = mokValueUser.id,
+                                    bookingsFilter = bookingsFilter)
+                            }else{
+                                fetchUserInfo(
+                                    employee = mokValueUser,
+                                    bookingsFilter=bookingsFilter)
+                            }
+                        }
                     }
                 }
             }
@@ -114,49 +145,54 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory, private 
 
         override fun executeAction(action: Action, getState: () -> State) {
             when (action) {
-                is Action.FetchUserInfo -> fetchUserInfo(employee = action.employee)
+                is Action.FetchUserInfo -> fetchUserInfo(employee = action.employee, bookingsFilter = filtration)
             }
         }
 
-        private fun fetchUserInfoByDate(date: LocalDate, ownerId:String,) {
+        private fun fetchUserInfoByDate(date: LocalDate, ownerId:String, bookingsFilter: BookingsFilter) {
+            if(recentDate != date)
+                recentDate = date
+            else
+                filtration = bookingsFilter
+
             scope.launch (Dispatchers.IO){
                 aboutEmployeeUseCase
-                    .getBookingsByDate(date = date, ownerId = ownerId, coroutineScope = this)
+                    .getBookingsByDate(
+                        date = date,
+                        ownerId = ownerId,
+                        bookingsFilter = bookingsFilter,
+                        coroutineScope = this)
                     .collect{newList -> withContext(Dispatchers.Main){
-                        dispatch(Msg.UpdateSeatsReservation(reservedSeats = newList, filtrationOnReserves = true))
+                        dispatch(Msg.UpdateSeatsReservation(
+                            date=recentDate,
+                            reservedSeatsList = newList,
+                            dateFiltrationOnReserves = datedList,
+                            filtrationOnReserves = !(filtration.workPlace && filtration.meetRoom)))
                         }
                     }
             }
         }
 
-        private fun fetchUserInfo(employee: User){
-            mokValueUser=employee
+        private fun fetchUserInfo(employee: User, bookingsFilter: BookingsFilter){
+            if (mokValueUser!=employee)
+                mokValueUser = employee
+            else
+                filtration = bookingsFilter
+
             scope.launch (Dispatchers.IO){
-                aboutEmployeeUseCase.getBookingsForUser(ownerId = employee.id, coroutineScope = this)
+                aboutEmployeeUseCase
+                    .getBookingsForUser(
+                        ownerId = employee.id,
+                        bookingsFilter = bookingsFilter,
+                        coroutineScope = this)
                     .collect{newList -> withContext(Dispatchers.Main){
-                        dispatch(Msg.ProfileData(user = employee, reservedSeats = newList))//false
-                    } }
+                        dispatch(Msg.ProfileData(
+                            user = employee,
+                            reservedSeatsList = newList,
+                            filtrationOnReserves = !(filtration.workPlace && filtration.meetRoom)))
+                        }
+                    }
             }
         }
     }
 }
-
-private var mokValueUser = User("1L","1","Ivanov Ivan", "Android-developer","67","@ivanov","employee@effective.com")
-private val mokValue = listOf(
-    ReservedSeat(
-        bookingId = "1",
-        ownerId = "1",
-        seatName = "Рабочее масто А2",
-        bookingDay = "Ср, 16 августа",
-        bookingTime = "12:00 - 14:00",
-        bookingDate = LocalDate(month = Month.AUGUST, year = 2023, dayOfMonth = 16)
-    ),
-    ReservedSeat(
-        bookingId = "1",
-        ownerId = "1",
-        seatName = "Переговорная Sun",
-        bookingDay = "Чт, 17 августа",
-        bookingTime = "14:00 - 16:00",
-        bookingDate = LocalDate(month = Month.AUGUST, year = 2023, dayOfMonth = 17)
-    ),
-)

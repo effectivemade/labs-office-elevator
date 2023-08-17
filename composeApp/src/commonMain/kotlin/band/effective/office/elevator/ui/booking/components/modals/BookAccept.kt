@@ -23,11 +23,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import band.effective.office.elevator.ExtendedTheme
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.textInBorderGray
-import band.effective.office.elevator.theme_light_tertiary_color
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
@@ -48,7 +47,7 @@ fun BookAccept(
                     .fillMaxWidth(fraction = .3f)
                     .height(4.dp)
                     .background(
-                        color = ExtendedTheme.colors.dividerColor,
+                        color = ExtendedThemeColors.colors.dividerColor,
                         shape = RoundedCornerShape(size = 16.dp)
                     )
                     .padding(
@@ -65,7 +64,7 @@ fun BookAccept(
                     Icon(
                         imageVector = Icons.Rounded.Close,
                         contentDescription = "Krestik",
-                        tint = theme_light_tertiary_color
+                        tint = ExtendedThemeColors.colors.blackColor
                     )
                 }
                 Column(modifier=Modifier.padding(horizontal = 5.dp)){
@@ -74,7 +73,7 @@ fun BookAccept(
                         style = MaterialTheme.typography.subtitle1,
                         fontSize = 20.sp,
                         fontWeight = FontWeight(600),
-                        color = theme_light_tertiary_color,
+                        color = ExtendedThemeColors.colors.blackColor,
                         modifier = Modifier.padding(top = 10.dp, bottom = 5.dp)
                     )
                     Text(

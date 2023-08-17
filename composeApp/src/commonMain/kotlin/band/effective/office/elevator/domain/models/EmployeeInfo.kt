@@ -13,4 +13,18 @@ data class EmployeeInfo(
     val phoneNum: String,
     val eMail: String,
     val telegramProfile: String
-) : Parcelable
+) : Parcelable{
+    companion object {
+        val defaultEmployee =
+            EmployeeInfo(
+                id = "1B",
+                name = "Romanov Roman",
+                post = "IOS Developer",
+                state = "In office",
+                logoUrl  = "https://wampi.ru/image/R9C6OC7",
+                phoneNum = "+79137894523",
+                eMail = "employee@effective.com",
+                telegramProfile = "@Romanov_Roman"
+            )
+    }
+}
