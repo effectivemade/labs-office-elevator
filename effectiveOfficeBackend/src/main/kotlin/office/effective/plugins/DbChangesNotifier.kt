@@ -4,10 +4,10 @@ import io.ktor.server.application.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import office.effective.common.utils.ListenToNotifyMessage
+import office.effective.common.notifications.DbNotifier
 
 fun Application.configureNotification() {
     CoroutineScope(Job()).launch {
-        ListenToNotifyMessage.listenToNotifyMessage()
+        DbNotifier.listenToNotifyMessage()
     }
 }
