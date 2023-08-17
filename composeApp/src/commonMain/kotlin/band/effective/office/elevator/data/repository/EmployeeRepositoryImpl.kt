@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 
-class EmployeeRepositoryImpl: EmployeeRepository{
+class EmployeeRepositoryImpl(): EmployeeRepository{
     object EmployeesData {
         val initial=listOf(
             EmployeeInfo(

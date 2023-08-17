@@ -82,6 +82,8 @@ kotlin {
                 implementation(Dependencies.SqlDelight.primitiveadaper)
 
                 implementation(project(":wheel-picker-compose"))
+
+                implementation(project(":contract"))
             }
         }
 

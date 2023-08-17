@@ -3,6 +3,7 @@ package band.effective.office.elevator.data.repository
 import band.effective.office.elevator.domain.repository.BookingRepository
 import band.effective.office.elevator.domain.models.BookingInfo
 import band.effective.office.elevator.domain.models.CreatingBookModel
+import band.effective.office.network.api.Api
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -13,7 +14,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 
-class MockBookingRepositoryImpl: BookingRepository {
+class MockBookingRepositoryImpl(private val api:Api): BookingRepository {
     private val scope = CoroutineScope(Dispatchers.IO)
     private val initLis = listOf(
         BookingInfo(

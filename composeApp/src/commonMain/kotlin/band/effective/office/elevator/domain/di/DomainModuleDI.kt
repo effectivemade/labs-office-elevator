@@ -25,7 +25,7 @@ internal val domainModuleDI = module {
     single { GetBookingsUseCase(get()) }
     single { ElevatorCallUseCase(get()) }
     single<EmployeeRepository>{ EmployeeRepositoryImpl() }
-    single<BookingRepository> { MockBookingRepositoryImpl() }
+    single<BookingRepository> { MockBookingRepositoryImpl(api = get()) }
     single<UserProfileRepository> { UserProfileRepositoryImpl() }
     single<AuthorizationEntity> {
         AuthorizationEntity(

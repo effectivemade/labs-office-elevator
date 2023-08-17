@@ -2,7 +2,6 @@ package band.effective.office.elevator.data.repository
 
 import band.effective.office.elevator.domain.models.UserData
 import band.effective.office.elevator.domain.repository.UserProfileRepository
-import band.effective.office.elevator.expects.showToast
 
 class UserProfileRepositoryImpl : UserProfileRepository {
     override suspend fun getUser(idToken: String): UserData {
