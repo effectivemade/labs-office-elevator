@@ -58,7 +58,7 @@ internal fun DefaultWheelTimePicker(
         )
     }
 
-    val minutes = (0..59).map {
+    val minutes = (0..59 step 5).map {
         Minute(
             text = it.toString().padStart(2, '0'),
             value = it,
