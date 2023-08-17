@@ -46,9 +46,9 @@ internal fun WheelPicker(
 
     LaunchedEffect(isScrollInProgress, count) {
         if(!isScrollInProgress) {
-//            onScrollFinished(calculateSnappedItemIndex(lazyListState, rowCount))?.let {
-//                lazyListState.scrollToItem(it)
-//            }
+            onScrollFinished(calculateSnappedItemIndex(lazyListState, rowCount))?.let {
+                lazyListState.scrollToItem(it)
+            }
         }
     }
 
