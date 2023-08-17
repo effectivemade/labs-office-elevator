@@ -66,6 +66,35 @@ class WorkspaceRepository(private val database: Database, private val converter:
     }
 
     /**
+     * Returns a HashMap that maps user ids and their integrations
+     * @return HashMap<UUID, MutableList<Utility>>
+     * @throws InstanceNotFoundException if user with the given id doesn't exist in the database
+     *
+     * @author Daniil Zavyalov
+     * */
+    fun findAllUtilitiesByWorkspaceIds(ids: Collection<UUID>): HashMap<UUID, MutableList<Utility>> {
+        for (id in ids) {
+            if (!workspaceExistsById(id))
+                throw InstanceNotFoundException(WorkspaceEntity::class, "Workspace with id $id not found")
+        }
+        val result = hashMapOf<UUID, MutableList<Utility>>()
+        database
+            .from(WorkspaceUtilities)
+            .innerJoin(right = Utilities, on = WorkspaceUtilities.utilityId eq Utilities.id)
+            .select()
+            .where { WorkspaceUtilities.workspaceId inList ids }
+            .forEach { row ->
+                val workspaceId: UUID = row[WorkspaceUtilities.workspaceId] ?: return@forEach
+                val utility = converter.utilityEntityToModel(
+                    Utilities.createEntity(row), row[WorkspaceUtilities.count] ?: 0
+                )
+                val utilities: MutableList<Utility> = result.getOrPut(workspaceId) { mutableListOf() }
+                utilities.add(utility)
+            }
+        return result
+    }
+
+    /**
      * Retrieves a workspace model by its id
      *
      * @author Daniil Zavyalov

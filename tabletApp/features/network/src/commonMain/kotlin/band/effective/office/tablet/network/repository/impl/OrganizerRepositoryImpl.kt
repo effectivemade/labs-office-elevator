@@ -7,6 +7,7 @@ import band.effective.office.network.model.ErrorResponse
 import band.effective.office.tablet.domain.model.ErrorWithData
 import band.effective.office.tablet.domain.model.Organizer
 import band.effective.office.tablet.network.repository.OrganizerRepository
+import band.effective.office.tablet.utils.Converter.toOrganizer
 import band.effective.office.tablet.utils.map
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -29,7 +30,7 @@ class OrganizerRepositoryImpl(private val api: Api) : OrganizerRepository {
     private suspend fun loadOrganizersList(): Either<ErrorWithData<List<Organizer>>, List<Organizer>> =
         with(orgList.value) {
             orgList.update {
-                api.getUsers().convert(this)
+                api.getUsers(tag = "emploee").convert(this)
             }
             orgList.value
         }
@@ -65,5 +66,3 @@ class OrganizerRepositoryImpl(private val api: Api) : OrganizerRepository {
                 user.filter { it.role == "ADMIN" }.map { it.toOrganizer() }
             })
 }
-
-private fun UserDTO.toOrganizer() = Organizer(fullName = fullName, id = id)

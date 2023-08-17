@@ -4,11 +4,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -35,23 +35,24 @@ fun CommonRoomInfoComponent(
     electricSocketCount: Int,
     backgroundColor: Color,
     isError: Boolean,
-    content: @Composable () -> Unit
+    content: @Composable ColumnScope.() -> Unit
 ) {
     Surface(
         modifier = Modifier.background(color = backgroundColor).fillMaxWidth(),
         color = if (isError) undefineStateColor else backgroundColor
     ) {
         Column(modifier = modifier) {
-            Text(
-                text = name,
-                style = MaterialTheme.typography.h1,
-                color = roomInfoColor
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            content()
-            Spacer(modifier = Modifier.height(25.dp))
-            Row(modifier = Modifier.padding(horizontal = 10.dp)) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
                 val spaceBetweenProperty = 40.dp
+                Text(
+                    text = name,
+                    style = MaterialTheme.typography.h1,
+                    color = roomInfoColor
+                )
+                Spacer(modifier = Modifier.width(spaceBetweenProperty))
                 RoomPropertyComponent(
                     image = MainRes.image.quantity,
                     text = "$capacity",
@@ -73,8 +74,10 @@ fun CommonRoomInfoComponent(
                         color = roomInfoColor
                     )
                 }
+
             }
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(10.dp))
+            content()
         }
     }
 }

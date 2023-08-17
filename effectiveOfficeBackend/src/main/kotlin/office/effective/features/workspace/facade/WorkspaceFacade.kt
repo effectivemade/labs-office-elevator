@@ -5,8 +5,8 @@ import office.effective.common.exception.ValidationException
 import office.effective.common.utils.DatabaseTransactionManager
 import office.effective.common.utils.UuidValidator
 import office.effective.features.workspace.converters.WorkspaceFacadeConverter
-import office.effective.features.workspace.dto.WorkspaceDTO
-import office.effective.features.workspace.dto.WorkspaceZoneDTO
+import office.effective.dto.WorkspaceDTO
+import office.effective.dto.WorkspaceZoneDTO
 import office.effective.features.workspace.service.WorkspaceService
 import office.effective.model.Workspace
 import java.time.Instant

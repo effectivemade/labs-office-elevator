@@ -1,5 +1,8 @@
 package band.effective.office.tablet.domain.model
 
+import band.effective.office.tablet.utils.oneDay
+import java.util.Calendar
+
 data class RoomInfo(
     val name: String,
     val capacity: Int,

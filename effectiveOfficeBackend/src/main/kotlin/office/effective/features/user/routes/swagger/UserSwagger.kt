@@ -3,9 +3,8 @@ package office.effective.features.user.routes.swagger
 import io.github.smiley4.ktorswaggerui.dsl.OpenApiRoute
 import io.ktor.http.*
 import office.effective.common.swagger.SwaggerDocument
-import office.effective.features.booking.dto.BookingDTO
-import office.effective.features.user.dto.IntegrationDTO
-import office.effective.features.user.dto.UserDTO
+import office.effective.dto.IntegrationDTO
+import office.effective.dto.UserDTO
 
 fun SwaggerDocument.returnUserByEmail(): OpenApiRoute.() -> Unit = {
     description = "Return user by email"
@@ -154,7 +153,14 @@ fun SwaggerDocument.updateUser(): OpenApiRoute.() -> Unit = {
     description = "Changes user by id"
     tags = listOf("users")
     request {
+        pathParameter<String>("user_id") {
+            description = "User id"
+            example = "87e66ee0-2550-4188-8d79-75560125836a"
+            required = true
+            allowEmptyValue = false
+        }
         body<UserDTO> {
+            required = true
             example(
                 "User",
                 UserDTO(

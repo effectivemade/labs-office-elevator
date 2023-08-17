@@ -1,6 +1,5 @@
 package band.effective.office.tablet.di
 
-import networkModule
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
 

@@ -153,6 +153,16 @@ fun BookingRoomView(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Bottom
         ) {
+            SuccessButton(
+                modifier = Modifier.fillMaxWidth().height(60.dp).focusable(true),
+                onClick = { onRequestBookingCurrentRoom() }
+            ) {
+                Text(
+                    text = MainRes.string.booking_button_text.format(roomName = roomName),
+                    style = MaterialTheme.typography.h6
+                )
+            }
+            Spacer(Modifier.height(10.dp))
             AlertButton(
                 modifier = Modifier.fillMaxWidth().height(60.dp),
                 onClick = { onRequestBookingOtherRoom() }
@@ -163,17 +173,6 @@ fun BookingRoomView(
                     painter = painterResource(MainRes.image.arrow_right),
                     contentDescription = null,
                     colorFilter = ColorFilter.tint(MaterialTheme.colors.onPrimary)
-                )
-            }
-            Spacer(Modifier.height(10.dp))
-
-            SuccessButton(
-                modifier = Modifier.fillMaxWidth().height(60.dp).focusable(true),
-                onClick = { onRequestBookingCurrentRoom() }
-            ) {
-                Text(
-                    text = MainRes.string.booking_button_text.format(roomName = roomName),
-                    style = MaterialTheme.typography.h6
                 )
             }
         }
