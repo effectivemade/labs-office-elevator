@@ -1915,24 +1915,6 @@
 			};
 			name = Debug;
 		};
-		67E3EE5ADFF5140990DBF1D4C4BE47E6 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 096A6188A17BF3596C45A1CA21DE88CA /* composeApp.release.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
 		67E9E8FAE28D5D2AAA42A505C1665534 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 43D230156786D7BF27524F67A89E77BD /* sqlite3.debug.xcconfig */;
@@ -2196,6 +2178,23 @@
 			};
 			name = Debug;
 		};
+		9FA184A50112DBCC8B401DA2417C3FC1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 143DC92D92785A65F2D61940588F8633 /* composeApp.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
 		ACC628E3E41F703E9390BEECA9E86A9E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = C7B6AF4C78A838C667B10A14E4C217E3 /* GTMAppAuth.debug.xcconfig */;
@@ -2262,6 +2261,24 @@
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		BB5CE3866944923E616F12F112F50D20 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 096A6188A17BF3596C45A1CA21DE88CA /* composeApp.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
@@ -2420,8 +2437,8 @@
 		BDDD9F5B8AC230B87C62C2594173958B /* Build configuration list for PBXAggregateTarget "composeApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				DB9CAFC27F6824D854A8A6E3CAD1D6C9 /* Debug */,
-				859E8832FC0E6D15F8B017733E248186 /* Release */,
+				9FA184A50112DBCC8B401DA2417C3FC1 /* Debug */,
+				BB5CE3866944923E616F12F112F50D20 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

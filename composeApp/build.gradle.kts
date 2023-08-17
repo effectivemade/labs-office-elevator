@@ -26,7 +26,7 @@ kotlin {
     val iosSimulatorArm64 = iosSimulatorArm64()
 
     cocoapods {
-        version = "1.0.0"
+        version = "2.0.0"
         summary = "Compose application framework"
         homepage = "https://github.com/Radch-enko"
         ios.deploymentTarget = "11.0"
