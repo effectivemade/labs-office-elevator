@@ -1,9 +1,9 @@
 package band.effective.office.elevator.ui.employee.allEmployee
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,9 +17,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -40,16 +41,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.borderGray
 import band.effective.office.elevator.borderGreen
-import band.effective.office.elevator.borderPurple
 import band.effective.office.elevator.textInBorderGray
-import band.effective.office.elevator.textInBorderPurple
-import band.effective.office.elevator.theme_light_background
-import band.effective.office.elevator.theme_light_onBackground
 import band.effective.office.elevator.theme_light_onPrimary
-import band.effective.office.elevator.theme_light_tertiary_color
 import band.effective.office.elevator.ui.employee.allEmployee.models.mappers.EmployeeCard
 import band.effective.office.elevator.ui.employee.allEmployee.store.EmployeeStore
 import band.effective.office.elevator.utils.generateImageLoader
@@ -72,7 +69,7 @@ fun EmployeeScreen(component: EmployeeComponent) {
     LaunchedEffect(component) {
         component.employLabel.collect { label ->
             when (label) {
-                EmployeeStore.Label.ShowProfileScreen -> component.onOutput(EmployeeComponent.Output.OpenProfileScreen)
+                is EmployeeStore.Label.ShowProfileScreen -> component.onOutput(EmployeeComponent.Output.OpenProfileScreen(label.employee))
             }
         }
     }
@@ -81,7 +78,7 @@ fun EmployeeScreen(component: EmployeeComponent) {
         employeesCount = employeesCount,
         employeesInOfficeCount = employeesInOfficeCount,
         userMessageState = userMessageState,
-        onCardClick = { component.onEvent(EmployeeStore.Intent.OnClickOnEmployee) },
+        onCardClick = { component.onEvent(EmployeeStore.Intent.OnClickOnEmployee(it)) },
         onTextFieldUpdate = { component.onEvent(EmployeeStore.Intent.OnTextFieldUpdate(it)) })
 }
 
@@ -91,7 +88,7 @@ fun EmployeeScreenContent(
     employeesCount: String,
     employeesInOfficeCount: String,
     userMessageState: String,
-    onCardClick: () -> Unit,
+    onCardClick: (String) -> Unit,
     onTextFieldUpdate: (String) -> Unit
 ) {
 
@@ -106,7 +103,7 @@ fun EmployeeScreenContent(
                 text = stringResource(MainRes.strings.employees),
                 fontSize = 20.sp,
                 fontWeight = FontWeight(600),//?
-                color = theme_light_tertiary_color,
+                color = ExtendedThemeColors.colors.blackColor,
                 modifier = Modifier.padding(start = 20.dp, top = 55.dp, end = 15.dp, bottom = 25.dp)
             )
             TextField(
@@ -117,15 +114,15 @@ fun EmployeeScreenContent(
                     .height(70.dp)
                     .padding(start = 20.dp, top = 10.dp, end = 20.dp, bottom = 5.dp),
                 textStyle = TextStyle(
-                    color = theme_light_tertiary_color,
+                    color = ExtendedThemeColors.colors.trinidad_400,
                     fontSize = 16.sp,
                     fontWeight = FontWeight(500)
                 ),
                 colors = TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    backgroundColor = theme_light_background
+                    focusedIndicatorColor = ExtendedThemeColors.colors.transparentColor,
+                    disabledIndicatorColor = ExtendedThemeColors.colors.transparentColor,
+                    unfocusedIndicatorColor = ExtendedThemeColors.colors.transparentColor,
+                    backgroundColor = MaterialTheme.colors.background
                 ),
                 placeholder = {
                     Text(
@@ -150,7 +147,7 @@ fun EmployeeScreenContent(
         }
         Column(
             modifier = Modifier
-                .background(theme_light_onBackground)
+                .background(MaterialTheme.colors.background)
                 .fillMaxSize()
                 .padding(start = 20.dp, top = 25.dp, end = 20.dp)
         ) {
@@ -159,20 +156,20 @@ fun EmployeeScreenContent(
                     text = stringResource(MainRes.strings.employees) + " ",
                     fontSize = 16.sp,
                     fontWeight = FontWeight(500),
-                    color = theme_light_tertiary_color//???
+                    color = ExtendedThemeColors.colors.blackColor
                 )
                 Text(
                     text = "($employeesCount)",
                     fontSize = 16.sp,
                     fontWeight = FontWeight(400),
-                    color = textInBorderPurple
+                    color = ExtendedThemeColors.colors.purple_heart_800
                 )
                 Text(
                     text = stringResource(MainRes.strings.employee_in_office)
                             + ": $employeesInOfficeCount",
                     fontSize = 16.sp,
                     fontWeight = FontWeight(400),
-                    color = textInBorderPurple,
+                    color = ExtendedThemeColors.colors.purple_heart_800,
                     textAlign = TextAlign.End,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -191,7 +188,7 @@ fun EmployeeScreenContent(
 
 @Composable
 
-fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
+fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: (String) -> Unit) {
     var isExpanded by remember { mutableStateOf(false) }
     val stateColorBorder: Color
     val stateColorText: Color
@@ -201,8 +198,8 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
     } else {
         if (emp.state == "Will be today") {
 
-            stateColorBorder = borderPurple
-            stateColorText = textInBorderPurple
+            stateColorBorder = ExtendedThemeColors.colors.purple_heart_700
+            stateColorText = ExtendedThemeColors.colors.purple_heart_800
         } else {
             stateColorBorder = borderGray
             stateColorText = textInBorderGray
@@ -210,7 +207,7 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
 
     }
     if (isExpanded) {
-        onCardClick()
+        onCardClick(emp.id)
     }
 
     Surface(
@@ -220,7 +217,7 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
             .padding(bottom=15.dp)
             .animateContentSize()
             .clickable { isExpanded = !isExpanded },
-        color = theme_light_onPrimary
+        color = MaterialTheme.colors.onPrimary
     ) {
         Row(modifier = Modifier.padding(6.dp, 15.dp)) {
 
@@ -249,7 +246,7 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
                     text = emp.name,
                     fontSize = 16.sp,
                     fontWeight = FontWeight(500),
-                    color = theme_light_tertiary_color
+                    color = ExtendedThemeColors.colors.blackColor
                 )
 
                 Spacer(modifier = Modifier.padding(0.dp, 4.dp))
@@ -260,13 +257,18 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: () -> Unit) {
                     color = textInBorderGray
                 )
                 Spacer(modifier = Modifier.padding(0.dp, 8.dp))
-                Button(
+                OutlinedButton(
                     onClick = { isExpanded = !isExpanded },
-                    colors = ButtonDefaults.buttonColors(theme_light_onPrimary),
-                    modifier = Modifier
-                        .border(1.dp, stateColorBorder, RoundedCornerShape(12.dp)),
+                    colors = ButtonDefaults.buttonColors(backgroundColor =
+                    MaterialTheme.colors.onPrimary),
+                    elevation = ButtonDefaults.elevation(
+                        defaultElevation = 0.dp,
+                        pressedElevation = 2.dp,
+                        disabledElevation = 0.dp,
+                        hoveredElevation = 0.dp
+                    ),
                     shape = RoundedCornerShape(12.dp),
-                    elevation = ButtonDefaults.elevation(0.dp, 2.dp, 0.dp)
+                    border = BorderStroke(width = 1.dp, color = stateColorBorder)
                 ) {
                     Text(
                         text = "•   " + emp.state,

@@ -1,7 +1,9 @@
-package band.effective.office.elevator.data
+package band.effective.office.elevator.data.repository
 
+import band.effective.office.elevator.data.ApiResponse
+import band.effective.office.elevator.data.NetworkClient
 import band.effective.office.elevator.domain.GoogleSignIn
-import band.effective.office.elevator.domain.OfficeElevatorRepository
+import band.effective.office.elevator.domain.repository.OfficeElevatorRepository
 import io.ktor.client.request.parameter
 import io.ktor.client.request.url
 

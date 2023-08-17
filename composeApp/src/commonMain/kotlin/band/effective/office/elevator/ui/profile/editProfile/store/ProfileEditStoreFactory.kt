@@ -4,14 +4,13 @@ import band.effective.office.elevator.domain.models.User
 import band.effective.office.elevator.domain.useCase.GetUserByIdUseCase
 import band.effective.office.elevator.domain.useCase.UpdateUserUseCase
 import band.effective.office.elevator.ui.models.validator.Validator
+import band.effective.office.elevator.ui.profile.editProfile.store.ProfileEditStore.*
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
-import band.effective.office.elevator.ui.profile.editProfile.store.ProfileEditStore.*
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -22,7 +21,7 @@ internal class ProfileEditStoreFactory(
 ) : KoinComponent {
 
     private val getUserByIdUseCase: GetUserByIdUseCase by inject()
-    private val updateUserUseCase: UpdateUserUseCase by inject()
+    private val updateUserUseCase:UpdateUserUseCase by inject()
     private val validator: Validator = Validator()
 
     @OptIn(ExperimentalMviKotlinApi::class)
@@ -172,7 +171,7 @@ internal class ProfileEditStoreFactory(
 
         private fun fetchUserInfo() {
             scope.launch {
-                getUserByIdUseCase.executeInFormat(user).collectLatest{
+                getUserByIdUseCase.executeInFormat(user).collect{
                         user ->  dispatch(Msg.ProfileData(user = user))
                 }
             }

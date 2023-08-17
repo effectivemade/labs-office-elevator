@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.employee
 
+import band.effective.office.elevator.domain.models.EmployeeInfo
 import band.effective.office.elevator.ui.employee.aboutEmployee.AboutEmployeeComponent
 import band.effective.office.elevator.ui.employee.allEmployee.EmployeeComponent
 import com.arkivanov.decompose.ComponentContext
@@ -43,14 +44,15 @@ class FullEmployeeComponent (
                 AboutEmployeeComponent(
                     componentContext,
                     storeFactory,
-                    ::employeeOutput
+                    ::employeeOutput,
+                    config.employee
                 )
             )
         }
 
     private fun employeeOutput(output: EmployeeComponent.Output) {
         when(output){
-            is EmployeeComponent.Output.OpenProfileScreen -> navigation.bringToFront(Config.AboutEmployee)
+            is EmployeeComponent.Output.OpenProfileScreen -> navigation.bringToFront(Config.AboutEmployee(output.employee))
             is EmployeeComponent.Output.OpenNewListOfEmployees -> TODO()//unused
         }
     }
@@ -58,7 +60,6 @@ class FullEmployeeComponent (
     private fun employeeOutput(output: AboutEmployeeComponent.Output) {
         when(output){
             is AboutEmployeeComponent.Output.OpenAllEmployee -> navigation.replaceAll(Config.AllEmployee)
-            is AboutEmployeeComponent.Output.OpenMap -> TODO()
         }
     }
 
@@ -72,6 +73,6 @@ class FullEmployeeComponent (
         object AllEmployee: Config()
 
         @Parcelize
-        object AboutEmployee: Config()
+        data class AboutEmployee(val employee: EmployeeInfo): Config()
     }
 }

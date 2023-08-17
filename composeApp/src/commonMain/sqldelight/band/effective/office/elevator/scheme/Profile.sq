@@ -1,21 +1,22 @@
-CREATE TABLE hockeyPlayer (
-  player_number INTEGER NOT NULL,
-  full_name TEXT NOT NULL
+CREATE TABLE profileData (
+    idToken TEXT PRIMARY KEY,
+    name TEXT NOT NULL DEFAULT '',
+    post TEXT NOT NULL DEFAULT '',
+    email TEXT NOT NULL DEFAULT '',
+    phoneNumber TEXT NOT NULL DEFAULT '',
+    telegramNick TEXT NOT NULL DEFAULT '',
+    imageUrl TEXT NOT NULL DEFAULT ''
 );
 
-CREATE INDEX hockeyPlayer_full_name ON hockeyPlayer(full_name);
-
-INSERT INTO hockeyPlayer (player_number, full_name)
-VALUES (15, 'Ryan Getzlaf');
+CREATE INDEX idTokenIndex ON profileData(idToken);
 
 selectAll:
-SELECT *
-FROM hockeyPlayer;
+SELECT * FROM profileData;
 
-insert:
-INSERT INTO hockeyPlayer(player_number, full_name)
-VALUES (?, ?);
+selectUser:
+SELECT * FROM profileData WHERE idToken = ?;
 
-insertFullPlayerObject:
-INSERT INTO hockeyPlayer(player_number, full_name)
-VALUES ?;
+update:
+INSERT OR REPLACE
+INTO profileData(idToken, name, post, email, phoneNumber, telegramNick, imageUrl)
+VALUES (?,?,?,?,?,?,?);

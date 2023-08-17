@@ -43,6 +43,11 @@ kotlin {
     targets.getByName<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>("iosX64").compilations.forEach {
         it.kotlinOptions.freeCompilerArgs += arrayOf("-linker-options", "-lsqlite3")
     }
+    targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
+        binaries.all {
+            freeCompilerArgs += "-Xlazy-ir-for-caches=disable"
+        }
+    }
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -82,6 +87,7 @@ kotlin {
                 implementation(Dependencies.SqlDelight.primitiveadaper)
 
                 implementation(project(":wheel-picker-compose"))
+                implementation(project(":modal_custom_dialog"))
             }
         }
 
@@ -186,6 +192,7 @@ android {
         }
     }
 }
+
 
 multiplatformResources {
     multiplatformResourcesPackage = "band.effective.office.elevator"

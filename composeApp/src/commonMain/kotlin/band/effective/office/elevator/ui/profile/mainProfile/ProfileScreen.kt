@@ -33,8 +33,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
-import band.effective.office.elevator.borderPurple
 import band.effective.office.elevator.components.TitlePage
 import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.ui.models.UserData
@@ -137,7 +137,7 @@ fun ProfileInfoAboutUser(imageUrl: String, userName: String, post: String, onEdi
             Surface(
                 modifier = Modifier.size(88.dp).align(Alignment.Center),
                 shape = CircleShape,
-                color = Color(0xFFEBE4FF)
+                color = ExtendedThemeColors.colors.purple_heart_100
             ) {
                 Image(
                     modifier = Modifier.fillMaxSize().align(Alignment.Center),
@@ -203,13 +203,13 @@ private fun FieldsItemStyle(
         Text(
             text = text,
             style = MaterialTheme.typography.subtitle1,
-            color = Color.Black
+            color = ExtendedThemeColors.colors.blackColor
         )
     IconButton(onClick = { onEditProfile(id) }) {
         Icon(
             painter = painterResource(MainRes.images.next),
             contentDescription = null,
-            tint = borderPurple
+            tint = ExtendedThemeColors.colors.purple_heart_700
         )
     }
     }

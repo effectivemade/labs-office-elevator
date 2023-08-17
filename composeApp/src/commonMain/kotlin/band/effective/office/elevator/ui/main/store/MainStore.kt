@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.main.store
 
+import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsFilter
 import band.effective.office.elevator.ui.models.ElevatorState
 import band.effective.office.elevator.ui.models.ReservedSeat
 import com.arkivanov.mvikotlin.core.store.Store
@@ -18,6 +19,17 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, MainStore.Label> 
         object OnClickCloseCalendar : Intent
 
         data class OnClickApplyDate(val date: LocalDate?) : Intent
+
+        object OpenFiltersBottomDialog : Intent
+        data class CloseFiltersBottomDialog(val bookingsFilter: BookingsFilter) : Intent
+
+        object OnClickShowMap : Intent
+
+        data class OnClickExtendBooking(val seat: ReservedSeat) : Intent
+
+        data class OnClickRepeatBooking(val seat: ReservedSeat) : Intent
+
+        data class OnClickDeleteBooking(val seat: ReservedSeat) : Intent
     }
 
     sealed interface Label {
@@ -29,12 +41,16 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, MainStore.Label> 
         object CloseCalendar : Label
 
         object OpenCalendar : Label
+
+        object OpenFiltersBottomDialog: Label
+        object CloseFiltersBottomDialog: Label
     }
 
     data class State(
         val reservedSeats: List<ReservedSeat>,
         val elevatorState: ElevatorState,
-        val currentDate: LocalDate
+        val currentDate: LocalDate,
+        val dateFiltrationOnReserves: Boolean
     )
 
     data class ErrorState(val message: StringResource)

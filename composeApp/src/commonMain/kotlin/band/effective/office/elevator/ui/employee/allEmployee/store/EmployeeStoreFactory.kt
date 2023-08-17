@@ -2,7 +2,7 @@ package band.effective.office.elevator.ui.employee.allEmployee.store
 
 
 import band.effective.office.elevator.domain.models.EmployeeInfo
-import band.effective.office.elevator.domain.repository.impl.EmployeeRepositoryImpl
+import band.effective.office.elevator.data.repository.EmployeeRepositoryImpl
 import band.effective.office.elevator.domain.useCase.EmployeeUseCase
 import band.effective.office.elevator.ui.employee.allEmployee.models.mappers.toUI
 import band.effective.office.elevator.utils.changeEmployeeShowedList
@@ -67,9 +67,9 @@ internal class EmployeeStoreFactory(private val storeFactory: StoreFactory):Koin
                         dispatch(Msg.UpdateEmployees(query = employeesNameFilter, employeesInfo = employList.value))
                     }
                 }
-                EmployeeStore.Intent.OnClickOnEmployee ->{
+                is EmployeeStore.Intent.OnClickOnEmployee ->{
                     scope.launch {
-                        publish(EmployeeStore.Label.ShowProfileScreen)
+                        publish(EmployeeStore.Label.ShowProfileScreen(employList.value.filter { it.id == intent.employeeId }[0]))
                     }
                 }
 

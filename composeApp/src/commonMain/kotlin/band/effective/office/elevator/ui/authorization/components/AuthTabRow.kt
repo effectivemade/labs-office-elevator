@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import band.effective.office.elevator.ExtendedThemeColors
 
 @Composable
 fun AuthTabRow(selectedIndex: Int) {
@@ -20,20 +21,20 @@ fun AuthTabRow(selectedIndex: Int) {
     TabRow(
         selectedTabIndex = i.value,
         divider = {
-            Color.Transparent
+            ExtendedThemeColors.colors.transparentColor
         },
         indicator = { pos ->
             TabRowDefaults.Indicator(
                 modifier = Modifier
-                    .background(Color.Transparent)
+                    .background(ExtendedThemeColors.colors.transparentColor)
                     .height(0.dp),
-                color = Color.Transparent
+                color = ExtendedThemeColors.colors.transparentColor
             )
         },
-        backgroundColor = Color.Transparent,
-        contentColor = Color.Transparent,
+        backgroundColor = ExtendedThemeColors.colors.transparentColor,
+        contentColor = ExtendedThemeColors.colors.transparentColor,
         modifier = Modifier
-            .background(Color.Transparent)
+            .background(ExtendedThemeColors.colors.transparentColor)
             .clickable(enabled = false, onClick = {})
     ) {
         tabs.forEachIndexed { index, s ->
