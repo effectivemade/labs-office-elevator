@@ -74,7 +74,7 @@ class RootComponent(componentContext: ComponentContext, private val storeFactory
                     componentContext = componentContext,
                     storeFactory = storeFactory,
                     onMainScreen = {
-                        navigation.push(Config.Main)
+                        navigation.replaceAll(Config.Main)
                     },
                     onExitApp = {
                         /*(Margarita Djinjolia)

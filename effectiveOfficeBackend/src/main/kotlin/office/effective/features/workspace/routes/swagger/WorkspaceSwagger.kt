@@ -3,9 +3,9 @@ package office.effective.features.workspace.routes.swagger
 import io.github.smiley4.ktorswaggerui.dsl.OpenApiRoute
 import io.ktor.http.*
 import office.effective.common.swagger.SwaggerDocument
-import office.effective.features.workspace.dto.UtilityDTO
-import office.effective.features.workspace.dto.WorkspaceDTO
-import office.effective.features.workspace.dto.WorkspaceZoneDTO
+import office.effective.dto.UtilityDTO
+import office.effective.dto.WorkspaceDTO
+import office.effective.dto.WorkspaceZoneDTO
 
 fun SwaggerDocument.returnWorkspaceById(): OpenApiRoute.() -> Unit = {
     description = "Return workspace by id"
@@ -54,7 +54,7 @@ fun SwaggerDocument.returnWorkspaceByTag(): OpenApiRoute.() -> Unit = {
     description = "Return all workspaces by tag"
     tags = listOf("workspaces")
     request {
-        queryParameter<WorkspaceTag>("tag") {
+        queryParameter<WorkspaceTag>("workspace_tag") {
             description = "Workspace tag"
             example = "meeting"
             required = true

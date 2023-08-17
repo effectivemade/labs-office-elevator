@@ -1,10 +1,11 @@
 package band.effective.office.network.api.impl
 
 import band.effective.office.network.api.Api
-import band.effective.office.network.dto.BookingInfo
+import band.effective.office.network.dto.BookingDTO
 import band.effective.office.network.dto.SuccessResponse
 import band.effective.office.network.dto.UserDTO
 import band.effective.office.network.dto.WorkspaceDTO
+import band.effective.office.network.dto.WorkspaceZoneDTO
 import band.effective.office.network.model.Either
 import band.effective.office.network.model.ErrorResponse
 import band.effective.office.utils.MockFactory
@@ -18,11 +19,17 @@ import kotlinx.coroutines.launch
 
 class ApiMock(private val realApi: Api, mockFactory: MockFactory) : Api {
     var getRealResponse: Boolean = false
-    private val workspaces = mockFactory.workspaces()
-    private val meetingRooms = mockFactory.meetingRooms()
-    private val users = MutableStateFlow(mockFactory.users())
-    private val bookings = MutableStateFlow(mockFactory.bookings())
+    private val workspaces: List<WorkspaceDTO> = mockFactory.workspaces()
+    private val meetingRooms: List<WorkspaceDTO> = mockFactory.meetingRooms()
+    private val users: MutableStateFlow<List<UserDTO>> = MutableStateFlow(mockFactory.users())
+    private val bookings: MutableStateFlow<List<BookingDTO>> = MutableStateFlow(
+        mockFactory.bookings(
+            workspaceDTO = (workspaces + meetingRooms).first { it.name == "Sirius" },
+            owner = users.value
+        )
+    )
     private val successResponse = mockFactory.success()
+
 
     private fun <T> response(mock: T?, realResponse: Either<ErrorResponse, T>) =
         with(getRealResponse) {
@@ -41,42 +48,66 @@ class ApiMock(private val realApi: Api, mockFactory: MockFactory) : Api {
         realResponse = realApi.getWorkspace(id)
     )
 
-    override suspend fun getWorkspaces(tag: String): Either<ErrorResponse, List<WorkspaceDTO>> =
+    override suspend fun getWorkspaces(
+        tag: String,
+        freeFrom: Long?,
+        freeUntil: Long?
+    ): Either<ErrorResponse, List<WorkspaceDTO>> =
         response(
             mock = if (tag == "meeting") meetingRooms else workspaces,
-            realResponse = realApi.getWorkspaces(tag = tag)
+            realResponse = realApi.getWorkspaces(
+                tag = tag,
+                freeFrom = freeFrom,
+                freeUntil = freeUntil
+            )
         )
+
+    override suspend fun getZones(): Either<ErrorResponse, List<WorkspaceZoneDTO>> = response(
+        mock = listOf(),
+        realResponse = realApi.getZones()
+    )
 
     override suspend fun getUser(id: String): Either<ErrorResponse, UserDTO> = response(
         mock = users.value.firstOrNull { it.id == id },
         realResponse = realApi.getUser(id)
     )
 
-    override suspend fun getUsers(): Either<ErrorResponse, List<UserDTO>> = response(
+    override suspend fun getUsers(tag: String): Either<ErrorResponse, List<UserDTO>> = response(
         mock = users.value,
-        realResponse = realApi.getUsers()
+        realResponse = realApi.getUsers(tag = tag)
     )
 
-    override suspend fun getBookingsByUser(userId: String): Either<ErrorResponse, List<BookingInfo>> =
+    override suspend fun updateUser(user: UserDTO): Either<ErrorResponse, UserDTO> = response(
+        mock = users.update { it.map { saveUser -> if (saveUser.id == user.id) user else saveUser } }
+            .run { user },
+        realResponse = realApi.updateUser(user = user)
+    )
+
+    override suspend fun getBooking(id: String): Either<ErrorResponse, BookingDTO> = response(
+        mock = bookings.value.firstOrNull { it.id == id },
+        realResponse = realApi.getBooking(id = id)
+    )
+
+    override suspend fun getBookingsByUser(userId: String): Either<ErrorResponse, List<BookingDTO>> =
         response(
-            mock = bookings.value.filter { it.ownerId == userId },
+            mock = bookings.value.filter { it.owner.id == userId },
             realResponse = realApi.getBookingsByUser(userId = userId)
         )
 
-    override suspend fun getBookingsByWorkspaces(workspaceId: String): Either<ErrorResponse, List<BookingInfo>> =
+    override suspend fun getBookingsByWorkspaces(workspaceId: String): Either<ErrorResponse, List<BookingDTO>> =
         response(
-            mock = bookings.value.filter { it.workspaceId == workspaceId },
+            mock = bookings.value.filter { it.workspace.id == workspaceId },
             realResponse = realApi.getBookingsByWorkspaces(workspaceId = workspaceId)
         )
 
-    override suspend fun createBooking(bookingInfo: BookingInfo): Either<ErrorResponse, SuccessResponse> =
+    override suspend fun createBooking(bookingInfo: BookingDTO): Either<ErrorResponse, SuccessResponse> =
         response(
             mock = successResponse.apply { bookings.update { it + bookingInfo } },
             realResponse = realApi.createBooking(bookingInfo)
         )
 
     override suspend fun updateBooking(
-        bookingInfo: BookingInfo
+        bookingInfo: BookingDTO
     ): Either<ErrorResponse, SuccessResponse> = response(
         mock = successResponse.apply { bookings.update { it.map { element -> if (element.id == bookingInfo.id) bookingInfo else element } } },
         realResponse = realApi.updateBooking(bookingInfo)
@@ -103,11 +134,11 @@ class ApiMock(private val realApi: Api, mockFactory: MockFactory) : Api {
             awaitClose()
         }
 
-    override suspend fun subscribeOnBookingsList(workspaceId: String): Flow<Either<ErrorResponse, List<BookingInfo>>> =
+    override suspend fun subscribeOnBookingsList(workspaceId: String): Flow<Either<ErrorResponse, List<BookingDTO>>> =
         channelFlow {
             launch {
                 bookings.collect {
-                    if (!getRealResponse) send(Either.Success(it.filter { item -> item.workspaceId == workspaceId }))
+                    if (!getRealResponse) send(Either.Success(it.filter { item -> item.workspace.id == workspaceId }))
                 }
             }
             launch {

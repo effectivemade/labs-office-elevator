@@ -22,7 +22,7 @@ fun Route.workspaceRouting() {
             call.respond(facade.findById(id))
         }
         get(SwaggerDocument.returnWorkspaceByTag()) {
-            val tag: String = call.request.queryParameters["tag"]
+            val tag: String = call.request.queryParameters["workspace_tag"]
                 ?: return@get call.respond(HttpStatusCode.BadRequest)
 
             val freeFrom: String? = call.request.queryParameters["free_from"]

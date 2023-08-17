@@ -3,7 +3,6 @@ package office.effective.features.user.routes.swagger
 import io.github.smiley4.ktorswaggerui.dsl.OpenApiRoute
 import io.ktor.http.*
 import office.effective.common.swagger.SwaggerDocument
-import office.effective.features.user.dto.UserDTO
 
 fun SwaggerDocument.login(): OpenApiRoute.() -> Unit = {
     description = "Empty route. Need to redirect to google authentication page"

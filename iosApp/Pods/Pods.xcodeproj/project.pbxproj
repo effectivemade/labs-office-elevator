@@ -9,12 +9,12 @@
 /* Begin PBXAggregateTarget section */
 		B96E9866C2872A8B63836A92F517CD48 /* composeApp */ = {
 			isa = PBXAggregateTarget;
-			buildConfigurationList = 97E447FA7733197D19709512E7D7415A /* Build configuration list for PBXAggregateTarget "composeApp" */;
+			buildConfigurationList = BDDD9F5B8AC230B87C62C2594173958B /* Build configuration list for PBXAggregateTarget "composeApp" */;
 			buildPhases = (
-				1CF0D35278C4B2574E4B379B85D3461F /* [CP-User] Build composeApp */,
+				D1E301331434CD231298439F8B54998E /* [CP-User] Build composeApp */,
 			);
 			dependencies = (
-				E96C9D08FD557C37A6874C760A1CD1C4 /* PBXTargetDependency */,
+				9212F4AB161D48E5D477A5888F84654E /* PBXTargetDependency */,
 			);
 			name = composeApp;
 		};
@@ -280,7 +280,7 @@
 			remoteGlobalIDString = CAD3534FC55B0333104E5117C0A9A324;
 			remoteInfo = GoogleSignIn;
 		};
-		B0CEA93AD101D995480BFCDFE8855D67 /* PBXContainerItemProxy */ = {
+		ACB9D59AB12FC0515D32EF28DC26E111 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
 			proxyType = 1;
@@ -1542,7 +1542,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		1CF0D35278C4B2574E4B379B85D3461F /* [CP-User] Build composeApp */ = {
+		D1E301331434CD231298439F8B54998E /* [CP-User] Build composeApp */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1550,7 +1550,7 @@
 			name = "[CP-User] Build composeApp";
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "                if [ \"YES\" = \"$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED\" ]; then\n                  echo \"Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \"YES\"\"\n                  exit 0\n                fi\n                set -ev\n                REPO_ROOT=\"$PODS_TARGET_SRCROOT\"\n                \"$REPO_ROOT/../gradlew\" -p \"$REPO_ROOT\" $KOTLIN_PROJECT_PATH:syncFramework                     -Pkotlin.native.cocoapods.platform=$PLATFORM_NAME                     -Pkotlin.native.cocoapods.archs=\"$ARCHS\"                     -Pkotlin.native.cocoapods.configuration=\"$CONFIGURATION\"\n";
+			shellScript = "                if [ \"YES\" = \"$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED\" ]; then\n                  echo \"Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \"YES\"\"\n                  exit 0\n                fi\n                set -ev\n                export LANG=en_US.UTF-8\n                REPO_ROOT=\"$PODS_TARGET_SRCROOT\"\n                \"$REPO_ROOT/../gradlew\" -p \"$REPO_ROOT\" $KOTLIN_PROJECT_PATH:syncFramework                     -Pkotlin.native.cocoapods.platform=$PLATFORM_NAME                     -Pkotlin.native.cocoapods.archs=\"$ARCHS\"                     -Pkotlin.native.cocoapods.configuration=\"$CONFIGURATION\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1708,6 +1708,12 @@
 			target = 5C642AA10FB29936669CC269F42079C6 /* AppAuth */;
 			targetProxy = C1FA6C58F66894B6345C6E096B293606 /* PBXContainerItemProxy */;
 		};
+		9212F4AB161D48E5D477A5888F84654E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = GoogleSignIn;
+			target = CAD3534FC55B0333104E5117C0A9A324 /* GoogleSignIn */;
+			targetProxy = ACB9D59AB12FC0515D32EF28DC26E111 /* PBXContainerItemProxy */;
+		};
 		C6618543A197B61D852AD4A9DEEBA575 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = GTMSessionFetcher;
@@ -1738,12 +1744,6 @@
 			target = 5C642AA10FB29936669CC269F42079C6 /* AppAuth */;
 			targetProxy = 0380FE330A47D6BC9855EDEA665CDBD6 /* PBXContainerItemProxy */;
 		};
-		E96C9D08FD557C37A6874C760A1CD1C4 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = GoogleSignIn;
-			target = CAD3534FC55B0333104E5117C0A9A324 /* GoogleSignIn */;
-			targetProxy = B0CEA93AD101D995480BFCDFE8855D67 /* PBXContainerItemProxy */;
-		};
 		F49B58209F79C91DA984C8C6177FC894 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = GTMSessionFetcher;
@@ -1753,41 +1753,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		007AA66CB42A7FB9239AC396396CDADC /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6AA44C4C702519E9C8FCB515D6E1A904 /* GTMAppAuth.release.xcconfig */;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "Target Support Files/GTMAppAuth/GTMAppAuth-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MODULEMAP_FILE = "Target Support Files/GTMAppAuth/GTMAppAuth.modulemap";
-				PRODUCT_MODULE_NAME = GTMAppAuth;
-				PRODUCT_NAME = GTMAppAuth;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = "";
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
 		10BD71CD69507B58DCE08E4BF5C0E278 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1854,57 +1819,6 @@
 			};
 			name = Debug;
 		};
-		19FC68DAC5F9A9970578F956EA2B1C27 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 43D230156786D7BF27524F67A89E77BD /* sqlite3.debug.xcconfig */;
-			buildSettings = {
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_PREFIX_HEADER = "Target Support Files/sqlite3/sqlite3-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/sqlite3/sqlite3-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MODULEMAP_FILE = "Target Support Files/sqlite3/sqlite3.modulemap";
-				PRODUCT_MODULE_NAME = sqlite3;
-				PRODUCT_NAME = sqlite3;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = "";
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
-		1D72C9DE68E999C98AB062E183E8B5FF /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 143DC92D92785A65F2D61940588F8633 /* composeApp.debug.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
 		280CBEAB0354DDBC341510E41B3F1D36 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1967,10 +1881,11 @@
 			};
 			name = Release;
 		};
-		48C4116A3161C0DA7989A1E88F6DCA29 /* Release */ = {
+		52573F5C830D4E436EF1C638F45817E9 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B60F67438128FB8358E606ABEBCD402A /* AppAuth.release.xcconfig */;
+			baseConfigurationReference = 64E09666CBD70C84F927716A66BC5990 /* GTMSessionFetcher.debug.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
@@ -1979,8 +1894,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_PREFIX_HEADER = "Target Support Files/AppAuth/AppAuth-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/AppAuth/AppAuth-Info.plist";
+				INFOPLIST_FILE = "Target Support Files/GTMSessionFetcher/GTMSessionFetcher-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1988,48 +1902,13 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MODULEMAP_FILE = "Target Support Files/AppAuth/AppAuth.modulemap";
-				PRODUCT_MODULE_NAME = AppAuth;
-				PRODUCT_NAME = AppAuth;
+				MODULEMAP_FILE = "Target Support Files/GTMSessionFetcher/GTMSessionFetcher.modulemap";
+				PRODUCT_MODULE_NAME = GTMSessionFetcher;
+				PRODUCT_NAME = GTMSessionFetcher;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = "";
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
-		61B25A52857AA65D403905F0CC6BD68E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = FD1C773EDF2460206B706BDBDB245402 /* AppAuth.debug.xcconfig */;
-			buildSettings = {
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_PREFIX_HEADER = "Target Support Files/AppAuth/AppAuth-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/AppAuth/AppAuth-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MODULEMAP_FILE = "Target Support Files/AppAuth/AppAuth.modulemap";
-				PRODUCT_MODULE_NAME = AppAuth;
-				PRODUCT_NAME = AppAuth;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = "";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -2053,6 +1932,40 @@
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
+		};
+		67E9E8FAE28D5D2AAA42A505C1665534 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 43D230156786D7BF27524F67A89E77BD /* sqlite3.debug.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/sqlite3/sqlite3-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/sqlite3/sqlite3-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/sqlite3/sqlite3.modulemap";
+				PRODUCT_MODULE_NAME = sqlite3;
+				PRODUCT_NAME = sqlite3;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
 		};
 		6B6FA9C4B40F0229C78085BE975CE954 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -2092,11 +2005,10 @@
 			};
 			name = Release;
 		};
-		74CC61A7D261034A81B0A3454A7D9F72 /* Debug */ = {
+		859E8832FC0E6D15F8B017733E248186 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 64E09666CBD70C84F927716A66BC5990 /* GTMSessionFetcher.debug.xcconfig */;
+			baseConfigurationReference = B60F67438128FB8358E606ABEBCD402A /* AppAuth.release.xcconfig */;
 			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = NO;
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
@@ -2105,7 +2017,8 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "Target Support Files/GTMSessionFetcher/GTMSessionFetcher-Info.plist";
+				GCC_PREFIX_HEADER = "Target Support Files/AppAuth/AppAuth-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/AppAuth/AppAuth-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -2113,24 +2026,24 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MODULEMAP_FILE = "Target Support Files/GTMSessionFetcher/GTMSessionFetcher.modulemap";
-				PRODUCT_MODULE_NAME = GTMSessionFetcher;
-				PRODUCT_NAME = GTMSessionFetcher;
+				MODULEMAP_FILE = "Target Support Files/AppAuth/AppAuth.modulemap";
+				PRODUCT_MODULE_NAME = AppAuth;
+				PRODUCT_NAME = AppAuth;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = "";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
-			name = Debug;
+			name = Release;
 		};
-		8673DFB10FD0C251526AAE53E9F35275 /* Release */ = {
+		892C02E9AFEE0D0F9B37F16B9599917F /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F1E092BB7677DE0AEA6294DC79BD8620 /* GTMSessionFetcher.release.xcconfig */;
+			baseConfigurationReference = 130A74D7DD855D9A0A3F48379433C83D /* sqlite3.release.xcconfig */;
 			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = NO;
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
@@ -2139,7 +2052,8 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "Target Support Files/GTMSessionFetcher/GTMSessionFetcher-Info.plist";
+				GCC_PREFIX_HEADER = "Target Support Files/sqlite3/sqlite3-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/sqlite3/sqlite3-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -2147,13 +2061,13 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MODULEMAP_FILE = "Target Support Files/GTMSessionFetcher/GTMSessionFetcher.modulemap";
-				PRODUCT_MODULE_NAME = GTMSessionFetcher;
-				PRODUCT_NAME = GTMSessionFetcher;
+				MODULEMAP_FILE = "Target Support Files/sqlite3/sqlite3.modulemap";
+				PRODUCT_MODULE_NAME = sqlite3;
+				PRODUCT_NAME = sqlite3;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = "";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -2175,6 +2089,73 @@
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
+		8C20B4DC49AAE80A57103552AB4053E4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 783646D566B91DF5CC7D0D9BBF315D19 /* GoogleSignIn.debug.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/GoogleSignIn/GoogleSignIn-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/GoogleSignIn/GoogleSignIn.modulemap";
+				PRODUCT_MODULE_NAME = GoogleSignIn;
+				PRODUCT_NAME = GoogleSignIn;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		945475389E6998558FD49D72931F006F /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 37D6B131A186B8B6C52A60D09B0A996F /* GoogleSignIn.release.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/GoogleSignIn/GoogleSignIn-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/GoogleSignIn/GoogleSignIn.modulemap";
+				PRODUCT_MODULE_NAME = GoogleSignIn;
+				PRODUCT_NAME = GoogleSignIn;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
 			};
 			name = Release;
 		};
@@ -2215,7 +2196,7 @@
 			};
 			name = Debug;
 		};
-		A47D72EEE9EC9BA1946C4A7D59FD0227 /* Debug */ = {
+		ACC628E3E41F703E9390BEECA9E86A9E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = C7B6AF4C78A838C667B10A14E4C217E3 /* GTMAppAuth.debug.xcconfig */;
 			buildSettings = {
@@ -2242,17 +2223,18 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = "";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
 			name = Debug;
 		};
-		B20A1DB753A7B2A43877C336CADF3839 /* Release */ = {
+		B4E092FF5572EDFAEDB2FCA51A8A0FEF /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 130A74D7DD855D9A0A3F48379433C83D /* sqlite3.release.xcconfig */;
+			baseConfigurationReference = F1E092BB7677DE0AEA6294DC79BD8620 /* GTMSessionFetcher.release.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
@@ -2261,8 +2243,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_PREFIX_HEADER = "Target Support Files/sqlite3/sqlite3-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/sqlite3/sqlite3-Info.plist";
+				INFOPLIST_FILE = "Target Support Files/GTMSessionFetcher/GTMSessionFetcher-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -2270,86 +2251,19 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MODULEMAP_FILE = "Target Support Files/sqlite3/sqlite3.modulemap";
-				PRODUCT_MODULE_NAME = sqlite3;
-				PRODUCT_NAME = sqlite3;
+				MODULEMAP_FILE = "Target Support Files/GTMSessionFetcher/GTMSessionFetcher.modulemap";
+				PRODUCT_MODULE_NAME = GTMSessionFetcher;
+				PRODUCT_NAME = GTMSessionFetcher;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = "";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
 			name = Release;
-		};
-		CAD506797A15FD305F3EC04A9EA81F5E /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 37D6B131A186B8B6C52A60D09B0A996F /* GoogleSignIn.release.xcconfig */;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "Target Support Files/GoogleSignIn/GoogleSignIn-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MODULEMAP_FILE = "Target Support Files/GoogleSignIn/GoogleSignIn.modulemap";
-				PRODUCT_MODULE_NAME = GoogleSignIn;
-				PRODUCT_NAME = GoogleSignIn;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = "";
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
-		CB3EA9214125AE0C0B6641D8CEB4BF83 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 783646D566B91DF5CC7D0D9BBF315D19 /* GoogleSignIn.debug.xcconfig */;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "Target Support Files/GoogleSignIn/GoogleSignIn-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MODULEMAP_FILE = "Target Support Files/GoogleSignIn/GoogleSignIn.modulemap";
-				PRODUCT_MODULE_NAME = GoogleSignIn;
-				PRODUCT_NAME = GoogleSignIn;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = "";
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
 		};
 		D1A26247852E9D0C9FEBB5C970FF2A62 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -2368,14 +2282,83 @@
 			};
 			name = Debug;
 		};
+		DB9CAFC27F6824D854A8A6E3CAD1D6C9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = FD1C773EDF2460206B706BDBDB245402 /* AppAuth.debug.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/AppAuth/AppAuth-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/AppAuth/AppAuth-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/AppAuth/AppAuth.modulemap";
+				PRODUCT_MODULE_NAME = AppAuth;
+				PRODUCT_NAME = AppAuth;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		FD8A73AF73B5FB40EA148FC4DB8B43E1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6AA44C4C702519E9C8FCB515D6E1A904 /* GTMAppAuth.release.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/GTMAppAuth/GTMAppAuth-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/GTMAppAuth/GTMAppAuth.modulemap";
+				PRODUCT_MODULE_NAME = GTMAppAuth;
+				PRODUCT_NAME = GTMAppAuth;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
 		1166072F19D605AE7E4B016DD27CFA21 /* Build configuration list for PBXNativeTarget "GTMAppAuth" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				A47D72EEE9EC9BA1946C4A7D59FD0227 /* Debug */,
-				007AA66CB42A7FB9239AC396396CDADC /* Release */,
+				ACC628E3E41F703E9390BEECA9E86A9E /* Debug */,
+				FD8A73AF73B5FB40EA148FC4DB8B43E1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -2392,8 +2375,8 @@
 		2D97C185A5D514FB434B640B16109400 /* Build configuration list for PBXNativeTarget "GoogleSignIn" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				CB3EA9214125AE0C0B6641D8CEB4BF83 /* Debug */,
-				CAD506797A15FD305F3EC04A9EA81F5E /* Release */,
+				8C20B4DC49AAE80A57103552AB4053E4 /* Debug */,
+				945475389E6998558FD49D72931F006F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -2419,17 +2402,8 @@
 		5DD577F49C3885AFDB3A5C47CCFF9432 /* Build configuration list for PBXNativeTarget "sqlite3" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				19FC68DAC5F9A9970578F956EA2B1C27 /* Debug */,
-				B20A1DB753A7B2A43877C336CADF3839 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		97E447FA7733197D19709512E7D7415A /* Build configuration list for PBXAggregateTarget "composeApp" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				1D72C9DE68E999C98AB062E183E8B5FF /* Debug */,
-				67E3EE5ADFF5140990DBF1D4C4BE47E6 /* Release */,
+				67E9E8FAE28D5D2AAA42A505C1665534 /* Debug */,
+				892C02E9AFEE0D0F9B37F16B9599917F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -2437,8 +2411,17 @@
 		AA5A2205A881DE5528CA6FE384DDD74F /* Build configuration list for PBXNativeTarget "AppAuth" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				61B25A52857AA65D403905F0CC6BD68E /* Debug */,
-				48C4116A3161C0DA7989A1E88F6DCA29 /* Release */,
+				DB9CAFC27F6824D854A8A6E3CAD1D6C9 /* Debug */,
+				859E8832FC0E6D15F8B017733E248186 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BDDD9F5B8AC230B87C62C2594173958B /* Build configuration list for PBXAggregateTarget "composeApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DB9CAFC27F6824D854A8A6E3CAD1D6C9 /* Debug */,
+				859E8832FC0E6D15F8B017733E248186 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -2446,8 +2429,8 @@
 		F6B1E2F3C22A802843C0868C99ECC447 /* Build configuration list for PBXNativeTarget "GTMSessionFetcher" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				74CC61A7D261034A81B0A3454A7D9F72 /* Debug */,
-				8673DFB10FD0C251526AAE53E9F35275 /* Release */,
+				52573F5C830D4E436EF1C638F45817E9 /* Debug */,
+				B4E092FF5572EDFAEDB2FCA51A8A0FEF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
