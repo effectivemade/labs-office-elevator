@@ -22,7 +22,7 @@ import org.koin.core.component.inject
 
 internal class EmployeeStoreFactory(private val storeFactory: StoreFactory):KoinComponent{
 
-    private val employeesInfo:EmployeeUseCase by inject()
+    private val employeesInfo: EmployeeUseCase by inject()
 
     private val _employList = MutableStateFlow(EmployeeRepositoryImpl.EmployeesData.initial)
     val employList=_employList.asStateFlow()

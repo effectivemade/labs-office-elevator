@@ -69,6 +69,7 @@ class UpdateEventStoreFactory(private val storeFactory: StoreFactory) : KoinComp
         data class UpdateOrganizer(val newValue: Organizer) : Message
         object LoadDelete : Message
         object FailDelete : Message
+        data class ChangeShowSelectDateModal(val newValue: Boolean) : Message
     }
 
     private sealed interface Action {
@@ -105,7 +106,51 @@ class UpdateEventStoreFactory(private val storeFactory: StoreFactory) : KoinComp
                 is UpdateEventStore.Intent.OnInit -> init(intent.event)
                 is UpdateEventStore.Intent.OnDoneInput -> onDone(state)
                 is UpdateEventStore.Intent.OnInput -> onInput(intent.input, state)
+                is UpdateEventStore.Intent.OnCloseSelectDateDialog -> dispatch(
+                    Message.ChangeShowSelectDateModal(
+                        false
+                    )
+                )
+
+                is UpdateEventStore.Intent.OnOpenSelectDateDialog -> dispatch(
+                    Message.ChangeShowSelectDateModal(
+                        true
+                    )
+                )
+
+                is UpdateEventStore.Intent.OnSetDate -> setDay(
+                    state = state,
+                    year = intent.year,
+                    month = intent.month,
+                    day = intent.day,
+                    hour = intent.hour,
+                    minute = intent.minute
+                )
             }
+        }
+
+        fun setDay(
+            state: UpdateEventStore.State,
+            year: Int,
+            month: Int,
+            day: Int,
+            hour: Int,
+            minute: Int
+        ) {
+            val newDate = (state.date.clone() as Calendar).apply {
+                set(Calendar.YEAR, year)
+                set(Calendar.MONTH, month)
+                set(Calendar.DAY_OF_MONTH, day)
+                set(Calendar.HOUR, hour)
+                set(Calendar.MINUTE, minute)
+            }
+            dispatch(
+                Message.UpdateInformation(
+                    newDate = newDate,
+                    newDuration = state.duration,
+                    newOrganizer = state.selectOrganizer
+                )
+            )
         }
 
         fun cancel(state: UpdateEventStore.State) = scope.launch {
@@ -226,6 +271,7 @@ class UpdateEventStoreFactory(private val storeFactory: StoreFactory) : KoinComp
 
                 is Message.FailDelete -> copy(isErrorDelete = true, isLoadDelete = false)
                 is Message.LoadDelete -> copy(isErrorDelete = false, isLoadDelete = true)
+                is Message.ChangeShowSelectDateModal -> copy(showSelectDate = msg.newValue)
             }
     }
 }

@@ -2,7 +2,7 @@ package office.effective.plugins
 
 import io.ktor.server.application.*
 import io.ktor.server.plugins.requestvalidation.*
-import office.effective.features.booking.dto.BookingDTO
+import office.effective.dto.BookingDTO
 
 fun Application.configureValidation() {
     install(RequestValidation) {

@@ -47,7 +47,8 @@ fun MainScreenView(
     onEventUpdateRequest: (EventInfo) -> Unit,
     showUpdateModal: Boolean,
     updatedEvent: EventInfo,
-    closeModal: () -> Unit
+    closeModal: () -> Unit,
+    onSettings: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colors.background)) {
         /*NOTE(Maksim Mishenko):
@@ -59,7 +60,8 @@ fun MainScreenView(
             RoomInfoComponent(
                 modifier = Modifier.fillMaxHeight().fillMaxWidth(infoViewWidth),
                 roomInfoComponent = roomInfoComponent,
-                onEventUpdateRequest = onEventUpdateRequest
+                onEventUpdateRequest = onEventUpdateRequest,
+                onSettings = onSettings
             )
             Box(modifier = Modifier.fillMaxSize()) {
                 BookingRoomView(

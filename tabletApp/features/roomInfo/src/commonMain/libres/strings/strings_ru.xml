@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="room_occupancy">Занято до ${finishTime} · ${organizer}</string>
-    <string name="free_room_occupancy">Свободна до ${time}</string>
+    <string name="room_occupancy">Занято до ${time} · До конца ${duration}</string>
+    <string name="free_room_occupancy">Свободна до ${time} · До начала ${duration}</string>
     <string name="stop_meeting_button">Освободить</string>
     <string name="tv_property">TV</string>
     <string name="usb_property">USB</string>
@@ -17,13 +17,10 @@
     <string name="booking_view_title">Занять</string>
     <string name="booking_button_text">Занять ${roomName}</string>
     <string name="busy_duration_string">До конца</string>
-    <string name="free_duration_string">Будет занята через</string>
     <string name="see_free_room">Смотреть другие переговорки</string>
     <string name="on_today_string">на сегодня</string>
     <string name="start_date_time">${date} с ${time}</string>
     <string name="current_length_string">${currentLength} мин</string>
-
-
     <string name="list_organizers_title">Занятое время</string>
     <string name="event_list_title">Занятое время</string>
     <string name="no_select_organizer_alert">Выберите организатора</string>

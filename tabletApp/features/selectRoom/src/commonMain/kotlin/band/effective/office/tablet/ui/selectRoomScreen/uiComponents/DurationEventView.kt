@@ -36,6 +36,7 @@ fun DurationEventView(modifier: Modifier, booking: Booking) {
     }
 }
 
-fun getLengthEvent(start: Calendar, finish: Calendar) =
-    (finish.get(Calendar.HOUR) * 60 + finish.get(Calendar.MINUTE)) -
-            (start.get(Calendar.HOUR) * 60 + start.get(Calendar.MINUTE))
+fun getLengthEvent(start: Calendar, finish: Calendar): Int{
+    val ml = finish.timeInMillis - start.timeInMillis
+    return ml.toInt() / 60000
+}

@@ -1,7 +1,7 @@
 package band.effective.office.tablet.network.repository.impl
 
 import band.effective.office.network.api.Api
-import band.effective.office.network.dto.BookingInfo
+import band.effective.office.network.dto.BookingDTO
 import band.effective.office.network.dto.WorkspaceDTO
 import band.effective.office.network.model.Either
 import band.effective.office.network.model.ErrorResponse
@@ -99,12 +99,12 @@ class RoomRepositoryImpl(
             successMapper = { it.toRoomInfo() }
         )
 
-    private suspend fun BookingInfo.toEventInfo() = let {
+    private suspend fun BookingDTO.toEventInfo() = let {
         EventInfo(
-            startTime = GregorianCalendar().apply { time = Date(it.begin) },
-            finishTime = GregorianCalendar().apply { time = Date(it.end) },
-            organizer = getOrgById(it.ownerId),
-            id = it.id
+            startTime = GregorianCalendar().apply { time = Date(it.beginBooking) },
+            finishTime = GregorianCalendar().apply { time = Date(it.endBooking) },
+            organizer = getOrgById(it.owner.id),
+            id = it.id!!
         )
     }
 
@@ -127,7 +127,7 @@ class RoomRepositoryImpl(
         id = id
     )
 
-    private suspend fun Either<ErrorWithData<RoomInfo>, RoomInfo>.addEvents(loadEvents: Either<ErrorResponse, List<BookingInfo>>): Either<ErrorWithData<RoomInfo>, RoomInfo> =
+    private suspend fun Either<ErrorWithData<RoomInfo>, RoomInfo>.addEvents(loadEvents: Either<ErrorResponse, List<BookingDTO>>): Either<ErrorWithData<RoomInfo>, RoomInfo> =
         if (loadEvents is Either.Success) {
             when (this) {
                 is Either.Error -> this

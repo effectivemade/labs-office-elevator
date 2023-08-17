@@ -27,6 +27,7 @@ Pod::Spec.new do |spec|
                   exit 0
                 fi
                 set -ev
+                export LANG=en_US.UTF-8
                 REPO_ROOT="$PODS_TARGET_SRCROOT"
                 "$REPO_ROOT/../gradlew" -p "$REPO_ROOT" $KOTLIN_PROJECT_PATH:syncFramework \
                     -Pkotlin.native.cocoapods.platform=$PLATFORM_NAME \

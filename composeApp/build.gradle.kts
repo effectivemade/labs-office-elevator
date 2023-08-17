@@ -226,3 +226,16 @@ sqldelight {
         }
     }
 }
+
+val podspec = tasks["podspec"] as org.jetbrains.kotlin.gradle.tasks.PodspecTask
+podspec.doLast {
+    val podspec = file("composeApp.podspec")
+    val newPodspecContent = mutableListOf<String>()
+    podspec.readLines().forEach {
+        newPodspecContent.add(it)
+        if (it.contains("set -ev")) {
+            newPodspecContent.add("                export LANG=en_US.UTF-8")
+        }
+    }
+    podspec.writeText(newPodspecContent.joinToString(separator = "\n"))
+}

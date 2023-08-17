@@ -5,6 +5,7 @@ import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.store.FreeNegotiationsStore
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.store.FreeNegotiationsStoreFactory
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponentImpl
+import band.effective.office.tablet.utils.time24
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.childContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
@@ -54,9 +55,12 @@ class FreeNegotiationsComponentImpl(
                 Booking(
                     nameRoom = state.value.nameBookingRoom.room.name,
                     eventInfo = EventInfo(
-                        startTime = state.value.currentTime,
-                        finishTime = getFinishTime(state.value.currentTime, state.value.realDurationBooking),
-                        organizer = state.value.organizer,
+                        startTime = state.value.booking.eventInfo.startTime,
+                        finishTime = getFinishTime(
+                            startTime = state.value.booking.eventInfo.startTime,
+                            duration = state.value.realDurationBooking
+                        ),
+                        organizer = state.value.booking.eventInfo.organizer,
                         id = ""
                     ),
                     roomId = state.value.nameBookingRoom.room.id

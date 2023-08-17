@@ -133,6 +133,9 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
             }
         }
 
+        private fun RoomInfo.filter(date: Calendar): RoomInfo =
+            copy(eventList = eventList.filter { eventInfo -> eventInfo.startTime.oneDay(date) })
+
         override fun executeAction(action: Action, getState: () -> RoomInfoStore.State) {
             when (action) {
                 is Action.UpdateRoomInfo -> with(action.roomInfo.filter(getState().selectDate)) {
@@ -150,10 +153,6 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
                 is Action.UpdateNameRoom -> dispatch(Message.UpdateNameRoom(action.nameRoom))
             }
         }
-
-        private fun RoomInfo.filter(date: Calendar): RoomInfo =
-            copy(eventList = eventList.filter { eventInfo -> eventInfo.startTime.oneDay(date) })
-
         private fun updateDate(newDate: Calendar, nameRoom: String) = scope.launch {
             dispatch(
                 Message.UpdateDate(
