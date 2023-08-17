@@ -29,6 +29,9 @@ import band.effective.office.elevator.components.TimePickerModal
 import band.effective.office.elevator.components.bottomSheet.BottomSheetItem
 import band.effective.office.elevator.components.bottomSheet.MultiBottomSheetController
 import band.effective.office.elevator.components.bottomSheet.rememberMultiBottomSheetController
+import band.effective.office.elevator.domain.models.BookingInfo
+import band.effective.office.elevator.domain.models.BookingPeriodUI
+import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.ui.booking.components.BookingMainContentScreen
 import band.effective.office.elevator.ui.booking.components.modals.BookAccept
 import band.effective.office.elevator.ui.booking.components.modals.BookingPeriod
@@ -37,14 +40,21 @@ import band.effective.office.elevator.ui.booking.components.modals.BookingRepeat
 import band.effective.office.elevator.ui.booking.components.modals.BookingSuccess
 import band.effective.office.elevator.ui.booking.components.modals.ChooseZone
 import band.effective.office.elevator.ui.booking.models.BottomSheetNames
+import band.effective.office.elevator.ui.booking.models.Frequency
+import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
+import band.effective.office.elevator.ui.booking.models.WorkSpaceZone
 import band.effective.office.elevator.ui.booking.store.BookingStore
+import band.effective.office.elevator.ui.models.TypesList
+import band.effective.office.elevator.utils.NumToMonth
 import band.effective.office.elevator.utils.Stack
 import band.effective.office.elevator.utils.isScrollingDown
 import band.effective.office.elevator.utils.stackOf
 import dev.icerock.moko.resources.compose.stringResource
+import effective.office.modalcustomdialog.Dialog
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
+import kotlinx.datetime.atTime
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -341,7 +351,7 @@ private fun BookingScreenContent(
     showTimePicker: Boolean,
     onClickCloseTimeModal: () -> Unit,
     onClickSelectTime: (LocalTime) -> Unit,
-    onClickOpenBookRepeat: (Pair<String, BookingPeriod>) -> Unit,
+    onClickOpenBookRepeat: (Pair<String, BookingPeriodUI>) -> Unit,
     onClickChangeZone: (WorkSpaceType) -> Unit,
     isStart: Boolean,
     date: LocalDate,

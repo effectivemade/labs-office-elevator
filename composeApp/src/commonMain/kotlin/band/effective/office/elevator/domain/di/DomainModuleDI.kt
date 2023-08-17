@@ -24,8 +24,8 @@ internal val domainModuleDI = module {
     single<OfficeElevatorRepository> { OfficeElevatorRepositoryImpl(get(), get()) }
 
     single<EmployeeRepository> { EmployeeRepositoryImpl() }
-    factory<EmployeeUseCase> { EmployeeUseCase(repository = get()) }
-    factory<AboutEmployeeUseCase> { AboutEmployeeUseCase(repository = get()) }
+    single { EmployeeUseCase(repository = get()) }
+    single { AboutEmployeeUseCase(repository = get()) }
 
     single { GetBookingsUseCase(get()) }
     single { ElevatorCallUseCase(get()) }

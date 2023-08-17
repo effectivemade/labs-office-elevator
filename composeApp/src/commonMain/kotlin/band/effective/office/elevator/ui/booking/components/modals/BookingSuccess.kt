@@ -57,33 +57,32 @@ fun BookingSuccess(onMain: () -> Unit, close: () -> Unit, modifier: Modifier) {
                         ),
                         color = Color.Black
                     ),
-                    textAlign = TextAlign.Center
-                )
+                ),
+                textAlign = TextAlign.Center
+            )
+            Text(
+                text = stringResource(
+                    resource = MainRes.strings.good_working_day,
+                ),
+                style = MaterialTheme.typography.body1.copy(
+                    color = ExtendedThemeColors.colors._66x
+                ),
+                textAlign = TextAlign.Center
+            )
+        }
 
-                Text(
-                    text = stringResource(
-                        resource = MainRes.strings.good_working_day,
-                    ),
-                    style = MaterialTheme.typography.body1.copy(
-                        color = ExtendedThemeColors.colors._66x
-                    ),
-                    textAlign = TextAlign.Center
-                )
-            }
-
-            Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                EffectiveButton(
-                    buttonText = stringResource(resource = MainRes.strings.move_to_main_from_booking),
-                    onClick = onMain
-                )
-                EffectiveButton(
-                    buttonText = stringResource(resource = MainRes.strings.close_booking),
-                    onClick = close
-                )
-            }
+        Column(
+            verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            EffectiveButton(
+                buttonText = stringResource(resource = MainRes.strings.move_to_main_from_booking),
+                onClick = onMain
+            )
+            EffectiveButton(
+                buttonText = stringResource(resource = MainRes.strings.close_booking),
+                onClick = close
+            )
         }
     }
 }

@@ -5,6 +5,7 @@ import band.effective.office.elevator.domain.models.CreatingBookModel
 import band.effective.office.elevator.domain.useCase.ChangeBookingUseCase
 import band.effective.office.elevator.domain.useCase.CreateBookingUseCase
 import band.effective.office.elevator.domain.useCase.GetBookingsUseCase
+import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsFilter
 import band.effective.office.elevator.ui.models.ReservedSeat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +18,11 @@ class BookingInteractor(
 ) {
     suspend fun getForUser(ownerId:String, coroutineScope: CoroutineScope): StateFlow<List<ReservedSeat>> {
         val bookingsForUser: StateFlow<List<ReservedSeat>> =
-            getBookingsUseCase.getBookingsForUser(ownerId = ownerId, coroutineScope = coroutineScope)
+            getBookingsUseCase.getBookingsForUser(
+                ownerId = ownerId,
+                coroutineScope = coroutineScope,
+                bookingsFilter = BookingsFilter(meetRoom = true, workPlace = true)
+            )
         return bookingsForUser
     }
 
@@ -27,7 +32,11 @@ class BookingInteractor(
         coroutineScope: CoroutineScope
     ): StateFlow<List<ReservedSeat>> {
         val bookingsByDate: StateFlow<List<ReservedSeat>> =
-            getBookingsUseCase.getBookingsByDate(ownerId = ownerId, date = date, coroutineScope = coroutineScope)
+            getBookingsUseCase.getBookingsByDate(
+                ownerId = ownerId, date = date,
+                coroutineScope = coroutineScope,
+                bookingsFilter = BookingsFilter(meetRoom = true, workPlace = true)
+            )
         return bookingsByDate
     }
 

@@ -1,6 +1,5 @@
 package band.effective.office.elevator.ui.booking.models
 
-import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.domain.models.DayOfWeek
 
 class Frequency(private val days: List<Pair<String, Int>>) {

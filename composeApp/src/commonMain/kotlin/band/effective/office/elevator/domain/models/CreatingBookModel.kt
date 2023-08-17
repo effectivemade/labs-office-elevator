@@ -7,21 +7,21 @@ data class CreatingBookModel(
     val workSpaceId: String,
     val dateOfStart: LocalDateTime,
     val dateOfEnd: LocalDateTime,
-    val bookingPeriod: BookingPeriod,
+    val bookingPeriodUI: BookingPeriodUI,
     val typeOfEndPeriod: TypeEndPeriodBooking
 )
 
-sealed class BookingPeriod(val durationPeriod: Int) {
-    data class Month(val monthPeriod: Int) : BookingPeriod(monthPeriod)
+sealed class BookingPeriodUI(val durationPeriod: Int) {
+    data class Month(val monthPeriod: Int) : BookingPeriodUI(monthPeriod)
 
-    data class Year(val yearPeriod: Int) : BookingPeriod(yearPeriod)
+    data class Year(val yearPeriod: Int) : BookingPeriodUI(yearPeriod)
 
-    data class EveryWorkDay(val workPeriod: Int) : BookingPeriod(workPeriod)
+    data class EveryWorkDay(val workPeriod: Int) : BookingPeriodUI(workPeriod)
 
     data class Week(val weekPeriod: Int, val selectedDayOfWeek: List<DayOfWeek>) :
-        BookingPeriod(weekPeriod)
+        BookingPeriodUI(weekPeriod)
 
-    object NoPeriod : BookingPeriod(0)
+    object NoPeriod : BookingPeriodUI(0)
 }
 
 sealed interface TypeEndPeriodBooking{

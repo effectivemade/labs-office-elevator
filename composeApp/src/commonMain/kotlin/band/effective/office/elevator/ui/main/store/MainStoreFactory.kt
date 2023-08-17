@@ -32,8 +32,12 @@ internal class MainStoreFactory(
 ) : KoinComponent {
 
     private val elevatorUseCase: ElevatorCallUseCase by inject()
-//    private val bookingsUseCase: GetBookingsUseCase by inject()
+
+    //    private val bookingsUseCase: GetBookingsUseCase by inject()
     private val bookingInteractor: BookingInteractor by inject()
+    private var recentDate = LocalDate(2023, 8, 16)
+    private var filtration = BookingsFilter(meetRoom = true, workPlace = true)
+    private var updatedList = false
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): MainStore =
@@ -93,6 +97,7 @@ internal class MainStoreFactory(
                         publish(MainStore.Label.CloseCalendar)
                     }
                 }
+
                 MainStore.Intent.OnClickOpenCalendar -> {
                     scope.launch {
                         publish(MainStore.Label.OpenCalendar)
@@ -110,12 +115,15 @@ internal class MainStoreFactory(
                 MainStore.Intent.OnClickShowMap -> {
                     showToast("map")
                 }
+
                 is MainStore.Intent.OnClickDeleteBooking -> {
                     showToast("delete")
                 }
+
                 is MainStore.Intent.OnClickExtendBooking -> {
                     showToast("extend")
                 }
+
                 is MainStore.Intent.OnClickRepeatBooking -> {
                     showToast("repeat")
                 }
@@ -129,11 +137,17 @@ internal class MainStoreFactory(
                 is MainStore.Intent.CloseFiltersBottomDialog -> {
                     scope.launch {
                         publish(MainStore.Label.CloseFiltersBottomDialog)
-                        intent.bookingsFilter.let {bookingsFilter ->
-                            if(updatedList){
-                                changeBookingsByDate(date=recentDate, bookingsFilter = bookingsFilter)
-                            }else{
-                                getBookingsForUserByDate(date = getCurrentDate(), bookingsFilter = bookingsFilter)
+                        intent.bookingsFilter.let { bookingsFilter ->
+                            if (updatedList) {
+                                changeBookingsByDate(
+                                    date = recentDate,
+                                    bookingsFilter = bookingsFilter
+                                )
+                            } else {
+                                getBookingsForUserByDate(
+                                    date = getCurrentDate(),
+                                    bookingsFilter = bookingsFilter
+                                )
                             }
                         }
                     }
@@ -143,7 +157,10 @@ internal class MainStoreFactory(
 
         override fun executeAction(action: Action, getState: () -> MainStore.State) {
             when (action) {
-                is Action.LoadBookings -> getBookingsForUserByDate(date = action.date, bookingsFilter = filtration)
+                is Action.LoadBookings -> getBookingsForUserByDate(
+                    date = action.date,
+                    bookingsFilter = filtration
+                )
             }
         }
 
@@ -189,10 +206,10 @@ internal class MainStoreFactory(
         }
 
         fun getBookingsForUserByDate(date: LocalDate, bookingsFilter: BookingsFilter) {
-            if(recentDate!=date)
-                recentDate=date
+            if (recentDate != date)
+                recentDate = date
             else
-                filtration=bookingsFilter
+                filtration = bookingsFilter
 
             scope.launch(Dispatchers.IO) {
                 bookingInteractor
@@ -206,10 +223,10 @@ internal class MainStoreFactory(
         }
 
         fun changeBookingsByDate(date: LocalDate, bookingsFilter: BookingsFilter) {
-            if(recentDate!=date)
-                recentDate=date
+            if (recentDate != date)
+                recentDate = date
             else
-                filtration=bookingsFilter
+                filtration = bookingsFilter
 
             scope.launch(Dispatchers.IO) {
                 bookingInteractor
