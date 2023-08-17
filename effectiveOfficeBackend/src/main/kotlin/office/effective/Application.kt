@@ -2,6 +2,7 @@ package office.effective
 
 import com.typesafe.config.ConfigFactory
 import io.ktor.server.application.*
+import io.ktor.server.application.*
 import io.ktor.server.config.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -32,4 +33,6 @@ fun Application.module() {
     configureExceptionHandling()
     configureSwagger()
     install(VerificationPlugin)
+    configureFirebase()
+    install(FirebaseMessagingPlugin)
 }
