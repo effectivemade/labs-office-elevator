@@ -48,13 +48,14 @@ fun BookingCard(
     onClickCloseOptionMenu: () -> Unit,
     showOptionsMenu:Boolean
 )  {
-    var expand = remember { mutableStateOf(false) }
+    var expand = remember { mutableStateOf(showOptionsMenu) }
     val interactionSource = remember {
         MutableInteractionSource()
     }
     if(!showOptionsMenu){
         expand.value = false
     }
+
     Box(modifier = Modifier
         .fillMaxSize()
         .indication(interactionSource, LocalIndication.current)
