@@ -6,7 +6,7 @@ import epicarchitect.calendar.compose.basis.localized
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 
-data class BookingInfo(
+data class BookingInfoDomain(
     val id: String,
     val ownerId: String,
     val seatName: String,
@@ -14,7 +14,7 @@ data class BookingInfo(
     val dateOfEnd: LocalDateTime
 )
 
-fun BookingInfo.toUiModel() = ReservedSeat(
+fun BookingInfoDomain.toUiModel() = ReservedSeat(
     ownerId = ownerId,
     bookingId = id,
     seatName = seatName,
@@ -25,7 +25,7 @@ fun BookingInfo.toUiModel() = ReservedSeat(
         endTime = dateOfEnd.time
     )
 )
-fun List<BookingInfo>.toUIModel() = map { it.toUiModel() }
+fun List<BookingInfoDomain>.toUIModel() = map { it.toUiModel() }
 
 private fun convertDateTimeToUiDateString(dateOfStart: LocalDateTime) =
     "${capitalizeFirstLetter(dateOfStart.dayOfWeek.localized())}, ${dateOfStart.dayOfMonth} ${dateOfStart.month}"
