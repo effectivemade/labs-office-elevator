@@ -9,7 +9,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import band.effective.office.elevator.textInBorderPurple
+import band.effective.office.elevator.ExtendedThemeColors
 import dev.icerock.moko.resources.ImageResource
 import dev.icerock.moko.resources.compose.painterResource
 
@@ -20,13 +20,13 @@ fun ContactUserUIComponent(image:ImageResource, value: String?, modifier: Modifi
            painter = painterResource(image),
            contentDescription = null,
            modifier = Modifier.size(16.dp),
-           tint = textInBorderPurple
+           tint = ExtendedThemeColors.colors.purple_heart_800
        )
         value?.let{
             Text(
                 text = it,
                 style = MaterialTheme.typography.caption,
-                color = textInBorderPurple,
+                color = ExtendedThemeColors.colors.purple_heart_800,
                 modifier = Modifier.padding(start = 8.dp)
             )
         }

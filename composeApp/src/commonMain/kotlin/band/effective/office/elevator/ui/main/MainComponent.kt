@@ -11,7 +11,11 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
-class MainComponent(componentContext: ComponentContext, storeFactory: StoreFactory) :
+class MainComponent(
+    componentContext: ComponentContext,
+    storeFactory: StoreFactory,
+    private val output: (Output) -> Unit
+) :
     ComponentContext by componentContext {
 
     private val mainStore =
@@ -31,14 +35,17 @@ class MainComponent(componentContext: ComponentContext, storeFactory: StoreFacto
     }
 
     fun onOutput(output: Output) {
-        when(output) {
-            is Output.OpenBookingScreen -> TODO()
-            is Output.OpenMap -> TODO()
-        }
+       output(output)
     }
 
     sealed interface Output {
         object OpenMap : Output
+
+        object ExtendBooking : Output
+
+        object RepeatBooking : Output
+
+        object DeleteBooking : Output
 
         object OpenBookingScreen : Output
 

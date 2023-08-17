@@ -4,6 +4,8 @@ import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.data.ApiResponse
 import band.effective.office.elevator.domain.useCase.ElevatorCallUseCase
 import band.effective.office.elevator.domain.useCase.GetBookingsUseCase
+import band.effective.office.elevator.expects.showToast
+import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsFilter
 import band.effective.office.elevator.ui.models.ElevatorState
 import band.effective.office.elevator.ui.models.ReservedSeat
 import band.effective.office.elevator.utils.getCurrentDate
@@ -21,7 +23,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.Month
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -31,6 +32,9 @@ internal class MainStoreFactory(
 
     private val elevatorUseCase: ElevatorCallUseCase by inject()
     private val bookingsUseCase: GetBookingsUseCase by inject()
+    private var recentDate = LocalDate(2023,8,16)
+    private var filtration = BookingsFilter(meetRoom = true, workPlace = true)
+    private var updatedList = false
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): MainStore =
@@ -40,7 +44,8 @@ internal class MainStoreFactory(
                 initialState = MainStore.State(
                     elevatorState = ElevatorState.Below,
                     reservedSeats = listOf(),
-                    currentDate = getCurrentDate()
+                    currentDate = getCurrentDate(),
+                    dateFiltrationOnReserves = updatedList
                 ),
                 executorFactory = ::ExecutorImpl,
                 reducer = ReducerImpl,
@@ -60,7 +65,8 @@ internal class MainStoreFactory(
 
         data class UpdateSeatReservationByDate(
             val date: LocalDate,
-            val reservedSeats: List<ReservedSeat>
+            val reservedSeats: List<ReservedSeat>,
+            val dateFiltrationOnReserves: Boolean
         ) : Msg
     }
 
@@ -96,8 +102,41 @@ internal class MainStoreFactory(
 
                 is MainStore.Intent.OnClickApplyDate -> {
                     publish(MainStore.Label.CloseCalendar)
+                    updatedList=true
                     intent.date?.let { newDate ->
-                        changeBookingsByDate(date = newDate)
+                        changeBookingsByDate(date = newDate, bookingsFilter = filtration)
+                    }
+                }
+
+                MainStore.Intent.OnClickShowMap -> {
+                    showToast("map")
+                }
+                is MainStore.Intent.OnClickDeleteBooking -> {
+                    showToast("delete")
+                }
+                is MainStore.Intent.OnClickExtendBooking -> {
+                    showToast("extend")
+                }
+                is MainStore.Intent.OnClickRepeatBooking -> {
+                    showToast("repeat")
+                }
+
+                MainStore.Intent.OpenFiltersBottomDialog -> {
+                    scope.launch {
+                        publish(MainStore.Label.OpenFiltersBottomDialog)
+                    }
+                }
+
+                is MainStore.Intent.CloseFiltersBottomDialog -> {
+                    scope.launch {
+                        publish(MainStore.Label.CloseFiltersBottomDialog)
+                        intent.bookingsFilter.let {bookingsFilter ->
+                            if(updatedList){
+                                changeBookingsByDate(date=recentDate, bookingsFilter = bookingsFilter)
+                            }else{
+                                getBookingsForUserByDate(date = getCurrentDate(), bookingsFilter = bookingsFilter)
+                            }
+                        }
                     }
                 }
             }
@@ -105,7 +144,7 @@ internal class MainStoreFactory(
 
         override fun executeAction(action: Action, getState: () -> MainStore.State) {
             when (action) {
-                is Action.LoadBookings -> getBookingsForUserByDate(date = action.date)
+                is Action.LoadBookings -> getBookingsForUserByDate(date = action.date, bookingsFilter = filtration)
             }
         }
 
@@ -150,10 +189,15 @@ internal class MainStoreFactory(
             }
         }
 
-        fun getBookingsForUserByDate(date: LocalDate) {
+        fun getBookingsForUserByDate(date: LocalDate, bookingsFilter: BookingsFilter) {
+            if(recentDate!=date)
+                recentDate=date
+            else
+                filtration=bookingsFilter
+
             scope.launch(Dispatchers.IO) {
                 bookingsUseCase
-                    .getBookingsByDate(date = date, coroutineScope = this)
+                    .getBookingsByDate(date = date, ownerId = "1L", bookingsFilter = bookingsFilter, coroutineScope = this)
                     .collect { bookings ->
                         withContext(Dispatchers.Main) {
                             dispatch(Msg.UpdateSeatsReservation(reservedSeats = bookings))
@@ -162,16 +206,22 @@ internal class MainStoreFactory(
             }
         }
 
-        fun changeBookingsByDate(date: LocalDate) {
+        fun changeBookingsByDate(date: LocalDate, bookingsFilter: BookingsFilter) {
+            if(recentDate!=date)
+                recentDate=date
+            else
+                filtration=bookingsFilter
+
             scope.launch(Dispatchers.IO) {
                 bookingsUseCase
-                    .getBookingsByDate(date = date, coroutineScope = this)
+                    .getBookingsByDate(date = date, ownerId = "1L", bookingsFilter = bookingsFilter, coroutineScope = this)
                     .collect { bookings ->
                         withContext(Dispatchers.Main) {
                             dispatch(
                                 Msg.UpdateSeatReservationByDate(
-                                    date = date,
-                                    reservedSeats = bookings
+                                    date = recentDate,
+                                    reservedSeats = bookings,
+                                    dateFiltrationOnReserves = updatedList
                                 )
                             )
                         }
@@ -188,7 +238,8 @@ internal class MainStoreFactory(
                 is Msg.UpdateSeatsReservation -> copy(reservedSeats = message.reservedSeats)
                 is Msg.UpdateSeatReservationByDate -> copy(
                     currentDate = message.date,
-                    reservedSeats = message.reservedSeats
+                    reservedSeats = message.reservedSeats,
+                    dateFiltrationOnReserves = message.dateFiltrationOnReserves
                 )
             }
     }

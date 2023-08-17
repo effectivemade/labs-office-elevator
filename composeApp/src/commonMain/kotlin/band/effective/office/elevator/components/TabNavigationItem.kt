@@ -1,6 +1,5 @@
 package band.effective.office.elevator.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
@@ -16,8 +15,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.navigation.Tab
 import band.effective.office.elevator.textGrayColor
@@ -54,7 +51,8 @@ internal fun RowScope.TabNavigationItem(
                     text = stringResource(tab.title),
                     style = MaterialTheme.typography.caption.copy(
                         color = if (selected) selectedColor else unselectedColor
-                    )
+                    ),
+                    maxLines = 1
                 )
             }
         }

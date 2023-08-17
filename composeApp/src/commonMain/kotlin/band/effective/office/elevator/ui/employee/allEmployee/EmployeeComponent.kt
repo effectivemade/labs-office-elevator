@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.employee.allEmployee
 
+import band.effective.office.elevator.domain.models.EmployeeInfo
 import band.effective.office.elevator.ui.employee.allEmployee.store.EmployeeStore
 import band.effective.office.elevator.ui.employee.allEmployee.store.EmployeeStoreFactory
 import com.arkivanov.decompose.ComponentContext
@@ -37,7 +38,7 @@ class EmployeeComponent(
 
 
     sealed interface Output{
-        object OpenProfileScreen: Output
+        data class OpenProfileScreen (val employee:EmployeeInfo): Output
 
         object OpenNewListOfEmployees: Output
 

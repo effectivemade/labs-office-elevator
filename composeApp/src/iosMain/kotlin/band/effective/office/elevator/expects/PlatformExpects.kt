@@ -33,7 +33,7 @@ actual fun pickTelegram(telegramNick: String) {
     }
 }
 
-actual fun pickSBP(phoneNumber: String){
+actual fun pickSBP(phoneNumber: String) {
     val url = NSURL(string = "tel:$phoneNumber")
     UIApplication.sharedApplication.openURL(url)
 }

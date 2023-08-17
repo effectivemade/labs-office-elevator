@@ -3,7 +3,6 @@ package band.effective.office.elevator.ui.authorization.authorization_telegram
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -15,7 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -39,14 +37,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.components.OutlinedTextColorsSetup
-import band.effective.office.elevator.components.PrimaryButton
 import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.textGrayColor
-import band.effective.office.elevator.theme_light_primary_stroke
 import band.effective.office.elevator.ui.authorization.authorization_telegram.store.AuthorizationTelegramStore
 import band.effective.office.elevator.ui.authorization.components.AuthSubTitle
 import band.effective.office.elevator.ui.authorization.components.AuthTabRow
@@ -89,14 +85,6 @@ private fun AuthorizationTelegramComponent(
     onEvent: (AuthorizationTelegramStore.Intent) -> Unit,
     state: AuthorizationTelegramStore.State
 ) {
-    val elevation = ButtonDefaults.elevation(
-        defaultElevation = 0.dp,
-        pressedElevation = 0.dp,
-        disabledElevation = 0.dp,
-        hoveredElevation = 0.dp,
-        focusedElevation = 0.dp
-    )
-
     val closeIcon = remember { mutableStateOf(false) }
     val borderColor = remember { mutableStateOf(textGrayColor) }
     val leadingColor = remember { mutableStateOf(textGrayColor) }
@@ -119,7 +107,7 @@ private fun AuthorizationTelegramComponent(
             }) {
             Icon(
                 imageVector = Icons.Rounded.ArrowBack,
-                tint = Color.Black,
+                tint = ExtendedThemeColors.colors.blackColor,
                 contentDescription = "back screen arrow"
             )
         }
@@ -152,7 +140,7 @@ private fun AuthorizationTelegramComponent(
                     if (it.isNotEmpty()) {
                         closeIcon.value = true
                         leadingColor.value = Color.Black
-                        borderColor.value = theme_light_primary_stroke
+                        borderColor.value = ExtendedThemeColors.colors.trinidad_400
                     } else {
                         borderColor.value = textGrayColor
                         closeIcon.value = false
@@ -218,7 +206,7 @@ private fun AuthorizationTelegramComponent(
                     .wrapContentHeight()
                     .onFocusChanged {
                         if (it.isFocused) {
-                            borderColor.value = theme_light_primary_stroke
+                            borderColor.value = ExtendedThemeColors.colors.trinidad_400
                         } else {
                             borderColor.value = textGrayColor
                             leadingColor.value = textGrayColor
@@ -228,19 +216,12 @@ private fun AuthorizationTelegramComponent(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            PrimaryButton(
-                text = stringResource(MainRes.strings._continue),
-                cornerValue = 40.dp,
-                contentTextSize = 16.sp,
-                paddingValues = PaddingValues(all = 10.dp),
-                elevation = elevation,
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = MaterialTheme.colors.primary
-                ),
-                border = null,
-                onButtonClick = {
+            EffectiveButton(
+                buttonText = stringResource(MainRes.strings._continue),
+                onClick =  {
                     onEvent(AuthorizationTelegramStore.Intent.ContinueButtonClicked)
-                }
+                },
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }
