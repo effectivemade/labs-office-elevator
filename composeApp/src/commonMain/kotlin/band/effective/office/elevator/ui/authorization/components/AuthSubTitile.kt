@@ -11,8 +11,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.getDefaultFont
 import band.effective.office.elevator.textGrayColor
-import band.effective.office.elevator.theme_light_tertiary_color
-
 @Composable
 fun AuthSubTitle(
     text: String,

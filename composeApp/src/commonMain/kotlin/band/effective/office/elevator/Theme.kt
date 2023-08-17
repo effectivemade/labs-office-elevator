@@ -65,7 +65,7 @@ internal fun AppTheme(
             fontSize = 28.sp,
             letterSpacing = 0.1.sp,
             textAlign = TextAlign.Start,
-            color = Color(0xFF5800CB),
+            color = ExtendedThemeColors.colors.purple_heart_800,
             lineHeight = 36.4.sp
         ),
 
@@ -95,7 +95,7 @@ internal fun AppTheme(
             lineHeight = 20.8.sp,
             letterSpacing = 0.1.sp,
             textAlign = TextAlign.Start,
-            color = theme_light_tertiary_color
+            color = textGrayColor
         ),
 
         body2 = TextStyle(
@@ -110,7 +110,7 @@ internal fun AppTheme(
             fontSize = 12.sp,
             lineHeight = 15.6.sp,
             fontWeight = FontWeight(500),
-            color = theme_light_tertiary_color,
+            color = textGrayColor,
             textAlign = TextAlign.Center,
             letterSpacing = 0.1.sp,
         ),
@@ -138,11 +138,12 @@ internal fun AppTheme(
             Surface(content = content)
         }
     )
+
 }
 
 @Composable
 fun ExtendedTheme(
-    useDarkTheme: Boolean = isSystemInDarkTheme(),
+    useDarkTheme: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val typography = Typography(
@@ -163,7 +164,7 @@ fun ExtendedTheme(
             fontSize = 28.sp,
             letterSpacing = 0.1.sp,
             textAlign = TextAlign.Start,
-            color = Color(0xFF5800CB),
+            color = ExtendedThemeColors.colors.purple_heart_800,
             lineHeight = 36.4.sp
         ),
 
@@ -193,7 +194,7 @@ fun ExtendedTheme(
             lineHeight = 20.8.sp,
             letterSpacing = 0.1.sp,
             textAlign = TextAlign.Start,
-            color = theme_light_tertiary_color
+            color = textGrayColor
         ),
 
         body2 = TextStyle(
@@ -208,7 +209,7 @@ fun ExtendedTheme(
             fontSize = 12.sp,
             lineHeight = 15.6.sp,
             fontWeight = FontWeight(500),
-            color = theme_light_tertiary_color,
+            color = textGrayColor,
             textAlign = TextAlign.Center,
             letterSpacing = 0.1.sp,
         ),
@@ -230,20 +231,16 @@ fun ExtendedTheme(
     } else {
         DarkColors
     }
-//    region::Extended colors
 
-//    endregion
-
-        MaterialTheme(
-            typography = typography,
-            colors = colors,
-            content = {
-                Surface(content = content)
-            }
-        )
-
+    MaterialTheme(
+        typography = typography,
+        colors = colors,
+        content = {
+            Surface(content = content)
+        }
+    )
 }
-
 object ExtendedThemeColors {
     val colors = ExtendedColors
 }
+

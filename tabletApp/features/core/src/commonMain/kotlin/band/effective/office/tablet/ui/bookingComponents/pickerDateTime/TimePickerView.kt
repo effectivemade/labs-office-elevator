@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -48,10 +47,10 @@ fun TimePickerView(currentDate: Calendar, selectedTime: Calendar) {
                     color = LocalCustomColorsPalette.current.primaryTextAndIcon
                 )
             }
-            Spacer(modifier = Modifier.height(15.dp))
+
             WheelTimePicker(
-                modifier = Modifier.fillMaxWidth(1f).fillMaxHeight(0.65f),
-                size = DpSize(248.dp, 260.dp),
+                modifier = Modifier.height(180.dp),
+                size = DpSize(248.dp, 180.dp),
                 textStyle = header6,
                 textColor = LocalCustomColorsPalette.current.primaryTextAndIcon,
                 rowCount = 5,

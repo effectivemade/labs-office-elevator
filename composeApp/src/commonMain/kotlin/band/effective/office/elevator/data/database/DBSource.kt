@@ -1,8 +1,12 @@
 package band.effective.office.elevator.data.database
 
-import band.effective.office.elevator.ui.content.ContentComponent
+import band.effective.office.elevator.scheme.ProfileData
 
-// TODO(edit this interface)
 interface DBSource {
-    fun getProfileName(): String
+
+    fun getUser(idToken: String): ProfileData
+
+    fun getAll(): List<ProfileData>
+
+    fun update(profileData: ProfileData)
 }

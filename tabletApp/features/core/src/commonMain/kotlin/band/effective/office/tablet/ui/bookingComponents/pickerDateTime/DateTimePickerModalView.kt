@@ -33,7 +33,10 @@ import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun DateTimePickerModalView(dateTimePickerComponent: DateTimePickerComponent, currentDate: Calendar) {
+fun DateTimePickerModalView(
+    dateTimePickerComponent: DateTimePickerComponent,
+    currentDate: Calendar
+) {
     val stateDateTime by dateTimePickerComponent.state.collectAsState()
     val selectedDateTime by remember { mutableStateOf(stateDateTime.selectDate) }
 
@@ -58,7 +61,8 @@ fun DateTimePickerModalView(dateTimePickerComponent: DateTimePickerComponent, cu
         selectionMode = EpicDatePickerState.SelectionMode.Single(1),
         initialMonth = EpicMonth(
             year = currentDate[Calendar.YEAR],
-            month = Month(currentDate[Calendar.MONTH] + 1))
+            month = Month(currentDate[Calendar.MONTH] + 1)
+        )
     )
 
 
@@ -68,7 +72,16 @@ fun DateTimePickerModalView(dateTimePickerComponent: DateTimePickerComponent, cu
         selectedDateTime = selectedDateTime,
         onCloseRequest = { dateTimePickerComponent.sendIntent(DateTimePickerStore.Intent.CloseModal()) },
         onSetDate = { day: Int, month: Int, year: Int, hour: Int, minute: Int ->
-            dateTimePickerComponent.sendIntent(DateTimePickerStore.Intent.OnSetDate(day, month, year, hour, minute)) }
+            dateTimePickerComponent.sendIntent(
+                DateTimePickerStore.Intent.OnSetDate(
+                    day,
+                    month,
+                    year,
+                    hour,
+                    minute
+                )
+            )
+        }
     )
 }
 
@@ -89,7 +102,7 @@ fun DateTimePickerModalView(
     ) {
         Box(
             modifier = Modifier
-                .fillMaxHeight(0.7f)
+                .fillMaxHeight(0.6f)
                 .fillMaxWidth(0.8f)
                 .clip(RoundedCornerShape(3))
                 .background(LocalCustomColorsPalette.current.elevationBackground)
@@ -122,11 +135,10 @@ fun DateTimePickerModalView(
                     /* minute = */
                     selectedDateTime[Calendar.MINUTE]
                 )
-
-                Spacer(modifier = Modifier.height(30.dp))
+                Spacer(modifier = Modifier.height(10.dp))
                 Button(
                     modifier = Modifier
-                        .fillMaxHeight(0.5f)
+                        //.fillMaxHeight(0.5f)
                         .fillMaxWidth(0.3f),
                     onClick = {
                         onSetDate(
