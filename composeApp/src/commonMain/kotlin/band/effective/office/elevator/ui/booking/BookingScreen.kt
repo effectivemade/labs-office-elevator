@@ -160,9 +160,9 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                     onClickCloseBookAccept = { bookingComponent.onEvent(BookingStore.Intent.CloseBookAccept) },
                     confirmBooking = { bookingComponent.onEvent(BookingStore.Intent.OpenConfirmBooking) },
                     bookingInfo = BookingInfo(
-                        id = "",
+                        id = state.bookingInfo.id,
                         ownerId = "",
-                        seatName = "",
+                        seatName = state.bookingInfo.seatName,
                         dateOfStart = state.selectedStartDate.atTime(state.selectedStartTime),
                         dateOfEnd = state.selectedStartDate.atTime(state.selectedFinishTime)
                     ),
@@ -246,9 +246,11 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                 is BookingStore.Label.CloseBookPeriod -> multiBottomSheetController.closeCurrentSheet()
                 is BookingStore.Label.OpenRepeatDialog -> showRepeatDialog = true
                 is BookingStore.Label.CloseRepeatDialog -> showRepeatDialog = false
-                is BookingStore.Label.OpenBookAccept -> multiBottomSheetController.showSheet(
-                    BottomSheetNames.BOOK_ACCEPT.name
-                )
+                is BookingStore.Label.OpenBookAccept -> {
+                    multiBottomSheetController.showSheet(
+                        BottomSheetNames.BOOK_ACCEPT.name
+                    )
+                }
 
                 is BookingStore.Label.CloseBookAccept -> multiBottomSheetController.closeCurrentSheet()
                 is BookingStore.Label.OpenCalendar -> showCalendar = true
@@ -293,7 +295,9 @@ fun BookingScreen(bookingComponent: BookingComponent) {
         onClickOpenChoseZone = { bookingComponent.onEvent(BookingStore.Intent.OpenChooseZone) },
         onClickOpenBookPeriod = { bookingComponent.onEvent(BookingStore.Intent.OpenBookPeriod) },
         onClickMainScreen = { bookingComponent.onOutput(BookingComponent.Output.OpenMainTab) },
-        onClickOpenBookAccept = { bookingComponent.onEvent(BookingStore.Intent.OpenBookAccept) },
+        onClickOpenBookAccept = { workSpacesUI ->
+            bookingComponent.onEvent(BookingStore.Intent.OpenBookAccept(value = workSpacesUI))
+        },
         onClickApplyDate = { date: LocalDate? ->
             bookingComponent.onEvent(
                 BookingStore.Intent.ApplyDate(
@@ -332,7 +336,7 @@ private fun BookingScreenContent(
     onClickOpenBookPeriod: () -> Unit,
     onClickOpenChoseZone: () -> Unit,
     showRepeatDialog: Boolean,
-    onClickOpenBookAccept: (String) -> Unit,
+    onClickOpenBookAccept: (WorkSpaceUI) -> Unit,
     onClickCloseCalendar: () -> Unit,
     showCalendar: Boolean,
     onClickApplyDate: (LocalDate?) -> Unit,

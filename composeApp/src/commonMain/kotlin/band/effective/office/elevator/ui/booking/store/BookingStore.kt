@@ -1,6 +1,7 @@
 package band.effective.office.elevator.ui.booking.store
 
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.domain.models.BookingInfo
 import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.domain.models.CreatingBookModel
 import band.effective.office.elevator.domain.models.TypeEndPeriodBooking
@@ -29,7 +30,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         object OpenRepeatDialog : Intent
         object CloseBookRepeat : Intent
         data class OpenBookRepeat(val pair: Pair<String, BookingPeriod>) : Intent
-        object OpenBookAccept : Intent
+        data class OpenBookAccept(val value: WorkSpaceUI) : Intent
         object CloseBookAccept : Intent
         object OpenBookPeriod : Intent
         object OpenConfirmBooking : Intent
@@ -70,7 +71,8 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         val frequency: Frequency,
         val repeatBooking: String,
         val bookingPeriod: BookingPeriod,
-        val selectedType: TypesList
+        val selectedType: TypesList,
+        val bookingInfo: BookingInfo
     ) {
         companion object {
             val initState = State(
@@ -97,6 +99,13 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
                     name = MainRes.strings.workplace,
                     icon = MainRes.images.table_icon,
                     type = WorkSpaceType.WORK_PLACE
+                ),
+                bookingInfo = BookingInfo(
+                    id = "",
+                    ownerId = "",
+                    seatName = "",
+                    dateOfStart = LocalDateTime(date = getCurrentDate(), time = getCurrentTime()),
+                    dateOfEnd = LocalDateTime(date = getCurrentDate(), time = getCurrentTime())
                 )
             )
         }
@@ -110,7 +119,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         object CloseBookPeriod : Label
         object CloseRepeatDialog : Label
         object OpenRepeatDialog : Label
-        object OpenBookAccept : Label
+        data class OpenBookAccept(val value: WorkSpaceUI) : Label
         object CloseBookAccept : Label
         object CloseCalendar : Label
 

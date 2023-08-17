@@ -2,6 +2,7 @@ package band.effective.office.elevator.ui.booking.store
 
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.domain.entity.BookingInteractor
+import band.effective.office.elevator.domain.models.BookingInfo
 import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.domain.models.CreatingBookModel
 import band.effective.office.elevator.domain.models.TypeEndPeriodBooking
@@ -18,6 +19,7 @@ import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.atTime
 import org.koin.core.component.KoinComponent
@@ -60,6 +62,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         data class ChangeFrequency(val frequency: Frequency) : Msg
         data class ChangeBookingRepeat(val bookingRepeat: String) : Msg
         data class ChangeBookingPeriod(val bookingPeriod: BookingPeriod) : Msg
+        data class ChangeWorkingUI(val bookingInfo: BookingInfo) : Msg
     }
 
     private sealed interface Action {
@@ -75,7 +78,11 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             when (intent) {
                 is BookingStore.Intent.ShowPlace -> dispatch(
                     Msg.SelectedTypeList(
-                        type = TypesList(name = MainRes.strings.app_name, icon = MainRes.images.table_icon, type = WorkSpaceType.WORK_PLACE)
+                        type = TypesList(
+                            name = MainRes.strings.app_name,
+                            icon = MainRes.images.table_icon,
+                            type = WorkSpaceType.WORK_PLACE
+                        )
                     )
                 )
 
@@ -131,7 +138,26 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                 is BookingStore.Intent.OpenBookAccept -> {
                     scope.launch {
-                        publish(BookingStore.Label.OpenBookAccept)
+                        publish(BookingStore.Label.OpenBookAccept(value = intent.value))
+                        with(intent.value) {
+                            dispatch(
+                                Msg.ChangeWorkingUI(
+                                    bookingInfo = BookingInfo(
+                                        id = workSpaceId,
+                                        ownerId = "",
+                                        seatName = workSpaceName,
+                                        dateOfEnd = LocalDateTime(
+                                            date = getState().selectedStartDate,
+                                            time = getState().selectedFinishTime
+                                        ),
+                                        dateOfStart = LocalDateTime(
+                                            date = getState().selectedStartDate,
+                                            time = getState().selectedStartTime
+                                        )
+                                    )
+                                )
+                            )
+                        }
                     }
                 }
 
@@ -332,6 +358,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is Msg.ChangeFrequency -> copy(frequency = msg.frequency)
                 is Msg.ChangeBookingRepeat -> copy(repeatBooking = msg.bookingRepeat)
                 is Msg.ChangeBookingPeriod -> copy(bookingPeriod = msg.bookingPeriod)
+                is Msg.ChangeWorkingUI -> copy(bookingInfo = msg.bookingInfo)
             }
         }
     }

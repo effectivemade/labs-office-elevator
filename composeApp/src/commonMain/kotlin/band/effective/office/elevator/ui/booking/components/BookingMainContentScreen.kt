@@ -50,7 +50,7 @@ fun BookingMainContentScreen(
     isExpandedOptions: Boolean,
     iconRotationStateCard: Float,
     iconRotationStateOptions: Float,
-    onClickOpenBookAccept: (String) -> Unit,
+    onClickOpenBookAccept: (WorkSpaceUI) -> Unit,
     onClickOpenBookPeriod: () -> Unit,
     onClickOpenChoseZone: () -> Unit,
     onClickExpandedMap: () -> Unit,
