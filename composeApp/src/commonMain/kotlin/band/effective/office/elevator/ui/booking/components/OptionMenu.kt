@@ -27,21 +27,28 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.models.TypesList
+import band.effective.office.elevator.utils.NumToMonth
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
+import kotlinx.datetime.LocalDate
 
 @Composable
 fun OptionMenu(
     isExpandedCard: Boolean,
     isExpandedOptions: Boolean,
-    onClickOpenBookPeriod: () -> Unit
+    onClickOpenBookPeriod: () -> Unit,
+    onClickChangeZone: (WorkSpaceType) -> Unit,
+    date: LocalDate,
+    onClickChangeSelectedType: (TypesList) -> Unit,
+    selectedTypesList: TypesList
 ) {
     Column {
         AnimatedVisibility(visible = isExpandedCard) {
             Column(
                 modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
-                    .background(MaterialTheme.colors.onBackground)
+                    .background(color = Color.White)
             ) {
                 Row(
                     horizontalArrangement = Arrangement.Center,
@@ -49,13 +56,11 @@ fun OptionMenu(
                 ) {
                     Image(
                         modifier = Modifier.padding(vertical = 20.dp),
-                        painter = painterResource(MainRes.images.icon_map), //TODO(Olesia Shinkarenko): replace map
-                        contentDescription = null
+                        painter = painterResource(MainRes.images.super_map),
+                        contentDescription = "office map"
                     )
                 }
             }
-
-
         }
 
         AnimatedVisibility(visible = isExpandedOptions) {
@@ -72,14 +77,16 @@ fun OptionMenu(
                     val types = listOf(
                         TypesList(
                             name = MainRes.strings.workplace,
-                            icon = MainRes.images.table_icon
+                            icon = MainRes.images.table_icon,
+                            type = WorkSpaceType.WORK_PLACE
                         ),
                         TypesList(
                             name = MainRes.strings.meeting_room,
-                            icon = MainRes.images.icon_meet
+                            icon = MainRes.images.icon_meet,
+                            type = WorkSpaceType.MEETING_ROOM
                         )
                     )
-                    val selectedType = remember { mutableStateOf(types[0]) }
+                    val selectedType = remember { mutableStateOf(selectedTypesList) }
 
                     types.forEach { type ->
                         val selected = selectedType.value == type
@@ -100,6 +107,8 @@ fun OptionMenu(
                                 selected = selected,
                                 onClick = {
                                     selectedType.value = type
+                                    onClickChangeZone(type.type)
+                                    onClickChangeSelectedType(selectedType.value)
                                 }
                             )
                         ) {
@@ -140,7 +149,7 @@ fun OptionMenu(
                         )
                     }
                     Text(
-                        text = "Пт, 30 июня 12:00 — 14:00", //TODO(Olesia Shinkarenko): get from calendar
+                        text = "${date.dayOfMonth} ${NumToMonth(month = date.monthNumber)} ${date.year}",
                         modifier = Modifier.padding(start = 8.dp),
                         style = MaterialTheme.typography.body2
                     )

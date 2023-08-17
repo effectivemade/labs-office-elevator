@@ -26,20 +26,21 @@ import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
+import band.effective.office.elevator.domain.models.BookingInfo
 import band.effective.office.elevator.textInBorderGray
+import band.effective.office.elevator.ui.booking.models.Frequency
+import band.effective.office.elevator.utils.NumToMonth
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun BookAccept(
     onClickCloseBookAccept: () -> Unit,
     confirmBooking: () -> Unit,
-){
-    val booking_place ="Cassipopeia | Table 1"
-    val frequency = "Every single day"
-    val startTime = "11:00"
-    val endTime = "19:00"
-    Box{
-        Column (modifier = Modifier.fillMaxWidth().background(Color.White)){
+    bookingInfo: BookingInfo,
+    frequency: Frequency
+) {
+    Box {
+        Column(modifier = Modifier.fillMaxWidth().background(Color.White)) {
             Spacer(modifier = Modifier.padding(vertical = 10.dp))
             Divider(
                 modifier = Modifier
@@ -55,7 +56,7 @@ fun BookAccept(
                     )
             )
 
-            Row (modifier= Modifier.padding(top=10.dp, start = 16.dp, end = 16.dp)){
+            Row(modifier = Modifier.padding(top = 10.dp, start = 16.dp, end = 16.dp)) {
                 IconButton(
                     onClick = onClickCloseBookAccept,
                     modifier = Modifier
@@ -67,9 +68,9 @@ fun BookAccept(
                         tint = ExtendedThemeColors.colors.blackColor
                     )
                 }
-                Column(modifier=Modifier.padding(horizontal = 5.dp)){
+                Column(modifier = Modifier.padding(horizontal = 5.dp)) {
                     Text(
-                        text = booking_place,
+                        text = bookingInfo.seatName,
                         style = MaterialTheme.typography.subtitle1,
                         fontSize = 20.sp,
                         fontWeight = FontWeight(600),
@@ -77,7 +78,19 @@ fun BookAccept(
                         modifier = Modifier.padding(top = 10.dp, bottom = 5.dp)
                     )
                     Text(
-                        text = "$frequency $startTime-$endTime",
+                        text = with(bookingInfo) {
+                                    "${frequency.toString()} ${dateOfStart.date.dayOfMonth} " + NumToMonth(dateOfStart.date.monthNumber)+ " ${dateOfStart.time.hour.toString()}:${
+                                with(
+                                    dateOfStart.time
+                                ) { if (minute.toString().length < 2) "0$minute" else minute.toString() }
+                            } - ${dateOfEnd.time.hour.toString()}:${
+                                with(
+                                    dateOfStart.time
+                                ) {
+                                    if (minute.toString().length < 2) "0$minute" else minute.toString()
+                                }
+                            }"
+                        },
                         style = MaterialTheme.typography.subtitle1,
                         fontSize = 16.sp,
                         fontWeight = FontWeight(400),
