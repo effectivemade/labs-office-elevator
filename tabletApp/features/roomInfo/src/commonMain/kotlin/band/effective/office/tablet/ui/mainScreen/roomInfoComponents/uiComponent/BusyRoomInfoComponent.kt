@@ -57,21 +57,23 @@ fun BusyRoomInfoComponent(
             backgroundColor = backgroundColor,
             isError = isError
         ) {
-            Text(
-                text = MainRes.string.room_occupancy.format(
-                    time = event.startTime.time(),
-                    duration = timeToFinish.getDuration()
-                ),
-                style = MaterialTheme.typography.h5,
-                color = roomInfoColor
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(
-                text = event.organizer.fullName,
-                style = MaterialTheme.typography.h5,
-                color = roomInfoColor
-            )
-            Spacer(modifier = Modifier.height(20.dp))
+            if (timeToFinish > 0) {
+                Text(
+                    text = MainRes.string.room_occupancy.format(
+                        time = event.startTime.time(),
+                        duration = timeToFinish.getDuration()
+                    ),
+                    style = MaterialTheme.typography.h5,
+                    color = roomInfoColor
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(
+                    text = event.organizer.fullName,
+                    style = MaterialTheme.typography.h5,
+                    color = roomInfoColor
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+            }
             Button(
                 modifier = Modifier
                     .clip(shape = RoundedCornerShape(70.dp))

@@ -106,7 +106,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         data class NotCorrectEvent(val busyEvent: EventInfo) : Message
 
         data class ChangeOrganizer(val newOrganizer: Organizer) : Message
-ь        data class ChangeNameRoom(val nameRoom: String) : Message
+        data class ChangeNameRoom(val nameRoom: String) : Message
         object OrganizerError : Message
         object BookingOtherRoom : Message
         object BookingCurrentRoom : Message
@@ -159,6 +159,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is BookingStore.Intent.OnChangeIsActive -> {
                     if (intent.reset) {
                         dispatch(Message.Reset)
+                        publish(BookingStore.Label.ChangeDate)
                     }
                     dispatch(Message.OnChangeIsActive)
                     reset(getState)
