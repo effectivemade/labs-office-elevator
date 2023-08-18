@@ -61,6 +61,7 @@ dependencies {
     implementation("io.ktor:ktor-server-swagger:$ktor_version")
     implementation("io.github.smiley4:ktor-swagger-ui:2.2.0")
     implementation("com.impossibl.pgjdbc-ng:pgjdbc-ng:0.6")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
     liquibaseRuntime("org.liquibase:liquibase-core:$liquibase_version")
     liquibaseRuntime("org.postgresql:postgresql:$postgresql_driver_version")

@@ -7,7 +7,8 @@ import kotlinx.coroutines.launch
 import office.effective.common.notifications.DbNotifier
 
 fun Application.configureNotification() {
+    val dbNotifier: DbNotifier = DbNotifier()
     CoroutineScope(Job()).launch {
-        DbNotifier.listenToNotifyMessage()
+        dbNotifier.listenToNotifyMessage()
     }
 }
