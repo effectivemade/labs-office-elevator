@@ -51,7 +51,7 @@
     <string name="every_week_repeat">Every week</string>
     <string name="every_month_repeat">Every month</string>
     <string name="other_repeat">Other</string>
-
+    <string name="hide_map">Hide map</string>
 
     <!--Booking period-->
     <string name="place_booked">Place reserved</string>
@@ -88,8 +88,6 @@
     <string name="Wednesday">Wed</string>
     <string name="Thursday">Thu</string>
     <string name="Friday">Fri</string>
-    <string name="Saturday">Sat</string>
-    <string name="Sunday">Sun</string>
 
     <string name="delete_booking">Delete booked room</string>
 

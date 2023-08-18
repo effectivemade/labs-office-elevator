@@ -26,11 +26,11 @@ import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import dev.icerock.moko.resources.compose.painterResource
 
 @Composable
-fun BookingCard(workSpace: WorkSpaceUI, onClickOpenBookAccept: (String) -> Unit) {
+fun BookingCard(workSpace: WorkSpaceUI, onClickOpenBookAccept: (WorkSpaceUI) -> Unit) {
     Column(
         modifier = Modifier
             .padding(bottom = 16.dp)
-            .clickable { onClickOpenBookAccept(workSpace.workSpaceId) }
+            .clickable { onClickOpenBookAccept(workSpace) }
     ) {
         Box(
             modifier = Modifier
