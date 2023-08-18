@@ -13,4 +13,5 @@
     <string name="short_hours">ч</string>
     <string name="selectbox_organizer_title">Выберите организатора</string>
     <string name="timepicker_view_title"> Занять с </string>
+    <string name="apply_date_time_for_booking"> Подтвердить </string>
 </resources>

@@ -49,7 +49,7 @@ fun TimePickerView(currentDate: Calendar, selectedTime: Calendar) {
             }
 
             WheelTimePicker(
-                modifier = Modifier.height(180.dp),
+                modifier = Modifier.height(180.dp).fillMaxWidth(1f),
                 size = DpSize(248.dp, 180.dp),
                 textStyle = header6,
                 textColor = LocalCustomColorsPalette.current.primaryTextAndIcon,
