@@ -2,6 +2,7 @@ package band.effective.office.elevator.ui.booking.components.modals
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -48,12 +49,13 @@ fun BookingContextMenu(onClick: (Int) -> Unit) {
                         backgroundColor = Color.Transparent,
                         contentColor = MaterialTheme.colors.secondary
                     ),
-                    elevation = Elevation()
+                    elevation = Elevation(),
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(text = this@with,
                         modifier = Modifier.wrapContentSize())
                 }
-                if (!dropDownList.indexOf(item).equals(dropDownList.last()))
+                if (dropDownList.indexOf(item) !=dropDownList.lastIndex)
                     Divider(
                         modifier = Modifier.height(1.dp)
                             .background(color = ExtendedThemeColors.colors._66x)

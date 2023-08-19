@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -36,7 +35,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.MainRes
@@ -101,7 +99,7 @@ fun NonEmptyReservation(
         MutableInteractionSource()
     }
 
-    var menuOffset by remember { mutableStateOf(DpOffset(0.dp, 0.dp)) }
+    var menuOffset by remember { mutableStateOf(0.dp) }
 
     var itemWidthDp by remember {
         mutableStateOf(0.dp)
@@ -129,39 +127,20 @@ fun NonEmptyReservation(
                         SeatIcon()
                         Spacer(modifier = Modifier.width(12.dp))
                         SeatTitle(seat)
-                        Spacer(modifier = Modifier.height(24.dp))
-                        Row(
-                            horizontalArrangement = Arrangement.End,
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            IconButton(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(80.dp)),
-                                onClick = {
-
-                                }
-                            ) {
-                                val itemHeight = 100.dp
-                                Icon(
-                                    imageVector = Icons.Default.MoreVert,
-                                    contentDescription = "show option menu",
-                                    modifier = Modifier.pointerInput(true) {
-                                        detectTapGestures(
-                                            onPress = {
-                                                menuOffset = DpOffset(
-                                                    x = it.x.toDp(),
-                                                    y = if(index==0){(it.y ).toDp()}else{(it.y).toDp()+itemHeight}
-                                                )
-                                                onClickShowOptions()
-                                            }
-                                        ) },
-                                    tint = MaterialTheme.colors.secondaryVariant
-                                )
-                            }
-                        }
-
+                        Spacer(modifier = Modifier.weight(1f))
+                        val itemHeight = 100.dp
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "show option menu",
+                            modifier = Modifier.pointerInput(true) {
+                                detectTapGestures(
+                                    onPress = {
+                                        menuOffset = if(index==0){(it.y ).toDp()}else{(it.y).toDp()+itemHeight}
+                                        onClickShowOptions()
+                                    }
+                                ) }.align(Alignment.CenterVertically).padding(end = 12.dp),
+                            tint = MaterialTheme.colors.secondaryVariant
+                        )
                 }
             }
 
@@ -170,7 +149,7 @@ fun NonEmptyReservation(
             mutableStateOf(50.dp)
         }
         Box (modifier = Modifier
-            .fillMaxWidth(0.6f).offset(itemWidthDp - dropDownWidthDp,menuOffset.y)){
+            .fillMaxWidth(0.6f).offset(itemWidthDp - dropDownWidthDp,menuOffset)){
             DropDownMenu(
                 expanded =  showOptionsMenu,
                 content = {
