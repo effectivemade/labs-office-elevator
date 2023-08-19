@@ -1,8 +1,8 @@
 package band.effective.office.elevator.data.repository
 
-import band.effective.office.elevator.domain.repository.BookingRepository
 import band.effective.office.elevator.domain.models.BookingInfo
 import band.effective.office.elevator.domain.models.CreatingBookModel
+import band.effective.office.elevator.domain.repository.BookingRepository
 import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsFilter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -48,11 +48,11 @@ class MockBookingRepositoryImpl: BookingRepository {
             ownerId = "1L",
             seatName = "Seat A2",
             dateOfStart = LocalDateTime(
-                date = LocalDate(year = 2023, monthNumber = 7, dayOfMonth = 14),
+                date = LocalDate(year = 2023, monthNumber = 7, dayOfMonth = 13),
                 time =  LocalTime(hour = 14, minute = 15, second = 0, nanosecond = 0)
             ),
             dateOfEnd = LocalDateTime(
-                date = LocalDate(year = 2023, monthNumber = 7, dayOfMonth = 14),
+                date = LocalDate(year = 2023, monthNumber = 7, dayOfMonth = 13),
                 time =  LocalTime(hour = 15, minute = 30, second = 0, nanosecond = 0)
             )
         ),
