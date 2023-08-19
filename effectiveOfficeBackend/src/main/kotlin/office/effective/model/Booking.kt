@@ -1,5 +1,6 @@
 package office.effective.model
 
+import model.RecurrenceDTO
 import java.time.Instant
 import java.util.UUID
 
@@ -9,5 +10,6 @@ data class Booking (
     var workspace: Workspace,
     var id: UUID?,
     var beginBooking: Instant,
-    var endBooking: Instant
+    var endBooking: Instant,
+    var recurrence: RecurrenceModel?
 )
