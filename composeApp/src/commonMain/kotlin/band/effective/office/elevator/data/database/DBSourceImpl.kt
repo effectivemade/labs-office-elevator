@@ -9,31 +9,19 @@ class DBSourceImpl(
 ) : DBSource {
 
     private val profileQueries = database.profileQueries
+    override fun getCurrentUserInfo(): User {
+        TODO("Not yet implemented")
+    }
 
-    override fun getUser(idToken: String): ProfileData =
-        with(profileQueries.selectUser(idToken = idToken).executeAsOne()) {
-            ProfileData(
-                idToken = idToken,
-                phoneNumber = phoneNumber,
-                post = post,
-                name = name,
-                telegramNick = telegramNick,
-                email = email,
-                imageUrl = imageUrl
-            )
-        }
-
-    override fun getAll(): List<ProfileData> = profileQueries.selectAll().executeAsList()
-
-    override fun update(profileData: ProfileData) {
-        with(profileData) {
+    override fun update(user: User) {
+        with(user) {
             profileQueries.update(
-                idToken = idToken,
-                name = name,
+                idToken = id,
+                name = userName,
                 post = post,
                 email = email,
                 phoneNumber = phoneNumber,
-                telegramNick = telegramNick,
+                telegramNick = telegram,
                 imageUrl = imageUrl
             )
         }

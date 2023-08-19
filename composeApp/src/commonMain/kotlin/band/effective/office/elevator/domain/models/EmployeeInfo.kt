@@ -1,5 +1,10 @@
 package band.effective.office.elevator.domain.models
 
+import band.effective.office.elevator.MainRes.strings.map
+import band.effective.office.elevator.utils.map
+import band.effective.office.network.dto.UserDTO
+import band.effective.office.network.model.Either
+import band.effective.office.network.model.ErrorResponse
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
 
@@ -28,3 +33,15 @@ data class EmployeeInfo(
             )
     }
 }
+
+fun UserDTO.toEmployeeInfo() =
+    EmployeeInfo(
+        id = id,
+        name = fullName,
+        post = role,
+        state = "",
+        logoUrl = avatarUrl,
+        phoneNum = integrations?.find { it.name == "phoneNumber" }?.value?:"None",
+        eMail = integrations?.find { it.name == "email" }?.value?:"None",
+        telegramProfile = integrations?.find { it.name == "telegram" }?.value?:"None",
+    )

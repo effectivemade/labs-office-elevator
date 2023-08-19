@@ -3,18 +3,21 @@ package band.effective.office.elevator.ui.authorization.authorization_google.sto
 import band.effective.office.elevator.data.ApiResponse
 import band.effective.office.elevator.domain.GoogleSignIn
 import band.effective.office.elevator.domain.SignInResultCallback
-import band.effective.office.elevator.domain.entity.AuthorizationEntity
-import band.effective.office.elevator.domain.models.UserData
+import band.effective.office.elevator.domain.entity.AuthorizationUseCase
 import band.effective.office.elevator.ui.authorization.authorization_google.store.AuthorizationGoogleStore.Intent
 import band.effective.office.elevator.ui.authorization.authorization_google.store.AuthorizationGoogleStore.Label
 import band.effective.office.elevator.ui.authorization.authorization_google.store.AuthorizationGoogleStore.State
 import band.effective.office.elevator.ui.authorization.authorization_phone.store.AuthorizationPhoneStoreFactory
+import band.effective.office.network.model.Either
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -23,7 +26,7 @@ internal class AuthorizationGoogleStoreFactory(
 ) : KoinComponent {
 
     private val signInClient: GoogleSignIn by inject()
-    private val authorizationEntity: AuthorizationEntity by inject()
+    private val authorizationUseCase: AuthorizationUseCase by inject()
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): AuthorizationGoogleStore =
@@ -59,9 +62,24 @@ internal class AuthorizationGoogleStoreFactory(
                             ApiResponse.Error.SerializationError -> {}
                             ApiResponse.Error.UnknownError -> {}
                             is ApiResponse.Success -> {
-                                val userData: UserData =
-                                    authorizationEntity.get(result.body.idToken!!)
-                                publish(Label.AuthorizationSuccess(userData))
+                                withContext(Dispatchers.IO) {
+                                    result.body.idToken?.let { token ->
+                                        authorizationUseCase.authorize(token).collect { response ->
+                                            when (response) {
+                                                is Either.Success -> {
+                                                    withContext(Dispatchers.Main) {
+                                                        publish(Label.AuthorizationSuccess(response.data))
+                                                    }
+                                                }
+
+                                                is Either.Error -> {
+                                                    // TODO show error and data
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
                             }
                         }
                     }
