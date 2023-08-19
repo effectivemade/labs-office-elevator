@@ -1,7 +1,7 @@
 package band.effective.office.elevator.ui.booking.store
 
 import band.effective.office.elevator.MainRes
-import band.effective.office.elevator.domain.models.BookingInfo
+import band.effective.office.elevator.domain.models.BookingInfoDomain
 import band.effective.office.elevator.domain.models.BookingPeriodUI
 import band.effective.office.elevator.domain.models.CreatingBookModel
 import band.effective.office.elevator.domain.models.TypeEndPeriodBooking
@@ -72,7 +72,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         val repeatBooking: String,
         val bookingPeriodUI: BookingPeriodUI,
         val selectedType: TypesList,
-        val bookingInfo: BookingInfo
+        val bookingInfoDomain: BookingInfoDomain
     ) {
         companion object {
             val initState = State(
@@ -100,7 +100,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
                     icon = MainRes.images.table_icon,
                     type = WorkSpaceType.WORK_PLACE
                 ),
-                bookingInfo = BookingInfo(
+                bookingInfoDomain = BookingInfoDomain(
                     id = "",
                     ownerId = "",
                     seatName = "",

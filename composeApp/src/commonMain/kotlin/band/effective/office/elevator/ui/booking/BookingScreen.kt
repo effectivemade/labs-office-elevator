@@ -29,7 +29,7 @@ import band.effective.office.elevator.components.TimePickerModal
 import band.effective.office.elevator.components.bottomSheet.BottomSheetItem
 import band.effective.office.elevator.components.bottomSheet.MultiBottomSheetController
 import band.effective.office.elevator.components.bottomSheet.rememberMultiBottomSheetController
-import band.effective.office.elevator.domain.models.BookingInfo
+import band.effective.office.elevator.domain.models.BookingInfoDomain
 import band.effective.office.elevator.domain.models.BookingPeriodUI
 import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.ui.booking.components.BookingMainContentScreen
@@ -161,10 +161,10 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                 BookAccept(
                     onClickCloseBookAccept = { bookingComponent.onEvent(BookingStore.Intent.CloseBookAccept) },
                     confirmBooking = { bookingComponent.onEvent(BookingStore.Intent.OpenConfirmBooking) },
-                    bookingInfo = BookingInfo(
-                        id = state.bookingInfo.id,
+                    bookingInfoDomain = BookingInfoDomain(
+                        id = state.bookingInfoDomain.id,
                         ownerId = "",
-                        seatName = state.bookingInfo.seatName,
+                        seatName = state.bookingInfoDomain.seatName,
                         dateOfStart = state.selectedStartDate.atTime(state.selectedStartTime),
                         dateOfEnd = state.selectedStartDate.atTime(state.selectedFinishTime)
                     ),

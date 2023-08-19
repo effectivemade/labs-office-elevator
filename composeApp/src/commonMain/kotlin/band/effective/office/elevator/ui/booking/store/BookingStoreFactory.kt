@@ -2,7 +2,7 @@ package band.effective.office.elevator.ui.booking.store
 
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.domain.entity.BookingInteractor
-import band.effective.office.elevator.domain.models.BookingInfo
+import band.effective.office.elevator.domain.models.BookingInfoDomain
 import band.effective.office.elevator.domain.models.BookingPeriodUI
 import band.effective.office.elevator.domain.models.CreatingBookModel
 import band.effective.office.elevator.domain.models.TypeEndPeriodBooking
@@ -62,7 +62,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         data class ChangeFrequency(val frequency: Frequency) : Msg
         data class ChangeBookingRepeat(val bookingRepeat: String) : Msg
         data class ChangeBookingPeriod(val bookingPeriodUI: BookingPeriodUI) : Msg
-        data class ChangeWorkingUI(val bookingInfo: BookingInfo) : Msg
+        data class ChangeWorkingUI(val bookingInfoDomain: BookingInfoDomain) : Msg
     }
 
     private sealed interface Action {
@@ -142,7 +142,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                         with(intent.value) {
                             dispatch(
                                 Msg.ChangeWorkingUI(
-                                    bookingInfo = BookingInfo(
+                                    bookingInfoDomain = BookingInfoDomain(
                                         id = workSpaceId,
                                         ownerId = "",
                                         seatName = workSpaceName,
@@ -358,7 +358,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is Msg.ChangeFrequency -> copy(frequency = msg.frequency)
                 is Msg.ChangeBookingRepeat -> copy(repeatBooking = msg.bookingRepeat)
                 is Msg.ChangeBookingPeriod -> copy(bookingPeriodUI = msg.bookingPeriodUI)
-                is Msg.ChangeWorkingUI -> copy(bookingInfo = msg.bookingInfo)
+                is Msg.ChangeWorkingUI -> copy(bookingInfoDomain = msg.bookingInfoDomain)
             }
         }
     }

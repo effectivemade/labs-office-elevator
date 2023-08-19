@@ -1,6 +1,6 @@
 package band.effective.office.elevator.domain.entity
 
-import band.effective.office.elevator.domain.models.BookingInfo
+import band.effective.office.elevator.domain.models.BookingInfoDomain
 import band.effective.office.elevator.domain.models.CreatingBookModel
 import band.effective.office.elevator.domain.useCase.ChangeBookingUseCase
 import band.effective.office.elevator.domain.useCase.CreateBookingUseCase
@@ -40,10 +40,10 @@ class BookingInteractor(
         return bookingsByDate
     }
 
-    suspend fun change(coroutineScope: CoroutineScope, bookingInfo: BookingInfo) {
+    suspend fun change(coroutineScope: CoroutineScope, bookingInfo: BookingInfoDomain) {
         changeBookingUseCase.execute(
             coroutineScope = coroutineScope,
-            bookingInfo = bookingInfo
+            bookingInfoDomain = bookingInfo
         )
     }
 

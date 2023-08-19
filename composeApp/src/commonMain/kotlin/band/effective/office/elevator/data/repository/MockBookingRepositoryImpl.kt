@@ -5,6 +5,7 @@ import band.effective.office.elevator.domain.models.BookingInfoDomain
 import band.effective.office.elevator.domain.models.CreatingBookModel
 import band.effective.office.network.api.Api
 import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsFilter
+import band.effective.office.network.dto.BookingDTO
 import band.effective.office.network.model.Either
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -12,13 +13,17 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
-import kotlin.random.Random
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 class MockBookingRepositoryImpl(private val api:Api): BookingRepository {
     private val scope = CoroutineScope(Dispatchers.IO)
+    private val workZones= listOf("Sirius", "Antares")
+    private val meetRooms = listOf("Pluto", "Sun")
     private val initLis = listOf(
         BookingInfoDomain(
             id = "2455W",
@@ -88,7 +93,7 @@ class MockBookingRepositoryImpl(private val api:Api): BookingRepository {
         BookingInfoDomain(
             id = "2222W",
             ownerId = "1H",
-            seatName = "Seat A2",
+            seatName = "Arrakis",// | Seat 2
             dateOfStart = LocalDateTime(
                 date = LocalDate(year = 2023, monthNumber = 8, dayOfMonth = 3),
                 time =  LocalTime(hour = 14, minute = 15, second = 0, nanosecond = 0)
@@ -101,7 +106,7 @@ class MockBookingRepositoryImpl(private val api:Api): BookingRepository {
         BookingInfoDomain(
             id = "358M",
             ownerId = "1H",
-            seatName= "Meeting room Sun",
+            seatName= "Sun",// | Meeting room
             dateOfStart = LocalDateTime(
                 date = LocalDate(year = 2023, monthNumber = 8, dayOfMonth = 17),
                 time = LocalTime(hour = 14, minute = 10, second = 0, nanosecond = 0)
@@ -130,9 +135,10 @@ class MockBookingRepositoryImpl(private val api:Api): BookingRepository {
                 is Either.Success -> toBockingInfoDomain(result.data)
                 else ->  initLis        //TODO():There we will catch errors and show error screens
             }.filter {
-                it.ownerId == ownerId &&
-                        ((it.id.contains('M') && bookingsFilter.meetRoom) ||
-                                (it.id.contains('W') && bookingsFilter.workPlace))
+                //it.ownerId == ownerId && (
+                                (it.seatName in meetRooms && bookingsFilter.meetRoom) ||
+                                (it.seatName in workZones && bookingsFilter.workPlace)
+                //)
             }
         }
         return bookings
@@ -149,19 +155,24 @@ class MockBookingRepositoryImpl(private val api:Api): BookingRepository {
         return bookings
     }
 
-    private fun toBockingInfoDomain(bookingsInfo:List<BookingInfo>):List<BookingInfoDomain> {
+    private fun toBockingInfoDomain(bookingsInfo:List<BookingDTO>):List<BookingInfoDomain> {
         val domainBookingsInfo = mutableListOf<BookingInfoDomain>()
         bookingsInfo.forEach { bookingInfo ->
-            val list=bookingInfo.begin.toString().split(".")+bookingInfo.end.toString().split(".")
             domainBookingsInfo.add(
                 BookingInfoDomain(
-                    id=bookingInfo.id, ownerId = bookingInfo.ownerId, seatName = bookingInfo.workspaceId,
-                    dateOfStart = LocalDateTime(2023, Random.nextInt(12),Random.nextInt(31),list[0].toInt(), list[1].toInt()),
-                    dateOfEnd = LocalDateTime(2023,Random.nextInt(12), Random.nextInt(31),list[2].toInt(), list[3].toInt())
+                    id=bookingInfo.id.toString(),
+                    ownerId = bookingInfo.owner.id,
+                    seatName = bookingInfo.workspace.id,
+                    dateOfStart = toLocalDateTime(bookingInfo.beginBooking),
+                    dateOfEnd = toLocalDateTime(bookingInfo.endBooking)
                 )
             )
         }
 
         return domainBookingsInfo
+    }
+    private fun toLocalDateTime(time: Long): LocalDateTime{
+        val instant=Instant.fromEpochMilliseconds(time)
+        return instant.toLocalDateTime(TimeZone.UTC)
     }
 }

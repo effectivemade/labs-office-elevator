@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
-import band.effective.office.elevator.domain.models.BookingInfo
+import band.effective.office.elevator.domain.models.BookingInfoDomain
 import band.effective.office.elevator.textInBorderGray
 import band.effective.office.elevator.ui.booking.models.Frequency
 import band.effective.office.elevator.utils.NumToMonth
@@ -36,7 +36,7 @@ import dev.icerock.moko.resources.compose.stringResource
 fun BookAccept(
     onClickCloseBookAccept: () -> Unit,
     confirmBooking: () -> Unit,
-    bookingInfo: BookingInfo,
+    bookingInfoDomain: BookingInfoDomain,
     frequency: Frequency
 ) {
     Box {
@@ -70,7 +70,7 @@ fun BookAccept(
                 }
                 Column(modifier = Modifier.padding(horizontal = 5.dp)) {
                     Text(
-                        text = bookingInfo.seatName,
+                        text = bookingInfoDomain.seatName,
                         style = MaterialTheme.typography.subtitle1,
                         fontSize = 20.sp,
                         fontWeight = FontWeight(600),
@@ -78,7 +78,7 @@ fun BookAccept(
                         modifier = Modifier.padding(top = 10.dp, bottom = 5.dp)
                     )
                     Text(
-                        text = with(bookingInfo) {
+                        text = with(bookingInfoDomain) {
                                     "${frequency.toString()} ${dateOfStart.date.dayOfMonth} " + NumToMonth(dateOfStart.date.monthNumber)+ " ${dateOfStart.time.hour.toString()}:${
                                 with(
                                     dateOfStart.time

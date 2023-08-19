@@ -16,7 +16,7 @@ class EmployeeRepositoryImpl(): EmployeeRepository{
             emit(
                 listOf(
                     EmployeeInfo(
-                        "1L",
+                        "Ольга Белозерова",//1L
                         "Ivanov Ivan",
                         "Android-developer",
                         "In office",
@@ -26,7 +26,7 @@ class EmployeeRepositoryImpl(): EmployeeRepository{
                         "@Ivanov_Ivan"
                     ),
                     EmployeeInfo(
-                        "1H",
+                        "Матвей Авгуль",//1H
                         "Smirnov Andrey",
                         "UI/UX Designer",
                         "Will be today",
@@ -36,7 +36,7 @@ class EmployeeRepositoryImpl(): EmployeeRepository{
                         "@Smirnov_Andrey"
                     ),
                     EmployeeInfo(
-                        "1E",
+                        "Лилия Акентьева",//1E
                         "Vasiliev Vasiliy",
                         "HR",
                         "No bookings",
