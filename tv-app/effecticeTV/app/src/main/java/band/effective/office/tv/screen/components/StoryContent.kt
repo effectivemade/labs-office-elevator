@@ -51,7 +51,7 @@ fun StoryContent(
             .data(employeeInfo.photoUrl).size(Size.ORIGINAL).build()
     )
     if (painter.state is AsyncImagePainter.State.Loading) {
-        onImageLoading()
+        //onImageLoading()
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -66,7 +66,7 @@ fun StoryContent(
             )
         }
     } else {
-        onImageLoaded()
+        //onImageLoaded()
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
