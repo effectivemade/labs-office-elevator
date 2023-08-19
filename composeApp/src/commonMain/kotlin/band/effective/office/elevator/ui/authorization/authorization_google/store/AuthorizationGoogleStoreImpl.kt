@@ -5,6 +5,7 @@ import band.effective.office.elevator.domain.GoogleSignIn
 import band.effective.office.elevator.domain.SignInResultCallback
 import band.effective.office.elevator.domain.entity.AuthorizationEntity
 import band.effective.office.elevator.domain.models.UserData
+import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.ui.authorization.authorization_google.store.AuthorizationGoogleStore.Intent
 import band.effective.office.elevator.ui.authorization.authorization_google.store.AuthorizationGoogleStore.Label
 import band.effective.office.elevator.ui.authorization.authorization_google.store.AuthorizationGoogleStore.State
@@ -23,7 +24,7 @@ internal class AuthorizationGoogleStoreFactory(
 ) : KoinComponent {
 
     private val signInClient: GoogleSignIn by inject()
-    private val authorizationEntity: AuthorizationEntity by inject()
+    private val authorizationEntity by inject<AuthorizationEntity>()
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): AuthorizationGoogleStore =
@@ -59,9 +60,9 @@ internal class AuthorizationGoogleStoreFactory(
                             ApiResponse.Error.SerializationError -> {}
                             ApiResponse.Error.UnknownError -> {}
                             is ApiResponse.Success -> {
-                                val userData: UserData =
-                                    authorizationEntity.get(result.body.idToken!!)
-                                publish(Label.AuthorizationSuccess(userData))
+//                                val userData: UserData =
+//                                    authorizationEntity.get(result.body.idToken!!)
+                                publish(Label.AuthorizationSuccess(userData = UserData()))
                             }
                         }
                     }

@@ -42,7 +42,7 @@ class AuthorizationComponent(
 
     private val validator: Validator = Validator()
     private val navigation = StackNavigation<AuthorizationComponent.Config>()
-    private val authorizationEntity: AuthorizationEntity by inject()
+    private val authorizationEntity by inject<AuthorizationEntity>()
     private val authorizationStore =
         instanceKeeper.getStore {
             AuthorizationStoreFactory(
@@ -93,16 +93,18 @@ class AuthorizationComponent(
                 )
             )
 
-            is Config.PhoneAuth -> Child.PhoneAuthChild(
-                AuthorizationPhoneComponent(
-                    componentContext,
-                    storeFactory,
-                    validator,
-                    authorizationStore.state.userData.phoneNumber,
-                    ::phoneAuthOutput,
-                    ::changePhoneNumber
+            is Config.PhoneAuth -> {
+                Child.PhoneAuthChild(
+                    AuthorizationPhoneComponent(
+                        componentContext,
+                        storeFactory,
+                        validator,
+                        authorizationStore.state.userData.phoneNumber,
+                        ::phoneAuthOutput,
+                        ::changePhoneNumber
+                    )
                 )
-            )
+            }
 
             is Config.ProfileAuth -> Child.ProfileAuthChild(
                 AuthorizationProfileComponent(
@@ -131,9 +133,10 @@ class AuthorizationComponent(
 
     private fun googleAuthOutput(output: AuthorizationGoogleComponent.Output) {
         when (output) {
-            is AuthorizationGoogleComponent.Output.OpenAuthorizationPhoneScreen -> navigation.replaceAll(
-                Config.PhoneAuth
-            )
+            is AuthorizationGoogleComponent.Output.OpenAuthorizationPhoneScreen -> {
+                authorizationStore.state.userData = output.userData
+                navigation.replaceAll(Config.PhoneAuth)
+            }
         }
     }
 

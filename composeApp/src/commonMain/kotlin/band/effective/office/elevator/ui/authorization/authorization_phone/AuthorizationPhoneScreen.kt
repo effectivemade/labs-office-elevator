@@ -137,6 +137,7 @@ private fun AuthorizationPhoneComponent(
 
             OutlinedTextField(
                 value = state.phoneNumber,
+                textStyle = MaterialTheme.typography.button.copy(color = Color.Black),
                 onValueChange = {
                     if (it.isNotEmpty()) {
                         closeIcon.value = true
@@ -200,7 +201,7 @@ private fun AuthorizationPhoneComponent(
                                 .height(20.dp)
                                 .width(2.dp)
                                 .clip(RoundedCornerShape(4.dp))
-                               .background(if (state.isErrorPhoneNumber) ExtendedThemeColors.colors.error else borderColor.value)
+                                .background(if (state.isErrorPhoneNumber) ExtendedThemeColors.colors.error else borderColor.value)
                                 .padding(vertical = 14.dp)
                         )
                     }

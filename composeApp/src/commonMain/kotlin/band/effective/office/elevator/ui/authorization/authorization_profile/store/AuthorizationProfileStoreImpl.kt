@@ -106,7 +106,7 @@ class AuthorizationProfileStoreFactory(
                     dispatch(
                         AuthorizationProfileStoreFactory.Msg.PostData(
                             post = post,
-                            isPostError = post == null
+                            isPostError = false
                         )
                     )
 

@@ -19,7 +19,9 @@ fun AuthorizationScreen(component: AuthorizationComponent) {
     LaunchedEffect(component) {
         component.label.collect { label ->
             when (label) {
-                AuthorizationStore.Label.AuthorizationSuccess -> TODO()
+                AuthorizationStore.Label.AuthorizationSuccess -> {
+
+                }
             }
         }
     }

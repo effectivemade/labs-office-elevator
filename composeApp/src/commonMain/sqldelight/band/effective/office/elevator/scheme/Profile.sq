@@ -1,4 +1,4 @@
-CREATE TABLE profileData (
+CREATE TABLE IF NOT EXISTS profileData (
     idToken TEXT PRIMARY KEY,
     name TEXT NOT NULL DEFAULT '',
     post TEXT NOT NULL DEFAULT '',

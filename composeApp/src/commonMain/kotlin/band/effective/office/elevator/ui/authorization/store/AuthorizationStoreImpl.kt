@@ -29,7 +29,7 @@ class AuthorizationStoreFactory(
         ) {
             when (intent) {
                 AuthorizationStore.Intent.ContinueButtonClicked -> {
-                    TODO()
+//                    TODO()
                 }
             }
         }

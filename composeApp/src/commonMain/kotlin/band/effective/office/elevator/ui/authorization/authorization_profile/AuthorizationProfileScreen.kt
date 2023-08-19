@@ -16,7 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
@@ -140,6 +140,7 @@ fun AuthorizationProfileComponent(
 //            NAME
             OutlinedTextField(
                 value = state.name,
+                textStyle = MaterialTheme.typography.button.copy(color = Color.Black),
                 onValueChange = {
                     if (it.isNotEmpty()) {
                         closeIcon1.value = true
@@ -221,6 +222,7 @@ fun AuthorizationProfileComponent(
 //            POST
             OutlinedTextField(
                 value = state.post,
+                textStyle = MaterialTheme.typography.button.copy(color = Color.Black),
                 onValueChange = {
                     if (it.isNotEmpty()) {
                         closeIcon2.value = true
