@@ -30,7 +30,7 @@ fun SeatTitle(seat: ReservedSeat) {
             text = seat.seatName,
             style = MaterialTheme.typography.subtitle1.copy(color = Color.Black)
         )
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(6.dp))
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.wrapContentSize()
