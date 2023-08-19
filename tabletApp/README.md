@@ -57,21 +57,14 @@ meeting details.
 A list of technologies used within the project:
 
 * DI: [Koin](https://insert-koin.io/)
-* Notion: [Notion-sdk-jvm](https://github.com/seratch/notion-sdk-jvm)
+* Navigation: [Decompose](https://github.com/arkivanov/Decompose)
+* Resources: [Libres](https://github.com/Skeptick/libres)
 * Multithreading: [Kotlin Flow](https://kotlinlang.org/docs/flow.html)
   and [Coroutines](https://kotlinlang.org/docs/flow.html)
-* Image loading: [Image Loader](https://github.com/qdsfdhvh/compose-imageloader)
 * Network client: [Ktor](https://ktor.io/)
 * JSON: [Kotlinx Serialization](https://github.com/Kotlin/kotlinx.serialization)
 * Architecture pattern: [MVI Kotlin](https://github.com/arkivanov/MVIKotlin)
-* UI:[Compose](https://developer.android.com/jetpack/compose/tooling)
-
-## Authors: :writing_hand:
-
-- [Margarita Ginjolia](https://github.com/MargaritaDj)
-- [Maksim Mishenko](https://github.com/UserNameMax)
-- [Victor Konyshev](https://github.com/DireRaven-exe)
-- [Angelika Semenova](https://github.com/Liker4ik26)
+* UI: [MVI Kotlin](https://github.com/arkivanov/MVIKotlin)
 
 ## Guidelines for starting up: :computer:
 
@@ -95,3 +88,10 @@ JDK: Version 11.0.15
 
 5. If you want to assemble the APK file for the release version, run the command ./gradlew
    assembleRelease.
+
+## Authors: :writing_hand:
+
+- [Margarita Ginjolia](https://github.com/MargaritaDj)
+- [Maksim Mishenko](https://github.com/UserNameMax)
+- [Victor Konyshev](https://github.com/DireRaven-exe)
+- [Angelika Semenova](https://github.com/Liker4ik26)
