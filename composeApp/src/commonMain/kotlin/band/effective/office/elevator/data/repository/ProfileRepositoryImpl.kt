@@ -1,8 +1,17 @@
 package band.effective.office.elevator.data.repository
 
 
+import band.effective.office.elevator.data.database.DBSource
+import band.effective.office.elevator.domain.models.ErrorWithData
 import band.effective.office.elevator.domain.repository.ProfileRepository
 import band.effective.office.elevator.domain.models.User
+import band.effective.office.elevator.domain.models.toUser
+import band.effective.office.elevator.domain.models.toUserDTO
+import band.effective.office.elevator.utils.map
+import band.effective.office.network.api.Api
+import band.effective.office.network.dto.UserDTO
+import band.effective.office.network.model.Either
+import band.effective.office.network.model.ErrorResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
@@ -10,35 +19,76 @@ import kotlinx.coroutines.flow.update
 import org.koin.core.component.KoinComponent
 
 
-class ProfileRepositoryImpl: ProfileRepository, KoinComponent {
+class ProfileRepositoryImpl(
+    private val api: Api,
+    private val bdSource: DBSource
+) : ProfileRepository, KoinComponent {
 
-    private val mutableListUser = MutableStateFlow(
-        mutableListOf(
-            User(
-            id = "1", imageUrl = "pry.jpg", userName = "Ivanov Ivan", post = "Android-developer",
-            telegram = "@fldf", phoneNumber = "+7-950-211-32-43", email = "fgfg@effectiveband"
-            ) ,
-            User(
-                id = "2", imageUrl = "oii.jpg", userName = "Petrov Ivan", post = "Android-developer",
-                telegram = "@kjhf", phoneNumber = "+7-950-211-32-43", email = "ghfgh@effectiveband"
-            ),
-            User(
-                id = "3", imageUrl = "ghh.jpg", userName = "Ivanov Petr", post = "Android-developer",
-                telegram = "@fgds", phoneNumber = "+7-950-211-32-43", email = "mnmgu@effectiveband"
+    private val user: MutableStateFlow<Either<ErrorWithData<User>, User>> =
+        MutableStateFlow(
+            Either.Error(
+                ErrorWithData<User>(
+                    ErrorResponse(0, ""), null
+                )
             )
         )
-    )
 
-    override suspend fun updateUser(user: User) {
-        val index = mutableListUser.value.indices.find { mutableListUser.value[it].id == user.id }?:0
-        mutableListUser.update {
-            mutableListUser.value.apply {
-                this[index] = user
-            }
+    override suspend fun updateUser(user: User): Flow<Either<ErrorWithData<User>, User>> = flow {
+        val requestResult =
+            api.updateUser(user.toUserDTO()).convert(this@ProfileRepositoryImpl.user.value)
+        val newUser = requestResult.getData()
+        val cashedUser = bdSource.getCurrentUserInfo()
+        if (newUser != null && newUser != cashedUser) {
+            bdSource.update(newUser)
+            this@ProfileRepositoryImpl.user.update { requestResult }
         }
+        val dateForEmit = bdSource.getCurrentUserInfo().packageEither(requestResult)
+        emit(dateForEmit)
     }
-    override suspend fun getUser(id: String): Flow<User>  = flow{
-        mutableListUser.value.apply {
-            emit(this.find { it.id == id } ?: this[0]) }
+
+    //TODO(Artem Gruzdev) maybe can easier this method
+    override suspend fun getUser(): Flow<Either<ErrorWithData<User>, User>> = flow {
+        val cashedUser = bdSource.getCurrentUserInfo()
+        val requestResult = api.getUser(cashedUser.id).convert(user.value)
+        val userFromApi = requestResult.getData()
+        if (userFromApi != null && userFromApi != cashedUser) {
+            bdSource.update(userFromApi)
+            user.update { requestResult }
+        }
+        val dateForEmit = bdSource.getCurrentUserInfo().packageEither(requestResult)
+        emit(dateForEmit)
     }
+
+    private fun Either<ErrorWithData<User>, User>.getData() =
+        when (this) {
+            is Either.Error -> error.saveData
+            is Either.Success -> data
+        }
+
+
+    private fun User.packageEither(apiResponse: Either<ErrorWithData<User>, User>) =
+        when (apiResponse) {
+            is Either.Success -> Either.Success(this)
+            is Either.Error -> Either.Error(
+                ErrorWithData(
+                    error = apiResponse.error.error,
+                    saveData = this
+                )
+            )
+        }
+
+    private fun Either<ErrorResponse, UserDTO>.convert(
+        oldValue: Either<ErrorWithData<User>, User>
+    ) =
+        map(errorMapper = { error ->
+            ErrorWithData(
+                error = error, saveData = when (oldValue) {
+                    is Either.Error -> oldValue.error.saveData
+                    is Either.Success -> oldValue.data
+                }
+            )
+        },
+            successMapper = { userDTO ->
+                userDTO.toUser()
+            })
 }

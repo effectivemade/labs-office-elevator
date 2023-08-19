@@ -2,14 +2,15 @@ package band.effective.office.elevator.domain.useCase
 
 import band.effective.office.elevator.domain.repository.ProfileRepository
 import band.effective.office.elevator.domain.models.User
+import band.effective.office.elevator.domain.repository.EmployeeRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class GetUserByIdUseCase(private val profileRepository: ProfileRepository) {
-    suspend fun execute(id:String) : Flow<User> = profileRepository.getUser(id)
+class GetUserByIdUseCase(private val employeeRepository: EmployeeRepository) {
+    suspend fun execute(id:String) : Flow<User> = employeeRepository.getEmployeeById(id)
     suspend fun executeInFormat(id: String):Flow<User> = flow{
        var userWithoutFormat = User.defaultUser
-           profileRepository.getUser(id).collect{
+           profileRepository.getUser().collect{
                user -> userWithoutFormat = user
            }
         emit(User(

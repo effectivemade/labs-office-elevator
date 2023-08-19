@@ -2,7 +2,7 @@ package band.effective.office.elevator.ui.employee.aboutEmployee.store
 
 import band.effective.office.elevator.domain.models.EmployeeInfo
 import band.effective.office.elevator.domain.models.User
-import band.effective.office.elevator.domain.useCase.AboutEmployeeUseCase
+import band.effective.office.elevator.domain.useCase.AboutEmployeeInteractor
 import band.effective.office.elevator.expects.makeCall
 import band.effective.office.elevator.expects.pickSBP
 import band.effective.office.elevator.expects.pickTelegram
@@ -27,7 +27,7 @@ import org.koin.core.component.inject
 
 class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory, private val employee: EmployeeInfo) : KoinComponent {
 
-    private val aboutEmployeeUseCase: AboutEmployeeUseCase by inject()
+    private val aboutEmployeeInteractor: AboutEmployeeInteractor by inject()
     private var mokValueUser = EmployeeInfo.defaultEmployee.toUIAbout()
     private var recentDate = getCurrentDate()
     private var filtration = BookingsFilter(meetRoom = true, workPlace = true)
@@ -156,7 +156,7 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory, private 
                 filtration = bookingsFilter
 
             scope.launch (Dispatchers.IO){
-                aboutEmployeeUseCase
+                aboutEmployeeInteractor
                     .getBookingsByDate(
                         date = date,
                         ownerId = ownerId,
@@ -180,7 +180,7 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory, private 
                 filtration = bookingsFilter
 
             scope.launch (Dispatchers.IO){
-                aboutEmployeeUseCase
+                aboutEmployeeInteractor
                     .getBookingsForUser(
                         ownerId = employee.id,
                         bookingsFilter = bookingsFilter,
