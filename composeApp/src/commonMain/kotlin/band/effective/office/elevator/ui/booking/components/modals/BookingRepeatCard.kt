@@ -15,17 +15,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.domain.models.BookingPeriodUI
+import band.effective.office.elevator.domain.models.DayOfWeek
+import band.effective.office.elevator.ui.booking.models.Frequency
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
-fun BookingRepeatCard(onSelected: () -> Unit, modifier: Modifier = Modifier) {
+fun BookingRepeatCard(
+    onSelected: (Pair<String, BookingPeriodUI>) -> Unit,
+    modifier: Modifier,
+    frequency: Frequency
+) {
+
+    val days: List<DayOfWeek> = frequency.getDays()
     val strings = listOf(
-        MainRes.strings.do_not_repeat,
-        MainRes.strings.every_work_day,
-        MainRes.strings.every_week,
-        MainRes.strings.every_month,
-        MainRes.strings.another
+        Pair(first = MainRes.strings.do_not_repeat, second = BookingPeriodUI.NoPeriod),
+        Pair(first = MainRes.strings.every_work_day, second = BookingPeriodUI.EveryWorkDay(5)),
+        Pair(first = MainRes.strings.every_week, second = BookingPeriodUI.Week(7, days)),
+        Pair(
+            first = MainRes.strings.every_month, second = BookingPeriodUI.Year(365),
+        ),
+        Pair(first = MainRes.strings.another, second = 0)
     )
+
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(strings[0]) }
 
     Column(
@@ -35,16 +47,22 @@ fun BookingRepeatCard(onSelected: () -> Unit, modifier: Modifier = Modifier) {
             .padding(all = 24.dp)
             .fillMaxWidth()
             .wrapContentHeight()
-            .background(color = ExtendedThemeColors.colors.whiteColor, shape = RoundedCornerShape(size = 16.dp))
+            .background(
+                color = ExtendedThemeColors.colors.whiteColor,
+                shape = RoundedCornerShape(size = 16.dp)
+            )
     ) {
-        strings.forEach { frequency ->
+        strings.forEachIndexed { index, pair ->
+            val name: String = stringResource(pair.first)
+
             BookingRepeatElement(
-                selected = frequency == selectedOption,
-                bookingText = stringResource(frequency),
-                onSelect = {
-                    onOptionSelected(frequency)
+                selected = pair == selectedOption,
+                bookingText = name,
+                onSelect = { it ->
+                    onOptionSelected(pair)
                 },
-                onSelected = onSelected
+                onSelected = onSelected,
+                bookingPeriod = pair.second
             )
         }
     }

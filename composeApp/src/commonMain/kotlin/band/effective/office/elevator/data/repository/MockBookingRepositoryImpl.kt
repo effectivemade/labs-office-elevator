@@ -5,7 +5,6 @@ import band.effective.office.elevator.domain.models.BookingInfoDomain
 import band.effective.office.elevator.domain.models.CreatingBookModel
 import band.effective.office.network.api.Api
 import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsFilter
-import band.effective.office.network.dto.BookingInfo
 import band.effective.office.network.model.Either
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -24,15 +24,15 @@ class MockFactory {
             ).toInstant(TimeZone.currentSystemDefault()).toEpochMilliseconds()
         }
 
-    private fun lanUtility() = UtilityDTO(
-        count = Random.nextInt(0, 20),
+    private fun lanUtility(value: Int) = UtilityDTO(
+        count = value,
         iconUrl = "",
         id = "",
         name = "lan"
     )
 
-    private fun placeUtility() = UtilityDTO(
-        count = Random.nextInt(0, 20),
+    private fun placeUtility(value: Int) = UtilityDTO(
+        count = value,
         iconUrl = "",
         id = "",
         name = "place"
@@ -70,23 +70,23 @@ class MockFactory {
         WorkspaceDTO(
             id = "Sirius",
             name = "Sirius",
-            utilities = listOf(lanUtility(), placeUtility())
+            utilities = listOf(lanUtility(0), placeUtility(1))
         ),
         WorkspaceDTO(
             id = "Pluto",
             name = "Pluto",
-            utilities = listOf(lanUtility(), placeUtility())
+            utilities = listOf(lanUtility(1), placeUtility(3))
         ),
-        WorkspaceDTO(id = "Moon", name = "Moon", utilities = listOf(lanUtility(), placeUtility())),
+        WorkspaceDTO(id = "Moon", name = "Moon", utilities = listOf(lanUtility(5), placeUtility(8))),
         WorkspaceDTO(
             id = "Antares",
             name = "Antares",
-            utilities = listOf(lanUtility(), placeUtility())
+            utilities = listOf(lanUtility(10), placeUtility(10))
         ),
         WorkspaceDTO(
             id = "Sun",
             name = "Sun",
-            utilities = listOf(lanUtility(), placeUtility(), tvUtility())
+            utilities = listOf(lanUtility(8), placeUtility(10), tvUtility())
         )
     )
 

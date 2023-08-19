@@ -27,8 +27,8 @@ actual fun makeCall(phoneNumber: String) {
 actual fun pickTelegram(telegramNick: String) {
     val urlString = "https://telegram.me/$telegramNick"
     val url = NSURL.URLWithString(urlString)
-    val application = UIApplication.sharedApplication
-    if (url != null) {
+    url?.let{
+        val application = UIApplication.sharedApplication
         application.openURL(url)
     }
 }

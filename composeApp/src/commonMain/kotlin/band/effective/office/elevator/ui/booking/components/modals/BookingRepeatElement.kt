@@ -14,11 +14,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.components.Elevation
+import band.effective.office.elevator.domain.models.BookingPeriodUI
 import band.effective.office.elevator.radioButtonColor
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -27,8 +27,9 @@ import kotlinx.coroutines.launch
 fun BookingRepeatElement(
     selected: Boolean,
     bookingText: String,
-    onSelect: () -> Unit,
-    onSelected: () -> Unit
+    bookingPeriod: Any,
+    onSelect: (String) -> Unit,
+    onSelected: (Pair<String, BookingPeriodUI>) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -40,9 +41,9 @@ fun BookingRepeatElement(
         modifier = Modifier.fillMaxWidth().wrapContentHeight(),
         onClick = {
             coroutineScope.launch {
-                onSelect()
+                onSelect(bookingText)
                 delay(100)
-                onSelected()
+                onSelected(Pair(first = bookingText, second = bookingPeriod) as Pair<String, BookingPeriodUI>)
             }
         }
     ) {

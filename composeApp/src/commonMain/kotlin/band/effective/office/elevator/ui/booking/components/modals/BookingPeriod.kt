@@ -35,6 +35,7 @@ import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.components.Elevation
+import band.effective.office.elevator.ui.booking.models.Frequency
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 
@@ -42,18 +43,17 @@ import dev.icerock.moko.resources.compose.stringResource
 fun BookingPeriod(
     startDate: String,
     startTime: String,
-    finishDate: String,
     finishTime: String,
     repeatBooking: String,
     switchChecked: Boolean,
     closeClick: () -> Unit,
-    onSwitchChange: (Boolean) -> Unit,
+    onSelectAllDay: (Boolean) -> Unit,
     bookStartDate: () -> Unit,
     bookStartTime: () -> Unit,
-    bookFinishDate: () -> Unit,
     bookFinishTime: () -> Unit,
     bookingRepeat: () -> Unit,
-    onClickSearchSuitableOptions: () -> Unit
+    onClickSearchSuitableOptions: () -> Unit,
+    frequency: Frequency
 ) {
     Column(
         verticalArrangement = Arrangement.Top,
@@ -90,7 +90,7 @@ fun BookingPeriod(
 
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.Start),
-            verticalAlignment = Alignment.Top,
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
@@ -102,7 +102,7 @@ fun BookingPeriod(
                 Icon(imageVector = Icons.Default.Close, contentDescription = "close booking")
             }
             Text(
-                text = stringResource(resource = MainRes.strings.booking_period),
+                text = stringResource(MainRes.strings.booking_period),
                 style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight(500))
             )
         }
@@ -155,7 +155,7 @@ fun BookingPeriod(
 
                     Switch(
                         checked = switchChecked,
-                        onCheckedChange = onSwitchChange,
+                        onCheckedChange = onSelectAllDay,
                         colors = SwitchDefaults.colors(
                             checkedThumbColor = MaterialTheme.colors.primary,
                             uncheckedThumbColor = ExtendedThemeColors.colors.switchColor,
@@ -168,19 +168,12 @@ fun BookingPeriod(
                 //Start booking date
                 TimeLine(
                     date = startDate,
-                    time = startTime,
-                    elevation = Elevation(),
+                    statTime = startTime.padStart(2, '0'),
+                    endTime = finishTime,
                     onPickDate = bookStartDate,
-                    onPickTime = bookStartTime,
-                )
-
-                //Finish booking date
-                TimeLine(
-                    date = finishDate,
-                    time = finishTime,
-                    elevation = Elevation(),
-                    onPickDate = bookFinishDate,
-                    onPickTime = bookFinishTime
+                    onPickStartTime = bookStartTime,
+                    selectTimeActive = !switchChecked,
+                    onPickEndTime = bookFinishTime,
                 )
 
                 //Book period
@@ -204,7 +197,7 @@ fun BookingPeriod(
                             contentDescription = "repeat booking date"
                         )
                         Text(
-                            text = repeatBooking,
+                            text = frequency.toString().ifEmpty { repeatBooking },
                             style = MaterialTheme.typography.button.copy(
                                 fontWeight = FontWeight(weight = 400),
                                 color = Color.Black

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.material3.Button
@@ -70,7 +71,7 @@ fun DatePickerView(epicDatePickerState: EpicDatePickerState) {
                 state = epicDatePickerState,
                 dayOfWeekContent = CustomDayOfWeekContent,
                 dayOfMonthContent = CustomDayOfMonthContent,
-                modifier = Modifier.background(Color.Transparent),
+                modifier = Modifier.background(Color.Transparent).height(180.dp),
             )
         }
     }

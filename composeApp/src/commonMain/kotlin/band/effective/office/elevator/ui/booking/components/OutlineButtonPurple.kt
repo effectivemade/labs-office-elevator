@@ -45,7 +45,7 @@ fun OutlineButtonPurple(
             )
             Text(
                 modifier = Modifier.padding(start = 8.dp),
-                text = stringResource(title),
+                text = stringResource(title) ,
                 color = ExtendedThemeColors.colors.purple_heart_800,
                 style = MaterialTheme.typography.body2
             )

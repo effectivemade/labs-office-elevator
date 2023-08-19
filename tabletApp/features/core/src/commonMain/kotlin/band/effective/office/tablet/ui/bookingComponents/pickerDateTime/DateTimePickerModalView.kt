@@ -32,7 +32,10 @@ import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun DateTimePickerModalView(dateTimePickerComponent: DateTimePickerComponent, currentDate: Calendar) {
+fun DateTimePickerModalView(
+    dateTimePickerComponent: DateTimePickerComponent,
+    currentDate: Calendar
+) {
     val stateDateTime by dateTimePickerComponent.state.collectAsState()
     val selectedDateTime by remember { mutableStateOf(stateDateTime.selectDate) }
 
@@ -57,7 +60,8 @@ fun DateTimePickerModalView(dateTimePickerComponent: DateTimePickerComponent, cu
         selectionMode = EpicDatePickerState.SelectionMode.Single(1),
         initialMonth = EpicMonth(
             year = currentDate[Calendar.YEAR],
-            month = Month(currentDate[Calendar.MONTH] + 1))
+            month = Month(currentDate[Calendar.MONTH] + 1)
+        )
     )
 
 
@@ -67,7 +71,16 @@ fun DateTimePickerModalView(dateTimePickerComponent: DateTimePickerComponent, cu
         selectedDateTime = selectedDateTime,
         onCloseRequest = { dateTimePickerComponent.sendIntent(DateTimePickerStore.Intent.CloseModal()) },
         onSetDate = { day: Int, month: Int, year: Int, hour: Int, minute: Int ->
-            dateTimePickerComponent.sendIntent(DateTimePickerStore.Intent.OnSetDate(day, month, year, hour, minute)) }
+            dateTimePickerComponent.sendIntent(
+                DateTimePickerStore.Intent.OnSetDate(
+                    day,
+                    month,
+                    year,
+                    hour,
+                    minute
+                )
+            )
+        }
     )
 }
 
@@ -112,13 +125,16 @@ fun DateTimePickerModalView(
                 /*TODO LOGIC MUST BE IN COMPONENT OR STORE */
                 selectedDateTime.set(
                     /* year = */  if (epicDatePickerState.selectedDates.isNotEmpty()) epicDatePickerState.selectedDates.first().year else selectedDateTime[Calendar.YEAR],
-                    /* month = */ if (epicDatePickerState.selectedDates.isNotEmpty()) epicDatePickerState.selectedDates.first().monthNumber - 1  else selectedDateTime[Calendar.MONTH],
-                    /* date = */  if (epicDatePickerState.selectedDates.isNotEmpty()) epicDatePickerState.selectedDates.first().dayOfMonth else selectedDateTime[Calendar.DATE],
-                    /* hourOfDay = */  selectedDateTime[Calendar.HOUR_OF_DAY],
-                    /* minute = */selectedDateTime[Calendar.MINUTE]
+                    /* month = */
+                    if (epicDatePickerState.selectedDates.isNotEmpty()) epicDatePickerState.selectedDates.first().monthNumber - 1 else selectedDateTime[Calendar.MONTH],
+                    /* date = */
+                    if (epicDatePickerState.selectedDates.isNotEmpty()) epicDatePickerState.selectedDates.first().dayOfMonth else selectedDateTime[Calendar.DATE],
+                    /* hourOfDay = */
+                    selectedDateTime[Calendar.HOUR_OF_DAY],
+                    /* minute = */
+                    selectedDateTime[Calendar.MINUTE]
                 )
                 Spacer(modifier = Modifier.height(10.dp))
-
                 Button(
                     modifier = Modifier
                         //.fillMaxHeight(1f)
