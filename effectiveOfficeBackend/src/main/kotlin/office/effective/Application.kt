@@ -1,18 +1,13 @@
 package office.effective
 
 import com.typesafe.config.ConfigFactory
-import io.ktor.http.*
-import io.ktor.server.application.*
 import io.ktor.server.application.*
 import io.ktor.server.config.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import office.effective.common.notifications.NotificationSender
-import office.effective.dto.WorkspaceDTO
 import office.effective.plugins.configureMigration
 import office.effective.plugins.configureRouting
 import office.effective.plugins.configureSerialization
-
 import office.effective.plugins.*
 
 val config = HoconApplicationConfig(ConfigFactory.load())
@@ -36,5 +31,4 @@ fun Application.module() {
     configureExceptionHandling()
     configureSwagger()
     install(VerificationPlugin)
-    NotificationSender().sendMessage(WorkspaceDTO("s","s", emptyList()), HttpMethod.Delete)
 }
