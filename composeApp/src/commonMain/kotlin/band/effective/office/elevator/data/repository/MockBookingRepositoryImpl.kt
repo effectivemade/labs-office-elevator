@@ -112,6 +112,14 @@ class MockBookingRepositoryImpl: BookingRepository {
 
     private val bookings = MutableStateFlow(initLis)
 
+    override suspend fun deleteBooking(bookingInfo: BookingInfo) {
+        bookings.update {
+            initLis.filter {
+                it != bookingInfo
+            }
+        }
+    }
+
     override suspend fun changeBooking(bookingInfo: BookingInfo) {
         TODO("Not yet implemented")
     }

@@ -8,6 +8,7 @@ import kotlinx.datetime.LocalDate
 
 interface BookingRepository {
     suspend fun changeBooking(bookingInfo: BookingInfo)
+    suspend fun deleteBooking(bookingInfo: BookingInfo)
 
     suspend fun createBook(bookingInfo: CreatingBookModel)
 

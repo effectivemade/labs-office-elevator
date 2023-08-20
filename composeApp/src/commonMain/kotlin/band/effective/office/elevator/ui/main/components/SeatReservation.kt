@@ -52,19 +52,22 @@ import kotlinx.coroutines.launch
 fun SeatsReservation(
     reservedSeats: List<ReservedSeat>,
     onClickBook: () -> Unit,
-    onClickOptionMenu: (Int) -> Unit,
     onClickShowOptions: () -> Unit,
     showOptionsMenu: Boolean,
-    onClickCloseOptionMenu: () -> Unit
+    onClickCloseOptionMenu: () -> Unit,
+    onClickOpenDeleteBooking: (ReservedSeat) -> Unit,
+    onClickOpenEditBooking: () -> Unit
 ) {
     when(reservedSeats.isEmpty()) {
         true -> EmptyReservation(onClickBook)
         false -> NonEmptyReservation(
             reservedSeats = reservedSeats,
-            onClickOptionMenu = onClickOptionMenu,
+            onClickOpenDeleteBooking = onClickOpenDeleteBooking,
+            onClickOpenEditBooking = onClickOpenEditBooking,
             onClickShowOptions = onClickShowOptions,
             showOptionsMenu = showOptionsMenu,
-            onClickCloseOptionMenu = onClickCloseOptionMenu
+            onClickCloseOptionMenu = onClickCloseOptionMenu,
+            onClickBook = onClickBook
         )
     }
 }
@@ -93,10 +96,12 @@ fun EmptyReservation(onClickBook: () -> Unit) {
 @Composable
 fun NonEmptyReservation(
     reservedSeats: List<ReservedSeat>,
-    onClickOptionMenu: (Int) -> Unit,
     onClickShowOptions: () -> Unit,
     showOptionsMenu: Boolean,
     onClickCloseOptionMenu: () -> Unit,
+    onClickOpenDeleteBooking: (ReservedSeat) -> Unit,
+    onClickOpenEditBooking: () -> Unit,
+    onClickBook: () -> Unit,
 ) {
     val interactionSource = remember {
         MutableInteractionSource()
@@ -107,12 +112,18 @@ fun NonEmptyReservation(
     var itemWidthDp by remember {
         mutableStateOf(0.dp)
     }
+    var itemHeightDp by remember {
+        mutableStateOf(0.dp)
+    }
+    var indexSelect by remember {
+        mutableStateOf(0)
+    }
     val localDensity = LocalDensity.current
     val coroutine = rememberCoroutineScope()
 
-    Box {
+    Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
-            modifier = Modifier.fillMaxSize().clickable(onClick = onClickCloseOptionMenu,
+            modifier = Modifier.clickable(onClick = onClickCloseOptionMenu,
                 interactionSource = interactionSource,
                 indication = null),
             verticalArrangement = Arrangement.spacedBy(18.dp)
@@ -126,13 +137,13 @@ fun NonEmptyReservation(
                             .padding(horizontal = 16.dp, vertical = 24.dp)
                             .onGloballyPositioned { coordinates ->
                                 itemWidthDp = with(localDensity) { coordinates.size.width.toDp() }
+                                itemHeightDp = with(localDensity) { coordinates.size.height.toDp() }
                             }
                     ) {
                         SeatIcon()
                         Spacer(modifier = Modifier.width(12.dp))
                         SeatTitle(seat)
                         Spacer(modifier = Modifier.weight(1f))
-                        val itemHeight = 100.dp
                         Icon(
                             imageVector = Icons.Default.MoreVert,
                             contentDescription = "show option menu",
@@ -142,7 +153,8 @@ fun NonEmptyReservation(
                                         coroutine.launch {
                                             onClickCloseOptionMenu()
                                             delay(300L)
-                                            menuOffset = if(index==0){(it.y ).toDp()}else{(it.y).toDp()+itemHeight}
+                                            indexSelect = index
+                                            menuOffset = if(index==0){(it.y).toDp()}else{(it.y).toDp()+(itemHeightDp*index)+(18.dp*index)}
                                             onClickShowOptions()
                                         }
                                     }
@@ -162,10 +174,12 @@ fun NonEmptyReservation(
             DropDownMenu(
                 expanded =  showOptionsMenu,
                 content = {
-                    BookingContextMenu(onClick = {
-                        onClickOptionMenu(it)
-                        onClickCloseOptionMenu()
-                    })
+                    BookingContextMenu(onClick = onClickCloseOptionMenu,
+                        onClickOpenDeleteBooking = onClickOpenDeleteBooking,
+                        onClickOpenEditBooking = onClickOpenEditBooking,
+                        onClickBook = onClickBook,
+                        seat = reservedSeats[indexSelect]
+                        )
                 },
                 modifier = Modifier.padding(end = 28.dp).onGloballyPositioned { coordinates ->
                     dropDownWidthDp = with(localDensity) { coordinates.size.width.toDp() }

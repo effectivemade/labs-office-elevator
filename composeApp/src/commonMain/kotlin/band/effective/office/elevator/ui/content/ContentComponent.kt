@@ -1,6 +1,5 @@
 package band.effective.office.elevator.ui.content
 
-import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.ui.booking.BookingComponent
 import band.effective.office.elevator.ui.employee.FullEmployeeComponent
 import band.effective.office.elevator.ui.main.MainComponent
@@ -47,11 +46,6 @@ class ContentComponent(
     private fun mainScreenOutput(output: MainComponent.Output){
         when(output){
             is MainComponent.Output.OpenBookingScreen -> navigation.bringToFront(Config.Booking)
-            is MainComponent.Output.OpenMap -> showToast("map")
-            is MainComponent.Output.DeleteBooking -> showToast("delete")
-            is MainComponent.Output.ExtendBooking -> showToast("extend")
-            is MainComponent.Output.RepeatBooking -> showToast("repeat")
-
         }
     }
 

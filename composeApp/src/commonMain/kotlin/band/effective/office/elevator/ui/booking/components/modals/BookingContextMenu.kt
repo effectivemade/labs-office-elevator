@@ -21,16 +21,22 @@ import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.Elevation
+import band.effective.office.elevator.ui.models.ReservedSeat
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
-fun BookingContextMenu(onClick: (Int) -> Unit) {
+fun BookingContextMenu(
+    onClick: () -> Unit,
+    onClickOpenDeleteBooking: (ReservedSeat) -> Unit,
+    onClickOpenEditBooking: () -> Unit,
+    seat: ReservedSeat,
+    onClickBook: () -> Unit
+) {
     val dropDownList =
         listOf(
             MainRes.strings.show_map,
             MainRes.strings.extend_booking,
-            MainRes.strings.repeat_booking,
-            MainRes.strings.delete_booking
+            MainRes.strings.delete
         )
 
     Column(modifier = Modifier
@@ -48,9 +54,13 @@ fun BookingContextMenu(onClick: (Int) -> Unit) {
             with(stringResource(item)) {
             Column(modifier = Modifier.wrapContentSize()) {
                 Button(
-                    onClick = {
-                        onClick(dropDownList.indexOf(item))
-                    },
+                    onClick = {if(item == MainRes.strings.show_map){
+                        onClickBook()
+                    }else{if(item == MainRes.strings.extend_booking){
+                        onClickOpenEditBooking()
+                    }else{onClickOpenDeleteBooking(seat)}}
+                              onClick()
+                              },
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = Color.Transparent,
                     ),
