@@ -33,15 +33,11 @@ class AuthorizationProfileStoreFactory(
         }
 
     private sealed interface Msg {
-        data class NameData(
-            var name: String,
-            var isNameError: Boolean
-        ) : Msg
+        data class NameData(var name: String) : Msg
+        data class NameError(var error: Boolean) : Msg
 
-        data class PostData(
-            var post: String,
-            var isPostError: Boolean
-        ) : Msg
+        data class PostData(var post: String) : Msg
+        data class PostError(var error: Boolean) : Msg
     }
 
     private sealed interface Action {
@@ -52,15 +48,10 @@ class AuthorizationProfileStoreFactory(
         Reducer<AuthorizationProfileStore.State, AuthorizationProfileStoreFactory.Msg> {
         override fun AuthorizationProfileStore.State.reduce(msg: AuthorizationProfileStoreFactory.Msg): AuthorizationProfileStore.State =
             when (msg) {
-                is Msg.NameData -> copy(
-                    name = msg.name,
-                    isErrorName = msg.isNameError
-                )
-
-                is Msg.PostData -> copy(
-                    post = msg.post,
-                    isErrorPost = msg.isPostError
-                )
+                is Msg.NameData -> copy(name = msg.name)
+                is Msg.PostData -> copy(post = msg.post)
+                is Msg.NameError -> copy(isErrorName = !msg.error)
+                is Msg.PostError -> copy(isErrorPost = !msg.error)
             }
     }
 
@@ -73,24 +64,21 @@ class AuthorizationProfileStoreFactory(
             when (intent) {
                 AuthorizationProfileStore.Intent.BackButtonClicked -> back()
                 AuthorizationProfileStore.Intent.ContinueButtonClicked -> checkUserdata(
-                    getState().name,
-                    getState().post
+                    name_ = getState().name,
+                    post_ = getState().post
                 )
 
-                is AuthorizationProfileStore.Intent.PostChanged -> with(intent.post) {
+                is AuthorizationProfileStore.Intent.PostChanged ->
                     dispatch(
                         AuthorizationProfileStoreFactory.Msg.PostData(
-                            post = this,
-                            isPostError = validator.checkPost(this)
+                            post = intent.post
                         )
                     )
-                }
 
                 is AuthorizationProfileStore.Intent.NameChanged ->
                     dispatch(
                         AuthorizationProfileStoreFactory.Msg.NameData(
-                            name = intent.name,
-                            isNameError = validator.checkName(intent.name)
+                            name = intent.name
                         )
                     )
             }
@@ -105,15 +93,13 @@ class AuthorizationProfileStoreFactory(
 
                     dispatch(
                         AuthorizationProfileStoreFactory.Msg.PostData(
-                            post = post,
-                            isPostError = false
+                            post = post
                         )
                     )
 
                     dispatch(
                         AuthorizationProfileStoreFactory.Msg.NameData(
-                            name = name,
-                            isNameError = false
+                            name = name
                         )
                     )
                 }
@@ -122,13 +108,16 @@ class AuthorizationProfileStoreFactory(
 
         private fun checkUserdata(name_: String, post_: String) {
 
-            if (!validator.checkName(name) && !validator.checkPost(post)) {
+            if (validator.checkName(name_) && validator.checkPost(post_)) {
                 post = post_
                 name = name_
                 publish(AuthorizationProfileStore.Label.AuthorizationProfileSuccess)
             } else {
                 publish(AuthorizationProfileStore.Label.AuthorizationProfileFailure)
             }
+
+            dispatch(Msg.PostError(error = validator.checkPost(post_)))
+            dispatch(Msg.NameError(error = validator.checkName(name_)))
         }
 
         private fun back() {

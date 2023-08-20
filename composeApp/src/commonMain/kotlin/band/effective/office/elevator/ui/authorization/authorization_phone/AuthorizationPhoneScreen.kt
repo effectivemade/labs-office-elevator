@@ -137,7 +137,6 @@ private fun AuthorizationPhoneComponent(
 
             OutlinedTextField(
                 value = state.phoneNumber,
-                textStyle = MaterialTheme.typography.button.copy(color = Color.Black),
                 onValueChange = {
                     if (it.isNotEmpty()) {
                         closeIcon.value = true
@@ -154,7 +153,7 @@ private fun AuthorizationPhoneComponent(
                 },
                 visualTransformation = PhoneMaskTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                textStyle = MaterialTheme.typography.body1,
+                textStyle = MaterialTheme.typography.body1.copy(color = Color.Black),
                 colors = OutlinedTextColorsSetup(),
                 placeholder = {
                     Text(

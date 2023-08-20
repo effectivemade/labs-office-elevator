@@ -11,7 +11,7 @@ interface AuthorizationStore :
     }
 
     data class State(
-        var userData: UserData = UserData()
+        val userData: UserData = UserData()
     )
 
     sealed interface Label {

@@ -149,7 +149,7 @@ private fun AuthorizationTelegramComponent(
                     onEvent(AuthorizationTelegramStore.Intent.NickChanged(name = it))
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                textStyle = MaterialTheme.typography.body1,
+                textStyle = MaterialTheme.typography.body1.copy(color = Color.Black),
                 colors = OutlinedTextColorsSetup(),
                 placeholder = {
                     Text(

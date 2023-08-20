@@ -134,7 +134,12 @@ class AuthorizationComponent(
     private fun googleAuthOutput(output: AuthorizationGoogleComponent.Output) {
         when (output) {
             is AuthorizationGoogleComponent.Output.OpenAuthorizationPhoneScreen -> {
-                authorizationStore.state.userData = output.userData
+                with(authorizationStore.state.userData) {
+                    name = output.userData.name
+                    email = output.userData.email
+                    idToken = output.userData.idToken
+                    imageUrl = output.userData.imageUrl
+                }
                 navigation.replaceAll(Config.PhoneAuth)
             }
         }

@@ -24,7 +24,6 @@ internal class AuthorizationGoogleStoreFactory(
 ) : KoinComponent {
 
     private val signInClient: GoogleSignIn by inject()
-    private val authorizationEntity by inject<AuthorizationEntity>()
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): AuthorizationGoogleStore =
@@ -60,9 +59,12 @@ internal class AuthorizationGoogleStoreFactory(
                             ApiResponse.Error.SerializationError -> {}
                             ApiResponse.Error.UnknownError -> {}
                             is ApiResponse.Success -> {
-//                                val userData: UserData =
-//                                    authorizationEntity.get(result.body.idToken!!)
-                                publish(Label.AuthorizationSuccess(userData = UserData()))
+                                publish(Label.AuthorizationSuccess(userData = UserData(
+                                    name = result.body.name,
+                                    email = result.body.email,
+                                    imageUrl = result.body.photoUrl,
+                                    idToken = result.body.idToken!!
+                                )))
                             }
                         }
                     }

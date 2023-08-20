@@ -10,6 +10,6 @@ class UserData(
     var name: String = "",
     var telegramNick: String = "",
     var email: String = "",
-    val imageUrl: String? = "",
-    val idToken: String = ""
+    var imageUrl: String? = "",
+    var idToken: String = ""
 ) : Parcelable

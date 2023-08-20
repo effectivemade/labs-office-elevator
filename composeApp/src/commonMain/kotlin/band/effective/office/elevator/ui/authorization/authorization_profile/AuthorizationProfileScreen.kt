@@ -16,7 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
@@ -63,6 +63,8 @@ fun AuthorizationProfileScreen(component: AuthorizationProfileComponent) {
                 }
 
                 is AuthorizationProfileStore.Label.AuthorizationProfileSuccess -> {
+                    component.changeUserName(name = state.name)
+                    component.changeUserPost(post = state.post)
                     component.onOutput(
                         AuthorizationProfileComponent.Output.OpenTGScreen
                     )
@@ -140,7 +142,6 @@ fun AuthorizationProfileComponent(
 //            NAME
             OutlinedTextField(
                 value = state.name,
-                textStyle = MaterialTheme.typography.button.copy(color = Color.Black),
                 onValueChange = {
                     if (it.isNotEmpty()) {
                         closeIcon1.value = true
@@ -154,7 +155,7 @@ fun AuthorizationProfileComponent(
 
                     onEvent(AuthorizationProfileStore.Intent.NameChanged(name = it))
                 },
-                textStyle = MaterialTheme.typography.body1,
+                textStyle = MaterialTheme.typography.body1.copy(color = Color.Black),
                 colors = OutlinedTextColorsSetup(),
                 placeholder = {
                     Text(
@@ -222,7 +223,6 @@ fun AuthorizationProfileComponent(
 //            POST
             OutlinedTextField(
                 value = state.post,
-                textStyle = MaterialTheme.typography.button.copy(color = Color.Black),
                 onValueChange = {
                     if (it.isNotEmpty()) {
                         closeIcon2.value = true
@@ -236,7 +236,7 @@ fun AuthorizationProfileComponent(
 
                     onEvent(AuthorizationProfileStore.Intent.PostChanged(post = it))
                 },
-                textStyle = MaterialTheme.typography.body1,
+                textStyle = MaterialTheme.typography.body1.copy(color = Color.Black),
                 colors = OutlinedTextColorsSetup(),
                 placeholder = {
                     Text(
