@@ -1,6 +1,7 @@
 package office.effective.plugins
 
 import io.ktor.server.application.*
+import office.effective.common.notifications.firebaseDiModule
 import office.effective.common.utils.commonDiModule
 import office.effective.features.booking.config.bookingDiModule
 import office.effective.features.simpleAuth.di.authDiModule
@@ -15,7 +16,8 @@ fun Application.configureDI() {
             userDIModule,
             workspaceDiModule,
             bookingDiModule,
-            authDiModule
+            authDiModule,
+            firebaseDiModule
         )
     }
 }
