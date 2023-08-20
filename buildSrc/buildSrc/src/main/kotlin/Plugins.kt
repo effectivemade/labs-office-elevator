@@ -49,7 +49,7 @@ object Plugins {
     }
 
     object BuildConfig {
-        const val implementation = "com.github.gmazzo.buildconfig:plugin:4.0.4"
+        const val implementation = "com.github.gmazzo.buildconfig:plugin:4.1.2"
         const val plugin = "com.github.gmazzo.buildconfig"
     }
 
