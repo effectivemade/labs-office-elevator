@@ -19,3 +19,4 @@ databaseChangeLog:
                     type: email_domain
                     constraints:
                       nullable: false
+                      unique: true
