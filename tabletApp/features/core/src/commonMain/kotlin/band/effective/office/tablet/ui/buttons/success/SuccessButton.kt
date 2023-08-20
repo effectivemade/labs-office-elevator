@@ -12,10 +12,12 @@ import androidx.compose.ui.unit.dp
 fun SuccessButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
+    enable: Boolean = true,
     content: @Composable RowScope.() -> Unit
 ) {
     Button(
         modifier = modifier.clip(RoundedCornerShape(100.dp)),
+        enabled = enable,
         onClick = { onClick() }
     ) {
         content()

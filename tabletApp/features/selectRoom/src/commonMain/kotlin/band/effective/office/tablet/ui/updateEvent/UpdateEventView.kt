@@ -80,7 +80,8 @@ fun UpdateEventView(
             isUpdateError = state.isErrorUpdate,
             isUpdateLoad = state.isLoadUpdate,
             isDeleteError = state.isErrorDelete,
-            isDeleteLoad = state.isLoadDelete
+            isDeleteLoad = state.isLoadDelete,
+            enableUpdateButton = state.enableUpdateButton
         )
     }
 
@@ -111,7 +112,8 @@ fun UpdateEventView(
     isUpdateError: Boolean,
     isUpdateLoad: Boolean,
     isDeleteError: Boolean,
-    isDeleteLoad: Boolean
+    isDeleteLoad: Boolean,
+    enableUpdateButton: Boolean
 ) {
     Dialog(
         onDismissRequest = onDismissRequest
@@ -162,7 +164,8 @@ fun UpdateEventView(
             Spacer(modifier = Modifier.height(25.dp))
             SuccessButton(
                 modifier = Modifier.fillMaxWidth().height(60.dp),
-                onClick = onUpdateEvent
+                onClick = onUpdateEvent,
+                enable = enableUpdateButton
             ) {
                 when {
                     isUpdateLoad -> Loader()
