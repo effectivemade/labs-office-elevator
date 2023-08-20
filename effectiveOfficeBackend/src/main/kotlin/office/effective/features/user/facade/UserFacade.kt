@@ -13,7 +13,7 @@ class UserFacade(
     private val verifier: ITokenVerifier,
     private val transactionManager: DatabaseTransactionManager
 ) {
-    fun getUsersByTag(tagStr: String, token: String): Set<UserDTO> {
+    fun getUsersByTag(tagStr: String): Set<UserDTO> {
         val models: Set<UserModel> =
             transactionManager.useTransaction<Set<UserModel>>({ service.getUsersByTag(tagStr) })
         val dtos: MutableSet<UserDTO> = mutableSetOf()
@@ -21,11 +21,21 @@ class UserFacade(
         return dtos.toSet()
     }
 
-    fun getUserById(userIdStr: String, token: String): UserDTO {
+    fun getUserById(userIdStr: String): UserDTO {
         return transactionManager.useTransaction<UserDTO>({
             converterDTO.modelToDTO(service.getUserById(userIdStr))
         })
+    }
 
+    /**
+     * Retrieves a user model by email
+     *
+     * @author Daniil Zavyalov
+     */
+    fun getUserByEmail(email: String): UserDTO {
+        return transactionManager.useTransaction<UserDTO>({
+            converterDTO.modelToDTO(service.getUserByEmail(email))
+        })
     }
 
     /**

@@ -23,6 +23,11 @@ class UserService(private val repository: UserRepository) : IUserService {
         return repository.updateUser(user)
     }
 
+    /**
+     * Retrieves a user model by email
+     *
+     * @author Danil Kiselev
+     */
     override fun getUserByEmail(emailStr: String): UserModel {
         return repository.findByEmail(emailStr)
     }

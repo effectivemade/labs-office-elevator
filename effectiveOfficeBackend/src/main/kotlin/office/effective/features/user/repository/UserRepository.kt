@@ -34,17 +34,12 @@ class UserRepository(private val db: Database,
      * */
     fun findById(userId: UUID): UserModel {
         val userEnt: UserEntity =
-            db.users.find { it.id eq userId } ?: throw InstanceNotFoundException(UserEntity::class, "User ${userId}")
+            db.users.find { it.id eq userId }
+                ?: throw InstanceNotFoundException(UserEntity::class, "User with id $userId not found", userId)
+
         val integrations = findSetOfIntegrationsByUser(userId)
-        val tagEntity = db.users_tags.find { it.id eq userEnt.tag.id } ?: throw InstanceNotFoundException(
-            UsersTagEntity::class, "Cannot find tag by id ${userEnt.tag.id}"
-        )
 
-        val userModel = converter.entityToModel(userEnt, null)
-        userModel.integrations = integrations
-        userModel.tag = tagEntity
-
-        return userModel
+        return converter.entityToModel(userEnt, integrations)
     }
 
     /**
@@ -56,7 +51,7 @@ class UserRepository(private val db: Database,
     fun findByTag(tagId: UUID): Set<UserModel> {
 
         val ents = db.users.filter { Users.tagId eq tagId }.toSet()
-        var models: MutableSet<UserModel> = mutableSetOf<UserModel>()
+        val models: MutableSet<UserModel> = mutableSetOf<UserModel>()
         ents.forEach {
             val user = converter.entityToModel(it, null)
             user.integrations = findSetOfIntegrationsByUser(user.id!!)
@@ -67,18 +62,20 @@ class UserRepository(private val db: Database,
     }
 
     /**
-     * Searching user with input integration value.
-     * @return UserModel - user with integration value eq input line
-     * @throws InstanceNotFoundException if there are no users with such integration value
+     * Retrieves a user model by email
      *
-     * @author Danil Kiselev
-     * */
+     * @return UserModel
+     * @throws InstanceNotFoundException if user with the given email doesn't exist in database
+     * @author Daniil Zavyalov
+     */
     fun findByEmail(email: String): UserModel {
-        val integrationUserEntity: UserIntegrationEntity =
-            db.usersinegrations.find { it.valueStr eq email } ?: throw InstanceNotFoundException(
-                UserIntegrationEntity::class, "Integration with value ${email} not found"
-            );
-        return findById(integrationUserEntity.userId.id)
+        val entity: UserEntity =
+            db.users.find { it.email eq email }
+                ?: throw InstanceNotFoundException(UserEntity::class, "User with email $email not found")
+
+        val integrations = findSetOfIntegrationsByUser(entity.id)
+
+        return converter.entityToModel(entity, integrations)
     }
 
     /**
