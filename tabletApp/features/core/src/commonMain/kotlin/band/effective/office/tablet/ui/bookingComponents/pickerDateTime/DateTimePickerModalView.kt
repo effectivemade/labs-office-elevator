@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults.buttonColors
@@ -15,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import band.effective.office.tablet.features.core.MainRes
 import band.effective.office.tablet.ui.common.CrossButtonView
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.header8
@@ -47,7 +49,7 @@ fun DateTimePickerModalView(
                     dayOfMonthViewHeight = 32.dp
                 )
             ),
-            selectionContainerColor = LocalCustomColorsPalette.current.pressedPrimaryButton,
+            selectionContainerColor = MaterialTheme.colors.secondary,
         ),
         selectedDates =
         listOf(
@@ -135,29 +137,30 @@ fun DateTimePickerModalView(
                     selectedDateTime[Calendar.MINUTE]
                 )
                 Spacer(modifier = Modifier.height(10.dp))
-                Button(
-                    modifier = Modifier
-                        //.fillMaxHeight(1f)
-                        .fillMaxWidth(0.3f),
-                    onClick = {
-                        onSetDate(
-                            selectedDateTime[Calendar.DATE],
-                            selectedDateTime[Calendar.MONTH],
-                            selectedDateTime[Calendar.YEAR],
-                            selectedDateTime[Calendar.HOUR_OF_DAY],
-                            selectedDateTime[Calendar.MINUTE]
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Button(
+                        modifier = Modifier.align(Alignment.Center)
+                            .fillMaxWidth(0.3f),
+                        onClick = {
+                            onSetDate(
+                                selectedDateTime[Calendar.DATE],
+                                selectedDateTime[Calendar.MONTH],
+                                selectedDateTime[Calendar.YEAR],
+                                selectedDateTime[Calendar.HOUR_OF_DAY],
+                                selectedDateTime[Calendar.MINUTE]
+                            )
+                            onCloseRequest()
+                        },
+                        colors = buttonColors(
+                            containerColor = LocalCustomColorsPalette.current.pressedPrimaryButton
                         )
-                        onCloseRequest()
-                    },
-                    colors = buttonColors(
-                        containerColor = LocalCustomColorsPalette.current.pressedPrimaryButton
-                    )
-                ) {
-                    Text(
-                        text = selectedDateTime.date() + " с ${selectedDateTime.time24()}",
-                        style = header8,
-                        color = LocalCustomColorsPalette.current.primaryTextAndIcon,
-                    )
+                    ) {
+                        Text(
+                            text = MainRes.string.apply_date_time_for_booking,
+                            style = header8,
+                            color = LocalCustomColorsPalette.current.primaryTextAndIcon,
+                        )
+                    }
                 }
             }
         }
