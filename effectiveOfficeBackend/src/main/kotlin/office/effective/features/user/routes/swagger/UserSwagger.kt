@@ -27,15 +27,24 @@ fun SwaggerDocument.returnUserByEmail(): OpenApiRoute.() -> Unit = {
                         id = "2c77feee-2bc1-11ee-be56-0242ac120002",
                         fullName = "Ivan Ivanov",
                         active = true,
-                        role = "ADMIN",
+                        role = "Backend developer",
                         avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
                         integrations = listOf(
                             IntegrationDTO(
-                                "13c80c3d-4278-45cf-8d2a-e281004d3ff9",
-                                "email",
-                                "123@effective.band"
+                                "c717cf6e-28b3-4148-a469-032991e5d9e9",
+                                "phoneNumber",
+                                "89236379887"
+                            ), IntegrationDTO(
+                                "8c02c6dc-1c4f-459e-ac27-f1db53923b2f",
+                                "telegram",
+                                "@cooldeveloper"
+                            ), IntegrationDTO(
+                                "e321f85c-3f85-4c23-8e59-05005a82ffa8",
+                                "Foobr",
+                                "CoolDev@foobr.ru"
                             )
-                        )
+                        ),
+                        email = "cool.backend.developer@effective.band"
                     )
                 ) {
                 }
@@ -73,29 +82,33 @@ fun SwaggerDocument.returnUsers(): OpenApiRoute.() -> Unit = {
                             id = "2c77feee-2bc1-11ee-be56-0242ac120002",
                             fullName = "Ivan Ivanov",
                             active = true,
-                            role = "ADMIN",
+                            role = "Backend developer",
                             avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
                             integrations = listOf(
                                 IntegrationDTO(
-                                    "13c80c3d-4278-45cf-8d2a-e281004d3ff9",
-                                    "email",
-                                    "123@effective.band"
+                                    "c717cf6e-28b3-4148-a469-032991e5d9e9",
+                                    "phoneNumber",
+                                    "89236379887"
+                                ), IntegrationDTO(
+                                    "8c02c6dc-1c4f-459e-ac27-f1db53923b2f",
+                                    "telegram",
+                                    "@cooldeveloper"
                                 )
-                            )
+                            ),
+                            email = "cool.backend.developer@effective.band"
                         ),
                         UserDTO(
                             id = "207b9634-2bc4-11ee-be56-0242ac120002",
-                            fullName = "Lol Kekov",
+                            fullName = "Danil Egorov",
                             active = true,
-                            role = "USER",
+                            role = "Android developer",
                             avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                            integrations = listOf(
-                                IntegrationDTO(
-                                    "13c80c3d-4278-45cf-8d2a-e281004d3ff9",
-                                    "email",
-                                    "321@effective.band"
-                                )
-                            )
+                            integrations = listOf(IntegrationDTO(
+                                "c717cf6e-28b3-4148-a469-032991e5d9e9",
+                                "phoneNumber",
+                                "89038760982")
+                            ),
+                            email = "cool.android.developer@effective.band"
                         )
                     )
                 ) {
@@ -126,15 +139,20 @@ fun SwaggerDocument.returnUserById(): OpenApiRoute.() -> Unit = {
                         id = "2c77feee-2bc1-11ee-be56-0242ac120002",
                         fullName = "Ivan Ivanov",
                         active = true,
-                        role = "ADMIN",
+                        role = "Backend developer",
                         avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
                         integrations = listOf(
                             IntegrationDTO(
-                                "13c80c3d-4278-45cf-8d2a-e281004d3ff9",
-                                "email",
-                                "123@effective.band"
+                                "c717cf6e-28b3-4148-a469-032991e5d9e9",
+                                "phoneNumber",
+                                "89236379887"
+                            ), IntegrationDTO(
+                                "8c02c6dc-1c4f-459e-ac27-f1db53923b2f",
+                                "telegram",
+                                "@cooldeveloper"
                             )
-                        )
+                        ),
+                        email = "cool.android.developer@effective.band"
                     )
                 ) {
                 }
@@ -171,15 +189,16 @@ fun SwaggerDocument.updateUser(): OpenApiRoute.() -> Unit = {
                     avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
                     integrations = listOf(
                         IntegrationDTO(
-                            "13c80c3d-4278-45cf-8d2a-e281004d3ff9",
-                            "email",
-                            "0987654321@gmail.com"
+                            "c717cf6e-28b3-4148-a469-032991e5d9e9",
+                            "phoneNumber",
+                            "88009000000"
                         ), IntegrationDTO(
-                            "52a3a1e0-21e1-4e76-b8c3-4b5ae7022aab",
-                            "telegraph",
-                            "@0987654321"
+                            "8c02c6dc-1c4f-459e-ac27-f1db53923b2f",
+                            "telegram",
+                            "@mimocrocodile"
                         )
-                    )
+                    ),
+                    email = "mimocrocodile@mimo.crocodile"
                 )
             )
         }
@@ -198,15 +217,16 @@ fun SwaggerDocument.updateUser(): OpenApiRoute.() -> Unit = {
                         avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
                         integrations = listOf(
                             IntegrationDTO(
-                                "13c80c3d-4278-45cf-8d2a-e281004d3ff9",
-                                "email",
-                                "0987654321@gmail.com"
+                                "c717cf6e-28b3-4148-a469-032991e5d9e9",
+                                "phoneNumber",
+                                "88009000000"
                             ), IntegrationDTO(
-                                "52a3a1e0-21e1-4e76-b8c3-4b5ae7022aab",
-                                "telegraph",
-                                "@0987654321"
+                                "8c02c6dc-1c4f-459e-ac27-f1db53923b2f",
+                                "telegram",
+                                "@mimocrocodile"
                             )
-                        )
+                        ),
+                        email = "mimocrocodile@mimo.crocodile"
                     )
                 ) {
                 }
@@ -216,7 +236,7 @@ fun SwaggerDocument.updateUser(): OpenApiRoute.() -> Unit = {
             description = "Bad request"
         }
         HttpStatusCode.NotFound to {
-            description = "User with this id was not found"
+            description = "User with this id not found"
         }
     }
 }
