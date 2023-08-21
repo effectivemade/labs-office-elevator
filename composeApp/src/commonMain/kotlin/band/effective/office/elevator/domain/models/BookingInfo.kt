@@ -2,6 +2,8 @@ package band.effective.office.elevator.domain.models
 
 import band.effective.office.elevator.ui.models.ReservedSeat
 import band.effective.office.elevator.utils.capitalizeFirstLetter
+import band.effective.office.elevator.utils.localDateTimeToUnix
+import band.effective.office.elevator.utils.unixToLocalDateTime
 import band.effective.office.network.dto.BookingDTO
 import band.effective.office.network.dto.RecurrenceDTO
 import band.effective.office.network.dto.UserDTO
@@ -29,8 +31,8 @@ fun BookingDTO.toDomainModel() =
         ownerId = owner.id,
         workSpaceId = workspace.id,
         seatName = workspace.name,
-        dateOfStart = Instant.fromEpochSeconds(beginBooking).toLocalDateTime(timeZone = TimeZone.currentSystemDefault()),
-        dateOfEnd = Instant.fromEpochSeconds(beginBooking).toLocalDateTime(timeZone = TimeZone.currentSystemDefault()),
+        dateOfStart = unixToLocalDateTime(beginBooking),
+        dateOfEnd = unixToLocalDateTime(endBooking),
     )
 
 fun List<BookingDTO>.toDomain() = map { it.toDomainModel() }
@@ -59,8 +61,8 @@ fun BookingInfo.toDTOModel(userDTO: UserDTO, workspaceDTO: WorkspaceDTO, recurre
         participants = listOf(userDTO),
         workspace = workspaceDTO,
         id = id,
-        beginBooking = dateOfStart.toInstant(timeZone = TimeZone.currentSystemDefault()).epochSeconds,
-        endBooking = dateOfEnd.toInstant(timeZone = TimeZone.currentSystemDefault()).epochSeconds,
+        beginBooking = localDateTimeToUnix(dateOfStart)!!,
+        endBooking = localDateTimeToUnix(dateOfEnd)!!,
         recurrence = recurrence
     )
 
