@@ -64,7 +64,10 @@ internal class AuthorizationGoogleStoreFactory(
                             is ApiResponse.Success -> {
                                 withContext(Dispatchers.IO) {
                                     result.body.idToken?.let { token ->
-                                        authorizationUseCase.authorize(token).collect { response ->
+                                        authorizationUseCase.authorize(
+                                            idToken = token,
+                                            email = result.body.email
+                                        ).collect { response ->
                                             when (response) {
                                                 is Either.Success -> {
                                                     withContext(Dispatchers.Main) {

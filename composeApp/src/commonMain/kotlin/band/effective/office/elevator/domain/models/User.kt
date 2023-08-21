@@ -1,5 +1,6 @@
 package band.effective.office.elevator.domain.models
 
+import band.effective.office.elevator.scheme.ProfileData
 import band.effective.office.network.dto.IntegrationDTO
 import band.effective.office.network.dto.UserDTO
 
@@ -50,3 +51,15 @@ fun UserDTO.toUser() =
         email = integrations?.find { it.name == "email" }?.value?:"None",
         telegram = integrations?.find { it.name == "telegram" }?.value?:"None",
     )
+
+fun ProfileData.toUser() =
+    User(
+        id = id,
+        imageUrl = imageUrl,
+        post = post,
+        phoneNumber = phoneNumber,
+        email = email,
+        telegram = telegramNick,
+        userName = name
+    )
+

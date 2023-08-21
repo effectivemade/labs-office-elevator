@@ -162,4 +162,14 @@ class ApiMock(private val realApi: Api, mockFactory: MockFactory) : Api {
             awaitClose()
         }
 
+    override suspend fun getUserByEmail(email: String): Either<ErrorResponse, UserDTO> =
+        response(
+            mock = users.value.find { user ->
+                user.integrations?.find { integration ->
+                    integration.name == "email"
+                }?.value == email
+            },
+            realResponse = realApi.getUserByEmail(email)
+        )
+
 }

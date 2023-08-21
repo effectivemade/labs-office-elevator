@@ -24,7 +24,7 @@ class ProfileRepositoryImpl(
     private val bdSource: DBSource
 ) : ProfileRepository, KoinComponent {
 
-    private val user: MutableStateFlow<Either<ErrorWithData<User>, User>> =
+    private val lastResponse: MutableStateFlow<Either<ErrorWithData<User>, User>> =
         MutableStateFlow(
             Either.Error(
                 ErrorWithData<User>(
@@ -35,28 +35,36 @@ class ProfileRepositoryImpl(
 
     override suspend fun updateUser(user: User): Flow<Either<ErrorWithData<User>, User>> = flow {
         val requestResult =
-            api.updateUser(user.toUserDTO()).convert(this@ProfileRepositoryImpl.user.value)
+            api.updateUser(user.toUserDTO()).convert(this@ProfileRepositoryImpl.lastResponse.value)
         val newUser = requestResult.getData()
         val cashedUser = bdSource.getCurrentUserInfo()
         if (newUser != null && newUser != cashedUser) {
             bdSource.update(newUser)
-            this@ProfileRepositoryImpl.user.update { requestResult }
+            lastResponse.update { requestResult }
         }
-        val dateForEmit = bdSource.getCurrentUserInfo().packageEither(requestResult)
+        val dateForEmit = bdSource.getCurrentUserInfo()!!.packageEither(requestResult)
         emit(dateForEmit)
     }
 
     //TODO(Artem Gruzdev) maybe can easier this method
     override suspend fun getUser(): Flow<Either<ErrorWithData<User>, User>> = flow {
         val cashedUser = bdSource.getCurrentUserInfo()
-        val requestResult = api.getUser(cashedUser.id).convert(user.value)
-        val userFromApi = requestResult.getData()
-        if (userFromApi != null && userFromApi != cashedUser) {
-            bdSource.update(userFromApi)
-            user.update { requestResult }
+        if (cashedUser == null) {
+            emit(Either.Error(ErrorWithData(
+                error = ErrorResponse(code = 404, description = "you don`t login"),
+                saveData = null
+            )))
         }
-        val dateForEmit = bdSource.getCurrentUserInfo().packageEither(requestResult)
-        emit(dateForEmit)
+        else {
+            val requestResult = api.getUser(cashedUser.id).convert(lastResponse.value)
+            val userFromApi = requestResult.getData()
+            if (userFromApi != null && userFromApi != cashedUser) {
+                bdSource.update(userFromApi)
+                lastResponse.update { requestResult }
+            }
+            val dateForEmit = bdSource.getCurrentUserInfo()!!.packageEither(requestResult)
+            emit(dateForEmit)
+        }
     }
 
     private fun Either<ErrorWithData<User>, User>.getData() =
@@ -64,7 +72,6 @@ class ProfileRepositoryImpl(
             is Either.Error -> error.saveData
             is Either.Success -> data
         }
-
 
     private fun User.packageEither(apiResponse: Either<ErrorWithData<User>, User>) =
         when (apiResponse) {
