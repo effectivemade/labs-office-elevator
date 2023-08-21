@@ -31,7 +31,7 @@ fun Route.userRouting() {
                 }
                 (email != null) -> call.respond(facade.getUserByEmail(email))
                 (tag != null) -> call.respond(facade.getUsersByTag(tag))
-                else -> call.respond(HttpStatusCode.BadRequest)
+                else -> call.respond(facade.getUsers())
             }
         }
         get("/{user_id}", SwaggerDocument.returnUserById()) {

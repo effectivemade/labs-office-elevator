@@ -43,6 +43,30 @@ class UserRepository(private val db: Database,
     }
 
     /**
+     * Retrieves all users
+     * @return Set<UserModel>
+     *
+     * @author Daniil Zavyalov
+     * */
+    fun findAll(): Set<UserModel> {
+        val entities = db.users.toSet()
+        if (entities.isEmpty()) return emptySet()
+
+        val ids = mutableSetOf<UUID>()
+
+        for (entity in entities) {
+            ids.add(entity.id)
+        }
+        val integrations = findAllIntegrationsByUserIds(ids)
+
+        val models = mutableSetOf<UserModel>()
+        for (entity in entities) {
+            models.add(converter.entityToModel(entity, integrations[entity.id]))
+        }
+        return models
+    }
+
+    /**
      * Used to find multiple users with one tag
      * @return Set<UserModel> - users with tag name like input
      *

@@ -10,6 +10,16 @@ class UserService(private val repository: UserRepository) : IUserService {
         return repository.findByTag(repository.findTagByName(tagStr).id)
     }
 
+    /**
+     * Retrieves all users
+     * @return Set<UserModel>
+     *
+     * @author Daniil Zavyalov
+     * */
+    override fun getAll(): Set<UserModel> {
+        return repository.findAll()
+    }
+
     override fun getUserById(userIdStr: String): UserModel {
         return repository.findById(UUID.fromString(userIdStr))
     }

@@ -21,6 +21,22 @@ class UserFacade(
         return dtos.toSet()
     }
 
+    /**
+     * Retrieves all users
+     * @return Set<UserDTO>
+     *
+     * @author Daniil Zavyalov
+     * */
+    fun getUsers(): Set<UserDTO> {
+        return transactionManager.useTransaction({
+            val dtos: MutableSet<UserDTO> = mutableSetOf()
+            for (model in service.getAll()) {
+                dtos.add(converterDTO.modelToDTO(model))
+            }
+            dtos.toSet()
+        })
+    }
+
     fun getUserById(userIdStr: String): UserDTO {
         return transactionManager.useTransaction<UserDTO>({
             converterDTO.modelToDTO(service.getUserById(userIdStr))
