@@ -9,7 +9,7 @@ import office.effective.dto.BookingDTO
 import office.effective.dto.UserDTO
 import office.effective.dto.WorkspaceDTO
 
-class NotificationSender(private val fcm: FirebaseMessaging) {
+class FcmNotificationSender(private val fcm: FirebaseMessaging): INotificationSender {
 
     /**
      * Sends an FCM message about workspace modification
@@ -19,7 +19,7 @@ class NotificationSender(private val fcm: FirebaseMessaging) {
      *
      * @author Daniil Zavyalov
      */
-    fun sendMessage(action: HttpMethod, modifiedWorkspace: WorkspaceDTO) {
+    override fun sendMessage(action: HttpMethod, modifiedWorkspace: WorkspaceDTO) {
         val json = Json.encodeToString(modifiedWorkspace)
         val msg: Message = Message.builder()
             .setTopic("workspace")
@@ -37,7 +37,7 @@ class NotificationSender(private val fcm: FirebaseMessaging) {
      *
      * @author Daniil Zavyalov
      */
-    fun sendMessage(action: HttpMethod, modifiedUser: UserDTO) {
+    override fun sendMessage(action: HttpMethod, modifiedUser: UserDTO) {
         val json = Json.encodeToString(modifiedUser)
         val msg: Message = Message.builder()
             .setTopic("user")
@@ -55,7 +55,7 @@ class NotificationSender(private val fcm: FirebaseMessaging) {
      *
      * @author Daniil Zavyalov
      */
-    fun sendMessage(action: HttpMethod, modifiedBooking: BookingDTO) {
+    override fun sendMessage(action: HttpMethod, modifiedBooking: BookingDTO) {
         val json = Json.encodeToString(modifiedBooking)
         val msg: Message = Message.builder()
             .setTopic("booking")

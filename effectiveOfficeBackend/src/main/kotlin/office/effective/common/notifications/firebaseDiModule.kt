@@ -24,7 +24,7 @@ val firebaseDiModule  = module(createdAtStart = true) {
     single<FirebaseMessaging> {
         FirebaseMessaging.getInstance(get<FirebaseApp>())
     }
-    single {
-        NotificationSender(get<FirebaseMessaging>())
+    single<INotificationSender> {
+        FcmNotificationSender(get<FirebaseMessaging>())
     }
 }
