@@ -8,7 +8,6 @@ import io.ktor.server.netty.*
 import office.effective.plugins.configureMigration
 import office.effective.plugins.configureRouting
 import office.effective.plugins.configureSerialization
-
 import office.effective.plugins.*
 
 val config = HoconApplicationConfig(ConfigFactory.load())

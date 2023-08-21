@@ -1,6 +1,5 @@
 package office.effective.common.utils
 
-import office.effective.config
 import org.koin.dsl.module
 import org.ktorm.database.Database
 
