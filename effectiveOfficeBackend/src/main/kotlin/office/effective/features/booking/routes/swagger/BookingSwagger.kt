@@ -111,7 +111,8 @@ fun SwaggerDocument.postBooking(): OpenApiRoute.() -> Unit = {
                         )
                     ),
                     workspace = WorkspaceDTO(
-                        id = "2561471e-2bc6-11ee-be56-0242ac120002", name = "Sun", utilities = listOf(
+                        id = "2561471e-2bc6-11ee-be56-0242ac120002", name = "Sun", tag = "meeting",
+                        utilities = listOf(
                             UtilityDTO(
                                 id = "50d89406-2bc6-11ee-be56-0242ac120002",
                                 name = "Sockets",
@@ -242,7 +243,8 @@ private val bookingExample1 = BookingDTO(
         )
     ),
     workspace = WorkspaceDTO(
-        id = "2561471e-2bc6-11ee-be56-0242ac120002", name = "Sun", utilities = listOf(
+        id = "2561471e-2bc6-11ee-be56-0242ac120002", name = "Sun", tag = "meeting",
+        utilities = listOf(
             UtilityDTO(
                 id = "50d89406-2bc6-11ee-be56-0242ac120002",
                 name = "Sockets",
@@ -291,7 +293,8 @@ private val bookingExample2 = BookingDTO(
         )
     ),
     workspace = WorkspaceDTO(
-        id = "2561471e-2bc6-11ee-be56-0242ac120002", name = "Sun", utilities = listOf(
+        id = "2561471e-2bc6-11ee-be56-0242ac120002", name = "Sun", tag = "meeting",
+        utilities = listOf(
             UtilityDTO(
                 id = "50d89406-2bc6-11ee-be56-0242ac120002",
                 name = "Sockets",

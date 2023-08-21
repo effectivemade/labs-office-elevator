@@ -24,7 +24,8 @@ fun SwaggerDocument.returnWorkspaceById(): OpenApiRoute.() -> Unit = {
             body<WorkspaceDTO> {
                 example(
                     "Workspaces", WorkspaceDTO(
-                        id = "2561471e-2bc6-11ee-be56-0242ac120002", name = "Sun", utilities = listOf(
+                        id = "2561471e-2bc6-11ee-be56-0242ac120002", name = "Sun", tag = "meeting",
+                        utilities = listOf(
                             UtilityDTO(
                                 id = "50d89406-2bc6-11ee-be56-0242ac120002",
                                 name = "Sockets",
@@ -80,7 +81,8 @@ fun SwaggerDocument.returnWorkspaceByTag(): OpenApiRoute.() -> Unit = {
                 example(
                     "Workspace", listOf(
                         WorkspaceDTO(
-                            id = "2561471e-2bc6-11ee-be56-0242ac120002", name = "Sun", utilities = listOf(
+                            id = "2561471e-2bc6-11ee-be56-0242ac120002", name = "Sun", tag = "meeting",
+                            utilities = listOf(
                                 UtilityDTO(
                                     id = "50d89406-2bc6-11ee-be56-0242ac120002",
                                     name = "Sockets",
@@ -94,7 +96,8 @@ fun SwaggerDocument.returnWorkspaceByTag(): OpenApiRoute.() -> Unit = {
                                 )
                             )
                         ), WorkspaceDTO(
-                            id = "2561471e-2bc6-11ee-be56-0242ac120002", name = "Moon", utilities = listOf(
+                            id = "2561471e-2bc6-11ee-be56-0242ac120002", name = "Moon", tag = "meeting",
+                            utilities = listOf(
                                 UtilityDTO(
                                     id = "50d89406-2bc6-11ee-be56-0242ac120002",
                                     name = "Sockets",
