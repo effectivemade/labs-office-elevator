@@ -51,7 +51,8 @@ class UserDTOModelConverter(
             role = userModel.role ?: "",
             avatarUrl = userModel.avatarURL ?: "",
             integrations = integrations,
-            email = userModel.email
+            email = userModel.email,
+            tag = userModel.tag.name
         )
     }
 

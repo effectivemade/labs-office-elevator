@@ -10,5 +10,6 @@ data class UserDTO(
     val role: String,
     val avatarUrl: String,
     val integrations: List<IntegrationDTO>?,
-    val email: String
+    val email: String,
+    val tag: String,
 )

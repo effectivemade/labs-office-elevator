@@ -47,7 +47,8 @@ fun SwaggerDocument.returnUsers(): OpenApiRoute.() -> Unit = {
                                     "@cooldeveloper"
                                 )
                             ),
-                            email = "cool.backend.developer@effective.band"
+                            email = "cool.backend.developer@effective.band",
+                            tag = "employee"
                         ),
                         UserDTO(
                             id = "207b9634-2bc4-11ee-be56-0242ac120002",
@@ -60,7 +61,8 @@ fun SwaggerDocument.returnUsers(): OpenApiRoute.() -> Unit = {
                                 "phoneNumber",
                                 "89038760982")
                             ),
-                            email = "cool.android.developer@effective.band"
+                            email = "cool.android.developer@effective.band",
+                            tag = "employee"
                         )
                     )
                 ) {
@@ -89,7 +91,8 @@ fun SwaggerDocument.returnUsers(): OpenApiRoute.() -> Unit = {
                                 "CoolDev@foobr.ru"
                             )
                         ),
-                        email = "cool.backend.developer@effective.band"
+                        email = "cool.backend.developer@effective.band",
+                        tag = "employee"
                     )
                 ) {
                     summary = "Return user by email"
@@ -139,7 +142,8 @@ fun SwaggerDocument.returnUserById(): OpenApiRoute.() -> Unit = {
                                 "@cooldeveloper"
                             )
                         ),
-                        email = "cool.android.developer@effective.band"
+                        email = "cool.android.developer@effective.band",
+                        tag = "employee"
                     )
                 ) {
                 }
@@ -185,7 +189,8 @@ fun SwaggerDocument.updateUser(): OpenApiRoute.() -> Unit = {
                             "@mimocrocodile"
                         )
                     ),
-                    email = "mimocrocodile@mimo.crocodile"
+                    email = "mimocrocodile@mimo.crocodile",
+                    tag = "guest"
                 )
             )
         }
@@ -213,7 +218,8 @@ fun SwaggerDocument.updateUser(): OpenApiRoute.() -> Unit = {
                                 "@mimocrocodile"
                             )
                         ),
-                        email = "mimocrocodile@mimo.crocodile"
+                        email = "mimocrocodile@mimo.crocodile",
+                        tag = "guest"
                     )
                 ) {
                 }

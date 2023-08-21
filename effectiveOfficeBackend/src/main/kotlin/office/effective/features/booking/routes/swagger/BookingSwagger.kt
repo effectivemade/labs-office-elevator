@@ -93,7 +93,8 @@ fun SwaggerDocument.postBooking(): OpenApiRoute.() -> Unit = {
                             "phoneNumber",
                             "89087659880")
                         ),
-                        email = "cool.fullstack.developer@effective.band"
+                        email = "cool.fullstack.developer@effective.band",
+                        tag = "employee"
                     ),
                     participants = listOf(
                         UserDTO(
@@ -107,7 +108,8 @@ fun SwaggerDocument.postBooking(): OpenApiRoute.() -> Unit = {
                                 "phoneNumber",
                                 "89236379887")
                             ),
-                            email = "cool.backend.developer@effective.band"
+                            email = "cool.backend.developer@effective.band",
+                            tag = "employee"
                         )
                     ),
                     workspace = WorkspaceDTO(
@@ -212,7 +214,8 @@ private val bookingExample1 = BookingDTO(
             "phoneNumber",
             "89236379887")
         ),
-        email = "cool.backend.developer@effective.band"
+        email = "cool.backend.developer@effective.band",
+        tag = "employee"
     ),
     participants = listOf(
         UserDTO(
@@ -226,7 +229,8 @@ private val bookingExample1 = BookingDTO(
                 "phoneNumber",
                 "89236379887")
             ),
-            email = "cool.backend.developer@effective.band"
+            email = "cool.backend.developer@effective.band",
+            tag = "employee"
         ),
         UserDTO(
             id = "207b9634-2bc4-11ee-be56-0242ac120002",
@@ -239,7 +243,8 @@ private val bookingExample1 = BookingDTO(
                 "phoneNumber",
                 "89086379880")
             ),
-            email = "email@yahoo.com"
+            email = "email@yahoo.com",
+            tag = "employee"
         )
     ),
     workspace = WorkspaceDTO(
@@ -275,7 +280,8 @@ private val bookingExample2 = BookingDTO(
             "phoneNumber",
             "89236379887")
         ),
-        email = "cool.backend.developer@effective.band"
+        email = "cool.backend.developer@effective.band",
+        tag = "employee"
     ),
     participants = listOf(
         UserDTO(
@@ -289,7 +295,8 @@ private val bookingExample2 = BookingDTO(
                 "phoneNumber",
                 "89236379887")
             ),
-            email = "cool.backend.developer@effective.band"
+            email = "cool.backend.developer@effective.band",
+            tag = "employee"
         )
     ),
     workspace = WorkspaceDTO(
