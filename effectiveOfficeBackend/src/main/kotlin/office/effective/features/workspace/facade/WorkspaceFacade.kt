@@ -19,7 +19,7 @@ class WorkspaceFacade(private val service: WorkspaceService,
     /**
      * Retrieves a workspace model by its id
      *
-     * Throws InstanceNotFoundException if workspace with the given id doesn't exist in database
+     * @throws InstanceNotFoundException if workspace with the given id doesn't exist in database
      *
      * @author Daniil Zavyalov
      */

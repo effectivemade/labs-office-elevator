@@ -11,27 +11,37 @@ import office.effective.model.UserModel
 class UserDTOModelConverter(
     private val repository: UserRepository,
     private val converter: IntegrationDTOModelConverter,
-    private val uuidConverter : UuidValidator
+    private val uuidConverter: UuidValidator
 ) {
 
+    /**
+     * Converts user dto to model
+     *
+     * @author Danil Kiselev, Daniil Zavyalov
+     */
     fun dTOToModel(userDTO: UserDTO): UserModel {
         val userId = uuidConverter.uuidFromString(userDTO.id)
         val tag: UsersTagEntity? = repository.findTagByUserOrNull(userId);
         val integrations: MutableSet<IntegrationModel> = mutableSetOf()
         userDTO.integrations?.forEach { integrations.add(converter.dTOToModel(it)) }
         return UserModel(
-            userDTO.fullName,
-            userId,
-            tag ?: UsersTagEntity(),
-            userDTO.active,
-            userDTO.role,
-            userDTO.avatarUrl,
-            integrations
+            fullName = userDTO.fullName,
+            id = userId,
+            tag = tag ?: UsersTagEntity(),
+            active = userDTO.active,
+            role = userDTO.role,
+            avatarURL = userDTO.avatarUrl,
+            integrations = integrations,
+            email = userDTO.email
         )
     }
 
+    /**
+     * Converts user model to dto
+     *
+     * @author Danil Kiselev, Daniil Zavyalov
+     */
     fun modelToDTO(userModel: UserModel): UserDTO {
-
         val integrations: MutableList<IntegrationDTO> = mutableListOf()
         userModel.integrations?.forEach { integrations.add(converter.modelToDTO(it)) }
         return UserDTO(
@@ -40,7 +50,9 @@ class UserDTOModelConverter(
             active = userModel.active,
             role = userModel.role ?: "",
             avatarUrl = userModel.avatarURL ?: "",
-            integrations = integrations
+            integrations = integrations,
+            email = userModel.email,
+            tag = userModel.tag.name
         )
     }
 
