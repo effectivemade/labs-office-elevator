@@ -21,7 +21,7 @@ fun Route.userRouting() {
 
     route("users", {}) {
         get(SwaggerDocument.returnUsers()) {
-            val tag: String? = call.request.queryParameters["tag"]
+            val tag: String? = call.request.queryParameters["user_tag"]
             val email: String? = call.request.queryParameters["email"]
 
             when {

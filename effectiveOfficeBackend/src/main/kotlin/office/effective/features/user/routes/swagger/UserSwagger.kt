@@ -10,7 +10,7 @@ fun SwaggerDocument.returnUsers(): OpenApiRoute.() -> Unit = {
     description = "Return all users, all users by tag or one user by email"
     tags = listOf("users")
     request{
-        queryParameter<String>("tag"){
+        queryParameter<String>("user_tag"){
             description = "Name of the tag. Mutually exclusive with email"
             example = "employee"
             required = false

@@ -208,6 +208,7 @@ class UserRepository(private val db: Database,
         ent?.active = model.active
         ent?.avatarURL = model.avatarURL
         ent?.role = model.role
+        ent?.email = model.email
         ent?.flushChanges()
 
         val integrations: Set<IntegrationModel>? = model.integrations
