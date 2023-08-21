@@ -21,11 +21,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.calendarColor
+import band.effective.office.elevator.utils.MonthLocalizations
 import dev.icerock.moko.resources.compose.painterResource
 import epicarchitect.calendar.compose.basis.BasisDayOfMonthContent
 import epicarchitect.calendar.compose.basis.BasisDayOfWeekContent
@@ -41,6 +43,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 
+
 @Composable
 fun Calendar(state: EpicDatePickerState) {
 
@@ -51,9 +54,9 @@ fun Calendar(state: EpicDatePickerState) {
     Column {
         CalendarTitle(
             selectedDate = if (state.selectedDates.isEmpty())
-                pagerState.currentMonth.month.name
+                MonthLocalizations.getMonthName(pagerState.currentMonth.month, Locale("ru"))
             else
-                stringFormat(state.selectedDates.first()),
+                stringFormatDate(state.selectedDates.first()),
             onClickNextMonth = { scrollMonth(coroutineScope, pagerState, 1) },
             onClickPreviousMonth = { scrollMonth(coroutineScope, pagerState, -1) }
         )
@@ -158,4 +161,15 @@ private val CustomDayOfMonthContent: BasisDayOfMonthContent = { date ->
                 color = if (isSelected) pickerState.config.selectionContentColor
         else pickerState.config.pagerConfig.basisConfig.contentColor
     )
+}
+
+fun stringFormatDate(date: LocalDate?): String {
+    val monthName = date?.month?.let { month ->
+        MonthLocalizations.getMonthName(month, Locale("ru"))
+    } ?: ""
+    return if (date != null) {
+        "${monthName.capitalize()}, ${date.dayOfMonth}"
+    } else {
+        monthName.lowercase()
+    }
 }

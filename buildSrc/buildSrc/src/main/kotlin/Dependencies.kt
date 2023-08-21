@@ -41,6 +41,7 @@ object Dependencies {
             const val CIO = "io.ktor:ktor-client-cio:$ktorVersion"
             const val Android = "io.ktor:ktor-client-android:${Versions.ktor}"
             const val Darwin = "io.ktor:ktor-client-darwin:${Versions.ktor}"
+            const val Auth = "io.ktor:ktor-client-auth:$ktorVersion"
         }
 
         object Server {

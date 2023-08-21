@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -54,8 +55,8 @@ fun RoomEventListComponent(
                     Row(
                         Modifier
                             .fillMaxWidth()
-                            .background(MaterialTheme.colors.surface)
-                            .padding(vertical = 10.dp)
+                            .background(color = MaterialTheme.colors.surface, shape = RoundedCornerShape(10.dp))
+                            .padding(10.dp)
                             .clickable { onItemClick(event) }) {
                         Text(
                             text = "${event.startTime.time()} - ${event.finishTime.time()}",

@@ -1,7 +1,15 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     id(Plugins.AndroidLib.plugin)
     id(Plugins.Kotlin.plugin)
     id(Plugins.Parcelize.plugin)
+    id(Plugins.BuildConfig.plugin)
+}
+
+val apiKey: String = gradleLocalProperties(rootDir).getProperty("apiKey")
+buildConfig {
+    buildConfigField("String", "apiKey", apiKey)
 }
 
 android {
@@ -40,7 +48,7 @@ kotlin {
                 implementation(Dependencies.KotlinxSerialization.json)
                 implementation(Dependencies.KotlinxDatetime.kotlinxDatetime)
                 implementation(Dependencies.Ktor.Client.CIO)
-
+                implementation(Dependencies.Ktor.Client.Auth)
             }
         }
         val androidMain by getting {
