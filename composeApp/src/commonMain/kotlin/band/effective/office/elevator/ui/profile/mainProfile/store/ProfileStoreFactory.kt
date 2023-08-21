@@ -2,8 +2,6 @@ package band.effective.office.elevator.ui.profile.mainProfile.store
 
 import band.effective.office.elevator.domain.GoogleSignIn
 import band.effective.office.elevator.domain.models.User
-import band.effective.office.elevator.domain.useCase.GetLastUserIdUseCase
-import band.effective.office.elevator.domain.useCase.GetUserByIdUseCase
 import band.effective.office.elevator.domain.useCase.GetUserUseCase
 import band.effective.office.elevator.ui.profile.mainProfile.store.ProfileStore.*
 import band.effective.office.network.model.Either

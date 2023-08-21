@@ -11,6 +11,7 @@ import band.effective.office.elevator.ui.employee.aboutEmployee.models.toUIAbout
 import band.effective.office.elevator.ui.employee.aboutEmployee.store.AboutEmployeeStore.*
 import band.effective.office.elevator.ui.models.ReservedSeat
 import band.effective.office.elevator.utils.getCurrentDate
+import band.effective.office.network.model.Either
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -25,7 +26,10 @@ import kotlinx.datetime.LocalDate
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory, private val employee: EmployeeInfo) : KoinComponent {
+class AboutEmployeeStoreFactory(
+    private val storeFactory: StoreFactory,
+    private val employee: EmployeeInfo
+) : KoinComponent {
 
     private val aboutEmployeeInteractor: AboutEmployeeInteractor by inject()
     private var mokValueUser = EmployeeInfo.defaultEmployee.toUIAbout()
@@ -61,31 +65,36 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory, private 
                         user = msg.user,
                         reservedSeatsList = msg.reservedSeatsList,
                         filtrationOnReserves = msg.filtrationOnReserves
-                )
+                    )
+
                 is Msg.UpdateSeatsReservation -> {
                     copy(
-                        currentDate=msg.date,
+                        currentDate = msg.date,
                         reservedSeatsList = msg.reservedSeatsList,
-                        dateFiltrationOnReserves=msg.dateFiltrationOnReserves,
-                        filtrationOnReserves = msg.filtrationOnReserves)
+                        dateFiltrationOnReserves = msg.dateFiltrationOnReserves,
+                        filtrationOnReserves = msg.filtrationOnReserves
+                    )
                 }
             }
     }
 
     private sealed interface Action {
-        data class FetchUserInfo (val employee: User) : Action
+        data class FetchUserInfo(val employee: User) : Action
     }
 
     private sealed interface Msg {
         data class ProfileData(
             val user: User,
             val reservedSeatsList: List<ReservedSeat>,
-            val filtrationOnReserves: Boolean) : Msg
+            val filtrationOnReserves: Boolean
+        ) : Msg
+
         data class UpdateSeatsReservation(
             val date: LocalDate,
             val reservedSeatsList: List<ReservedSeat>,
             val dateFiltrationOnReserves: Boolean,
-            val filtrationOnReserves: Boolean) : Msg
+            val filtrationOnReserves: Boolean
+        ) : Msg
     }
 
     private inner class ExecutorImpl :
@@ -101,29 +110,34 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory, private 
                         publish(Label.OpenCalendar)
                     }
                 }
+
                 Intent.CloseCalendarClicked -> {
                     scope.launch {
                         publish(Label.CloseCalendar)
                     }
                 }
-                is Intent.OnClickApplyDate ->{
+
+                is Intent.OnClickApplyDate -> {
                     scope.launch {
                         publish(Label.CloseCalendar)
                         datedList = true
                         intent.date?.let { newDate ->
                             fetchUserInfoByDate(
-                                date=newDate,
+                                date = newDate,
                                 ownerId = mokValueUser.id,
-                                bookingsFilter = filtration)
+                                bookingsFilter = filtration
+                            )
                         }
                     }
                 }
-                Intent.OpenBottomDialog ->{
+
+                Intent.OpenBottomDialog -> {
                     scope.launch {
                         publish(Label.OpenBottomDialog)
                     }
                 }
-                is Intent.CloseBottomDialog ->{
+
+                is Intent.CloseBottomDialog -> {
                     scope.launch {
                         publish(Label.CloseBottomDialog)
                         intent.bookingsFilter.let { bookingsFilter ->
@@ -131,11 +145,13 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory, private 
                                 fetchUserInfoByDate(
                                     date = recentDate,
                                     ownerId = mokValueUser.id,
-                                    bookingsFilter = bookingsFilter)
-                            }else{
+                                    bookingsFilter = bookingsFilter
+                                )
+                            } else {
                                 fetchUserInfo(
                                     employee = mokValueUser,
-                                    bookingsFilter=bookingsFilter)
+                                    bookingsFilter = bookingsFilter
+                                )
                             }
                         }
                     }
@@ -145,51 +161,84 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory, private 
 
         override fun executeAction(action: Action, getState: () -> State) {
             when (action) {
-                is Action.FetchUserInfo -> fetchUserInfo(employee = action.employee, bookingsFilter = filtration)
+                is Action.FetchUserInfo -> fetchUserInfo(
+                    employee = action.employee,
+                    bookingsFilter = filtration
+                )
             }
         }
 
-        private fun fetchUserInfoByDate(date: LocalDate, ownerId:String, bookingsFilter: BookingsFilter) {
-            if(recentDate != date)
+        private fun fetchUserInfoByDate(
+            date: LocalDate,
+            ownerId: String,
+            bookingsFilter: BookingsFilter
+        ) {
+            if (recentDate != date)
                 recentDate = date
             else
                 filtration = bookingsFilter
 
-            scope.launch (Dispatchers.IO){
+            scope.launch(Dispatchers.IO) {
                 aboutEmployeeInteractor
                     .getBookingsByDate(
                         date = date,
                         ownerId = ownerId,
                         bookingsFilter = bookingsFilter,
-                        coroutineScope = this)
-                    .collect{newList -> withContext(Dispatchers.Main){
-                        dispatch(Msg.UpdateSeatsReservation(
-                            date=recentDate,
-                            reservedSeatsList = newList,
-                            dateFiltrationOnReserves = datedList,
-                            filtrationOnReserves = !(filtration.workPlace && filtration.meetRoom)))
+                        coroutineScope = this
+                    )
+                    .collect { newList ->
+                        withContext(Dispatchers.Main) {
+                            when (newList) {
+                                is Either.Error -> {
+                                    //TODO show error on UI
+                                }
+
+                                is Either.Success -> {
+                                    dispatch(
+                                        Msg.UpdateSeatsReservation(
+                                            date = recentDate,
+                                            reservedSeatsList = newList.data,
+                                            dateFiltrationOnReserves = datedList,
+                                            filtrationOnReserves = !(filtration.workPlace && filtration.meetRoom)
+                                        )
+                                    )
+                                }
+                            }
                         }
                     }
             }
         }
 
-        private fun fetchUserInfo(employee: User, bookingsFilter: BookingsFilter){
-            if (mokValueUser!=employee)
+        private fun fetchUserInfo(employee: User, bookingsFilter: BookingsFilter) {
+            if (mokValueUser != employee)
                 mokValueUser = employee
             else
                 filtration = bookingsFilter
 
-            scope.launch (Dispatchers.IO){
+            scope.launch(Dispatchers.IO) {
                 aboutEmployeeInteractor
                     .getBookingsForUser(
                         ownerId = employee.id,
                         bookingsFilter = bookingsFilter,
-                        coroutineScope = this)
-                    .collect{newList -> withContext(Dispatchers.Main){
-                        dispatch(Msg.ProfileData(
-                            user = employee,
-                            reservedSeatsList = newList,
-                            filtrationOnReserves = !(filtration.workPlace && filtration.meetRoom)))
+                        coroutineScope = this
+                    )
+                    .collect { newList ->
+                        withContext(Dispatchers.Main) {
+                            when (newList) {
+                                is Either.Error -> {
+                                    //TODO show error on UI
+                                }
+
+                                is Either.Success -> {
+                                    dispatch(
+                                        Msg.ProfileData(
+                                            user = employee,
+                                            reservedSeatsList = newList.data,
+                                            filtrationOnReserves = !(filtration.workPlace && filtration.meetRoom)
+                                        )
+                                    )
+                                }
+                            }
                         }
                     }
             }

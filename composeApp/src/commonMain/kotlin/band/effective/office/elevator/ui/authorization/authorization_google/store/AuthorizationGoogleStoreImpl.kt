@@ -71,11 +71,14 @@ internal class AuthorizationGoogleStoreFactory(
                                             when (response) {
                                                 is Either.Success -> {
                                                     withContext(Dispatchers.Main) {
+                                                        println("autorize success")
                                                         publish(Label.AuthorizationSuccess(response.data))
                                                     }
                                                 }
 
                                                 is Either.Error -> {
+                                                    println("autorize error ${response.error.description}")
+
                                                     // TODO show error and data
                                                 }
                                             }

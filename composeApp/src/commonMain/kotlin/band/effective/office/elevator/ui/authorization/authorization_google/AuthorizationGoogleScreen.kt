@@ -37,7 +37,7 @@ fun AuthorizationGoogleScreen(component: AuthorizationGoogleComponent) {
                 is AuthorizationGoogleStore.Label.AuthorizationFailure -> showToast(label.message)
                 is AuthorizationGoogleStore.Label.AuthorizationSuccess -> {
                     component.onOutput(
-                        AuthorizationGoogleComponent.Output.OpenAuthorizationPhoneScreen(label.userData)
+                        AuthorizationGoogleComponent.Output.OpenAuthorizationPhoneScreen(label.user)
                     )
                 }
             }

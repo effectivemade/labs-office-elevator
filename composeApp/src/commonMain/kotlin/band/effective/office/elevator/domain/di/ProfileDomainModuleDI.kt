@@ -9,10 +9,12 @@ import band.effective.office.elevator.domain.useCase.GetUserByIdUseCase
 import band.effective.office.elevator.domain.useCase.UpdateUserUseCase
 import org.koin.dsl.module
 
-internal val profileDomainModuleDI = module{
-    single<ProfileRepository> { ProfileRepositoryImpl() }
-    single<GetUserByIdUseCase> { GetUserByIdUseCase(get()) }
-    single<UpdateUserUseCase> { UpdateUserUseCase(get()) }
-    single<UserRepository> { UserRepositoryImpl() }
-    single { GetLastUserIdUseCase(get()) }
+internal val profileDomainModuleDI = module {
+    single<ProfileRepository> {
+        ProfileRepositoryImpl(
+            api = get(), bdSource = get()
+        )
+    }
+    single { GetUserByIdUseCase(get()) }
+    single { UpdateUserUseCase(get()) }
 }

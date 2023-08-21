@@ -2,17 +2,67 @@ package band.effective.office.elevator.domain.models
 
 import band.effective.office.elevator.ui.models.ReservedSeat
 import band.effective.office.elevator.utils.capitalizeFirstLetter
+import band.effective.office.network.dto.BookingDTO
+import band.effective.office.network.dto.RecurrenceDTO
+import band.effective.office.network.dto.UserDTO
+import band.effective.office.network.dto.WorkspaceDTO
 import epicarchitect.calendar.compose.basis.localized
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
 
 data class BookingInfo(
     val id: String,
     val ownerId: String,
+    val workSpaceId: String,
     val seatName: String,
     val dateOfStart: LocalDateTime,
     val dateOfEnd: LocalDateTime
 )
+
+fun BookingDTO.toDomainModel() =
+    BookingInfo(
+        id = id!!,
+        ownerId = owner.id,
+        workSpaceId = workspace.id,
+        seatName = workspace.name,
+        dateOfStart = Instant.fromEpochSeconds(beginBooking).toLocalDateTime(timeZone = TimeZone.currentSystemDefault()),
+        dateOfEnd = Instant.fromEpochSeconds(beginBooking).toLocalDateTime(timeZone = TimeZone.currentSystemDefault()),
+    )
+
+fun List<BookingDTO>.toDomain() = map { it.toDomainModel() }
+fun emptyUserDTO(id: String) =
+    UserDTO(
+        id = id,
+        fullName = "",
+        active = false,
+        role = "",
+        avatarUrl = "",
+        integrations = null
+    )
+
+
+fun emptyWorkSpaceDTO(id: String) =
+    WorkspaceDTO(
+        id = id,
+        name = "",
+        utilities = listOf(),
+        zone = null
+    )
+
+fun BookingInfo.toDTOModel(userDTO: UserDTO, workspaceDTO: WorkspaceDTO, recurrence: RecurrenceDTO?) =
+    BookingDTO(
+        owner = userDTO,
+        participants = listOf(userDTO),
+        workspace = workspaceDTO,
+        id = id,
+        beginBooking = dateOfStart.toInstant(timeZone = TimeZone.currentSystemDefault()).epochSeconds,
+        endBooking = dateOfEnd.toInstant(timeZone = TimeZone.currentSystemDefault()).epochSeconds,
+        recurrence = recurrence
+    )
 
 fun BookingInfo.toUiModel() = ReservedSeat(
     ownerId = ownerId,

@@ -3,7 +3,7 @@ package band.effective.office.elevator.ui.booking.store
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.domain.entity.BookingInteractor
 import band.effective.office.elevator.domain.models.BookingInfo
-import band.effective.office.elevator.domain.models.BookingPeriodUI
+import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.domain.models.CreatingBookModel
 import band.effective.office.elevator.domain.models.TypeEndPeriodBooking
 import band.effective.office.elevator.ui.booking.models.Frequency
@@ -61,7 +61,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         data class IsStartTimePicked(val isStart: Boolean) : Msg
         data class ChangeFrequency(val frequency: Frequency) : Msg
         data class ChangeBookingRepeat(val bookingRepeat: String) : Msg
-        data class ChangeBookingPeriod(val bookingPeriodUI: BookingPeriodUI) : Msg
+        data class ChangeBookingPeriod(val bookingPeriod: BookingPeriod) : Msg
         data class ChangeWorkingUI(val bookingInfo: BookingInfo) : Msg
     }
 
@@ -197,7 +197,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                                 workSpaceId = "",
                                 dateOfStart = getState().selectedStartDate.atTime(getState().selectedStartTime),
                                 dateOfEnd = getState().selectedStartDate.atTime(getState().selectedFinishTime),
-                                bookingPeriodUI = getState().bookingPeriodUI,
+                                bookingPeriod = getState().bookingPeriod,
                                 typeOfEndPeriod = TypeEndPeriodBooking.Never
                             )
                         )
@@ -257,14 +257,14 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                         publish(BookingStore.Label.CloseRepeatDialog)
                         publish(BookingStore.Label.OpenBookRepeat)
                         val name = when (intent.pair.second) {
-                            is BookingPeriodUI.EveryWorkDay -> "Каждый рабочий день"
-                            is BookingPeriodUI.Month -> "Каждый месяц"
-                            BookingPeriodUI.NoPeriod -> "Без периода"
-                            is BookingPeriodUI.Week -> "Каждую неделю"
-                            is BookingPeriodUI.Year -> "Каждый год"
+                            is BookingPeriod.EveryWorkDay -> "Каждый рабочий день"
+                            is BookingPeriod.Month -> "Каждый месяц"
+                            BookingPeriod.NoPeriod -> "Без периода"
+                            is BookingPeriod.Week -> "Каждую неделю"
+                            is BookingPeriod.Year -> "Каждый год"
                         }
                         dispatch(Msg.ChangeBookingRepeat(bookingRepeat = name))
-                        dispatch(Msg.ChangeBookingPeriod(bookingPeriodUI = intent.pair.second))
+                        dispatch(Msg.ChangeBookingPeriod(bookingPeriod = intent.pair.second))
                     }
 
                 }
@@ -357,7 +357,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is Msg.BeginningBookingDate -> copy(selectedStartDate = msg.date)
                 is Msg.ChangeFrequency -> copy(frequency = msg.frequency)
                 is Msg.ChangeBookingRepeat -> copy(repeatBooking = msg.bookingRepeat)
-                is Msg.ChangeBookingPeriod -> copy(bookingPeriodUI = msg.bookingPeriodUI)
+                is Msg.ChangeBookingPeriod -> copy(bookingPeriod = msg.bookingPeriod)
                 is Msg.ChangeWorkingUI -> copy(bookingInfo = msg.bookingInfo)
             }
         }

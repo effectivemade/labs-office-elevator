@@ -30,7 +30,7 @@ import band.effective.office.elevator.components.bottomSheet.BottomSheetItem
 import band.effective.office.elevator.components.bottomSheet.MultiBottomSheetController
 import band.effective.office.elevator.components.bottomSheet.rememberMultiBottomSheetController
 import band.effective.office.elevator.domain.models.BookingInfo
-import band.effective.office.elevator.domain.models.BookingPeriodUI
+import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.ui.booking.components.BookingMainContentScreen
 import band.effective.office.elevator.ui.booking.components.modals.BookAccept
@@ -351,7 +351,7 @@ private fun BookingScreenContent(
     showTimePicker: Boolean,
     onClickCloseTimeModal: () -> Unit,
     onClickSelectTime: (LocalTime) -> Unit,
-    onClickOpenBookRepeat: (Pair<String, BookingPeriodUI>) -> Unit,
+    onClickOpenBookRepeat: (Pair<String, BookingPeriod>) -> Unit,
     onClickChangeZone: (WorkSpaceType) -> Unit,
     isStart: Boolean,
     date: LocalDate,
