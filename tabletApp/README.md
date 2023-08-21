@@ -63,8 +63,8 @@ A list of technologies used within the project:
   and [Coroutines](https://kotlinlang.org/docs/flow.html)
 * Network client: [Ktor](https://ktor.io/)
 * JSON: [Kotlinx Serialization](https://github.com/Kotlin/kotlinx.serialization)
-* Architecture pattern: [MVI Kotlin](https://github.com/arkivanov/MVIKotlin)
 * UI: [MVI Kotlin](https://github.com/arkivanov/MVIKotlin)
+  and [Compose](https://developer.android.com/jetpack/compose/tooling)
 
 ## Guidelines for starting up: :computer:
 
