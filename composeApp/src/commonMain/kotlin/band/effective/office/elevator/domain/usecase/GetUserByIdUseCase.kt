@@ -12,8 +12,8 @@ import kotlinx.coroutines.flow.map
 
 class GetUserByIdUseCase(private val employeeRepository: EmployeeRepository) {
     suspend fun execute(id:String) = employeeRepository.getEmployeeById(id)
-    suspend fun executeInFormat(id: String) =
 
+    suspend fun executeInFormat(id: String) =
         employeeRepository.getEmployeeById(id).map { user ->
             when (user) {
                 is Either.Success -> Either.Success(user.data.formatToUI())

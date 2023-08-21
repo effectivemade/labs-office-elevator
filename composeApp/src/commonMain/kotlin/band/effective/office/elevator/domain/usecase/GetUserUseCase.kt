@@ -1,5 +1,6 @@
 package band.effective.office.elevator.domain.useCase
 
+<<<<<<< HEAD
 import band.effective.office.elevator.domain.models.ErrorWithData
 import band.effective.office.elevator.domain.models.User
 import band.effective.office.elevator.domain.repository.ProfileRepository
@@ -33,4 +34,10 @@ class GetUserUseCase(
             telegram = telegram.substring(1),
             email = email
         )
+=======
+import band.effective.office.elevator.domain.repository.ProfileRepository
+
+class GetUserUseCase(private val userProfileRepository: ProfileRepository) {
+    suspend fun execute(idToken: String)  = userProfileRepository.getUser()
+>>>>>>> origin/mabileApp/data_layer
 }

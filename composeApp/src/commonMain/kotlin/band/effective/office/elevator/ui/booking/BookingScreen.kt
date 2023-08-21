@@ -61,7 +61,7 @@ import kotlinx.datetime.atTime
 fun BookingScreen(bookingComponent: BookingComponent) {
 
     val state by bookingComponent.state.collectAsState()
-
+    
     val showChooseZone = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val showBookPeriod = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val showBookAccept = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
