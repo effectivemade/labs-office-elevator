@@ -36,7 +36,8 @@ class BookingRepositoryConverter(private val database: Database,
             workspaceModel,
             bookingEntity.id,
             bookingEntity.beginBooking,
-            bookingEntity.endBooking
+            bookingEntity.endBooking,
+            recurrence = null
         )
     }
 
