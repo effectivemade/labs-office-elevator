@@ -1,14 +1,9 @@
 package office.effective.features.calendar.service
 
-import com.google.api.services.calendar.model.Event
-import com.google.api.services.calendar.model.Event.Organizer
-import com.google.api.services.calendar.model.EventAttendee
-import com.google.api.services.calendar.model.EventDateTime
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
-import com.google.api.client.googleapis.testing.auth.oauth2.MockGoogleCredential
 import com.google.api.client.http.HttpTransport
 import com.google.api.client.json.JsonFactory
 import com.google.api.client.json.gson.GsonFactory
@@ -18,7 +13,6 @@ import com.google.auth.http.HttpCredentialsAdapter
 import com.google.auth.oauth2.GoogleCredentials
 import office.effective.common.exception.MissingIdException
 import office.effective.config
-import office.effective.dto.BookingDTO
 import office.effective.features.calendar.repository.CalendarRepository
 import office.effective.model.Booking
 import utils.GoogleCalendarConverter
@@ -28,7 +22,9 @@ import java.io.InputStreamReader
 
 
 class CalendarService(val repository: CalendarRepository, val converter: GoogleCalendarConverter) {
-    val authorGoogleAccount: String = "maxim.mishchenko@effective.band"
+    val authorGoogleAccount: String = config.propertyOrNull("auth.app.defaultAppEmail")?.getString() ?: throw Exception(
+        "Config file does not contain default gmail value"
+    )
     val credentialsPath: String = config.propertyOrNull("auth.app.credentials")?.getString()
         ?: throw Exception("Config file does not contain path for google credentials")
     val inputStream = FileInputStream(credentialsPath)
