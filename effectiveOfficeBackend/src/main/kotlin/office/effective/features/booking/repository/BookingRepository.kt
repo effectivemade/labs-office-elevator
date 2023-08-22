@@ -13,14 +13,14 @@ import org.ktorm.entity.*
 import java.util.*
 import kotlin.collections.List
 
-class BookingRepository(private val database: Database, private val converter: BookingRepositoryConverter) {
+class BookingRepository(private val database: Database, private val converter: BookingRepositoryConverter) : IBookingRepository{
 
     /**
      * Returns whether a booking with the given id exists
      *
      * @author Daniil Zavyalov
      */
-    fun existsById(id: UUID): Boolean {
+    override fun existsById(id: UUID): Boolean {
         return database.workspaceBooking.count { it.id eq id } > 0
     }
 
@@ -31,7 +31,7 @@ class BookingRepository(private val database: Database, private val converter: B
      *
      * @author Daniil Zavyalov
      */
-    fun deleteById(id: UUID) {
+    override fun deleteById(id: UUID) {
         database.bookingParticipants.removeIf { it.bookingId eq id }
         database.workspaceBooking.removeIf { it.id eq id }
     }
@@ -42,7 +42,7 @@ class BookingRepository(private val database: Database, private val converter: B
      *
      * @author Daniil Zavyalov
      */
-    fun findById(bookingId: UUID): Booking? {
+    override fun findById(bookingId: UUID): Booking? {
         val entity = database.workspaceBooking.find { it.id eq bookingId } ?: return null
         val participants = findParticipants(bookingId)
         return entity.let { converter.entityToModel(it, participants) }
@@ -53,7 +53,7 @@ class BookingRepository(private val database: Database, private val converter: B
      *
      * @author Daniil Zavyalov
      */
-    fun findAllByOwnerId(ownerId: UUID): List<Booking> {
+    override fun findAllByOwnerId(ownerId: UUID): List<Booking> {
         val entityList = database.workspaceBooking.filter { it.ownerId eq ownerId }.toList()
         return entityList.map {
             val participants = findParticipants(it.id)
@@ -66,7 +66,7 @@ class BookingRepository(private val database: Database, private val converter: B
      *
      * @author Daniil Zavyalov
      */
-    fun findAllByWorkspaceId(workspaceId: UUID): List<Booking> {
+    override fun findAllByWorkspaceId(workspaceId: UUID): List<Booking> {
         val entityList = database.workspaceBooking.filter { it.workspaceId eq workspaceId }.toList()
         return entityList.map {
             val participants = findParticipants(it.id)
@@ -79,7 +79,7 @@ class BookingRepository(private val database: Database, private val converter: B
      *
      * @author Daniil Zavyalov
      */
-    fun findAllByOwnerAndWorkspaceId(ownerId: UUID, workspaceId: UUID): List<Booking> {
+    override fun findAllByOwnerAndWorkspaceId(ownerId: UUID, workspaceId: UUID): List<Booking> {
         val entityList = database.workspaceBooking
             .filter { it.ownerId eq ownerId }
             .filter { it.workspaceId eq workspaceId }.toList()
@@ -95,7 +95,7 @@ class BookingRepository(private val database: Database, private val converter: B
      *
      * @author Daniil Zavyalov
      */
-    fun findAll(): List<Booking> {
+    override fun findAll(): List<Booking> {
         val entityList = database.workspaceBooking.toList()
         return entityList.map {
             val participants = findParticipants(it.id)
@@ -136,7 +136,7 @@ class BookingRepository(private val database: Database, private val converter: B
      *
      * @author Daniil Zavyalov
      */
-    fun save(booking: Booking): Booking {
+    override fun save(booking: Booking): Booking {
         val id = UUID.randomUUID()
         booking.id = id
         val entity = converter.modelToEntity(booking)
@@ -177,7 +177,7 @@ class BookingRepository(private val database: Database, private val converter: B
      *
      * @author Daniil Zavyalov
      */
-    fun update(booking: Booking): Booking {
+    override fun update(booking: Booking): Booking {
         booking.id?.let {
             if(!existsById(it))
                 throw InstanceNotFoundException(WorkspaceBookingEntity::class, "Booking with id $it not wound")
