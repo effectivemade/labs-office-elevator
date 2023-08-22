@@ -21,6 +21,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.intl.Locale
+import band.effective.office.elevator.utils.DayOfWeekLocalizations
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.ExtendedThemeColors
@@ -30,8 +32,7 @@ import band.effective.office.elevator.domain.models.BookingInfo
 import band.effective.office.elevator.domain.models.BookingPeriodUI
 import band.effective.office.elevator.textInBorderGray
 import band.effective.office.elevator.ui.booking.models.Frequency
-import band.effective.office.elevator.utils.NumToDayOfWeek
-import band.effective.office.elevator.utils.NumToMonth
+import band.effective.office.elevator.utils.MonthLocalizations
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
@@ -44,15 +45,17 @@ fun BookAccept(
 ) {
     var value = with(bookingInfo) {
         when (period) {
-            is BookingPeriodUI.Another -> "${frequency.toString()} ${dateOfStart.date.dayOfMonth} " + NumToMonth(
-                dateOfStart.date.monthNumber
+            is BookingPeriodUI.Another -> "${frequency.toString()} ${dateOfStart.date.dayOfMonth} " + MonthLocalizations.getMonthName(
+                month = dateOfStart.date.month,
+                locale = Locale.current
             )
 
             is BookingPeriodUI.EveryWorkDay -> stringResource(MainRes.strings.every_work_day)
             is BookingPeriodUI.Month -> stringResource(MainRes.strings.every_month) + ", " + dateOfStart.dayOfMonth
             is BookingPeriodUI.NoPeriod -> stringResource(MainRes.strings.booking_not_repeat)
-            is BookingPeriodUI.Week -> stringResource(MainRes.strings.every_week) + ", в " + NumToDayOfWeek(
-                dateOfStart.dayOfWeek.ordinal
+            is BookingPeriodUI.Week -> stringResource(MainRes.strings.every_week) + ", в " + DayOfWeekLocalizations.getDayOfWeek(
+                dayOfWeek = dateOfStart.dayOfWeek,
+                locale = Locale.current
             )
 
             is BookingPeriodUI.Year -> stringResource(MainRes.strings.every_month)

@@ -24,12 +24,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.models.TypesList
-import band.effective.office.elevator.utils.NumToMonth
+import band.effective.office.elevator.utils.MonthLocalizations
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.datetime.LocalDate
@@ -149,7 +150,11 @@ fun OptionMenu(
                         )
                     }
                     Text(
-                        text = "${date.dayOfMonth} ${NumToMonth(month = date.monthNumber)} ${date.year}",
+                        text = "${date.dayOfMonth} ${
+                            MonthLocalizations.getMonthName(
+                            month = date.month,
+                            locale = Locale.current
+                        )} ${date.year}",
                         modifier = Modifier.padding(start = 8.dp),
                         style = MaterialTheme.typography.body2
                     )

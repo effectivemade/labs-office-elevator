@@ -1,25 +1,8 @@
 package band.effective.office.elevator.utils
 
 import androidx.compose.ui.text.intl.Locale
+import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.Month
-
-fun NumToMonth(month: Int): String {
-    return when (month) {
-        1 -> "Янв."
-        2 -> "Фев."
-        3 -> "Мар."
-        4 -> "Апр."
-        5 -> "Май"
-        6 -> "Июнь"
-        7 -> "Июль"
-        8 -> "Авг."
-        9 -> "Сен."
-        10 -> "Окт."
-        11 -> "Ноя."
-        12 -> "Дек."
-        else -> "Unknown"
-    }
-}
 
 object MonthLocalizations {
     private val monthNames: Map<Month, Map<Locale, String>> = mapOf(
@@ -42,15 +25,18 @@ object MonthLocalizations {
     }
 }
 
-fun NumToDayOfWeek(dayOfWeek: Int): String {
-    return when (dayOfWeek){
-        0 -> "понедельник"
-        1 -> "вторник"
-        2 -> "среда"
-        3 -> "четверг"
-        4 -> "пятница"
-        5 -> "суббота"
-        6 -> "воскресенье"
-        else -> "Unknown"
+object DayOfWeekLocalizations{
+    private val dayOfWeekNames: Map<DayOfWeek, Map<Locale, String>> = mapOf(
+        DayOfWeek.MONDAY to mapOf(Locale("ru") to "Понедельник", Locale("en") to "Monday"),
+        DayOfWeek.TUESDAY to mapOf(Locale("ru") to "Вторник", Locale("en") to "Tuesday"),
+        DayOfWeek.WEDNESDAY to mapOf(Locale("ru") to "Среда", Locale("en") to "Wednesday"),
+        DayOfWeek.THURSDAY to mapOf(Locale("ru") to "Четверг", Locale("en") to "Thursday"),
+        DayOfWeek.FRIDAY to mapOf(Locale("ru") to "Пятница", Locale("en") to "Friday"),
+        DayOfWeek.SATURDAY to mapOf(Locale("ru") to "Суббота", Locale("en") to "Saturday"),
+        DayOfWeek.SUNDAY to mapOf(Locale("ru") to "Воскресенье", Locale("en") to "Sunday")
+    )
+
+    fun getDayOfWeek(dayOfWeek: DayOfWeek, locale: Locale) : String{
+        return dayOfWeekNames[dayOfWeek]?.get(locale) ?: ""
     }
 }

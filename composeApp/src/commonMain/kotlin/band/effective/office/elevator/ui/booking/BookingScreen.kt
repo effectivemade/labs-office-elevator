@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.ModalCalendar
@@ -46,7 +47,7 @@ import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import band.effective.office.elevator.ui.booking.models.WorkSpaceZone
 import band.effective.office.elevator.ui.booking.store.BookingStore
 import band.effective.office.elevator.ui.models.TypesList
-import band.effective.office.elevator.utils.NumToMonth
+import band.effective.office.elevator.utils.MonthLocalizations
 import band.effective.office.elevator.utils.Stack
 import band.effective.office.elevator.utils.isScrollingDown
 import band.effective.office.elevator.utils.stackOf
@@ -176,7 +177,12 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                 bottomSheetContentState = showBookPeriod
             ) {
                 BookingPeriod(
-                    startDate = "${state.selectedStartDate.dayOfMonth} ${NumToMonth(month = state.selectedStartDate.monthNumber)} ${state.selectedStartDate.year}",
+                    startDate = "${state.selectedStartDate.dayOfMonth} ${
+                        MonthLocalizations.getMonthName(
+                            month = state.selectedStartDate.month,
+                            locale = Locale.current
+                        )
+                    } ${state.selectedStartDate.year}",
                     startTime = "${
                         state.selectedStartTime.hour.toString().padStart(2, '0')
                     }:${state.selectedStartTime.minute.toString().padStart(2, '0').padEnd(2, '0')}",
