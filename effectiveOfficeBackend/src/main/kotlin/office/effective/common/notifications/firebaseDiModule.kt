@@ -5,18 +5,15 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.messaging.FirebaseMessaging
 import org.koin.dsl.module
+import java.io.ByteArrayInputStream
 
 val firebaseDiModule  = module(createdAtStart = true) {
-    val serviceAccountKeyPath: String? = System.getenv("SERVICE_ACCOUNT_KEY_PATH")
-
+    val envString: String = System.getenv("FIREBASE_SA_JSON")
     single<FirebaseOptions> {
-        val keyStream = javaClass.classLoader.getResourceAsStream(serviceAccountKeyPath)
-            ?: throw Exception("Service account key json not found")
-        keyStream.use { stream ->
-            FirebaseOptions.builder()
-                .setCredentials(GoogleCredentials.fromStream(stream))
-                .build()
-        }
+        print(envString)
+        FirebaseOptions.builder()
+            .setCredentials(GoogleCredentials.fromStream(ByteArrayInputStream(envString.toByteArray())))
+            .build()
     }
     single<FirebaseApp> {
         FirebaseApp.initializeApp(get<FirebaseOptions>())
