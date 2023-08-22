@@ -208,7 +208,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 }
 
                 is BookingStore.Intent.OpenMainScreen -> {
-                    TODO()
+                    //TODO()
                 }
 
                 is BookingStore.Intent.CloseConfirmBooking -> {
