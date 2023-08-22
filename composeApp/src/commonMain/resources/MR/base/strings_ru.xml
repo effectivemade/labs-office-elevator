@@ -113,6 +113,8 @@
     <string name="every_month_repeat">Каждый месяц</string>
     <string name="other_repeat">Другое</string>
     <string name="hide_map">Скрыть карту</string>
+    <string name="booking_not_repeat">Бронирование не повторяется</string>
+    <string name="every_year">Каждый год</string>
 
 
     <!--Tab titles-->

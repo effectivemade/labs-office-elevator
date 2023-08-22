@@ -22,6 +22,8 @@ sealed class BookingPeriodUI(val durationPeriod: Int) {
         BookingPeriodUI(weekPeriod)
 
     object NoPeriod : BookingPeriodUI(0)
+
+    object Another : BookingPeriodUI(-1)
 }
 
 sealed interface TypeEndPeriodBooking{

@@ -1,7 +1,7 @@
 package band.effective.office.elevator.utils
 
 fun NumToMonth(month: Int): String {
-    return when(month) {
+    return when (month) {
         1 -> "Янв."
         2 -> "Фев."
         3 -> "Мар."
@@ -14,6 +14,19 @@ fun NumToMonth(month: Int): String {
         10 -> "Окт."
         11 -> "Ноя."
         12 -> "Дек."
+        else -> "Unknown"
+    }
+}
+
+fun NumToDayOfWeek(dayOfWeek: Int): String {
+    return when (dayOfWeek){
+        0 -> "понедельник"
+        1 -> "вторник"
+        2 -> "среда"
+        3 -> "четверг"
+        4 -> "пятница"
+        5 -> "суббота"
+        6 -> "воскресенье"
         else -> "Unknown"
     }
 }

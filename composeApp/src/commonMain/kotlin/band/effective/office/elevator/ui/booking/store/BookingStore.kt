@@ -13,6 +13,7 @@ import band.effective.office.elevator.ui.models.TypesList
 import band.effective.office.elevator.utils.getCurrentDate
 import com.arkivanov.mvikotlin.core.store.Store
 import com.commandiron.wheel_picker_compose.utils.getCurrentTime
+import dev.icerock.moko.resources.StringResource
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
@@ -52,7 +53,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
 
         data class ChangeFrequency(val frequency: Frequency) : Intent
 
-        data class ChangeBookingRepeat(val bookingRepeat: String) : Intent
+        data class ChangeBookingRepeat(val bookingRepeat: StringResource) : Intent
 
         data class ChangeSelectedType(val selectedType: TypesList) : Intent
     }
@@ -69,10 +70,11 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         val wholeDay: Boolean,
         val isStart: Boolean,
         val frequency: Frequency,
-        val repeatBooking: String,
+        val repeatBooking: StringResource,
         val bookingPeriodUI: BookingPeriodUI,
         val selectedType: TypesList,
-        val bookingInfo: BookingInfo
+        val bookingInfo: BookingInfo,
+        val selectedFinishDate: LocalDate
     ) {
         companion object {
             val initState = State(
@@ -93,7 +95,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
                 wholeDay = false,
                 isStart = true,
                 frequency = Frequency(days = listOf()),
-                repeatBooking = "Бронирование не повторяется",
+                repeatBooking = MainRes.strings.booking_not_repeat,
                 bookingPeriodUI = BookingPeriodUI.NoPeriod,
                 selectedType = TypesList(
                     name = MainRes.strings.workplace,
@@ -106,7 +108,8 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
                     seatName = "",
                     dateOfStart = LocalDateTime(date = getCurrentDate(), time = getCurrentTime()),
                     dateOfEnd = LocalDateTime(date = getCurrentDate(), time = getCurrentTime())
-                )
+                ),
+                selectedFinishDate = getCurrentDate()
             )
         }
     }

@@ -11,6 +11,7 @@ import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import band.effective.office.elevator.ui.booking.models.WorkSpaceZone
 import band.effective.office.elevator.ui.models.TypesList
+import band.effective.office.elevator.utils.getCurrentDate
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -24,6 +25,7 @@ import kotlinx.datetime.LocalTime
 import kotlinx.datetime.atTime
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import dev.icerock.moko.resources.StringResource
 
 class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
 
@@ -48,7 +50,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         data class BeginningBookingTime(val time: LocalTime) : Msg
         data class BeginningBookingDate(val date: LocalDate) : Msg
         data class EndBookingTime(val time: LocalTime) : Msg
-        data class EndBookingDate(val date: LocalDate)
+        data class EndBookingDate(val date: LocalDate) : Msg
         data class SelectedTypeList(val type: TypesList) : Msg
         data class DateBooking(val date: LocalDate) : Msg
         data class TimeBooking(val time: LocalTime) : Msg
@@ -60,7 +62,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         data class WholeDay(val wholeDay: Boolean) : Msg
         data class IsStartTimePicked(val isStart: Boolean) : Msg
         data class ChangeFrequency(val frequency: Frequency) : Msg
-        data class ChangeBookingRepeat(val bookingRepeat: String) : Msg
+        data class ChangeBookingRepeat(val bookingRepeat: StringResource) : Msg
         data class ChangeBookingPeriod(val bookingPeriodUI: BookingPeriodUI) : Msg
         data class ChangeWorkingUI(val bookingInfo: BookingInfo) : Msg
     }
@@ -255,16 +257,20 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     scope.launch {
                         publish(BookingStore.Label.CloseBookPeriod)
                         publish(BookingStore.Label.CloseRepeatDialog)
-                        publish(BookingStore.Label.OpenBookRepeat)
-                        val name = when (intent.pair.second) {
-                            is BookingPeriodUI.EveryWorkDay -> "Каждый рабочий день"
-                            is BookingPeriodUI.Month -> "Каждый месяц"
-                            BookingPeriodUI.NoPeriod -> "Без периода"
-                            is BookingPeriodUI.Week -> "Каждую неделю"
-                            is BookingPeriodUI.Year -> "Каждый год"
+                        with(intent.pair) {
+                            if (second == BookingPeriodUI.Another)
+                                publish(BookingStore.Label.OpenBookRepeat)
+                            val name = when (second) {
+                                is BookingPeriodUI.EveryWorkDay -> MainRes.strings.every_work_day
+                                is BookingPeriodUI.Month -> MainRes.strings.every_month
+                                is BookingPeriodUI.NoPeriod -> MainRes.strings.booking_not_repeat
+                                is BookingPeriodUI.Week -> MainRes.strings.every_week
+                                is BookingPeriodUI.Year -> MainRes.strings.every_month
+                                is BookingPeriodUI.Another -> MainRes.strings.every_year
+                            }
+                            dispatch(Msg.ChangeBookingRepeat(bookingRepeat = name))
+                            dispatch(Msg.ChangeBookingPeriod(bookingPeriodUI = intent.pair.second))
                         }
-                        dispatch(Msg.ChangeBookingRepeat(bookingRepeat = name))
-                        dispatch(Msg.ChangeBookingPeriod(bookingPeriodUI = intent.pair.second))
                     }
 
                 }
@@ -296,6 +302,10 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                 is BookingStore.Intent.ChangeWholeDay -> {
                     dispatch(Msg.WholeDay(wholeDay = intent.wholeDay))
+                    dispatch(Msg.BeginningBookingTime(time = LocalTime(hour = 8, minute = 0)))
+                    dispatch(Msg.EndBookingTime(time = LocalTime(hour = 20, minute = 0)))
+                    dispatch(Msg.BeginningBookingDate(date = getCurrentDate()))
+                    dispatch(Msg.EndBookingDate(date = getCurrentDate()))
                 }
 
                 BookingStore.Intent.OpenFinishTimeModal -> {
@@ -350,7 +360,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is Msg.TimeBooking -> copy(selectedStartTime = msg.time)
                 is Msg.SelectedTypeList -> copy(selectedType = msg.type)
                 is Msg.ChangeWorkSpacesUI -> copy(workSpaces = msg.workSpacesUI)
-                is Msg.WholeDay -> copy(wholeDay = msg.wholeDay)
+                is Msg.WholeDay -> copy(wholeDay = !msg.wholeDay)
                 is Msg.BeginningBookingTime -> copy(selectedStartTime = msg.time)
                 is Msg.EndBookingTime -> copy(selectedFinishTime = msg.time)
                 is Msg.IsStartTimePicked -> copy(isStart = msg.isStart)
@@ -359,6 +369,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is Msg.ChangeBookingRepeat -> copy(repeatBooking = msg.bookingRepeat)
                 is Msg.ChangeBookingPeriod -> copy(bookingPeriodUI = msg.bookingPeriodUI)
                 is Msg.ChangeWorkingUI -> copy(bookingInfo = msg.bookingInfo)
+                is Msg.EndBookingDate -> copy(selectedFinishDate = msg.date)
             }
         }
     }

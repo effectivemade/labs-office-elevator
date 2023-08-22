@@ -94,6 +94,9 @@
     <string name="take_from">Take from</string>
     <string name="take_before">Take before</string>
 
+    <string name="booking_not_repeat">Booking not repeatable</string>
+    <string name="every_year">Every year</string>
+
     <!--Main Screen-->
     <string name="filter">Filters</string>
 

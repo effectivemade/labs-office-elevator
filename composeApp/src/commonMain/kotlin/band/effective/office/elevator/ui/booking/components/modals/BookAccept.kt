@@ -27,8 +27,10 @@ import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.domain.models.BookingInfo
+import band.effective.office.elevator.domain.models.BookingPeriodUI
 import band.effective.office.elevator.textInBorderGray
 import band.effective.office.elevator.ui.booking.models.Frequency
+import band.effective.office.elevator.utils.NumToDayOfWeek
 import band.effective.office.elevator.utils.NumToMonth
 import dev.icerock.moko.resources.compose.stringResource
 
@@ -37,8 +39,33 @@ fun BookAccept(
     onClickCloseBookAccept: () -> Unit,
     confirmBooking: () -> Unit,
     bookingInfo: BookingInfo,
-    frequency: Frequency
+    frequency: Frequency,
+    period: BookingPeriodUI
 ) {
+    var value = with(bookingInfo) {
+        when (period) {
+            is BookingPeriodUI.Another -> "${frequency.toString()} ${dateOfStart.date.dayOfMonth} " + NumToMonth(
+                dateOfStart.date.monthNumber
+            )
+
+            is BookingPeriodUI.EveryWorkDay -> stringResource(MainRes.strings.every_work_day)
+            is BookingPeriodUI.Month -> stringResource(MainRes.strings.every_month) + ", " + dateOfStart.dayOfMonth
+            is BookingPeriodUI.NoPeriod -> stringResource(MainRes.strings.booking_not_repeat)
+            is BookingPeriodUI.Week -> stringResource(MainRes.strings.every_week) + ", в " + NumToDayOfWeek(
+                dateOfStart.dayOfWeek.ordinal
+            )
+
+            is BookingPeriodUI.Year -> stringResource(MainRes.strings.every_month)
+        }
+    }
+
+    value += with(bookingInfo) {
+        " ${dateOfStart.time.hour.toString().padStart(2, '0')}:${
+            dateOfStart.time.minute.toString().padStart(2, '0')
+        } - ${dateOfEnd.time.hour.toString().padStart(2, '0')}:${
+            dateOfStart.time.minute.toString().padStart(2, '0')
+        }"
+    }
     Box {
         Column(modifier = Modifier.fillMaxWidth().background(Color.White)) {
             Spacer(modifier = Modifier.padding(vertical = 10.dp))
@@ -78,19 +105,7 @@ fun BookAccept(
                         modifier = Modifier.padding(top = 10.dp, bottom = 5.dp)
                     )
                     Text(
-                        text = with(bookingInfo) {
-                                    "${frequency.toString()} ${dateOfStart.date.dayOfMonth} " + NumToMonth(dateOfStart.date.monthNumber)+ " ${dateOfStart.time.hour.toString()}:${
-                                with(
-                                    dateOfStart.time
-                                ) { if (minute.toString().length < 2) "0$minute" else minute.toString() }
-                            } - ${dateOfEnd.time.hour.toString()}:${
-                                with(
-                                    dateOfStart.time
-                                ) {
-                                    if (minute.toString().length < 2) "0$minute" else minute.toString()
-                                }
-                            }"
-                        },
+                        text = value,
                         style = MaterialTheme.typography.subtitle1,
                         fontSize = 16.sp,
                         fontWeight = FontWeight(400),

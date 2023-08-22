@@ -117,7 +117,7 @@ class MockBookingRepositoryImpl: BookingRepository {
     }
 
     override suspend fun createBook(bookingInfo: CreatingBookModel) {
-        TODO("Not yet implemented")
+//        TODO("Not yet implemented")
     }
 
     override suspend fun getBookingsForUser(ownerId:String, bookingsFilter: BookingsFilter): StateFlow<List<BookingInfo>> {

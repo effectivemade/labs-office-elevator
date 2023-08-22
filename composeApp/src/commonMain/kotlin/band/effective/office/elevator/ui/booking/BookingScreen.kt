@@ -168,7 +168,8 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                         dateOfStart = state.selectedStartDate.atTime(state.selectedStartTime),
                         dateOfEnd = state.selectedStartDate.atTime(state.selectedFinishTime)
                     ),
-                    frequency = state.frequency
+                    frequency = state.frequency,
+                    period = state.bookingPeriodUI
                 )
             },
             BottomSheetNames.BOOK_PERIOD.name to BottomSheetItem(
@@ -176,15 +177,21 @@ fun BookingScreen(bookingComponent: BookingComponent) {
             ) {
                 BookingPeriod(
                     startDate = "${state.selectedStartDate.dayOfMonth} ${NumToMonth(month = state.selectedStartDate.monthNumber)} ${state.selectedStartDate.year}",
-                    startTime = "${state.selectedStartTime.hour}:${state.selectedStartTime.minute}",
-                    finishTime = "${state.selectedFinishTime.hour}:${state.selectedFinishTime.minute}",
-                    repeatBooking = state.repeatBooking,
+                    startTime = "${
+                        state.selectedStartTime.hour.toString().padStart(2, '0')
+                    }:${state.selectedStartTime.minute.toString().padStart(2, '0').padEnd(2, '0')}",
+                    finishTime = "${
+                        state.selectedFinishTime.hour.toString().padStart(2, '0')
+                    }:${
+                        state.selectedFinishTime.minute.toString().padStart(2, '0').padEnd(2, '0')
+                    }",
+                    repeatBooking = stringResource(state.repeatBooking),
                     switchChecked = state.wholeDay,
                     closeClick = { bookingComponent.onEvent(BookingStore.Intent.CloseBookPeriod) },
                     onSelectAllDay = {
                         bookingComponent.onEvent(
                             BookingStore.Intent.ChangeWholeDay(
-                                wholeDay = !state.wholeDay
+                                wholeDay = state.wholeDay
                             )
                         )
                     },
@@ -268,6 +275,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                 is BookingStore.Label.CloseBookRepeat -> multiBottomSheetController.closeCurrentSheet()
                 BookingStore.Label.OpenFinishTimeModal -> showTimePicker = true
                 BookingStore.Label.CloseFinishTimeModal -> showTimePicker = false
+                else -> {}
             }
         }
     }
@@ -285,7 +293,6 @@ fun BookingScreen(bookingComponent: BookingComponent) {
         },
         onClickCloseTimeModal = { bookingComponent.onEvent(BookingStore.Intent.CloseStartTimeModal) },
         onClickSelectTime = { time: LocalTime ->
-            showToast(time.minute.toString())
             bookingComponent.onEvent(
                 BookingStore.Intent.ApplyTime(
                     time = time,
