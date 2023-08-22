@@ -16,11 +16,8 @@ import utils.GoogleCalendarConverter.toGoogleEvent
 import java.util.*
 
 class BookingCalendarRepository(
-    private val database: Database,
-    private val converter: BookingRepositoryConverter,
     private val calendarRepository: CalendarRepository,
     private val calendarConverter: GoogleCalendarConverter,
-    private val workspaceRepository: WorkspaceRepository,
     private val userRepository: UserRepository
 ) : IBookingRepository {
     private val calendarEvents = calendarRepository.calendar.Events();
@@ -104,9 +101,7 @@ class BookingCalendarRepository(
             calendarRepository.findByWorkspace(booking.workspace.id ?: throw MissingIdException("workspace model"))
         calendarRepository.calendar.Events().insert(calendarID, event).execute()
 
-        return findById(UUID.fromString(event.id)) ?: throw InstanceNotFoundException(
-            Event::class, "Calendar save gone wrong", null
-        )
+        return findById(UUID.fromString(event.id)) ?: throw Exception("Calendar save goes wrong")
     }
 
     override fun update(booking: Booking): Booking {
