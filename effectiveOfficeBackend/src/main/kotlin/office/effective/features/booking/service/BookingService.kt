@@ -2,7 +2,7 @@ package office.effective.features.booking.service
 
 import office.effective.common.exception.InstanceNotFoundException
 import office.effective.common.exception.MissingIdException
-import office.effective.features.booking.repository.BookingRepository
+import office.effective.features.booking.repository.IBookingRepository
 import office.effective.features.user.repository.UserEntity
 import office.effective.features.user.repository.UserRepository
 import office.effective.features.workspace.repository.WorkspaceRepository
@@ -10,7 +10,7 @@ import office.effective.model.*
 import java.util.UUID
 
 class BookingService(
-    private val bookingRepository: BookingRepository,
+    private val bookingRepository: IBookingRepository,
     private val userRepository: UserRepository,
     private val workspaceRepository: WorkspaceRepository
 ) {
