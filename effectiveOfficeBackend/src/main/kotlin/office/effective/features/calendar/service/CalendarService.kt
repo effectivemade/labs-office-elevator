@@ -37,18 +37,14 @@ class CalendarService(val repository: CalendarRepository, val converter: GoogleC
     var credentials: GoogleCredentials = getCredential(httpTransport)
     val jsonFactory: JsonFactory = GsonFactory.getDefaultInstance()
 
-    val calendar = getCalendar()
+    val calendar = Calendar.Builder(httpTransport, jsonFactory, HttpCredentialsAdapter(credentials))
+        .setApplicationName("APPLICATION_NAME").build()
 
     fun putEvent(booking: Booking) {
         val event = booking.toGoogleEvent()
         val calendarID: String =
             repository.findByWorkspace(booking.workspace.id ?: throw MissingIdException("workspace model"))
         calendar.Events().insert(calendarID, event)
-    }
-
-    private fun getCalendar(): Calendar {
-        return Calendar.Builder(httpTransport, jsonFactory, HttpCredentialsAdapter(credentials))
-            .setApplicationName("APPLICATION_NAME").build()
     }
 
     private fun getCredential(httpTransport: HttpTransport): GoogleCredentials {
