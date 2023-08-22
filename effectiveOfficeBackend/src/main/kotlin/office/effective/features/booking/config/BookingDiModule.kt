@@ -11,7 +11,7 @@ import org.koin.dsl.module
 
 val bookingDiModule = module(createdAtStart = true) {
     single { BookingRepositoryConverter(get(), get(), get()) }
-    single<IBookingRepository> { BookingCalendarRepository(get(), get(), get()) }
+    single<IBookingRepository> { BookingCalendarRepository(get(), get()) }
     single { BookingService(get(), get(), get()) }
     single { BookingFacadeConverter(get(), get(), get()) }
     single { BookingFacade(get(), get(), get(), get()) }
