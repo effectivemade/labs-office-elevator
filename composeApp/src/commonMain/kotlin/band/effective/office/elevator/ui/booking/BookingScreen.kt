@@ -164,6 +164,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                     bookingInfo = BookingInfo(
                         id = state.bookingInfo.id,
                         ownerId = "",
+                        workSpaceId = "",
                         seatName = state.bookingInfo.seatName,
                         dateOfStart = state.selectedStartDate.atTime(state.selectedStartTime),
                         dateOfEnd = state.selectedStartDate.atTime(state.selectedFinishTime)

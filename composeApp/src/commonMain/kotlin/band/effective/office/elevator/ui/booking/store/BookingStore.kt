@@ -102,6 +102,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
                 ),
                 bookingInfo = BookingInfo(
                     id = "",
+                    workSpaceId = "",
                     ownerId = "",
                     seatName = "",
                     dateOfStart = LocalDateTime(date = getCurrentDate(), time = getCurrentTime()),

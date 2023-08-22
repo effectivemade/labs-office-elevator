@@ -35,7 +35,7 @@ fun BookingDTO.toDomainModel() =
         dateOfEnd = unixToLocalDateTime(endBooking),
     )
 
-fun List<BookingDTO>.toDomain() = map { it.toDomainModel() }
+fun List<BookingDTO>.toDomainZone() = map { it.toDomainModel() }
 fun emptyUserDTO(id: String) =
     UserDTO(
         id = id,

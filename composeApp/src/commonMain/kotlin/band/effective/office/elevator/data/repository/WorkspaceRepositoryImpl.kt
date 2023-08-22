@@ -1,16 +1,14 @@
 package band.effective.office.elevator.data.repository
 
-import band.effective.office.elevator.domain.models.BookingInfo
 import band.effective.office.elevator.domain.models.ErrorWithData
 import band.effective.office.elevator.domain.models.WorkSpace
 import band.effective.office.elevator.domain.models.WorkspaceZone
+import band.effective.office.elevator.domain.models.toDomainZone
 import band.effective.office.elevator.domain.models.toDomain
 import band.effective.office.elevator.domain.repository.WorkspaceRepository
-import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsFilter
 import band.effective.office.elevator.utils.localDateTimeToUnix
 import band.effective.office.elevator.utils.map
 import band.effective.office.network.api.Api
-import band.effective.office.network.dto.BookingDTO
 import band.effective.office.network.dto.WorkspaceDTO
 import band.effective.office.network.dto.WorkspaceZoneDTO
 import band.effective.office.network.model.Either
@@ -78,7 +76,7 @@ class WorkspaceRepositoryImpl(
             )
         },
             successMapper = { zones ->
-                zones.toDomain()
+                zones.toDomainZone()
             }
         )
 

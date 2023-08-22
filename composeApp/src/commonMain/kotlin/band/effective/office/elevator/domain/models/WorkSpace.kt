@@ -16,8 +16,8 @@ data class WorkspaceZone(val id: String, val name: String)
 fun WorkspaceZone.toDTO() =
     WorkspaceZoneDTO(id = id, name = name)
 
-fun List<WorkspaceZoneDTO>.toDomain() = map {it.toDomain()}
-fun WorkspaceZoneDTO.toDomain() =
+fun List<WorkspaceZoneDTO>.toDomainZone() = map {it.toDomainZone()}
+fun WorkspaceZoneDTO.toDomainZone() =
     WorkspaceZone(id = id, name = name)
 
 fun WorkSpace.toDTO() =
@@ -33,7 +33,7 @@ fun WorkspaceDTO.toDomain() =
         id = id,
         name = name,
         utilities = utilities,
-        zone = zone?.toDomain()
+        zone = zone?.toDomainZone()
     )
 
 fun List<WorkspaceDTO>.toDomain() = map { it.toDomain() }

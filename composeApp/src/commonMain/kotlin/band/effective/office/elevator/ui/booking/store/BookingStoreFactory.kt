@@ -143,8 +143,9 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                             dispatch(
                                 Msg.ChangeWorkingUI(
                                     bookingInfo = BookingInfo(
-                                        id = workSpaceId,
+                                        id = "",
                                         ownerId = "",
+                                        workSpaceId = workSpaceId,
                                         seatName = workSpaceName,
                                         dateOfEnd = LocalDateTime(
                                             date = getState().selectedStartDate,

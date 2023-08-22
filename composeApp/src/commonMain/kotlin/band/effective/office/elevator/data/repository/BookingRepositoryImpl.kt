@@ -9,7 +9,7 @@ import band.effective.office.elevator.domain.models.emptyUserDTO
 import band.effective.office.elevator.domain.models.emptyWorkSpaceDTO
 import band.effective.office.elevator.domain.models.toDTO
 import band.effective.office.elevator.domain.models.toDTOModel
-import band.effective.office.elevator.domain.models.toDomain
+import band.effective.office.elevator.domain.models.toDomainZone
 import band.effective.office.elevator.domain.repository.BookingRepository
 import band.effective.office.elevator.domain.repository.ProfileRepository
 import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsFilter
@@ -17,10 +17,8 @@ import band.effective.office.elevator.utils.map
 import band.effective.office.network.api.Api
 import band.effective.office.network.dto.BookingDTO
 import band.effective.office.network.dto.RecurrenceDTO
-import band.effective.office.network.dto.UserDTO
 import band.effective.office.network.model.Either
 import band.effective.office.network.model.ErrorResponse
-import io.ktor.http.parametersOf
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
@@ -124,7 +122,7 @@ class BookingRepositoryImpl(
             )
         },
             successMapper = { bookingDTOS ->
-                bookingDTOS.toDomain() // TODO add filtration by workSpace or meetingRoom
+                bookingDTOS.toDomainZone() // TODO add filtration by workSpace or meetingRoom
             }
         )
 
@@ -143,7 +141,7 @@ class BookingRepositoryImpl(
         },
             successMapper = { bookingDTOS ->
                 bookingDTOS
-                    .toDomain()
+                    .toDomainZone()
                     .filter {
                     it.dateOfStart.date == dateFilter
                 } // TODO add filtration by workSpace or meetingRoom
