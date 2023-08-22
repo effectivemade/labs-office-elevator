@@ -10,7 +10,6 @@ import java.io.ByteArrayInputStream
 val firebaseDiModule  = module(createdAtStart = true) {
     val envString: String = System.getenv("FIREBASE_SA_JSON")
     single<FirebaseOptions> {
-        print(envString)
         FirebaseOptions.builder()
             .setCredentials(GoogleCredentials.fromStream(ByteArrayInputStream(envString.toByteArray())))
             .build()
