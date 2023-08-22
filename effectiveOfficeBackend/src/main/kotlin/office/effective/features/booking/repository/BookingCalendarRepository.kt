@@ -17,7 +17,6 @@ import java.util.*
 
 class BookingCalendarRepository(
     private val calendarRepository: CalendarRepository,
-    private val calendarConverter: GoogleCalendarConverter,
     private val userRepository: UserRepository
 ) : IBookingRepository {
     private val calendarEvents = calendarRepository.calendar.Events();
