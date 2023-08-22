@@ -9,6 +9,7 @@ import band.effective.office.network.dto.WorkspaceZoneDTO
 import band.effective.office.network.model.Either
 import band.effective.office.network.model.ErrorResponse
 import band.effective.office.utils.MockFactory
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -134,21 +135,27 @@ class ApiMock(private val realApi: Api, mockFactory: MockFactory) : Api {
         realResponse = realApi.deleteBooking(bookingId)
     )
 
-    override suspend fun subscribeOnWorkspaceUpdates(id: String): Flow<Either<ErrorResponse, WorkspaceDTO>> =
+    override fun subscribeOnWorkspaceUpdates(
+        id: String,
+        scope: CoroutineScope
+    ): Flow<Either<ErrorResponse, WorkspaceDTO>> =
         flow {
-            realApi.subscribeOnWorkspaceUpdates(id).collect { if (getRealResponse) emit(it) }
+            realApi.subscribeOnWorkspaceUpdates(id, scope).collect { if (getRealResponse) emit(it) }
         }
 
-    override suspend fun subscribeOnOrganizersList(): Flow<Either<ErrorResponse, List<UserDTO>>> =
+    override fun subscribeOnOrganizersList(scope: CoroutineScope): Flow<Either<ErrorResponse, List<UserDTO>>> =
         channelFlow {
             launch { users.collect { if (!getRealResponse) send(Either.Success(it)) } }
             launch {
-                realApi.subscribeOnOrganizersList().collect { if (getRealResponse) send(it) }
+                realApi.subscribeOnOrganizersList(scope).collect { if (getRealResponse) send(it) }
             }
             awaitClose()
         }
 
-    override suspend fun subscribeOnBookingsList(workspaceId: String): Flow<Either<ErrorResponse, List<BookingDTO>>> =
+    override fun subscribeOnBookingsList(
+        workspaceId: String,
+        scope: CoroutineScope
+    ): Flow<Either<ErrorResponse, List<BookingDTO>>> =
         channelFlow {
             launch {
                 bookings.collect {
@@ -156,7 +163,7 @@ class ApiMock(private val realApi: Api, mockFactory: MockFactory) : Api {
                 }
             }
             launch {
-                realApi.subscribeOnBookingsList(workspaceId)
+                realApi.subscribeOnBookingsList(workspaceId, scope)
                     .collect { if (getRealResponse) send(it) }
             }
             awaitClose()

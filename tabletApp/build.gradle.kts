@@ -4,6 +4,7 @@ plugins {
     id(Plugins.Kotlin.plugin)
     id(Plugins.Parcelize.plugin)
     id(Plugins.Libres.plugin)
+    id(Plugins.GoogleServices.plugin)
 }
 
 android {
@@ -69,6 +70,7 @@ kotlin {
                 implementation(Dependencies.AndroidX.appCompat)
                 implementation(Dependencies.AndroidX.activityCompose)
                 implementation(Dependencies.Compose.uiTooling)
+                implementation("com.google.firebase:firebase-messaging-ktx:23.1.0")
             }
         }
     }

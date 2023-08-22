@@ -7,5 +7,7 @@ import band.effective.office.utils.MockFactory
 import org.koin.dsl.module
 
 val networkModule = module {
-    single<Api> { ApiMock(realApi = ApiImpl(), mockFactory = MockFactory()) }
+    val api = ApiImpl()
+    single<Api> { ApiMock(realApi = api, mockFactory = MockFactory()) }
+    single { api.collector } // NOTE(Maksim Mishenko) collector
 }

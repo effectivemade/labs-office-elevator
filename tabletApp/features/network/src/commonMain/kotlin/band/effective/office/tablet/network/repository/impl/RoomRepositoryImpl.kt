@@ -12,6 +12,7 @@ import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.network.repository.OrganizerRepository
 import band.effective.office.tablet.network.repository.RoomRepository
 import band.effective.office.tablet.utils.map
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -67,19 +68,20 @@ class RoomRepositoryImpl(
         }
 
     override fun subscribeOnUpdates(
-        roomId: String
+        roomId: String,
+        scope: CoroutineScope
     ): Flow<Either<ErrorWithData<RoomInfo>, RoomInfo>> =
         channelFlow {
             send(loadRoomInfo(roomId))
             launch {
-                api.subscribeOnWorkspaceUpdates(roomId).collect {
+                api.subscribeOnWorkspaceUpdates(roomId, scope).collect {
                     send(
                         it.convert(roomInfo.value).addEvents(loadEvents(roomId))
                             .apply { roomInfo.update { this } })
                 }
             }
             launch {
-                api.subscribeOnBookingsList(roomId).collect {
+                api.subscribeOnBookingsList(roomId, scope).collect {
                     send(
                         getRoomInfo(roomId).addEvents(it)
                             .apply { roomInfo.update { this } })
