@@ -123,8 +123,8 @@ fun ChooseZone(
             WorkingZones(
                 workSpaceZone = workSpaceZone,
                 onClickZone = { workSpaceZone1 ->
-                    val isSelected = !workSpaceZone.isSelected
-                    selectedZones[currentIndex] = workSpaceZone.copy(isSelected = isSelected)
+                    val isSelected = !workSpaceZone1.isSelected
+                    selectedZones[currentIndex] = workSpaceZone1.copy(isSelected = isSelected)
                 }
             )
         }
