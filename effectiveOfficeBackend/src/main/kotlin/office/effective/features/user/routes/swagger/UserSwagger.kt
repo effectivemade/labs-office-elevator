@@ -6,65 +6,26 @@ import office.effective.common.swagger.SwaggerDocument
 import office.effective.dto.IntegrationDTO
 import office.effective.dto.UserDTO
 
-fun SwaggerDocument.returnUserByEmail(): OpenApiRoute.() -> Unit = {
-    description = "Return user by email"
-    tags = listOf("userTests")
-    request {
-        pathParameter<String>("email") {
-            description = "User`s email"
-            example = "user@effective.band"
-            required = true
-            allowEmptyValue = false
-        }
-    }
-    response {
-        HttpStatusCode.OK to {
-            description = "Return user found by email"
-            body<UserDTO> {
-                example(
-                    "User",
-                    UserDTO(
-                        id = "2c77feee-2bc1-11ee-be56-0242ac120002",
-                        fullName = "Ivan Ivanov",
-                        active = true,
-                        role = "ADMIN",
-                        avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                        integrations = listOf(
-                            IntegrationDTO(
-                                "13c80c3d-4278-45cf-8d2a-e281004d3ff9",
-                                "email",
-                                "123@effective.band"
-                            )
-                        )
-                    )
-                ) {
-                }
-            }
-        }
-        HttpStatusCode.BadRequest to {
-            description = "Bad request"
-        }
-        HttpStatusCode.NotFound to {
-            description = "User with this email was not found"
-        }
-    }
-}
-
 fun SwaggerDocument.returnUsers(): OpenApiRoute.() -> Unit = {
-    description = "Return all users by Tag name"
+    description = "Return all users, all users by tag or one user by email"
     tags = listOf("users")
     request{
-        queryParameter<String>("tag"){
-            description = "Name of the tag"
-            example = "emploee"
-            required = true
+        queryParameter<String>("user_tag"){
+            description = "Name of the tag. Mutually exclusive with email"
+            example = "employee"
+            required = false
             allowEmptyValue = false
         }
-
+        queryParameter<String>("email") {
+            description = "User's email. Mutually exclusive with tag"
+            example = "cool.backend.developer@effective.band"
+            required = false
+            allowEmptyValue = false
+        }
     }
     response {
         HttpStatusCode.OK to {
-            description = "Return users list"
+            description = "Return users list or single user"
             body<List<UserDTO>> {
                 example(
                     "Users",
@@ -73,34 +34,76 @@ fun SwaggerDocument.returnUsers(): OpenApiRoute.() -> Unit = {
                             id = "2c77feee-2bc1-11ee-be56-0242ac120002",
                             fullName = "Ivan Ivanov",
                             active = true,
-                            role = "ADMIN",
+                            role = "Backend developer",
                             avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
                             integrations = listOf(
                                 IntegrationDTO(
-                                    "13c80c3d-4278-45cf-8d2a-e281004d3ff9",
-                                    "email",
-                                    "123@effective.band"
+                                    "c717cf6e-28b3-4148-a469-032991e5d9e9",
+                                    "phoneNumber",
+                                    "89236379887"
+                                ), IntegrationDTO(
+                                    "8c02c6dc-1c4f-459e-ac27-f1db53923b2f",
+                                    "telegram",
+                                    "@cooldeveloper"
                                 )
-                            )
+                            ),
+                            email = "cool.backend.developer@effective.band",
+                            tag = "employee"
                         ),
                         UserDTO(
                             id = "207b9634-2bc4-11ee-be56-0242ac120002",
-                            fullName = "Lol Kekov",
+                            fullName = "Danil Egorov",
                             active = true,
-                            role = "USER",
+                            role = "Android developer",
                             avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                            integrations = listOf(
-                                IntegrationDTO(
-                                    "13c80c3d-4278-45cf-8d2a-e281004d3ff9",
-                                    "email",
-                                    "321@effective.band"
-                                )
-                            )
+                            integrations = listOf(IntegrationDTO(
+                                "c717cf6e-28b3-4148-a469-032991e5d9e9",
+                                "phoneNumber",
+                                "89038760982")
+                            ),
+                            email = "cool.android.developer@effective.band",
+                            tag = "employee"
                         )
                     )
                 ) {
+                    summary = "Return users list by tag"
+                }
+                example(
+                    "User",
+                    UserDTO(
+                        id = "2c77feee-2bc1-11ee-be56-0242ac120002",
+                        fullName = "Ivan Ivanov",
+                        active = true,
+                        role = "Backend developer",
+                        avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
+                        integrations = listOf(
+                            IntegrationDTO(
+                                "c717cf6e-28b3-4148-a469-032991e5d9e9",
+                                "phoneNumber",
+                                "89236379887"
+                            ), IntegrationDTO(
+                                "8c02c6dc-1c4f-459e-ac27-f1db53923b2f",
+                                "telegram",
+                                "@cooldeveloper"
+                            ), IntegrationDTO(
+                                "e321f85c-3f85-4c23-8e59-05005a82ffa8",
+                                "Foobr",
+                                "CoolDev@foobr.ru"
+                            )
+                        ),
+                        email = "cool.backend.developer@effective.band",
+                        tag = "employee"
+                    )
+                ) {
+                    summary = "Return user by email"
                 }
             }
+        }
+        HttpStatusCode.BadRequest to {
+            description = "Email and tag are mutually exclusive parameters"
+        }
+        HttpStatusCode.NotFound to {
+            description = "Provided tag doesn't exist or the user was not found when searching by email"
         }
     }
 }
@@ -126,15 +129,21 @@ fun SwaggerDocument.returnUserById(): OpenApiRoute.() -> Unit = {
                         id = "2c77feee-2bc1-11ee-be56-0242ac120002",
                         fullName = "Ivan Ivanov",
                         active = true,
-                        role = "ADMIN",
+                        role = "Backend developer",
                         avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
                         integrations = listOf(
                             IntegrationDTO(
-                                "13c80c3d-4278-45cf-8d2a-e281004d3ff9",
-                                "email",
-                                "123@effective.band"
+                                "c717cf6e-28b3-4148-a469-032991e5d9e9",
+                                "phoneNumber",
+                                "89236379887"
+                            ), IntegrationDTO(
+                                "8c02c6dc-1c4f-459e-ac27-f1db53923b2f",
+                                "telegram",
+                                "@cooldeveloper"
                             )
-                        )
+                        ),
+                        email = "cool.android.developer@effective.band",
+                        tag = "employee"
                     )
                 ) {
                 }
@@ -153,7 +162,14 @@ fun SwaggerDocument.updateUser(): OpenApiRoute.() -> Unit = {
     description = "Changes user by id"
     tags = listOf("users")
     request {
+        pathParameter<String>("user_id") {
+            description = "User id"
+            example = "87e66ee0-2550-4188-8d79-75560125836a"
+            required = true
+            allowEmptyValue = false
+        }
         body<UserDTO> {
+            required = true
             example(
                 "User",
                 UserDTO(
@@ -164,15 +180,17 @@ fun SwaggerDocument.updateUser(): OpenApiRoute.() -> Unit = {
                     avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
                     integrations = listOf(
                         IntegrationDTO(
-                            "13c80c3d-4278-45cf-8d2a-e281004d3ff9",
-                            "email",
-                            "0987654321@gmail.com"
+                            "c717cf6e-28b3-4148-a469-032991e5d9e9",
+                            "phoneNumber",
+                            "88009000000"
                         ), IntegrationDTO(
-                            "52a3a1e0-21e1-4e76-b8c3-4b5ae7022aab",
-                            "telegraph",
-                            "@0987654321"
+                            "8c02c6dc-1c4f-459e-ac27-f1db53923b2f",
+                            "telegram",
+                            "@mimocrocodile"
                         )
-                    )
+                    ),
+                    email = "mimocrocodile@mimo.crocodile",
+                    tag = "guest"
                 )
             )
         }
@@ -191,15 +209,17 @@ fun SwaggerDocument.updateUser(): OpenApiRoute.() -> Unit = {
                         avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
                         integrations = listOf(
                             IntegrationDTO(
-                                "13c80c3d-4278-45cf-8d2a-e281004d3ff9",
-                                "email",
-                                "0987654321@gmail.com"
+                                "c717cf6e-28b3-4148-a469-032991e5d9e9",
+                                "phoneNumber",
+                                "88009000000"
                             ), IntegrationDTO(
-                                "52a3a1e0-21e1-4e76-b8c3-4b5ae7022aab",
-                                "telegraph",
-                                "@0987654321"
+                                "8c02c6dc-1c4f-459e-ac27-f1db53923b2f",
+                                "telegram",
+                                "@mimocrocodile"
                             )
-                        )
+                        ),
+                        email = "mimocrocodile@mimo.crocodile",
+                        tag = "guest"
                     )
                 ) {
                 }
@@ -209,7 +229,7 @@ fun SwaggerDocument.updateUser(): OpenApiRoute.() -> Unit = {
             description = "Bad request"
         }
         HttpStatusCode.NotFound to {
-            description = "User with this id was not found"
+            description = "User with this id not found"
         }
     }
 }

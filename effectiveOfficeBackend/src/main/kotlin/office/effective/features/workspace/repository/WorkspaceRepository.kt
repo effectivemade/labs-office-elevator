@@ -2,7 +2,6 @@ package office.effective.features.workspace.repository
 
 import office.effective.common.exception.InstanceNotFoundException
 import office.effective.features.booking.repository.WorkspaceBooking
-import office.effective.features.user.repository.UserEntity
 import office.effective.features.workspace.converters.WorkspaceRepositoryConverter
 import office.effective.model.Utility
 import office.effective.model.Workspace
@@ -137,7 +136,7 @@ class WorkspaceRepository(private val database: Database, private val converter:
 
         return database.from(Workspaces)
             .innerJoin(right = WorkspaceTags, on = WorkspaceTags.id eq Workspaces.tagId)
-            .innerJoin(right = WorkspaceZones, on = WorkspaceZones.id eq Workspaces.zoneId)
+            .leftJoin(right = WorkspaceZones, on = WorkspaceZones.id eq Workspaces.zoneId)
             .leftJoin(
                 right = WorkspaceBooking,
                 on = (Workspaces.id eq WorkspaceBooking.workspaceId)

@@ -65,8 +65,7 @@ dependencies {
     implementation("com.google.auth:google-auth-library-oauth2-http:1.3.0")
     implementation("com.google.api-client:google-api-client:1.31.1")
     implementation("com.google.oauth-client:google-oauth-client-jetty:1.34.1")
-
-
+    implementation("com.google.firebase:firebase-admin:9.2.0")
 
     liquibaseRuntime("org.liquibase:liquibase-core:$liquibase_version")
     liquibaseRuntime("org.postgresql:postgresql:$postgresql_driver_version")
