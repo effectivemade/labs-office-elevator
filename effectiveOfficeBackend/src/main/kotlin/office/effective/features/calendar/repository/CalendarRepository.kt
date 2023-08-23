@@ -1,6 +1,7 @@
 package office.effective.features.calendar.repository
 
 import office.effective.common.exception.InstanceNotFoundException
+import office.effective.config
 import office.effective.features.workspace.converters.WorkspaceRepositoryConverter
 import office.effective.features.workspace.repository.WorkspaceEntity
 import office.effective.features.workspace.repository.WorkspaceRepository
@@ -49,6 +50,11 @@ class CalendarRepository(
 
     fun findAllCalendarsId(): List<String> {
         var list = mutableListOf<String>()
+        list.add(
+            config.propertyOrNull("auth.app.defaultAppEmail")?.getString() ?: throw Exception(
+                "Config file does not contain default gmail value"
+            )
+        )
         db.calendarIds.toList().forEach { list.add(it.calendarId) }
         return list
     }

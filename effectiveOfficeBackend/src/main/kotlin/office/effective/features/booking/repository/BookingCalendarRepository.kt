@@ -4,21 +4,28 @@ import com.google.api.services.calendar.Calendar
 import com.google.api.services.calendar.model.Event
 import office.effective.common.exception.InstanceNotFoundException
 import office.effective.common.exception.MissingIdException
+import office.effective.config
 import office.effective.features.calendar.repository.CalendarRepository
 import office.effective.features.user.repository.UserRepository
 import office.effective.model.Booking
 import office.effective.features.calendar.service.GoogleCalendarConverter.toBookingModel
 import office.effective.features.calendar.service.GoogleCalendarConverter.toGoogleEvent
+import office.effective.features.workspace.repository.WorkspaceRepository
 import java.util.*
 
 class BookingCalendarRepository(
     private val calendarRepository: CalendarRepository,
     private val userRepository: UserRepository,
-    private val calendar: Calendar
+    private val calendar: Calendar,
+    private val workspaceRepository: WorkspaceRepository
 ) : IBookingRepository {
     private val calendarEvents = calendar.Events();
 
     private fun getCalendarIdByWorkspace(workspaceId: UUID): String {
+        if(workspaceRepository.findById(workspaceId)?.tag != "meeting"){
+            return config.propertyOrNull("auth.app.defaultAppEmail")?.getString() ?: throw Exception(
+                "Config file does not contain default gmail value")
+        }
         return calendarRepository.findByWorkspace(workspaceId)
     }
 
@@ -45,7 +52,7 @@ class BookingCalendarRepository(
     }
 
     private fun findByCalendarIdAndBookingId(calendarId: String, bookingId: String): Event? {
-        return calendarEvents.list(calendarId).execute().items.find { it.id.equals(bookingId.toString()) }
+        return calendarEvents.list(calendarId).execute().items.find { it.id.equals(bookingId) }
     }
 
     override fun findAllByOwnerId(ownerId: UUID): List<Booking> {
