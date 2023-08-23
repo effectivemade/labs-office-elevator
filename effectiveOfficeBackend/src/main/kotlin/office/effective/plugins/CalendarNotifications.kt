@@ -5,6 +5,7 @@ import com.google.api.services.calendar.model.Channel
 import io.ktor.server.application.*
 import office.effective.features.calendar.repository.CalendarRepository
 import org.koin.core.context.GlobalContext
+import java.util.*
 
 /**
  * Subscribe to Google Calendar push notifications. Should be called after DI configuration
@@ -18,7 +19,7 @@ fun Application.configureCalendarNotifications() {
     val calendarRepository: CalendarRepository = GlobalContext.get().get()
     calendarRepository.findAllCalendarsId().forEach { calendar_id ->
         val channel = Channel().apply {
-            id = "4a074113-b435-4a07-a620-bfc56e331de9"
+            id = UUID.randomUUID().toString()
             type = "web_hook"
             address = "$appAddress/notifications"
         }
