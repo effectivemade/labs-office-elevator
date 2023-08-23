@@ -21,7 +21,8 @@ class WorkspaceFacadeConverter(private val uuidValidator: UuidValidator) {
             model.id.toString(),
             model.name,
             utilities,
-            model.zone?.let { zoneModelToDto(it) }
+            model.zone?.let { zoneModelToDto(it) },
+            model.tag
         )
     }
 
@@ -53,7 +54,7 @@ class WorkspaceFacadeConverter(private val uuidValidator: UuidValidator) {
         return Workspace(
             id = uuidValidator.uuidFromString(dto.id),
             name = dto.name,
-            tag = "", //This is probably wrong
+            tag = dto.tag,
             utilities = utilities,
             zone = dto.zone?.let { zoneDtoToModel(it) }
         )
