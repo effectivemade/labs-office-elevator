@@ -11,8 +11,7 @@ import office.effective.model.RecurrenceModel
 import java.time.Instant
 
 class BookingFacadeConverter(private val userConverter: UserDTOModelConverter,
-                             private val workspaceConverter: WorkspaceFacadeConverter,
-                             private val uuidValidator: UuidValidator) {
+                             private val workspaceConverter: WorkspaceFacadeConverter) {
     /**
      * Converts WorkspaceEntity to BookingDTO
      *
@@ -48,7 +47,7 @@ class BookingFacadeConverter(private val userConverter: UserDTOModelConverter,
             owner = userConverter.dTOToModel(bookingDTO.owner),
             participants = bookingDTO.participants.map { userConverter.dTOToModel(it) },
             workspace = workspaceConverter.dtoToModel(bookingDTO.workspace),
-            id = bookingDTO.id?.let { uuidValidator.uuidFromString(it) },
+            id = bookingDTO.id,
             beginBooking = Instant.ofEpochMilli(bookingDTO.beginBooking),
             endBooking = Instant.ofEpochMilli(bookingDTO.endBooking),
             recurrence = recurrenceModel

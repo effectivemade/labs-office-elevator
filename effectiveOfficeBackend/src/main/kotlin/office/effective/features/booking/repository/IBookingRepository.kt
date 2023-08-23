@@ -18,7 +18,7 @@ interface IBookingRepository {
      *
      * @author Daniil Zavyalov
      */
-    fun existsById(id: UUID): Boolean ;
+    fun existsById(id: String): Boolean ;
 
     /**
      * Deletes the booking with the given id
@@ -27,7 +27,7 @@ interface IBookingRepository {
      *
      * @author Daniil Zavyalov
      */
-    fun deleteById(id: UUID) ;
+    fun deleteById(id: String) ;
 
     /**
      * Retrieves a booking model by its id.
@@ -35,7 +35,7 @@ interface IBookingRepository {
      *
      * @author Daniil Zavyalov
      */
-    fun findById(bookingId: UUID): Booking? ;
+    fun findById(bookingId: String): Booking? ;
 
     /**
      * Returns all bookings with the given owner id
