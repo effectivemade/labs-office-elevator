@@ -131,6 +131,7 @@ fun SwaggerDocument.postBooking(): OpenApiRoute.() -> Unit = {
                     id = null,
                     beginBooking = 1691299526000,
                     endBooking = 1691310326000,
+                    recurrence = null
                 )
             )
         }
@@ -266,6 +267,7 @@ private val bookingExample1 = BookingDTO(
     id = "c48c2a3d-bbfd-4801-b121-973ae3cf4cd9",
     beginBooking = 1691299526000,
     endBooking = 1691310326000,
+    recurrence = null
 )
 
 private val bookingExample2 = BookingDTO(
@@ -318,4 +320,5 @@ private val bookingExample2 = BookingDTO(
     id = "c48c2a3d-bbfd-4801-b121-973ae3cf4cd9",
     beginBooking = 1691299526000,
     endBooking = 1691310326000,
+    recurrence = null
 )

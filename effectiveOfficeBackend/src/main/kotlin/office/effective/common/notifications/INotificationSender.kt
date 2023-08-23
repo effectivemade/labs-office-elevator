@@ -8,6 +8,13 @@ import office.effective.dto.WorkspaceDTO
 interface INotificationSender {
 
     /**
+     * Sends an FCM message about topic modification
+     *
+     * @author Daniil Zavyalov
+     */
+    fun sendEmptyMessage(topic: String)
+
+    /**
      * Sends an FCM message about workspace modification
      *
      * @param action will be put as "action" in message data
@@ -15,7 +22,7 @@ interface INotificationSender {
      *
      * @author Daniil Zavyalov
      */
-    fun sendMessage(action: HttpMethod, modifiedWorkspace: WorkspaceDTO)
+    fun sendContentMessage(action: HttpMethod, modifiedWorkspace: WorkspaceDTO)
 
     /**
      * Sends an FCM message about user modification
@@ -25,7 +32,7 @@ interface INotificationSender {
      *
      * @author Daniil Zavyalov
      */
-    fun sendMessage(action: HttpMethod, modifiedUser: UserDTO)
+    fun sendContentMessage(action: HttpMethod, modifiedUser: UserDTO)
 
     /**
      * Sends an FCM message about booking modification
@@ -35,5 +42,5 @@ interface INotificationSender {
      *
      * @author Daniil Zavyalov
      */
-    fun sendMessage(action: HttpMethod, modifiedBooking: BookingDTO)
+    fun sendContentMessage(action: HttpMethod, modifiedBooking: BookingDTO)
 }

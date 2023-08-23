@@ -12,6 +12,19 @@ import office.effective.dto.WorkspaceDTO
 class FcmNotificationSender(private val fcm: FirebaseMessaging): INotificationSender {
 
     /**
+     * Sends an FCM message about topic modification
+     *
+     * @author Daniil Zavyalov
+     */
+    override fun sendEmptyMessage(topic: String) {
+        val msg: Message = Message.builder()
+            .setTopic(topic)
+            .putData("message", "$topic was changed")
+            .build()
+        fcm.send(msg)
+    }
+
+    /**
      * Sends an FCM message about workspace modification
      *
      * @param action will be put as "action" in message data
@@ -19,7 +32,7 @@ class FcmNotificationSender(private val fcm: FirebaseMessaging): INotificationSe
      *
      * @author Daniil Zavyalov
      */
-    override fun sendMessage(action: HttpMethod, modifiedWorkspace: WorkspaceDTO) {
+    override fun sendContentMessage(action: HttpMethod, modifiedWorkspace: WorkspaceDTO) {
         val json = Json.encodeToString(modifiedWorkspace)
         val msg: Message = Message.builder()
             .setTopic("workspace")
@@ -37,7 +50,7 @@ class FcmNotificationSender(private val fcm: FirebaseMessaging): INotificationSe
      *
      * @author Daniil Zavyalov
      */
-    override fun sendMessage(action: HttpMethod, modifiedUser: UserDTO) {
+    override fun sendContentMessage(action: HttpMethod, modifiedUser: UserDTO) {
         val json = Json.encodeToString(modifiedUser)
         val msg: Message = Message.builder()
             .setTopic("user")
@@ -55,7 +68,7 @@ class FcmNotificationSender(private val fcm: FirebaseMessaging): INotificationSe
      *
      * @author Daniil Zavyalov
      */
-    override fun sendMessage(action: HttpMethod, modifiedBooking: BookingDTO) {
+    override fun sendContentMessage(action: HttpMethod, modifiedBooking: BookingDTO) {
         val json = Json.encodeToString(modifiedBooking)
         val msg: Message = Message.builder()
             .setTopic("booking")
