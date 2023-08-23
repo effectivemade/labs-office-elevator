@@ -94,7 +94,7 @@ class BookingCalendarRepository(
             calendarRepository.findByWorkspace(booking.workspace.id ?: throw MissingIdException("workspace model"))
         val savedEvent = calendar.Events().insert("effective.office@effective.band", event).execute()
 
-        return findById(event.id) ?: throw Exception("Calendar save goes wrong")
+        return findById(savedEvent.id) ?: throw Exception("Calendar save goes wrong")
     }
 
     override fun update(booking: Booking): Booking {
