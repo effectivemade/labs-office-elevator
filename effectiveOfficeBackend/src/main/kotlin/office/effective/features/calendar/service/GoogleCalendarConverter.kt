@@ -1,4 +1,4 @@
-package utils
+package office.effective.features.calendar.service
 
 import com.google.api.client.util.DateTime
 import com.google.api.services.calendar.model.Event
@@ -61,7 +61,8 @@ object GoogleCalendarConverter {
         val dto = this
         return Event().apply {
             summary = "${dto.owner.fullName}: create from office application"
-            description = "${dto.owner.integrations?.first { it.name == "email" }} - почта организатора"
+            description =
+                "${dto.owner.email} - почта организатора"//"${dto.owner.integrations?.first { it.name == "email" }} - почта организатора"
             organizer = owner.toGoogleOrganizer()
             attendees = participants.map { it.toAttendee() } + owner.toAttendee()
                 .apply { organizer = true } + workspace.toAttendee()
@@ -90,14 +91,15 @@ object GoogleCalendarConverter {
 
     private fun UserDTO.toAttendee(): EventAttendee {
         return EventAttendee().also {
-            it.email = this.integrations?.first { it.name == "email" }?.value //TODO надо допилить получение почты
+            it.email =
+                this.email// this.integrations?.first { it.name == "email" }?.value //TODO надо допилить получение почты
         }
     }
 
     private fun UserDTO.toGoogleOrganizer(): Event.Organizer? {
         return Organizer().also {
             it.email =
-                this.integrations?.first { integ -> integ.name == "email" }?.value //TODO надо допилить получение почты
+                this.email//this.integrations?.first { integ -> integ.name == "email" }?.value //TODO надо допилить получение почты
         }
     }
 
