@@ -35,34 +35,8 @@ import kotlin.text.toByteArray
 class CalendarRepository(
     private val db: Database,
     private val converter: WorkspaceRepositoryConverter,
-    private val workspaceRepository: WorkspaceRepository
+    private val workspaceRepository: WorkspaceRepository,
 ) {
-    val jsonFactory: JsonFactory = GsonFactory.getDefaultInstance()
-    val authorGoogleAccount: String = config.propertyOrNull("auth.app.defaultAppEmail")?.getString() ?: throw Exception(
-        "Config file does not contain default gmail value"
-    )
-    val credentialsPath: String = config.propertyOrNull("auth.app.credentials")?.getString()
-        ?: throw Exception("Config file does not contain path for google credentials")
-
-
-    val inputStream = ByteArrayInputStream(System.getenv("JSON_CREDENTIALS").toByteArray())
-
-    var httpTransport: HttpTransport = GoogleNetHttpTransport.newTrustedTransport()
-
-    var credentials: GoogleCredentials = getCredential(httpTransport)
-
-
-    val calendar = Calendar.Builder(httpTransport, jsonFactory, HttpCredentialsAdapter(credentials))
-        .setApplicationName("APPLICATION_NAME").build()
-
-
-
-    private fun getCredential(httpTransport: HttpTransport): GoogleCredentials {
-        return GoogleCredentials.fromStream(inputStream)
-            .createScoped(CalendarScopes.CALENDAR)
-            .createDelegated(authorGoogleAccount)
-    }
-
 
     /**
      * @return String - id of calendar for specified workspace

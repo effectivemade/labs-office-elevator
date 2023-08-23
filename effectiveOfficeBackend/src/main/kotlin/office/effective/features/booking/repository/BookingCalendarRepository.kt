@@ -1,5 +1,6 @@
 package office.effective.features.booking.repository
 
+import com.google.api.services.calendar.Calendar
 import com.google.api.services.calendar.model.Event
 import office.effective.common.exception.InstanceNotFoundException
 import office.effective.common.exception.MissingIdException
@@ -17,9 +18,10 @@ import java.util.*
 
 class BookingCalendarRepository(
     private val calendarRepository: CalendarRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val calendar : Calendar
 ) : IBookingRepository {
-    private val calendarEvents = calendarRepository.calendar.Events();
+    private val calendarEvents = calendar.Events();
 
     private fun getCalendarIdByWorkspace(workspaceId: UUID): String {
         return calendarRepository.findByWorkspace(workspaceId)
@@ -98,7 +100,7 @@ class BookingCalendarRepository(
         val event = booking.toGoogleEvent()
         val calendarID: String =
             calendarRepository.findByWorkspace(booking.workspace.id ?: throw MissingIdException("workspace model"))
-        calendarRepository.calendar.Events().insert(calendarID, event).execute()
+        calendar.Events().insert("effective.office@effective.band", event).execute()
 
         return findById(UUID.fromString(event.id)) ?: throw Exception("Calendar save goes wrong")
     }
