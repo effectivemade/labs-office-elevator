@@ -1,7 +1,9 @@
 package band.effective.office.elevator.ui.booking.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,12 +28,17 @@ import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import dev.icerock.moko.resources.compose.painterResource
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun BookingCard(workSpace: WorkSpaceUI, onClickOpenBookAccept: (WorkSpaceUI) -> Unit) {
     Column(
         modifier = Modifier
             .padding(bottom = 16.dp)
-            .clickable { onClickOpenBookAccept(workSpace) }
+            .combinedClickable (
+                onClick = {onClickOpenBookAccept(workSpace) },
+                onDoubleClick = { },
+                onLongClick = { }
+            )
     ) {
         Box(
             modifier = Modifier
