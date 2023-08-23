@@ -12,7 +12,7 @@ fun Route.calendarNotificationsRouting() {
     route("/notifications") {
         val messageSender: INotificationSender = GlobalContext.get().get()
 
-        get() {
+        post() {
             messageSender.sendEmptyMessage("booking")
             call.respond(HttpStatusCode.OK)
         }
