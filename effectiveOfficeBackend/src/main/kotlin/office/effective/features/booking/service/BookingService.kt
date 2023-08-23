@@ -20,7 +20,7 @@ class BookingService(
      *
      * @author Daniil Zavyalov
      */
-    fun existsById(id: UUID): Boolean {
+    fun existsById(id: String): Boolean {
         return bookingRepository.existsById(id)
     }
 
@@ -29,7 +29,7 @@ class BookingService(
      *
      * @author Daniil Zavyalov
      */
-    fun deleteById(id: UUID) {
+    fun deleteById(id: String) {
         bookingRepository.deleteById(id)
     }
 
@@ -38,7 +38,7 @@ class BookingService(
      *
      * @author Daniil Zavyalov
      */
-    fun findById(id: UUID): Booking? {
+    fun findById(id: String): Booking? {
         val booking = bookingRepository.findById(id) ?: return null
         val userIds = mutableSetOf<UUID>()
         for (participant in booking.participants) {

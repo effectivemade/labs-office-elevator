@@ -22,21 +22,21 @@ class BookingCalendarRepository(
         return calendarRepository.findByWorkspace(workspaceId)
     }
 
-    override fun existsById(id: UUID): Boolean {
+    override fun existsById(id: String): Boolean {
         var event: Any? = null
         calendarRepository.findAllCalendarsId().forEach {
-            event = calendarEvents.get(it, id.toString()).execute()
+            event = calendarEvents.get(it, id).execute()
         }
         return event != null
     }
 
-    override fun deleteById(id: UUID) {
+    override fun deleteById(id: String) {
         calendarRepository.findAllCalendarsId().forEach {
-            calendarEvents.delete(it, id.toString()).execute()
+            calendarEvents.delete(it, id).execute()
         }
     }
 
-    override fun findById(bookingId: UUID): Booking? {
+    override fun findById(bookingId: String): Booking? {
         var event: Event? = null;
         calendarRepository.findAllCalendarsId().forEach {
             event = findByCalendarIdAndBookingId(it, bookingId)
@@ -44,7 +44,7 @@ class BookingCalendarRepository(
         return event?.toBookingModel()
     }
 
-    private fun findByCalendarIdAndBookingId(calendarId: String, bookingId: UUID): Event? {
+    private fun findByCalendarIdAndBookingId(calendarId: String, bookingId: String): Event? {
         return calendarEvents.list(calendarId).execute().items.find { it.id.equals(bookingId.toString()) }
     }
 
@@ -94,7 +94,7 @@ class BookingCalendarRepository(
             calendarRepository.findByWorkspace(booking.workspace.id ?: throw MissingIdException("workspace model"))
         val savedEvent = calendar.Events().insert("effective.office@effective.band", event).execute()
 
-        return findById(UUID.fromString(savedEvent.id.uppercase())) ?: throw Exception("Calendar save goes wrong")
+        return findById(event.id) ?: throw Exception("Calendar save goes wrong")
     }
 
     override fun update(booking: Booking): Booking {
