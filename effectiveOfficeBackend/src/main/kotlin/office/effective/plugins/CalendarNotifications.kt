@@ -18,7 +18,7 @@ fun Application.configureCalendarNotifications() {
     val calendarRepository: CalendarRepository = GlobalContext.get().get()
     calendarRepository.findAllCalendarsId().forEach { calendar_id ->
         val channel = Channel().apply {
-            id = "${calendar_id}_channel"
+            id = "4a074113-b435-4a07-a620-bfc56e331de9"
             type = "web_hook"
             address = "$appAddress/notifications"
         }
