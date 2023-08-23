@@ -67,7 +67,7 @@ internal class ProfileStoreFactory(
         private fun fetchUserInfo() {
             scope.launch {
                 getUserByIdUseCase.execute(getLastUserIdUseCase.execute()).collectLatest {
-                    user ->  dispatch(Msg.ProfileData(user = user))
+                    user -> dispatch(Msg.ProfileData(user = user))
                 }
             }
         }
@@ -87,5 +87,4 @@ internal class ProfileStoreFactory(
                 )
             }
     }
-
 }

@@ -54,6 +54,20 @@ import dev.icerock.moko.resources.compose.stringResource
 fun ProfileEditScreen(component: ProfileEditComponent){
     val user by component.user.collectAsState()
 
+    when{
+        user.isData -> {
+            ProfileEditView(
+                user = user,
+                component = component
+            )
+        }
+        else -> {}
+    }
+
+}
+
+@Composable
+fun ProfileEditView(user: ProfileEditStore.State, component: ProfileEditComponent){
     val errorMessage = stringResource(MainRes.strings.profile_format_error)
 
     LaunchedEffect(component){
@@ -94,6 +108,7 @@ private fun ProfileEditScreenContent(
     isErrorPost: Boolean,
     isErrorTelegram: Boolean
 ) {
+
     val userNameText = rememberSaveable { mutableStateOf(userName) }
     val phoneNumberText = rememberSaveable { mutableStateOf(phoneNumber) }
     val postText = rememberSaveable { mutableStateOf(post) }
@@ -196,7 +211,7 @@ private fun FieldsItemStyle(
                 }
                           },
             trailingIcon = {
-                IconButton(onClick = {text.value = ""}){
+                IconButton(onClick = {text.value = "" }){
                     Icon(
                         painter = painterResource(MainRes.images.clear_icon),
                         contentDescription = null,
