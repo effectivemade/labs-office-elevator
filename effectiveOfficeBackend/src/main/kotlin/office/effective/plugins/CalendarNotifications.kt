@@ -21,7 +21,11 @@ fun Application.configureCalendarNotifications() {
         type = "web_hook"
         address = "$appAddress/notifications"
     }
-    calendarRepository.findAllCalendarsId().forEach {
-            id -> calendar.events().watch(id, channel).execute()
+    calendarRepository.findAllCalendarsId().forEach { id ->
+        try {
+            calendar.events().watch(id, channel).execute()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 }
