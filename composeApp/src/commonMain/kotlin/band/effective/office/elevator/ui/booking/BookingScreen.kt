@@ -216,6 +216,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                 bottomSheetContentState = showBookRepeat
             ) {
                 BookingRepeat(
+                    periodMeasure = state.bookingPeriodUI,
                     backButtonClicked = { bookingComponent.onEvent(BookingStore.Intent.CloseBookRepeat) },
                     dropDownClick = {},
                     confirmBooking = { frequency ->

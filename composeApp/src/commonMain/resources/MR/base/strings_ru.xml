@@ -53,6 +53,7 @@
     <string name="every_work_day">Каждый будний день</string>
     <string name="every_week">Каждую неделю</string>
     <string name="every_month">Каждый месяц</string>
+    <string name="every_year">Каждый год</string>
     <string name="another">Другое...</string>
     <string name="booking_repeat">Повтор брони</string>
     <string name="booking_repeat_in">Повторяется раз в:</string>

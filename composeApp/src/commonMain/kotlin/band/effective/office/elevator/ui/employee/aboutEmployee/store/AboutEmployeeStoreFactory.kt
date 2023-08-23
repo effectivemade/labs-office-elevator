@@ -28,7 +28,7 @@ import org.koin.core.component.inject
 class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory, private val employee: EmployeeInfo) : KoinComponent {
 
     private val aboutEmployeeUseCase: AboutEmployeeUseCase by inject()
-    private var mokValueUser = EmployeeInfo.defaultEmployee.toUIAbout()
+    private var currentUser = EmployeeInfo.defaultEmployee.toUIAbout()
     private var recentDate = getCurrentDate()
     private var filtration = BookingsFilter(meetRoom = true, workPlace = true)
     private var datedList = false
@@ -38,7 +38,7 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory, private 
         object : AboutEmployeeStore, Store<Intent, State, Label> by storeFactory.create(
             name = "AboutEmployeeStore",
             initialState = State(
-                mokValueUser,
+                currentUser,
                 reservedSeatsList = listOf(),
                 currentDate = getCurrentDate(),
                 dateFiltrationOnReserves = datedList,
@@ -113,7 +113,7 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory, private 
                         intent.date?.let { newDate ->
                             fetchUserInfoByDate(
                                 date=newDate,
-                                ownerId = mokValueUser.id,
+                                ownerId = currentUser.id,
                                 bookingsFilter = filtration)
                         }
                     }
@@ -130,11 +130,11 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory, private 
                             if (datedList) {
                                 fetchUserInfoByDate(
                                     date = recentDate,
-                                    ownerId = mokValueUser.id,
+                                    ownerId = currentUser.id,
                                     bookingsFilter = bookingsFilter)
                             }else{
                                 fetchUserInfo(
-                                    employee = mokValueUser,
+                                    employee = currentUser,
                                     bookingsFilter=bookingsFilter)
                             }
                         }
@@ -174,8 +174,8 @@ class AboutEmployeeStoreFactory(private val storeFactory: StoreFactory, private 
         }
 
         private fun fetchUserInfo(employee: User, bookingsFilter: BookingsFilter){
-            if (mokValueUser!=employee)
-                mokValueUser = employee
+            if (currentUser!=employee)
+                currentUser = employee
             else
                 filtration = bookingsFilter
 

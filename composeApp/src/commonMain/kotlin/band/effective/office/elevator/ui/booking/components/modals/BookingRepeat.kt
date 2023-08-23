@@ -3,10 +3,8 @@ package band.effective.office.elevator.ui.booking.components.modals
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -22,6 +20,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -50,27 +50,43 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
-import band.effective.office.elevator.components.Elevation
+import band.effective.office.elevator.domain.models.BookingPeriodUI
 import band.effective.office.elevator.textInBorderGray
-import band.effective.office.elevator.components.EffectiveButton
-import band.effective.office.elevator.components.Elevation
 import band.effective.office.elevator.ui.booking.models.Frequency
 import dev.icerock.moko.resources.compose.stringResource
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun BookingRepeat(
+    periodMeasure: BookingPeriodUI,
     backButtonClicked: () -> Unit,
     dropDownClick: (Int) -> Unit,
     confirmBooking: (Frequency) -> Unit,
     onSelected: () -> Unit,
     onDaySelected: (Int) -> Unit,
 ) {
+    var periodMeasureState = mutableStateOf("")
+    when(periodMeasure){
+        is BookingPeriodUI.EveryWorkDay -> periodMeasureState.value = "Day"
+        is BookingPeriodUI.Week -> periodMeasureState.value = "Week"
+        is BookingPeriodUI.Month -> periodMeasureState.value = "Month"
+        else -> periodMeasureState.value = "Year"
+    }
+    val periodicity = remember { mutableStateOf("1") }
+
+    val listDaysOfWeek = listOf(
+        MainRes.strings.Monday,
+        MainRes.strings.Tuesday,
+        MainRes.strings.Wednesday,
+        MainRes.strings.Thursday,
+        MainRes.strings.Friday
+    )
 
     val selected1 = remember {
         mutableStateOf(true)
@@ -81,17 +97,13 @@ fun BookingRepeat(
     val selected3 = remember {
         mutableStateOf(false)
     }
-
     val list = mutableListOf<Pair<String, Int>>()
+    val endDate = remember { mutableStateOf("01.01.2023") }
+    val endPeriod = remember { mutableStateOf("1") }
 
-    val isExpandedContextMenu = remember { mutableStateOf(false) }
-    val weekNames = listOf(
-        MainRes.strings.Monday,
-        MainRes.strings.Tuesday,
-        MainRes.strings.Wednesday,
-        MainRes.strings.Thursday,
-        MainRes.strings.Friday,
-    )
+    var researchClose = mutableStateOf(Triple("Never","", periodMeasureState.value))
+
+
 
     Column(
         verticalArrangement = Arrangement.Top,
@@ -181,73 +193,7 @@ fun BookingRepeat(
             Column(
                 modifier = Modifier
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.Start),
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 54.dp, end = 16.dp, top = 16.dp)
-                ) {
-                    Text(
-                        text = stringResource(resource = MainRes.strings.booking_repeat_in),
-                        style = MaterialTheme.typography.button.copy(fontWeight = FontWeight(400))
-                    )
-                }
-
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start),
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .wrapContentWidth()
-                        .padding(start = 54.dp, end = 16.dp)
-                ) {
-                    OutlinedTextField(
-                        value = "1",
-                        onValueChange = {
-
-                        },
-                        shape = RoundedCornerShape(8.dp),
-                        modifier = Modifier
-                            .padding(top = 12.dp, bottom = 12.dp)
-                            .weight(.3f)
-                    )
-                    OutlinedTextField(
-                        enabled = false,
-                        readOnly = true,
-                        value = stringResource(MainRes.strings.week),
-                        onValueChange = {
-
-                        },
-                        shape = RoundedCornerShape(8.dp),
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            disabledTextColor = LocalContentColor.current.copy(LocalContentAlpha.current)
-                        ),
-                        modifier = Modifier
-                            .padding(
-                                start = 16.dp,
-                                top = 12.dp,
-                                end = 12.dp,
-                                bottom = 12.dp
-                            )
-                            .weight(.7f),
-                        trailingIcon = {
-                            IconButton(
-                                onClick =
-                                {
-                                    isExpandedContextMenu.value = !isExpandedContextMenu.value
-                                }
-                            ) {
-                                Image(
-                                    modifier = Modifier,
-                                    imageVector = Icons.Default.ArrowDropDown,
-                                    contentDescription = "drop down",
-                                    contentScale = ContentScale.None
-                                )
-                            }
-                        }
-                    )
-                }
-                Column {
+                if(periodMeasureState.value != "Day") {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.Start),
                         verticalAlignment = Alignment.CenterVertically,
@@ -256,79 +202,159 @@ fun BookingRepeat(
                             .padding(start = 54.dp, end = 16.dp, top = 16.dp)
                     ) {
                         Text(
-                            text = stringResource(MainRes.strings.when_repeat),
-                            style = MaterialTheme.typography.button.copy(
-                                fontWeight = FontWeight(
-                                    weight = 400
-                                )
-                            )
+                            text = stringResource(resource = MainRes.strings.booking_repeat_in),
+                            style = MaterialTheme.typography.button.copy(fontWeight = FontWeight(400))
                         )
                     }
-                    val listDaysOfWeek = listOf(
-                        MainRes.strings.Monday,
-                        MainRes.strings.Tuesday,
-                        MainRes.strings.Wednesday,
-                        MainRes.strings.Thursday,
-                        MainRes.strings.Friday
-                    )
 
-                    LazyRow(modifier = Modifier.padding(start = 54.dp, end = 16.dp, top = 16.dp)) {
-                        itemsIndexed(listDaysOfWeek) { index, days ->
-                            var isExpanded by remember { mutableStateOf(false) }
-                            val name: String = stringResource(days)
-                            Button(
-                                onClick = {
-                                    isExpanded = !isExpanded
-                                    list.add(Pair(first = name, second = index))
-                                },
-                                contentPadding = PaddingValues(
-                                    horizontal = 12.dp,
-                                    vertical = 6.dp
-                                ),
-                                colors = ButtonDefaults.buttonColors(
-                                    backgroundColor = ExtendedThemeColors.colors.whiteColor
-                                ),
-                                modifier = Modifier
-                                    .wrapContentWidth().padding(end = 12.dp),
-                                border = BorderStroke(
-                                    width = 1.dp,
-                                    color = if (isExpanded)
-                                        ExtendedThemeColors.colors.purple_heart_800
-                                    else textInBorderGray
-                                ),
-                                shape = RoundedCornerShape(12.dp),
-                                elevation = ButtonDefaults.elevation(0.dp, 2.dp, 0.dp)
-                            ) {
-                                Row {
-                                    Icon(
-                                        imageVector = Icons.Rounded.Done,
-                                        tint = ExtendedThemeColors.colors.purple_heart_800,
-                                        modifier = Modifier.size(
-                                            if (isExpanded) 20.dp
-                                            else 0.dp
-                                        )
-                                            .align(Alignment.CenterVertically),
-                                        contentDescription = "done button"
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start),
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .padding(start = 54.dp, end = 16.dp)
+                    ) {
+                        OutlinedTextField(
+                            value = periodicity.value,
+                            onValueChange = {
+                                periodicity.value=it
+                            },
+                            shape = RoundedCornerShape(8.dp),
+                            modifier = Modifier
+                                .padding(top = 12.dp, bottom = 12.dp)
+                                .weight(.3f),
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            keyboardActions = KeyboardActions.Default
+                        )
+                        OutlinedTextField(
+                            enabled = false,
+                            readOnly = true,
+                            value =
+                            when(periodMeasureState.value){
+                                "Week" -> stringResource(MainRes.strings.week)
+                                "Month" -> stringResource(MainRes.strings.month)
+                                else -> stringResource(MainRes.strings.year)
+                            },
+                            onValueChange = {
+
+                            },
+                            shape = RoundedCornerShape(8.dp),
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                disabledTextColor = LocalContentColor.current.copy(LocalContentAlpha.current)
+                            ),
+                            modifier = Modifier
+                                .padding(
+                                    start = 16.dp,
+                                    top = 12.dp,
+                                    end = 12.dp,
+                                    bottom = 12.dp
+                                )
+                                .weight(.7f),
+                            trailingIcon = {
+                                IconButton(
+                                    onClick =
+                                    {
+                                        isExpandedContextMenu.value = !isExpandedContextMenu.value
+                                    }
+                                ) {
+                                    Image(
+                                        modifier = Modifier,
+                                        imageVector = Icons.Default.ArrowDropDown,
+                                        contentDescription = "drop down",
+                                        contentScale = ContentScale.None
                                     )
                                 }
-                                Text(
-                                    text = stringResource(days),
-                                    style = MaterialTheme.typography.body2.copy(
-                                        color = if (isExpanded) ExtendedThemeColors.colors.purple_heart_800
+                            }
+                        )
+                    }
+                }
+                Column {
+                    if(periodMeasureState.value == "Week") {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.Start),
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 54.dp, end = 16.dp, top = 16.dp)
+                        ) {
+                            Text(
+                                text = stringResource(MainRes.strings.when_repeat),
+                                style = MaterialTheme.typography.button.copy(
+                                    fontWeight = FontWeight(
+                                        weight = 400
+                                    )
+                                )
+                            )
+                        }
+
+                        LazyRow(
+                            modifier = Modifier.padding(
+                                start = 54.dp,
+                                end = 16.dp,
+                                top = 16.dp
+                            )
+                        ) {
+                            itemsIndexed(listDaysOfWeek) { index, days ->
+                                var isExpanded by remember { mutableStateOf(false) }
+                                val name: String = stringResource(days)
+                                Button(
+                                    onClick = {
+                                        isExpanded = !isExpanded
+                                        list.add(Pair(first = name, second = index))
+                                    },
+                                    contentPadding = PaddingValues(
+                                        horizontal = 12.dp,
+                                        vertical = 6.dp
+                                    ),
+                                    colors = ButtonDefaults.buttonColors(
+                                        backgroundColor = ExtendedThemeColors.colors.whiteColor
+                                    ),
+                                    modifier = Modifier
+                                        .wrapContentWidth().padding(end = 12.dp),
+                                    border = BorderStroke(
+                                        width = 1.dp,
+                                        color = if (isExpanded)
+                                            ExtendedThemeColors.colors.purple_heart_800
                                         else textInBorderGray
                                     ),
-                                )
+                                    shape = RoundedCornerShape(12.dp),
+                                    elevation = ButtonDefaults.elevation(0.dp, 2.dp, 0.dp)
+                                ) {
+                                    Row {
+                                        Icon(
+                                            imageVector = Icons.Rounded.Done,
+                                            tint = ExtendedThemeColors.colors.purple_heart_800,
+                                            modifier = Modifier.size(
+                                                if (isExpanded) 20.dp
+                                                else 0.dp
+                                            )
+                                                .align(Alignment.CenterVertically),
+                                            contentDescription = "done button"
+                                        )
+                                    }
+                                    Text(
+                                        text = stringResource(days),
+                                        style = MaterialTheme.typography.body2.copy(
+                                            color = if (isExpanded) ExtendedThemeColors.colors.purple_heart_800
+                                            else textInBorderGray
+                                        ),
+                                    )
+                                }
                             }
                         }
                     }
-                    Divider(
-                        modifier = Modifier
-                            .fillMaxWidth(fraction = 1.0f)
-                            .height(height = 1.dp)
-                            .background(
-                                color = ExtendedThemeColors.colors._66x
-                            )
-                    )
+
+                    if(periodMeasureState.value != "Day") {
+                        Divider(
+                            modifier = Modifier
+                                .fillMaxWidth(fraction = 1.0f)
+                                .height(height = 1.dp)
+                                .background(
+                                    color = ExtendedThemeColors.colors._66x
+                                )
+                        )
+                    }
 
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.Start),
@@ -355,42 +381,50 @@ fun BookingRepeat(
                             .fillMaxWidth()
                             .padding(start = 54.dp, end = 16.dp, top = 8.dp)
                     ) {
-                        Button(
-                            colors = ButtonDefaults.buttonColors(
-                                backgroundColor = Color.Transparent
-                            ),
-                            elevation = Elevation(),
-                            modifier = Modifier.fillMaxWidth().wrapContentHeight(),
-                            onClick = {
-                                selected1.value = !selected1.value
-                                selected2.value = false
-                                selected3.value = false
-                            }.also { onSelected() },
-                            contentPadding = PaddingValues(all = 0.dp)
-                        ) {
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(0.dp, Alignment.Start),
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
+//                        Button(
+//                            colors = ButtonDefaults.buttonColors(
+//                                backgroundColor = Color.Transparent
+//                            ),
+//                            elevation = Elevation(),
+//                            modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+//                            onClick = {
+//                                selected1.value = !selected1.value
+//                                selected2.value = false
+//                                selected3.value = false
+//                            }.also { onSelected() },
+//                            contentPadding = PaddingValues(all = 0.dp)
+//                        ) {
+//                            Row(
+//                                horizontalArrangement = Arrangement.spacedBy(0.dp, Alignment.Start),
+//                                verticalAlignment = Alignment.CenterVertically,
+//                            ) {
                                 RadioButton(
-                                    enabled = false,
+                                    //enabled = false,
                                     selected = selected1.value,
-                                    onClick = { },
+                                    onClick = {
+                                        selected1.value = true//!selected1.value
+                                        selected2.value = false
+                                        selected3.value = false
+                                    }.also { onSelected() },
                                     colors = RadioButtonDefaults.colors(
                                         disabledSelectedColor = MaterialTheme.colors.primary,
-                                        disabledUnselectedColor = Color.Black
+                                        disabledUnselectedColor = Color.Black,
+                                        selectedColor = MaterialTheme.colors.primary
                                     )
                                 )
+
+                        Spacer(modifier = Modifier.width(width = 16.dp))
+
                                 Text(
                                     text = stringResource(MainRes.strings.never),
                                     style = MaterialTheme.typography.button.copy(
                                         color = ExtendedThemeColors.colors.radioTextColor,
                                         fontWeight = FontWeight(400)
                                     ),
-                                    modifier = Modifier.fillMaxWidth().wrapContentHeight()
+                                    modifier = Modifier.wrapContentHeight()//.fillMaxWidth()
                                 )
-                            }
-                        }
+                            //}
+                        //}
                     }
 
                     Row(
@@ -400,23 +434,34 @@ fun BookingRepeat(
                             .fillMaxWidth()
                             .padding(start = 54.dp, end = 16.dp, top = 6.dp)
                     ) {
-                        RadioButton(selected = selected2.value, onClick = {
-                            selected2.value = !selected2.value
-                            selected1.value = false
-                            selected3.value = false
-                        }.also { onSelected() })
+                        RadioButton(
+                            selected = selected2.value,
+                            onClick = {
+                                selected2.value = true
+                                selected1.value = false
+                                selected3.value = false
+                        }.also { onSelected() },
+                            colors = RadioButtonDefaults.colors(
+                                disabledSelectedColor = MaterialTheme.colors.primary,
+                                disabledUnselectedColor = Color.Black,
+                                selectedColor = MaterialTheme.colors.primary
+                            )
+                        )
 
                         Spacer(modifier = Modifier.width(width = 16.dp))
 
                         OutlinedTextField(
-                            value = "01.01.2023",
+                            value = endDate.value,
                             onValueChange = {
-
+                                endDate.value=it
                             },
                             shape = RoundedCornerShape(8.dp),
                             modifier = Modifier
                                 .padding(top = 12.dp, bottom = 12.dp)
-                                .weight(0.4f)
+                                .weight(0.4f),
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            keyboardActions = KeyboardActions.Default
                         )
 
                         Spacer(modifier = Modifier.width(width = 48.dp))
@@ -429,11 +474,18 @@ fun BookingRepeat(
                             .fillMaxWidth()
                             .padding(start = 54.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
                     ) {
-                        RadioButton(selected = selected3.value, onClick = {
-                            selected3.value = !selected3.value
-                            selected1.value = false
-                            selected2.value = false
-                        }.also { onSelected() })
+                        RadioButton(
+                            selected = selected3.value,
+                            onClick = {
+                                selected3.value = true
+                                selected1.value = false
+                                selected2.value = false
+                        }.also { onSelected() },
+                            colors = RadioButtonDefaults.colors(
+                                disabledSelectedColor = MaterialTheme.colors.primary,
+                                disabledUnselectedColor = Color.Black,
+                                selectedColor = MaterialTheme.colors.primary
+                            ))
                         Text(
                             text = stringResource(MainRes.strings.booking_1),
                             style = MaterialTheme.typography.button.copy(
@@ -445,14 +497,17 @@ fun BookingRepeat(
                         Spacer(modifier = Modifier.width(width = 16.dp))
 
                         OutlinedTextField(
-                            value = "1",
+                            value = endPeriod.value,
                             onValueChange = {
-
+                                endPeriod.value=it
                             },
                             shape = RoundedCornerShape(8.dp),
                             modifier = Modifier
                                 .padding(top = 12.dp, bottom = 12.dp)
-                                .weight(weight = 0.1f)
+                                .weight(weight = 0.1f),
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            keyboardActions = KeyboardActions.Default
                         )
 
                         Spacer(modifier = Modifier.width(width = 16.dp))
@@ -472,7 +527,13 @@ fun BookingRepeat(
                     EffectiveButton(
                         buttonText = stringResource(MainRes.strings.confirm_booking),
                         onClick = {
-                            val frequency = Frequency(days = list.toList())
+                            if(selected2.value)
+                                researchClose.value=Triple("Date", endDate.value, periodMeasureState.value)
+                            else{
+                                if(selected3.value)
+                                    researchClose.value=Triple("CoupleTimes", endPeriod.value, periodMeasureState.value)
+                            }
+                            val frequency = Frequency(days = list.toList(), researchEnd =researchClose.value)
                             confirmBooking(frequency)
                         },
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),

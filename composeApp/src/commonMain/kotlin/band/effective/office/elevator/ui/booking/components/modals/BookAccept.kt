@@ -39,6 +39,12 @@ fun BookAccept(
     bookingInfoDomain: BookingInfoDomain,
     frequency: Frequency
 ) {
+    val textForUser: String = when(frequency.getResearchEnd().first){
+        "ThisDay" -> noPeriodReserve(bookingInfoDomain, frequency)
+        "Never" -> noEndsPeriodReserve(bookingInfoDomain, frequency)
+        "Data" ->  noEndsPeriodReserve(bookingInfoDomain, frequency)
+        else -> noPeriodReserve(bookingInfoDomain, frequency)
+    }
     Box {
         Column(modifier = Modifier.fillMaxWidth().background(Color.White)) {
             Spacer(modifier = Modifier.padding(vertical = 10.dp))
@@ -78,18 +84,11 @@ fun BookAccept(
                         modifier = Modifier.padding(top = 10.dp, bottom = 5.dp)
                     )
                     Text(
-                        text = with(bookingInfoDomain) {
-                                    "${frequency.toString()} ${dateOfStart.date.dayOfMonth} " + NumToMonth(dateOfStart.date.monthNumber)+ " ${dateOfStart.time.hour.toString()}:${
-                                with(
-                                    dateOfStart.time
-                                ) { if (minute.toString().length < 2) "0$minute" else minute.toString() }
-                            } - ${dateOfEnd.time.hour.toString()}:${
-                                with(
-                                    dateOfStart.time
-                                ) {
-                                    if (minute.toString().length < 2) "0$minute" else minute.toString()
-                                }
-                            }"
+                        text = when(frequency.getResearchEnd().first){
+                            "ThisDay" -> noPeriodReserve(bookingInfoDomain, frequency)
+                            "Never" -> noEndsPeriodReserve(bookingInfoDomain, frequency)
+                            "Date" ->  noEndsPeriodReserve(bookingInfoDomain, frequency)
+                            else ->  coupleTimesPeriodReserve(bookingInfoDomain, frequency)
                         },
                         style = MaterialTheme.typography.subtitle1,
                         fontSize = 16.sp,
@@ -104,6 +103,55 @@ fun BookAccept(
                 onClick = confirmBooking,
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
             )
+        }
+    }
+}
+
+@Composable
+fun coupleTimesPeriodReserve(bookingInfoDomain: BookingInfoDomain, frequency: Frequency):String{
+    return when(frequency.getResearchEnd().third) {
+        "Month" -> noEndsPeriodReserve(bookingInfoDomain, frequency)
+        else -> noPeriodReserve(bookingInfoDomain, frequency)
+    }
+}
+
+@Composable
+fun noEndsPeriodReserve(bookingInfoDomain: BookingInfoDomain, frequency: Frequency):String{
+    return when(frequency.getResearchEnd().third){
+        "Day" -> stringResource(MainRes.strings.every_work_day) + " " + noPeriodReserve(bookingInfoDomain, frequency)
+        "Week" -> stringResource(MainRes.strings.every_week) + " " + noPeriodReserve(bookingInfoDomain, frequency)
+        "Month" -> stringResource(MainRes.strings.every_month) + " " + noPeriodReserve(bookingInfoDomain, frequency)
+        else -> stringResource(MainRes.strings.every_year) + " " + noPeriodReserve(bookingInfoDomain, frequency)
+    }
+}
+
+@Composable
+fun noPeriodReserve(bookingInfoDomain: BookingInfoDomain, frequency: Frequency): String{
+    return with(bookingInfoDomain) {
+        if(frequency.toString().isNotEmpty())"${frequency.toString()} " else {""} +
+                if((frequency.getResearchEnd().third != "Week" && frequency.getResearchEnd().third != "Day") || frequency.getResearchEnd().first == "CoupleTimes"){
+                "${dateOfStart.date.dayOfMonth} " +
+                    if(frequency.getResearchEnd().third != "Month"){
+                    NumToMonth(dateOfStart.date.monthNumber)}
+                    else{""}
+                }
+                else{""}+
+                " ${dateOfStart.time.hour.toString()}:${
+            with(
+                dateOfStart.time
+            ) { if (minute.toString().length < 2) "0$minute" else minute.toString() }
+        } - ${dateOfEnd.time.hour.toString()}:${
+            with(
+                dateOfEnd.time
+            ) {
+                if (minute.toString().length < 2) "0$minute" else minute.toString()
+            }
+        }"+ if(frequency.getResearchEnd().second.contains(".")){
+                " \nпо " + frequency.getResearchEnd().second
+            }else{
+                if (frequency.getResearchEnd().second.isNotEmpty()){
+                    " и ещё ${frequency.getResearchEnd().second} раз(-а) через неделю"
+                }else ""
         }
     }
 }

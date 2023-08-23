@@ -65,6 +65,7 @@
     <string name="every_work_day">Every work day</string>
     <string name="every_week">Every week</string>
     <string name="every_month">Every month</string>
+    <string name="every_year">Every year</string>
     <string name="another">Other...</string>
     <string name="booking_repeat">Repeat booking</string>
     <string name="booking_repeat_in">Repeats every:</string>

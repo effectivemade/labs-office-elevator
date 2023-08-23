@@ -33,9 +33,9 @@ fun BookingRepeatCard(
         Pair(first = MainRes.strings.every_work_day, second = BookingPeriodUI.EveryWorkDay(5)),
         Pair(first = MainRes.strings.every_week, second = BookingPeriodUI.Week(7, days)),
         Pair(
-            first = MainRes.strings.every_month, second = BookingPeriodUI.Year(365),
+            first = MainRes.strings.every_month, second = BookingPeriodUI.Month(30),
         ),
-        Pair(first = MainRes.strings.another, second = 0)
+        Pair(first = MainRes.strings.another, second = BookingPeriodUI.Year(365))
     )
 
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(strings[0]) }
