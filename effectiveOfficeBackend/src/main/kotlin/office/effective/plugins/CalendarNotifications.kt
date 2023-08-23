@@ -14,13 +14,12 @@ import org.koin.core.context.GlobalContext
 fun Application.configureCalendarNotifications() {
 
     val calendar: Calendar = GlobalContext.get().get()
-    val appAddress: String = System.getenv("DATABASE_URL")
+    val appAddress: String = System.getenv("APPLICATION_URL")
     val calendarRepository: CalendarRepository = GlobalContext.get().get()
-
     val channel = Channel().apply {
         id = "6a120681-913e-4749-9b9f-10948d868d9f"
         type = "web_hook"
-        address = appAddress
+        address = "$appAddress/notifications"
     }
     calendarRepository.findAllCalendarsId().forEach {
             id -> calendar.events().watch(id, channel).execute()
