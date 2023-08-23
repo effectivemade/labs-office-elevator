@@ -17,7 +17,7 @@ interface UpdateEventStore :
             val day: Int,
             val hour: Int,
             val minute: Int
-        ): Intent
+        ) : Intent
 
         object OnExpandedChange : Intent
         data class OnSelectOrganizer(val newOrganizer: Organizer) : Intent
@@ -43,7 +43,8 @@ interface UpdateEventStore :
         val inputText: String,
         val isLoadDelete: Boolean,
         val isErrorDelete: Boolean,
-        val showSelectDate:Boolean
+        val showSelectDate: Boolean,
+        val enableUpdateButton: Boolean
     ) {
         companion object {
             val defaultValue = State(
@@ -59,7 +60,8 @@ interface UpdateEventStore :
                 inputText = "",
                 isLoadDelete = false,
                 isErrorDelete = false,
-                showSelectDate = false
+                showSelectDate = false,
+                enableUpdateButton = true
             )
         }
     }

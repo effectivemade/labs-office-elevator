@@ -22,15 +22,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import dev.icerock.moko.resources.compose.painterResource
 
 @Composable
-fun BookingCard(workSpace: WorkSpaceUI, onClickOpenBookAccept: (String) -> Unit) {
+fun BookingCard(workSpace: WorkSpaceUI, onClickOpenBookAccept: (WorkSpaceUI) -> Unit) {
     Column(
         modifier = Modifier
             .padding(bottom = 16.dp)
-            .clickable { onClickOpenBookAccept(workSpace.workSpaceId) }
+            .clickable { onClickOpenBookAccept(workSpace) }
     ) {
         Box(
             modifier = Modifier
@@ -52,7 +53,10 @@ fun BookingCard(workSpace: WorkSpaceUI, onClickOpenBookAccept: (String) -> Unit)
                         .size(44.dp)
                 ) {
                     Icon(
-                        painter = painterResource(MainRes.images.table_icon),
+                        painter = painterResource(
+                            if(workSpace.workSpaceType == WorkSpaceType.WORK_PLACE) MainRes.images.table_icon
+                            else MainRes.images.icon_meet
+                        ),
                         contentDescription = null,
                         modifier = Modifier,
                         tint = ExtendedThemeColors.colors.purple_heart_800

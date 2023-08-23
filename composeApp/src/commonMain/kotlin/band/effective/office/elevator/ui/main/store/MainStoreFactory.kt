@@ -3,6 +3,7 @@ package band.effective.office.elevator.ui.main.store
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.data.ApiResponse
 import band.effective.office.elevator.domain.useCase.DeleteBookingUseCase
+import band.effective.office.elevator.domain.entity.BookingInteractor
 import band.effective.office.elevator.domain.useCase.ElevatorCallUseCase
 import band.effective.office.elevator.domain.useCase.GetBookingsUseCase
 import band.effective.office.elevator.expects.showToast
@@ -35,6 +36,8 @@ internal class MainStoreFactory(
     private val bookingsUseCase: GetBookingsUseCase by inject()
     private val deleteBookingUseCase : DeleteBookingUseCase by inject()
     private var recentDate = LocalDate(2023,8,16)
+    private val bookingInteractor: BookingInteractor by inject()
+
     private var filtration = BookingsFilter(meetRoom = true, workPlace = true)
     private var updatedList = false
 
@@ -96,6 +99,7 @@ internal class MainStoreFactory(
                         publish(MainStore.Label.CloseCalendar)
                     }
                 }
+
                 MainStore.Intent.OnClickOpenCalendar -> {
                     scope.launch {
                         publish(MainStore.Label.OpenCalendar)
@@ -104,7 +108,7 @@ internal class MainStoreFactory(
 
                 is MainStore.Intent.OnClickApplyDate -> {
                     publish(MainStore.Label.CloseCalendar)
-                    updatedList=true
+                    updatedList = true
                     intent.date?.let { newDate ->
                         changeBookingsByDate(date = newDate, bookingsFilter = filtration)
                     }
@@ -131,8 +135,13 @@ internal class MainStoreFactory(
                 is MainStore.Intent.OnClickCloseEditBooking -> {
                     publish(MainStore.Label.OnClickCloseEditBooking)
                 }
+
                 is MainStore.Intent.OnClickExtendBooking -> {
                     showToast("extend")
+                }
+
+                is MainStore.Intent.OnClickRepeatBooking -> {
+                    showToast("repeat")
                 }
 
                 MainStore.Intent.OpenFiltersBottomDialog -> {
@@ -144,11 +153,17 @@ internal class MainStoreFactory(
                 is MainStore.Intent.CloseFiltersBottomDialog -> {
                     scope.launch {
                         publish(MainStore.Label.CloseFiltersBottomDialog)
-                        intent.bookingsFilter.let {bookingsFilter ->
-                            if(updatedList){
-                                changeBookingsByDate(date=recentDate, bookingsFilter = bookingsFilter)
-                            }else{
-                                getBookingsForUserByDate(date = getCurrentDate(), bookingsFilter = bookingsFilter)
+                        intent.bookingsFilter.let { bookingsFilter ->
+                            if (updatedList) {
+                                changeBookingsByDate(
+                                    date = recentDate,
+                                    bookingsFilter = bookingsFilter
+                                )
+                            } else {
+                                getBookingsForUserByDate(
+                                    date = getCurrentDate(),
+                                    bookingsFilter = bookingsFilter
+                                )
                             }
                         }
                     }
@@ -167,7 +182,10 @@ internal class MainStoreFactory(
 
         override fun executeAction(action: Action, getState: () -> MainStore.State) {
             when (action) {
-                is Action.LoadBookings -> getBookingsForUserByDate(date = action.date, bookingsFilter = filtration)
+                is Action.LoadBookings -> getBookingsForUserByDate(
+                    date = action.date,
+                    bookingsFilter = filtration
+                )
             }
         }
 
@@ -213,14 +231,14 @@ internal class MainStoreFactory(
         }
 
         fun getBookingsForUserByDate(date: LocalDate, bookingsFilter: BookingsFilter) {
-            if(recentDate!=date)
-                recentDate=date
+            if (recentDate != date)
+                recentDate = date
             else
-                filtration=bookingsFilter
+                filtration = bookingsFilter
 
             scope.launch(Dispatchers.IO) {
-                bookingsUseCase
-                    .getBookingsByDate(date = date, ownerId = "1L", bookingsFilter = bookingsFilter, coroutineScope = this)
+                bookingInteractor
+                    .getByDate(ownerId = "", date = date, coroutineScope = this)
                     .collect { bookings ->
                         withContext(Dispatchers.Main) {
                             dispatch(Msg.UpdateSeatsReservation(reservedSeats = bookings))
@@ -230,14 +248,14 @@ internal class MainStoreFactory(
         }
 
         fun changeBookingsByDate(date: LocalDate, bookingsFilter: BookingsFilter) {
-            if(recentDate!=date)
-                recentDate=date
+            if (recentDate != date)
+                recentDate = date
             else
-                filtration=bookingsFilter
+                filtration = bookingsFilter
 
             scope.launch(Dispatchers.IO) {
-                bookingsUseCase
-                    .getBookingsByDate(date = date, ownerId = "1L", bookingsFilter = bookingsFilter, coroutineScope = this)
+                bookingInteractor
+                    .getByDate(ownerId = "", date = date, coroutineScope = this)
                     .collect { bookings ->
                         withContext(Dispatchers.Main) {
                             dispatch(

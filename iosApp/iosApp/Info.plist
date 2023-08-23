@@ -13,14 +13,14 @@
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
-		<key>UISceneConfigurations</key>
-		<dict/>
 		<key>New item</key>
 		<string></string>
 		<key>UIApplicationSupportsMultipleScenes</key>
 		<true/>
 		<key>UIApplicationSupportsTabbedSceneCollection</key>
 		<false/>
+		<key>UISceneConfigurations</key>
+		<dict/>
 	</dict>
 	<key>UILaunchScreen</key>
 	<dict/>

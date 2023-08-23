@@ -5,6 +5,7 @@ import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.Organizer
 import band.effective.office.tablet.domain.useCase.BookingUseCase
 import band.effective.office.tablet.domain.useCase.CancelUseCase
+import band.effective.office.tablet.domain.useCase.CheckBookingUseCase
 import band.effective.office.tablet.domain.useCase.OrganizersInfoUseCase
 import band.effective.office.tablet.utils.unbox
 import com.arkivanov.mvikotlin.core.store.Reducer
@@ -17,12 +18,14 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.Calendar
+import java.util.GregorianCalendar
 
 class UpdateEventStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
 
     val bookingUseCase: BookingUseCase by inject()
     val organizersInfoUseCase: OrganizersInfoUseCase by inject()
     val cancelUseCase: CancelUseCase by inject()
+    val checkBookingUseCase: CheckBookingUseCase by inject()
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): UpdateEventStore =
@@ -60,7 +63,8 @@ class UpdateEventStoreFactory(private val storeFactory: StoreFactory) : KoinComp
         data class UpdateInformation(
             val newDate: Calendar,
             val newDuration: Int,
-            val newOrganizer: Organizer
+            val newOrganizer: Organizer,
+            val enableButton: Boolean
         ) : Message
 
         object LoadUpdate : Message
@@ -136,7 +140,7 @@ class UpdateEventStoreFactory(private val storeFactory: StoreFactory) : KoinComp
             day: Int,
             hour: Int,
             minute: Int
-        ) {
+        ) = scope.launch {
             val newDate = (state.date.clone() as Calendar).apply {
                 set(Calendar.YEAR, year)
                 set(Calendar.MONTH, month)
@@ -144,11 +148,17 @@ class UpdateEventStoreFactory(private val storeFactory: StoreFactory) : KoinComp
                 set(Calendar.HOUR, hour)
                 set(Calendar.MINUTE, minute)
             }
+            val busyEvent = checkBookingUseCase.busyEvents(
+                state.copy(
+                    date = newDate
+                ).toEvent()
+            ).unbox({ it.saveData })?.filter { it.startTime != state.date } ?: listOf()
             dispatch(
                 Message.UpdateInformation(
                     newDate = newDate,
                     newDuration = state.duration,
-                    newOrganizer = state.selectOrganizer
+                    newOrganizer = state.selectOrganizer,
+                    enableButton = busyEvent.isEmpty()
                 )
             )
         }
@@ -206,18 +216,35 @@ class UpdateEventStoreFactory(private val storeFactory: StoreFactory) : KoinComp
             changeData: Int = 0,
             changeDuration: Int = 0,
             newOrg: Organizer = state.selectOrganizer
-        ) {
+        ) = scope.launch {
             val newDate =
                 (state.date.clone() as Calendar).apply { add(Calendar.DAY_OF_WEEK, changeData) }
             val newDuration = state.duration + changeDuration
             val newOrganizer = state.organizers.firstOrNull { it.fullName == newOrg.fullName }
                 ?: state.event.organizer
-            dispatch(
-                Message.UpdateInformation(
-                    newDate = newDate,
-                    newDuration = newDuration,
-                    newOrganizer = newOrganizer
+            val busyEvent = checkBookingUseCase.busyEvents(
+                state.copy(
+                    date = newDate,
+                    duration = newDuration,
+                    selectOrganizer = newOrganizer
+                ).toEvent()
+            ).unbox({ it.saveData })?.filter { it.startTime != state.date } ?: listOf()
+            if (newDuration > 0 && newDate > today()) {
+                dispatch(
+                    Message.UpdateInformation(
+                        newDate = newDate,
+                        newDuration = newDuration,
+                        newOrganizer = newOrganizer,
+                        enableButton = busyEvent.isEmpty()
+                    )
                 )
+            }
+        }
+
+        private fun today() = GregorianCalendar().apply {
+            add(
+                /* field = */ Calendar.MINUTE,
+                /* amount = */ -(get(Calendar.HOUR) * 60 + get(Calendar.MINUTE))
             )
         }
 
@@ -258,7 +285,8 @@ class UpdateEventStoreFactory(private val storeFactory: StoreFactory) : KoinComp
                 is Message.UpdateInformation -> copy(
                     date = msg.newDate,
                     duration = msg.newDuration,
-                    selectOrganizer = msg.newOrganizer
+                    selectOrganizer = msg.newOrganizer,
+                    enableUpdateButton = msg.enableButton
                 )
 
                 is Message.FailUpdate -> copy(isErrorUpdate = true, isLoadUpdate = false)
@@ -275,3 +303,10 @@ class UpdateEventStoreFactory(private val storeFactory: StoreFactory) : KoinComp
             }
     }
 }
+
+private fun UpdateEventStore.State.toEvent(): EventInfo = EventInfo(
+    startTime = date,
+    finishTime = (date.clone() as Calendar).apply { add(Calendar.MINUTE, duration) },
+    organizer = selectOrganizer,
+    id = ""
+)

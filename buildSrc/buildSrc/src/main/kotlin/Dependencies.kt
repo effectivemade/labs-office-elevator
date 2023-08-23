@@ -14,7 +14,7 @@ object Dependencies {
         const val buildConfig = "3.1.0"
         const val kotlinxCoroutines = "1.7.1"
         const val kotlinCorutinesMultiplatform = "1.6.1-native-mt"
-        const val ktor = "2.3.1"
+        const val ktor = "2.3.2"
         const val composeIcons = "1.1.0"
         const val kotlinxSerialization = "1.5.1"
         const val kotlinxDatetime = "0.4.0"
@@ -41,6 +41,7 @@ object Dependencies {
             const val CIO = "io.ktor:ktor-client-cio:$ktorVersion"
             const val Android = "io.ktor:ktor-client-android:${Versions.ktor}"
             const val Darwin = "io.ktor:ktor-client-darwin:${Versions.ktor}"
+            const val Auth = "io.ktor:ktor-client-auth:$ktorVersion"
         }
 
         object Server {

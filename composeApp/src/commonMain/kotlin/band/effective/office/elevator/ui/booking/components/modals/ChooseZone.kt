@@ -2,14 +2,24 @@ package band.effective.office.elevator.ui.booking.components.modals
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -35,41 +45,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
-import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.textInBorderGray
-import dev.icerock.moko.resources.StringResource
+import band.effective.office.elevator.ui.booking.components.HorizontalGirdItems
+import band.effective.office.elevator.ui.booking.models.WorkSpaceZone
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
-fun ChooseZone(zone: Boolean, onClickCloseChoseZone: () -> Unit) {
-    val highZonesNames = listOf(
-        MainRes.strings.sirius_zone,
-        MainRes.strings.antares_zone,
-        MainRes.strings.mars_zone
-    )
-    val lowZonesNames = listOf(
-        MainRes.strings.cassiopeia_zone,
-        MainRes.strings.arrakis_zone
-    )
-    val highRoomsNames = listOf(
-        MainRes.strings.moon_room,
-        MainRes.strings.sun_room,
-        MainRes.strings.mercury_room,
-        MainRes.strings.pluto_room
-    )
-    val lowRoomsNames = listOf(
-        MainRes.strings.pluto_room
-    )
-    val highListNames: List<StringResource>
-    val lowListNames: List<StringResource>
-    if (zone) {
-        highListNames = highZonesNames
-        lowListNames = lowZonesNames
-    } else {
-        highListNames = highRoomsNames
-        lowListNames = lowRoomsNames
-    }
-    Column(modifier = Modifier.fillMaxWidth().background(Color.White)) {
+fun ChooseZone(
+    sheetTile: String,
+    workSpacecZone: List<WorkSpaceZone>,
+    onClickCloseChoseZone: () -> Unit,
+    onClickConfirmSelectedZone: (List<WorkSpaceZone>) -> Unit
+) {
+    val selectedZones: MutableList<WorkSpaceZone> = mutableListOf()
+    selectedZones.addAll(workSpacecZone)
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White)
+    ) {
         Spacer(modifier = Modifier.padding(vertical = 10.dp))
         Divider(
             modifier = Modifier
@@ -97,10 +92,7 @@ fun ChooseZone(zone: Boolean, onClickCloseChoseZone: () -> Unit) {
                 )
             }
             Text(
-                text = stringResource(
-                    if (zone) MainRes.strings.selection_zones
-                    else MainRes.strings.selection_rooms
-                ),
+                text = sheetTile,
                 style = MaterialTheme.typography.subtitle1,
                 fontSize = 20.sp,
                 fontWeight = FontWeight(600),
@@ -116,67 +108,88 @@ fun ChooseZone(zone: Boolean, onClickCloseChoseZone: () -> Unit) {
                     color = ExtendedThemeColors.colors._66x
                 )
         )
-        Column(
-            modifier = Modifier.padding(
-                top = 16.dp,
-                bottom = 6.dp,
-                start = 16.dp
-            ).fillMaxWidth()
-        ) {
-            LazyRow {
-                items(highListNames) { highListName ->
-                    WorkingZones(highListName)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        HorizontalGirdItems(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            countItemsInRow = 3,
+            listItems = workSpacecZone,
+            horizontalPaddingContent = 12.dp,
+            verticalPaddingContent = 12.dp
+        ) { workSpaceZone, columnIndex, rowIndex ->
+            val currentIndex = 3 * columnIndex + rowIndex
+            //TODO(Artem Gruzdev) refactor this code
+            WorkingZones(
+                workSpaceZone = workSpaceZone,
+                onClickZone = { workSpaceZone1 ->
+                    val isSelected = !workSpaceZone1.isSelected
+                    selectedZones[currentIndex] = workSpaceZone1.copy(isSelected = isSelected)
                 }
-            }
-            LazyRow {
-                items(lowListNames) { lowListName ->
-                    WorkingZones(lowListName)
-                }
-            }
+            )
         }
-        Spacer(modifier  = Modifier.height(18.dp))
-        EffectiveButton(
-            buttonText = stringResource(MainRes.strings.confirm_booking),
-            onClick = onClickCloseChoseZone,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 11.dp)
-        )
+
+        Button(
+            onClick = {
+                onClickConfirmSelectedZone(selectedZones)
+                onClickCloseChoseZone()
+            },
+            modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
+                .fillMaxWidth()
+                .height(60.dp)
+                .padding(horizontal = 15.dp, vertical = 10.dp),
+            shape = RoundedCornerShape(32.dp),
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = ExtendedThemeColors.colors.trinidad_600,
+            )
+        ) {
+            Text(
+                text = stringResource(MainRes.strings.confirm_booking),
+                style = MaterialTheme.typography.button
+            )
+        }
     }
 }
 
 @Composable
-fun WorkingZones(text: StringResource) {
-    var isExpanded by remember { mutableStateOf(false) }
+fun WorkingZones(
+    modifier: Modifier = Modifier,
+    workSpaceZone: WorkSpaceZone,
+    onClickZone: (WorkSpaceZone) -> Unit,
+) {
+    var isSelected by remember { mutableStateOf(workSpaceZone.isSelected) }
+
     Button(
-        onClick = { isExpanded = !isExpanded },
+        onClick = {
+            isSelected = !isSelected
+            onClickZone(workSpaceZone)
+          },
         colors = ButtonDefaults.buttonColors(ExtendedThemeColors.colors.whiteColor),
-        modifier = Modifier
-            .padding(end = 10.dp)
-            .fillMaxWidth(fraction = 0.5f),
+        modifier = modifier
+            .padding(end = 10.dp),
         border = BorderStroke(
             width = 1.dp,
-            color = if (!isExpanded) ExtendedThemeColors.colors.purple_heart_800 else textInBorderGray
+            color = if (isSelected)  ExtendedThemeColors.colors.purple_heart_800  else textInBorderGray
         ),
         shape = RoundedCornerShape(12.dp),
         elevation = ButtonDefaults.elevation(0.dp, 2.dp, 0.dp)
     ) {
-        Row {
+        if (isSelected) {
             Icon(
                 imageVector = Icons.Rounded.Done,
                 tint = ExtendedThemeColors.colors.purple_heart_800,
-                modifier = Modifier.size(
-                    if (!isExpanded) 20.dp
-                    else 0.dp
-                )
+                modifier = Modifier
+                    .size(20.dp)
                     .align(Alignment.CenterVertically),
                 contentDescription = "galochka"
             )
-            Text(
-                text = stringResource(text),
-                fontSize = 16.sp,
-                fontWeight = FontWeight(500),
-                color = if (!isExpanded) ExtendedThemeColors.colors.purple_heart_800
-                else textInBorderGray
-            )
         }
+        Text(
+            text = workSpaceZone.name,
+            fontSize = 16.sp,
+            fontWeight = FontWeight(500),
+            color = if (isSelected) ExtendedThemeColors.colors.purple_heart_800
+            else textInBorderGray
+        )
     }
 }

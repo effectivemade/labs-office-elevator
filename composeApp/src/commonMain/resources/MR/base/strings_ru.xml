@@ -75,8 +75,6 @@
     <string name="Wednesday">Ср</string>
     <string name="Thursday">Чт</string>
     <string name="Friday">Пт</string>
-    <string name="Saturday">Сб</string>
-    <string name="Sunday">Вс</string>
 
     <string name="delete_booking">Удалить бронь?</string>
 
@@ -102,7 +100,7 @@
     <string name="sirius_zone">Sirius</string>
     <string name="antares_zone">Antares</string>
     <string name="mars_zone">Mars</string>
-    <string name="cassiopeia_zone">Cassipopeia</string>
+    <string name="cassiopeia_zone">Cassiopeia</string>
     <string name="arrakis_zone">Arrakis</string>
     <string name="moon_room">Moon</string>
     <string name="sun_room">Sun</string>
@@ -113,6 +111,7 @@
     <string name="every_week_repeat">Каждую неделю</string>
     <string name="every_month_repeat">Каждый месяц</string>
     <string name="other_repeat">Другое</string>
+    <string name="hide_map">Скрыть карту</string>
 
 
     <!--Tab titles-->
