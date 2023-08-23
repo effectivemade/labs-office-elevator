@@ -15,8 +15,7 @@ import office.effective.common.exception.MissingIdException
 import office.effective.config
 import office.effective.features.calendar.repository.CalendarRepository
 import office.effective.model.Booking
-import utils.GoogleCalendarConverter
-import utils.GoogleCalendarConverter.toGoogleEvent
+import office.effective.features.calendar.service.GoogleCalendarConverter.toGoogleEvent
 import java.io.FileInputStream
 import java.io.InputStreamReader
 
