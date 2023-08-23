@@ -27,7 +27,7 @@ private fun getCredential(httpTransport: HttpTransport): GoogleCredentials {
     val authorGoogleAccount: String = config.propertyOrNull("auth.app.defaultAppEmail")?.getString() ?: throw Exception(
         "Config file does not contain default gmail value"
     )
-    val inputStream: ByteArrayInputStream = ByteArrayInputStream(System.getenv("JSON_CREDENTIALS").toByteArray())
+    val inputStream: ByteArrayInputStream = ByteArrayInputStream(System.getenv("JSON_GOOGLE_CREDENTIALS").toByteArray())
     return GoogleCredentials.fromStream(inputStream).createScoped(CalendarScopes.CALENDAR)
         .createDelegated(authorGoogleAccount)
 }
