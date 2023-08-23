@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.Divider
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -31,6 +33,7 @@ import band.effective.office.elevator.textInBorderGray
 import band.effective.office.elevator.ui.booking.models.Frequency
 import band.effective.office.elevator.utils.NumToMonth
 import dev.icerock.moko.resources.compose.stringResource
+import effective.office.modalcustomdialog.Dialog
 
 @Composable
 fun BookAccept(
@@ -39,12 +42,6 @@ fun BookAccept(
     bookingInfoDomain: BookingInfoDomain,
     frequency: Frequency
 ) {
-    val textForUser: String = when(frequency.getResearchEnd().first){
-        "ThisDay" -> noPeriodReserve(bookingInfoDomain, frequency)
-        "Never" -> noEndsPeriodReserve(bookingInfoDomain, frequency)
-        "Data" ->  noEndsPeriodReserve(bookingInfoDomain, frequency)
-        else -> noPeriodReserve(bookingInfoDomain, frequency)
-    }
     Box {
         Column(modifier = Modifier.fillMaxWidth().background(Color.White)) {
             Spacer(modifier = Modifier.padding(vertical = 10.dp))

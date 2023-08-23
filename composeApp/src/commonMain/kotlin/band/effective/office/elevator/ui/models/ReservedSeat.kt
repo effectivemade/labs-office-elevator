@@ -1,7 +1,5 @@
 package band.effective.office.elevator.ui.models
 
-import com.arkivanov.essenty.parcelable.Parcelable
-import com.arkivanov.essenty.parcelable.Parcelize
 import kotlinx.datetime.LocalDate
 
 data class ReservedSeat(
@@ -11,4 +9,16 @@ data class ReservedSeat(
     val bookingDay: String,
     val bookingTime: String,
     val bookingDate: LocalDate
-)
+){
+    companion object {
+        val defaultSeat =
+            ReservedSeat(
+                bookingId = "",
+                ownerId = "",
+                seatName = "",
+                bookingDay = "",
+                bookingTime = "",
+                bookingDate = LocalDate(2023,8,16)
+            )
+    }
+}

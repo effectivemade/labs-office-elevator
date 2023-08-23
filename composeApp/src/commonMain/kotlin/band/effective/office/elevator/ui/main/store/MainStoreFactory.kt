@@ -2,6 +2,7 @@ package band.effective.office.elevator.ui.main.store
 
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.data.ApiResponse
+import band.effective.office.elevator.domain.useCase.DeleteBookingUseCase
 import band.effective.office.elevator.domain.entity.BookingInteractor
 import band.effective.office.elevator.domain.useCase.ElevatorCallUseCase
 import band.effective.office.elevator.domain.useCase.GetBookingsUseCase
@@ -32,10 +33,11 @@ internal class MainStoreFactory(
 ) : KoinComponent {
 
     private val elevatorUseCase: ElevatorCallUseCase by inject()
-
-    //    private val bookingsUseCase: GetBookingsUseCase by inject()
+    private val bookingsUseCase: GetBookingsUseCase by inject()
+    private val deleteBookingUseCase : DeleteBookingUseCase by inject()
+    private var recentDate = LocalDate(2023,8,16)
     private val bookingInteractor: BookingInteractor by inject()
-    private var recentDate = LocalDate(2023, 8, 16)
+
     private var filtration = BookingsFilter(meetRoom = true, workPlace = true)
     private var updatedList = false
 
@@ -111,13 +113,27 @@ internal class MainStoreFactory(
                         changeBookingsByDate(date = newDate, bookingsFilter = filtration)
                     }
                 }
-
-                MainStore.Intent.OnClickShowMap -> {
-                    showToast("map")
+                is MainStore.Intent.OnClickHideOption-> {
+                    scope.launch {
+                        publish(MainStore.Label.HideOptions)
+                    }
                 }
 
                 is MainStore.Intent.OnClickDeleteBooking -> {
-                    showToast("delete")
+                    scope.launch {
+                        publish(MainStore.Label.OnClickOpenDeleteBooking(intent.seat))
+                        deleteBooking(intent.seat)
+                    }
+
+                }
+                is MainStore.Intent.OnClickCloseDeleteBooking -> {
+                    publish(MainStore.Label.OnClickCloseDeleteBooking)
+                }
+                is MainStore.Intent.OnClickOpenEditBooking -> {
+                    publish(MainStore.Label.OnClickOpenEditBooking)
+                }
+                is MainStore.Intent.OnClickCloseEditBooking -> {
+                    publish(MainStore.Label.OnClickCloseEditBooking)
                 }
 
                 is MainStore.Intent.OnClickExtendBooking -> {
@@ -152,6 +168,15 @@ internal class MainStoreFactory(
                         }
                     }
                 }
+            }
+        }
+
+        private fun deleteBooking(seat:ReservedSeat) {
+            scope.launch(Dispatchers.IO){
+                deleteBookingUseCase.deleteBooking(
+                    seat = seat,
+                    coroutineScope = this
+                )
             }
         }
 

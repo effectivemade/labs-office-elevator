@@ -45,6 +45,7 @@ class ContentComponent(
 
     private fun bookingOutput(output: BookingComponent.Output){
         when(output){
+            is MainComponent.Output.OpenBookingScreen -> navigation.bringToFront(Config.Booking)
             BookingComponent.Output.OpenMainTab -> navigation.bringToFront(Config.MainScreen)
         }
     }

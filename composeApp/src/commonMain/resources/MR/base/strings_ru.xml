@@ -70,7 +70,6 @@
     <string name="show_map">Показать карту</string>
     <string name="extend_booking">Продлить</string>
     <string name="repeat_booking">Повторить</string>
-    <string name="delete_booking">Удалить</string>
 
     <string name="Monday">Пн</string>
     <string name="Tuesday">Вт</string>
@@ -78,7 +77,7 @@
     <string name="Thursday">Чт</string>
     <string name="Friday">Пт</string>
 
-    <string name="delete_booking">Удалить бронь</string>
+    <string name="delete_booking">Удалить бронь?</string>
 
     <string name="take_from">Занять с</string>
     <string name="take_before">Занять до</string>
@@ -102,7 +101,7 @@
     <string name="sirius_zone">Sirius</string>
     <string name="antares_zone">Antares</string>
     <string name="mars_zone">Mars</string>
-    <string name="cassiopeia_zone">Cassipopeia</string>
+    <string name="cassiopeia_zone">Cassiopeia</string>
     <string name="arrakis_zone">Arrakis</string>
     <string name="moon_room">Moon</string>
     <string name="sun_room">Sun</string>

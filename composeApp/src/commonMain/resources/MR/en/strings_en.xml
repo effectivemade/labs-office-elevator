@@ -82,7 +82,6 @@
     <string name="show_map">Show map</string>
     <string name="extend_booking">Extend</string>
     <string name="repeat_booking">Repeat</string>
-    <string name="delete_booking">Delete</string>
 
     <string name="Monday">Mon</string>
     <string name="Tuesday">Tue</string>
@@ -90,7 +89,7 @@
     <string name="Thursday">Thu</string>
     <string name="Friday">Fri</string>
 
-    <string name="delete_booking">Delete booked room</string>
+    <string name="delete_booking">Delete booked room?</string>
 
     <string name="take_from">Take from</string>
     <string name="take_before">Take before</string>
