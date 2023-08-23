@@ -4,22 +4,17 @@ import com.google.api.services.calendar.Calendar
 import com.google.api.services.calendar.model.Event
 import office.effective.common.exception.InstanceNotFoundException
 import office.effective.common.exception.MissingIdException
-import office.effective.features.booking.converters.BookingRepositoryConverter
 import office.effective.features.calendar.repository.CalendarRepository
 import office.effective.features.user.repository.UserRepository
-import office.effective.features.workspace.repository.WorkspaceRepository
 import office.effective.model.Booking
-import office.effective.model.IntegrationModel
-import org.ktorm.database.Database
-import utils.GoogleCalendarConverter
-import utils.GoogleCalendarConverter.toBookingModel
-import utils.GoogleCalendarConverter.toGoogleEvent
+import office.effective.features.calendar.service.GoogleCalendarConverter.toBookingModel
+import office.effective.features.calendar.service.GoogleCalendarConverter.toGoogleEvent
 import java.util.*
 
 class BookingCalendarRepository(
     private val calendarRepository: CalendarRepository,
     private val userRepository: UserRepository,
-    private val calendar : Calendar
+    private val calendar: Calendar
 ) : IBookingRepository {
     private val calendarEvents = calendar.Events();
 
@@ -65,10 +60,7 @@ class BookingCalendarRepository(
     }
 
     private fun findUserEmailByUserId(id: UUID): String {
-        return userRepository.findSetOfIntegrationsByUser(id).find { it.name.equals("email") }?.valueStr
-            ?: throw InstanceNotFoundException(
-                IntegrationModel::class, "Email integration for user $id cannot be found ", null
-            );
+        return userRepository.findById(id).email
     }
 
     override fun findAllByWorkspaceId(workspaceId: UUID): List<Booking> {
@@ -81,7 +73,7 @@ class BookingCalendarRepository(
     override fun findAllByOwnerAndWorkspaceId(ownerId: UUID, workspaceId: UUID): List<Booking> {
         val email = findUserEmailByUserId(ownerId)
         return findAllByWorkspaceId(workspaceId).filter {
-            it.owner.integrations?.find { it.name.equals("email") }?.valueStr.equals(
+            it.owner.email.equals(
                 email
             )
         }
@@ -100,9 +92,9 @@ class BookingCalendarRepository(
         val event = booking.toGoogleEvent()
         val calendarID: String =
             calendarRepository.findByWorkspace(booking.workspace.id ?: throw MissingIdException("workspace model"))
-        calendar.Events().insert("effective.office@effective.band", event).execute()
+        val savedEvent = calendar.Events().insert("effective.office@effective.band", event).execute()
 
-        return findById(UUID.fromString(event.id)) ?: throw Exception("Calendar save goes wrong")
+        return findById(UUID.fromString(savedEvent.id.uppercase())) ?: throw Exception("Calendar save goes wrong")
     }
 
     override fun update(booking: Booking): Booking {
