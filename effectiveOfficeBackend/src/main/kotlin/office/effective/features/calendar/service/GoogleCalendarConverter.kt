@@ -17,6 +17,7 @@ import office.effective.features.user.converters.UserDTOModelConverter
 import office.effective.features.user.repository.UserRepository
 import office.effective.features.workspace.converters.WorkspaceFacadeConverter
 import office.effective.model.Booking
+import office.effective.model.Workspace
 import org.koin.core.context.GlobalContext
 import utils.RecurrenceRuleFactory.getRecurrence
 import utils.RecurrenceRuleFactory.rule
@@ -29,15 +30,19 @@ object GoogleCalendarConverter {
         )
 
     fun Event.toBookingDTO(): BookingDTO {
-        val email = if (organizer.email != defaultAccount) organizer.email else description.substringAfter(" ")
+        val a: String = organizer?.email ?: ""
+        val email = if (a != defaultAccount) a else description.substringAfter(" ")
         val recurrence = recurrence?.toString()?.getRecurrence()?.toDto()
         return BookingDTO(
             owner = getUser(email),
-            participants = attendees.filter { !it.resource }.map { getUser(it.email) },
-            workspace = getWorkspace(attendees.first { it.resource }.email),
-            id = null,
-            beginBooking = start.dateTime.value,
-            endBooking = end.dateTime.value,
+            participants = attendees?.filter { !(it?.resource ?: true) }?.map { getUser(it.email) } ?: listOf(),
+            workspace = getWorkspace(
+                attendees?.firstOrNull { it?.resource ?: false }?.email
+                    ?: "c_1882249i0l5ieh0cih42dli6fodbi@resource.calendar.google.com"
+            ),
+            id = this.id ?: null,
+            beginBooking = start?.dateTime?.value ?: 0,//TODO FIX date placeholder
+            endBooking = end?.dateTime?.value ?: 0,//TODO FIX date placeholder
             recurrence = recurrence
         )
     }

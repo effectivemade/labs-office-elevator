@@ -39,13 +39,17 @@ class CalendarRepository(
      * @author Danil Kiselev
      * */
     fun findWorkspaceById(calendarId: String): Workspace {
-        val workspaceEntity =
-            db.calendarIds.find { it.calendarId eq calendarId }?.workspace ?: throw InstanceNotFoundException(
-                WorkspaceEntity::class, "Workspace with such google calendar id not found", null
+        try {
+            val workspaceEntity =
+                db.calendarIds.find { it.calendarId eq calendarId }?.workspace ?: throw InstanceNotFoundException(
+                    WorkspaceEntity::class, "Workspace with such google calendar id not found", null
+                )
+            return converter.entityToModel(
+                workspaceEntity, workspaceRepository.findUtilitiesByWorkspaceId(workspaceEntity.id)
             )
-        return converter.entityToModel(
-            workspaceEntity, workspaceRepository.findUtilitiesByWorkspaceId(workspaceEntity.id)
-        )
+        } catch (ex: InstanceNotFoundException) {
+            return Workspace(UUID.randomUUID(), "placeholder workspace", "tag placeholder", listOf(), null)
+        }
     }
 
     fun findAllCalendarsId(): List<String> {
