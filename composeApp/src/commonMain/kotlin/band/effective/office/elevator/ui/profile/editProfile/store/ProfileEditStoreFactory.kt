@@ -2,16 +2,24 @@ package band.effective.office.elevator.ui.profile.editProfile.store
 
 import band.effective.office.elevator.domain.models.User
 import band.effective.office.elevator.domain.useCase.GetUserByIdUseCase
+import band.effective.office.elevator.domain.useCase.GetUserUseCase
 import band.effective.office.elevator.domain.useCase.UpdateUserUseCase
 import band.effective.office.elevator.ui.models.validator.Validator
 import band.effective.office.elevator.ui.profile.editProfile.store.ProfileEditStore.*
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
+import band.effective.office.elevator.ui.profile.editProfile.store.ProfileEditStore.*
+import band.effective.office.elevator.ui.profile.mainProfile.store.ProfileStoreFactory
+import band.effective.office.network.model.Either
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -20,7 +28,7 @@ internal class ProfileEditStoreFactory(
     private val user: String,
 ) : KoinComponent {
 
-    private val getUserByIdUseCase: GetUserByIdUseCase by inject()
+    private val getUserUseCase: GetUserUseCase by inject()
     private val updateUserUseCase: UpdateUserUseCase by inject()
     private val validator: Validator = Validator()
 
@@ -76,15 +84,15 @@ internal class ProfileEditStoreFactory(
                 val uptUser = User(
                     id = user.user.id,
                     imageUrl = user.user.imageUrl,
-                    userName = intent.userName,
-                    post = intent.post,
+                    userName = intent.userName, post = intent.post,
                     phoneNumber = intent.phoneNumber,
                     telegram = intent.telegram,
                     email = user.user.email
                 )
                 dispatch(Msg.ProfileData(user = uptUser))
                 if (checkPhoneNumber(intent.phoneNumber) && checkUserdata(userName = intent.userName) && checkPost(
-                        intent.post) && checkTelegram(intent.telegram)
+                        intent.post
+                    ) && checkTelegram(intent.telegram)
                 ) {
                     updateUserUseCase.execute(uptUser)
                     publish(Label.SavedChange)
@@ -176,9 +184,23 @@ internal class ProfileEditStoreFactory(
         }
 
         private fun fetchUserInfo() {
-            scope.launch {
-                getUserByIdUseCase.executeInFormat(user).collect { user ->
-                    dispatch(Msg.ProfileData(user = user))
+            scope.launch(Dispatchers.IO) {
+                getUserUseCase.executeInFormat().collect { user ->
+                    withContext(Dispatchers.Main) {
+                        withContext(Dispatchers.Main) {
+                            when (user) {
+                                is Either.Success -> {
+                                    dispatch(Msg.ProfileData(user = user.data))
+                                }
+                                is Either.Error -> {
+                                    // TODO show error on UI
+                                    user.error.saveData?.let {
+                                        dispatch(Msg.ProfileData(user = it))
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -191,9 +213,10 @@ internal class ProfileEditStoreFactory(
     private object ReducerImpl : Reducer<State, Msg> {
         override fun State.reduce(message: Msg): State =
             when (message) {
-                is Msg.ProfileData ->
+                is Msg.ProfileData -> {
                     copy(
                         isData = true,
+                        isLoading = false,
                         user = User(
                             id = message.user.id,
                             userName = message.user.userName,
@@ -204,6 +227,7 @@ internal class ProfileEditStoreFactory(
                             email = message.user.email
                         )
                     )
+                }
 
                 is Msg.ErrorPhone ->
                     copy(isErrorPhone = message.errorPhone)

@@ -9,9 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.Divider
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -23,25 +21,59 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.intl.Locale
+import band.effective.office.elevator.utils.DayOfWeekLocalizations
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.domain.models.BookingInfo
+import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.textInBorderGray
 import band.effective.office.elevator.ui.booking.models.Frequency
-import band.effective.office.elevator.utils.NumToMonth
+import band.effective.office.elevator.utils.MonthLocalizations
 import dev.icerock.moko.resources.compose.stringResource
-import effective.office.modalcustomdialog.Dialog
 
 @Composable
 fun BookAccept(
     onClickCloseBookAccept: () -> Unit,
     confirmBooking: () -> Unit,
     bookingInfo: BookingInfo,
-    frequency: Frequency
+    frequency: Frequency,
+    period: BookingPeriod
 ) {
+
+    val startMonth = MonthLocalizations.getMonthName(
+        month = bookingInfo.dateOfStart.month,
+        locale = Locale(languageTag = Locale.current.language)
+    )
+
+    val finishMonth = MonthLocalizations.getMonthName(
+        month = bookingInfo.dateOfEnd.month,
+        locale = Locale(languageTag = Locale.current.language)
+    )
+
+    val startDay = bookingInfo.dateOfStart.dayOfMonth
+    val finishDay = bookingInfo.dateOfEnd.dayOfMonth
+
+    val startYear = bookingInfo.dateOfStart.year
+    val finishYear = bookingInfo.dateOfEnd.year
+
+    val startTime = bookingInfo.dateOfStart.time
+    val finishTime = bookingInfo.dateOfEnd.time
+
+    val date =
+        if (startYear == finishYear) if (startMonth == finishMonth) if (startDay == finishDay) "$startDay $startMonth $startYear" else "$startDay - $finishDay $startMonth $startYear"
+        else "$startDay $startMonth - $finishDay $finishMonth $startYear"
+        else "$startDay $startMonth $startYear - $finishDay $finishMonth $finishYear"
+
+    val time = "${startTime.hour.toString().padStart(2, '0')}:${
+        startTime.minute.toString().padStart(2, '0')
+    } - ${finishTime.hour.toString().padStart(2, '0')}:${
+        finishTime.minute.toString().padStart(2, '0')
+    }"
+
     Box {
         Column(modifier = Modifier.fillMaxWidth().background(Color.White)) {
             Spacer(modifier = Modifier.padding(vertical = 10.dp))
@@ -82,8 +114,9 @@ fun BookAccept(
                     )
                     Text(
                         text = with(bookingInfo) {
-                            "${frequency.toString()} ${dateOfStart.date.dayOfMonth} " + NumToMonth(
-                                dateOfStart.date.monthNumber
+                            "${frequency.toString()} ${dateOfStart.date.dayOfMonth} " + MonthLocalizations.getMonthName(
+                                month = dateOfStart.date.month,
+                                locale = Locale(languageTag = Locale.current.language)
                             ) + " ${dateOfStart.time.hour.toString()}:${
                                 with(
                                     dateOfStart.time

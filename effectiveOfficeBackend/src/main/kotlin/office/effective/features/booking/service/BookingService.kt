@@ -2,7 +2,7 @@ package office.effective.features.booking.service
 
 import office.effective.common.exception.InstanceNotFoundException
 import office.effective.common.exception.MissingIdException
-import office.effective.features.booking.repository.BookingRepository
+import office.effective.features.booking.repository.IBookingRepository
 import office.effective.features.user.repository.UserEntity
 import office.effective.features.user.repository.UserRepository
 import office.effective.features.workspace.repository.WorkspaceRepository
@@ -10,7 +10,7 @@ import office.effective.model.*
 import java.util.UUID
 
 class BookingService(
-    private val bookingRepository: BookingRepository,
+    private val bookingRepository: IBookingRepository,
     private val userRepository: UserRepository,
     private val workspaceRepository: WorkspaceRepository
 ) {
@@ -20,7 +20,7 @@ class BookingService(
      *
      * @author Daniil Zavyalov
      */
-    fun existsById(id: UUID): Boolean {
+    fun existsById(id: String): Boolean {
         return bookingRepository.existsById(id)
     }
 
@@ -29,7 +29,7 @@ class BookingService(
      *
      * @author Daniil Zavyalov
      */
-    fun deleteById(id: UUID) {
+    fun deleteById(id: String) {
         bookingRepository.deleteById(id)
     }
 
@@ -38,7 +38,7 @@ class BookingService(
      *
      * @author Daniil Zavyalov
      */
-    fun findById(id: UUID): Booking? {
+    fun findById(id: String): Booking? {
         val booking = bookingRepository.findById(id) ?: return null
         val userIds = mutableSetOf<UUID>()
         for (participant in booking.participants) {
@@ -97,8 +97,8 @@ class BookingService(
 
             else -> bookingRepository.findAll()
         }
-        if (bookingList.isEmpty()) return bookingList
-        return findIntegrationsAndUtilities(bookingList)
+//        if (bookingList.isEmpty()) return bookingList
+        return bookingList//findIntegrationsAndUtilities(bookingList) TODO: FIX ME, SEMPAI
     }
 
     /**

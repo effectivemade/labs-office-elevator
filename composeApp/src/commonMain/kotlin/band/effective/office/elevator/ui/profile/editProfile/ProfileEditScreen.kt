@@ -62,6 +62,9 @@ fun ProfileEditScreen(component: ProfileEditComponent){
                 component = component
             )
         }
+        user.isLoading -> {
+            Text("Loading")
+        }
         else -> {}
     }
 

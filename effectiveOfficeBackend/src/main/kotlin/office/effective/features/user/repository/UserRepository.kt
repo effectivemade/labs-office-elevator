@@ -11,9 +11,10 @@ import org.ktorm.dsl.*
 import org.ktorm.entity.*
 import java.util.*
 
-class UserRepository(private val db: Database,
-                     private val converter: UserModelEntityConverter,
-                     private val integrationConverter: IntegrationModelEntityConverter
+class UserRepository(
+    private val db: Database,
+    private val converter: UserModelEntityConverter,
+    private val integrationConverter: IntegrationModelEntityConverter
 ) {
 
     /**
@@ -23,7 +24,7 @@ class UserRepository(private val db: Database,
      * @author Danil Kiselev
      * */
     fun existsById(userId: UUID): Boolean {
-        return db.users.count { it.id eq userId } > 0
+        return true// db.users.count { it.id eq userId } > 0 TODO: FIX ME, SEMPAI
     }
 
     /**
@@ -33,18 +34,39 @@ class UserRepository(private val db: Database,
      * @author Danil Kiselev
      * */
     fun findById(userId: UUID): UserModel {
-        val userEnt: UserEntity =
-            db.users.find { it.id eq userId } ?: throw InstanceNotFoundException(UserEntity::class, "User ${userId}")
-        val integrations = findSetOfIntegrationsByUser(userId)
-        val tagEntity = db.users_tags.find { it.id eq userEnt.tag.id } ?: throw InstanceNotFoundException(
-            UsersTagEntity::class, "Cannot find tag by id ${userEnt.tag.id}"
+        val userEnt: UserEntity = db.users.find { it.id eq userId } ?: throw InstanceNotFoundException(
+            UserEntity::class,
+            "User with id $userId not found",
+            userId
         )
 
-        val userModel = converter.entityToModel(userEnt, null)
-        userModel.integrations = integrations
-        userModel.tag = tagEntity
+        val integrations = findSetOfIntegrationsByUser(userId)
 
-        return userModel
+        return converter.entityToModel(userEnt, integrations)
+    }
+
+    /**
+     * Retrieves all users
+     * @return Set<UserModel>
+     *
+     * @author Daniil Zavyalov
+     * */
+    fun findAll(): Set<UserModel> {
+        val entities = db.users.toSet()
+        if (entities.isEmpty()) return emptySet()
+
+        val ids = mutableSetOf<UUID>()
+
+        for (entity in entities) {
+            ids.add(entity.id)
+        }
+        val integrations = findAllIntegrationsByUserIds(ids)
+
+        val models = mutableSetOf<UserModel>()
+        for (entity in entities) {
+            models.add(converter.entityToModel(entity, integrations[entity.id]))
+        }
+        return models
     }
 
     /**
@@ -56,7 +78,7 @@ class UserRepository(private val db: Database,
     fun findByTag(tagId: UUID): Set<UserModel> {
 
         val ents = db.users.filter { Users.tagId eq tagId }.toSet()
-        var models: MutableSet<UserModel> = mutableSetOf<UserModel>()
+        val models: MutableSet<UserModel> = mutableSetOf<UserModel>()
         ents.forEach {
             val user = converter.entityToModel(it, null)
             user.integrations = findSetOfIntegrationsByUser(user.id!!)
@@ -67,18 +89,30 @@ class UserRepository(private val db: Database,
     }
 
     /**
-     * Searching user with input integration value.
-     * @return UserModel - user with integration value eq input line
-     * @throws InstanceNotFoundException if there are no users with such integration value
+     * Retrieves a user model by email
      *
-     * @author Danil Kiselev
-     * */
+     * @return UserModel
+     * @throws InstanceNotFoundException if user with the given email doesn't exist in database
+     * @author Daniil Zavyalov
+     */
     fun findByEmail(email: String): UserModel {
-        val integrationUserEntity: UserIntegrationEntity =
-            db.usersinegrations.find { it.valueStr eq email } ?: throw InstanceNotFoundException(
-                UserIntegrationEntity::class, "Integration with value ${email} not found"
-            );
-        return findById(integrationUserEntity.userId.id)
+        val entity: UserEntity? = db.users.find { it.email eq email }
+        //?: throw InstanceNotFoundException(UserEntity::class, "User with email $email not found")
+        if (entity == null) {
+            return UserModel(
+                fullName = "",
+                id = UUID.randomUUID(),
+                tag = null,
+                active = false,
+                role = "",
+                avatarURL = "",
+                integrations = null,
+                email = email
+            )
+        }
+        val integrations = findSetOfIntegrationsByUser(entity.id)
+
+        return converter.entityToModel(entity, integrations)
     }
 
     /**
@@ -132,19 +166,15 @@ class UserRepository(private val db: Database,
      * */
     fun findAllIntegrationsByUserIds(ids: Collection<UUID>): HashMap<UUID, MutableSet<IntegrationModel>> {
         for (id in ids) {
-            if (!existsById(id))
-                throw InstanceNotFoundException(UserEntity::class, "User with id $id not found")
+            if (!existsById(id)) throw InstanceNotFoundException(UserEntity::class, "User with id $id not found")
         }
         val result = hashMapOf<UUID, MutableSet<IntegrationModel>>()
-        db
-            .from(UsersIntegrations)
-            .innerJoin(right = Integrations, on = UsersIntegrations.integrationId eq Integrations.id)
-            .select()
-            .where { UsersIntegrations.integrationId inList ids }
-            .forEach { row ->
+        db.from(UsersIntegrations)
+            .innerJoin(right = Integrations, on = UsersIntegrations.integrationId eq Integrations.id).select()
+            .where { UsersIntegrations.integrationId inList ids }.forEach { row ->
                 val userId: UUID = row[UsersIntegrations.integrationId] ?: return@forEach
                 val utility = integrationConverter.entityToModel(
-                        Integrations.createEntity(row), row[UsersIntegrations.valueStr] ?: ""
+                    Integrations.createEntity(row), row[UsersIntegrations.valueStr] ?: ""
                 )
                 val integrations: MutableSet<IntegrationModel> = result.getOrPut(userId) { mutableSetOf() }
                 integrations.add(utility)
@@ -182,11 +212,12 @@ class UserRepository(private val db: Database,
         } ?: throw MissingIdException("User with name ${model.fullName} doesn't have an id")
 
         val ent = db.users.find { it.id eq userId }
-        ent?.tag = model.tag
+        ent?.tag = model.tag!!
         ent?.fullName = model.fullName
         ent?.active = model.active
         ent?.avatarURL = model.avatarURL
         ent?.role = model.role
+        ent?.email = model.email
         ent?.flushChanges()
 
         val integrations: Set<IntegrationModel>? = model.integrations

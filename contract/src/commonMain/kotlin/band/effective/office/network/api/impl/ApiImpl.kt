@@ -11,6 +11,7 @@ import band.effective.office.network.model.ErrorResponse
 import band.effective.office.utils.KtorEtherClient
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
+import io.ktor.http.append
 import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
 import kotlinx.coroutines.flow.Flow
@@ -165,5 +166,12 @@ class ApiImpl : Api {
                     )
                 )
             )
+        }
+
+    override suspend fun getUserByEmail(email: String): Either<ErrorResponse, UserDTO> =
+        client.securityResponse("$baseUrl/users"){
+           url {
+               parameters.append(name = "email", value = email)
+           }
         }
 }

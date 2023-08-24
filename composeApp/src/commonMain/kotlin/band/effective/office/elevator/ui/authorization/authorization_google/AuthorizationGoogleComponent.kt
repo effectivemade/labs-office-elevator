@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.authorization.authorization_google
 
+import band.effective.office.elevator.domain.models.User
 import band.effective.office.elevator.domain.models.UserData
 import band.effective.office.elevator.ui.authorization.authorization_google.store.AuthorizationGoogleStore
 import band.effective.office.elevator.ui.authorization.authorization_google.store.AuthorizationGoogleStoreFactory
@@ -35,7 +36,7 @@ class AuthorizationGoogleComponent(
     }
 
     sealed class Output {
-        data class OpenAuthorizationPhoneScreen(val userData: UserData) : Output()
+        data class OpenAuthorizationPhoneScreen(val userData: User) : Output()
     }
 
 }

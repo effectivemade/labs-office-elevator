@@ -6,6 +6,6 @@ import kotlinx.coroutines.CoroutineScope
 
 class CreateBookingUseCase(private val repository: BookingRepository) {
     suspend fun execute(coroutineScope: CoroutineScope, creatingBookModel: CreatingBookModel) {
-        repository.createBook(bookingInfo = creatingBookModel)
+        repository.createBook(creatingBookModel = creatingBookModel)
     }
 }

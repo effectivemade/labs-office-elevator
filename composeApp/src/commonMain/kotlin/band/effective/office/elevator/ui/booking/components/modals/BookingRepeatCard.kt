@@ -15,27 +15,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
-import band.effective.office.elevator.domain.models.BookingPeriodUI
+import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.domain.models.DayOfWeek
 import band.effective.office.elevator.ui.booking.models.Frequency
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun BookingRepeatCard(
-    onSelected: (Pair<String, BookingPeriodUI>) -> Unit,
+    onSelected: (Pair<String, BookingPeriod>) -> Unit,
     modifier: Modifier,
     frequency: Frequency
 ) {
 
     val days: List<DayOfWeek> = frequency.getDays()
     val strings = listOf(
-        Pair(first = MainRes.strings.do_not_repeat, second = BookingPeriodUI.NoPeriod),
-        Pair(first = MainRes.strings.every_work_day, second = BookingPeriodUI.EveryWorkDay(5)),
-        Pair(first = MainRes.strings.every_week, second = BookingPeriodUI.Week(7, days)),
+        Pair(first = MainRes.strings.do_not_repeat, second = BookingPeriod.NoPeriod),
+        Pair(first = MainRes.strings.every_work_day, second = BookingPeriod.EveryWorkDay(5)),
+        Pair(first = MainRes.strings.every_week, second = BookingPeriod.Week(7, days)),
         Pair(
-            first = MainRes.strings.every_month, second = BookingPeriodUI.Year(365),
+            first = MainRes.strings.every_month, second = BookingPeriod.Month(31),
         ),
-        Pair(first = MainRes.strings.another, second = 0)
+        Pair(first = MainRes.strings.another, second = BookingPeriod.Another)
     )
 
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(strings[0]) }

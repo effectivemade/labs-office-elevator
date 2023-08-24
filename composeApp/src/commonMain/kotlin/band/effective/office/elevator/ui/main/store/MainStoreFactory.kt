@@ -10,6 +10,7 @@ import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsF
 import band.effective.office.elevator.ui.models.ElevatorState
 import band.effective.office.elevator.ui.models.ReservedSeat
 import band.effective.office.elevator.utils.getCurrentDate
+import band.effective.office.network.model.Either
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -213,10 +214,17 @@ internal class MainStoreFactory(
 
             scope.launch(Dispatchers.IO) {
                 bookingInteractor
-                    .getByDate(ownerId = "", date = date, coroutineScope = this)
+                    .getByDate(ownerId = "", date = date)
                     .collect { bookings ->
                         withContext(Dispatchers.Main) {
-                            dispatch(Msg.UpdateSeatsReservation(reservedSeats = bookings))
+                            when(bookings) {
+                                is Either.Error -> {
+                                    // TODO show error on UI
+                                }
+                                is Either.Success -> {
+                                    dispatch(Msg.UpdateSeatsReservation(reservedSeats = bookings.data))
+                                }
+                            }
                         }
                     }
             }
@@ -230,16 +238,26 @@ internal class MainStoreFactory(
 
             scope.launch(Dispatchers.IO) {
                 bookingInteractor
-                    .getByDate(ownerId = "", date = date, coroutineScope = this)
+                    .getByDate(ownerId = "", date = date)
                     .collect { bookings ->
                         withContext(Dispatchers.Main) {
-                            dispatch(
-                                Msg.UpdateSeatReservationByDate(
-                                    date = recentDate,
-                                    reservedSeats = bookings,
-                                    dateFiltrationOnReserves = updatedList
-                                )
-                            )
+                            withContext(Dispatchers.Main) {
+                                when(bookings) {
+                                    is Either.Error -> {
+                                        // TODO show error on UI
+                                    }
+                                    is Either.Success -> {
+                                        dispatch(
+                                            Msg.UpdateSeatReservationByDate(
+                                                date = recentDate,
+                                                reservedSeats = bookings.data,
+                                                dateFiltrationOnReserves = updatedList
+                                            )
+                                        )
+                                    }
+                                }
+                            }
+
                         }
                     }
             }
