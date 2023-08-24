@@ -171,7 +171,7 @@ fun NonEmptyReservation(
 
         Box (modifier = Modifier
             .fillMaxWidth(0.6f).offset(itemWidthDp - dropDownWidthDp,menuOffset)){
-            DropDownMenu(
+        DropDownMenu(
                 expanded =  showOptionsMenu,
                 content = {
                     BookingContextMenu(onClick = onClickCloseOptionMenu,

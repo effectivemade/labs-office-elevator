@@ -9,9 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.Divider
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -33,7 +31,6 @@ import band.effective.office.elevator.textInBorderGray
 import band.effective.office.elevator.ui.booking.models.Frequency
 import band.effective.office.elevator.utils.NumToMonth
 import dev.icerock.moko.resources.compose.stringResource
-import effective.office.modalcustomdialog.Dialog
 
 @Composable
 fun BookAccept(
@@ -81,7 +78,7 @@ fun BookAccept(
                         modifier = Modifier.padding(top = 10.dp, bottom = 5.dp)
                     )
                     Text(
-                        text = when(frequency.getResearchEnd().first){
+                        text = when(frequency.getResearchEnd().first.first){
                             "ThisDay" -> noPeriodReserve(bookingInfoDomain, frequency)
                             "Never" -> noEndsPeriodReserve(bookingInfoDomain, frequency)
                             "Date" ->  noEndsPeriodReserve(bookingInfoDomain, frequency)
@@ -126,7 +123,7 @@ fun noEndsPeriodReserve(bookingInfoDomain: BookingInfoDomain, frequency: Frequen
 fun noPeriodReserve(bookingInfoDomain: BookingInfoDomain, frequency: Frequency): String{
     return with(bookingInfoDomain) {
         if(frequency.toString().isNotEmpty())"${frequency.toString()} " else {""} +
-                if((frequency.getResearchEnd().third != "Week" && frequency.getResearchEnd().third != "Day") || frequency.getResearchEnd().first == "CoupleTimes"){
+                if((frequency.getResearchEnd().third != "Week" && frequency.getResearchEnd().third != "Day") || frequency.getResearchEnd().first.first == "CoupleTimes"){
                 "${dateOfStart.date.dayOfMonth} " +
                     if(frequency.getResearchEnd().third != "Month"){
                     NumToMonth(dateOfStart.date.monthNumber)}
@@ -147,7 +144,7 @@ fun noPeriodReserve(bookingInfoDomain: BookingInfoDomain, frequency: Frequency):
                 " \nпо " + frequency.getResearchEnd().second
             }else{
                 if (frequency.getResearchEnd().second.isNotEmpty()){
-                    " и ещё ${frequency.getResearchEnd().second} раз(-а) через неделю"
+                    " в ближайшие ${frequency.getResearchEnd().second} недель"
                 }else ""
         }
     }

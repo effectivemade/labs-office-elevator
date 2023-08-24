@@ -12,7 +12,6 @@ import band.effective.office.elevator.domain.useCase.GetBookingsUseCase
 import band.effective.office.elevator.domain.entity.AuthorizationEntity
 import band.effective.office.elevator.domain.entity.BookingInteractor
 import band.effective.office.elevator.domain.repository.EmployeeRepository
-import band.effective.office.elevator.domain.repository.OfficeElevatorRepository
 import band.effective.office.elevator.domain.repository.UserProfileRepository
 import band.effective.office.elevator.domain.useCase.AboutEmployeeUseCase
 import band.effective.office.elevator.domain.useCase.DeleteBookingUseCase

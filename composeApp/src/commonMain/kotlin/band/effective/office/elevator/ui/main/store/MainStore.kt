@@ -27,7 +27,7 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, MainStore.Label> 
 
         data class OnClickExtendBooking(val seat: ReservedSeat) : Intent
 
-
+        data class OnClickRepeatBooking(val seat: ReservedSeat) : Intent
         data class OnClickDeleteBooking(val seat: ReservedSeat) : Intent
         object OnClickCloseDeleteBooking: Intent
         object OnClickOpenEditBooking: Intent

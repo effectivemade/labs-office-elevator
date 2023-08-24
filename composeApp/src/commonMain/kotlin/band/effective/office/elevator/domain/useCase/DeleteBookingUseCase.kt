@@ -1,6 +1,6 @@
 package band.effective.office.elevator.domain.useCase
 
-import band.effective.office.elevator.domain.models.BookingInfo
+import band.effective.office.elevator.domain.models.BookingInfoDomain
 import band.effective.office.elevator.domain.repository.BookingRepository
 import band.effective.office.elevator.ui.models.ReservedSeat
 import kotlinx.coroutines.CoroutineScope
@@ -11,7 +11,7 @@ class DeleteBookingUseCase(
     private val repository: BookingRepository
 )  {
     suspend fun deleteBooking(seat: ReservedSeat, coroutineScope: CoroutineScope) = repository.deleteBooking(
-        BookingInfo(
+        BookingInfoDomain(
             id = seat.bookingId,
             ownerId = seat.ownerId,
             seatName = seat.seatName,

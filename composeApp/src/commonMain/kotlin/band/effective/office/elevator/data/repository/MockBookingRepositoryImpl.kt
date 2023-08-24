@@ -27,7 +27,7 @@ class MockBookingRepositoryImpl(private val api:Api): BookingRepository {
     private val initLis = listOf(
         BookingInfoDomain(
             id = "2455W",
-            ownerId = "1L",
+            ownerId = "Ольга Белозерова",
             seatName = "Seat A1",
             dateOfStart = LocalDateTime(
                 date = LocalDate(year = 2023, monthNumber = 7, dayOfMonth = 13),
@@ -40,7 +40,7 @@ class MockBookingRepositoryImpl(private val api:Api): BookingRepository {
         ),
         BookingInfoDomain(
             id = "303040W",
-            ownerId = "1L",
+            ownerId = "Ольга Белозерова",
             seatName = "Seat A2",
             dateOfStart = LocalDateTime(
                 date = LocalDate(year = 2023, monthNumber = 7, dayOfMonth = 13),
@@ -53,7 +53,7 @@ class MockBookingRepositoryImpl(private val api:Api): BookingRepository {
         ),
         BookingInfoDomain(
             id = "8989W",
-            ownerId = "1L",
+            ownerId = "Ольга Белозерова",
             seatName = "Seat A2",
             dateOfStart = LocalDateTime(
                 date = LocalDate(year = 2023, monthNumber = 7, dayOfMonth = 14),
@@ -66,7 +66,7 @@ class MockBookingRepositoryImpl(private val api:Api): BookingRepository {
         ),
         BookingInfoDomain(
             id = "234W",
-            ownerId = "1L",
+            ownerId = "Ольга Белозерова",
             seatName = "Seat A2",
             dateOfStart = LocalDateTime(
                 date = LocalDate(year = 2023, monthNumber = 7, dayOfMonth = 15),
@@ -79,7 +79,7 @@ class MockBookingRepositoryImpl(private val api:Api): BookingRepository {
         ),
         BookingInfoDomain(
             id = "754W",
-            ownerId = "1L",
+            ownerId = "Ольга Белозерова",
             seatName = "Seat A2",
             dateOfStart = LocalDateTime(
                 date = LocalDate(year = 2023, monthNumber = 8, dayOfMonth = 3),
@@ -92,7 +92,7 @@ class MockBookingRepositoryImpl(private val api:Api): BookingRepository {
         ),
         BookingInfoDomain(
             id = "2222W",
-            ownerId = "1H",
+            ownerId = "Лилия Акентьева",
             seatName = "Arrakis",// | Seat 2
             dateOfStart = LocalDateTime(
                 date = LocalDate(year = 2023, monthNumber = 8, dayOfMonth = 3),
@@ -105,7 +105,7 @@ class MockBookingRepositoryImpl(private val api:Api): BookingRepository {
         ),
         BookingInfoDomain(
             id = "358M",
-            ownerId = "1H",
+            ownerId = "Ольга Белозерова",
             seatName= "Sun",// | Meeting room
             dateOfStart = LocalDateTime(
                 date = LocalDate(year = 2023, monthNumber = 8, dayOfMonth = 17),

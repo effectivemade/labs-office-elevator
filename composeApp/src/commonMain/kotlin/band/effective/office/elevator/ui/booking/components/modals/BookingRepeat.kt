@@ -1,16 +1,21 @@
 package band.effective.office.elevator.ui.booking.components.modals
 
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -31,6 +36,7 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -38,25 +44,33 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.components.DropDownMenu
 import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.domain.models.BookingPeriodUI
 import band.effective.office.elevator.textInBorderGray
 import band.effective.office.elevator.ui.booking.models.Frequency
 import dev.icerock.moko.resources.compose.stringResource
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun BookingRepeat(
     periodMeasure: BookingPeriodUI,
@@ -66,13 +80,7 @@ fun BookingRepeat(
     onSelected: () -> Unit,
     onDaySelected: (Int) -> Unit,
 ) {
-    var periodMeasureState = mutableStateOf("")
-    when(periodMeasure){
-        is BookingPeriodUI.EveryWorkDay -> periodMeasureState.value = "Day"
-        is BookingPeriodUI.Week -> periodMeasureState.value = "Week"
-        is BookingPeriodUI.Month -> periodMeasureState.value = "Month"
-        else -> periodMeasureState.value = "Year"
-    }
+    var periodMeasureState = remember {mutableStateOf("Week")}
     val periodicity = remember { mutableStateOf("1") }
 
     val listDaysOfWeek = listOf(
@@ -96,9 +104,21 @@ fun BookingRepeat(
     val endDate = remember { mutableStateOf("01.01.2023") }
     val endPeriod = remember { mutableStateOf("1") }
 
-    var researchClose = mutableStateOf(Triple("Never","", periodMeasureState.value))
+    var researchClose = mutableStateOf(Triple(Pair("",""), "",""))
 
-
+    val isExpandedContextMenu = remember { mutableStateOf(false) }
+    val localDensity = LocalDensity.current
+    var itemWidthDp by remember {
+        mutableStateOf(0.dp)
+    }
+    var itemHeightDp by remember {
+        mutableStateOf(0.dp)
+    }
+    var menuOffset by remember { mutableStateOf(0.dp) }
+    var dropDownWidthDp by remember {
+        mutableStateOf(50.dp)
+    }
+    val coroutine = rememberCoroutineScope()
 
     Column(
         verticalArrangement = Arrangement.Top,
@@ -133,7 +153,6 @@ fun BookingRepeat(
                     top = 8.dp
                 )
         )
-        val isExpandedContextMenu = remember { mutableStateOf(false) }
 
         Column(
             verticalArrangement = Arrangement.Top,
@@ -186,9 +205,11 @@ fun BookingRepeat(
             )
 
             Column(
-                modifier = Modifier
+                modifier = Modifier.onGloballyPositioned { coordinates ->
+                    itemWidthDp = with(localDensity) { coordinates.size.width.toDp() }
+                    itemHeightDp = with(localDensity) { coordinates.size.height.toDp() }
+                }
             ) {
-                if(periodMeasureState.value != "Day") {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.Start),
                         verticalAlignment = Alignment.CenterVertically,
@@ -223,14 +244,14 @@ fun BookingRepeat(
                             keyboardActions = KeyboardActions.Default
                         )
                         OutlinedTextField(
-                            enabled = false,
+                            enabled = true,
                             readOnly = true,
                             value =
-                            when(periodMeasureState.value){
+                            when(periodMeasureState.value) {
                                 "Week" -> stringResource(MainRes.strings.week)
                                 "Month" -> stringResource(MainRes.strings.month)
                                 else -> stringResource(MainRes.strings.year)
-                            },
+                                                           },
                             onValueChange = {
 
                             },
@@ -240,7 +261,7 @@ fun BookingRepeat(
                             ),
                             modifier = Modifier
                                 .padding(
-                                    start = 16.dp,
+                                    start = 12.dp,
                                     top = 12.dp,
                                     end = 12.dp,
                                     bottom = 12.dp
@@ -251,6 +272,16 @@ fun BookingRepeat(
                                     onClick =
                                     {
                                         isExpandedContextMenu.value = !isExpandedContextMenu.value
+                                    },
+                                    modifier = Modifier.pointerInput(true){
+                                        detectTapGestures(
+                                            onPress = {
+                                                coroutine.launch {
+                                                    delay(300L)
+                                                    menuOffset = (it.y).toDp()
+                                                }
+                                            }
+                                        )
                                     }
                                 ) {
                                     Image(
@@ -261,6 +292,29 @@ fun BookingRepeat(
                                     )
                                 }
                             }
+                        )
+                    }
+                Box (modifier = Modifier.fillMaxSize(.6f)){
+                    Box (modifier = Modifier
+                        .fillMaxWidth(0.6f).offset(itemWidthDp - dropDownWidthDp,menuOffset)) {
+                        DropDownMenu(
+                            expanded = isExpandedContextMenu.value,
+                            content = {
+                                BookingRepeatContextMenu(onClick = {
+                                    when(it){
+                                        "Неделя" -> periodMeasureState.value = "Week"
+                                        "Месяц" -> periodMeasureState.value = "Month"
+                                        "Год" -> periodMeasureState.value = "Year"
+                                        else -> periodMeasureState.value = it
+                                    }
+                                    isExpandedContextMenu.value=!isExpandedContextMenu.value
+
+                                })
+                            },
+                            modifier = Modifier.padding(end = 14.dp)
+                                .onGloballyPositioned { coordinates ->
+                                    dropDownWidthDp = with(localDensity) { coordinates.size.width.toDp() }
+                                }
                         )
                     }
                 }
@@ -287,15 +341,16 @@ fun BookingRepeat(
                             modifier = Modifier.padding(
                                 start = 54.dp,
                                 end = 16.dp,
-                                top = 16.dp
+                                top = 16.dp,
+                                bottom = 16.dp
                             )
                         ) {
                             itemsIndexed(listDaysOfWeek) { index, days ->
-                                var isExpanded by remember { mutableStateOf(false) }
+                                var isExpanded = remember { mutableStateOf(false) }
                                 val name: String = stringResource(days)
                                 Button(
                                     onClick = {
-                                        isExpanded = !isExpanded
+                                        isExpanded.value = !isExpanded.value
                                         list.add(Pair(first = name, second = index))
                                     },
                                     contentPadding = PaddingValues(
@@ -309,7 +364,7 @@ fun BookingRepeat(
                                         .wrapContentWidth().padding(end = 12.dp),
                                     border = BorderStroke(
                                         width = 1.dp,
-                                        color = if (isExpanded)
+                                        color = if (isExpanded.value)
                                             ExtendedThemeColors.colors.purple_heart_800
                                         else textInBorderGray
                                     ),
@@ -321,7 +376,7 @@ fun BookingRepeat(
                                             imageVector = Icons.Rounded.Done,
                                             tint = ExtendedThemeColors.colors.purple_heart_800,
                                             modifier = Modifier.size(
-                                                if (isExpanded) 20.dp
+                                                if (isExpanded.value) 20.dp
                                                 else 0.dp
                                             )
                                                 .align(Alignment.CenterVertically),
@@ -331,7 +386,7 @@ fun BookingRepeat(
                                     Text(
                                         text = stringResource(days),
                                         style = MaterialTheme.typography.body2.copy(
-                                            color = if (isExpanded) ExtendedThemeColors.colors.purple_heart_800
+                                            color = if (isExpanded.value) ExtendedThemeColors.colors.purple_heart_800
                                             else textInBorderGray
                                         ),
                                     )
@@ -340,16 +395,14 @@ fun BookingRepeat(
                         }
                     }
 
-                    if(periodMeasureState.value != "Day") {
-                        Divider(
-                            modifier = Modifier
-                                .fillMaxWidth(fraction = 1.0f)
-                                .height(height = 1.dp)
-                                .background(
-                                    color = ExtendedThemeColors.colors._66x
-                                )
-                        )
-                    }
+                    Divider(
+                        modifier = Modifier
+                            .fillMaxWidth(fraction = 1.0f)
+                            .height(height = 1.dp)
+                            .background(
+                                color = ExtendedThemeColors.colors._66x
+                            )
+                    )
 
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.Start),
@@ -416,7 +469,7 @@ fun BookingRepeat(
                                         color = ExtendedThemeColors.colors.radioTextColor,
                                         fontWeight = FontWeight(400)
                                     ),
-                                    modifier = Modifier.wrapContentHeight()//.fillMaxWidth()
+                                    modifier = Modifier.wrapContentHeight()
                                 )
                             //}
                         //}
@@ -523,10 +576,12 @@ fun BookingRepeat(
                         buttonText = stringResource(MainRes.strings.confirm_booking),
                         onClick = {
                             if(selected2.value)
-                                researchClose.value=Triple("Date", endDate.value, periodMeasureState.value)
+                                researchClose.value=Triple(Pair("Date", endDate.value), periodicity.value, periodMeasureState.value)
                             else{
                                 if(selected3.value)
-                                    researchClose.value=Triple("CoupleTimes", endPeriod.value, periodMeasureState.value)
+                                    researchClose.value=Triple(Pair("CoupleTimes", endPeriod.value), periodicity.value, periodMeasureState.value)
+                                else
+                                    researchClose.value=Triple(Pair("Never",""), periodicity.value, periodMeasureState.value)
                             }
                             val frequency = Frequency(days = list.toList(), researchEnd =researchClose.value)
                             confirmBooking(frequency)

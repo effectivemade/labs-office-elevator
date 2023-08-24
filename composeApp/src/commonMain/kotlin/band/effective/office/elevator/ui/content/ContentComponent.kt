@@ -2,7 +2,6 @@ package band.effective.office.elevator.ui.content
 
 import band.effective.office.elevator.ui.booking.BookingComponent
 import band.effective.office.elevator.ui.employee.FullEmployeeComponent
-import band.effective.office.elevator.ui.employee.allEmployee.EmployeeComponent
 import band.effective.office.elevator.ui.main.MainComponent
 import band.effective.office.elevator.ui.profile.ProfileComponent
 import com.arkivanov.decompose.ComponentContext
@@ -45,18 +44,13 @@ class ContentComponent(
 
     private fun bookingOutput(output: BookingComponent.Output){
         when(output){
-            is MainComponent.Output.OpenBookingScreen -> navigation.bringToFront(Config.Booking)
             BookingComponent.Output.OpenMainTab -> navigation.bringToFront(Config.MainScreen)
         }
     }
 
     private fun mainOutput(output: MainComponent.Output) {
         when(output){
-            MainComponent.Output.DeleteBooking -> TODO()
-            MainComponent.Output.ExtendBooking -> TODO()
-            MainComponent.Output.OpenBookingScreen -> TODO()
-            MainComponent.Output.OpenMap -> TODO()
-            MainComponent.Output.RepeatBooking -> TODO()
+            is MainComponent.Output.OpenBookingScreen -> navigation.bringToFront(Config.Booking)
         }
     }
 
