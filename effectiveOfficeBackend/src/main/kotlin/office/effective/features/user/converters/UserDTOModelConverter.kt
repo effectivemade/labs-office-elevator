@@ -1,5 +1,6 @@
 package office.effective.features.user.converters
 
+import office.effective.common.exception.InstanceNotFoundException
 import office.effective.common.utils.UuidValidator
 import office.effective.dto.IntegrationDTO
 import office.effective.dto.UserDTO
@@ -20,8 +21,13 @@ class UserDTOModelConverter(
      * @author Danil Kiselev, Daniil Zavyalov
      */
     fun dTOToModel(userDTO: UserDTO): UserModel {
+
         val userId = uuidConverter.uuidFromString(userDTO.id)
-        val tag: UsersTagEntity? = repository.findTagByUserOrNull(userId);
+        val tag: UsersTagEntity? = try {
+            repository.findTagByUserOrNull(userId);
+        } catch (ex: InstanceNotFoundException) {
+            null
+        }
         val integrations: MutableSet<IntegrationModel> = mutableSetOf()
         userDTO.integrations?.forEach { integrations.add(converter.dTOToModel(it)) }
         return UserModel(
@@ -52,7 +58,7 @@ class UserDTOModelConverter(
             avatarUrl = userModel.avatarURL ?: "",
             integrations = integrations,
             email = userModel.email,
-            tag = userModel.tag.name
+            tag = "tag placeholder"//TODO Fix tag placeholder
         )
     }
 

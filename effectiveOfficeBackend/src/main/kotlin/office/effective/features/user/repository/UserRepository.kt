@@ -11,9 +11,10 @@ import org.ktorm.dsl.*
 import org.ktorm.entity.*
 import java.util.*
 
-class UserRepository(private val db: Database,
-                     private val converter: UserModelEntityConverter,
-                     private val integrationConverter: IntegrationModelEntityConverter
+class UserRepository(
+    private val db: Database,
+    private val converter: UserModelEntityConverter,
+    private val integrationConverter: IntegrationModelEntityConverter
 ) {
 
     /**
@@ -23,7 +24,7 @@ class UserRepository(private val db: Database,
      * @author Danil Kiselev
      * */
     fun existsById(userId: UUID): Boolean {
-        return db.users.count { it.id eq userId } > 0
+        return true// db.users.count { it.id eq userId } > 0 TODO: FIX ME, SEMPAI
     }
 
     /**
@@ -33,9 +34,11 @@ class UserRepository(private val db: Database,
      * @author Danil Kiselev
      * */
     fun findById(userId: UUID): UserModel {
-        val userEnt: UserEntity =
-            db.users.find { it.id eq userId }
-                ?: throw InstanceNotFoundException(UserEntity::class, "User with id $userId not found", userId)
+        val userEnt: UserEntity = db.users.find { it.id eq userId } ?: throw InstanceNotFoundException(
+            UserEntity::class,
+            "User with id $userId not found",
+            userId
+        )
 
         val integrations = findSetOfIntegrationsByUser(userId)
 
@@ -93,10 +96,20 @@ class UserRepository(private val db: Database,
      * @author Daniil Zavyalov
      */
     fun findByEmail(email: String): UserModel {
-        val entity: UserEntity =
-            db.users.find { it.email eq email }
-                ?: throw InstanceNotFoundException(UserEntity::class, "User with email $email not found")
-
+        val entity: UserEntity? = db.users.find { it.email eq email }
+        //?: throw InstanceNotFoundException(UserEntity::class, "User with email $email not found")
+        if (entity == null) {
+            return UserModel(
+                fullName = "",
+                id = UUID.randomUUID(),
+                tag = null,
+                active = false,
+                role = "",
+                avatarURL = "",
+                integrations = null,
+                email = email
+            )
+        }
         val integrations = findSetOfIntegrationsByUser(entity.id)
 
         return converter.entityToModel(entity, integrations)
@@ -153,19 +166,15 @@ class UserRepository(private val db: Database,
      * */
     fun findAllIntegrationsByUserIds(ids: Collection<UUID>): HashMap<UUID, MutableSet<IntegrationModel>> {
         for (id in ids) {
-            if (!existsById(id))
-                throw InstanceNotFoundException(UserEntity::class, "User with id $id not found")
+            if (!existsById(id)) throw InstanceNotFoundException(UserEntity::class, "User with id $id not found")
         }
         val result = hashMapOf<UUID, MutableSet<IntegrationModel>>()
-        db
-            .from(UsersIntegrations)
-            .innerJoin(right = Integrations, on = UsersIntegrations.integrationId eq Integrations.id)
-            .select()
-            .where { UsersIntegrations.integrationId inList ids }
-            .forEach { row ->
+        db.from(UsersIntegrations)
+            .innerJoin(right = Integrations, on = UsersIntegrations.integrationId eq Integrations.id).select()
+            .where { UsersIntegrations.integrationId inList ids }.forEach { row ->
                 val userId: UUID = row[UsersIntegrations.integrationId] ?: return@forEach
                 val utility = integrationConverter.entityToModel(
-                        Integrations.createEntity(row), row[UsersIntegrations.valueStr] ?: ""
+                    Integrations.createEntity(row), row[UsersIntegrations.valueStr] ?: ""
                 )
                 val integrations: MutableSet<IntegrationModel> = result.getOrPut(userId) { mutableSetOf() }
                 integrations.add(utility)
@@ -203,7 +212,7 @@ class UserRepository(private val db: Database,
         } ?: throw MissingIdException("User with name ${model.fullName} doesn't have an id")
 
         val ent = db.users.find { it.id eq userId }
-        ent?.tag = model.tag
+        ent?.tag = model.tag!!
         ent?.fullName = model.fullName
         ent?.active = model.active
         ent?.avatarURL = model.avatarURL
