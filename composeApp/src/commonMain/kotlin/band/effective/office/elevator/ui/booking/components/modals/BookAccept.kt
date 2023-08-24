@@ -113,22 +113,7 @@ fun BookAccept(
                         modifier = Modifier.padding(top = 10.dp, bottom = 5.dp)
                     )
                     Text(
-                        text = with(bookingInfo) {
-                            "${frequency.toString()} ${dateOfStart.date.dayOfMonth} " + MonthLocalizations.getMonthName(
-                                month = dateOfStart.date.month,
-                                locale = Locale(languageTag = Locale.current.language)
-                            ) + " ${dateOfStart.time.hour.toString()}:${
-                                with(
-                                    dateOfStart.time
-                                ) { if (minute.toString().length < 2) "0$minute" else minute.toString() }
-                            } - ${dateOfEnd.time.hour.toString()}:${
-                                with(
-                                    dateOfStart.time
-                                ) {
-                                    if (minute.toString().length < 2) "0$minute" else minute.toString()
-                                }
-                            }"
-                        },
+                        text = "${if (frequency.toString().isEmpty()) "$date $time" else "$frequency $time"}",
                         style = MaterialTheme.typography.subtitle1,
                         fontSize = 16.sp,
                         fontWeight = FontWeight(400),
