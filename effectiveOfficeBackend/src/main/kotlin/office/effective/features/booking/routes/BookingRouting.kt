@@ -9,6 +9,7 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import office.effective.common.notifications.INotificationSender
 import office.effective.common.swagger.SwaggerDocument
 import office.effective.dto.BookingDTO
 import office.effective.features.booking.facade.BookingFacade
@@ -23,11 +24,11 @@ fun Route.bookingRouting() {
             GlobalContext.get().get(),
             GlobalContext.get().get()
         )
+        val sender: INotificationSender = GlobalContext.get().get()
 
         get("/{id}", SwaggerDocument.returnBookingById()) {
             val id: String = call.parameters["id"]
                 ?: return@get call.respond(HttpStatusCode.BadRequest)
-
             call.respond(bookingFacade.findById(id))
         }
 
@@ -40,17 +41,23 @@ fun Route.bookingRouting() {
             val dto = call.receive<BookingDTO>()
 
             call.response.status(HttpStatusCode.Created)
-            call.respond(bookingFacade.post(dto))
+            val result = bookingFacade.post(dto)
+            sender.sendEmptyMessage("booking")
+            call.respond(result)
         }
         put(SwaggerDocument.putBooking()) {
             val dto = call.receive<BookingDTO>()
 
-            call.respond(bookingFacade.put(dto))
+            val result = bookingFacade.put(dto)
+            sender.sendEmptyMessage("booking")
+            call.respond(result)
         }
         delete("{id}", SwaggerDocument.deleteBookingById()) {
             val id: String = call.parameters["id"]
                 ?: return@delete call.respond(HttpStatusCode.BadRequest)
+
             bookingFacade.deleteById(id)
+            sender.sendEmptyMessage("booking")
             call.respond(HttpStatusCode.NoContent)
         }
     }

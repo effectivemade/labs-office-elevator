@@ -17,6 +17,7 @@ import office.effective.features.user.converters.UserDTOModelConverter
 import office.effective.features.user.repository.UserRepository
 import office.effective.features.workspace.converters.WorkspaceFacadeConverter
 import office.effective.model.Booking
+import office.effective.model.UserModel
 import office.effective.model.Workspace
 import org.koin.core.context.GlobalContext
 import utils.RecurrenceRuleFactory.getRecurrence
@@ -31,7 +32,7 @@ object GoogleCalendarConverter {
 
     fun Event.toBookingDTO(): BookingDTO {
         val a: String = organizer?.email ?: ""
-        val email = if (a != defaultAccount) a else description.substringAfter(" ")
+        val email = if (a != defaultAccount) a else description.substringBefore(" ")
         val recurrence = recurrence?.toString()?.getRecurrence()?.toDto()
         return BookingDTO(
             owner = getUser(email),
@@ -42,7 +43,7 @@ object GoogleCalendarConverter {
             ),
             id = this.id ?: null,
             beginBooking = start?.dateTime?.value ?: 0,//TODO FIX date placeholder
-            endBooking = end?.dateTime?.value ?: 0,//TODO FIX date placeholder
+            endBooking = end?.dateTime?.value ?: 1,//TODO FIX date placeholder
             recurrence = recurrence
         )
     }
@@ -50,14 +51,24 @@ object GoogleCalendarConverter {
     private fun getWorkspace(calendarId: String): WorkspaceDTO {
         // достаём воркспейс по гугловкому id
         val calendarRepository: CalendarRepository = GlobalContext.get().get()
-        val workspaceModel = calendarRepository.findWorkspaceById(calendarId)
+        val workspaceModel: Workspace = calendarRepository.findWorkspaceById(calendarId)
         val workspaceConverter: WorkspaceFacadeConverter = GlobalContext.get().get()
         return workspaceConverter.modelToDto(workspaceModel)
     }
 
     private fun getUser(email: String): UserDTO {
         val userRepository: UserRepository = GlobalContext.get().get()
-        val userModel = userRepository.findByEmail(email)
+        val userModel: UserModel = userRepository.findByEmail(email)
+            ?: UserModel(
+                id = null,
+                fullName = "placeholder",
+                tag = null,
+                active = false,
+                role = null,
+                avatarURL = null,
+                integrations = emptySet(),
+                email = email
+            )
         val converter: UserDTOModelConverter = GlobalContext.get().get()
         return converter.modelToDTO(userModel)
     }
