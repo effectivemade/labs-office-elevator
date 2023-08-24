@@ -48,7 +48,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         data class BeginningBookingTime(val time: LocalTime) : Msg
         data class BeginningBookingDate(val date: LocalDate) : Msg
         data class EndBookingTime(val time: LocalTime) : Msg
-        data class EndBookingDate(val date: LocalDate)
+        data class EndBookingDate(val date: LocalDate) : Msg
         data class SelectedTypeList(val type: TypesList) : Msg
         data class DateBooking(val date: LocalDate) : Msg
         data class TimeBooking(val time: LocalTime) : Msg
@@ -63,6 +63,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         data class ChangeBookingRepeat(val bookingRepeat: String) : Msg
         data class ChangeBookingPeriod(val bookingPeriodUI: BookingPeriodUI) : Msg
         data class ChangeWorkingUI(val bookingInfo: BookingInfo) : Msg
+
+        data class IsStartDatePicker(val isStart: Boolean) : Msg
     }
 
     private sealed interface Action {
@@ -169,7 +171,9 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                 is BookingStore.Intent.OpenCalendar -> {
                     scope.launch {
+                        dispatch(Msg.IsStartDatePicker(isStart = intent.isStart))
                         publish(BookingStore.Label.OpenCalendar)
+
                     }
                 }
 
@@ -182,9 +186,14 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is BookingStore.Intent.ApplyDate -> {
                     scope.launch {
                         publish(BookingStore.Label.CloseCalendar)
-                        intent.date?.let { newDate ->
-                            dispatch(Msg.BeginningBookingDate(date = newDate))
-                        }
+                        if (intent.isStart)
+                            intent.date?.let { newDate ->
+                                dispatch(Msg.BeginningBookingDate(date = newDate))
+                            }
+                        else
+                            intent.date?.let { newDate ->
+                                dispatch(Msg.EndBookingDate(date = newDate))
+                            }
                     }
                 }
 
@@ -194,9 +203,9 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                         bookingInteractor.create(
                             coroutineScope = this@launch,
                             creatingBookModel = CreatingBookModel(
-                                workSpaceId = "",
+                                workSpaceId = "", //TODO(Replace with value from DB)
                                 dateOfStart = getState().selectedStartDate.atTime(getState().selectedStartTime),
-                                dateOfEnd = getState().selectedStartDate.atTime(getState().selectedFinishTime),
+                                dateOfEnd = getState().selectedFinishDate.atTime(getState().selectedFinishTime),
                                 bookingPeriodUI = getState().bookingPeriodUI,
                                 typeOfEndPeriod = TypeEndPeriodBooking.Never
                             )
@@ -359,6 +368,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is Msg.ChangeBookingRepeat -> copy(repeatBooking = msg.bookingRepeat)
                 is Msg.ChangeBookingPeriod -> copy(bookingPeriodUI = msg.bookingPeriodUI)
                 is Msg.ChangeWorkingUI -> copy(bookingInfo = msg.bookingInfo)
+                is Msg.EndBookingDate -> copy(selectedFinishDate = msg.date)
+                is Msg.IsStartDatePicker -> copy(isStartDate = msg.isStart)
             }
         }
     }
