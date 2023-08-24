@@ -140,11 +140,11 @@ fun noPeriodReserve(bookingInfoDomain: BookingInfoDomain, frequency: Frequency):
             ) {
                 if (minute.toString().length < 2) "0$minute" else minute.toString()
             }
-        }"+ if(frequency.getResearchEnd().second.contains(".")){
-                " \nпо " + frequency.getResearchEnd().second
+        }"+ if(frequency.getResearchEnd().first.second.contains(".")){
+                " \nпо " + frequency.getResearchEnd().first.second
             }else{
-                if (frequency.getResearchEnd().second.isNotEmpty()){
-                    " в ближайшие ${frequency.getResearchEnd().second} недель"
+                if (frequency.getResearchEnd().first.second.isNotEmpty()){
+                    " в ближайшие ${frequency.getResearchEnd().first.second} недель"
                 }else ""
         }
     }

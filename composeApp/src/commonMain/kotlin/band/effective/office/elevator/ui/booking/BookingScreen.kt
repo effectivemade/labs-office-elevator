@@ -289,6 +289,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
         startDate = state.selectedStartDate,
         finishDate = state.selectedFinishDate,
         frequency = state.frequency,
+        repeatBookings = state.repeatBooking,
         onClickChangeSelectedType = {
             bookingComponent.onEvent(
                 BookingStore.Intent.ChangeSelectedType(
@@ -325,6 +326,7 @@ private fun BookingScreenContent(
     startDate: LocalDate,
     finishDate: LocalDate,
     frequency: Frequency,
+    repeatBookings: String,
     onClickChangeSelectedType: (TypesList) -> Unit,
     selectedTypesList: TypesList
 ) {
@@ -365,6 +367,8 @@ private fun BookingScreenContent(
                 onClickChangeZone = onClickChangeZone,
                 startDate = startDate,
                 finishDate = finishDate,
+                frequency = frequency,
+                repeatBooking=repeatBookings,
                 onClickChangeSelectedType = onClickChangeSelectedType,
                 selectedTypesList = selectedTypesList
             )

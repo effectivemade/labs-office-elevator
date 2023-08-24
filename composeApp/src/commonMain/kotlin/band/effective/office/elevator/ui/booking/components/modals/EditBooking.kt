@@ -235,7 +235,7 @@ fun EditBooking(
             BookingRepeatCard(
                 onSelected = { onClickCloseRepeatDialog() },
                 modifier = Modifier,
-                frequency = Frequency(days = listOf(), researchEnd = Triple("ThisDay","",""))
+                frequency = Frequency(days = listOf(), researchEnd = Triple(Pair("ThisDay",""),"",""))
             )
         }
     }

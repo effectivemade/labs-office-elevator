@@ -263,9 +263,12 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is BookingStore.Intent.OpenBookRepeat -> {
                     scope.launch {
                         publish(BookingStore.Label.CloseRepeatDialog)
-                        if(intent.pair.second == BookingPeriodUI.Year ){
-                            publish(BookingStore.Label.CloseBookPeriod)
-                            publish(BookingStore.Label.OpenBookRepeat)
+                        when(intent.pair.second ){
+                            is BookingPeriodUI.Year -> {
+                                publish(BookingStore.Label.CloseBookPeriod)
+                                publish(BookingStore.Label.OpenBookRepeat)
+                            }
+                            else ->{ }
                         }
                         val name = when (intent.pair.second) {
                             is BookingPeriodUI.EveryWorkDay -> "Каждый рабочий день"

@@ -97,7 +97,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
                 selectedFinishTime = getCurrentTime(),
                 wholeDay = false,
                 isStart = true,
-                frequency = Frequency(days = listOf(), researchEnd = Triple("ThisDay","","")),
+                frequency = Frequency(days = listOf(), researchEnd = Triple(Pair("ThisDay",""),"","")),
                 repeatBooking = "Бронирование не повторяется",
                 bookingPeriodUI = BookingPeriodUI.NoPeriod,
                 selectedType = TypesList(

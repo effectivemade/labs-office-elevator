@@ -28,6 +28,7 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.ui.booking.models.Frequency
 import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.models.TypesList
 import band.effective.office.elevator.utils.MonthLocalizations
@@ -43,6 +44,8 @@ fun OptionMenu(
     onClickChangeZone: (WorkSpaceType) -> Unit,
     startDate: LocalDate,
     finishDate: LocalDate,
+    frequency: Frequency,
+    repeatBooking: String,
     onClickChangeSelectedType: (TypesList) -> Unit,
     selectedTypesList: TypesList
 ) {
@@ -62,10 +65,23 @@ fun OptionMenu(
     val startYear = startDate.year
     val finishYear = finishDate.year
 
-    val date =
+    val repeatBookingsOnShow = when(repeatBooking){
+        stringResource(MainRes.strings.every_work_day_repeat) -> repeatBooking + " "
+        stringResource(MainRes.strings.every_week) -> repeatBooking + " "
+        stringResource(MainRes.strings.every_month) -> repeatBooking + " "
+        else -> ""
+    }
+    val periodicity = when(frequency.getResearchEnd().first.first) {
+        "ThisDay" -> ""
+        else -> ""
+    }
+
+    val date = repeatBookingsOnShow +
         if (startYear == finishYear) if (startMonth == finishMonth) if (startDay == finishDay) "$startDay $startMonth $startYear" else "$startDay - $finishDay $startMonth $startYear"
         else "$startDay $startMonth - $finishDay $finishMonth $startYear"
         else "$startDay $startMonth $startYear - $finishDay $finishMonth $finishYear"
+
+
 
     Column {
         AnimatedVisibility(visible = isExpandedCard) {
