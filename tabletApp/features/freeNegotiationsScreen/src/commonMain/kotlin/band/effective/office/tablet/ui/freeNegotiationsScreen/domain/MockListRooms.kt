@@ -95,4 +95,4 @@ object MockListRooms {
     }
 }
 
-private fun String.toOrg(): Organizer = Organizer(fullName = this, id = this)
+private fun String.toOrg(): Organizer = Organizer(fullName = this, id = this, email = this)

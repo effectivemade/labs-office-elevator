@@ -5,6 +5,7 @@ plugins {
     id(Plugins.Kotlin.plugin)
     id(Plugins.Parcelize.plugin)
     id(Plugins.BuildConfig.plugin)
+    id(Plugins.Serialization.plugin)
 }
 
 val apiKey: String = gradleLocalProperties(rootDir).getProperty("apiKey")

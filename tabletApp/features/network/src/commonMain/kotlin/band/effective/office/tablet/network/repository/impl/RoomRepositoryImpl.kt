@@ -32,7 +32,12 @@ class RoomRepositoryImpl(
 
     private suspend fun loadRoomInfo(roomId: String): Either<ErrorWithData<RoomInfo>, RoomInfo> =
         with(roomInfo.value) {
-            val events = loadEvents(roomId)
+            val response = api.getWorkspace(roomId)
+            val id = when (response) {
+                is Either.Error -> ""
+                is Either.Success -> response.data.id
+            }
+            val events = loadEvents(id)
             roomInfo.update { api.getWorkspace(roomId).convert(this).addEvents(events) }
             roomInfo.value
         }
@@ -58,7 +63,7 @@ class RoomRepositoryImpl(
                         val loadEvents = loadEvents(id)
                         if (loadEvents is Either.Success) {
                             events.add(loadEvents.data.map { it.toEventInfo() })
-                        }
+                        } else events.add(listOf())
                     }
                     Either.Success(roomList.mapIndexed { index, room ->
                         room.toRoomInfo().addEvents(events[index])
