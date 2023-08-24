@@ -79,6 +79,9 @@ fun MainScreen(component: MainComponent) {
                 MainStore.Label.CloseCalendar -> showModalCalendar = false
                 MainStore.Label.OpenFiltersBottomDialog -> bottomSheetState.show()
                 MainStore.Label.CloseFiltersBottomDialog -> bottomSheetState.hide()
+                MainStore.Label.OpenBooking -> {
+                    component.onOutput(MainComponent.Output.OpenMap)
+                }
             }
         }
     }
@@ -96,7 +99,7 @@ fun MainScreen(component: MainComponent) {
             onClickBook = { component.onOutput(MainComponent.Output.OpenBookingScreen) },
             onClickShowOptions = { component.onEvent(MainStore.Intent.OnClickShowOption) },
             onClickOptionMenu = { index ->
-                when (index){
+                when (index) {
                     0 -> component.onOutput(MainComponent.Output.OpenMap)
                     1 -> component.onOutput(MainComponent.Output.ExtendBooking)
                     2 -> component.onOutput(MainComponent.Output.RepeatBooking)
@@ -105,7 +108,13 @@ fun MainScreen(component: MainComponent) {
             },
             onClickOpenCalendar = { component.onEvent(MainStore.Intent.OnClickOpenCalendar) },
             onClickOpenBottomDialog = { component.onEvent(MainStore.Intent.OpenFiltersBottomDialog) },
-            onClickCloseBottomDialog = { component.onEvent(MainStore.Intent.CloseFiltersBottomDialog(it))}
+            onClickCloseBottomDialog = {
+                component.onEvent(
+                    MainStore.Intent.CloseFiltersBottomDialog(
+                        it
+                    )
+                )
+            }
         )
         Dialog(
             content = {

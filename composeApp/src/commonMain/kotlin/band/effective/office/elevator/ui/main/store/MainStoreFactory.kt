@@ -114,19 +114,11 @@ internal class MainStoreFactory(
                 }
 
                 MainStore.Intent.OnClickShowMap -> {
-                    showToast("map")
+                    publish(MainStore.Label.OpenBooking)
                 }
 
                 is MainStore.Intent.OnClickDeleteBooking -> {
-                    showToast("delete")
-                }
-
-                is MainStore.Intent.OnClickExtendBooking -> {
-                    showToast("extend")
-                }
-
-                is MainStore.Intent.OnClickRepeatBooking -> {
-                    showToast("repeat")
+                    publish(MainStore.Label.DeleteBooking(intent.id))
                 }
 
                 MainStore.Intent.OpenFiltersBottomDialog -> {

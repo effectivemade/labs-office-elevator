@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.main.store
 
+import band.effective.office.elevator.domain.models.BookingInfo
 import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsFilter
 import band.effective.office.elevator.ui.models.ElevatorState
 import band.effective.office.elevator.ui.models.ReservedSeat
@@ -25,11 +26,7 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, MainStore.Label> 
 
         object OnClickShowMap : Intent
 
-        data class OnClickExtendBooking(val seat: ReservedSeat) : Intent
-
-        data class OnClickRepeatBooking(val seat: ReservedSeat) : Intent
-
-        data class OnClickDeleteBooking(val seat: ReservedSeat) : Intent
+        data class OnClickDeleteBooking(val id: String) : Intent
     }
 
     sealed interface Label {
@@ -44,6 +41,9 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, MainStore.Label> 
 
         object OpenFiltersBottomDialog: Label
         object CloseFiltersBottomDialog: Label
+
+        object OpenBooking: Label
+        data class DeleteBooking(val id: String) : Label
     }
 
     data class State(
