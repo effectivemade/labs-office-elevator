@@ -32,7 +32,7 @@ object GoogleCalendarConverter {
 
     fun Event.toBookingDTO(): BookingDTO {
         val a: String = organizer?.email ?: ""
-        val email = if (a != defaultAccount) a else description.substringAfter(" ")
+        val email = if (a != defaultAccount) a else description.substringBefore(" ")
         val recurrence = recurrence?.toString()?.getRecurrence()?.toDto()
         return BookingDTO(
             owner = getUser(email),
