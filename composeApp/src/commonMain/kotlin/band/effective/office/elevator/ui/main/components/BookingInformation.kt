@@ -16,8 +16,7 @@ fun BookingInformation(
     currentDate: LocalDate,
     dateFiltrationOnReserves: Boolean,
     onClickBook: () -> Unit,
-    onClickOptionMenu: (Int) -> Unit,
-    onClickShowOptions: () -> Unit,
+    onClickOptionMenu: (String) -> Unit,
     onClickOpenCalendar: () -> Unit,
     onClickOpenBottomDialog: () -> Unit
 ) {
@@ -36,8 +35,7 @@ fun BookingInformation(
         SeatsReservation(
             reservedSeats = reservedSeats,
             onClickBook = onClickBook,
-            onClickOptionMenu = onClickOptionMenu,
-            onClickShowOptions = onClickShowOptions
+            onClickOptionMenu = onClickOptionMenu
         )
     }
 }

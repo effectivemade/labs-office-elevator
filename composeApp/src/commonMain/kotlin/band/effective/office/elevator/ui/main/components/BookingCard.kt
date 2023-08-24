@@ -38,10 +38,9 @@ import band.effective.office.elevator.ui.models.ReservedSeat
 @Composable
 fun BookingCard(
     seat: ReservedSeat,
-    onClickOptionMenu: (Int) -> Unit,
-    onClickShowOptions: () -> Unit
+    onClickOptionMenu: (String) -> Unit,
 ) {
-    var expand = remember { mutableStateOf(false) }
+
     Row(
         modifier = Modifier
             .clip(RoundedCornerShape(16.dp))
@@ -61,10 +60,7 @@ fun BookingCard(
         ) {
             IconButton(
                 onClick = {
-                    /*
-                    expand.value = !expand.value
-                    onClickShowOptions()
-                     */
+                    onClickOptionMenu(seat.bookingId)
                 },
                 modifier = Modifier
                     .clip(RoundedCornerShape(80.dp)),

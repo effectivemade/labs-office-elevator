@@ -16,6 +16,10 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
 import com.arkivanov.mvikotlin.core.store.StoreFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -72,7 +76,11 @@ class ContentComponent(
     private fun mainOutput(output: MainComponent.Output) {
         when (output) {
             is MainComponent.Output.DeleteBooking -> {
-                bookingInteractor.deleteBooking()
+                CoroutineScope(Dispatchers.IO).launch {
+                    bookingInteractor.deleteBooking(
+                        bookingId = output.id
+                    )
+                }
             }
 
             MainComponent.Output.OpenBookingScreen -> navigation.bringToFront(Config.Booking)

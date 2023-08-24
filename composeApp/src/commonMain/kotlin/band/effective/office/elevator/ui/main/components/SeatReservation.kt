@@ -24,15 +24,13 @@ import dev.icerock.moko.resources.compose.stringResource
 fun SeatsReservation(
     reservedSeats: List<ReservedSeat>,
     onClickBook: () -> Unit,
-    onClickOptionMenu: (Int) -> Unit,
-    onClickShowOptions: () -> Unit
+    onClickOptionMenu: (String) -> Unit,
 ) {
     when(reservedSeats.isEmpty()) {
         true -> EmptyReservation(onClickBook)
         false -> NonEmptyReservation(
             reservedSeats = reservedSeats,
-            onClickOptionMenu = onClickOptionMenu,
-            onClickShowOptions = onClickShowOptions
+            onClickOptionMenu = onClickOptionMenu
         )
     }
 }
@@ -61,8 +59,7 @@ fun EmptyReservation(onClickBook: () -> Unit) {
 @Composable
 fun NonEmptyReservation(
     reservedSeats: List<ReservedSeat>,
-    onClickOptionMenu: (Int) -> Unit,
-    onClickShowOptions: () -> Unit,
+    onClickOptionMenu: (String) -> Unit
 ) {
     LazyColumn (
         modifier = Modifier.fillMaxSize(),
@@ -72,7 +69,6 @@ fun NonEmptyReservation(
             BookingCard(
                 seat = seat,
                 onClickOptionMenu = onClickOptionMenu,
-                onClickShowOptions = onClickShowOptions
             )
         }
     }

@@ -82,6 +82,10 @@ fun MainScreen(component: MainComponent) {
                 MainStore.Label.OpenBooking -> {
                     component.onOutput(MainComponent.Output.OpenMap)
                 }
+
+                is MainStore.Label.DeleteBooking -> {
+                    component.onOutput(MainComponent.Output.DeleteBooking(label.id))
+                }
             }
         }
     }
@@ -97,14 +101,8 @@ fun MainScreen(component: MainComponent) {
             currentDate = state.currentDate,
             dateFiltrationOnReserves = state.dateFiltrationOnReserves,
             onClickBook = { component.onOutput(MainComponent.Output.OpenBookingScreen) },
-            onClickShowOptions = { component.onEvent(MainStore.Intent.OnClickShowOption) },
-            onClickOptionMenu = { index ->
-                when (index) {
-                    0 -> component.onOutput(MainComponent.Output.OpenMap)
-                    1 -> component.onOutput(MainComponent.Output.ExtendBooking)
-                    2 -> component.onOutput(MainComponent.Output.RepeatBooking)
-                    3 -> component.onOutput(MainComponent.Output.DeleteBooking)
-                }
+            onClickOptionMenu = { id ->
+                component.onEvent(MainStore.Intent.OnClickDeleteBooking(id = id))
             },
             onClickOpenCalendar = { component.onEvent(MainStore.Intent.OnClickOpenCalendar) },
             onClickOpenBottomDialog = { component.onEvent(MainStore.Intent.OpenFiltersBottomDialog) },
@@ -175,8 +173,7 @@ fun MainScreenContent(
     currentDate: LocalDate,
     dateFiltrationOnReserves: Boolean,
     onClickBook: () -> Unit,
-    onClickOptionMenu: (Int) -> Unit,
-    onClickShowOptions: () -> Unit,
+    onClickOptionMenu: (String) -> Unit,
     onClickOpenCalendar: () -> Unit,
     onClickOpenBottomDialog: () -> Unit,
     onClickCloseBottomDialog: (BookingsFilter) -> Unit
@@ -220,7 +217,6 @@ fun MainScreenContent(
                     dateFiltrationOnReserves = dateFiltrationOnReserves,
                     onClickBook = onClickBook,
                     onClickOptionMenu = onClickOptionMenu,
-                    onClickShowOptions = onClickShowOptions,
                     onClickOpenCalendar = onClickOpenCalendar,
                     onClickOpenBottomDialog = onClickOpenBottomDialog
                 )
