@@ -1,5 +1,6 @@
 package office.effective.features.user.facade
 
+import office.effective.common.exception.InstanceNotFoundException
 import office.effective.common.utils.DatabaseTransactionManager
 import office.effective.features.user.ITokenVerifier
 import office.effective.features.user.converters.UserDTOModelConverter
@@ -39,7 +40,11 @@ class UserFacade(
 
     fun getUserById(userIdStr: String): UserDTO {
         return transactionManager.useTransaction<UserDTO>({
-            converterDTO.modelToDTO(service.getUserById(userIdStr))
+            converterDTO.modelToDTO(
+                service.getUserById(userIdStr) ?: throw InstanceNotFoundException(
+                    UserModel::class, "User with id ${userIdStr} not found", null
+                )
+            )
         })
     }
 
@@ -50,7 +55,11 @@ class UserFacade(
      */
     fun getUserByEmail(email: String): UserDTO {
         return transactionManager.useTransaction<UserDTO>({
-            converterDTO.modelToDTO(service.getUserByEmail(email))
+            converterDTO.modelToDTO(
+                service.getUserByEmail(email) ?: throw InstanceNotFoundException(
+                    UserModel::class, "User with email $email not found", null
+                )
+            )
         })
     }
 
@@ -69,8 +78,8 @@ class UserFacade(
         })
     }
 
-    fun getUserByToken(tokenStr: String): UserDTO {
-        val userEmail = verifier.isCorrectToken(tokenStr)
-        return converterDTO.modelToDTO(transactionManager.useTransaction<UserModel>({ service.getUserByEmail(userEmail) }))
-    }
+//    fun getUserByToken(tokenStr: String): UserDTO {
+//        val userEmail = verifier.isCorrectToken(tokenStr)
+//        return converterDTO.modelToDTO(transactionManager.useTransaction<UserModel>({ service.getUserByEmail(userEmail) }))
+//    }
 }

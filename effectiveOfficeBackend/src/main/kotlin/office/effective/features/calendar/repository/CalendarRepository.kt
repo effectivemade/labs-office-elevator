@@ -48,7 +48,7 @@ class CalendarRepository(
                 workspaceEntity, workspaceRepository.findUtilitiesByWorkspaceId(workspaceEntity.id)
             )
         } catch (ex: InstanceNotFoundException) {
-            return Workspace(UUID.randomUUID(), "placeholder workspace", "tag placeholder", listOf(), null)
+            return Workspace(null, "placeholder", "placeholder", listOf(), null)
         }
     }
 
