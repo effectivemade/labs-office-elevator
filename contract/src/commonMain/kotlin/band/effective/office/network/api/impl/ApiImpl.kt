@@ -11,7 +11,6 @@ import band.effective.office.network.model.ErrorResponse
 import band.effective.office.utils.KtorEtherClient
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
-import io.ktor.http.append
 import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
 import kotlinx.coroutines.flow.Flow

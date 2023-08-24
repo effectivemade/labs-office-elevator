@@ -9,12 +9,8 @@ import band.effective.office.network.dto.RecurrenceDTO
 import band.effective.office.network.dto.UserDTO
 import band.effective.office.network.dto.WorkspaceDTO
 import epicarchitect.calendar.compose.basis.localized
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toInstant
-import kotlinx.datetime.toLocalDateTime
 
 data class BookingInfo(
     val id: String,
@@ -52,7 +48,8 @@ fun emptyWorkSpaceDTO(id: String) =
         id = id,
         name = "",
         utilities = listOf(),
-        zone = null
+        zone = null,
+        tag = "regular"
     )
 
 fun BookingInfo.toDTOModel(userDTO: UserDTO, workspaceDTO: WorkspaceDTO, recurrence: RecurrenceDTO?) =
