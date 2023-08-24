@@ -104,7 +104,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                         workSpaceId = "",
                         seatName = state.bookingInfo.seatName,
                         dateOfStart = state.selectedStartDate.atTime(state.selectedStartTime),
-                        dateOfEnd = state.selectedStartDate.atTime(state.selectedFinishTime)
+                        dateOfEnd = state.selectedFinishDate.atTime(state.selectedFinishTime)
                     ),
                     frequency = state.frequency,
                     period = state.bookingPeriod
@@ -138,7 +138,14 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                             )
                         )
                     },
-                    bookStartDate = { bookingComponent.onEvent(BookingStore.Intent.OpenCalendar) },
+                    bookStartDate = {
+                        bookingComponent.onEvent(
+                            BookingStore.Intent.OpenCalendar(
+                                isStart = true,
+                                date = state.selectedStartDate
+                            )
+                        )
+                    },
                     bookStartTime = {
                         bookingComponent.onEvent(
                             BookingStore.Intent.OpenStartTimeModal(
@@ -151,7 +158,15 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                         bookingComponent.onEvent(
                             BookingStore.Intent.OpenStartTimeModal(
                                 isStart = false,
-                                time = state.selectedStartTime
+                                time = state.selectedFinishTime
+                            )
+                        )
+                    },
+                    bookFinishDate = {
+                        bookingComponent.onEvent(
+                            BookingStore.Intent.OpenCalendar(
+                                isStart = false,
+                                date = state.selectedFinishDate
                             )
                         )
                     },
@@ -218,7 +233,6 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                 is BookingStore.Label.CloseBookRepeat -> multiBottomSheetController.closeCurrentSheet()
                 BookingStore.Label.OpenFinishTimeModal -> showTimePicker = true
                 BookingStore.Label.CloseFinishTimeModal -> showTimePicker = false
-                else -> {}
             }
         }
     }
@@ -254,7 +268,8 @@ fun BookingScreen(bookingComponent: BookingComponent) {
         onClickApplyDate = { date: LocalDate? ->
             bookingComponent.onEvent(
                 BookingStore.Intent.ApplyDate(
-                    date = date
+                    date = date,
+                    isStart = state.isStartDate
                 )
             )
         },
@@ -271,7 +286,8 @@ fun BookingScreen(bookingComponent: BookingComponent) {
             }
         },
         isStart = state.isStart,
-        date = state.selectedStartDate,
+        startDate = state.selectedStartDate,
+        finishDate = state.selectedFinishDate,
         frequency = state.frequency,
         onClickChangeSelectedType = {
             bookingComponent.onEvent(
@@ -306,7 +322,8 @@ private fun BookingScreenContent(
     onClickOpenBookRepeat: (Pair<String, BookingPeriod>) -> Unit,
     onClickChangeZone: (WorkSpaceType) -> Unit,
     isStart: Boolean,
-    date: LocalDate,
+    startDate: LocalDate,
+    finishDate: LocalDate,
     frequency: Frequency,
     onClickChangeSelectedType: (TypesList) -> Unit,
     selectedTypesList: TypesList
@@ -346,7 +363,8 @@ private fun BookingScreenContent(
                 onClickExpandedMap = { isExpandedCard = !isExpandedCard },
                 onClickExpandedOption = { isExpandedOptions = !isExpandedOptions },
                 onClickChangeZone = onClickChangeZone,
-                date = date,
+                startDate = startDate,
+                finishDate = finishDate,
                 onClickChangeSelectedType = onClickChangeSelectedType,
                 selectedTypesList = selectedTypesList
             )

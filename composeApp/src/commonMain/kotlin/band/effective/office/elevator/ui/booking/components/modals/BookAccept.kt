@@ -43,32 +43,37 @@ fun BookAccept(
     frequency: Frequency,
     period: BookingPeriod
 ) {
-    var value = with(bookingInfo) {
-        when (period) {
-            is BookingPeriod.Another -> "${frequency.toString()} ${dateOfStart.date.dayOfMonth} " + MonthLocalizations.getMonthName(
-                month = dateOfStart.date.month,
-                locale = Locale.current
-            )
 
-            is BookingPeriod.EveryWorkDay -> stringResource(MainRes.strings.every_work_day)
-            is BookingPeriod.Month -> stringResource(MainRes.strings.every_month) + ", " + dateOfStart.dayOfMonth
-            is BookingPeriod.NoPeriod -> stringResource(MainRes.strings.booking_not_repeat)
-            is BookingPeriod.Week -> stringResource(MainRes.strings.every_week) + ", в " + DayOfWeekLocalizations.getDayOfWeek(
-                dayOfWeek = dateOfStart.dayOfWeek,
-                locale = Locale.current
-            )
+    val startMonth = MonthLocalizations.getMonthName(
+        month = bookingInfo.dateOfStart.month,
+        locale = Locale(languageTag = Locale.current.language)
+    )
 
-            is BookingPeriod.Year -> stringResource(MainRes.strings.every_month)
-        }
-    }
+    val finishMonth = MonthLocalizations.getMonthName(
+        month = bookingInfo.dateOfEnd.month,
+        locale = Locale(languageTag = Locale.current.language)
+    )
 
-    value += with(bookingInfo) {
-        " ${dateOfStart.time.hour.toString().padStart(2, '0')}:${
-            dateOfStart.time.minute.toString().padStart(2, '0')
-        } - ${dateOfEnd.time.hour.toString().padStart(2, '0')}:${
-            dateOfStart.time.minute.toString().padStart(2, '0')
-        }"
-    }
+    val startDay = bookingInfo.dateOfStart.dayOfMonth
+    val finishDay = bookingInfo.dateOfEnd.dayOfMonth
+
+    val startYear = bookingInfo.dateOfStart.year
+    val finishYear = bookingInfo.dateOfEnd.year
+
+    val startTime = bookingInfo.dateOfStart.time
+    val finishTime = bookingInfo.dateOfEnd.time
+
+    val date =
+        if (startYear == finishYear) if (startMonth == finishMonth) if (startDay == finishDay) "$startDay $startMonth $startYear" else "$startDay - $finishDay $startMonth $startYear"
+        else "$startDay $startMonth - $finishDay $finishMonth $startYear"
+        else "$startDay $startMonth $startYear - $finishDay $finishMonth $finishYear"
+
+    val time = "${startTime.hour.toString().padStart(2, '0')}:${
+        startTime.minute.toString().padStart(2, '0')
+    } - ${finishTime.hour.toString().padStart(2, '0')}:${
+        finishTime.minute.toString().padStart(2, '0')
+    }"
+
     Box {
         Column(modifier = Modifier.fillMaxWidth().background(Color.White)) {
             Spacer(modifier = Modifier.padding(vertical = 10.dp))

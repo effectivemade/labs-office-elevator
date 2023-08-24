@@ -38,13 +38,13 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         object OpenConfirmBooking : Intent
         object SearchSuitableOptions : Intent
         object CloseBookPeriod : Intent
-        object OpenCalendar : Intent
+        data class OpenCalendar(val isStart: Boolean, val date: LocalDate?) : Intent
 
         object CloseCalendar : Intent
         object OpenMainScreen : Intent
         object CloseConfirmBooking : Intent
         data class ChangeSelectedWorkSpacesZone(val workSpaceZone: List<WorkSpaceZone>) : Intent
-        data class ApplyDate(val date: LocalDate?) : Intent
+        data class ApplyDate(val date: LocalDate?, val isStart: Boolean) : Intent
         data class ShowPlace(val type: String) : Intent
 
         data class ChangeWorkSpacesUI(val workSpaces: List<WorkSpaceUI>) : Intent
@@ -69,14 +69,15 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         val selectedStartDate: LocalDate,
         val selectedStartTime: LocalTime,
         val selectedFinishTime: LocalTime,
+        val selectedFinishDate: LocalDate,
         val wholeDay: Boolean,
         val isStart: Boolean,
+        val isStartDate: Boolean,
         val frequency: Frequency,
         val repeatBooking: StringResource,
         val bookingPeriod: BookingPeriod,
         val selectedType: TypesList,
-        val bookingInfo: BookingInfo,
-        val selectedFinishDate: LocalDate
+        val bookingInfo: BookingInfo
     ) {
         companion object {
             val initState = State(
@@ -113,7 +114,8 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
                     dateOfStart = LocalDateTime(date = getCurrentDate(), time = getCurrentTime()),
                     dateOfEnd = LocalDateTime(date = getCurrentDate(), time = getCurrentTime())
                 ),
-                selectedFinishDate = getCurrentDate()
+                selectedFinishDate = getCurrentDate(),
+                isStartDate = true
             )
         }
     }

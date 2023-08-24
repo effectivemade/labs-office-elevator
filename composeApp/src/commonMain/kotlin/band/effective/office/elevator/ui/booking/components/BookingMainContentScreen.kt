@@ -56,7 +56,8 @@ fun BookingMainContentScreen(
     onClickExpandedMap: () -> Unit,
     onClickExpandedOption: () -> Unit,
     onClickChangeZone: (WorkSpaceType) -> Unit,
-    date: LocalDate,
+    startDate: LocalDate,
+    finishDate: LocalDate,
     onClickChangeSelectedType: (TypesList) -> Unit,
     selectedTypesList: TypesList
 ) {
@@ -93,7 +94,8 @@ fun BookingMainContentScreen(
                         isExpandedOptions = isExpandedOptions,
                         onClickOpenBookPeriod = onClickOpenBookPeriod,
                         onClickChangeZone = onClickChangeZone,
-                        date = date,
+                        startDate = startDate,
+                        finishDate = finishDate,
                         onClickChangeSelectedType = onClickChangeSelectedType,
                         selectedTypesList = selectedTypesList
                     )

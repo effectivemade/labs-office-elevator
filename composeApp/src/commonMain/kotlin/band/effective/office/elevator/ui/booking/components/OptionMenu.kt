@@ -41,10 +41,32 @@ fun OptionMenu(
     isExpandedOptions: Boolean,
     onClickOpenBookPeriod: () -> Unit,
     onClickChangeZone: (WorkSpaceType) -> Unit,
-    date: LocalDate,
+    startDate: LocalDate,
+    finishDate: LocalDate,
     onClickChangeSelectedType: (TypesList) -> Unit,
     selectedTypesList: TypesList
 ) {
+    val startMonth = MonthLocalizations.getMonthName(
+        month = startDate.month,
+        locale = Locale(languageTag = Locale.current.language)
+    )
+
+    val finishMonth = MonthLocalizations.getMonthName(
+        month = finishDate.month,
+        locale = Locale(languageTag = Locale.current.language)
+    )
+
+    val startDay = startDate.dayOfMonth
+    val finishDay = finishDate.dayOfMonth
+
+    val startYear = startDate.year
+    val finishYear = finishDate.year
+
+    val date =
+        if (startYear == finishYear) if (startMonth == finishMonth) if (startDay == finishDay) "$startDay $startMonth $startYear" else "$startDay - $finishDay $startMonth $startYear"
+        else "$startDay $startMonth - $finishDay $finishMonth $startYear"
+        else "$startDay $startMonth $startYear - $finishDay $finishMonth $finishYear"
+
     Column {
         AnimatedVisibility(visible = isExpandedCard) {
             Column(
@@ -150,11 +172,7 @@ fun OptionMenu(
                         )
                     }
                     Text(
-                        text = "${date.dayOfMonth} ${
-                            MonthLocalizations.getMonthName(
-                            month = date.month,
-                            locale = Locale.current
-                        )} ${date.year}",
+                        text = date,
                         modifier = Modifier.padding(start = 8.dp),
                         style = MaterialTheme.typography.body2
                     )
