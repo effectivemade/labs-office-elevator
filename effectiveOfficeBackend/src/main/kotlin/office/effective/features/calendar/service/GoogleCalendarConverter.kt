@@ -40,7 +40,7 @@ object GoogleCalendarConverter {
                 attendees?.firstOrNull { it?.resource ?: false }?.email
                     ?: "c_1882249i0l5ieh0cih42dli6fodbi@resource.calendar.google.com"
             ),
-            id = null,
+            id = this.id ?: null,
             beginBooking = start?.dateTime?.value ?: 0,//TODO FIX date placeholder
             endBooking = end?.dateTime?.value ?: 0,//TODO FIX date placeholder
             recurrence = recurrence

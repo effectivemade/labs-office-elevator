@@ -27,7 +27,7 @@ object RecurrenceRuleFactory {
                     try {
                         parts.last().trim(Char(34), 'Z').toLong()
                     } catch (ex: Exception) {
-                        0 /*TODO FIX ME, SEMPAI*/
+                        0 /*TODO FIX ME, SEMPAI (двойная кавычка в конце строки, которая парсится в лонг)*/
                     }
                 )
             )

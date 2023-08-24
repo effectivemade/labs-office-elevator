@@ -48,7 +48,10 @@ class BookingCalendarRepository(
     override fun findById(bookingId: String): Booking? {
         var event: Event? = null;
         calendarRepository.findAllCalendarsId().forEach {
-            event = findByCalendarIdAndBookingId(it, bookingId)
+            val a = findByCalendarIdAndBookingId(it, bookingId)
+            if (a != null) {
+                event = a
+            }
         }
         return event?.toBookingModel()
     }
@@ -64,7 +67,7 @@ class BookingCalendarRepository(
             calendarEvents.list(calendarId).execute().items.filter {
                 it.status != "cancelled"
             }.filter {
-                it?.organizer?.email.equals(
+                it?.organizer?.email?.equals(
                     userEmail
                 ) ?: false
             }.forEach { eventsList.add(it) }
@@ -83,12 +86,16 @@ class BookingCalendarRepository(
     }
 
     override fun findAllByWorkspaceId(workspaceId: UUID): List<Booking> {
-        val calendarId = getCalendarIdByWorkspace(workspaceId)
-        val bookingList = mutableListOf<Booking>()
-        calendarEvents.list(calendarId)
-            .execute().items.filter { (it?.start?.dateTime?.value?:0) > GregorianCalendar().time.time }
-            .forEach { bookingList.add(it.toBookingModel()) }
+        val bookingList: MutableList<Booking> = mutableListOf()
+        findAllEntitiesByWorkspaceId(workspaceId).forEach { bookingList.add(it.toBookingModel()) }
         return bookingList
+    }
+
+    private fun findAllEntitiesByWorkspaceId(workspaceId: UUID): List<Event> {
+        val calendarId = getCalendarIdByWorkspace(workspaceId)
+        return calendarEvents.list(calendarId).execute().items.filter {
+            it.status != "cancelled"
+        }.filter { (it?.start?.dateTime?.value ?: 0) > GregorianCalendar().time.time }
     }
 
     override fun findAllByOwnerAndWorkspaceId(ownerId: UUID, workspaceId: UUID): List<Booking> {
@@ -105,8 +112,11 @@ class BookingCalendarRepository(
 
     override fun findAll(): List<Booking> {
         val bookingList = mutableListOf<Booking>()
-        calendarRepository.findAllCalendarsId().forEach {
-            calendarEvents.list(it).execute().items.forEach { bookingList.add(it.toBookingModel()) }
+        calendarRepository.findAllCalendarsId().forEach { calendarId ->
+            calendarEvents.list(calendarId).execute().items.filter { event ->
+                event.status != "cancelled"
+            }.filter { (it?.start?.dateTime?.value ?: 0) > GregorianCalendar().time.time }
+                .forEach { bookingList.add(it.toBookingModel()) }
         }
         return bookingList
     }
@@ -117,20 +127,25 @@ class BookingCalendarRepository(
         val calendarID: String =
             calendarRepository.findByWorkspace(booking.workspace.id ?: throw MissingIdException("workspace model"))
         val savedEvent = calendar.Events().insert("effective.office@effective.band", event).execute()
-
-        return findById(savedEvent.id) ?: throw Exception("Calendar save goes wrong")
+        println("=====================================")
+        println(savedEvent.id)
+        println("=====================================")
+        return savedEvent.toBookingModel()//findById(savedEvent.id) ?: throw Exception("Calendar save goes wrong")
     }
 
     override fun update(booking: Booking): Booking {
-        val event = booking.toGoogleEvent()
-        booking.workspace.id
-            ?: throw MissingIdException("Workspace ${booking.workspace.name} must have id to push event ${event.id}")
-        val id = getCalendarIdByWorkspace(booking.workspace.id!!)
-        calendarEvents.update(id, event.id, event)
+        deleteById(booking.id ?: throw MissingIdException("Update model must have id"))
+        return save(booking)
 
-        return findById(booking.id ?: throw MissingIdException("Booking must have id to update event"))
-            ?: throw InstanceNotFoundException(
-                Booking::class, "Cannot to found booking directly after booking", null
-            )
+//        val event = booking.toGoogleEvent()
+//        booking.workspace.id
+//            ?: throw MissingIdException("Workspace ${booking.workspace.name} must have id to push event ${event.id}")
+//        val id = getCalendarIdByWorkspace(booking.workspace.id!!)
+//        calendarEvents.update(id, event.id, event)
+//
+//        return findById(booking.id ?: throw MissingIdException("Booking must have id to update event"))
+//            ?: throw InstanceNotFoundException(
+//                Booking::class, "Cannot to found booking directly after booking", null
+//            )
     }
 }
