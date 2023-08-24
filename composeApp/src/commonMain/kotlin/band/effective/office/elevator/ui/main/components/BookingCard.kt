@@ -20,6 +20,49 @@ import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.ui.models.ReservedSeat
 
 @Composable
+fun BookingCard(
+    seat: ReservedSeat,
+    onClickOptionMenu: (String) -> Unit,
+) {
+
+    Row(
+        modifier = Modifier
+            .clip(RoundedCornerShape(16.dp))
+            .background(Color.White)
+            .padding(horizontal = 16.dp, vertical = 24.dp)
+            .fillMaxWidth()
+    ) {
+        SeatIcon()
+        Spacer(modifier = Modifier.width(12.dp))
+        SeatTitle(seat)
+        Spacer(modifier = Modifier.height(24.dp))
+        Row(
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            IconButton(
+                onClick = {
+                    onClickOptionMenu(seat.bookingId)
+                },
+                modifier = Modifier
+                    .clip(RoundedCornerShape(80.dp)),
+                colors = IconButtonDefaults.iconButtonColors(),
+            ) {
+                Icon(
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = "show option menu",
+                    modifier = Modifier,
+                    tint = MaterialTheme.colors.secondaryVariant
+                )
+
+            }
+        }
+    }
+}
+
+@Composable
 fun SeatTitle(seat: ReservedSeat) {
     Column(
         modifier = Modifier.wrapContentSize(),

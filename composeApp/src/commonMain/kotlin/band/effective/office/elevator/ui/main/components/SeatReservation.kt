@@ -52,22 +52,13 @@ import kotlinx.coroutines.launch
 fun SeatsReservation(
     reservedSeats: List<ReservedSeat>,
     onClickBook: () -> Unit,
-    onClickShowOptions: () -> Unit,
-    showOptionsMenu: Boolean,
-    onClickCloseOptionMenu: () -> Unit,
-    onClickOpenDeleteBooking: (ReservedSeat) -> Unit,
-    onClickOpenEditBooking: () -> Unit
+    onClickOptionMenu: (String) -> Unit,
 ) {
     when(reservedSeats.isEmpty()) {
         true -> EmptyReservation(onClickBook)
         false -> NonEmptyReservation(
             reservedSeats = reservedSeats,
-            onClickOpenDeleteBooking = onClickOpenDeleteBooking,
-            onClickOpenEditBooking = onClickOpenEditBooking,
-            onClickShowOptions = onClickShowOptions,
-            showOptionsMenu = showOptionsMenu,
-            onClickCloseOptionMenu = onClickCloseOptionMenu,
-            onClickBook = onClickBook
+            onClickOptionMenu = onClickOptionMenu
         )
     }
 }
@@ -96,94 +87,16 @@ fun EmptyReservation(onClickBook: () -> Unit) {
 @Composable
 fun NonEmptyReservation(
     reservedSeats: List<ReservedSeat>,
-    onClickShowOptions: () -> Unit,
-    showOptionsMenu: Boolean,
-    onClickCloseOptionMenu: () -> Unit,
-    onClickOpenDeleteBooking: (ReservedSeat) -> Unit,
-    onClickOpenEditBooking: () -> Unit,
-    onClickBook: () -> Unit,
+    onClickOptionMenu: (String) -> Unit
 ) {
-    val interactionSource = remember {
-        MutableInteractionSource()
-    }
-
-    var menuOffset by remember { mutableStateOf(0.dp) }
-
-    var itemWidthDp by remember {
-        mutableStateOf(0.dp)
-    }
-    var itemHeightDp by remember {
-        mutableStateOf(0.dp)
-    }
-    var indexSelect by remember {
-        mutableStateOf(0)
-    }
-    val localDensity = LocalDensity.current
-    val coroutine = rememberCoroutineScope()
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        LazyColumn(
-            modifier = Modifier.clickable(onClick = onClickCloseOptionMenu,
-                interactionSource = interactionSource,
-                indication = null),
-            verticalArrangement = Arrangement.spacedBy(18.dp)
-
-        ) {
-            itemsIndexed(reservedSeats) {index ,seat  ->
-                    Row(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(Color.White)
-                            .padding(horizontal = 16.dp, vertical = 24.dp)
-                            .onGloballyPositioned { coordinates ->
-                                itemWidthDp = with(localDensity) { coordinates.size.width.toDp() }
-                                itemHeightDp = with(localDensity) { coordinates.size.height.toDp() }
-                            }
-                    ) {
-                        SeatIcon()
-                        Spacer(modifier = Modifier.width(12.dp))
-                        SeatTitle(seat)
-                        Spacer(modifier = Modifier.weight(1f))
-                        Icon(
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = "show option menu",
-                            modifier = Modifier.pointerInput(true) {
-                                detectTapGestures(
-                                    onPress = {
-                                        coroutine.launch {
-                                            onClickCloseOptionMenu()
-                                            delay(300L)
-                                            indexSelect = index
-                                            menuOffset = if(index==0){(it.y).toDp()}else{(it.y).toDp()+(itemHeightDp*index)+(18.dp*index)}
-                                            onClickShowOptions()
-                                        }
-                                    }
-                                ) }.align(Alignment.CenterVertically).padding(end = 12.dp),
-                            tint = MaterialTheme.colors.secondaryVariant
-                        )
-                }
-            }
-
-        }
-        var dropDownWidthDp by remember {
-            mutableStateOf(50.dp)
-        }
-
-        Box (modifier = Modifier
-            .fillMaxWidth(0.6f).offset(itemWidthDp - dropDownWidthDp,menuOffset)){
-        DropDownMenu(
-                expanded =  showOptionsMenu,
-                content = {
-                    BookingContextMenu(onClick = onClickCloseOptionMenu,
-                        onClickOpenDeleteBooking = onClickOpenDeleteBooking,
-                        onClickOpenEditBooking = onClickOpenEditBooking,
-                        onClickBook = onClickBook,
-                        seat = reservedSeats[indexSelect]
-                        )
-                },
-                modifier = Modifier.padding(end = 28.dp).onGloballyPositioned { coordinates ->
-                    dropDownWidthDp = with(localDensity) { coordinates.size.width.toDp() }
-                }
+    LazyColumn (
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(18.dp)
+    ) {
+        items(reservedSeats) { seat ->
+            BookingCard(
+                seat = seat,
+                onClickOptionMenu = onClickOptionMenu,
             )
 
         }

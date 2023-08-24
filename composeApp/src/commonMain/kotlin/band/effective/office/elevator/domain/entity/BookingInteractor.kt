@@ -3,6 +3,7 @@ package band.effective.office.elevator.domain.entity
 import band.effective.office.elevator.domain.models.BookingInfoDomain
 import band.effective.office.elevator.domain.models.CreatingBookModel
 import band.effective.office.elevator.domain.models.ErrorWithData
+import band.effective.office.elevator.domain.repository.BookingRepository
 import band.effective.office.elevator.domain.useCase.ChangeBookingUseCase
 import band.effective.office.elevator.domain.useCase.CreateBookingUseCase
 import band.effective.office.elevator.domain.useCase.GetBookingsUseCase
@@ -19,7 +20,8 @@ class BookingInteractor(
     private val getBookingsUseCase: GetBookingsUseCase,
     private val changeBookingUseCase: ChangeBookingUseCase,
     private val createBookingUseCase: CreateBookingUseCase,
-    private val workspaceUseCase: WorkspacesUseCase
+    private val workspaceUseCase: WorkspacesUseCase,
+    private val repository: BookingRepository // todo replace this
 ) {
     suspend fun getForUser(ownerId:String): Flow<Either<ErrorWithData<List<ReservedSeat>>, List<ReservedSeat>>> =
         getBookingsUseCase.getBookingsForUser(
@@ -29,15 +31,14 @@ class BookingInteractor(
 
 
     suspend fun getByDate(
-        ownerId: String,
         date: LocalDate,
     ): Flow<Either<ErrorWithData<List<ReservedSeat>>, List<ReservedSeat>>> =
         getBookingsUseCase.getBookingsByDate(
-            date = date, ownerId = ownerId,
+            date = date,
             bookingsFilter = BookingsFilter(meetRoom = true, workPlace = true)
         )
 
-    suspend fun change(bookingInfoDomain: BookingInfoDomain) {
+    suspend fun change(bookingInfo: BookingInfo) {
         changeBookingUseCase.execute(
             bookingInfoDomain = bookingInfoDomain
         )
@@ -60,4 +61,6 @@ class BookingInteractor(
         freeFrom = freeFrom,
         freeUntil = freeUntil
     )
+
+    suspend fun deleteBooking(bookingId: String) = repository.deleteBooking(bookingId)
 }

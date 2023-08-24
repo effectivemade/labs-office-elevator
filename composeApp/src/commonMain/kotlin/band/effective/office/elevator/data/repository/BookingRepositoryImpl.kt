@@ -60,7 +60,9 @@ class BookingRepositoryImpl(
         api.updateBooking(bookingInfo = bookingDTO)
     }
 
-    override suspend fun deleteBooking(bookingInfoDomain: BookingInfoDomain) {
+
+    override suspend fun deleteBooking(book: String) {
+        api.deleteBooking(book)
     }
 
     override suspend fun createBook(creatingBookModel: CreatingBookModel) {
@@ -109,6 +111,30 @@ class BookingRepositoryImpl(
             .convertWithDateFilter(oldValue = lastResponse.value, filter = bookingsFilter, dateFilter = date)
         lastResponse.update { response }
         emit(response)
+    }
+
+    override suspend fun getBookingsByDate(
+        date: LocalDate,
+        bookingsFilter: BookingsFilter
+    ): Flow<Either<ErrorWithData<List<BookingInfo>>, List<BookingInfo>>> = flow  {
+
+        val currentUserResponse = profileRepository.getUser()
+
+        currentUserResponse.collect { userResponse ->
+
+            when (userResponse) {
+                is Either.Success -> {
+                    val bookings = api.getBookingsByUser(userResponse.data.id)
+                        .convertWithDateFilter(oldValue = lastResponse.value, filter = bookingsFilter, dateFilter = date)
+                    lastResponse.update { bookings }
+                    emit(bookings)
+                }
+
+                is Either.Error -> {
+                    // TODO add implemetation for error
+                }
+            }
+        }
     }
 
     private fun Either<ErrorResponse, List<BookingDTO>>.convert(

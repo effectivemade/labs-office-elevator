@@ -25,6 +25,7 @@ dependencies {
     implementation(Plugins.Serialization.implementation)
     implementation(Plugins.Moko.implementation)
     implementation(Plugins.Libres.implementation)
+    implementation(Plugins.GoogleServices.implementation) //NOTE(Maksim Mishenko): need for firebase message
 }
 
 val rootDirProject = file("../")

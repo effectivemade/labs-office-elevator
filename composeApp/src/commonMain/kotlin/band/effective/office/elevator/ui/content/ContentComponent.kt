@@ -1,5 +1,7 @@
 package band.effective.office.elevator.ui.content
 
+import band.effective.office.elevator.domain.entity.BookingInteractor
+import band.effective.office.elevator.domain.models.BookingInfo
 import band.effective.office.elevator.ui.booking.BookingComponent
 import band.effective.office.elevator.ui.employee.FullEmployeeComponent
 import band.effective.office.elevator.ui.main.MainComponent
@@ -13,13 +15,19 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
 import com.arkivanov.mvikotlin.core.store.StoreFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class ContentComponent(
     componentContext: ComponentContext,
     private val storeFactory: StoreFactory,
     private val openAuthorizationFlow: () -> Unit
 ) :
-    ComponentContext by componentContext {
+    ComponentContext by componentContext, KoinComponent {
 
     private val navigation = StackNavigation<Config>()
     private val stack = childStack(
@@ -27,10 +35,18 @@ class ContentComponent(
         initialStack = { listOf(Config.MainScreen) },
         childFactory = ::child,
     )
+    val bookingInteractor by inject<BookingInteractor>()
     val childStack: Value<ChildStack<*, Child>> = stack
 
     private fun child(config: Config, componentContext: ComponentContext): Child = when (config) {
-        is Config.MainScreen -> Child.Main(MainComponent(componentContext, storeFactory, ::mainOutput))
+        is Config.MainScreen -> Child.Main(
+            MainComponent(
+                componentContext,
+                storeFactory,
+                ::mainOutput
+            )
+        )
+
         is Config.Profile -> Child.Profile(
             ProfileComponent(
                 componentContext,
@@ -38,19 +54,38 @@ class ContentComponent(
                 openAuthorizationFlow
             )
         )
-        is Config.Booking -> Child.Booking(BookingComponent(componentContext, storeFactory, ::bookingOutput))
+
+        is Config.Booking -> Child.Booking(
+            BookingComponent(
+                componentContext,
+                storeFactory,
+                ::bookingOutput
+            )
+        )
+
         is Config.Employee -> Child.Employee(FullEmployeeComponent(componentContext, storeFactory))
     }
 
-    private fun bookingOutput(output: BookingComponent.Output){
-        when(output){
+    private fun bookingOutput(output: BookingComponent.Output) {
+        when (output) {
             BookingComponent.Output.OpenMainTab -> navigation.bringToFront(Config.MainScreen)
         }
     }
 
     private fun mainOutput(output: MainComponent.Output) {
-        when(output){
+        when (output) {
+            is MainComponent.Output.DeleteBooking -> {
+                CoroutineScope(Dispatchers.IO).launch {
+                    bookingInteractor.deleteBooking(
+                        bookingId = output.id
+                    )
+                }
+            }
+
             MainComponent.Output.OpenBookingScreen -> navigation.bringToFront(Config.Booking)
+            MainComponent.Output.OpenMap -> {
+                navigation.bringToFront(Config.Booking)
+            }
         }
     }
 
@@ -69,9 +104,9 @@ class ContentComponent(
 
         class Profile(val component: ProfileComponent) : Child()
 
-        class Booking(val component: BookingComponent): Child()
+        class Booking(val component: BookingComponent) : Child()
 
-        class Employee(val component: FullEmployeeComponent): Child()
+        class Employee(val component: FullEmployeeComponent) : Child()
     }
 
     private sealed interface Config : Parcelable {

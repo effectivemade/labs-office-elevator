@@ -29,8 +29,10 @@ abstract class CurrentEventController(
         this.scope = scope
         job?.cancel()
         job = update()
-        scope.launch { roomUseCase.subscribe(Settings.current.checkCurrentRoom())
-            .collect() { onServerUpdate() } }
+        scope.launch {
+            roomUseCase.subscribe(Settings.current.checkCurrentRoom(), scope)
+                .collect() { onServerUpdate() }
+        }
     }
 
     /**Finish current event*/

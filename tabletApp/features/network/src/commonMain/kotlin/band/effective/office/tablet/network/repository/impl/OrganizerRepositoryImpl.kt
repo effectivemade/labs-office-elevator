@@ -9,6 +9,7 @@ import band.effective.office.tablet.domain.model.Organizer
 import band.effective.office.tablet.network.repository.OrganizerRepository
 import band.effective.office.tablet.utils.Converter.toOrganizer
 import band.effective.office.tablet.utils.map
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,11 +46,10 @@ class OrganizerRepositoryImpl(private val api: Api) : OrganizerRepository {
         }
 
 
-    override suspend fun subscribeOnUpdates(
-    ): Flow<Either<ErrorWithData<List<Organizer>>, List<Organizer>>> =
+    override fun subscribeOnUpdates(scope: CoroutineScope): Flow<Either<ErrorWithData<List<Organizer>>, List<Organizer>>> =
         flow {
             emit(loadOrganizersList())
-            api.subscribeOnOrganizersList()
+            api.subscribeOnOrganizersList(scope)
                 .collect { emit(it.convert(orgList.value).apply { orgList.update { this } }) }
         }
 

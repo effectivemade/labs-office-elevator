@@ -39,7 +39,8 @@ internal val domainModuleDI = module {
             getBookingsUseCase = GetBookingsUseCase(repository = get()),
             changeBookingUseCase = ChangeBookingUseCase(repository = get()),
             createBookingUseCase = CreateBookingUseCase(repository = get()),
-            workspaceUseCase = WorkspacesUseCase(repository = get())
+            workspaceUseCase = WorkspacesUseCase(repository = get()),
+            repository = get()
         )
     }
 

@@ -30,6 +30,7 @@ fun BookingContextMenu(
     onClickOpenDeleteBooking: (ReservedSeat) -> Unit,
     onClickOpenEditBooking: () -> Unit,
     seat: ReservedSeat,
+
     onClickBook: () -> Unit
 ) {
     val dropDownList =
@@ -39,43 +40,49 @@ fun BookingContextMenu(
             MainRes.strings.delete
         )
 
-    Column(modifier = Modifier
+    Column(
+        modifier = Modifier
             .padding(end = 24.dp, bottom = 24.dp)
             .shadow(
-            elevation = 10.dp,
-            shape = RoundedCornerShape(8.dp)
-        )
+                elevation = 10.dp,
+                shape = RoundedCornerShape(8.dp)
+            )
             .clip(RoundedCornerShape(8.dp))
             .background(color = Color.White)
 
-        .wrapContentSize()
+            .wrapContentSize()
     ) {
         for (item in dropDownList) {
             with(stringResource(item)) {
-            Column(modifier = Modifier.wrapContentSize()) {
-                Button(
-                    onClick = {if(item == MainRes.strings.show_map){
-                        onClickBook()
-                    }else{if(item == MainRes.strings.extend_booking){
-                        onClickOpenEditBooking()
-                    }else{onClickOpenDeleteBooking(seat)}}
-                              onClick()
-                              },
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color.Transparent,
-                    ),
-                    elevation = Elevation(),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(text = this@with,
-                        color = MaterialTheme.colors.secondary,
-                        modifier = Modifier.wrapContentSize())
+                Column(modifier = Modifier.wrapContentSize()) {
+                    Button(
+                        onClick = {
+                            if (item == MainRes.strings.show_map) {
+                                onClickBook()
+                            } else {
+                                onClickOpenDeleteBooking()
+                            }
+                            onClick()
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color.Transparent,
+                        ),
+                        elevation = Elevation(),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = this@with,
+                            color = MaterialTheme.colors.secondary,
+                            modifier = Modifier.wrapContentSize()
+                        )
+                    }
+                    if (dropDownList.indexOf(item) != dropDownList.lastIndex)
+                        Divider(
+                            modifier = Modifier.height(1.dp)
+                                .background(color = ExtendedThemeColors.colors._66x)
+                        )
                 }
-                if (dropDownList.indexOf(item) !=dropDownList.lastIndex)
-                    Divider(
-                        modifier = Modifier.height(1.dp)
-                            .background(color = ExtendedThemeColors.colors._66x)
-                    )
+                
             }
             }
         }

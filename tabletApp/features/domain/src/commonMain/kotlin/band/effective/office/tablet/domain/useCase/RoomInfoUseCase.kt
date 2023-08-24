@@ -5,6 +5,7 @@ import band.effective.office.tablet.domain.model.ErrorWithData
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.network.repository.RoomRepository
 import band.effective.office.tablet.utils.map
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.flow
 import java.util.GregorianCalendar
 
@@ -17,9 +18,10 @@ class RoomInfoUseCase(private val repository: RoomRepository) {
      * @param scope scope for collect new information
      * @param handler handler for new information*/
     fun subscribe(
-        roomId: String = "Sirius"
+        roomId: String = "Sirius",
+        scope: CoroutineScope
     ) = flow {
-        repository.subscribeOnUpdates(roomId).collect { emit(it.filter()) }
+        repository.subscribeOnUpdates(roomId, scope).collect { emit(it.filter()) }
     }
 
     suspend fun getOtherRoom(roomId: String = "Sirius") = repository.getRoomsInfo().map(

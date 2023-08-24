@@ -63,7 +63,8 @@ fun WorkSpace.toUIModel() =
         workSpaceType = when (workspaceType) {
             WorkspaceType.RegularSeat -> WorkSpaceType.WORK_PLACE
             WorkspaceType.MeetingRoom -> WorkSpaceType.MEETING_ROOM
-        }
+        },
+        zoneName = zone?.name?:name
     )
 
 fun List<WorkSpace>.toUIModel() = map { it.toUIModel() }
