@@ -61,7 +61,7 @@ class ProfileComponent(
     private fun mainProfileOutput(output: MainProfileComponent.Output) {
         when(output){
             is MainProfileComponent.Output.OpenAuthorizationFlow -> openAuthorizationFlow()
-            is MainProfileComponent.Output.NavigateToEdit -> navigation.push(Config.EditProfile(output.userEdit))
+            is MainProfileComponent.Output.NavigateToEdit -> navigation.replaceAll(Config.EditProfile(output.userEdit))
         }
     }
 

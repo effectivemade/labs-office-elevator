@@ -76,15 +76,15 @@ internal class ProfileEditStoreFactory(
                 val uptUser = User(
                     id = user.user.id,
                     imageUrl = user.user.imageUrl,
-                    userName = intent.userName, post = intent.post,
+                    userName = intent.userName,
+                    post = intent.post,
                     phoneNumber = intent.phoneNumber,
                     telegram = intent.telegram,
                     email = user.user.email
                 )
                 dispatch(Msg.ProfileData(user = uptUser))
                 if (checkPhoneNumber(intent.phoneNumber) && checkUserdata(userName = intent.userName) && checkPost(
-                        intent.post
-                    ) && checkTelegram(intent.telegram)
+                        intent.post) && checkTelegram(intent.telegram)
                 ) {
                     updateUserUseCase.execute(uptUser)
                     publish(Label.SavedChange)

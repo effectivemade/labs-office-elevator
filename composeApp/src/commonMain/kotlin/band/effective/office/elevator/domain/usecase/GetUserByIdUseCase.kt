@@ -17,7 +17,7 @@ class GetUserByIdUseCase(private val profileRepository: ProfileRepository) {
             imageUrl = userWithoutFormat.imageUrl,
             userName = userWithoutFormat.userName,
             post = userWithoutFormat.post,
-            phoneNumber = userWithoutFormat.phoneNumber.substring(3).replace("-",""),
+            phoneNumber = userWithoutFormat.phoneNumber.substring(2),
             telegram = userWithoutFormat.telegram.substring(1),
             email = userWithoutFormat.email
             ))
