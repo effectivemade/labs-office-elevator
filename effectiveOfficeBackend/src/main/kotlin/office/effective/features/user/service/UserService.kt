@@ -20,7 +20,7 @@ class UserService(private val repository: UserRepository) : IUserService {
         return repository.findAll()
     }
 
-    override fun getUserById(userIdStr: String): UserModel {
+    override fun getUserById(userIdStr: String): UserModel? {
         return repository.findById(UUID.fromString(userIdStr))
     }
 
@@ -38,7 +38,7 @@ class UserService(private val repository: UserRepository) : IUserService {
      *
      * @author Danil Kiselev
      */
-    override fun getUserByEmail(emailStr: String): UserModel {
+    override fun getUserByEmail(emailStr: String): UserModel? {
         return repository.findByEmail(emailStr)
     }
 }
