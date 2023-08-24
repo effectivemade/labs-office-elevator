@@ -22,16 +22,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
+import band.effective.office.elevator.utils.DayOfWeekLocalizations
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.domain.models.BookingInfo
+import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.textInBorderGray
 import band.effective.office.elevator.ui.booking.models.Frequency
 import band.effective.office.elevator.utils.MonthLocalizations
-import band.effective.office.elevator.utils.NumToMonth
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
@@ -39,7 +40,8 @@ fun BookAccept(
     onClickCloseBookAccept: () -> Unit,
     confirmBooking: () -> Unit,
     bookingInfo: BookingInfo,
-    frequency: Frequency
+    frequency: Frequency,
+    period: BookingPeriod
 ) {
 
     val startMonth = MonthLocalizations.getMonthName(
@@ -111,7 +113,22 @@ fun BookAccept(
                         modifier = Modifier.padding(top = 10.dp, bottom = 5.dp)
                     )
                     Text(
-                        text = if (frequency.toString().isEmpty()) "$date $time" else "${frequency.toString()} $time",
+                        text = with(bookingInfo) {
+                            "${frequency.toString()} ${dateOfStart.date.dayOfMonth} " + MonthLocalizations.getMonthName(
+                                month = dateOfStart.date.month,
+                                locale = Locale(languageTag = Locale.current.language)
+                            ) + " ${dateOfStart.time.hour.toString()}:${
+                                with(
+                                    dateOfStart.time
+                                ) { if (minute.toString().length < 2) "0$minute" else minute.toString() }
+                            } - ${dateOfEnd.time.hour.toString()}:${
+                                with(
+                                    dateOfStart.time
+                                ) {
+                                    if (minute.toString().length < 2) "0$minute" else minute.toString()
+                                }
+                            }"
+                        },
                         style = MaterialTheme.typography.subtitle1,
                         fontSize = 16.sp,
                         fontWeight = FontWeight(400),
