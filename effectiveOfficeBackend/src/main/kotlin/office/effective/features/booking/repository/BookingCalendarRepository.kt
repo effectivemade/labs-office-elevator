@@ -55,11 +55,7 @@ class BookingCalendarRepository(
     override fun findAllByOwnerId(ownerId: UUID): List<Booking> {
         val userEmail: String = findUserEmailByUserId(ownerId)
         val eventsList = mutableListOf<Event>()
-        findAllEntities().filter {
-            it.organizer?.email?.equals(
-                userEmail
-            ) ?: false
-        }.forEach { eventsList.add(it) }
+        findAllEntities().filter { checkEventOrganizer(it, userEmail) }.forEach { eventsList.add(it) }
 
         val bookingList = mutableListOf<Booking>()
         eventsList.forEach {
@@ -68,9 +64,17 @@ class BookingCalendarRepository(
         return bookingList;
     }
 
+    private fun checkEventOrganizer(event: Event, email: String): Boolean {
+        if (event.organizer?.email?.equals(defaultCalendar) ?: false) {
+            return event.description.contains(email)
+        }
+        return event.organizer?.email?.equals(email) ?: false
+    }
+
     private fun findUserEmailByUserId(id: UUID): String {
-        return userRepository.findById(id)?.email
-            ?: throw InstanceNotFoundException(UserEntity::class, "User with id $id not found")
+        return userRepository.findById(id)?.email ?: throw InstanceNotFoundException(
+            UserEntity::class, "User with id $id not found"
+        )
     }
 
     override fun findAllByWorkspaceId(workspaceId: UUID): List<Booking> {
@@ -86,7 +90,7 @@ class BookingCalendarRepository(
 
     private fun hasId(event: Event, calendarId: String): Boolean {
         event.attendees.forEach {
-            if(it.email == calendarId) return true
+            if (it.email == calendarId) return true
         }
         return false
     }
