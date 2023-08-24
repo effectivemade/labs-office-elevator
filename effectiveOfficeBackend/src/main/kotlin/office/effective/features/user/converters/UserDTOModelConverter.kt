@@ -8,6 +8,7 @@ import office.effective.features.user.repository.UserRepository
 import office.effective.features.user.repository.UsersTagEntity
 import office.effective.model.IntegrationModel
 import office.effective.model.UserModel
+import java.util.*
 
 class UserDTOModelConverter(
     private val repository: UserRepository,
@@ -21,12 +22,16 @@ class UserDTOModelConverter(
      * @author Danil Kiselev, Daniil Zavyalov
      */
     fun dTOToModel(userDTO: UserDTO): UserModel {
-
-        val userId = uuidConverter.uuidFromString(userDTO.id)
-        val tag: UsersTagEntity? = try {
-            repository.findTagByUserOrNull(userId);
-        } catch (ex: InstanceNotFoundException) {
-            null
+        var userId: UUID? = null;
+        if (userDTO.id != "null") {
+            userId = uuidConverter.uuidFromString(userDTO.id)
+        }
+        val tag: UsersTagEntity? = userId?.let {
+            try {
+                repository.findTagByUserOrNull(userId);
+            } catch (ex: InstanceNotFoundException) {
+                null
+            }
         }
         val integrations: MutableSet<IntegrationModel> = mutableSetOf()
         userDTO.integrations?.forEach { integrations.add(converter.dTOToModel(it)) }
