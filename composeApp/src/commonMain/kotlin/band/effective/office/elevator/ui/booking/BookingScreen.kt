@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.ModalCalendar
@@ -46,7 +47,7 @@ import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import band.effective.office.elevator.ui.booking.store.BookingStore
 import band.effective.office.elevator.ui.models.TypesList
-import band.effective.office.elevator.utils.NumToMonth
+import band.effective.office.elevator.utils.MonthLocalizations
 import band.effective.office.elevator.utils.Stack
 import band.effective.office.elevator.utils.isScrollingDown
 import band.effective.office.elevator.utils.stackOf
@@ -103,7 +104,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                         workSpaceId = "",
                         seatName = state.bookingInfo.seatName,
                         dateOfStart = state.selectedStartDate.atTime(state.selectedStartTime),
-                        dateOfEnd = state.selectedStartDate.atTime(state.selectedFinishTime)
+                        dateOfEnd = state.selectedFinishDate.atTime(state.selectedFinishTime)
                     ),
                     frequency = state.frequency
                 )
@@ -112,9 +113,20 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                 bottomSheetContentState = showBookPeriod
             ) {
                 BookingPeriod(
-                    startDate = "${state.selectedStartDate.dayOfMonth} ${NumToMonth(month = state.selectedStartDate.monthNumber)} ${state.selectedStartDate.year}",
+                    startDate = "${state.selectedStartDate.dayOfMonth} ${
+                        MonthLocalizations.getMonthName(
+                            month = state.selectedStartDate.month,
+                            locale = Locale(languageTag = Locale.current.language)
+                        )
+                    } ${state.selectedStartDate.year}",
                     startTime = "${state.selectedStartTime.hour}:${state.selectedStartTime.minute}",
                     finishTime = "${state.selectedFinishTime.hour}:${state.selectedFinishTime.minute}",
+                    finishDate = "${state.selectedFinishDate.dayOfMonth} ${
+                        MonthLocalizations.getMonthName(
+                            month = state.selectedFinishDate.month,
+                            locale = Locale(languageTag = Locale.current.language)
+                        )
+                    } ${state.selectedFinishDate.year}",
                     repeatBooking = state.repeatBooking,
                     switchChecked = state.wholeDay,
                     closeClick = { bookingComponent.onEvent(BookingStore.Intent.CloseBookPeriod) },
@@ -125,7 +137,14 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                             )
                         )
                     },
-                    bookStartDate = { bookingComponent.onEvent(BookingStore.Intent.OpenCalendar) },
+                    bookStartDate = {
+                        bookingComponent.onEvent(
+                            BookingStore.Intent.OpenCalendar(
+                                isStart = true,
+                                date = state.selectedStartDate
+                            )
+                        )
+                    },
                     bookStartTime = {
                         bookingComponent.onEvent(
                             BookingStore.Intent.OpenStartTimeModal(
@@ -138,7 +157,15 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                         bookingComponent.onEvent(
                             BookingStore.Intent.OpenStartTimeModal(
                                 isStart = false,
-                                time = state.selectedStartTime
+                                time = state.selectedFinishTime
+                            )
+                        )
+                    },
+                    bookFinishDate = {
+                        bookingComponent.onEvent(
+                            BookingStore.Intent.OpenCalendar(
+                                isStart = false,
+                                date = state.selectedFinishDate
                             )
                         )
                     },
@@ -241,7 +268,8 @@ fun BookingScreen(bookingComponent: BookingComponent) {
         onClickApplyDate = { date: LocalDate? ->
             bookingComponent.onEvent(
                 BookingStore.Intent.ApplyDate(
-                    date = date
+                    date = date,
+                    isStart = state.isStartDate
                 )
             )
         },
@@ -258,7 +286,8 @@ fun BookingScreen(bookingComponent: BookingComponent) {
             }
         },
         isStart = state.isStart,
-        date = state.selectedStartDate,
+        startDate = state.selectedStartDate,
+        finishDate = state.selectedFinishDate,
         frequency = state.frequency,
         onClickChangeSelectedType = {
             bookingComponent.onEvent(
@@ -293,7 +322,8 @@ private fun BookingScreenContent(
     onClickOpenBookRepeat: (Pair<String, BookingPeriod>) -> Unit,
     onClickChangeZone: (WorkSpaceType) -> Unit,
     isStart: Boolean,
-    date: LocalDate,
+    startDate: LocalDate,
+    finishDate: LocalDate,
     frequency: Frequency,
     onClickChangeSelectedType: (TypesList) -> Unit,
     selectedTypesList: TypesList
@@ -333,7 +363,8 @@ private fun BookingScreenContent(
                 onClickExpandedMap = { isExpandedCard = !isExpandedCard },
                 onClickExpandedOption = { isExpandedOptions = !isExpandedOptions },
                 onClickChangeZone = onClickChangeZone,
-                date = date,
+                startDate = startDate,
+                finishDate = finishDate,
                 onClickChangeSelectedType = onClickChangeSelectedType,
                 selectedTypesList = selectedTypesList
             )

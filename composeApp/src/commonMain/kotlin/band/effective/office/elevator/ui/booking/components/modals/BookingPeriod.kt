@@ -43,6 +43,7 @@ import dev.icerock.moko.resources.compose.stringResource
 fun BookingPeriod(
     startDate: String,
     startTime: String,
+    finishDate: String,
     finishTime: String,
     repeatBooking: String,
     switchChecked: Boolean,
@@ -51,6 +52,7 @@ fun BookingPeriod(
     bookStartDate: () -> Unit,
     bookStartTime: () -> Unit,
     bookFinishTime: () -> Unit,
+    bookFinishDate: () -> Unit,
     bookingRepeat: () -> Unit,
     onClickSearchSuitableOptions: () -> Unit,
     frequency: Frequency
@@ -168,12 +170,19 @@ fun BookingPeriod(
                 //Start booking date
                 TimeLine(
                     date = startDate,
-                    statTime = startTime.padStart(2, '0'),
-                    endTime = finishTime,
+                    time = startTime.padStart(2, '0'),
                     onPickDate = bookStartDate,
-                    onPickStartTime = bookStartTime,
+                    onPickTime = bookStartTime,
                     selectTimeActive = !switchChecked,
-                    onPickEndTime = bookFinishTime,
+                )
+
+                //Finish booking date
+                TimeLine(
+                    date = finishDate,
+                    time = finishTime.padStart(2, '0'),
+                    onPickDate = bookFinishDate,
+                    onPickTime = bookFinishTime,
+                    selectTimeActive = !switchChecked,
                 )
 
                 //Book period
