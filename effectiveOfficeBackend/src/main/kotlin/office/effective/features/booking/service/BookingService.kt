@@ -42,13 +42,9 @@ class BookingService(
         val booking = bookingRepository.findById(id) ?: return null
         val userIds = mutableSetOf<UUID>()
         for (participant in booking.participants) {
-            userIds.add(participant.id
-                ?: throw MissingIdException("User with name ${participant.fullName} doesn't have an id")
-            )
+            participant.id?.let { userIds.add(it) }
         }
-        userIds.add(booking.owner.id
-            ?: throw MissingIdException("User with name ${booking.owner.fullName} doesn't have an id")
-        )
+        booking.owner.id?.let { userIds.add(it)  }
         val integrations = userRepository.findAllIntegrationsByUserIds(userIds)
         booking.workspace.utilities = findUtilities(booking.workspace)
         booking.owner.integrations = integrations[booking.owner.id] ?: setOf()

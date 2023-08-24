@@ -10,8 +10,8 @@ import office.effective.features.user.repository.UserRepository
 import office.effective.model.Booking
 import office.effective.features.calendar.service.GoogleCalendarConverter.toBookingModel
 import office.effective.features.calendar.service.GoogleCalendarConverter.toGoogleEvent
+import office.effective.features.user.repository.UserEntity
 import office.effective.features.workspace.repository.WorkspaceRepository
-import org.ktorm.dsl.eq
 import java.util.*
 
 class BookingCalendarRepository(
@@ -23,6 +23,8 @@ class BookingCalendarRepository(
     private val calendarEvents = calendar.Events()
     private val defaultCalendar = config.propertyOrNull("auth.app.defaultAppEmail")?.getString()
         ?: throw Exception("Config file does not contain default gmail value")
+    private val minTime = config.propertyOrNull("calendar.minTime")?.getString()?.toLong()
+        ?: throw Exception("Config file does not contain minimum time")
 
     private fun getCalendarIdByWorkspace(workspaceId: UUID): String {
         if (workspaceRepository.findById(workspaceId)?.tag != "meeting") {
@@ -53,10 +55,8 @@ class BookingCalendarRepository(
     override fun findAllByOwnerId(ownerId: UUID): List<Booking> {
         val userEmail: String = findUserEmailByUserId(ownerId)
         val eventsList = mutableListOf<Event>()
-        calendarEvents.list(defaultCalendar).execute().items.filter {
-            it.status != "cancelled"
-        }.filter {
-            it?.organizer?.email?.equals(
+        findAllEntities().filter {
+            it.organizer?.email?.equals(
                 userEmail
             ) ?: false
         }.forEach { eventsList.add(it) }
@@ -69,7 +69,8 @@ class BookingCalendarRepository(
     }
 
     private fun findUserEmailByUserId(id: UUID): String {
-        return userRepository.findById(id).email
+        return userRepository.findById(id)?.email
+            ?: throw InstanceNotFoundException(UserEntity::class, "User with id $id not found")
     }
 
     override fun findAllByWorkspaceId(workspaceId: UUID): List<Booking> {
@@ -80,10 +81,7 @@ class BookingCalendarRepository(
 
     private fun findAllEntitiesByWorkspaceId(workspaceId: UUID): List<Event> {
         val calendarId = getCalendarIdByWorkspace(workspaceId)
-        return calendarEvents.list(defaultCalendar).execute().items.filter {
-            it.status != "cancelled"
-        }.filter { (it?.start?.dateTime?.value ?: 0) > GregorianCalendar().time.time }
-            .filter { hasId(it, calendarId) }
+        return findAllEntities().filter { hasId(it, calendarId) }
     }
 
     private fun hasId(event: Event, calendarId: String): Boolean {
@@ -101,10 +99,7 @@ class BookingCalendarRepository(
 
     override fun findAll(): List<Booking> {
         val bookingList = mutableListOf<Booking>()
-        calendarEvents.list(defaultCalendar).execute().items.filter { event ->
-            event.status != "cancelled"
-        }.filter { (it?.start?.dateTime?.value ?: 0) > GregorianCalendar().time.time }
-            .forEach { bookingList.add(it.toBookingModel()) }
+        findAllEntities().forEach { bookingList.add(it.toBookingModel()) }
         return bookingList
     }
 
@@ -112,6 +107,12 @@ class BookingCalendarRepository(
         val event = booking.toGoogleEvent()
         val savedEvent = calendar.Events().insert(defaultCalendar, event).execute()
         return savedEvent.toBookingModel()//findById(savedEvent.id) ?: throw Exception("Calendar save goes wrong")
+    }
+
+    private fun findAllEntities(): List<Event> {
+        return calendarEvents.list(defaultCalendar).execute().items.filter { event ->
+            event.status != "cancelled"
+        }.filter { (it?.start?.dateTime?.value ?: 0) > minTime }
     }
 
     override fun update(booking: Booking): Booking {
