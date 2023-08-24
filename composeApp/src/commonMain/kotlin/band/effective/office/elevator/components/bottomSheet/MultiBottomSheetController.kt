@@ -33,7 +33,7 @@ class MultiBottomSheetController(
 
     @OptIn(ExperimentalMaterialApi::class)
     suspend fun showSheet(nameSheet: String) {
-        closeCurrentSheet()
+        //closeCurrentSheet()
         sheetStack.push(nameSheet)
         currentState.update { getCurrentSheetState() }
         sheetContents[nameSheet]?.showBottomSheet()

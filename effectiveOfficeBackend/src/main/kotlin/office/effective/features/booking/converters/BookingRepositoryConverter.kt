@@ -2,6 +2,7 @@ package office.effective.features.booking.converters
 
 import office.effective.common.exception.InstanceNotFoundException
 import office.effective.common.exception.MissingIdException
+import office.effective.common.utils.UuidValidator
 import office.effective.features.booking.repository.WorkspaceBookingEntity
 import office.effective.features.user.converters.UserModelEntityConverter
 import office.effective.features.user.repository.UserEntity
@@ -19,7 +20,8 @@ import java.util.*
 
 class BookingRepositoryConverter(private val database: Database,
                                  private val workspaceConverter: WorkspaceRepositoryConverter,
-                                 private val userConverter: UserModelEntityConverter) {
+                                 private val userConverter: UserModelEntityConverter,
+                                 private val uuidValidator: UuidValidator) {
 
     /**
      * Converts booking entity to model which contains user and workspace models.
@@ -34,9 +36,10 @@ class BookingRepositoryConverter(private val database: Database,
             ownerModel,
             participantModels,
             workspaceModel,
-            bookingEntity.id,
+            bookingEntity.id.toString(),
             bookingEntity.beginBooking,
-            bookingEntity.endBooking
+            bookingEntity.endBooking,
+            recurrence = null
         )
     }
 
@@ -51,7 +54,8 @@ class BookingRepositoryConverter(private val database: Database,
         return WorkspaceBookingEntity {
             owner = findOwnerEntity(bookingModel.owner)
             workspace = findWorkspaceEntity(bookingModel.workspace)
-            id = bookingModel.id ?: throw MissingIdException("Booking model doesn't have an id")
+            id = bookingModel.id?.let { uuidValidator.uuidFromString(it) }
+                ?: throw MissingIdException("Booking model doesn't have an id")
             beginBooking = bookingModel.beginBooking
             endBooking = bookingModel.endBooking
         }

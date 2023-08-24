@@ -88,6 +88,7 @@ kotlin {
 
                 implementation(project(":wheel-picker-compose"))
                 implementation(project(":modal_custom_dialog"))
+                implementation(project(":contract"))
             }
         }
 

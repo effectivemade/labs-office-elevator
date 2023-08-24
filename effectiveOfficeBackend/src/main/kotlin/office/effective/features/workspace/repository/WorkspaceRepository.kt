@@ -136,7 +136,7 @@ class WorkspaceRepository(private val database: Database, private val converter:
 
         return database.from(Workspaces)
             .innerJoin(right = WorkspaceTags, on = WorkspaceTags.id eq Workspaces.tagId)
-            .innerJoin(right = WorkspaceZones, on = WorkspaceZones.id eq Workspaces.zoneId)
+            .leftJoin(right = WorkspaceZones, on = WorkspaceZones.id eq Workspaces.zoneId)
             .leftJoin(
                 right = WorkspaceBooking,
                 on = (Workspaces.id eq WorkspaceBooking.workspaceId)
