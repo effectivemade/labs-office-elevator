@@ -15,19 +15,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
 @Composable
-fun Dialog(content:@Composable ()->Unit,
-           showDialog:Boolean,
-           onDismissRequest: ()-> Unit,
-           modifier: Modifier = Modifier){
+fun Dialog(
+    modifier: Modifier = Modifier,
+    showDialog:Boolean = true,
+    onDismissRequest: ()-> Unit,
+    content:@Composable ()->Unit,
+){
     val interactionSource = remember { MutableInteractionSource() }
     AnimatedVisibility(
         enter = fadeIn(),
         exit = fadeOut(),
         visible = showDialog,
         content = {
-            Box(modifier = Modifier.fillMaxSize().
-            background(Color(0x4D000000))
-                .clickable(onClick = onDismissRequest,
+            Box(modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0x4D000000))
+                    .clickable(onClick = onDismissRequest,
                 indication = null,
                 interactionSource = interactionSource)
             ) {

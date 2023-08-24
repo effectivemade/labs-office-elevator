@@ -41,9 +41,9 @@ import band.effective.office.elevator.ui.booking.components.modals.BookingSucces
 import band.effective.office.elevator.ui.booking.components.modals.ChooseZone
 import band.effective.office.elevator.ui.booking.models.BottomSheetNames
 import band.effective.office.elevator.ui.booking.models.Frequency
+import band.effective.office.elevator.ui.booking.models.MockDataSpaces
 import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
-import band.effective.office.elevator.ui.booking.models.WorkSpaceZone
 import band.effective.office.elevator.ui.booking.store.BookingStore
 import band.effective.office.elevator.ui.models.TypesList
 import band.effective.office.elevator.utils.NumToMonth
@@ -66,70 +66,6 @@ fun BookingScreen(bookingComponent: BookingComponent) {
     val showBookPeriod = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val showBookAccept = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val showBookRepeat = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-
-    val workSpacesUI = listOf(
-        WorkSpaceUI(
-            workSpaceId = "",
-            workSpaceName = stringResource(MainRes.strings.cassiopeia_zone),
-            workSpaceType = WorkSpaceType.MEETING_ROOM
-        ),
-        WorkSpaceUI(
-            workSpaceId = "",
-            workSpaceName = stringResource(MainRes.strings.arrakis_zone),
-            workSpaceType = WorkSpaceType.MEETING_ROOM
-        ),
-        WorkSpaceUI(
-            workSpaceId = "",
-            workSpaceName = stringResource(MainRes.strings.mars_zone),
-            workSpaceType = WorkSpaceType.MEETING_ROOM
-        ),
-        WorkSpaceUI(
-            workSpaceId = "",
-            workSpaceName = stringResource(MainRes.strings.antares_zone),
-            workSpaceType = WorkSpaceType.MEETING_ROOM
-        ),
-        WorkSpaceUI(
-            workSpaceId = "",
-            workSpaceName = stringResource(MainRes.strings.sirius_zone),
-            workSpaceType = WorkSpaceType.MEETING_ROOM
-        ),
-
-        WorkSpaceUI(
-            workSpaceId = "",
-            workSpaceName = stringResource(MainRes.strings.moon_room),
-            workSpaceType = WorkSpaceType.WORK_PLACE
-        ),
-        WorkSpaceUI(
-            workSpaceId = "",
-            workSpaceName = stringResource(MainRes.strings.sun_room),
-            workSpaceType = WorkSpaceType.WORK_PLACE
-        ),
-        WorkSpaceUI(
-            workSpaceId = "",
-            workSpaceName = stringResource(MainRes.strings.mercury_room),
-            workSpaceType = WorkSpaceType.WORK_PLACE
-        ),
-        WorkSpaceUI(
-            workSpaceId = "",
-            workSpaceName = stringResource(MainRes.strings.pluto_room),
-            workSpaceType = WorkSpaceType.WORK_PLACE
-        )
-    )
-
-    val allBookingZone = listOf(
-        WorkSpaceZone(name = stringResource(MainRes.strings.sirius_zone), isSelected = true),
-        WorkSpaceZone(name = stringResource(MainRes.strings.antares_zone), isSelected = true),
-        WorkSpaceZone(name = stringResource(MainRes.strings.mars_zone), isSelected = true),
-        WorkSpaceZone(name = stringResource(MainRes.strings.cassiopeia_zone), isSelected = true),
-        WorkSpaceZone(name = stringResource(MainRes.strings.arrakis_zone), isSelected = true),
-    )
-
-    val allMeetingRooms = listOf(
-        WorkSpaceZone(name = stringResource(MainRes.strings.moon_room), isSelected = true),
-        WorkSpaceZone(name = stringResource(MainRes.strings.sun_room), isSelected = true),
-        WorkSpaceZone(name = stringResource(MainRes.strings.mercury_room), isSelected = true),
-        WorkSpaceZone(name = stringResource(MainRes.strings.pluto_room), isSelected = true),
-    )
 
     val stackRemember: Stack<String> by remember { mutableStateOf(stackOf()) }
 
@@ -310,13 +246,15 @@ fun BookingScreen(bookingComponent: BookingComponent) {
             )
         },
         onClickChangeZone = { type ->
-            with(if (type == WorkSpaceType.MEETING_ROOM) allBookingZone else allMeetingRooms) {
+            with(
+                if (type == WorkSpaceType.MEETING_ROOM) MockDataSpaces.allMeetingRooms
+                else MockDataSpaces.allBookingZone
+            ) {
                 bookingComponent.onEvent(
                     BookingStore.Intent.ChangeSelectedWorkSpacesZone(
                         workSpaceZone = this@with
                     )
                 )
-                bookingComponent.onEvent(BookingStore.Intent.ChangeWorkSpacesUI(workSpaces = workSpacesUI.filter { workSpaceUI -> workSpaceUI.workSpaceType == type }))
             }
         },
         isStart = state.isStart,

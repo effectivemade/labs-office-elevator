@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -17,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.features.core.MainRes
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
@@ -54,13 +54,13 @@ fun EventDurationView(
                     style = MaterialTheme.typography.h6
                 )
             }
-            Spacer(modifier = Modifier.width(space))
             Text(
+                modifier = Modifier.weight(1f),
                 text = currentDuration.getDurationString(),
                 color = MaterialTheme.colors.onPrimary,
-                style = MaterialTheme.typography.h4
+                style = MaterialTheme.typography.h4,
+                textAlign = TextAlign.Center
             )
-            Spacer(modifier = Modifier.width(space))
             Button(
                 modifier = Modifier.fillMaxHeight().weight(1f).clip(RoundedCornerShape(15.dp)),
                 onClick = {
