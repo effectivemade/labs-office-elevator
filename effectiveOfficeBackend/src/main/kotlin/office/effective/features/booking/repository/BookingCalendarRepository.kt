@@ -40,9 +40,10 @@ class BookingCalendarRepository(
     }
 
     override fun deleteById(id: String) {
-        calendarRepository.findAllCalendarsId().forEach {
-            calendarEvents.delete(it, id).execute()
-        }
+        calendarEvents.delete("effective.office@effective.band", id).execute()
+//        calendarRepository.findAllCalendarsId().forEach {
+//            calendarEvents.delete(it, id).execute()
+//        }
     }
 
     override fun findById(bookingId: String): Booking? {
@@ -127,9 +128,6 @@ class BookingCalendarRepository(
         val calendarID: String =
             calendarRepository.findByWorkspace(booking.workspace.id ?: throw MissingIdException("workspace model"))
         val savedEvent = calendar.Events().insert("effective.office@effective.band", event).execute()
-        println("=====================================")
-        println(savedEvent.id)
-        println("=====================================")
         return savedEvent.toBookingModel()//findById(savedEvent.id) ?: throw Exception("Calendar save goes wrong")
     }
 
