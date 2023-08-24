@@ -50,7 +50,19 @@ class ContentComponent(
 
     private fun mainOutput(output: MainComponent.Output) {
         when(output){
-            is MainComponent.Output.OpenBookingScreen -> navigation.bringToFront(Config.Booking)
+            MainComponent.Output.DeleteBooking -> {
+//                TODO()
+            }
+            MainComponent.Output.ExtendBooking -> {
+//                TODO()
+            }
+            MainComponent.Output.OpenBookingScreen -> navigation.bringToFront(Config.Booking)
+            MainComponent.Output.OpenMap -> {
+//                TODO()
+            }
+            MainComponent.Output.RepeatBooking -> {
+//                TODO()
+            }
         }
     }
 

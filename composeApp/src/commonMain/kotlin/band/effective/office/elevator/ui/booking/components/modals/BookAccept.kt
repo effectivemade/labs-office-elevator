@@ -22,16 +22,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
+import band.effective.office.elevator.utils.DayOfWeekLocalizations
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.domain.models.BookingInfoDomain
+import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.textInBorderGray
 import band.effective.office.elevator.ui.booking.models.Frequency
 import band.effective.office.elevator.utils.MonthLocalizations
-import band.effective.office.elevator.utils.NumToMonth
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
@@ -39,7 +40,8 @@ fun BookAccept(
     onClickCloseBookAccept: () -> Unit,
     confirmBooking: () -> Unit,
     bookingInfoDomain: BookingInfoDomain,
-    frequency: Frequency
+    frequency: Frequency,
+    period: BookingPeriod
 ) {
 
     val startMonth = MonthLocalizations.getMonthName(
