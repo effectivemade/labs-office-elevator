@@ -64,5 +64,5 @@ class BookingInteractor(
         freeUntil = freeUntil
     )
 
-    suspend fun deleteBooking(bookingInfo: BookingInfo) = repository.deleteBooking(bookingInfo)
+    suspend fun deleteBooking(bookingId: String) = repository.deleteBooking(bookingId)
 }
