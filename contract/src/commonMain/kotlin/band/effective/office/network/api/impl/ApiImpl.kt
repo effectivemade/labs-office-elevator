@@ -1,6 +1,7 @@
 package band.effective.office.network.api.impl
 
 import band.effective.office.network.api.Api
+import band.effective.office.network.api.Collector
 import band.effective.office.network.dto.BookingDTO
 import band.effective.office.network.dto.SuccessResponse
 import band.effective.office.network.dto.UserDTO
@@ -13,10 +14,13 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 
 class ApiImpl : Api {
+    val collector = Collector("")
     private val client = KtorEtherClient
     private val baseUrl: String = "https://d5do2upft1rficrbubot.apigw.yandexcloud.net"
     override suspend fun getWorkspace(id: String): Either<ErrorResponse, WorkspaceDTO> =
@@ -128,31 +132,14 @@ class ApiImpl : Api {
             }
         }
 
-    //TODO(Maksim Mishenko): Request not exist in swagger
-    override suspend fun subscribeOnWorkspaceUpdates(id: String): Flow<Either<ErrorResponse, WorkspaceDTO>> =
-        flow {
-            emit(
-                Either.Error(
-                    ErrorResponse(
-                        code = 601,
-                        description = "Request not exist in swagger"
-                    )
-                )
-            )
-        }
+    override fun subscribeOnWorkspaceUpdates(
+        id: String,
+        scope: CoroutineScope
+    ): Flow<Either<ErrorResponse, WorkspaceDTO>> =
+        collector.flow(scope).filter { it == "workspace" }.map { getWorkspace(id) }
 
-    //TODO(Maksim Mishenko): Request not exist in swagger
-    override suspend fun subscribeOnOrganizersList(): Flow<Either<ErrorResponse, List<UserDTO>>> =
-        flow {
-            emit(
-                Either.Error(
-                    ErrorResponse(
-                        code = 601,
-                        description = "Request not exist in swagger"
-                    )
-                )
-            )
-        }
+    override fun subscribeOnOrganizersList(scope: CoroutineScope): Flow<Either<ErrorResponse, List<UserDTO>>> =
+        collector.flow(scope).filter { it == "organizer" }.map { getUsers(tag = "emploee") }
 
     //TODO(Maksim Mishenko): Request not exist in swagger
     override suspend fun subscribeOnBookingsList(workspaceId: String): Flow<Either<ErrorResponse, List<BookingDTO>>> =
@@ -173,4 +160,9 @@ class ApiImpl : Api {
                parameters.append(name = "email", value = email)
            }
         }
+    override fun subscribeOnBookingsList(
+        workspaceId: String,
+        scope: CoroutineScope
+    ): Flow<Either<ErrorResponse, List<BookingDTO>>> =
+        collector.flow(scope).filter { it == "booking" }.map { getBookingsByWorkspaces(workspaceId) }
 }

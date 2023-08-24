@@ -31,8 +31,8 @@ class UpdateUseCase(
         roomUpdateHandler: (Either<ErrorWithData<RoomInfo>, RoomInfo>) -> Unit,
         organizerUpdateHandler: (Either<ErrorWithData<List<Organizer>>, List<Organizer>>) -> Unit
     ) {
-        scope.launch { roomInfoUseCase.subscribe(checkSettingsUseCase()).collect { roomUpdateHandler(it) } }
-        scope.launch { organizersInfoUseCase.subscribe().collect() { organizerUpdateHandler(it) } }
+        scope.launch { roomInfoUseCase.subscribe(checkSettingsUseCase(),scope).collect { roomUpdateHandler(it) } }
+        scope.launch { organizersInfoUseCase.subscribe(scope).collect() { organizerUpdateHandler(it) } }
         currentEventController.start(scope)
         currentEventController.subscribe {
             scope.launch(Dispatchers.IO) {
