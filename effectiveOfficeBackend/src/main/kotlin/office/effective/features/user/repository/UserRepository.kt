@@ -165,6 +165,9 @@ class UserRepository(
      * @author Daniil Zavyalov
      * */
     fun findAllIntegrationsByUserIds(ids: Collection<UUID>): HashMap<UUID, MutableSet<IntegrationModel>> {
+        if (ids.isEmpty()) {
+            return HashMap<UUID, MutableSet<IntegrationModel>>()
+        }
         for (id in ids) {
             if (!existsById(id)) throw InstanceNotFoundException(UserEntity::class, "User with id $id not found")
         }
