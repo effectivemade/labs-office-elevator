@@ -29,7 +29,7 @@ import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.domain.models.BookingInfo
-import band.effective.office.elevator.domain.models.BookingPeriodUI
+import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.textInBorderGray
 import band.effective.office.elevator.ui.booking.models.Frequency
 import band.effective.office.elevator.utils.MonthLocalizations
@@ -41,24 +41,24 @@ fun BookAccept(
     confirmBooking: () -> Unit,
     bookingInfo: BookingInfo,
     frequency: Frequency,
-    period: BookingPeriodUI
+    period: BookingPeriod
 ) {
     var value = with(bookingInfo) {
         when (period) {
-            is BookingPeriodUI.Another -> "${frequency.toString()} ${dateOfStart.date.dayOfMonth} " + MonthLocalizations.getMonthName(
+            is BookingPeriod.Another -> "${frequency.toString()} ${dateOfStart.date.dayOfMonth} " + MonthLocalizations.getMonthName(
                 month = dateOfStart.date.month,
                 locale = Locale.current
             )
 
-            is BookingPeriodUI.EveryWorkDay -> stringResource(MainRes.strings.every_work_day)
-            is BookingPeriodUI.Month -> stringResource(MainRes.strings.every_month) + ", " + dateOfStart.dayOfMonth
-            is BookingPeriodUI.NoPeriod -> stringResource(MainRes.strings.booking_not_repeat)
-            is BookingPeriodUI.Week -> stringResource(MainRes.strings.every_week) + ", в " + DayOfWeekLocalizations.getDayOfWeek(
+            is BookingPeriod.EveryWorkDay -> stringResource(MainRes.strings.every_work_day)
+            is BookingPeriod.Month -> stringResource(MainRes.strings.every_month) + ", " + dateOfStart.dayOfMonth
+            is BookingPeriod.NoPeriod -> stringResource(MainRes.strings.booking_not_repeat)
+            is BookingPeriod.Week -> stringResource(MainRes.strings.every_week) + ", в " + DayOfWeekLocalizations.getDayOfWeek(
                 dayOfWeek = dateOfStart.dayOfWeek,
                 locale = Locale.current
             )
 
-            is BookingPeriodUI.Year -> stringResource(MainRes.strings.every_month)
+            is BookingPeriod.Year -> stringResource(MainRes.strings.every_month)
         }
     }
 

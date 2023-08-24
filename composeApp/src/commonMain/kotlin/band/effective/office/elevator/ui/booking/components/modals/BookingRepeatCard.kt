@@ -22,7 +22,7 @@ import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun BookingRepeatCard(
-    onSelected: (Pair<String, BookingPeriodUI>) -> Unit,
+    onSelected: (Pair<String, BookingPeriod>) -> Unit,
     modifier: Modifier,
     frequency: Frequency
 ) {
@@ -33,9 +33,9 @@ fun BookingRepeatCard(
         Pair(first = MainRes.strings.every_work_day, second = BookingPeriod.EveryWorkDay(5)),
         Pair(first = MainRes.strings.every_week, second = BookingPeriod.Week(7, days)),
         Pair(
-            first = MainRes.strings.every_month, second = BookingPeriodUI.Month(31),
+            first = MainRes.strings.every_month, second = BookingPeriod.Month(31),
         ),
-        Pair(first = MainRes.strings.another, second = BookingPeriodUI.Another)
+        Pair(first = MainRes.strings.another, second = BookingPeriod.Another)
     )
 
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(strings[0]) }

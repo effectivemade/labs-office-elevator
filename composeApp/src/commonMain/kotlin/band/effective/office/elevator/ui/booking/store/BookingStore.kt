@@ -73,7 +73,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         val isStart: Boolean,
         val frequency: Frequency,
         val repeatBooking: StringResource,
-        val bookingPeriodUI: BookingPeriodUI,
+        val bookingPeriod: BookingPeriod,
         val selectedType: TypesList,
         val bookingInfo: BookingInfo,
         val selectedFinishDate: LocalDate
@@ -99,7 +99,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
                 isStart = true,
                 frequency = Frequency(days = listOf()),
                 repeatBooking = MainRes.strings.booking_not_repeat,
-                bookingPeriodUI = BookingPeriodUI.NoPeriod,
+                bookingPeriod = BookingPeriod.NoPeriod,
                 selectedType = TypesList(
                     name = MainRes.strings.workplace,
                     icon = MainRes.images.table_icon,

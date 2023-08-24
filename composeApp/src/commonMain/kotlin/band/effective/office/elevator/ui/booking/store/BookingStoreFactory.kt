@@ -62,7 +62,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         data class WholeDay(val wholeDay: Boolean) : Msg
         data class IsStartTimePicked(val isStart: Boolean) : Msg
         data class ChangeFrequency(val frequency: Frequency) : Msg
-        data class ChangeBookingRepeat(val bookingRepeat: String) : Msg
+        data class ChangeBookingRepeat(val bookingRepeat: StringResource) : Msg
         data class ChangeBookingPeriod(val bookingPeriod: BookingPeriod) : Msg
         data class ChangeWorkingUI(val bookingInfo: BookingInfo) : Msg
     }
@@ -239,18 +239,18 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                         publish(BookingStore.Label.CloseBookPeriod)
                         publish(BookingStore.Label.CloseRepeatDialog)
                         with(intent.pair) {
-                            if (second == BookingPeriodUI.Another)
+                            if (second == BookingPeriod.Another)
                                 publish(BookingStore.Label.OpenBookRepeat)
                             val name = when (second) {
-                                is BookingPeriodUI.EveryWorkDay -> MainRes.strings.every_work_day
-                                is BookingPeriodUI.Month -> MainRes.strings.every_month
-                                is BookingPeriodUI.NoPeriod -> MainRes.strings.booking_not_repeat
-                                is BookingPeriodUI.Week -> MainRes.strings.every_week
-                                is BookingPeriodUI.Year -> MainRes.strings.every_month
-                                is BookingPeriodUI.Another -> MainRes.strings.every_year
+                                is BookingPeriod.EveryWorkDay -> MainRes.strings.every_work_day
+                                is BookingPeriod.Month -> MainRes.strings.every_month
+                                is BookingPeriod.NoPeriod -> MainRes.strings.booking_not_repeat
+                                is BookingPeriod.Week -> MainRes.strings.every_week
+                                is BookingPeriod.Year -> MainRes.strings.every_month
+                                is BookingPeriod.Another -> MainRes.strings.every_year
                             }
                             dispatch(Msg.ChangeBookingRepeat(bookingRepeat = name))
-                            dispatch(Msg.ChangeBookingPeriod(bookingPeriodUI = intent.pair.second))
+                            dispatch(Msg.ChangeBookingPeriod(bookingPeriod = intent.pair.second))
                         }
                     }
 

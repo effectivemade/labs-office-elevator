@@ -107,7 +107,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                         dateOfEnd = state.selectedStartDate.atTime(state.selectedFinishTime)
                     ),
                     frequency = state.frequency,
-                    period = state.bookingPeriodUI
+                    period = state.bookingPeriod
                 )
             },
             BottomSheetNames.BOOK_PERIOD.name to BottomSheetItem(
