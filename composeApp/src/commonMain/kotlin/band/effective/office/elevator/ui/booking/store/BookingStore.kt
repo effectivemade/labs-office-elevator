@@ -2,7 +2,7 @@ package band.effective.office.elevator.ui.booking.store
 
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.domain.models.BookingInfo
-import band.effective.office.elevator.domain.models.BookingPeriodUI
+import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.domain.models.CreatingBookModel
 import band.effective.office.elevator.domain.models.TypeEndPeriodBooking
 import band.effective.office.elevator.ui.booking.models.Frequency
@@ -30,7 +30,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         object CloseChooseZone : Intent
         object OpenRepeatDialog : Intent
         object CloseBookRepeat : Intent
-        data class OpenBookRepeat(val pair: Pair<String, BookingPeriodUI>) : Intent
+        data class OpenBookRepeat(val pair: Pair<String, BookingPeriod>) : Intent
         data class OpenBookAccept(val value: WorkSpaceUI) : Intent
         object CloseBookAccept : Intent
         object OpenBookPeriod : Intent
@@ -72,7 +72,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         val isStart: Boolean,
         val frequency: Frequency,
         val repeatBooking: String,
-        val bookingPeriodUI: BookingPeriodUI,
+        val bookingPeriod: BookingPeriod,
         val selectedType: TypesList,
         val bookingInfo: BookingInfo
     ) {
@@ -85,7 +85,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
                     workSpaceId = "",
                     dateOfStart = LocalDateTime(getCurrentDate(), getCurrentTime()),
                     dateOfEnd = LocalDateTime(getCurrentDate(), getCurrentTime()),
-                    bookingPeriodUI = BookingPeriodUI.NoPeriod,
+                    bookingPeriod = BookingPeriod.NoPeriod,
                     typeOfEndPeriod = TypeEndPeriodBooking.Never
                 ),
                 workSpacesType = WorkSpaceType.WORK_PLACE,
@@ -97,7 +97,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
                 isStart = true,
                 frequency = Frequency(days = listOf()),
                 repeatBooking = "Бронирование не повторяется",
-                bookingPeriodUI = BookingPeriodUI.NoPeriod,
+                bookingPeriod = BookingPeriod.NoPeriod,
                 selectedType = TypesList(
                     name = MainRes.strings.workplace,
                     icon = MainRes.images.table_icon,
@@ -105,6 +105,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
                 ),
                 bookingInfo = BookingInfo(
                     id = "",
+                    workSpaceId = "",
                     ownerId = "",
                     seatName = "",
                     dateOfStart = LocalDateTime(date = getCurrentDate(), time = getCurrentTime()),

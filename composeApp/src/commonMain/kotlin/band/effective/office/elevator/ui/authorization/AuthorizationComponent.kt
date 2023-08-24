@@ -1,8 +1,6 @@
 package band.effective.office.elevator.ui.authorization
 
-import band.effective.office.elevator.domain.entity.AuthorizationEntity
-import band.effective.office.elevator.domain.models.UserData
-import band.effective.office.elevator.expects.showToast
+import band.effective.office.elevator.domain.useCase.UpdateUserInfoUseCase
 import band.effective.office.elevator.ui.authorization.authorization_google.AuthorizationGoogleComponent
 import band.effective.office.elevator.ui.authorization.authorization_phone.AuthorizationPhoneComponent
 import band.effective.office.elevator.ui.authorization.authorization_profile.AuthorizationProfileComponent
@@ -10,6 +8,7 @@ import band.effective.office.elevator.ui.authorization.authorization_telegram.Au
 import band.effective.office.elevator.ui.authorization.store.AuthorizationStore
 import band.effective.office.elevator.ui.authorization.store.AuthorizationStoreFactory
 import band.effective.office.elevator.ui.models.validator.Validator
+import band.effective.office.network.model.Either
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
@@ -30,6 +29,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -42,7 +42,7 @@ class AuthorizationComponent(
 
     private val validator: Validator = Validator()
     private val navigation = StackNavigation<AuthorizationComponent.Config>()
-    private val authorizationEntity: AuthorizationEntity by inject()
+    private val updateUserInfoUseCase: UpdateUserInfoUseCase by inject()
     private val authorizationStore =
         instanceKeeper.getStore {
             AuthorizationStoreFactory(
@@ -51,19 +51,19 @@ class AuthorizationComponent(
         }
 
     private fun changePhoneNumber(phoneNumber: String) {
-        authorizationStore.state.userData.phoneNumber = phoneNumber
+        authorizationStore.accept(AuthorizationStore.Intent.ChangePhoneNumber(phoneNumber))
     }
 
     private fun changeName(name: String) {
-        authorizationStore.state.userData.name = name
+        authorizationStore.accept(AuthorizationStore.Intent.ChangeName(name))
     }
 
     private fun changePost(post: String) {
-        authorizationStore.state.userData.post = post
+        authorizationStore.accept(AuthorizationStore.Intent.ChangePost(post))
     }
 
     private fun changeTelegramNick(telegramNick: String) {
-        authorizationStore.state.userData.telegramNick = telegramNick
+        authorizationStore.accept(AuthorizationStore.Intent.ChangeTelegram(telegramNick))
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -109,7 +109,7 @@ class AuthorizationComponent(
                     componentContext,
                     storeFactory,
                     validator,
-                    authorizationStore.state.userData.name,
+                    authorizationStore.state.userData.userName,
                     authorizationStore.state.userData.post!!,
                     ::profileAuthOutput,
                     ::changeName,
@@ -122,7 +122,7 @@ class AuthorizationComponent(
                     componentContext,
                     storeFactory,
                     validator,
-                    authorizationStore.state.userData.telegramNick,
+                    authorizationStore.state.userData.telegram,
                     ::telegramAuthOutput,
                     ::changeTelegramNick
                 )
@@ -167,11 +167,22 @@ class AuthorizationComponent(
                 Config.ProfileAuth
             )
 
+            // TODO (Artem Gruzdev) @Slivka you should replace this logic to storeFactory
             is AuthorizationTelegramComponent.Output.OpenContentFlow -> {
-                CoroutineScope(Dispatchers.Main).launch {
-                    val result = authorizationEntity.push(authorizationStore.state.userData)
-                    if (result)
-                        openContentFlow()
+                CoroutineScope(Dispatchers.IO).launch {
+                    val response = updateUserInfoUseCase.execute(authorizationStore.state.userData)
+                    response.collect { result ->
+                        when (result) {
+                            is Either.Success -> {
+                                withContext(Dispatchers.Main) {
+                                    openContentFlow()
+                                }
+                            }
+                            else -> {
+                            //TODO show error
+                            }
+                        }
+                    }
                 }
             }
         }
