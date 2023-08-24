@@ -113,12 +113,12 @@ fun BookAccept(
                         modifier = Modifier.padding(top = 10.dp, bottom = 5.dp)
                     )
                     Text(
-                        text = when(frequency.getResearchEnd().first.first){
-                            "ThisDay" -> noPeriodReserve(bookingInfoDomain, frequency)
-                            "Never" -> noEndsPeriodReserve(bookingInfoDomain, frequency)
-                            "Date" ->  noEndsPeriodReserve(bookingInfoDomain, frequency)
-                            else ->  coupleTimesPeriodReserve(bookingInfoDomain, frequency)
-                        },
+//                        text = when(frequency.getResearchEnd().first.first){
+//                            "ThisDay" -> noPeriodReserve(bookingInfoDomain, frequency)
+//                            "Never" -> noEndsPeriodReserve(bookingInfoDomain, frequency)
+//                            "Date" ->  noEndsPeriodReserve(bookingInfoDomain, frequency)
+//                            else ->  coupleTimesPeriodReserve(bookingInfoDomain, frequency)
+//                        },
                         text = if (frequency.toString().isEmpty()) "$date $time" else "${frequency.toString()} $time",
                         style = MaterialTheme.typography.subtitle1,
                         fontSize = 16.sp,
@@ -162,7 +162,7 @@ fun noPeriodReserve(bookingInfoDomain: BookingInfoDomain, frequency: Frequency):
                 if((frequency.getResearchEnd().third != "Week" && frequency.getResearchEnd().third != "Day") || frequency.getResearchEnd().first.first == "CoupleTimes"){
                 "${dateOfStart.date.dayOfMonth} " +
                     if(frequency.getResearchEnd().third != "Month"){
-                    NumToMonth(dateOfStart.date.monthNumber)}
+                    dateOfStart.date.monthNumber}
                     else{""}
                 }
                 else{""}+

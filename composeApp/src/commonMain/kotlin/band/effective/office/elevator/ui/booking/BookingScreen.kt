@@ -51,6 +51,7 @@ import band.effective.office.elevator.utils.MonthLocalizations
 import band.effective.office.elevator.utils.Stack
 import band.effective.office.elevator.utils.isScrollingDown
 import band.effective.office.elevator.utils.stackOf
+import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
 import effective.office.modalcustomdialog.Dialog
 import kotlinx.datetime.LocalDate
@@ -333,7 +334,7 @@ private fun BookingScreenContent(
     startDate: LocalDate,
     finishDate: LocalDate,
     frequency: Frequency,
-    repeatBookings: String,
+    repeatBookings: StringResource,
     onClickChangeSelectedType: (TypesList) -> Unit,
     selectedTypesList: TypesList
 ) {

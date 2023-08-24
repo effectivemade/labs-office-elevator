@@ -67,7 +67,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         data class IsStartTimePicked(val isStart: Boolean) : Msg
         data class ChangeFrequency(val frequency: Frequency) : Msg
         data class ChangeBookingRepeat(val bookingRepeat: StringResource) : Msg
-        data class ChangeBookingPeriod(val bookingPeriodUI: BookingPeriod) : Msg
+        data class ChangeBookingPeriod(val bookingPeriod: BookingPeriod) : Msg
         data class ChangeWorkingUI(val bookingInfoDomain: BookingInfoDomain) : Msg
 
         data class IsStartDatePicker(val isStart: Boolean) : Msg

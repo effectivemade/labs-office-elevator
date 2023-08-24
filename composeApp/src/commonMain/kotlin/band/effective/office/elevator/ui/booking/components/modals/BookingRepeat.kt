@@ -64,7 +64,7 @@ import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.DropDownMenu
 import band.effective.office.elevator.components.EffectiveButton
-import band.effective.office.elevator.domain.models.BookingPeriodUI
+import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.textInBorderGray
 import band.effective.office.elevator.ui.booking.models.Frequency
 import dev.icerock.moko.resources.compose.stringResource
@@ -73,7 +73,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun BookingRepeat(
-    periodMeasure: BookingPeriodUI,
+    periodMeasure: BookingPeriod,
     backButtonClicked: () -> Unit,
     dropDownClick: (Int) -> Unit,
     confirmBooking: (Frequency) -> Unit,

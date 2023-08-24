@@ -14,6 +14,7 @@ class DeleteBookingUseCase(
         BookingInfoDomain(
             id = seat.bookingId,
             ownerId = seat.ownerId,
+            workSpaceId = "",
             seatName = seat.seatName,
             dateOfStart = LocalDateTime(date = seat.bookingDate, time = seat.bookingTime.substringBefore(" -").toLocalTime()),
             dateOfEnd = LocalDateTime(date = seat.bookingDate, time = seat.bookingTime.substringAfter("- ").toLocalTime())

@@ -28,10 +28,12 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.ui.booking.components.modals.noPeriodReserve
 import band.effective.office.elevator.ui.booking.models.Frequency
 import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.models.TypesList
 import band.effective.office.elevator.utils.MonthLocalizations
+import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.datetime.LocalDate
@@ -45,7 +47,7 @@ fun OptionMenu(
     startDate: LocalDate,
     finishDate: LocalDate,
     frequency: Frequency,
-    repeatBooking: String,
+    repeatBooking: StringResource,
     onClickChangeSelectedType: (TypesList) -> Unit,
     selectedTypesList: TypesList
 ) {
@@ -66,20 +68,34 @@ fun OptionMenu(
     val finishYear = finishDate.year
 
     val repeatBookingsOnShow = when(repeatBooking){
-        stringResource(MainRes.strings.every_work_day_repeat) -> repeatBooking + " "
-        stringResource(MainRes.strings.every_week) -> repeatBooking + " "
-        stringResource(MainRes.strings.every_month) -> repeatBooking + " "
+        MainRes.strings.every_work_day_repeat ->  stringResource( repeatBooking) + " "
+        MainRes.strings.every_week -> stringResource( repeatBooking) + " "
+        MainRes.strings.every_month -> stringResource( repeatBooking) + " "
         else -> ""
     }
+    val period = when(frequency.getResearchEnd().third){
+        "Week" -> "недели"
+        "Month" -> "месяцев"
+        else -> "лет"
+    }
     val periodicity = when(frequency.getResearchEnd().first.first) {
-        "ThisDay" -> ""
+        //"ThisDay" -> ""
+        "Never" -> "раз в ${frequency.getResearchEnd().second} ${period} c "
+        "Date" -> "раз в ${frequency.getResearchEnd().second} ${period} c "
+        else -> ""
+    }
+    val extendedPeriodInfo = when(frequency.getResearchEnd().first.first){
+        "Date" -> " по ${frequency.getResearchEnd().first.second}"
+        "CoupleTimes" -> "в ближайшие ${frequency.getResearchEnd().first.second} ${period}"
         else -> ""
     }
 
-    val date = repeatBookingsOnShow +
+    val date = repeatBookingsOnShow + periodicity +
         if (startYear == finishYear) if (startMonth == finishMonth) if (startDay == finishDay) "$startDay $startMonth $startYear" else "$startDay - $finishDay $startMonth $startYear"
         else "$startDay $startMonth - $finishDay $finishMonth $startYear"
-        else "$startDay $startMonth $startYear - $finishDay $finishMonth $finishYear"
+        else "$startDay $startMonth $startYear - $finishDay $finishMonth $finishYear" +
+                extendedPeriodInfo
+
 
 
 

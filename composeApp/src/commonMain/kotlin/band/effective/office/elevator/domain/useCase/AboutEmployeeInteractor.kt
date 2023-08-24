@@ -1,6 +1,6 @@
 package band.effective.office.elevator.domain.useCase
 
-import band.effective.office.elevator.domain.models.BookingInfo
+import band.effective.office.elevator.domain.models.BookingInfoDomain
 import band.effective.office.elevator.domain.models.ErrorWithData
 import band.effective.office.elevator.domain.models.toUIModel
 import band.effective.office.elevator.domain.repository.BookingRepository
@@ -39,7 +39,7 @@ class AboutEmployeeInteractor(
             .getBookingsByDate(date = date, ownerId = ownerId, bookingsFilter = bookingsFilter)
             .map()
 
-    private fun Flow<Either<ErrorWithData<List<BookingInfo>>, List<BookingInfo>>>.map() =
+    private fun Flow<Either<ErrorWithData<List<BookingInfoDomain>>, List<BookingInfoDomain>>>.map() =
         this.map{ response ->
             when(response) {
                 is Either.Error -> Either.Error(ErrorWithData(

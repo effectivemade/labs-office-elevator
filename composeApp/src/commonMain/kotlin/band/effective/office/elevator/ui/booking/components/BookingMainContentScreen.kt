@@ -41,6 +41,7 @@ import band.effective.office.elevator.ExtendedColors._66x
 import band.effective.office.elevator.ExtendedColors.purple_heart_500
 import band.effective.office.elevator.ui.booking.models.Frequency
 import band.effective.office.elevator.ui.models.TypesList
+import dev.icerock.moko.resources.StringResource
 import kotlinx.datetime.LocalDate
 
 @Composable
@@ -60,7 +61,7 @@ fun BookingMainContentScreen(
     startDate: LocalDate,
     finishDate: LocalDate,
     frequency: Frequency,
-    repeatBooking: String,
+    repeatBooking: StringResource,
     onClickChangeSelectedType: (TypesList) -> Unit,
     selectedTypesList: TypesList
 ) {

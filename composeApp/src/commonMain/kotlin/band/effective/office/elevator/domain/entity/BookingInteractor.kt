@@ -37,9 +37,9 @@ class BookingInteractor(
             bookingsFilter = BookingsFilter(meetRoom = true, workPlace = true)
         )
 
-    suspend fun change(bookingInfo: BookingInfoDomain) {
+    suspend fun change(bookingInfoDomain: BookingInfoDomain) {
         changeBookingUseCase.execute(
-            bookingInfo = bookingInfo
+            bookingInfoDomain = bookingInfoDomain
         )
     }
 
