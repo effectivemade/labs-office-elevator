@@ -133,19 +133,19 @@ fun MainScreen(component: MainComponent) {
                 )
             }
         )
-        Dialog(
-            content = {
-                DeleteBooking(
-                    place = selectSeat.seatName,
-                    fullDate = selectSeat.bookingDay + " "+ selectSeat.bookingTime,
-                    onCanselCLick = {component.onEvent(MainStore.Intent.OnClickCloseDeleteBooking)},
-                    onDeleteClick = {component.onEvent(MainStore.Intent.OnClickDeleteBooking(selectSeat))}
-                )
-            },
-            onDismissRequest = {component.onEvent(MainStore.Intent.OnClickCloseDeleteBooking)},
-            showDialog = showDeleteBooking,
-            modifier = Modifier.align(Alignment.Center).padding(horizontal = 16.dp)
-        )
+//        Dialog(
+//            content = {
+//                DeleteBooking(
+//                    place = selectSeat.seatName,
+//                    fullDate = selectSeat.bookingDay + " "+ selectSeat.bookingTime,
+//                    onCanselCLick = {component.onEvent(MainStore.Intent.OnClickCloseDeleteBooking)},
+//                    onDeleteClick = {component.onEvent(MainStore.Intent.OnClickDeleteBooking(selectSeat))}
+//                )
+//            },
+//            onDismissRequest = {component.onEvent(MainStore.Intent.OnClickCloseDeleteBooking)},
+//            showDialog = showDeleteBooking,
+//            modifier = Modifier.align(Alignment.Center).padding(horizontal = 16.dp)
+//        )
         Dialog(
             content = {
                 ModalCalendar(
@@ -221,11 +221,7 @@ fun MainScreenContent(
     onClickOptionMenu: (String) -> Unit,
     onClickOpenCalendar: () -> Unit,
     onClickOpenBottomDialog: () -> Unit,
-    showOptionsMenu: Boolean,
-    onClickCloseOptionMenu: () -> Unit,
     onClickCloseBottomDialog: (BookingsFilter) -> Unit,
-    onClickOpenEditBooking: () -> Unit,
-    onClickOpenDeleteBooking: (ReservedSeat) -> Unit
 ) {
     ModalBottomSheetLayout(
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
@@ -269,8 +265,6 @@ fun MainScreenContent(
                     onClickOptionMenu = onClickOptionMenu,
                     onClickOpenCalendar = onClickOpenCalendar,
                     onClickOpenBottomDialog = onClickOpenBottomDialog,
-                    showOptionsMenu = showOptionsMenu,
-                    onClickCloseOptionMenu = onClickCloseOptionMenu,
                 )
             }
         }

@@ -27,10 +27,7 @@ import dev.icerock.moko.resources.compose.stringResource
 @Composable
 fun BookingContextMenu(
     onClick: () -> Unit,
-    onClickOpenDeleteBooking: (ReservedSeat) -> Unit,
-    onClickOpenEditBooking: () -> Unit,
-    seat: ReservedSeat,
-
+    onClickOpenDeleteBooking: () -> Unit,
     onClickBook: () -> Unit
 ) {
     val dropDownList =
@@ -87,4 +84,3 @@ fun BookingContextMenu(
             }
         }
     }
-}

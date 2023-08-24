@@ -1,6 +1,5 @@
 package band.effective.office.elevator.domain.useCase
 
-import band.effective.office.elevator.domain.models.BookingInfoDomain
 import band.effective.office.elevator.domain.models.ErrorWithData
 import band.effective.office.elevator.domain.models.WorkSpace
 import band.effective.office.elevator.domain.models.toUIModel
@@ -9,7 +8,6 @@ import band.effective.office.network.model.Either
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.LocalDateTime
-import kotlin.math.tan
 
 class WorkspacesUseCase (
     private val repository: WorkspaceRepository

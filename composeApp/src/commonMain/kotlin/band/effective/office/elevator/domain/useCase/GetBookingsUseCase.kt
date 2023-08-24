@@ -1,6 +1,6 @@
 package band.effective.office.elevator.domain.useCase
 
-import band.effective.office.elevator.domain.models.BookingInfoDomain
+import band.effective.office.elevator.domain.models.BookingInfo
 import band.effective.office.elevator.domain.models.ErrorWithData
 import band.effective.office.elevator.domain.repository.BookingRepository
 import band.effective.office.elevator.domain.models.toUIModel

@@ -1,6 +1,6 @@
 package band.effective.office.elevator.data.repository
 
-import band.effective.office.elevator.domain.models.BookingInfoDomain
+import band.effective.office.elevator.domain.models.BookingInfo
 import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.domain.models.CreatingBookModel
 import band.effective.office.elevator.domain.models.ErrorWithData
@@ -33,9 +33,9 @@ class BookingRepositoryImpl(
 ) : BookingRepository {
 
     private val lastResponse =
-        MutableStateFlow<Either<ErrorWithData<List<BookingInfoDomain>>, List<BookingInfoDomain>>>(
+        MutableStateFlow<Either<ErrorWithData<List<BookingInfo>>, List<BookingInfo>>>(
             Either.Error(
-                ErrorWithData<List<BookingInfoDomain>>(
+                ErrorWithData<List<BookingInfo>>(
                     error = ErrorResponse(code = 0, description = ""),
                     saveData = null
                 )
@@ -43,7 +43,7 @@ class BookingRepositoryImpl(
         )
 
     override suspend fun changeBooking(
-        bookingInfo: BookingInfoDomain,
+        bookingInfo: BookingInfo,
         bookingPeriod: BookingPeriod?,
         typeEndPeriod: TypeEndPeriodBooking?
     ) {
@@ -58,6 +58,10 @@ class BookingRepositoryImpl(
             recurrence = recurrence
         )
         api.updateBooking(bookingInfo = bookingDTO)
+    }
+
+    override suspend fun deleteBooking(bookingInfo: BookingInfo) {
+
     }
 
 
@@ -95,23 +99,13 @@ class BookingRepositoryImpl(
     override suspend fun getBookingsForUser(
         ownerId: String,
         bookingsFilter: BookingsFilter
-    ): Flow<Either<ErrorWithData<List<BookingInfoDomain>>, List<BookingInfoDomain>>> = flow {
+    ): Flow<Either<ErrorWithData<List<BookingInfo>>, List<BookingInfo>>> = flow {
         val response = api.getBookingsByUser(ownerId)
             .convert(oldValue = lastResponse.value, filter = bookingsFilter)
         lastResponse.update { response }
         emit(response)
     }
 
-    override suspend fun getBookingsByDate(
-        date: LocalDate,
-        ownerId: String,
-        bookingsFilter: BookingsFilter
-    ): Flow<Either<ErrorWithData<List<BookingInfoDomain>>, List<BookingInfoDomain>>> = flow {
-        val response = api.getBookingsByUser(ownerId)
-            .convertWithDateFilter(oldValue = lastResponse.value, filter = bookingsFilter, dateFilter = date)
-        lastResponse.update { response }
-        emit(response)
-    }
 
     override suspend fun getBookingsByDate(
         date: LocalDate,
@@ -139,8 +133,8 @@ class BookingRepositoryImpl(
 
     private fun Either<ErrorResponse, List<BookingDTO>>.convert(
         filter: BookingsFilter,
-        oldValue: Either<ErrorWithData<List<BookingInfoDomain>>,
-                List<BookingInfoDomain>>
+        oldValue: Either<ErrorWithData<List<BookingInfo>>,
+                List<BookingInfo>>
     ) =
         map(errorMapper = { error ->
             ErrorWithData(
@@ -165,7 +159,7 @@ class BookingRepositoryImpl(
 
     private fun Either<ErrorResponse, List<BookingDTO>>.convertWithDateFilter(
         filter: BookingsFilter,
-        oldValue: Either<ErrorWithData<List<BookingInfoDomain>>,List<BookingInfoDomain>>,
+        oldValue: Either<ErrorWithData<List<BookingInfo>>,List<BookingInfo>>,
         dateFilter: LocalDate
     ) =
         map(errorMapper = { error ->

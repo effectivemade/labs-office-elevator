@@ -22,13 +22,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
-import band.effective.office.elevator.utils.DayOfWeekLocalizations
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
-import band.effective.office.elevator.domain.models.BookingInfoDomain
+import band.effective.office.elevator.domain.models.BookingInfo
 import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.textInBorderGray
 import band.effective.office.elevator.ui.booking.models.Frequency
@@ -39,29 +38,29 @@ import dev.icerock.moko.resources.compose.stringResource
 fun BookAccept(
     onClickCloseBookAccept: () -> Unit,
     confirmBooking: () -> Unit,
-    bookingInfoDomain: BookingInfoDomain,
+    bookingInfo: BookingInfo,
     frequency: Frequency,
     period: BookingPeriod
 ) {
 
     val startMonth = MonthLocalizations.getMonthName(
-        month = bookingInfoDomain.dateOfStart.month,
+        month = bookingInfo.dateOfStart.month,
         locale = Locale(languageTag = Locale.current.language)
     )
 
     val finishMonth = MonthLocalizations.getMonthName(
-        month = bookingInfoDomain.dateOfEnd.month,
+        month = bookingInfo.dateOfEnd.month,
         locale = Locale(languageTag = Locale.current.language)
     )
 
-    val startDay = bookingInfoDomain.dateOfStart.dayOfMonth
-    val finishDay = bookingInfoDomain.dateOfEnd.dayOfMonth
+    val startDay = bookingInfo.dateOfStart.dayOfMonth
+    val finishDay = bookingInfo.dateOfEnd.dayOfMonth
 
-    val startYear = bookingInfoDomain.dateOfStart.year
-    val finishYear = bookingInfoDomain.dateOfEnd.year
+    val startYear = bookingInfo.dateOfStart.year
+    val finishYear = bookingInfo.dateOfEnd.year
 
-    val startTime = bookingInfoDomain.dateOfStart.time
-    val finishTime = bookingInfoDomain.dateOfEnd.time
+    val startTime = bookingInfo.dateOfStart.time
+    val finishTime = bookingInfo.dateOfEnd.time
 
     val date =
         if (startYear == finishYear) if (startMonth == finishMonth) if (startDay == finishDay) "$startDay $startMonth $startYear" else "$startDay - $finishDay $startMonth $startYear"
@@ -105,7 +104,7 @@ fun BookAccept(
                 }
                 Column(modifier = Modifier.padding(horizontal = 5.dp)) {
                     Text(
-                        text = bookingInfoDomain.seatName,
+                        text = bookingInfo.seatName,
                         style = MaterialTheme.typography.subtitle1,
                         fontSize = 20.sp,
                         fontWeight = FontWeight(600),
@@ -138,26 +137,26 @@ fun BookAccept(
 }
 
 @Composable
-fun coupleTimesPeriodReserve(bookingInfoDomain: BookingInfoDomain, frequency: Frequency):String{
+fun coupleTimesPeriodReserve(bookingInfo: BookingInfo, frequency: Frequency):String{
     return when(frequency.getResearchEnd().third) {
-        "Month" -> noEndsPeriodReserve(bookingInfoDomain, frequency)
-        else -> noPeriodReserve(bookingInfoDomain, frequency)
+        "Month" -> noEndsPeriodReserve(bookingInfo, frequency)
+        else -> noPeriodReserve(bookingInfo, frequency)
     }
 }
 
 @Composable
-fun noEndsPeriodReserve(bookingInfoDomain: BookingInfoDomain, frequency: Frequency):String{
+fun noEndsPeriodReserve(bookingInfo: BookingInfo, frequency: Frequency):String{
     return when(frequency.getResearchEnd().third){
-        "Day" -> stringResource(MainRes.strings.every_work_day) + " " + noPeriodReserve(bookingInfoDomain, frequency)
-        "Week" -> stringResource(MainRes.strings.every_week) + " " + noPeriodReserve(bookingInfoDomain, frequency)
-        "Month" -> stringResource(MainRes.strings.every_month) + " " + noPeriodReserve(bookingInfoDomain, frequency)
-        else -> stringResource(MainRes.strings.every_year) + " " + noPeriodReserve(bookingInfoDomain, frequency)
+        "Day" -> stringResource(MainRes.strings.every_work_day) + " " + noPeriodReserve(bookingInfo, frequency)
+        "Week" -> stringResource(MainRes.strings.every_week) + " " + noPeriodReserve(bookingInfo, frequency)
+        "Month" -> stringResource(MainRes.strings.every_month) + " " + noPeriodReserve(bookingInfo, frequency)
+        else -> stringResource(MainRes.strings.every_year) + " " + noPeriodReserve(bookingInfo, frequency)
     }
 }
 
 @Composable
-fun noPeriodReserve(bookingInfoDomain: BookingInfoDomain, frequency: Frequency): String{
-    return with(bookingInfoDomain) {
+fun noPeriodReserve(bookingInfo: BookingInfo, frequency: Frequency): String{
+    return with(bookingInfo) {
         if(frequency.toString().isNotEmpty())"${frequency.toString()} " else {""} +
                 if((frequency.getResearchEnd().third != "Week" && frequency.getResearchEnd().third != "Day") || frequency.getResearchEnd().first.first == "CoupleTimes"){
                 "${dateOfStart.date.dayOfMonth} " +

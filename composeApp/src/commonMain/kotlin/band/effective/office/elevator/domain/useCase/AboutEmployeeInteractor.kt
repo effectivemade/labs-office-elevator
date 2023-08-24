@@ -1,6 +1,6 @@
 package band.effective.office.elevator.domain.useCase
 
-import band.effective.office.elevator.domain.models.BookingInfoDomain
+import band.effective.office.elevator.domain.models.BookingInfo
 import band.effective.office.elevator.domain.models.ErrorWithData
 import band.effective.office.elevator.domain.models.toUIModel
 import band.effective.office.elevator.domain.repository.BookingRepository
@@ -10,9 +10,7 @@ import band.effective.office.elevator.ui.models.ReservedSeat
 import band.effective.office.network.model.Either
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.datetime.LocalDate
 
 class AboutEmployeeInteractor(
@@ -36,10 +34,10 @@ class AboutEmployeeInteractor(
         coroutineScope: CoroutineScope
     ): Flow<Either<ErrorWithData<List<ReservedSeat>>, List<ReservedSeat>>> =
         bookingRepository
-            .getBookingsByDate(date = date, ownerId = ownerId, bookingsFilter = bookingsFilter)
+            .getBookingsByDate(date = date, bookingsFilter = bookingsFilter)
             .map()
 
-    private fun Flow<Either<ErrorWithData<List<BookingInfoDomain>>, List<BookingInfoDomain>>>.map() =
+    private fun Flow<Either<ErrorWithData<List<BookingInfo>>, List<BookingInfo>>>.map() =
         this.map{ response ->
             when(response) {
                 is Either.Error -> Either.Error(ErrorWithData(

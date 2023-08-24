@@ -19,10 +19,6 @@ fun BookingInformation(
     onClickOptionMenu: (String) -> Unit,
     onClickOpenCalendar: () -> Unit,
     onClickOpenBottomDialog: () -> Unit,
-    showOptionsMenu: Boolean,
-    onClickCloseOptionMenu: () -> Unit,
-    onClickOpenDeleteBooking: (ReservedSeat) -> Unit,
-    onClickOpenEditBooking: () -> Unit
 ) {
     Column(
         modifier = Modifier

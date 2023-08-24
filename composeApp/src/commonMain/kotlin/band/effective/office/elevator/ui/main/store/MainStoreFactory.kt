@@ -119,9 +119,9 @@ internal class MainStoreFactory(
                     }
                 }
 
-                MainStore.Intent.OnClickShowMap -> {
-                    publish(MainStore.Label.OpenBooking)
-                }
+//                MainStore.Intent.OnClickShowMap -> {
+//                    publish(MainStore.Label.OpenBooking)
+//                }
 
                 is MainStore.Intent.OnClickDeleteBooking -> {
                     scope.launch(Dispatchers.IO) {
@@ -156,6 +156,8 @@ internal class MainStoreFactory(
                         }
                     }
                 }
+
+                else -> {}
             }
         }
 
@@ -250,7 +252,7 @@ internal class MainStoreFactory(
 
             scope.launch(Dispatchers.IO) {
                 bookingInteractor
-                    .getByDate(ownerId = "", date = date)
+                    .getByDate(date = date)
                     .collect { bookings ->
                         withContext(Dispatchers.Main) {
                             withContext(Dispatchers.Main) {

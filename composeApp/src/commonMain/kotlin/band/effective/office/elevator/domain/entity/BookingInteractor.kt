@@ -1,6 +1,6 @@
 package band.effective.office.elevator.domain.entity
 
-import band.effective.office.elevator.domain.models.BookingInfoDomain
+import band.effective.office.elevator.domain.models.BookingInfo
 import band.effective.office.elevator.domain.models.CreatingBookModel
 import band.effective.office.elevator.domain.models.ErrorWithData
 import band.effective.office.elevator.domain.repository.BookingRepository
@@ -40,7 +40,7 @@ class BookingInteractor(
 
     suspend fun change(bookingInfo: BookingInfo) {
         changeBookingUseCase.execute(
-            bookingInfoDomain = bookingInfoDomain
+            bookingInfo = bookingInfo
         )
     }
 
