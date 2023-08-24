@@ -122,7 +122,15 @@ class BookingRepositoryImpl(
             )
         },
             successMapper = { bookingDTOS ->
-                bookingDTOS.toDomainZone() // TODO add filtration by workSpace or meetingRoom
+                bookingDTOS.filter {booking ->
+                    when {
+                        filter.workPlace && filter.meetRoom -> true
+                        filter.workPlace -> booking.workspace.tag == "regular"
+                        filter.meetRoom -> booking.workspace.tag == "meeting"
+                        else -> {false}
+                    }
+                }
+                    .toDomainZone() // TODO add filtration by workSpace or meetingRoom
             }
         )
 
