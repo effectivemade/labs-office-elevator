@@ -58,7 +58,7 @@ class UserDTOModelConverter(
             avatarUrl = userModel.avatarURL ?: "",
             integrations = integrations,
             email = userModel.email,
-            tag = "tag placeholder"//TODO Fix tag placeholder
+            tag = userModel.tag?.name ?: ""
         )
     }
 
