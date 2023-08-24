@@ -12,6 +12,7 @@ import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import band.effective.office.elevator.ui.booking.models.WorkSpaceZone
 import band.effective.office.elevator.ui.models.TypesList
 import band.effective.office.elevator.utils.getCurrentDate
+import band.effective.office.network.model.Either
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -26,6 +27,9 @@ import kotlinx.datetime.atTime
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import dev.icerock.moko.resources.StringResource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.withContext
 
 class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
 
@@ -314,11 +318,14 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                 is BookingStore.Intent.ChangeSelectedWorkSpacesZone -> {
                     scope.launch {
-                        dispatch(Msg.ChangeWorkSpacesUI(workSpacesUI = getSpacesUI(
+                        getSpacesUI(
                             workSpaceZone = intent.workSpaceZone,
-                            state = getState()
-                        )))
-                        dispatch(Msg.ChangeSelectedWorkSpacesZone(intent.workSpaceZone))
+                            state = getState(),
+                            dispatch = {
+                                dispatch(Msg.ChangeWorkSpacesUI(it))
+                                dispatch(Msg.ChangeSelectedWorkSpacesZone(intent.workSpaceZone))
+                            }
+                        )
                     }
                 }
 
@@ -376,23 +383,59 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             }
         }
 
-        override fun executeAction(action: Action, getState: () -> BookingStore.State) =
+        override fun executeAction(action: Action, getState: () -> BookingStore.State) {
+            println("Init book type")
             when (action) {
-                Action.InitWorkSpaces -> dispatch(Msg.ChangeWorkSpacesUI(workSpacesUI = getSpacesUI(
-                    workSpaceZone = getState().workSpacesZone,
-                    state = getState())
-                ))
+                Action.InitWorkSpaces -> {
+                    scope.launch {
+                        getSpacesUI(
+                            workSpaceZone = getState().workSpacesZone,
+                            state = getState(),
+                            dispatch = { dispatch(Msg.ChangeWorkSpacesUI(it)) },
+                        )
+                    }
+                }
+            }
+        }
+
+        private suspend fun getSpacesUI(
+            workSpaceZone: List<WorkSpaceZone>,
+            state: BookingStore.State,
+            dispatch: (List<WorkSpaceUI>) -> Unit,
+        ) {
+            withContext(Dispatchers.IO) {
+                bookingInteractor.getWorkspaces(
+                    tag = state.workSpacesType.type,
+                    freeFrom = LocalDateTime(
+                        date = state.selectedStartDate,
+                        time = state.selectedStartTime
+                    ),
+                    freeUntil = LocalDateTime(
+                        date = state.selectedFinishDate,
+                        time = state.selectedFinishTime
+                    )
+                ).collect { response ->
+                    withContext(Dispatchers.Main) {
+                        when (response) {
+                            is Either.Success -> {
+                                val list = workSpaceZone.filter { it.isSelected }
+                                val listWorkSpaces = response.data
+                                val newList = mutableListOf<WorkSpaceUI>()
+                                list.forEach {
+                                    val nameSpace = it.name
+                                    newList.add(listWorkSpaces.first { it.workSpaceName == nameSpace })
+                                }
+                                dispatch(newList.toList())
+                            }
+                            is Either.Error -> {
+                                println("ERROORRR!!!!")
+                                // TODO SHOW ERROR ON UI
+                            }
+                        }
+                    }
+                }
             }
 
-        private fun getSpacesUI(workSpaceZone: List<WorkSpaceZone>, state: BookingStore.State): List<WorkSpaceUI>{
-            val list = workSpaceZone.filter { it.isSelected }
-            val listWorkSpaces = state.workSpacesAll
-            val newList = mutableListOf<WorkSpaceUI>()
-            list.forEach {
-                val nameSpace = it.name
-                newList.add(listWorkSpaces.first { it.workSpaceName == nameSpace })
-            }
-            return newList.toList()
         }
     }
 
@@ -406,6 +449,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     workSpacesType = msg.type.type,
                     selectedType = msg.type
                 )
+
                 is Msg.ChangeWorkSpacesUI -> copy(workSpaces = msg.workSpacesUI)
                 is Msg.WholeDay -> copy(wholeDay = !msg.wholeDay)
                 is Msg.BeginningBookingTime -> copy(selectedStartTime = msg.time)
