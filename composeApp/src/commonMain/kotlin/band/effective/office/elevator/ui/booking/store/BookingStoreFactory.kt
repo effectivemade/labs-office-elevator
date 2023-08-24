@@ -48,7 +48,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         data class BeginningBookingTime(val time: LocalTime) : Msg
         data class BeginningBookingDate(val date: LocalDate) : Msg
         data class EndBookingTime(val time: LocalTime) : Msg
-        data class EndBookingDate(val date: LocalDate)
+        data class EndBookingDate(val date: LocalDate) : Msg
         data class SelectedTypeList(val type: TypesList) : Msg
         data class DateBooking(val date: LocalDate) : Msg
         data class TimeBooking(val time: LocalTime) : Msg
@@ -63,6 +63,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         data class ChangeBookingRepeat(val bookingRepeat: String) : Msg
         data class ChangeBookingPeriod(val bookingPeriodUI: BookingPeriodUI) : Msg
         data class ChangeWorkingUI(val bookingInfoDomain: BookingInfoDomain) : Msg
+
+        data class IsStartDatePicker(val isStart: Boolean) : Msg
     }
 
     private sealed interface Action {
@@ -89,6 +91,26 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is BookingStore.Intent.OpenChooseZone -> {
                     scope.launch {
                         publish(BookingStore.Label.OpenChooseZone)
+
+                        scope.launch {
+                            val list = getState().workSpacesZone.filter { it.isSelected == true }
+                                .toMutableList()
+                            val mListW = getState().workSpaces.toMutableList()
+
+                            val iteratorW = mListW.iterator()
+                            while (iteratorW.hasNext()) {
+                                val workSpaceUI = iteratorW.next()
+                                val iteratorZ = list.iterator()
+                                while (iteratorZ.hasNext()) {
+                                    val zone = iteratorZ.next()
+                                    if (workSpaceUI.workSpaceName != zone.name) {
+                                        iteratorW.remove()
+                                        break
+                                    }
+                                }
+                            }
+                            dispatch(Msg.ChangeWorkSpacesUI(workSpacesUI = mListW.toList()))
+                        }
                     }
                 }
 
@@ -149,7 +171,9 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                 is BookingStore.Intent.OpenCalendar -> {
                     scope.launch {
+                        dispatch(Msg.IsStartDatePicker(isStart = intent.isStart))
                         publish(BookingStore.Label.OpenCalendar)
+
                     }
                 }
 
@@ -162,9 +186,14 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is BookingStore.Intent.ApplyDate -> {
                     scope.launch {
                         publish(BookingStore.Label.CloseCalendar)
-                        intent.date?.let { newDate ->
-                            dispatch(Msg.BeginningBookingDate(date = newDate))
-                        }
+                        if (intent.isStart)
+                            intent.date?.let { newDate ->
+                                dispatch(Msg.BeginningBookingDate(date = newDate))
+                            }
+                        else
+                            intent.date?.let { newDate ->
+                                dispatch(Msg.EndBookingDate(date = newDate))
+                            }
                     }
                 }
 
@@ -174,9 +203,9 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                         bookingInteractor.create(
                             coroutineScope = this@launch,
                             creatingBookModel = CreatingBookModel(
-                                workSpaceId = "",
+                                workSpaceId = "", //TODO(Replace with value from DB)
                                 dateOfStart = getState().selectedStartDate.atTime(getState().selectedStartTime),
-                                dateOfEnd = getState().selectedStartDate.atTime(getState().selectedFinishTime),
+                                dateOfEnd = getState().selectedFinishDate.atTime(getState().selectedFinishTime),
                                 bookingPeriodUI = getState().bookingPeriodUI,
                                 typeOfEndPeriod = TypeEndPeriodBooking.Never
                             )
@@ -234,7 +263,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is BookingStore.Intent.OpenBookRepeat -> {
                     scope.launch {
                         publish(BookingStore.Label.CloseRepeatDialog)
-                        if(intent.pair.second != BookingPeriodUI.NoPeriod ){
+                        if(intent.pair.second == BookingPeriodUI.Year ){
                             publish(BookingStore.Label.CloseBookPeriod)
                             publish(BookingStore.Label.OpenBookRepeat)
                         }
@@ -269,6 +298,12 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 }
 
                 is BookingStore.Intent.ChangeWorkSpacesUI -> {
+                    val list = getState().workSpacesZone.filter { zone -> zone.isSelected == true }
+                    intent.workSpaces.forEachIndexed { index1, workSpaceUI ->
+                        getState().workSpacesZone.forEachIndexed { index2, workSpaceZone ->
+                            intent.workSpaces.filter { workSpaceUI -> workSpaceUI.workSpaceName == workSpaceZone.name }
+                        }
+                    }
                     dispatch(Msg.ChangeWorkSpacesUI(workSpacesUI = intent.workSpaces))
                 }
 
@@ -352,6 +387,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is Msg.ChangeBookingRepeat -> copy(repeatBooking = msg.bookingRepeat)
                 is Msg.ChangeBookingPeriod -> copy(bookingPeriodUI = msg.bookingPeriodUI)
                 is Msg.ChangeWorkingUI -> copy(bookingInfoDomain = msg.bookingInfoDomain)
+                is Msg.EndBookingDate -> copy(selectedFinishDate = msg.date)
+                is Msg.IsStartDatePicker -> copy(isStartDate = msg.isStart)
             }
         }
     }

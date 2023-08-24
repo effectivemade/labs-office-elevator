@@ -28,12 +28,10 @@ import band.effective.office.elevator.common.compose.components.GrayText
 @Composable
 fun TimeLine(
     date: String,
-    statTime: String,
-    endTime: String,
+    time: String,
     selectTimeActive: Boolean,
     onPickDate: () -> Unit,
-    onPickStartTime: () -> Unit,
-    onPickEndTime: () -> Unit
+    onPickTime: () -> Unit,
 ) {
     Row(
         horizontalArrangement = Arrangement.Center,
@@ -58,8 +56,8 @@ fun TimeLine(
 
         if (selectTimeActive) {
             Text(
-                text = statTime,
-                modifier = Modifier.clickable { if (selectTimeActive) onPickStartTime() },
+                text = time,
+                modifier = Modifier.clickable { if (selectTimeActive) onPickTime() },
                 style = MaterialTheme.typography.button.copy(
                     fontWeight = FontWeight(
                         weight = 400
@@ -69,45 +67,11 @@ fun TimeLine(
             )
         } else {
             GrayText(
-                text = statTime,
+                text = time,
                 style = MaterialTheme.typography.button.copy(
                     fontWeight = FontWeight(
                         weight = 400
                     ),
-                    color = Color.Black
-                )
-            )
-        }
-
-        Spacer(modifier = Modifier.width(12.dp))
-
-        Divider(
-            thickness = 1.dp,
-            modifier = Modifier.width(11.dp),
-            color = Color.Black
-        )
-
-        Spacer(modifier = Modifier.width(12.dp))
-
-        if (selectTimeActive) {
-            Text(
-                text = endTime,
-                modifier = Modifier.clickable { if (selectTimeActive) onPickEndTime() },
-                style = MaterialTheme.typography.button.copy(
-                    fontWeight = FontWeight(
-                        weight = 400
-                    ),
-                    color = Color.Black
-                )
-            )
-        } else {
-            GrayText(
-                text = endTime,
-                style = MaterialTheme.typography.button.copy(
-                    fontWeight = FontWeight(
-                        weight = 400
-                    ),
-                    color = ExtendedThemeColors.colors.blackColor
                 )
             )
         }
