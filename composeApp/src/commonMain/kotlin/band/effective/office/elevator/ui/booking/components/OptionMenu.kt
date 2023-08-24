@@ -75,7 +75,7 @@ fun OptionMenu(
     }
     val period = when(frequency.getResearchEnd().third){
         "Week" -> "недели"
-        "Month" -> "месяцев"
+        "Month" -> "месяц"
         else -> "лет"
     }
     val periodicity = when(frequency.getResearchEnd().first.first) {
