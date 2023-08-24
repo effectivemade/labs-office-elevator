@@ -74,7 +74,5 @@ interface Api {
         scope: CoroutineScope
     ): Flow<Either<ErrorResponse, List<BookingDTO>>>
 
-    suspend fun subscribeOnBookingsList(workspaceId: String): Flow<Either<ErrorResponse, List<BookingDTO>>>
-
     suspend fun getUserByEmail(email: String): Either<ErrorResponse, UserDTO>
 }

@@ -17,6 +17,7 @@ import io.ktor.http.contentType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 class ApiImpl : Api {
@@ -141,18 +142,6 @@ class ApiImpl : Api {
     override fun subscribeOnOrganizersList(scope: CoroutineScope): Flow<Either<ErrorResponse, List<UserDTO>>> =
         collector.flow(scope).filter { it == "organizer" }.map { getUsers(tag = "emploee") }
 
-    //TODO(Maksim Mishenko): Request not exist in swagger
-    override suspend fun subscribeOnBookingsList(workspaceId: String): Flow<Either<ErrorResponse, List<BookingDTO>>> =
-        flow {
-            emit(
-                Either.Error(
-                    ErrorResponse(
-                        code = 601,
-                        description = "Request not exist in swagger"
-                    )
-                )
-            )
-        }
 
     override suspend fun getUserByEmail(email: String): Either<ErrorResponse, UserDTO> =
         client.securityResponse("$baseUrl/users"){
@@ -160,6 +149,7 @@ class ApiImpl : Api {
                parameters.append(name = "email", value = email)
            }
         }
+
     override fun subscribeOnBookingsList(
         workspaceId: String,
         scope: CoroutineScope
