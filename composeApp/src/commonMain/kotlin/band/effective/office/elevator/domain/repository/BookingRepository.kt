@@ -17,6 +17,7 @@ interface BookingRepository {
         typeEndPeriod: TypeEndPeriodBooking? = null
     )
 
+    suspend fun deleteBooking(bookingInfo: BookingInfo)
     suspend fun createBook(creatingBookModel: CreatingBookModel)
 
     suspend fun getBookingsForUser(
