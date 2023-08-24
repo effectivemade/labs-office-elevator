@@ -60,8 +60,8 @@ class BookingRepositoryImpl(
         api.updateBooking(bookingInfo = bookingDTO)
     }
 
-    override suspend fun deleteBooking(bookingInfo: BookingInfo) {
-        api.deleteBooking(bookingInfo.id)
+    override suspend fun deleteBooking(book: String) {
+        api.deleteBooking(book)
     }
 
     override suspend fun createBook(creatingBookModel: CreatingBookModel) {
