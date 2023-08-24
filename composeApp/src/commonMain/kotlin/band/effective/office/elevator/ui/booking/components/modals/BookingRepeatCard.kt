@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
-import band.effective.office.elevator.domain.models.BookingPeriodUI
+import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.domain.models.DayOfWeek
 import band.effective.office.elevator.ui.booking.models.Frequency
 import dev.icerock.moko.resources.compose.stringResource
@@ -29,9 +29,9 @@ fun BookingRepeatCard(
 
     val days: List<DayOfWeek> = frequency.getDays()
     val strings = listOf(
-        Pair(first = MainRes.strings.do_not_repeat, second = BookingPeriodUI.NoPeriod),
-        Pair(first = MainRes.strings.every_work_day, second = BookingPeriodUI.EveryWorkDay(5)),
-        Pair(first = MainRes.strings.every_week, second = BookingPeriodUI.Week(7, days)),
+        Pair(first = MainRes.strings.do_not_repeat, second = BookingPeriod.NoPeriod),
+        Pair(first = MainRes.strings.every_work_day, second = BookingPeriod.EveryWorkDay(5)),
+        Pair(first = MainRes.strings.every_week, second = BookingPeriod.Week(7, days)),
         Pair(
             first = MainRes.strings.every_month, second = BookingPeriodUI.Month(31),
         ),

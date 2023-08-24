@@ -97,8 +97,8 @@ class BookingService(
 
             else -> bookingRepository.findAll()
         }
-        if (bookingList.isEmpty()) return bookingList
-        return findIntegrationsAndUtilities(bookingList)
+//        if (bookingList.isEmpty()) return bookingList
+        return bookingList//findIntegrationsAndUtilities(bookingList) TODO: FIX ME, SEMPAI
     }
 
     /**

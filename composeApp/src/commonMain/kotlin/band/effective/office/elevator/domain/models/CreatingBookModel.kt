@@ -1,29 +1,35 @@
 package band.effective.office.elevator.domain.models
 
+import band.effective.office.network.dto.BookingDTO
+import band.effective.office.network.dto.RecurrenceDTO
+import band.effective.office.network.dto.UserDTO
+import band.effective.office.network.dto.WorkspaceDTO
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
 
 data class CreatingBookModel(
     val workSpaceId: String,
     val dateOfStart: LocalDateTime,
     val dateOfEnd: LocalDateTime,
-    val bookingPeriodUI: BookingPeriodUI,
+    val bookingPeriod: BookingPeriod,
     val typeOfEndPeriod: TypeEndPeriodBooking
 )
 
-sealed class BookingPeriodUI(val durationPeriod: Int) {
-    data class Month(val monthPeriod: Int) : BookingPeriodUI(monthPeriod)
+sealed class BookingPeriod(val durationPeriod: Int) {
+    data class Month(val monthPeriod: Int) : BookingPeriod(monthPeriod)
 
-    data class Year(val yearPeriod: Int) : BookingPeriodUI(yearPeriod)
+    data class Year(val yearPeriod: Int) : BookingPeriod(yearPeriod)
 
-    data class EveryWorkDay(val workPeriod: Int) : BookingPeriodUI(workPeriod)
+    data class EveryWorkDay(val workPeriod: Int) : BookingPeriod(workPeriod)
 
     data class Week(val weekPeriod: Int, val selectedDayOfWeek: List<DayOfWeek>) :
-        BookingPeriodUI(weekPeriod)
+        BookingPeriod(weekPeriod)
 
-    object NoPeriod : BookingPeriodUI(0)
+    object NoPeriod : BookingPeriod(0)
 
-    object Another : BookingPeriodUI(-1)
+    object Another : BookingPeriod(-1)
 }
 
 sealed interface TypeEndPeriodBooking{
@@ -33,11 +39,27 @@ sealed interface TypeEndPeriodBooking{
 
     data class CountRepeat(val count: Int) : TypeEndPeriodBooking
 }
-enum class DayOfWeek {
-    Monday,
-    Tuesday,
-    Wednesday,
-    Thursday,
-    Friday,
-    Saturday
+enum class DayOfWeek(val dayOfWeekNumber: Int) {
+    Sunday(1),
+    Monday(2),
+    Tuesday(3),
+    Wednesday(4),
+    Thursday(5),
+    Friday(6),
+    Saturday(7),
 }
+
+fun CreatingBookModel.toDTO(
+    user: UserDTO,
+    workspaceDTO: WorkspaceDTO,
+    recurrence: RecurrenceDTO?
+) =
+    BookingDTO(
+        owner = user,
+        participants = listOf(user),
+        workspace = workspaceDTO,
+        id = "",
+        beginBooking = dateOfStart.toInstant(timeZone = TimeZone.currentSystemDefault()).epochSeconds,
+        endBooking = dateOfEnd.toInstant(timeZone = TimeZone.currentSystemDefault()).epochSeconds,
+        recurrence = recurrence
+    )

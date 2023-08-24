@@ -31,7 +31,7 @@ import band.effective.office.elevator.components.bottomSheet.BottomSheetItem
 import band.effective.office.elevator.components.bottomSheet.MultiBottomSheetController
 import band.effective.office.elevator.components.bottomSheet.rememberMultiBottomSheetController
 import band.effective.office.elevator.domain.models.BookingInfo
-import band.effective.office.elevator.domain.models.BookingPeriodUI
+import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.ui.booking.components.BookingMainContentScreen
 import band.effective.office.elevator.ui.booking.components.modals.BookAccept
@@ -62,7 +62,7 @@ import kotlinx.datetime.atTime
 fun BookingScreen(bookingComponent: BookingComponent) {
 
     val state by bookingComponent.state.collectAsState()
-
+    
     val showChooseZone = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val showBookPeriod = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val showBookAccept = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
@@ -101,6 +101,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                     bookingInfo = BookingInfo(
                         id = state.bookingInfo.id,
                         ownerId = "",
+                        workSpaceId = "",
                         seatName = state.bookingInfo.seatName,
                         dateOfStart = state.selectedStartDate.atTime(state.selectedStartTime),
                         dateOfEnd = state.selectedStartDate.atTime(state.selectedFinishTime)
@@ -302,7 +303,7 @@ private fun BookingScreenContent(
     showTimePicker: Boolean,
     onClickCloseTimeModal: () -> Unit,
     onClickSelectTime: (LocalTime) -> Unit,
-    onClickOpenBookRepeat: (Pair<String, BookingPeriodUI>) -> Unit,
+    onClickOpenBookRepeat: (Pair<String, BookingPeriod>) -> Unit,
     onClickChangeZone: (WorkSpaceType) -> Unit,
     isStart: Boolean,
     date: LocalDate,

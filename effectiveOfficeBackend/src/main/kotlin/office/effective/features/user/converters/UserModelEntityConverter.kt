@@ -18,7 +18,7 @@ class UserModelEntityConverter {
         return UserEntity {
             id = userModel.id ?: throw MissingIdException("User with name ${userModel.fullName} doesn't have an id")
             fullName = userModel.fullName
-            tag = userModel.tag
+            tag = userModel.tag!!
             active = userModel.active
             role = userModel.role
             avatarURL = userModel.avatarURL

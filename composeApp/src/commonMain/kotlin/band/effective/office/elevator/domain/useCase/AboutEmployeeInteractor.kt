@@ -2,33 +2,40 @@ package band.effective.office.elevator.domain.useCase
 
 import band.effective.office.elevator.domain.models.BookingInfo
 import band.effective.office.elevator.domain.models.ErrorWithData
-import band.effective.office.elevator.domain.repository.BookingRepository
 import band.effective.office.elevator.domain.models.toUIModel
+import band.effective.office.elevator.domain.repository.BookingRepository
+import band.effective.office.elevator.domain.repository.EmployeeRepository
 import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsFilter
 import band.effective.office.elevator.ui.models.ReservedSeat
 import band.effective.office.network.model.Either
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.datetime.LocalDate
 
-class GetBookingsUseCase(
-    private val repository: BookingRepository
+class AboutEmployeeInteractor(
+    private val employeeRepository: EmployeeRepository,
+    private val bookingRepository: BookingRepository
 ) {
+
     suspend fun getBookingsForUser(
         ownerId:String,
         bookingsFilter: BookingsFilter,
+        coroutineScope: CoroutineScope
     ): Flow<Either<ErrorWithData<List<ReservedSeat>>, List<ReservedSeat>>> =
-        repository
+        bookingRepository
             .getBookingsForUser(ownerId = ownerId, bookingsFilter = bookingsFilter)
-            .map ()
-
+            .map()
 
     suspend fun getBookingsByDate(
         date: LocalDate,
         ownerId:String,
         bookingsFilter: BookingsFilter,
+        coroutineScope: CoroutineScope
     ): Flow<Either<ErrorWithData<List<ReservedSeat>>, List<ReservedSeat>>> =
-        repository
+        bookingRepository
             .getBookingsByDate(date = date, ownerId = ownerId, bookingsFilter = bookingsFilter)
             .map()
 

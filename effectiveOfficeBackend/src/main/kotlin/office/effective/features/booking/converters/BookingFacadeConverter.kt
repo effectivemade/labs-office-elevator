@@ -41,7 +41,7 @@ class BookingFacadeConverter(private val userConverter: UserDTOModelConverter,
     fun dtoToModel(bookingDTO: BookingDTO): Booking {
         var recurrenceModel : RecurrenceModel? = null
         if(bookingDTO.recurrence != null) {
-            recurrenceModel = RecurrenceConverter.dtoToModel(bookingDTO.recurrence!!)
+            recurrenceModel = RecurrenceConverter.dtoToModel(bookingDTO.recurrence)
         }
         return Booking(
             owner = userConverter.dTOToModel(bookingDTO.owner),
