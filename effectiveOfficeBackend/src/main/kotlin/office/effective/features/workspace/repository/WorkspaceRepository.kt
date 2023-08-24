@@ -3,6 +3,7 @@ package office.effective.features.workspace.repository
 import office.effective.common.exception.InstanceNotFoundException
 import office.effective.features.booking.repository.WorkspaceBooking
 import office.effective.features.workspace.converters.WorkspaceRepositoryConverter
+import office.effective.model.IntegrationModel
 import office.effective.model.Utility
 import office.effective.model.Workspace
 import office.effective.model.WorkspaceZone
@@ -73,6 +74,9 @@ class WorkspaceRepository(private val database: Database, private val converter:
      * @author Daniil Zavyalov
      * */
     fun findAllUtilitiesByWorkspaceIds(ids: Collection<UUID>): HashMap<UUID, MutableList<Utility>> {
+        if (ids.isEmpty()) {
+            return HashMap<UUID, MutableList<Utility>>()
+        }
         for (id in ids) {
             if (!workspaceExistsById(id))
                 throw InstanceNotFoundException(WorkspaceEntity::class, "Workspace with id $id not found")

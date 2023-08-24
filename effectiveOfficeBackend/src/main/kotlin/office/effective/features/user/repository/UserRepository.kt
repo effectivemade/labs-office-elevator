@@ -33,16 +33,12 @@ class UserRepository(
      *
      * @author Danil Kiselev
      * */
-    fun findById(userId: UUID): UserModel {
-        val userEnt: UserEntity = db.users.find { it.id eq userId } ?: throw InstanceNotFoundException(
-            UserEntity::class,
-            "User with id $userId not found",
-            userId
-        )
+    fun findById(userId: UUID): UserModel? {
+        val userEnt: UserEntity? = db.users.find { it.id eq userId }
 
         val integrations = findSetOfIntegrationsByUser(userId)
 
-        return converter.entityToModel(userEnt, integrations)
+        return userEnt?.let { converter.entityToModel(userEnt, integrations) }
     }
 
     /**
@@ -95,24 +91,28 @@ class UserRepository(
      * @throws InstanceNotFoundException if user with the given email doesn't exist in database
      * @author Daniil Zavyalov
      */
-    fun findByEmail(email: String): UserModel {
+    fun findByEmail(email: String): UserModel? {
         val entity: UserEntity? = db.users.find { it.email eq email }
         //?: throw InstanceNotFoundException(UserEntity::class, "User with email $email not found")
-        if (entity == null) {
-            return UserModel(
-                fullName = "",
-                id = UUID.randomUUID(),
-                tag = null,
-                active = false,
-                role = "",
-                avatarURL = "",
-                integrations = null,
-                email = email
-            )
-        }
-        val integrations = findSetOfIntegrationsByUser(entity.id)
+//        if (entity == null) {
+//            return UserModel(
+//                fullName = "",
+//                id = UUID.randomUUID(),
+//                tag = null,
+//                active = false,
+//                role = "",
+//                avatarURL = "",
+//                integrations = null,
+//                email = email
+//            )
+//        }
+        var integrations: MutableSet<IntegrationModel>? = null
 
-        return converter.entityToModel(entity, integrations)
+        if (entity != null) {
+            integrations = findSetOfIntegrationsByUser(entity.id)
+        }
+
+        return entity?.let { converter.entityToModel(entity, integrations) }
     }
 
     /**
@@ -165,6 +165,9 @@ class UserRepository(
      * @author Daniil Zavyalov
      * */
     fun findAllIntegrationsByUserIds(ids: Collection<UUID>): HashMap<UUID, MutableSet<IntegrationModel>> {
+        if (ids.isEmpty()) {
+            return HashMap<UUID, MutableSet<IntegrationModel>>()
+        }
         for (id in ids) {
             if (!existsById(id)) throw InstanceNotFoundException(UserEntity::class, "User with id $id not found")
         }
@@ -224,7 +227,7 @@ class UserRepository(
         if (!integrations.isNullOrEmpty()) {
             saveIntegrations(integrations, userId)
         }
-        return findById(userId)
+        return model
     }
 
     /**
@@ -262,6 +265,6 @@ class UserRepository(
     fun findTagByUserOrNull(userId: UUID): UsersTagEntity? {
         if (!existsById(userId)) return null
         val ent = findById(userId)
-        return ent.tag
+        return ent?.tag
     }
 }
