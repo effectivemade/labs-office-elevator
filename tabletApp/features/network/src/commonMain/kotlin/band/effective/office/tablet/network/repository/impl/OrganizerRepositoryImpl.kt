@@ -31,7 +31,7 @@ class OrganizerRepositoryImpl(private val api: Api) : OrganizerRepository {
     private suspend fun loadOrganizersList(): Either<ErrorWithData<List<Organizer>>, List<Organizer>> =
         with(orgList.value) {
             orgList.update {
-                api.getUsers(tag = "emploee").convert(this)
+                api.getUsers(tag = "employee").convert(this)
             }
             orgList.value
         }
@@ -41,7 +41,7 @@ class OrganizerRepositoryImpl(private val api: Api) : OrganizerRepository {
             if (this is Either.Error && error.error.code == 0) loadOrganizersList()
             else {
                 coroutineScope { launch { loadOrganizersList() } }
-                this
+                orgList.value
             }
         }
 
@@ -63,6 +63,6 @@ class OrganizerRepositoryImpl(private val api: Api) : OrganizerRepository {
             )
         },
             successMapper = { user ->
-                user.filter { it.role == "ADMIN" }.map { it.toOrganizer() }
+                user.filter { it.tag == "employee" }.map { it.toOrganizer() }
             })
 }

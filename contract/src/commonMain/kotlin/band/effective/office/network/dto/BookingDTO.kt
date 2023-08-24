@@ -9,5 +9,6 @@ data class BookingDTO (
     val workspace: WorkspaceDTO,
     val id: String?,
     val beginBooking: Long,
-    val endBooking: Long
+    val endBooking: Long,
+    val recurrence: String? = null
 )
