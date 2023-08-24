@@ -28,7 +28,7 @@ data class User(
 }
 
 // TODO(Artem Gruzdev) ID for integrations ??????
-fun User.toUserDTO() =
+fun User.toUserDTO(): UserDTO =
     UserDTO(
         id = id,
         fullName = userName,

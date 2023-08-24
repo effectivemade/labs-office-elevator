@@ -32,14 +32,15 @@ fun BookingDTO.toDomainModel() =
     )
 
 fun List<BookingDTO>.toDomainZone() = map { it.toDomainModel() }
-fun emptyUserDTO(id: String) =
+fun emptyUserDTO(id: String): UserDTO =
     UserDTO(
         id = id,
         fullName = "",
         active = false,
         role = "",
         avatarUrl = "",
-        integrations = null
+        integrations = null,
+        ""
     )
 
 
