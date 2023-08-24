@@ -21,53 +21,66 @@ object MockDataSpaces {
         WorkSpaceUI(
             workSpaceId = "",
             workSpaceName = "Cassiopeia",
-            workSpaceType = WorkSpaceType.WORK_PLACE
+            workSpaceType = WorkSpaceType.WORK_PLACE,
+            zoneName = "Cassiopeia"
         ),
         WorkSpaceUI(
             workSpaceId = "",
             workSpaceName = "Arrakis",
-            workSpaceType = WorkSpaceType.WORK_PLACE
+            workSpaceType = WorkSpaceType.WORK_PLACE,
+            zoneName = "Arrakis"
         ),
         WorkSpaceUI(
             workSpaceId = "",
             workSpaceName = "Mars",
-            workSpaceType = WorkSpaceType.WORK_PLACE
+            workSpaceType = WorkSpaceType.WORK_PLACE,
+            zoneName = "Mars"
         ),
         WorkSpaceUI(
             workSpaceId = "",
             workSpaceName = "Antares",
-            workSpaceType = WorkSpaceType.WORK_PLACE
+            workSpaceType = WorkSpaceType.WORK_PLACE,
+            zoneName = "Antares"
         ),
         WorkSpaceUI(
             workSpaceId = "",
             workSpaceName = "Sirius",
-            workSpaceType = WorkSpaceType.WORK_PLACE
+            workSpaceType = WorkSpaceType.WORK_PLACE,
+            zoneName = "Sirius"
         ),
 
         WorkSpaceUI(
             workSpaceId = "",
             workSpaceName = "Moon",
-            workSpaceType = WorkSpaceType.MEETING_ROOM
+            workSpaceType = WorkSpaceType.MEETING_ROOM,
+            zoneName = "Moon"
+
         ),
         WorkSpaceUI(
             workSpaceId = "",
             workSpaceName = "Call box",
-            workSpaceType = WorkSpaceType.MEETING_ROOM
+            workSpaceType = WorkSpaceType.MEETING_ROOM,
+            zoneName = "Call box"
         ),
         WorkSpaceUI(
             workSpaceId = "",
             workSpaceName = "Sun",
-            workSpaceType = WorkSpaceType.MEETING_ROOM
+            workSpaceType = WorkSpaceType.MEETING_ROOM,
+            zoneName = "Sun"
+
         ),
         WorkSpaceUI(
             workSpaceId = "",
             workSpaceName = "Mercury",
-            workSpaceType = WorkSpaceType.MEETING_ROOM
+            workSpaceType = WorkSpaceType.MEETING_ROOM,
+            zoneName = "Mercury"
         ),
         WorkSpaceUI(
             workSpaceId = "",
             workSpaceName = "Pluto",
-            workSpaceType = WorkSpaceType.MEETING_ROOM
+            workSpaceType = WorkSpaceType.MEETING_ROOM,
+            zoneName = "Pluto"
+
         )
     )
 }

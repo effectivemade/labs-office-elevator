@@ -30,4 +30,9 @@ interface BookingRepository {
         ownerId: String,
         bookingsFilter: BookingsFilter
     ): Flow<Either<ErrorWithData<List<BookingInfo>>, List<BookingInfo>>>
+
+    suspend fun getBookingsByDate(
+        date: LocalDate,
+        bookingsFilter: BookingsFilter
+    ): Flow<Either<ErrorWithData<List<BookingInfo>>, List<BookingInfo>>>
 }

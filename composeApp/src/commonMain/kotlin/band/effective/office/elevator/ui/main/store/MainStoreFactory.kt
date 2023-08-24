@@ -49,7 +49,8 @@ internal class MainStoreFactory(
                     elevatorState = ElevatorState.Below,
                     reservedSeats = listOf(),
                     currentDate = getCurrentDate(),
-                    dateFiltrationOnReserves = updatedList
+                    dateFiltrationOnReserves = updatedList,
+                    idSelectedBooking = ""
                 ),
                 executorFactory = ::ExecutorImpl,
                 reducer = ReducerImpl,
@@ -66,6 +67,8 @@ internal class MainStoreFactory(
     private sealed interface Msg {
         data class UpdateElevatorState(val elevatorState: ElevatorState) : Msg
         data class UpdateSeatsReservation(val reservedSeats: List<ReservedSeat>) : Msg
+
+        data class UpdateBookingSelectedId(val bookingId: String) : Msg
 
         data class UpdateSeatReservationByDate(
             val date: LocalDate,
@@ -87,8 +90,9 @@ internal class MainStoreFactory(
                         doElevatorCall()
                 }
 
-                MainStore.Intent.OnClickShowOption -> {
+                is MainStore.Intent.OnClickShowOption -> {
                     scope.launch {
+                        dispatch(Msg.UpdateBookingSelectedId(bookingId = intent.bookingId))
                         publish(MainStore.Label.ShowOptions)
                     }
                 }
@@ -118,7 +122,12 @@ internal class MainStoreFactory(
                 }
 
                 is MainStore.Intent.OnClickDeleteBooking -> {
-                    publish(MainStore.Label.DeleteBooking(intent.id))
+                    scope.launch(Dispatchers.IO) {
+                        bookingInteractor.deleteBooking(getState().idSelectedBooking)
+                    }
+                    scope.launch {
+                        publish(MainStore.Label.CloseOption)
+                    }
                 }
 
                 MainStore.Intent.OpenFiltersBottomDialog -> {
@@ -206,7 +215,7 @@ internal class MainStoreFactory(
 
             scope.launch(Dispatchers.IO) {
                 bookingInteractor
-                    .getByDate(ownerId = "", date = date)
+                    .getByDate(date = date)
                     .collect { bookings ->
                         withContext(Dispatchers.Main) {
                             when(bookings) {
@@ -267,6 +276,8 @@ internal class MainStoreFactory(
                     reservedSeats = message.reservedSeats,
                     dateFiltrationOnReserves = message.dateFiltrationOnReserves
                 )
+
+                is Msg.UpdateBookingSelectedId -> copy(idSelectedBooking = message.bookingId)
             }
     }
 }

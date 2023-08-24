@@ -400,9 +400,13 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                                 val list = workSpaceZone.filter { it.isSelected }
                                 val listWorkSpaces = response.data
                                 val newList = mutableListOf<WorkSpaceUI>()
+
                                 list.forEach {
                                     val nameSpace = it.name
-                                    newList.add(listWorkSpaces.first { it.workSpaceName == nameSpace })
+                                    val foundedSpace = listWorkSpaces.firstOrNull { it.zoneName == nameSpace }
+                                    foundedSpace?.let{
+                                        newList.add(it)
+                                    }
                                 }
                                 dispatch(newList.toList())
                             }
@@ -416,6 +420,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             }
 
         }
+
     }
 
     private object ReducerImpl : Reducer<BookingStore.State, Msg> {

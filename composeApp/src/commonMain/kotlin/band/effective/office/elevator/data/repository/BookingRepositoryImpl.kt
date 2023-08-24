@@ -112,6 +112,30 @@ class BookingRepositoryImpl(
         emit(response)
     }
 
+    override suspend fun getBookingsByDate(
+        date: LocalDate,
+        bookingsFilter: BookingsFilter
+    ): Flow<Either<ErrorWithData<List<BookingInfo>>, List<BookingInfo>>> = flow  {
+
+        val currentUserResponse = profileRepository.getUser()
+
+        currentUserResponse.collect { userResponse ->
+
+            when (userResponse) {
+                is Either.Success -> {
+                    val bookings = api.getBookingsByUser(userResponse.data.id)
+                        .convertWithDateFilter(oldValue = lastResponse.value, filter = bookingsFilter, dateFilter = date)
+                    lastResponse.update { bookings }
+                    emit(bookings)
+                }
+
+                is Either.Error -> {
+                    // TODO add implemetation for error
+                }
+            }
+        }
+    }
+
     private fun Either<ErrorResponse, List<BookingDTO>>.convert(
         filter: BookingsFilter,
         oldValue: Either<ErrorWithData<List<BookingInfo>>,

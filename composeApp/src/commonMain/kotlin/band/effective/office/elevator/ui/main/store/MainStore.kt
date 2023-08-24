@@ -13,7 +13,7 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, MainStore.Label> 
     sealed interface Intent {
         object OnClickCallElevator : Intent
 
-        object  OnClickShowOption : Intent
+        data class OnClickShowOption(val bookingId: String) : Intent
 
         object OnClickOpenCalendar : Intent
 
@@ -26,7 +26,7 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, MainStore.Label> 
 
         object OnClickShowMap : Intent
 
-        data class OnClickDeleteBooking(val id: String) : Intent
+        object OnClickDeleteBooking : Intent
     }
 
     sealed interface Label {
@@ -34,6 +34,8 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, MainStore.Label> 
         object ShowSuccess : Label
 
         object ShowOptions : Label
+
+        object CloseOption : Label
 
         object CloseCalendar : Label
 
@@ -50,7 +52,8 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, MainStore.Label> 
         val reservedSeats: List<ReservedSeat>,
         val elevatorState: ElevatorState,
         val currentDate: LocalDate,
-        val dateFiltrationOnReserves: Boolean
+        val dateFiltrationOnReserves: Boolean,
+        val idSelectedBooking: String
     )
 
     data class ErrorState(val message: StringResource)

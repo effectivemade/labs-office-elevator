@@ -32,6 +32,7 @@ import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.ModalCalendar
 import band.effective.office.elevator.components.TitlePage
 import band.effective.office.elevator.successGreen
+import band.effective.office.elevator.ui.booking.components.modals.BookingContextMenu
 import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsFilter
 import band.effective.office.elevator.ui.main.components.BookingInformation
 import band.effective.office.elevator.ui.main.components.BottomDialog
@@ -54,6 +55,7 @@ fun MainScreen(component: MainComponent) {
     var isSuccessMessageVisible by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf(MainRes.strings.something_went_wrong) }
     var showModalCalendar by remember { mutableStateOf(false) }
+    var showModalOptionCard by remember { mutableStateOf(false) }
     var bottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 
@@ -74,7 +76,7 @@ fun MainScreen(component: MainComponent) {
                     isSuccessMessageVisible = false
                 }
 
-                MainStore.Label.ShowOptions -> {}
+                MainStore.Label.ShowOptions -> showModalOptionCard = true
                 MainStore.Label.OpenCalendar -> showModalCalendar = true
                 MainStore.Label.CloseCalendar -> showModalCalendar = false
                 MainStore.Label.OpenFiltersBottomDialog -> bottomSheetState.show()
@@ -86,6 +88,8 @@ fun MainScreen(component: MainComponent) {
                 is MainStore.Label.DeleteBooking -> {
                     component.onOutput(MainComponent.Output.DeleteBooking(label.id))
                 }
+
+                MainStore.Label.CloseOption -> showModalOptionCard = false
             }
         }
     }
@@ -102,7 +106,7 @@ fun MainScreen(component: MainComponent) {
             dateFiltrationOnReserves = state.dateFiltrationOnReserves,
             onClickBook = { component.onOutput(MainComponent.Output.OpenBookingScreen) },
             onClickOptionMenu = { id ->
-                component.onEvent(MainStore.Intent.OnClickDeleteBooking(id = id))
+                component.onEvent(MainStore.Intent.OnClickShowOption(bookingId = id))
             },
             onClickOpenCalendar = { component.onEvent(MainStore.Intent.OnClickOpenCalendar) },
             onClickOpenBottomDialog = { component.onEvent(MainStore.Intent.OpenFiltersBottomDialog) },
@@ -122,6 +126,19 @@ fun MainScreen(component: MainComponent) {
                     onClickCansel = { component.onEvent(MainStore.Intent.OnClickCloseCalendar) },
                     onClickOk = { component.onEvent(MainStore.Intent.OnClickApplyDate(it)) },
                     currentDate = state.currentDate
+                )
+            },
+            onDismissRequest = { component.onEvent(MainStore.Intent.OnClickCloseCalendar) },
+            showDialog = showModalCalendar,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
+
+        Dialog(
+            content = {
+                BookingContextMenu(
+                    onClick = {},
+                    onClickOpenDeleteBooking = { component.onEvent(MainStore.Intent.OnClickDeleteBooking) },
+                    onClickBook = { component.onOutput(MainComponent.Output.OpenMap) }
                 )
             },
             onDismissRequest = { component.onEvent(MainStore.Intent.OnClickCloseCalendar) },
