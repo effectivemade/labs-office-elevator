@@ -53,7 +53,7 @@ kotlin {
                 implementation(Dependencies.Ktor.Client.Auth)
             }
         }
-        
+
         val androidMain by getting
 
         val iosX64Main by getting

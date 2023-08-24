@@ -1,6 +1,6 @@
 package band.effective.office.elevator.domain.useCase
 
-import band.effective.office.elevator.domain.models.BookingInfo
+import band.effective.office.elevator.domain.models.BookingInfoDomain
 import band.effective.office.elevator.domain.models.ErrorWithData
 import band.effective.office.elevator.domain.repository.BookingRepository
 import band.effective.office.elevator.domain.models.toUIModel
@@ -22,15 +22,6 @@ class GetBookingsUseCase(
             .getBookingsForUser(ownerId = ownerId, bookingsFilter = bookingsFilter)
             .map ()
 
-
-    suspend fun getBookingsByDate(
-        date: LocalDate,
-        ownerId:String,
-        bookingsFilter: BookingsFilter,
-    ): Flow<Either<ErrorWithData<List<ReservedSeat>>, List<ReservedSeat>>> =
-        repository
-            .getBookingsByDate(date = date, ownerId = ownerId, bookingsFilter = bookingsFilter)
-            .map()
 
     suspend fun getBookingsByDate(
         date: LocalDate,

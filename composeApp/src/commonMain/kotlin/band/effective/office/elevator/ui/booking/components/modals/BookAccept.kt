@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
-import band.effective.office.elevator.domain.models.BookingInfo
+import band.effective.office.elevator.domain.models.BookingInfoDomain
 import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.textInBorderGray
 import band.effective.office.elevator.ui.booking.models.Frequency
@@ -39,29 +39,29 @@ import dev.icerock.moko.resources.compose.stringResource
 fun BookAccept(
     onClickCloseBookAccept: () -> Unit,
     confirmBooking: () -> Unit,
-    bookingInfo: BookingInfo,
+    bookingInfoDomain: BookingInfoDomain,
     frequency: Frequency,
     period: BookingPeriod
 ) {
 
     val startMonth = MonthLocalizations.getMonthName(
-        month = bookingInfo.dateOfStart.month,
+        month = bookingInfoDomain.dateOfStart.month,
         locale = Locale(languageTag = Locale.current.language)
     )
 
     val finishMonth = MonthLocalizations.getMonthName(
-        month = bookingInfo.dateOfEnd.month,
+        month = bookingInfoDomain.dateOfEnd.month,
         locale = Locale(languageTag = Locale.current.language)
     )
 
-    val startDay = bookingInfo.dateOfStart.dayOfMonth
-    val finishDay = bookingInfo.dateOfEnd.dayOfMonth
+    val startDay = bookingInfoDomain.dateOfStart.dayOfMonth
+    val finishDay = bookingInfoDomain.dateOfEnd.dayOfMonth
 
-    val startYear = bookingInfo.dateOfStart.year
-    val finishYear = bookingInfo.dateOfEnd.year
+    val startYear = bookingInfoDomain.dateOfStart.year
+    val finishYear = bookingInfoDomain.dateOfEnd.year
 
-    val startTime = bookingInfo.dateOfStart.time
-    val finishTime = bookingInfo.dateOfEnd.time
+    val startTime = bookingInfoDomain.dateOfStart.time
+    val finishTime = bookingInfoDomain.dateOfEnd.time
 
     val date =
         if (startYear == finishYear) if (startMonth == finishMonth) if (startDay == finishDay) "$startDay $startMonth $startYear" else "$startDay - $finishDay $startMonth $startYear"
@@ -105,7 +105,7 @@ fun BookAccept(
                 }
                 Column(modifier = Modifier.padding(horizontal = 5.dp)) {
                     Text(
-                        text = bookingInfo.seatName,
+                        text = bookingInfoDomain.seatName,
                         style = MaterialTheme.typography.subtitle1,
                         fontSize = 20.sp,
                         fontWeight = FontWeight(600),
@@ -113,6 +113,12 @@ fun BookAccept(
                         modifier = Modifier.padding(top = 10.dp, bottom = 5.dp)
                     )
                     Text(
+                        //                        text = when(frequency.getResearchEnd().first.first){
+//                            "ThisDay" -> noPeriodReserve(bookingInfoDomain, frequency)
+//                            "Never" -> noEndsPeriodReserve(bookingInfoDomain, frequency)
+//                            "Date" ->  noEndsPeriodReserve(bookingInfoDomain, frequency)
+//                            else ->  coupleTimesPeriodReserve(bookingInfoDomain, frequency)
+//                        },
                         text = "${if (frequency.toString().isEmpty()) "$date $time" else "$frequency $time"}",
                         style = MaterialTheme.typography.subtitle1,
                         fontSize = 16.sp,
@@ -127,6 +133,55 @@ fun BookAccept(
                 onClick = confirmBooking,
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
             )
+        }
+    }
+}
+
+@Composable
+fun coupleTimesPeriodReserve(bookingInfoDomain: BookingInfoDomain, frequency: Frequency):String{
+    return when(frequency.getResearchEnd().third) {
+        "Month" -> noEndsPeriodReserve(bookingInfoDomain, frequency)
+        else -> noPeriodReserve(bookingInfoDomain, frequency)
+    }
+}
+
+@Composable
+fun noEndsPeriodReserve(bookingInfoDomain: BookingInfoDomain, frequency: Frequency):String{
+    return when(frequency.getResearchEnd().third){
+        "Day" -> stringResource(MainRes.strings.every_work_day) + " " + noPeriodReserve(bookingInfoDomain, frequency)
+        "Week" -> stringResource(MainRes.strings.every_week) + " " + noPeriodReserve(bookingInfoDomain, frequency)
+        "Month" -> stringResource(MainRes.strings.every_month) + " " + noPeriodReserve(bookingInfoDomain, frequency)
+        else -> stringResource(MainRes.strings.every_year) + " " + noPeriodReserve(bookingInfoDomain, frequency)
+    }
+}
+
+@Composable
+fun noPeriodReserve(bookingInfoDomain: BookingInfoDomain, frequency: Frequency): String{
+    return with(bookingInfoDomain) {
+        if(frequency.toString().isNotEmpty())"${frequency.toString()} " else {""} +
+                if((frequency.getResearchEnd().third != "Week" && frequency.getResearchEnd().third != "Day") || frequency.getResearchEnd().first.first == "CoupleTimes"){
+                "${dateOfStart.date.dayOfMonth} " +
+                    if(frequency.getResearchEnd().third != "Month"){
+                    dateOfStart.date.monthNumber}
+                    else{""}
+                }
+                else{""}+
+                " ${dateOfStart.time.hour.toString()}:${
+            with(
+                dateOfStart.time
+            ) { if (minute.toString().length < 2) "0$minute" else minute.toString() }
+        } - ${dateOfEnd.time.hour.toString()}:${
+            with(
+                dateOfEnd.time
+            ) {
+                if (minute.toString().length < 2) "0$minute" else minute.toString()
+            }
+        }"+ if(frequency.getResearchEnd().first.second.contains(".")){
+                " \nпо " + frequency.getResearchEnd().first.second
+            }else{
+                if (frequency.getResearchEnd().first.second.isNotEmpty()){
+                    " в ближайшие ${frequency.getResearchEnd().first.second} недель"
+                }else ""
         }
     }
 }

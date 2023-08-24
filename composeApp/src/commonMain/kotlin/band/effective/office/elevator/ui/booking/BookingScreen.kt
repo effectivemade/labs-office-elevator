@@ -30,7 +30,7 @@ import band.effective.office.elevator.components.TimePickerModal
 import band.effective.office.elevator.components.bottomSheet.BottomSheetItem
 import band.effective.office.elevator.components.bottomSheet.MultiBottomSheetController
 import band.effective.office.elevator.components.bottomSheet.rememberMultiBottomSheetController
-import band.effective.office.elevator.domain.models.BookingInfo
+import band.effective.office.elevator.domain.models.BookingInfoDomain
 import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.ui.booking.components.BookingMainContentScreen
@@ -51,6 +51,7 @@ import band.effective.office.elevator.utils.MonthLocalizations
 import band.effective.office.elevator.utils.Stack
 import band.effective.office.elevator.utils.isScrollingDown
 import band.effective.office.elevator.utils.stackOf
+import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
 import effective.office.modalcustomdialog.Dialog
 import kotlinx.datetime.LocalDate
@@ -62,7 +63,7 @@ import kotlinx.datetime.atTime
 fun BookingScreen(bookingComponent: BookingComponent) {
 
     val state by bookingComponent.state.collectAsState()
-    
+
     val showChooseZone = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val showBookPeriod = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val showBookAccept = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
@@ -98,11 +99,11 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                 BookAccept(
                     onClickCloseBookAccept = { bookingComponent.onEvent(BookingStore.Intent.CloseBookAccept) },
                     confirmBooking = { bookingComponent.onEvent(BookingStore.Intent.OpenConfirmBooking) },
-                    bookingInfo = BookingInfo(
-                        id = state.bookingInfo.id,
+                    bookingInfoDomain = BookingInfoDomain(
+                        id = state.bookingInfoDomain.id,
                         ownerId = "",
                         workSpaceId = "",
-                        seatName = state.bookingInfo.seatName,
+                        seatName = state.bookingInfoDomain.seatName,
                         dateOfStart = state.selectedStartDate.atTime(state.selectedStartTime),
                         dateOfEnd = state.selectedFinishDate.atTime(state.selectedFinishTime)
                     ),
@@ -187,6 +188,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                 bottomSheetContentState = showBookRepeat
             ) {
                 BookingRepeat(
+                    periodMeasure = state.bookingPeriod,
                     backButtonClicked = { bookingComponent.onEvent(BookingStore.Intent.CloseBookRepeat) },
                     dropDownClick = {},
                     confirmBooking = { frequency ->
@@ -295,6 +297,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
         startDate = state.selectedStartDate,
         finishDate = state.selectedFinishDate,
         frequency = state.frequency,
+        repeatBookings = state.repeatBooking,
         onClickChangeSelectedType = {
             bookingComponent.onEvent(
                 BookingStore.Intent.ChangeSelectedType(
@@ -331,6 +334,7 @@ private fun BookingScreenContent(
     startDate: LocalDate,
     finishDate: LocalDate,
     frequency: Frequency,
+    repeatBookings: StringResource,
     onClickChangeSelectedType: (TypesList) -> Unit,
     selectedTypesList: TypesList
 ) {
@@ -371,6 +375,8 @@ private fun BookingScreenContent(
                 onClickChangeZone = onClickChangeZone,
                 startDate = startDate,
                 finishDate = finishDate,
+                frequency = frequency,
+                repeatBooking=repeatBookings,
                 onClickChangeSelectedType = onClickChangeSelectedType,
                 selectedTypesList = selectedTypesList
             )

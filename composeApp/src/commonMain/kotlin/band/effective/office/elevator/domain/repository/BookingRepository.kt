@@ -1,6 +1,6 @@
 package band.effective.office.elevator.domain.repository
 
-import band.effective.office.elevator.domain.models.BookingInfo
+import band.effective.office.elevator.domain.models.BookingInfoDomain
 import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.domain.models.CreatingBookModel
 import band.effective.office.elevator.domain.models.ErrorWithData
@@ -12,21 +12,16 @@ import kotlinx.datetime.LocalDate
 
 interface BookingRepository {
     suspend fun changeBooking(
-        bookingInfo: BookingInfo,
+        bookingInfoDomain: BookingInfoDomain,
         bookingPeriod: BookingPeriod? = null,
         typeEndPeriod: TypeEndPeriodBooking? = null
     )
+    suspend fun deleteBooking(bookingInfoDomain: BookingInfoDomain)
 
     suspend fun deleteBooking(book: String)
     suspend fun createBook(creatingBookModel: CreatingBookModel)
 
     suspend fun getBookingsForUser(
-        ownerId: String,
-        bookingsFilter: BookingsFilter
-    ): Flow<Either<ErrorWithData<List<BookingInfo>>, List<BookingInfo>>>
-
-    suspend fun getBookingsByDate(
-        date: LocalDate,
         ownerId: String,
         bookingsFilter: BookingsFilter
     ): Flow<Either<ErrorWithData<List<BookingInfo>>, List<BookingInfo>>>

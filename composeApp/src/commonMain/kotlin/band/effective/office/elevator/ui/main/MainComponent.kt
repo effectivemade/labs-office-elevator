@@ -39,6 +39,7 @@ class MainComponent(
     }
 
     sealed interface Output {
+
         object OpenMap : Output
 
         data class DeleteBooking(val id: String) : Output

@@ -25,7 +25,7 @@ import band.effective.office.elevator.components.OutlinedPrimaryButton
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
-fun DeleteBooking(place: String, fullDate: String, onMainCLick: () -> Unit, onDeleteClick: () -> Unit) {
+fun DeleteBooking(place: String, fullDate: String, onCanselCLick: () -> Unit, onDeleteClick: () -> Unit) {
     Column(
         verticalArrangement = Arrangement.spacedBy(32.dp, Alignment.Top),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -48,7 +48,8 @@ fun DeleteBooking(place: String, fullDate: String, onMainCLick: () -> Unit, onDe
                     other = TextStyle(
                         fontWeight = FontWeight(
                             weight = 500
-                        )
+                        ),
+                        color = ExtendedThemeColors.colors.blackColor
                     )
                 ),
                 textAlign = TextAlign.Center
@@ -80,12 +81,16 @@ fun DeleteBooking(place: String, fullDate: String, onMainCLick: () -> Unit, onDe
             horizontalAlignment = Alignment.Start,
         ) {
             EffectiveButton(
-                buttonText = stringResource(resource = MainRes.strings.move_to_main_from_booking),
-                onClick = onMainCLick,
+                buttonText = stringResource(resource = MainRes.strings.delete),
+                onClick = { onDeleteClick()
+                    onCanselCLick()
+                          },
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
             )
             OutlinedPrimaryButton(
-                title = MainRes.strings.delete,
-                onClick = onDeleteClick
+                title = MainRes.strings.cansel,
+                onClick = { onCanselCLick() },
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
             )
         }
     }

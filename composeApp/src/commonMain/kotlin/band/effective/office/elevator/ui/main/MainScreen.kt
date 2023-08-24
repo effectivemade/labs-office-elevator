@@ -31,6 +31,7 @@ import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.ModalCalendar
 import band.effective.office.elevator.components.TitlePage
+import band.effective.office.elevator.ui.booking.components.modals.DeleteBooking
 import band.effective.office.elevator.successGreen
 import band.effective.office.elevator.ui.booking.components.modals.BookingContextMenu
 import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsFilter
@@ -54,10 +55,15 @@ fun MainScreen(component: MainComponent) {
     var isErrorMessageVisible by remember { mutableStateOf(false) }
     var isSuccessMessageVisible by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf(MainRes.strings.something_went_wrong) }
+    var selectSeat by remember { mutableStateOf(ReservedSeat.defaultSeat) }
     var showModalCalendar by remember { mutableStateOf(false) }
+    var showOptionsMenu by remember { mutableStateOf(false) }
+    var showDeleteBooking by remember { mutableStateOf(false) }
     var showModalOptionCard by remember { mutableStateOf(false) }
+
     var bottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+
 
     LaunchedEffect(component) {
         component.label.collect { label ->
@@ -76,11 +82,20 @@ fun MainScreen(component: MainComponent) {
                     isSuccessMessageVisible = false
                 }
 
-                MainStore.Label.ShowOptions -> showModalOptionCard = true
+                MainStore.Label.ShowOptions -> showOptionsMenu = true
+                MainStore.Label.HideOptions -> showOptionsMenu = false
+
                 MainStore.Label.OpenCalendar -> showModalCalendar = true
                 MainStore.Label.CloseCalendar -> showModalCalendar = false
                 MainStore.Label.OpenFiltersBottomDialog -> bottomSheetState.show()
                 MainStore.Label.CloseFiltersBottomDialog -> bottomSheetState.hide()
+                is MainStore.Label.OnClickOpenDeleteBooking -> {
+                    selectSeat = label.seat
+                    showDeleteBooking = true
+                }
+                MainStore.Label.OnClickCloseDeleteBooking -> showDeleteBooking = false
+                MainStore.Label.OnClickOpenEditBooking -> {}
+                MainStore.Label.OnClickCloseEditBooking -> {}
                 MainStore.Label.OpenBooking -> {
                     component.onOutput(MainComponent.Output.OpenMap)
                 }
@@ -117,6 +132,19 @@ fun MainScreen(component: MainComponent) {
                     )
                 )
             }
+        )
+        Dialog(
+            content = {
+                DeleteBooking(
+                    place = selectSeat.seatName,
+                    fullDate = selectSeat.bookingDay + " "+ selectSeat.bookingTime,
+                    onCanselCLick = {component.onEvent(MainStore.Intent.OnClickCloseDeleteBooking)},
+                    onDeleteClick = {component.onEvent(MainStore.Intent.OnClickDeleteBooking(selectSeat))}
+                )
+            },
+            onDismissRequest = {component.onEvent(MainStore.Intent.OnClickCloseDeleteBooking)},
+            showDialog = showDeleteBooking,
+            modifier = Modifier.align(Alignment.Center).padding(horizontal = 16.dp)
         )
         Dialog(
             content = {
@@ -193,7 +221,11 @@ fun MainScreenContent(
     onClickOptionMenu: (String) -> Unit,
     onClickOpenCalendar: () -> Unit,
     onClickOpenBottomDialog: () -> Unit,
-    onClickCloseBottomDialog: (BookingsFilter) -> Unit
+    showOptionsMenu: Boolean,
+    onClickCloseOptionMenu: () -> Unit,
+    onClickCloseBottomDialog: (BookingsFilter) -> Unit,
+    onClickOpenEditBooking: () -> Unit,
+    onClickOpenDeleteBooking: (ReservedSeat) -> Unit
 ) {
     ModalBottomSheetLayout(
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
@@ -205,6 +237,7 @@ fun MainScreenContent(
                 onClickCloseBottomDialog
             )
         }
+        //,sheetPeekHeight = 0.dp
     ) {
         Column(
             modifier = modifier.fillMaxSize()
@@ -235,7 +268,9 @@ fun MainScreenContent(
                     onClickBook = onClickBook,
                     onClickOptionMenu = onClickOptionMenu,
                     onClickOpenCalendar = onClickOpenCalendar,
-                    onClickOpenBottomDialog = onClickOpenBottomDialog
+                    onClickOpenBottomDialog = onClickOpenBottomDialog,
+                    showOptionsMenu = showOptionsMenu,
+                    onClickCloseOptionMenu = onClickCloseOptionMenu,
                 )
             }
         }

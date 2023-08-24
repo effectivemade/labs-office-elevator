@@ -4,7 +4,6 @@ import band.effective.office.elevator.domain.entity.BookingInteractor
 import band.effective.office.elevator.domain.models.BookingInfo
 import band.effective.office.elevator.ui.booking.BookingComponent
 import band.effective.office.elevator.ui.employee.FullEmployeeComponent
-import band.effective.office.elevator.ui.employee.allEmployee.EmployeeComponent
 import band.effective.office.elevator.ui.main.MainComponent
 import band.effective.office.elevator.ui.profile.ProfileComponent
 import com.arkivanov.decompose.ComponentContext

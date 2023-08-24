@@ -53,6 +53,7 @@
     <string name="every_work_day">Каждый будний день</string>
     <string name="every_week">Каждую неделю</string>
     <string name="every_month">Каждый месяц</string>
+    <string name="every_year">Каждый год</string>
     <string name="another">Другое...</string>
     <string name="booking_repeat">Повтор брони</string>
     <string name="booking_repeat_in">Повторяется раз в:</string>
@@ -69,7 +70,6 @@
     <string name="show_map">Показать карту</string>
     <string name="extend_booking">Продлить</string>
     <string name="repeat_booking">Повторить</string>
-    <string name="delete_booking">Удалить</string>
 
     <string name="Monday">Пн</string>
     <string name="Tuesday">Вт</string>
@@ -77,7 +77,7 @@
     <string name="Thursday">Чт</string>
     <string name="Friday">Пт</string>
 
-    <string name="delete_booking">Удалить бронь</string>
+    <string name="delete_booking">Удалить бронь?</string>
 
     <string name="take_from">Занять с</string>
     <string name="take_before">Занять до</string>

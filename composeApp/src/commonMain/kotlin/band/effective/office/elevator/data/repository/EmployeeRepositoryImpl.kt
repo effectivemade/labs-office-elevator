@@ -27,7 +27,7 @@ class EmployeeRepositoryImpl(
                 )
             )
         )
-    
+
     override suspend fun getEmployeesInfo(): Flow<Either<ErrorWithData<List<EmployeeInfo>>, List<EmployeeInfo>>> =
         flow {
             val employees = api.getUsers(tag = "employee").convert(employeeList.value)

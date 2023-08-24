@@ -21,69 +21,46 @@ import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.Elevation
-import band.effective.office.elevator.ui.models.ReservedSeat
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
-fun BookingContextMenu(
-    onClick: () -> Unit,
-    onClickOpenDeleteBooking: (ReservedSeat) -> Unit,
-    onClickOpenEditBooking: () -> Unit,
-    seat: ReservedSeat,
-
-    onClickBook: () -> Unit
-) {
+fun BookingRepeatContextMenu (onClick: (String) -> Unit) {
     val dropDownList =
         listOf(
-            MainRes.strings.show_map,
-            MainRes.strings.extend_booking,
-            MainRes.strings.delete
+            MainRes.strings.week,
+            MainRes.strings.month,
+            MainRes.strings.year
         )
 
     Column(
         modifier = Modifier
-            .padding(end = 24.dp, bottom = 24.dp)
-            .shadow(
-                elevation = 10.dp,
-                shape = RoundedCornerShape(8.dp)
-            )
-            .clip(RoundedCornerShape(8.dp))
-            .background(color = Color.White)
-
-            .wrapContentSize()
+                .padding(end = 24.dp, bottom = 24.dp)
+                .shadow( elevation = 10.dp, shape = RoundedCornerShape(8.dp))
+                .clip(RoundedCornerShape(8.dp))
+                .background(color = Color.White)
+                .wrapContentSize()
     ) {
         for (item in dropDownList) {
             with(stringResource(item)) {
                 Column(modifier = Modifier.wrapContentSize()) {
                     Button(
-                        onClick = {
-                            if (item == MainRes.strings.show_map) {
-                                onClickBook()
-                            } else {
-                                onClickOpenDeleteBooking()
-                            }
-                            onClick()
-                        },
+                        onClick = { onClick(this@with) },
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = Color.Transparent,
                         ),
                         elevation = Elevation(),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(
-                            text = this@with,
+                        Text(text = this@with,
                             color = MaterialTheme.colors.secondary,
-                            modifier = Modifier.wrapContentSize()
-                        )
+                            modifier = Modifier.wrapContentSize())
                     }
-                    if (dropDownList.indexOf(item) != dropDownList.lastIndex)
+                    if (dropDownList.indexOf(item) !=dropDownList.lastIndex)
                         Divider(
                             modifier = Modifier.height(1.dp)
                                 .background(color = ExtendedThemeColors.colors._66x)
                         )
                 }
-                
-            }
             }
         }
     }

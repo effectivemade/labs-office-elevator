@@ -2,7 +2,7 @@ package band.effective.office.elevator.ui.booking.store
 
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.domain.entity.BookingInteractor
-import band.effective.office.elevator.domain.models.BookingInfo
+import band.effective.office.elevator.domain.models.BookingInfoDomain
 import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.domain.models.CreatingBookModel
 import band.effective.office.elevator.domain.models.TypeEndPeriodBooking
@@ -68,7 +68,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         data class ChangeFrequency(val frequency: Frequency) : Msg
         data class ChangeBookingRepeat(val bookingRepeat: StringResource) : Msg
         data class ChangeBookingPeriod(val bookingPeriod: BookingPeriod) : Msg
-        data class ChangeWorkingUI(val bookingInfo: BookingInfo) : Msg
+        data class ChangeWorkingUI(val bookingInfoDomain: BookingInfoDomain) : Msg
+
         data class IsStartDatePicker(val isStart: Boolean) : Msg
     }
 
@@ -96,6 +97,26 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is BookingStore.Intent.OpenChooseZone -> {
                     scope.launch {
                         publish(BookingStore.Label.OpenChooseZone)
+
+                        scope.launch {
+                            val list = getState().workSpacesZone.filter { it.isSelected == true }
+                                .toMutableList()
+                            val mListW = getState().workSpaces.toMutableList()
+
+                            val iteratorW = mListW.iterator()
+                            while (iteratorW.hasNext()) {
+                                val workSpaceUI = iteratorW.next()
+                                val iteratorZ = list.iterator()
+                                while (iteratorZ.hasNext()) {
+                                    val zone = iteratorZ.next()
+                                    if (workSpaceUI.workSpaceName != zone.name) {
+                                        iteratorW.remove()
+                                        break
+                                    }
+                                }
+                            }
+                            dispatch(Msg.ChangeWorkSpacesUI(workSpacesUI = mListW.toList()))
+                        }
                     }
                 }
 
@@ -149,7 +170,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                         with(intent.value) {
                             dispatch(
                                 Msg.ChangeWorkingUI(
-                                    bookingInfo = BookingInfo(
+                                    bookingInfoDomain = BookingInfoDomain(
                                         id = "",
                                         workSpaceId = workSpaceId,
                                         ownerId = "",
@@ -443,7 +464,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is Msg.ChangeFrequency -> copy(frequency = msg.frequency)
                 is Msg.ChangeBookingRepeat -> copy(repeatBooking = msg.bookingRepeat)
                 is Msg.ChangeBookingPeriod -> copy(bookingPeriod = msg.bookingPeriod)
-                is Msg.ChangeWorkingUI -> copy(bookingInfo = msg.bookingInfo)
+                is Msg.ChangeWorkingUI -> copy(bookingInfoDomain = msg.bookingInfoDomain)
                 is Msg.EndBookingDate -> copy(selectedFinishDate = msg.date)
                 is Msg.IsStartDatePicker -> copy(isStartDate = msg.isStart)
             }
