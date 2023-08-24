@@ -9,9 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.Divider
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -36,7 +34,6 @@ import band.effective.office.elevator.textInBorderGray
 import band.effective.office.elevator.ui.booking.models.Frequency
 import band.effective.office.elevator.utils.MonthLocalizations
 import dev.icerock.moko.resources.compose.stringResource
-import effective.office.modalcustomdialog.Dialog
 
 @Composable
 fun BookAccept(
@@ -112,8 +109,9 @@ fun BookAccept(
                     )
                     Text(
                         text = with(bookingInfo) {
-                            "${frequency.toString()} ${dateOfStart.date.dayOfMonth} " + NumToMonth(
-                                dateOfStart.date.monthNumber
+                            "${frequency.toString()} ${dateOfStart.date.dayOfMonth} " + MonthLocalizations.getMonthName(
+                                month = dateOfStart.date.month,
+                                locale = Locale(languageTag = Locale.current.language)
                             ) + " ${dateOfStart.time.hour.toString()}:${
                                 with(
                                     dateOfStart.time
