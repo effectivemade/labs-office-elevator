@@ -174,7 +174,13 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                         bookingComponent.onEvent(BookingStore.Intent.OpenRepeatDialog)
                     },
                     onClickSearchSuitableOptions = { bookingComponent.onEvent(BookingStore.Intent.SearchSuitableOptions) },
-                    frequency = state.frequency
+                    frequency = state.frequency,
+                    finishDate = "${state.selectedFinishDate.dayOfMonth} ${
+                        MonthLocalizations.getMonthName(
+                            month = state.selectedFinishDate.month,
+                            locale = Locale.current
+                        )
+                    } ${state.selectedFinishDate.year}",
                 )
             },
             BottomSheetNames.BOOK_REPEAT.name to BottomSheetItem(

@@ -170,8 +170,7 @@ fun BookingPeriod(
                 //Start booking date
                 TimeLine(
                     date = startDate,
-                    statTime = startTime.padStart(2, '0'),
-                    endTime = finishTime.padStart(2, '0'),
+                    time = startTime.padStart(2, '0'),
                     onPickDate = bookStartDate,
                     onPickTime = bookStartTime,
                     selectTimeActive = !switchChecked,
@@ -184,7 +183,6 @@ fun BookingPeriod(
                     onPickDate = bookFinishDate,
                     onPickTime = bookFinishTime,
                     selectTimeActive = !switchChecked,
-                    onPickEndTime = bookFinishTime,
                 )
 
                 //Book period
