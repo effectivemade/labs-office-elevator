@@ -6,6 +6,7 @@ import band.effective.office.elevator.domain.models.BookingPeriodUI
 import band.effective.office.elevator.domain.models.CreatingBookModel
 import band.effective.office.elevator.domain.models.TypeEndPeriodBooking
 import band.effective.office.elevator.ui.booking.models.Frequency
+import band.effective.office.elevator.ui.booking.models.MockDataSpaces
 import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import band.effective.office.elevator.ui.booking.models.WorkSpaceZone
@@ -60,6 +61,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
 
     data class State(
         val workSpaces: List<WorkSpaceUI>,
+        val workSpacesAll: List<WorkSpaceUI>,
         val creatingBookModel: CreatingBookModel,
         val currentDate: LocalDate,
         val workSpacesType: WorkSpaceType,
@@ -78,7 +80,8 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
     ) {
         companion object {
             val initState = State(
-                workSpaces = workSpacesUI,
+                workSpaces = MockDataSpaces.workSpacesUI,
+                workSpacesAll = MockDataSpaces.workSpacesUI,
                 currentDate = getCurrentDate(),
                 creatingBookModel = CreatingBookModel(
                     workSpaceId = "",
@@ -88,7 +91,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
                     typeOfEndPeriod = TypeEndPeriodBooking.Never
                 ),
                 workSpacesType = WorkSpaceType.WORK_PLACE,
-                workSpacesZone = allBookingZone,
+                workSpacesZone = MockDataSpaces.allBookingZone,
                 selectedStartDate = getCurrentDate(),
                 selectedStartTime = getCurrentTime(),
                 selectedFinishTime = getCurrentTime(),
@@ -136,70 +139,3 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         object OpenBookRepeat : Label
     }
 }
-
-//TODO(Artem Gruzdev) replace that
-//TODO(Slava) replace with what?
-val allBookingZone = listOf(
-    WorkSpaceZone(name = "Sirius", isSelected = true),
-    WorkSpaceZone(name = "Antares", isSelected = true),
-    WorkSpaceZone(name = "Mars", isSelected = true),
-    WorkSpaceZone(name = "Cassiopeia", isSelected = true),
-    WorkSpaceZone(name = "Arrakis", isSelected = true),
-)
-
-val allMeetingRooms = listOf(
-    WorkSpaceZone(name = "Moon", isSelected = true),
-    WorkSpaceZone(name = "Sun", isSelected = true),
-    WorkSpaceZone(name = "Mercury", isSelected = true),
-    WorkSpaceZone(name = "Pluto", isSelected = true),
-    WorkSpaceZone(name = "Sun", isSelected = true)
-)
-
-val workSpacesUI = listOf(
-    WorkSpaceUI(
-        workSpaceId = "",
-        workSpaceName = "Cassiopeia",
-        workSpaceType = WorkSpaceType.MEETING_ROOM
-    ),
-    WorkSpaceUI(
-        workSpaceId = "",
-        workSpaceName = "Arrakis",
-        workSpaceType = WorkSpaceType.MEETING_ROOM
-    ),
-    WorkSpaceUI(
-        workSpaceId = "",
-        workSpaceName = "Mars",
-        workSpaceType = WorkSpaceType.MEETING_ROOM
-    ),
-    WorkSpaceUI(
-        workSpaceId = "",
-        workSpaceName = "Antares",
-        workSpaceType = WorkSpaceType.MEETING_ROOM
-    ),
-    WorkSpaceUI(
-        workSpaceId = "",
-        workSpaceName = "Sirius",
-        workSpaceType = WorkSpaceType.MEETING_ROOM
-    ),
-
-    WorkSpaceUI(
-        workSpaceId = "",
-        workSpaceName = "Moon",
-        workSpaceType = WorkSpaceType.WORK_PLACE
-    ),
-    WorkSpaceUI(
-        workSpaceId = "",
-        workSpaceName = "Sun",
-        workSpaceType = WorkSpaceType.WORK_PLACE
-    ),
-    WorkSpaceUI(
-        workSpaceId = "",
-        workSpaceName = "Mercury",
-        workSpaceType = WorkSpaceType.WORK_PLACE
-    ),
-    WorkSpaceUI(
-        workSpaceId = "",
-        workSpaceName = "Pluto",
-        workSpaceType = WorkSpaceType.WORK_PLACE
-    )
-)

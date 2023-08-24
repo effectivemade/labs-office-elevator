@@ -3,6 +3,7 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+src/main/resources/serviceAccountKey.json
 
 ### STS ###
 .apt_generated
@@ -37,3 +38,4 @@ out/
 
 ### Environment ###
 .env
+credentials.json

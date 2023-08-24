@@ -97,26 +97,6 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is BookingStore.Intent.CloseChooseZone -> {
                     scope.launch {
                         publish(BookingStore.Label.CloseChooseZone)
-
-                        scope.launch {
-                            val list = getState().workSpacesZone.filter { it.isSelected == true }
-                                .toMutableList()
-                            val mListW = getState().workSpaces.toMutableList()
-
-                            val iteratorW = mListW.iterator()
-                            while (iteratorW.hasNext()) {
-                                val workSpaceUI = iteratorW.next()
-                                val iteratorZ = list.iterator()
-                                while (iteratorZ.hasNext()) {
-                                    val zone = iteratorZ.next()
-                                    if (workSpaceUI.workSpaceName != zone.name) {
-                                        iteratorW.remove()
-                                        break
-                                    }
-                                }
-                            }
-                            dispatch(Msg.ChangeWorkSpacesUI(workSpacesUI = mListW.toList()))
-                        }
                     }
                 }
 
@@ -210,7 +190,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 }
 
                 is BookingStore.Intent.OpenMainScreen -> {
-                    TODO()
+                    //TODO()
                 }
 
                 is BookingStore.Intent.CloseConfirmBooking -> {
@@ -283,16 +263,16 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 }
 
                 is BookingStore.Intent.ChangeSelectedWorkSpacesZone -> {
-                    dispatch(Msg.ChangeSelectedWorkSpacesZone(intent.workSpaceZone))
+                    scope.launch {
+                        dispatch(Msg.ChangeWorkSpacesUI(workSpacesUI = getSpacesUI(
+                            workSpaceZone = intent.workSpaceZone,
+                            state = getState()
+                        )))
+                        dispatch(Msg.ChangeSelectedWorkSpacesZone(intent.workSpaceZone))
+                    }
                 }
 
                 is BookingStore.Intent.ChangeWorkSpacesUI -> {
-                    val list = getState().workSpacesZone.filter { zone -> zone.isSelected == true }
-                    intent.workSpaces.forEachIndexed { index1, workSpaceUI ->
-                        getState().workSpacesZone.forEachIndexed { index2, workSpaceZone ->
-                            intent.workSpaces.filter { workSpaceUI -> workSpaceUI.workSpaceName == workSpaceZone.name }
-                        }
-                    }
                     dispatch(Msg.ChangeWorkSpacesUI(workSpacesUI = intent.workSpaces))
                 }
 
@@ -342,13 +322,21 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
         override fun executeAction(action: Action, getState: () -> BookingStore.State) =
             when (action) {
-                Action.InitWorkSpaces -> initList(getState())
+                Action.InitWorkSpaces -> dispatch(Msg.ChangeWorkSpacesUI(workSpacesUI = getSpacesUI(
+                    workSpaceZone = getState().workSpacesZone,
+                    state = getState())
+                ))
             }
 
-        private fun initList(state: BookingStore.State) {
-            scope.launch {
-                dispatch(Msg.ChangeWorkSpacesUI(workSpacesUI = state.workSpaces.filter { workSpaceUI -> workSpaceUI.workSpaceType == WorkSpaceType.WORK_PLACE }))
+        private fun getSpacesUI(workSpaceZone: List<WorkSpaceZone>, state: BookingStore.State): List<WorkSpaceUI>{
+            val list = workSpaceZone.filter { it.isSelected }
+            val listWorkSpaces = state.workSpacesAll
+            val newList = mutableListOf<WorkSpaceUI>()
+            list.forEach {
+                val nameSpace = it.name
+                newList.add(listWorkSpaces.first { it.workSpaceName == nameSpace })
             }
+            return newList.toList()
         }
     }
 
@@ -358,7 +346,10 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is Msg.ChangeSelectedWorkSpacesZone -> copy(workSpacesZone = msg.workSpacesZone)
                 is Msg.DateBooking -> copy(selectedStartDate = msg.date)
                 is Msg.TimeBooking -> copy(selectedStartTime = msg.time)
-                is Msg.SelectedTypeList -> copy(selectedType = msg.type)
+                is Msg.SelectedTypeList -> copy(
+                    workSpacesType = msg.type.type,
+                    selectedType = msg.type
+                )
                 is Msg.ChangeWorkSpacesUI -> copy(workSpaces = msg.workSpacesUI)
                 is Msg.WholeDay -> copy(wholeDay = !msg.wholeDay)
                 is Msg.BeginningBookingTime -> copy(selectedStartTime = msg.time)

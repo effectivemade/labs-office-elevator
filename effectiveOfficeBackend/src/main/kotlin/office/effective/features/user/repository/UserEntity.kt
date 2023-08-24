@@ -18,6 +18,7 @@ interface UserEntity : Entity<UserEntity> {
     var active: Boolean
     var role: String?
     var avatarURL: String?
+    var email: String
 }
 
 object Users : Table<UserEntity>("users") {
@@ -27,6 +28,7 @@ object Users : Table<UserEntity>("users") {
     val active = boolean("active").bindTo { it.active }
     val role = varchar("role").bindTo { it.role }
     val avatarURL = varchar("avatar_url").bindTo { it.avatarURL }
+    val email = varchar("email").bindTo { it.email }
 }
 
 val Database.users get() = this.sequenceOf(Users)

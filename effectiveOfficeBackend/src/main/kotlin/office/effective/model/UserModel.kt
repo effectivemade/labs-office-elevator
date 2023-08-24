@@ -10,5 +10,6 @@ data class UserModel(
     var active: Boolean,
     var role: String?,
     var avatarURL: String?,
-    var integrations: Set<IntegrationModel>?
+    var integrations: Set<IntegrationModel>?,
+    var email: String
 )

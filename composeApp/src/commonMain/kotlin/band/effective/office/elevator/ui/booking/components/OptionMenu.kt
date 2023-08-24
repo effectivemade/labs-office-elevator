@@ -108,8 +108,8 @@ fun OptionMenu(
                                 selected = selected,
                                 onClick = {
                                     selectedType.value = type
-                                    onClickChangeZone(type.type)
                                     onClickChangeSelectedType(selectedType.value)
+                                    onClickChangeZone(type.type)
                                 }
                             )
                         ) {
