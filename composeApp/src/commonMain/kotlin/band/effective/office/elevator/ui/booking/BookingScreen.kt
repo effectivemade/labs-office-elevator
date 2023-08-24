@@ -31,7 +31,7 @@ import band.effective.office.elevator.components.bottomSheet.BottomSheetItem
 import band.effective.office.elevator.components.bottomSheet.MultiBottomSheetController
 import band.effective.office.elevator.components.bottomSheet.rememberMultiBottomSheetController
 import band.effective.office.elevator.domain.models.BookingInfoDomain
-import band.effective.office.elevator.domain.models.BookingPeriodUI
+import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.ui.booking.components.BookingMainContentScreen
 import band.effective.office.elevator.ui.booking.components.modals.BookAccept
@@ -101,9 +101,10 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                     bookingInfoDomain = BookingInfoDomain(
                         id = state.bookingInfoDomain.id,
                         ownerId = "",
+                        workSpaceId = "",
                         seatName = state.bookingInfoDomain.seatName,
                         dateOfStart = state.selectedStartDate.atTime(state.selectedStartTime),
-                        dateOfEnd = state.selectedStartDate.atTime(state.selectedFinishTime)
+                        dateOfEnd = state.selectedFinishDate.atTime(state.selectedFinishTime)
                     ),
                     frequency = state.frequency
                 )
@@ -179,7 +180,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                 bottomSheetContentState = showBookRepeat
             ) {
                 BookingRepeat(
-                    periodMeasure = state.bookingPeriodUI,
+                    periodMeasure = state.bookingPeriod,
                     backButtonClicked = { bookingComponent.onEvent(BookingStore.Intent.CloseBookRepeat) },
                     dropDownClick = {},
                     confirmBooking = { frequency ->
@@ -320,7 +321,7 @@ private fun BookingScreenContent(
     showTimePicker: Boolean,
     onClickCloseTimeModal: () -> Unit,
     onClickSelectTime: (LocalTime) -> Unit,
-    onClickOpenBookRepeat: (Pair<String, BookingPeriodUI>) -> Unit,
+    onClickOpenBookRepeat: (Pair<String, BookingPeriod>) -> Unit,
     onClickChangeZone: (WorkSpaceType) -> Unit,
     isStart: Boolean,
     startDate: LocalDate,

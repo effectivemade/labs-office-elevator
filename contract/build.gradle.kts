@@ -38,9 +38,11 @@ kotlin {
             }
         }
     }
-    val iosArm64 = iosArm64()
-    val iosX64 = iosX64()
-    val iosSimulatorArm64 = iosSimulatorArm64()
+
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -51,11 +53,9 @@ kotlin {
                 implementation(Dependencies.Ktor.Client.Auth)
             }
         }
-        val androidMain by getting {
-            dependencies {
 
-            }
-        }
+        val androidMain by getting
+
         val iosX64Main by getting
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
@@ -68,6 +68,5 @@ kotlin {
                 implementation(Dependencies.Ktor.Client.Darwin)
             }
         }
-
     }
 }

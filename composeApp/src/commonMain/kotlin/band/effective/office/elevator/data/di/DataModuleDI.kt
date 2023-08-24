@@ -15,8 +15,12 @@ internal val dataModuleDI = module {
 
     factory { Database(get()) } // SQL Driver injected by native platforms(see: androidMain or iosMain)
 
-    single<DBSource>{DBSourceImpl(get())}
+    single<DBSource> { DBSourceImpl(get()) }
 
-    single<Api> { ApiMock(realApi = ApiImpl(), mockFactory = MockFactory()) }
-
+    single<Api> {
+        ApiMock(
+            realApi = ApiImpl(),
+            mockFactory = MockFactory()
+        )
+    }
 }

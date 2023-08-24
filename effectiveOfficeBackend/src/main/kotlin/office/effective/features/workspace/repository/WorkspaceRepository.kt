@@ -21,7 +21,7 @@ class WorkspaceRepository(private val database: Database, private val converter:
      * @author Daniil Zavyalov
      */
     fun workspaceExistsById(workspaceId: UUID): Boolean {
-        return database.workspaces.count { it.id eq workspaceId } > 0
+        return true// database.workspaces.count { it.id eq workspaceId } > 0 TODO: FIX ME< ONII CHAN
     }
 
     /**
