@@ -27,10 +27,11 @@ class BookingCalendarRepository(
         ?: throw Exception("Config file does not contain minimum time")
 
     private fun getCalendarIdByWorkspace(workspaceId: UUID): String {
-        if (workspaceRepository.findById(workspaceId)?.tag != "meeting") {
-            return defaultCalendar
+        return try {
+            calendarRepository.findByWorkspace(workspaceId)
+        } catch (e: InstanceNotFoundException) {
+            defaultCalendar
         }
-        return calendarRepository.findByWorkspace(workspaceId)
     }
 
     override fun existsById(id: String): Boolean {
