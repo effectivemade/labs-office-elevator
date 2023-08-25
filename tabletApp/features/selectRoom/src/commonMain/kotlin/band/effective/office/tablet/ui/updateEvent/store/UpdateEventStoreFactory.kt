@@ -101,7 +101,7 @@ class UpdateEventStoreFactory(private val storeFactory: StoreFactory) : KoinComp
                     changeData = intent.updateInDays
                 )
 
-                is UpdateEventStore.Intent.OnUpdateEvent -> updateEvent(state)
+                is UpdateEventStore.Intent.OnUpdateEvent -> updateEvent(state, intent.room)
                 is UpdateEventStore.Intent.OnUpdateLength -> updateInfo(
                     state = state,
                     changeDuration = intent.update
@@ -187,9 +187,9 @@ class UpdateEventStoreFactory(private val storeFactory: StoreFactory) : KoinComp
             dispatch(Message.Input(input, newList))
         }
 
-        fun updateEvent(state: UpdateEventStore.State) = scope.launch {
+        fun updateEvent(state: UpdateEventStore.State, room: String) = scope.launch {
             dispatch(Message.LoadUpdate)
-            if (bookingUseCase.update(state.toEventInfo()) is Either.Success) {
+            if (bookingUseCase.update(state.toEventInfo(), room) is Either.Success) {
                 publish(UpdateEventStore.Label.Close)
             } else {
                 dispatch(Message.FailUpdate)

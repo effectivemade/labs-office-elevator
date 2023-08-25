@@ -17,7 +17,6 @@ import io.ktor.http.contentType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -119,7 +118,7 @@ class ApiImpl : Api {
             }
         }
 
-    override suspend fun createBooking(bookingInfo: BookingDTO): Either<ErrorResponse, SuccessResponse> =
+    override suspend fun createBooking(bookingInfo: BookingDTO): Either<ErrorResponse, BookingDTO> =
         client.securityResponse(
             urlString = "$baseUrl/bookings",
             method = KtorEtherClient.RestMethod.Post
@@ -131,18 +130,20 @@ class ApiImpl : Api {
 
     override suspend fun updateBooking(
         bookingInfo: BookingDTO
-    ): Either<ErrorResponse, SuccessResponse> =
+    ): Either<ErrorResponse, BookingDTO> =
         client.securityResponse(
             urlString = "$baseUrl/bookings",
             method = KtorEtherClient.RestMethod.Put
         ) {
             contentType(ContentType.Application.Json)
-            setBody(bookingInfo)
+            val body = Json.encodeToString(bookingInfo)
+            setBody(body)
         }
 
     override suspend fun deleteBooking(bookingId: String): Either<ErrorResponse, SuccessResponse> =
         client.securityResponse(
             urlString = "$baseUrl/bookings",
+            method = KtorEtherClient.RestMethod.Delete
         ) {
             url {
                 appendPathSegments(bookingId)

@@ -31,7 +31,8 @@ object KtorEtherClient {
                 }
             }
             install(HttpTimeout) {
-                requestTimeoutMillis = 10000
+                requestTimeoutMillis = 100000
+                connectTimeoutMillis = 100000
             }
             install(ContentNegotiation) {
                 json()

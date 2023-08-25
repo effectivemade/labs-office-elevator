@@ -16,14 +16,14 @@ class BookingRepositoryImpl(private val api: Api) :
         eventInfo: EventInfo,
         room: RoomInfo
     ): Either<ErrorResponse, String> = api.createBooking(eventInfo.toBookingInfo(room))
-        .map(errorMapper = { it }, successMapper = { it.status })
+        .map(errorMapper = { it }, successMapper = { "it.status" })
 
     override suspend fun updateBooking(
         eventInfo: EventInfo,
         room: RoomInfo
     ): Either<ErrorResponse, String> =
         api.updateBooking(eventInfo.toBookingInfo(room))
-            .map(errorMapper = { it }, successMapper = { it.status })
+            .map(errorMapper = { it }, successMapper = { "it.status" })
 
 
     private fun EventInfo.toBookingInfo(room: RoomInfo): BookingDTO = BookingDTO(
