@@ -14,6 +14,8 @@ technologies as little as possible.
 
 ## Project Structure: :dizzy:
 
+Pre-requisite: [Notion](https://www.notion.so/effectiveband/613e964862f44c9faefefd7958697dd9?pvs=4). Note: due to the incompleteness of the database, placeholders may appear in applications
+
 [Effective-Tablet](tabletApp/README.md)
 
 An application for booking meeting rooms on a tablet.
