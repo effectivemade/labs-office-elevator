@@ -32,14 +32,15 @@ fun BookingDTO.toDomainModel() =
     )
 
 fun List<BookingDTO>.toDomainZone() = map { it.toDomainModel() }
-fun emptyUserDTO(id: String): UserDTO =
+fun emptyUserDTO(id: String, email: String): UserDTO =
     UserDTO(
         id = id,
         fullName = "",
         active = false,
         role = "",
         avatarUrl = "",
-        integrations = null
+        integrations = null,
+        email = email
     )
 
 
@@ -55,7 +56,7 @@ fun emptyWorkSpaceDTO(id: String) =
 fun BookingInfo.toDTOModel(userDTO: UserDTO, workspaceDTO: WorkspaceDTO, recurrence: RecurrenceDTO?) =
     BookingDTO(
         owner = userDTO,
-        participants = listOf(userDTO),
+        participants = listOf(),
         workspace = workspaceDTO,
         id = id,
         beginBooking = localDateTimeToUnix(dateOfStart)!!,

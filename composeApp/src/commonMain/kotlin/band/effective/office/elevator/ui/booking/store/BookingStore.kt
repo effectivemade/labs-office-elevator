@@ -77,7 +77,8 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         val repeatBooking: StringResource,
         val bookingPeriod: BookingPeriod,
         val selectedType: TypesList,
-        val bookingInfo: BookingInfo
+        val bookingInfo: BookingInfo,
+        val selectedWorkspaceId: String
     ) {
         companion object {
             val initState = State(
@@ -115,7 +116,8 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
                     dateOfEnd = LocalDateTime(date = getCurrentDate(), time = getCurrentTime())
                 ),
                 selectedFinishDate = getCurrentDate(),
-                isStartDate = true
+                isStartDate = true,
+                selectedWorkspaceId = ""
             )
         }
     }

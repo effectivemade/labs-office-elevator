@@ -71,6 +71,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         data class ChangeWorkingUI(val bookingInfo: BookingInfo) : Msg
 
         data class IsStartDatePicker(val isStart: Boolean) : Msg
+
+        data class UpdateSelectedWorkspace(val workspaceId: String ) : Msg
     }
 
     private sealed interface Action {
@@ -168,6 +170,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     scope.launch {
                         publish(BookingStore.Label.OpenBookAccept(value = intent.value))
                         with(intent.value) {
+                            dispatch(Msg.UpdateSelectedWorkspace(workspaceId = workSpaceId))
                             dispatch(
                                 Msg.ChangeWorkingUI(
                                     bookingInfo = BookingInfo(
@@ -230,7 +233,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                         bookingInteractor.create(
                             coroutineScope = this@launch,
                             creatingBookModel = CreatingBookModel(
-                                workSpaceId = "", //TODO(Replace with value from DB)
+                                workSpaceId = getState().selectedWorkspaceId, //TODO(Replace with value from DB)
                                 dateOfStart = getState().selectedStartDate.atTime(getState().selectedStartTime),
                                 dateOfEnd = getState().selectedFinishDate.atTime(getState().selectedFinishTime),
                                 bookingPeriod = getState().bookingPeriod,
@@ -432,7 +435,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                                 dispatch(newList.toList())
                             }
                             is Either.Error -> {
-                                println("ERROORRR!!!!")
+                                println("ERROORRR!!!! ${response.error.error}")
                                 // TODO SHOW ERROR ON UI
                             }
                         }
@@ -467,6 +470,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is Msg.ChangeWorkingUI -> copy(bookingInfo = msg.bookingInfo)
                 is Msg.EndBookingDate -> copy(selectedFinishDate = msg.date)
                 is Msg.IsStartDatePicker -> copy(isStartDate = msg.isStart)
+                is Msg.UpdateSelectedWorkspace -> copy(selectedWorkspaceId = msg.workspaceId)
             }
         }
     }

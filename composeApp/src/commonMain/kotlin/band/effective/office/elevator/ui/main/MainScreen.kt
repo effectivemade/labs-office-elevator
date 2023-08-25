@@ -170,7 +170,7 @@ fun MainScreen(component: MainComponent) {
                 )
             },
             onDismissRequest = { component.onEvent(MainStore.Intent.OnClickCloseCalendar) },
-            showDialog = showModalCalendar,
+            showDialog = showOptionsMenu,
             modifier = Modifier.align(Alignment.BottomCenter)
         )
 

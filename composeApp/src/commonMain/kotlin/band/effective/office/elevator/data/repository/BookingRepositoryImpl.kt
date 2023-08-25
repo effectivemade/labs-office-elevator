@@ -5,6 +5,7 @@ import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.domain.models.CreatingBookModel
 import band.effective.office.elevator.domain.models.ErrorWithData
 import band.effective.office.elevator.domain.models.TypeEndPeriodBooking
+import band.effective.office.elevator.domain.models.User
 import band.effective.office.elevator.domain.models.emptyUserDTO
 import band.effective.office.elevator.domain.models.emptyWorkSpaceDTO
 import band.effective.office.elevator.domain.models.toDTO
@@ -19,10 +20,14 @@ import band.effective.office.network.dto.BookingDTO
 import band.effective.office.network.dto.RecurrenceDTO
 import band.effective.office.network.model.Either
 import band.effective.office.network.model.ErrorResponse
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
@@ -31,6 +36,20 @@ class BookingRepositoryImpl(
     private val api: Api,
     private val profileRepository: ProfileRepository
 ) : BookingRepository {
+
+    private var user: User? = null
+    init {
+        CoroutineScope(Dispatchers.IO).launch {
+            val currentUserResponse = profileRepository.getUser()
+
+            currentUserResponse.collect { response ->
+                user = when (response) {
+                    is Either.Error -> null
+                    is Either.Success -> response.data
+                }
+            }
+        }
+    }
 
     private val lastResponse =
         MutableStateFlow<Either<ErrorWithData<List<BookingInfo>>, List<BookingInfo>>>(
@@ -53,7 +72,10 @@ class BookingRepositoryImpl(
         )
 
         val bookingDTO = bookingInfo.toDTOModel(
-            userDTO = emptyUserDTO(bookingInfo.ownerId),
+            userDTO = emptyUserDTO(
+                id = bookingInfo.ownerId,
+                email = user?.email?:"",
+            ),
             workspaceDTO = emptyWorkSpaceDTO(bookingInfo.workSpaceId),
             recurrence = recurrence
         )
@@ -76,17 +98,29 @@ class BookingRepositoryImpl(
         currentUserResponse.collect { response ->
             when (response) {
                 is Either.Success -> {
+
+                    user = response.data
+
                     val recurrence = getRecurrenceModal(
                         bookingPeriod = creatingBookModel.bookingPeriod,
                         typeEndPeriod = creatingBookModel.typeOfEndPeriod
                     )
 
                     val bookingDTO = creatingBookModel.toDTO(
-                        user = emptyUserDTO(response.data.id),
+                        user = emptyUserDTO(
+                            id = response.data.id,
+                            email = response.data.email
+                        ),
                         workspaceDTO = emptyWorkSpaceDTO(creatingBookModel.workSpaceId),
                         recurrence = recurrence
                     )
-                    api.createBooking(bookingDTO)
+                    when(val creating= api.createBooking(bookingDTO)){
+                        is Either.Error -> {
+                            println("Error create booking: ${creating.error}" +
+                                    "BooKingDTO: $bookingDTO")
+                        }
+                        is Either.Success -> println("Creating ok")
+                    }
                 }
 
                 is Either.Error -> {
@@ -125,6 +159,7 @@ class BookingRepositoryImpl(
                 }
 
                 is Either.Error -> {
+
                     // TODO add implemetation for error
                 }
             }
@@ -163,6 +198,7 @@ class BookingRepositoryImpl(
         dateFilter: LocalDate
     ) =
         map(errorMapper = { error ->
+            println("errors sow booking $error")
             ErrorWithData(
                 error = error, saveData = when (oldValue) {
                     is Either.Error -> oldValue.error.saveData
@@ -171,9 +207,11 @@ class BookingRepositoryImpl(
             )
         },
             successMapper = { bookingDTOS ->
+                println("bookings: $bookingDTOS")
                 bookingDTOS
                     .toDomainZone()
                     .filter {
+                        println("repository: ${it.dateOfStart.date} == ${dateFilter}")
                     it.dateOfStart.date == dateFilter
                 } // TODO add filtration by workSpace or meetingRoom
             }

@@ -124,8 +124,9 @@ class ApiImpl : Api {
             method = KtorEtherClient.RestMethod.Post
         ) {
             contentType(ContentType.Application.Json)
-            val body = Json.encodeToString(bookingInfo)
-            setBody(body)
+//            val body = Json.encodeToString(bookingInfo)
+//            println(body)
+            setBody(bookingInfo)
         }
 
     override suspend fun updateBooking(

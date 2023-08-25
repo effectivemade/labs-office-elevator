@@ -34,7 +34,6 @@ internal class MainStoreFactory(
 ) : KoinComponent {
 
     private val elevatorUseCase: ElevatorCallUseCase by inject()
-    private val bookingsUseCase: GetBookingsUseCase by inject()
     private val deleteBookingUseCase : DeleteBookingUseCase by inject()
     private var recentDate = LocalDate(2023,8,16)
     private val bookingInteractor: BookingInteractor by inject()
