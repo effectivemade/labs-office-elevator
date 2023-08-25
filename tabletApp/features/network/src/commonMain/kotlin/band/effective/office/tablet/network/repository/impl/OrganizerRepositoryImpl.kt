@@ -10,12 +10,10 @@ import band.effective.office.tablet.network.repository.OrganizerRepository
 import band.effective.office.tablet.utils.Converter.toOrganizer
 import band.effective.office.tablet.utils.map
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 class OrganizerRepositoryImpl(private val api: Api) : OrganizerRepository {
 
@@ -38,11 +36,11 @@ class OrganizerRepositoryImpl(private val api: Api) : OrganizerRepository {
 
     override suspend fun getOrganizersList(): Either<ErrorWithData<List<Organizer>>, List<Organizer>> =
         with(orgList.value) {
-            if (this is Either.Error && error.error.code == 0) loadOrganizersList()
-            else {
-                coroutineScope { launch { loadOrganizersList() } }
-                orgList.value
-            }
+            if (this is Either.Error && error.error.code == 0) {
+                val response = loadOrganizersList()
+                orgList.update { response }
+                response
+            } else this
         }
 
 

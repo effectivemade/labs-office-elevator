@@ -39,6 +39,7 @@ import java.util.Calendar
 fun UpdateEventView(
     component: UpdateEventComponent,
     event: EventInfo,
+    room: String,
     onCloseRequest: () -> Unit
 ) {
     val state by component.state.collectAsState()
@@ -72,7 +73,7 @@ fun UpdateEventView(
             selectOrganizer = state.selectOrganizer,
             organizers = state.selectOrganizers,
             expended = state.expanded,
-            onUpdateEvent = { component.sendIntent(UpdateEventStore.Intent.OnUpdateEvent) },
+            onUpdateEvent = { component.sendIntent(UpdateEventStore.Intent.OnUpdateEvent(room)) },
             onDeleteEvent = { component.sendIntent(UpdateEventStore.Intent.OnDeleteEvent) },
             inputText = state.inputText,
             onInput = { component.sendIntent(UpdateEventStore.Intent.OnInput(it)) },

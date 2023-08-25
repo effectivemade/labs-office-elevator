@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 class ApiMock(private val realApi: Api, mockFactory: MockFactory) : Api {
-    var getRealResponse: Boolean = false
+    var getRealResponse: Boolean = true
     private val workspaces: List<WorkspaceDTO> = mockFactory.workspaces()
     private val meetingRooms: List<WorkspaceDTO> = mockFactory.meetingRooms()
     private val users: MutableStateFlow<List<UserDTO>> = MutableStateFlow(mockFactory.users())
@@ -43,7 +43,7 @@ class ApiMock(private val realApi: Api, mockFactory: MockFactory) : Api {
         }
 
     private fun <T> Either<ErrorResponse, T>.requestNotExist() =
-        this is Either.Error && error.code in 600..699
+        this is Either.Error
 
     override suspend fun getWorkspace(id: String): Either<ErrorResponse, WorkspaceDTO> = response(
         mock = (workspaces + meetingRooms).firstOrNull() { it.id == id },
@@ -102,9 +102,9 @@ class ApiMock(private val realApi: Api, mockFactory: MockFactory) : Api {
             realResponse = realApi.getBookingsByWorkspaces(workspaceId = workspaceId)
         )
 
-    override suspend fun createBooking(bookingInfo: BookingDTO): Either<ErrorResponse, SuccessResponse> =
+    override suspend fun createBooking(bookingInfo: BookingDTO): Either<ErrorResponse, BookingDTO> =
         response(
-            mock = successResponse.apply {
+            mock = bookingInfo.apply {
                 bookings.update {
                     it + bookingInfo.copy(
                         id = "${Random.nextInt(1000)}"
@@ -116,8 +116,8 @@ class ApiMock(private val realApi: Api, mockFactory: MockFactory) : Api {
 
     override suspend fun updateBooking(
         bookingInfo: BookingDTO
-    ): Either<ErrorResponse, SuccessResponse> = response(
-        mock = successResponse.apply {
+    ): Either<ErrorResponse, BookingDTO> = response(
+        mock = bookingInfo.apply {
             bookings.update {
                 val a = it
                 a.map { element ->

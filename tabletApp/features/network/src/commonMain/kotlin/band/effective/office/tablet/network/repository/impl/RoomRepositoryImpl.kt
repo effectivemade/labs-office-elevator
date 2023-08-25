@@ -27,31 +27,39 @@ class RoomRepositoryImpl(
     private val organizerRepository: OrganizerRepository
 ) : RoomRepository {
 
-    private val roomInfo: MutableStateFlow<Either<ErrorWithData<RoomInfo>, RoomInfo>> =
-        MutableStateFlow(Either.Error(ErrorWithData<RoomInfo>(ErrorResponse(0, ""), null)))
-
-    private suspend fun loadRoomInfo(roomId: String): Either<ErrorWithData<RoomInfo>, RoomInfo> =
-        with(roomInfo.value) {
-            val response = api.getWorkspace(roomId)
-            val id = when (response) {
-                is Either.Error -> ""
-                is Either.Success -> response.data.id
-            }
-            val events = loadEvents(id)
-            roomInfo.update { api.getWorkspace(roomId).convert(this).addEvents(events) }
-            roomInfo.value
-        }
+    private val roomInfo: MutableStateFlow<Either<ErrorWithData<List<RoomInfo>>, List<RoomInfo>>> =
+        MutableStateFlow(Either.Error(ErrorWithData<List<RoomInfo>>(ErrorResponse(0, ""), null)))
 
     private suspend fun loadEvents(roomId: String) =
         api.getBookingsByWorkspaces(roomId)
 
     override suspend fun getRoomInfo(room: String): Either<ErrorWithData<RoomInfo>, RoomInfo> =
+        getRoomsInfo().map(errorMapper = {
+            val save = it.saveData
+            if (save == null) {
+                ErrorWithData<RoomInfo>(it.error, null)
+            } else {
+                ErrorWithData<RoomInfo>(it.error, save.firstOrNull { it.name == room })
+            }
+        }, successMapper = {
+            val room = it.firstOrNull { it.name == room }
+            if (room == null) {
+                RoomInfo.defaultValue// TODO fix return error
+            } else room
+        })
+
+    override suspend fun getRoomsInfo(): Either<ErrorWithData<List<RoomInfo>>, List<RoomInfo>> =
         with(roomInfo.value) {
-            if (this is Either.Error && error.error.code == 0) loadRoomInfo(room)
-            else apply { loadRoomInfo(room) }
+            if (this is Either.Error) {
+                val response = loadRooms().map(
+                    errorMapper = { ErrorWithData<List<RoomInfo>>(it, null) },
+                    successMapper = { it })
+                roomInfo.update { response }
+                response
+            } else this
         }
 
-    override suspend fun getRoomsInfo(): Either<ErrorResponse, List<RoomInfo>> =
+    suspend fun loadRooms() =
         api.getWorkspaces("meeting").run {
             when (this) {
                 is Either.Error -> this
@@ -77,19 +85,29 @@ class RoomRepositoryImpl(
         scope: CoroutineScope
     ): Flow<Either<ErrorWithData<RoomInfo>, RoomInfo>> =
         channelFlow {
-            send(loadRoomInfo(roomId))
+            send(getRoomInfo(roomId))
             launch {
                 api.subscribeOnWorkspaceUpdates(roomId, scope).collect {
+                    roomInfo.update {
+                        loadRooms().map(
+                            errorMapper = { ErrorWithData<List<RoomInfo>>(it, null) },
+                            successMapper = { it })
+                    }
                     send(
-                        it.convert(roomInfo.value).addEvents(loadEvents(roomId))
-                            .apply { roomInfo.update { this } })
+                        it.convert(getRoomInfo(roomId)).addEvents(loadEvents(roomId))
+                    )
                 }
             }
             launch {
                 api.subscribeOnBookingsList(roomId, scope).collect {
+                    roomInfo.update {
+                        loadRooms().map(
+                            errorMapper = { ErrorWithData<List<RoomInfo>>(it, null) },
+                            successMapper = { it })
+                    }
                     send(
                         getRoomInfo(roomId).addEvents(it)
-                            .apply { roomInfo.update { this } })
+                    )
                 }
             }
             awaitClose()
