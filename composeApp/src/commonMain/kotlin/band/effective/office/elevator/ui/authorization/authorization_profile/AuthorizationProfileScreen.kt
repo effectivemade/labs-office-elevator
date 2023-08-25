@@ -63,6 +63,10 @@ fun AuthorizationProfileScreen(component: AuthorizationProfileComponent) {
                 }
 
                 is AuthorizationProfileStore.Label.AuthorizationProfileSuccess -> {
+
+                    component.changeUserName(state.name)
+                    component.changeUserPost(state.post)
+
                     component.onOutput(
                         AuthorizationProfileComponent.Output.OpenTGScreen
                     )
