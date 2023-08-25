@@ -1,12 +1,15 @@
 package office.effective.features.workspace.repository
 
 import office.effective.common.exception.InstanceNotFoundException
+import office.effective.features.booking.repository.BookingCalendarRepository
+import office.effective.features.booking.repository.IBookingRepository
 import office.effective.features.booking.repository.WorkspaceBooking
 import office.effective.features.workspace.converters.WorkspaceRepositoryConverter
 import office.effective.model.IntegrationModel
 import office.effective.model.Utility
 import office.effective.model.Workspace
 import office.effective.model.WorkspaceZone
+import org.koin.core.context.GlobalContext
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
 import org.ktorm.entity.*
@@ -138,21 +141,17 @@ class WorkspaceRepository(private val database: Database, private val converter:
         if (database.workspaceTags.count { it.name eq tag } == 0)
             throw InstanceNotFoundException(WorkspaceTagEntity::class, "Workspace tag $tag not found")
 
-        return database.from(Workspaces)
-            .innerJoin(right = WorkspaceTags, on = WorkspaceTags.id eq Workspaces.tagId)
-            .leftJoin(right = WorkspaceZones, on = WorkspaceZones.id eq Workspaces.zoneId)
-            .leftJoin(
-                right = WorkspaceBooking,
-                on = (Workspaces.id eq WorkspaceBooking.workspaceId)
-                    .and(WorkspaceBooking.beginBooking lt endTimestamp)
-                    .and(WorkspaceBooking.endBooking gt beginTimestamp)
-            )
-            .select()
-            .where(WorkspaceBooking.workspaceId.isNull() and (WorkspaceTags.name eq tag))
-            .map { row ->
-                val entity = Workspaces.createEntity(row)
-                converter.entityToModel(entity, findUtilitiesByWorkspaceId(entity.id))
-            }.toList()
+        val calendarRepository: IBookingRepository = GlobalContext.get().get() //TODO: REWRITE IT FROM SCRATCH
+        val freeWorkspaces = mutableListOf<Workspace>()
+        val bookings = calendarRepository.findAll()
+        findAllByTag(tag).forEach {
+            if (bookings.none { booking ->
+                booking.beginBooking.isBefore(endTimestamp) && booking.endBooking.isAfter(beginTimestamp)
+            }) {
+                freeWorkspaces.add(it)
+            }
+        }
+        return freeWorkspaces
     }
 
     /**
