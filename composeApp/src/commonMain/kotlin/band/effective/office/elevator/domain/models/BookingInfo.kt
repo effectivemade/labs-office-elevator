@@ -39,8 +39,7 @@ fun emptyUserDTO(id: String): UserDTO =
         active = false,
         role = "",
         avatarUrl = "",
-        integrations = null,
-        ""
+        integrations = null
     )
 
 

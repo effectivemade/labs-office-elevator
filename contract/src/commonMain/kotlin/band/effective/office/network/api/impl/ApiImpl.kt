@@ -84,6 +84,7 @@ class ApiImpl : Api {
             urlString = "$baseUrl/users",
             method = KtorEtherClient.RestMethod.Put
         ) {
+            println("user = $user")
             contentType(ContentType.Application.Json)
             setBody(user)
             url {

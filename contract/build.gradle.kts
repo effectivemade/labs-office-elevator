@@ -52,6 +52,9 @@ kotlin {
                 implementation(Dependencies.KotlinxDatetime.kotlinxDatetime)
                 implementation(Dependencies.Ktor.Client.CIO)
                 implementation(Dependencies.Ktor.Client.Auth)
+                implementation(Dependencies.Ktor.Client.negotiation)
+                implementation(Dependencies.Ktor.Client.jsonSerialization)
+
             }
         }
 

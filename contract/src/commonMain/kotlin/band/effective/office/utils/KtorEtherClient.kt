@@ -10,11 +10,13 @@ import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.put
+import io.ktor.serialization.kotlinx.json.json
 
 object KtorEtherClient {
     var token = BuildConfig.apiKey
@@ -30,6 +32,9 @@ object KtorEtherClient {
             }
             install(HttpTimeout) {
                 requestTimeoutMillis = 10000
+            }
+            install(ContentNegotiation) {
+                json()
             }
         }
     }
