@@ -14,6 +14,10 @@ technologies as little as possible.
 
 ## Project Structure: :dizzy:
 
+[Effective-Tablet](tabletApp/README.md)
+
+An application for booking meeting rooms on a tablet.
+
 [Effective-TV](tv-app/effecticeTV/README.md)
 
 Application for Android TV, which will show various interesting statistics about
