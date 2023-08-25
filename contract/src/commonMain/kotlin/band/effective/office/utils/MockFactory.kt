@@ -45,7 +45,15 @@ class MockFactory {
         name = "tv"
     )
 
-    private fun user(name: String, role: String): UserDTO = TODO()
+    private fun user(name: String, role: String): UserDTO = UserDTO(
+        id = "",
+        fullName = name,
+        active = false,
+        role = role,
+        avatarUrl = "",
+        integrations = listOf(),
+        tag = "employee"
+    )
 
     private fun booking(
         owner: UserDTO,

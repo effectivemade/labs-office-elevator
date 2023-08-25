@@ -11,15 +11,15 @@ import kotlinx.serialization.serializer
 val KtorEitherPlugin = createClientPlugin("KtorEitherPlugin") {
     transformResponseBody { response, content, requestedType ->
         if (response.status.value in 200..299) {
-            if (requestedType.kotlinType!!.arguments[1].type!! == SuccessResponse::class){
+            val response = content.readUTF8Line()
+            if (response == null){
                 Either.Success(SuccessResponse("ok"))
             }
             else{
                 Either.Success(
                     Json.decodeFromString(
-
                         serializer(requestedType.kotlinType!!.arguments[1].type!!),
-                        content.readUTF8Line()!!
+                        response
                     )
                 )
             }

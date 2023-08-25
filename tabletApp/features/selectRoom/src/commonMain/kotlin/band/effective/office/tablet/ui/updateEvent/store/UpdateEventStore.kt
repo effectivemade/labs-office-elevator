@@ -21,7 +21,7 @@ interface UpdateEventStore :
 
         object OnExpandedChange : Intent
         data class OnSelectOrganizer(val newOrganizer: Organizer) : Intent
-        object OnUpdateEvent : Intent
+        data class OnUpdateEvent(val room: String) : Intent
         object OnDeleteEvent : Intent
         data class OnInit(val event: EventInfo) : Intent
         data class OnInput(val input: String) : Intent

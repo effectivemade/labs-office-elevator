@@ -15,7 +15,7 @@ class BookingUseCase(
 ) {
     var rooms: Either<ErrorResponse, List<RoomInfo>>? = null
     suspend fun getRoom(room: String) = with(rooms) {
-        if (this == null) rooms = roomRepository.getRoomsInfo()
+        if (this == null) rooms = roomRepository.getRoomsInfo().map({ it.error }, { it })
         rooms?.map(
             errorMapper = { it },
             successMapper = { it.first { it.name == room } })
