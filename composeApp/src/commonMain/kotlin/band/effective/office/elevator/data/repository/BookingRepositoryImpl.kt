@@ -142,27 +142,39 @@ class BookingRepositoryImpl(
 
 
     override suspend fun getBookingsByDate(
+        ownerId: String?,
         date: LocalDate,
         bookingsFilter: BookingsFilter
     ): Flow<Either<ErrorWithData<List<BookingInfo>>, List<BookingInfo>>> = flow  {
-
-        val currentUserResponse = profileRepository.getUser()
-
-        currentUserResponse.collect { userResponse ->
-
-            when (userResponse) {
-                is Either.Success -> {
-                    val bookings = api.getBookingsByUser(userResponse.data.id)
-                        .convertWithDateFilter(oldValue = lastResponse.value, filter = bookingsFilter, dateFilter = date)
-                    lastResponse.update { bookings }
-                    emit(bookings)
-                }
-
-                is Either.Error -> {
-
-                    // TODO add implemetation for error
+        if (ownerId == null) {
+            val currentUserResponse = profileRepository.getUser()
+            currentUserResponse.collect { userResponse ->
+                when (userResponse) {
+                    is Either.Success -> {
+                        val bookings = api.getBookingsByUser(userResponse.data.id)
+                            .convertWithDateFilter(
+                                oldValue = lastResponse.value,
+                                filter = bookingsFilter,
+                                dateFilter = date
+                            )
+                        lastResponse.update { bookings }
+                        emit(bookings)
+                    }
+                    is Either.Error -> {
+                        // TODO add implemetation for error
+                    }
                 }
             }
+        }
+        else {
+            val bookings = api.getBookingsByUser(ownerId)
+                .convertWithDateFilter(
+                    oldValue = lastResponse.value,
+                    filter = bookingsFilter,
+                    dateFilter = date
+                )
+            lastResponse.update { bookings }
+            emit(bookings)
         }
     }
 

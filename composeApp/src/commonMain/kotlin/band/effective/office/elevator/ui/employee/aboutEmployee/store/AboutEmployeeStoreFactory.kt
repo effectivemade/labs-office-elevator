@@ -20,6 +20,7 @@ import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.LocalDate
@@ -28,7 +29,7 @@ import org.koin.core.component.inject
 
 class AboutEmployeeStoreFactory(
     private val storeFactory: StoreFactory,
-    private val employee: EmployeeInfo
+    private val employeeInfo: EmployeeInfo
 ) : KoinComponent {
 
     private val aboutEmployeeInteractor: AboutEmployeeInteractor by inject()
@@ -50,7 +51,7 @@ class AboutEmployeeStoreFactory(
             ),
             bootstrapper = coroutineBootstrapper {
                 launch {
-                    dispatch(Action.FetchUserInfo(employee = employee.toUIAbout()))
+                    dispatch(Action.FetchUserInfo(employee = employeeInfo.toUIAbout()))
                 }
             },
             executorFactory = ::ExecutorImpl,
@@ -149,6 +150,7 @@ class AboutEmployeeStoreFactory(
                                 )
                             } else {
                                 fetchUserInfo(
+                                    date = getState().currentDate,
                                     employee = currentUser,
                                     bookingsFilter = bookingsFilter
                                 )
@@ -162,6 +164,7 @@ class AboutEmployeeStoreFactory(
         override fun executeAction(action: Action, getState: () -> State) {
             when (action) {
                 is Action.FetchUserInfo -> fetchUserInfo(
+                    date = getState().currentDate,
                     employee = action.employee,
                     bookingsFilter = filtration
                 )
@@ -184,7 +187,6 @@ class AboutEmployeeStoreFactory(
                         date = date,
                         ownerId = ownerId,
                         bookingsFilter = bookingsFilter,
-                        coroutineScope = this
                     )
                     .collect { newList ->
                         withContext(Dispatchers.Main) {
@@ -209,20 +211,19 @@ class AboutEmployeeStoreFactory(
             }
         }
 
-        private fun fetchUserInfo(employee: User, bookingsFilter: BookingsFilter){
-            if (currentUser != employee)
-                currentUser = employee
-            else
-                filtration = bookingsFilter
+        private fun fetchUserInfo(
+            date: LocalDate,
+            employee: User,
+            bookingsFilter: BookingsFilter
+        ){
 
             scope.launch(Dispatchers.IO) {
                 aboutEmployeeInteractor
-                    .getBookingsForUser(
+                    .getBookingsByDate(
+                        date = date,
                         ownerId = employee.id,
                         bookingsFilter = bookingsFilter,
-                        coroutineScope = this
-                    )
-                    .collect { newList ->
+                    ).collect { newList ->
                         withContext(Dispatchers.Main) {
                             when (newList) {
                                 is Either.Error -> {
