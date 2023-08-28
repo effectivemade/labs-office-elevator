@@ -1,4 +1,4 @@
-package office.effective.features.booking.config
+package office.effective.features.booking.di
 
 import office.effective.features.booking.converters.BookingFacadeConverter
 import office.effective.features.booking.converters.BookingRepositoryConverter

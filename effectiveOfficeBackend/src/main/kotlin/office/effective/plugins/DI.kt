@@ -3,7 +3,7 @@ package office.effective.plugins
 import io.ktor.server.application.*
 import office.effective.common.notifications.firebaseDiModule
 import office.effective.common.di.commonDiModule
-import office.effective.features.booking.config.bookingDiModule
+import office.effective.features.booking.di.bookingDiModule
 import office.effective.common.di.calendarDiModule
 import office.effective.features.simpleAuth.di.authDiModule
 import office.effective.features.user.di.userDIModule
