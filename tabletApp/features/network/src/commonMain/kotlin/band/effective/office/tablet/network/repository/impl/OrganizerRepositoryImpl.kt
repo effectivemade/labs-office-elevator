@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 
 class OrganizerRepositoryImpl(private val api: Api) : OrganizerRepository {
-
+    /**Buffer for organization list*/
     private var orgList: MutableStateFlow<Either<ErrorWithData<List<Organizer>>, List<Organizer>>> =
         MutableStateFlow(
             Either.Error(
@@ -36,6 +36,7 @@ class OrganizerRepositoryImpl(private val api: Api) : OrganizerRepository {
 
     override suspend fun getOrganizersList(): Either<ErrorWithData<List<Organizer>>, List<Organizer>> =
         with(orgList.value) {
+            // NOTE if buffer is empty or contain error get data from api, else get data from buffer
             if (this is Either.Error && error.error.code == 0) {
                 val response = loadOrganizersList()
                 orgList.update { response }
@@ -47,10 +48,12 @@ class OrganizerRepositoryImpl(private val api: Api) : OrganizerRepository {
     override fun subscribeOnUpdates(scope: CoroutineScope): Flow<Either<ErrorWithData<List<Organizer>>, List<Organizer>>> =
         flow {
             emit(loadOrganizersList())
+            // NOTE collect updates from api and update orgList
             api.subscribeOnOrganizersList(scope)
                 .collect { emit(it.convert(orgList.value).apply { orgList.update { this } }) }
         }
-
+    /** Map DTO to domain model
+     * @param oldValue past save value*/
     private fun Either<ErrorResponse, List<UserDTO>>.convert(oldValue: Either<ErrorWithData<List<Organizer>>, List<Organizer>>) =
         map(errorMapper = { error ->
             ErrorWithData(
