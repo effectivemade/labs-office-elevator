@@ -19,7 +19,7 @@ abstract class CurrentEventController(
 ) {
     private var job: Job? = null
     protected lateinit var scope: CoroutineScope
-    protected var currentEvent: EventInfo? = null
+    private var currentEvent: EventInfo? = null
     protected val handlersList: MutableList<() -> Unit> = mutableListOf()
     protected var mutableTimeToUpdate = MutableStateFlow(-1L)
     val timeToUpdate = mutableTimeToUpdate.asStateFlow()
