@@ -3,6 +3,7 @@
     package="band.effective.office.tablet">
 
     <application
+        android:name=".Application"
         android:allowBackup="false"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
