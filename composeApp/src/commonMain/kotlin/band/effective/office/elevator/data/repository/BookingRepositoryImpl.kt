@@ -14,6 +14,7 @@ import band.effective.office.elevator.domain.models.toDomainZone
 import band.effective.office.elevator.domain.repository.BookingRepository
 import band.effective.office.elevator.domain.repository.ProfileRepository
 import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsFilter
+import band.effective.office.elevator.utils.localDateTimeToUnix
 import band.effective.office.elevator.utils.map
 import band.effective.office.network.api.Api
 import band.effective.office.network.dto.BookingDTO
@@ -33,6 +34,7 @@ import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.atTime
 
 class BookingRepositoryImpl(
     private val api: Api,
@@ -252,8 +254,7 @@ class BookingRepositoryImpl(
             },
             until = when (typeEndPeriod) {
                 is TypeEndPeriodBooking.DatePeriodEnd ->
-                    typeEndPeriod.date.atStartOfDayIn(timeZone = TimeZone.currentSystemDefault()).epochSeconds
-
+                    localDateTimeToUnix(typeEndPeriod.date.atTime(hour = 0, minute = 0))
                 else -> null
             },
             byDay = when (bookingPeriod) {

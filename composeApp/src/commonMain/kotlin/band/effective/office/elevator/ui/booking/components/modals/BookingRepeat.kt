@@ -124,8 +124,7 @@ fun BookingRepeat(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
+            .fillMaxSize()
             .background(
                 color = Color.White,
                 shape = RoundedCornerShape(

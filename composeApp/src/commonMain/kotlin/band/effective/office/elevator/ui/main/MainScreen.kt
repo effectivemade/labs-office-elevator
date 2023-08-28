@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -29,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.components.LoadingIndicator
 import band.effective.office.elevator.components.ModalCalendar
 import band.effective.office.elevator.components.TitlePage
 import band.effective.office.elevator.ui.booking.components.modals.DeleteBooking
@@ -43,6 +45,7 @@ import band.effective.office.elevator.ui.models.ReservedSeat
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
 import effective.office.modalcustomdialog.Dialog
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.delay
 import kotlinx.datetime.LocalDate
 
@@ -131,21 +134,10 @@ fun MainScreen(component: MainComponent) {
                         it
                     )
                 )
-            }
+            },
+            isLoadingBooking = state.isLoading
         )
-//        Dialog(
-//            content = {
-//                DeleteBooking(
-//                    place = selectSeat.seatName,
-//                    fullDate = selectSeat.bookingDay + " "+ selectSeat.bookingTime,
-//                    onCanselCLick = {component.onEvent(MainStore.Intent.OnClickCloseDeleteBooking)},
-//                    onDeleteClick = {component.onEvent(MainStore.Intent.OnClickDeleteBooking(selectSeat))}
-//                )
-//            },
-//            onDismissRequest = {component.onEvent(MainStore.Intent.OnClickCloseDeleteBooking)},
-//            showDialog = showDeleteBooking,
-//            modifier = Modifier.align(Alignment.Center).padding(horizontal = 16.dp)
-//        )
+
         Dialog(
             content = {
                 ModalCalendar(
@@ -165,13 +157,16 @@ fun MainScreen(component: MainComponent) {
             content = {
                 BookingContextMenu(
                     onClick = {},
+                    modifier = Modifier.padding(16.dp),
                     onClickOpenDeleteBooking = { component.onEvent(MainStore.Intent.OnClickDeleteBooking) },
                     onClickBook = { component.onOutput(MainComponent.Output.OpenMap) }
                 )
             },
-            onDismissRequest = { component.onEvent(MainStore.Intent.OnClickCloseCalendar) },
+            onDismissRequest = { component.onEvent(MainStore.Intent.OnClickHideOption) },
             showDialog = showOptionsMenu,
-            modifier = Modifier.align(Alignment.BottomCenter)
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.Center)
         )
 
         SnackBarErrorMessage(
@@ -215,6 +210,7 @@ fun MainScreenContent(
     modifier: Modifier = Modifier,
     bottomSheetState: ModalBottomSheetState,
     reservedSeats: List<ReservedSeat>,
+    isLoadingBooking: Boolean,
     currentDate: LocalDate,
     dateFiltrationOnReserves: Boolean,
     onClickBook: () -> Unit,
@@ -257,15 +253,24 @@ fun MainScreenContent(
                     .background(MaterialTheme.colors.onBackground)
                     .padding(horizontal = 16.dp),
             ) {
-                BookingInformation(
-                    reservedSeats = reservedSeats,
-                    currentDate = currentDate,
-                    dateFiltrationOnReserves = dateFiltrationOnReserves,
-                    onClickBook = onClickBook,
-                    onClickOptionMenu = onClickOptionMenu,
-                    onClickOpenCalendar = onClickOpenCalendar,
-                    onClickOpenBottomDialog = onClickOpenBottomDialog,
-                )
+                when(isLoadingBooking) {
+                    true -> {
+                        LoadingIndicator()
+                    }
+                    false -> {
+                        Napier.d { "showing main content" }
+                        BookingInformation(
+                            reservedSeats = reservedSeats,
+                            currentDate = currentDate,
+                            dateFiltrationOnReserves = dateFiltrationOnReserves,
+                            onClickBook = onClickBook,
+                            onClickOptionMenu = onClickOptionMenu,
+                            onClickOpenCalendar = onClickOpenCalendar,
+                            onClickOpenBottomDialog = onClickOpenBottomDialog,
+                        )
+                    }
+                }
+
             }
         }
     }

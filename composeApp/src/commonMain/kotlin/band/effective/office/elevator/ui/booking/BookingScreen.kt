@@ -63,10 +63,64 @@ fun BookingScreen(bookingComponent: BookingComponent) {
 
     val state by bookingComponent.state.collectAsState()
 
-    val showChooseZone = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    val showBookPeriod = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    val showBookAccept = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    val showBookRepeat = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    val showChooseZone = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmValueChange = { sheetState ->
+            when(sheetState) {
+                ModalBottomSheetValue.Expanded -> true
+                ModalBottomSheetValue.Hidden -> {
+                    bookingComponent.onEvent(BookingStore.Intent.CloseChooseZone)
+                    true
+                }
+
+                ModalBottomSheetValue.HalfExpanded -> true
+            }
+        }
+    )
+    val showBookPeriod = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmValueChange = { sheetState ->
+            when (sheetState) {
+                ModalBottomSheetValue.Expanded -> true
+                ModalBottomSheetValue.Hidden -> {
+                    bookingComponent.onEvent(BookingStore.Intent.CloseBookPeriod)
+                    true
+                }
+                ModalBottomSheetValue.HalfExpanded ->  true
+            }
+        }
+    )
+    val showBookAccept = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmValueChange = { sheetState ->
+            when (sheetState) {
+                ModalBottomSheetValue.Expanded -> {
+                    true
+                }
+                ModalBottomSheetValue.Hidden -> {
+                    bookingComponent.onEvent(BookingStore.Intent.CloseChooseZone)
+                    true
+                }
+                ModalBottomSheetValue.HalfExpanded -> {
+                    true
+                }
+            }
+        }
+    )
+    val showBookRepeat = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        skipHalfExpanded = true,
+        confirmValueChange = { sheetState ->
+            when (sheetState) {
+                ModalBottomSheetValue.Expanded -> true
+                ModalBottomSheetValue.Hidden -> {
+                    bookingComponent.onEvent(BookingStore.Intent.CloseChooseZone)
+                    true
+                }
+                ModalBottomSheetValue.HalfExpanded -> true
+            }
+        }
+    )
 
     val stackRemember: Stack<String> by remember { mutableStateOf(stackOf()) }
 

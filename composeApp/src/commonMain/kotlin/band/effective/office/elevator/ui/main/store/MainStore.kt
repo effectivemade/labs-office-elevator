@@ -60,7 +60,8 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, MainStore.Label> 
         val elevatorState: ElevatorState,
         val currentDate: LocalDate,
         val dateFiltrationOnReserves: Boolean,
-        val idSelectedBooking: String
+        val idSelectedBooking: String,
+        val isLoading: Boolean
     )
 
     data class ErrorState(val message: StringResource)

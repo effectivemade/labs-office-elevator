@@ -176,7 +176,8 @@ fun OptionMenu(
                                 Text(
                                     modifier = Modifier.padding(start = 8.dp),
                                     text = stringResource(type.name),
-                                    style = MaterialTheme.typography.body2
+                                    style = MaterialTheme.typography.body2,
+                                    maxLines = 1
                                 )
                             }
                         }

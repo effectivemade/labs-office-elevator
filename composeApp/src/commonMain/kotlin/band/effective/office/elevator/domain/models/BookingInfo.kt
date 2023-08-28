@@ -26,7 +26,7 @@ fun BookingDTO.toDomainModel() =
         id = id!!,
         ownerId = owner.id,
         workSpaceId = workspace.id,
-        seatName = workspace.name,
+        seatName = "${workspace.zone?.name.orEmpty()} ${workspace.name}",
         dateOfStart = unixToLocalDateTime(beginBooking),
         dateOfEnd = unixToLocalDateTime(endBooking),
     )
