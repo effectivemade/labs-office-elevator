@@ -6,10 +6,9 @@ import office.effective.common.exception.InstanceNotFoundException
 import office.effective.common.exception.MissingIdException
 import office.effective.config
 import office.effective.features.calendar.repository.CalendarRepository
+import office.effective.features.calendar.service.GoogleCalendarConverter
 import office.effective.features.user.repository.UserRepository
 import office.effective.model.Booking
-import office.effective.features.calendar.service.GoogleCalendarConverter.toBookingModel
-import office.effective.features.calendar.service.GoogleCalendarConverter.toGoogleEvent
 import office.effective.features.user.repository.UserEntity
 import office.effective.features.workspace.repository.WorkspaceRepository
 import java.util.*
@@ -18,7 +17,8 @@ class BookingCalendarRepository(
     private val calendarRepository: CalendarRepository,
     private val userRepository: UserRepository,
     private val calendar: Calendar,
-    private val workspaceRepository: WorkspaceRepository
+    private val workspaceRepository: WorkspaceRepository,
+    private val googleCalendarConverter: GoogleCalendarConverter
 ) : IBookingRepository {
     private val calendarEvents = calendar.Events()
     private val defaultCalendar = config.propertyOrNull("auth.app.defaultAppEmail")?.getString()
@@ -46,7 +46,7 @@ class BookingCalendarRepository(
 
     override fun findById(bookingId: String): Booking? {
         val event: Event? = findByCalendarIdAndBookingId(defaultCalendar, bookingId)
-        return event?.toBookingModel()
+        return event?.let { googleCalendarConverter.toBookingModel(it) }
     }
 
     private fun findByCalendarIdAndBookingId(calendarId: String, bookingId: String): Event? {
@@ -60,13 +60,13 @@ class BookingCalendarRepository(
 
         val bookingList = mutableListOf<Booking>()
         eventsList.forEach {
-            bookingList.add(it.toBookingModel())
+            bookingList.add(googleCalendarConverter.toBookingModel(it))
         }
         return bookingList;
     }
 
     private fun checkEventOrganizer(event: Event, email: String): Boolean {
-        if (event.organizer?.email?.equals(defaultCalendar) ?: false) {
+        if (event.organizer?.email?.equals(defaultCalendar) == false) {
             return event.description.contains(email)
         }
         return event.organizer?.email?.equals(email) ?: false
@@ -80,7 +80,7 @@ class BookingCalendarRepository(
 
     override fun findAllByWorkspaceId(workspaceId: UUID): List<Booking> {
         val bookingList: MutableList<Booking> = mutableListOf()
-        findAllEntitiesByWorkspaceId(workspaceId).forEach { bookingList.add(it.toBookingModel()) }
+        findAllEntitiesByWorkspaceId(workspaceId).forEach { bookingList.add(googleCalendarConverter.toBookingModel(it)) }
         return bookingList
     }
 
@@ -104,14 +104,14 @@ class BookingCalendarRepository(
 
     override fun findAll(): List<Booking> {
         val bookingList = mutableListOf<Booking>()
-        findAllEntities().forEach { bookingList.add(it.toBookingModel()) }
+        findAllEntities().forEach { bookingList.add(googleCalendarConverter.toBookingModel(it)) }
         return bookingList
     }
 
     override fun save(booking: Booking): Booking {
-        val event = booking.toGoogleEvent()
+        val event = googleCalendarConverter.toGoogleEvent(booking)
         val savedEvent = calendar.Events().insert(defaultCalendar, event).execute()
-        return savedEvent.toBookingModel()//findById(savedEvent.id) ?: throw Exception("Calendar save goes wrong")
+        return googleCalendarConverter.toBookingModel(savedEvent)//findById(savedEvent.id) ?: throw Exception("Calendar save goes wrong")
     }
 
     private fun findAllEntities(): List<Event> {

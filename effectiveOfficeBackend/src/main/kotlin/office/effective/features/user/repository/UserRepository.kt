@@ -174,7 +174,7 @@ class UserRepository(
         val result = hashMapOf<UUID, MutableSet<IntegrationModel>>()
         db.from(UsersIntegrations)
             .innerJoin(right = Integrations, on = UsersIntegrations.integrationId eq Integrations.id).select()
-            .where { UsersIntegrations.integrationId inList ids }.forEach { row ->
+            .where { UsersIntegrations.userId inList ids }.forEach { row ->
                 val userId: UUID = row[UsersIntegrations.integrationId] ?: return@forEach
                 val utility = integrationConverter.entityToModel(
                     Integrations.createEntity(row), row[UsersIntegrations.valueStr] ?: ""

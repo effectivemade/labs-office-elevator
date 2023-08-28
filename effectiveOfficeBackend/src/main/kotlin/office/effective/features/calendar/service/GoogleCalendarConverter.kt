@@ -19,49 +19,52 @@ import office.effective.features.workspace.converters.WorkspaceFacadeConverter
 import office.effective.model.Booking
 import office.effective.model.UserModel
 import office.effective.model.Workspace
-import org.koin.core.context.GlobalContext
 import utils.RecurrenceRuleFactory.getRecurrence
 import utils.RecurrenceRuleFactory.rule
 
-object GoogleCalendarConverter {
+class GoogleCalendarConverter(
+    private val calendarRepository: CalendarRepository,
+    private val userRepository: UserRepository,
+    private val workspaceConverter: WorkspaceFacadeConverter,
+    private val userConverter: UserDTOModelConverter,
+    private val bookingConverter: BookingFacadeConverter,
+    private val verifier: UuidValidator
+) {
 
     private val defaultAccount: String =
         config.propertyOrNull("auth.app.defaultAppEmail")?.getString() ?: throw Exception(
             "Config file does not contain default gmail value"
         )
 
-    fun Event.toBookingDTO(): BookingDTO {
-        val a: String = organizer?.email ?: ""
-        val email = if (a != defaultAccount) a else description.substringBefore(" ")
-        val recurrence = recurrence?.toString()?.getRecurrence()?.toDto()
+    fun toBookingDTO(event: Event): BookingDTO {
+        val a: String = event.organizer?.email ?: ""
+        val email = if (a != defaultAccount) a else event.description.substringBefore(" ")
+        val recurrence = event.recurrence?.toString()?.getRecurrence()?.toDto()
         return BookingDTO(
             owner = getUser(email),
-            participants = attendees?.filter { !(it?.resource ?: true) }?.map { getUser(it.email) } ?: listOf(),
+            participants = event.attendees?.filter { !(it?.resource ?: true) }?.map { getUser(it.email) } ?: listOf(),
             workspace = getWorkspace(
-                attendees?.firstOrNull { it?.resource ?: false }?.email
+                event.attendees?.firstOrNull { it?.resource ?: false }?.email
                     ?: "c_1882249i0l5ieh0cih42dli6fodbi@resource.calendar.google.com"
             ),
-            id = this.id ?: null,
-            beginBooking = start?.dateTime?.value ?: 0,//TODO FIX date placeholder
-            endBooking = end?.dateTime?.value ?: 1,//TODO FIX date placeholder
+            id = event.id ?: null,
+            beginBooking = event.start?.dateTime?.value ?: 0,//TODO FIX date placeholder
+            endBooking = event.end?.dateTime?.value ?: ((event.start?.dateTime?.value ?: 0) + 86400000),
             recurrence = recurrence
         )
     }
 
     private fun getWorkspace(calendarId: String): WorkspaceDTO {
         // достаём воркспейс по гугловкому id
-        val calendarRepository: CalendarRepository = GlobalContext.get().get()
         val workspaceModel: Workspace = calendarRepository.findWorkspaceById(calendarId)
-        val workspaceConverter: WorkspaceFacadeConverter = GlobalContext.get().get()
         return workspaceConverter.modelToDto(workspaceModel)
     }
 
     private fun getUser(email: String): UserDTO {
-        val userRepository: UserRepository = GlobalContext.get().get()
         val userModel: UserModel = userRepository.findByEmail(email)
             ?: UserModel(
                 id = null,
-                fullName = "placeholder",
+                fullName = "Unregistered user",
                 tag = null,
                 active = false,
                 role = null,
@@ -69,36 +72,32 @@ object GoogleCalendarConverter {
                 integrations = emptySet(),
                 email = email
             )
-        val converter: UserDTOModelConverter = GlobalContext.get().get()
-        return converter.modelToDTO(userModel)
+        return userConverter.modelToDTO(userModel)
     }
 
-    fun BookingDTO.toGoogleEvent(): Event {
-        val dto = this
+    fun toGoogleEvent(dto: BookingDTO): Event {
         return Event().apply {
             summary = "${dto.owner.fullName}: create from office application"
             description =
                 "${dto.owner.email} - почта организатора"//"${dto.owner.integrations?.first { it.name == "email" }} - почта организатора"
-            organizer = owner.toGoogleOrganizer()
-            attendees = participants.map { it.toAttendee() } + owner.toAttendee()
-                .apply { organizer = true } + workspace.toAttendee()
+            organizer = dto.owner.toGoogleOrganizer()
+            attendees = dto.participants.map { it.toAttendee() } + dto.owner.toAttendee()
+                .apply { organizer = true } + dto.workspace.toAttendee()
             if (dto.recurrence != null) recurrence = listOf(dto.recurrence.toRecurrence().rule())
-            start = beginBooking.toGoogleDateTime()
-            end = endBooking.toGoogleDateTime()
+            start = dto.beginBooking.toGoogleDateTime()
+            end = dto.endBooking.toGoogleDateTime()
         }
     }
 
-    fun Booking.toGoogleEvent(): Event {
-        val converter: BookingFacadeConverter = GlobalContext.get().get()
-        return converter.modelToDto(this).toGoogleEvent()
+    fun toGoogleEvent(booking: Booking): Event {
+        return toGoogleEvent(bookingConverter.modelToDto(booking))
     }
 
-    fun Event.toBookingModel(): Booking {
-        val converter: BookingFacadeConverter = GlobalContext.get().get()
-        return converter.dtoToModel(this.toBookingDTO());
+    fun toBookingModel(event: Event): Booking {
+        return bookingConverter.dtoToModel(toBookingDTO(event));
     }
 
-    private fun Long.toGoogleDateTime(): EventDateTime? {
+    private fun Long.toGoogleDateTime(): EventDateTime {
         return EventDateTime().also {
             it.dateTime = DateTime(this)
             it.timeZone = "Asia/Omsk"
@@ -126,10 +125,7 @@ object GoogleCalendarConverter {
         }
     }
 
-    val calendarRepository: CalendarRepository = GlobalContext.get().get()
-
     private fun getCalendarIdById(id: String): String {
-        val verifier = UuidValidator()
         return calendarRepository.findByWorkspace(verifier.uuidFromString(id))
     }
 }
