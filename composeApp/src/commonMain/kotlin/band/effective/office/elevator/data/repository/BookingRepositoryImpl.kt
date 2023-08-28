@@ -20,6 +20,7 @@ import band.effective.office.network.dto.BookingDTO
 import band.effective.office.network.dto.RecurrenceDTO
 import band.effective.office.network.model.Either
 import band.effective.office.network.model.ErrorResponse
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -28,6 +29,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
@@ -105,7 +107,9 @@ class BookingRepositoryImpl(
                         bookingPeriod = creatingBookModel.bookingPeriod,
                         typeEndPeriod = creatingBookModel.typeOfEndPeriod
                     )
-
+                    Napier.d {
+                        "Creaing booking is: $recurrence"
+                    }
                     val bookingDTO = creatingBookModel.toDTO(
                         user = emptyUserDTO(
                             id = response.data.id,
@@ -239,7 +243,7 @@ class BookingRepositoryImpl(
                 is BookingPeriod.Month -> "MONTHLY"
                 is BookingPeriod.Week -> "WEEKLY"
                 is BookingPeriod.Year -> "YEARLY"
-                is BookingPeriod.EveryWorkDay -> "DAILY"
+                is BookingPeriod.EveryWorkDay -> "WEEKLY"
                 else -> "DAILY"
             },
             count = when (typeEndPeriod) {
@@ -254,6 +258,9 @@ class BookingRepositoryImpl(
             },
             byDay = when (bookingPeriod) {
                 is BookingPeriod.Week -> bookingPeriod.selectedDayOfWeek.map { it.dayOfWeekNumber }
+                is BookingPeriod.EveryWorkDay -> {
+                    listOf(1, 2, 3, 4, 5)
+                }
                 else -> listOf()
             }
         )

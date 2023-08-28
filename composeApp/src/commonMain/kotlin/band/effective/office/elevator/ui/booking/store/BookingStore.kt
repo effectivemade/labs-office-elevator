@@ -30,8 +30,11 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         data class ApplyTime(val isStart: Boolean, val time: LocalTime) : Intent
         object CloseChooseZone : Intent
         object OpenRepeatDialog : Intent
+
+        object CloseRepeatDialog : Intent
+
         object CloseBookRepeat : Intent
-        data class OpenBookRepeat(val pair: Pair<String, BookingPeriod>) : Intent
+        data class OnSelectBookingPeriod(val pair: Pair<String, BookingPeriod>) : Intent
         data class OpenBookAccept(val value: WorkSpaceUI) : Intent
         object CloseBookAccept : Intent
         object OpenBookPeriod : Intent

@@ -27,6 +27,7 @@ import kotlinx.datetime.atTime
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import dev.icerock.moko.resources.StringResource
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
@@ -229,7 +230,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                 is BookingStore.Intent.OpenConfirmBooking -> {
                     scope.launch {
-
+                        Napier.d { "book period: ${getState().bookingPeriod is BookingPeriod.EveryWorkDay}" }
                         bookingInteractor.create(
                             coroutineScope = this@launch,
                             creatingBookModel = CreatingBookModel(
@@ -284,13 +285,18 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 }
 
                 is BookingStore.Intent.SearchSuitableOptions -> {
+
                     scope.launch {
+                        getSpacesUI(
+                            workSpaceZone = getState().workSpacesZone,
+                            state = getState(),
+                            dispatch = {dispatch(Msg.ChangeWorkSpacesUI(it))}
+                        )
                         publish(BookingStore.Label.CloseBookPeriod)
                     }
-
                 }
 
-                is BookingStore.Intent.OpenBookRepeat -> {
+                is BookingStore.Intent.OnSelectBookingPeriod -> {
                     scope.launch {
                         publish(BookingStore.Label.CloseBookPeriod)
                         publish(BookingStore.Label.CloseRepeatDialog)
@@ -383,6 +389,12 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is BookingStore.Intent.ChangeSelectedType -> {
                     dispatch(Msg.SelectedTypeList(type = intent.selectedType))
                 }
+
+                BookingStore.Intent.CloseRepeatDialog -> {
+                    scope.launch {
+                        publish(BookingStore.Label.CloseRepeatDialog)
+                    }
+                }
             }
         }
 
@@ -436,6 +448,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                             }
                             is Either.Error -> {
                                 println("ERROORRR!!!! ${response.error.error}")
+                                dispatch(listOf())
                                 // TODO SHOW ERROR ON UI
                             }
                         }

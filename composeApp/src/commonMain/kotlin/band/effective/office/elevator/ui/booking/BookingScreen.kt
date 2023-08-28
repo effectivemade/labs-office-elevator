@@ -253,7 +253,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
         showTimePicker = showTimePicker,
         currentDate = state.currentDate,
         onClickOpenBookRepeat = { pair ->
-            bookingComponent.onEvent(BookingStore.Intent.OpenBookRepeat(pair = pair))
+            bookingComponent.onEvent(BookingStore.Intent.OnSelectBookingPeriod(pair = pair))
         },
         onClickCloseTimeModal = { bookingComponent.onEvent(BookingStore.Intent.CloseStartTimeModal) },
         onClickSelectTime = { time: LocalTime ->
@@ -304,7 +304,8 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                 )
             )
         },
-        selectedTypesList = state.selectedType
+        selectedTypesList = state.selectedType,
+        onClickCloseRepeatDialog = {bookingComponent.onEvent(BookingStore.Intent.CloseRepeatDialog)}
     )
 }
 
@@ -335,7 +336,8 @@ private fun BookingScreenContent(
     frequency: Frequency,
     repeatBookings: StringResource,
     onClickChangeSelectedType: (TypesList) -> Unit,
-    selectedTypesList: TypesList
+    selectedTypesList: TypesList,
+    onClickCloseRepeatDialog: () -> Unit
 ) {
     val scrollState = rememberLazyListState()
     val scrollIsDown = scrollState.isScrollingDown()
@@ -389,7 +391,7 @@ private fun BookingScreenContent(
                     frequency = frequency
                 )
             },
-            onDismissRequest = {},
+            onDismissRequest = onClickCloseRepeatDialog,
             showDialog = showRepeatDialog,
             modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
         )
