@@ -5,7 +5,7 @@ import office.effective.common.utils.DatabaseTransactionManager
 import office.effective.features.user.ITokenVerifier
 import office.effective.features.user.converters.UserDTOModelConverter
 import office.effective.dto.UserDTO
-import office.effective.features.user.service.IUserService
+import office.effective.serviceapi.IUserService
 import office.effective.model.UserModel
 
 class UserFacade(

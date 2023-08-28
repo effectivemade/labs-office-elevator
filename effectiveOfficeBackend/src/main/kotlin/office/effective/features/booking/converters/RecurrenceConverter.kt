@@ -1,4 +1,4 @@
-package office.effective.features.calendar.converters
+package office.effective.features.booking.converters
 
 import model.RecurrenceDTO
 import office.effective.model.RecurrenceModel

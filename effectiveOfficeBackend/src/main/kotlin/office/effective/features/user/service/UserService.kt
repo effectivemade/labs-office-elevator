@@ -2,6 +2,7 @@ package office.effective.features.user.service
 
 import office.effective.features.user.repository.UserRepository
 import office.effective.model.UserModel
+import office.effective.serviceapi.IUserService
 import java.util.*
 
 class UserService(private val repository: UserRepository) : IUserService {

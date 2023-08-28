@@ -7,11 +7,11 @@ import office.effective.common.utils.UuidValidator
 import office.effective.features.workspace.converters.WorkspaceFacadeConverter
 import office.effective.dto.WorkspaceDTO
 import office.effective.dto.WorkspaceZoneDTO
-import office.effective.features.workspace.service.WorkspaceService
 import office.effective.model.Workspace
+import office.effective.serviceapi.IWorkspaceService
 import java.time.Instant
 
-class WorkspaceFacade(private val service: WorkspaceService,
+class WorkspaceFacade(private val service: IWorkspaceService,
                       private val converter: WorkspaceFacadeConverter,
                       private val transactionManager: DatabaseTransactionManager,
                       private val uuidValidator: UuidValidator) {

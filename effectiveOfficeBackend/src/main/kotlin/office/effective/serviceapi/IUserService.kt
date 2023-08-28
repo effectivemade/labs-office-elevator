@@ -1,4 +1,4 @@
-package office.effective.features.user.service
+package office.effective.serviceapi
 
 import office.effective.model.UserModel
 

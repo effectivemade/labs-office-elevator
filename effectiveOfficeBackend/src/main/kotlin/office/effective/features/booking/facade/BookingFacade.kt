@@ -5,11 +5,11 @@ import office.effective.common.utils.DatabaseTransactionManager
 import office.effective.common.utils.UuidValidator
 import office.effective.features.booking.converters.BookingFacadeConverter
 import office.effective.dto.BookingDTO
-import office.effective.features.booking.service.BookingService
 import office.effective.model.Booking
 import office.effective.model.Workspace
+import office.effective.serviceapi.IBookingService
 
-class BookingFacade(private val bookingService: BookingService,
+class BookingFacade(private val bookingService: IBookingService,
                     private val transactionManager: DatabaseTransactionManager,
                     private val uuidValidator: UuidValidator,
                     private val bookingConverter: BookingFacadeConverter

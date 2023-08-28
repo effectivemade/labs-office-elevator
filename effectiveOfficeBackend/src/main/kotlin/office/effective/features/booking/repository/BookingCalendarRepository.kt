@@ -5,8 +5,8 @@ import com.google.api.services.calendar.model.Event
 import office.effective.common.exception.InstanceNotFoundException
 import office.effective.common.exception.MissingIdException
 import office.effective.config
-import office.effective.features.calendar.repository.CalendarRepository
-import office.effective.features.calendar.service.GoogleCalendarConverter
+import office.effective.features.calendar.repository.CalendarIdsRepository
+import office.effective.features.booking.converters.GoogleCalendarConverter
 import office.effective.features.user.repository.UserRepository
 import office.effective.model.Booking
 import office.effective.features.user.repository.UserEntity
@@ -14,7 +14,7 @@ import office.effective.features.workspace.repository.WorkspaceRepository
 import java.util.*
 
 class BookingCalendarRepository(
-    private val calendarRepository: CalendarRepository,
+    private val calendarIdsRepository: CalendarIdsRepository,
     private val userRepository: UserRepository,
     private val calendar: Calendar,
     private val workspaceRepository: WorkspaceRepository,
@@ -28,7 +28,7 @@ class BookingCalendarRepository(
 
     private fun getCalendarIdByWorkspace(workspaceId: UUID): String {
         return try {
-            calendarRepository.findByWorkspace(workspaceId)
+            calendarIdsRepository.findByWorkspace(workspaceId)
         } catch (e: InstanceNotFoundException) {
             defaultCalendar
         }

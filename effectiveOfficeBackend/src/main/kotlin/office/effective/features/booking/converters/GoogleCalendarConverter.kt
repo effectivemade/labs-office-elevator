@@ -1,4 +1,4 @@
-package office.effective.features.calendar.service
+package office.effective.features.booking.converters
 
 import com.google.api.client.util.DateTime
 import com.google.api.services.calendar.model.Event
@@ -11,19 +11,18 @@ import office.effective.config
 import office.effective.dto.BookingDTO
 import office.effective.dto.UserDTO
 import office.effective.dto.WorkspaceDTO
-import office.effective.features.booking.converters.BookingFacadeConverter
-import office.effective.features.calendar.repository.CalendarRepository
+import office.effective.features.calendar.repository.CalendarIdsRepository
 import office.effective.features.user.converters.UserDTOModelConverter
 import office.effective.features.user.repository.UserRepository
 import office.effective.features.workspace.converters.WorkspaceFacadeConverter
 import office.effective.model.Booking
 import office.effective.model.UserModel
 import office.effective.model.Workspace
-import utils.RecurrenceRuleFactory.getRecurrence
-import utils.RecurrenceRuleFactory.rule
+import office.effective.features.booking.converters.RecurrenceRuleFactory.getRecurrence
+import office.effective.features.booking.converters.RecurrenceRuleFactory.rule
 
 class GoogleCalendarConverter(
-    private val calendarRepository: CalendarRepository,
+    private val calendarIdsRepository: CalendarIdsRepository,
     private val userRepository: UserRepository,
     private val workspaceConverter: WorkspaceFacadeConverter,
     private val userConverter: UserDTOModelConverter,
@@ -56,7 +55,7 @@ class GoogleCalendarConverter(
 
     private fun getWorkspace(calendarId: String): WorkspaceDTO {
         // достаём воркспейс по гугловкому id
-        val workspaceModel: Workspace = calendarRepository.findWorkspaceById(calendarId)
+        val workspaceModel: Workspace = calendarIdsRepository.findWorkspaceById(calendarId)
         return workspaceConverter.modelToDto(workspaceModel)
     }
 
@@ -126,6 +125,6 @@ class GoogleCalendarConverter(
     }
 
     private fun getCalendarIdById(id: String): String {
-        return calendarRepository.findByWorkspace(verifier.uuidFromString(id))
+        return calendarIdsRepository.findByWorkspace(verifier.uuidFromString(id))
     }
 }
