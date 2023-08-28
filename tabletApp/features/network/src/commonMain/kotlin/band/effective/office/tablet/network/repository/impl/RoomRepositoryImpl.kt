@@ -34,19 +34,30 @@ class RoomRepositoryImpl(
         api.getBookingsByWorkspaces(roomId)
 
     override suspend fun getRoomInfo(room: String): Either<ErrorWithData<RoomInfo>, RoomInfo> =
-        getRoomsInfo().map(errorMapper = {
-            val save = it.saveData
-            if (save == null) {
-                ErrorWithData<RoomInfo>(it.error, null)
-            } else {
-                ErrorWithData<RoomInfo>(it.error, save.firstOrNull { it.name == room })
+        getRoomsInfo().run {
+            when (this) {
+                is Either.Error -> {
+                    val errorWithData = this.error
+                    val save = errorWithData.saveData
+                    val error = if (save == null) {
+                        ErrorWithData<RoomInfo>(errorWithData.error, null)
+                    } else {
+                        ErrorWithData<RoomInfo>(
+                            errorWithData.error,
+                            save.firstOrNull { it.name == room })
+                    }
+                    Either.Error(error)
+                }
+
+                is Either.Success -> {
+                    val rooms = this.data
+                    val room = rooms.firstOrNull { it.name == room }
+                    if (room == null) {
+                        Either.Error(ErrorWithData(ErrorResponse.getResponse(404), null))
+                    } else Either.Success(room)
+                }
             }
-        }, successMapper = {
-            val room = it.firstOrNull { it.name == room }
-            if (room == null) {
-                RoomInfo.defaultValue// TODO fix return error
-            } else room
-        })
+        }
 
     override suspend fun getRoomsInfo(): Either<ErrorWithData<List<RoomInfo>>, List<RoomInfo>> =
         with(roomInfo.value) {
@@ -59,19 +70,18 @@ class RoomRepositoryImpl(
             } else this
         }
 
-    suspend fun loadRooms() =
+    private suspend fun loadRooms() =
         api.getWorkspaces("meeting").run {
             when (this) {
                 is Either.Error -> this
                 is Either.Success -> {
                     val roomList = this.data
-                    val ids = roomList.map { it.id }
-                    val events = mutableListOf<List<EventInfo>>()
-                    for (id in ids) {
+                    val events = roomList.mapNotNull { workspace ->
+                        val id = workspace.id
                         val loadEvents = loadEvents(id)
                         if (loadEvents is Either.Success) {
-                            events.add(loadEvents.data.map { it.toEventInfo() })
-                        } else events.add(listOf())
+                            loadEvents.data.map { it.toEventInfo() }
+                        } else null
                     }
                     Either.Success(roomList.mapIndexed { index, room ->
                         room.toRoomInfo().addEvents(events[index])
@@ -88,11 +98,13 @@ class RoomRepositoryImpl(
             send(getRoomInfo(roomId))
             launch {
                 api.subscribeOnWorkspaceUpdates(roomId, scope).collect {
+                    // NOTE update info about all rooms
                     roomInfo.update {
                         loadRooms().map(
                             errorMapper = { ErrorWithData<List<RoomInfo>>(it, null) },
                             successMapper = { it })
                     }
+                    // NOTE send update about current room
                     send(
                         it.convert(getRoomInfo(roomId)).addEvents(loadEvents(roomId))
                     )
@@ -100,11 +112,13 @@ class RoomRepositoryImpl(
             }
             launch {
                 api.subscribeOnBookingsList(roomId, scope).collect {
+                    // NOTE update info about all rooms
                     roomInfo.update {
                         loadRooms().map(
                             errorMapper = { ErrorWithData<List<RoomInfo>>(it, null) },
                             successMapper = { it })
                     }
+                    // NOTE send update about current room
                     send(
                         getRoomInfo(roomId).addEvents(it)
                     )
@@ -113,6 +127,8 @@ class RoomRepositoryImpl(
             awaitClose()
         }
 
+    /**Map either with DTO to Either with domain model
+     * @param oldValue past save value*/
     private fun Either<ErrorResponse, WorkspaceDTO>.convert(oldValue: Either<ErrorWithData<RoomInfo>, RoomInfo>): Either<ErrorWithData<RoomInfo>, RoomInfo> =
         map(
             errorMapper = {
@@ -124,15 +140,15 @@ class RoomRepositoryImpl(
             successMapper = { it.toRoomInfo() }
         )
 
-    private suspend fun BookingDTO.toEventInfo() = let {
-        EventInfo(
-            startTime = GregorianCalendar().apply { time = Date(it.beginBooking) },
-            finishTime = GregorianCalendar().apply { time = Date(it.endBooking) },
-            organizer = getOrgById(it.owner.id),
-            id = it.id!!
-        )
-    }
+    /**Convert DTO to domain model*/
+    private suspend fun BookingDTO.toEventInfo() = EventInfo(
+        startTime = GregorianCalendar().apply { time = Date(beginBooking) },
+        finishTime = GregorianCalendar().apply { time = Date(endBooking) },
+        organizer = getOrgById(owner.id),
+        id = id ?: "empty id"
+    )
 
+    /**Get organizer by id*/
     private suspend fun getOrgById(ownerId: String): Organizer =
         with(organizerRepository.getOrganizersList()) {
             when {
@@ -142,6 +158,7 @@ class RoomRepositoryImpl(
             } ?: Organizer.default
         }
 
+    /**Convert DTO to domain model, without events*/
     private fun WorkspaceDTO.toRoomInfo() = RoomInfo(
         name = name,
         capacity = utilities.firstOrNull { it.name == "place" }?.count ?: 0,
@@ -152,6 +169,7 @@ class RoomRepositoryImpl(
         id = id
     )
 
+    /**Add load event in Either contain model of room*/
     private suspend fun Either<ErrorWithData<RoomInfo>, RoomInfo>.addEvents(loadEvents: Either<ErrorResponse, List<BookingDTO>>): Either<ErrorWithData<RoomInfo>, RoomInfo> =
         if (loadEvents is Either.Success) {
             when (this) {
@@ -162,6 +180,7 @@ class RoomRepositoryImpl(
             }
         } else this
 
+    /**Add event in room*/
     private fun RoomInfo.addEvents(events: List<EventInfo>): RoomInfo =
         with(GregorianCalendar()) {
             copy(

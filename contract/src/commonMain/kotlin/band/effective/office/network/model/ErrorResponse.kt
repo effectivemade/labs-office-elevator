@@ -2,6 +2,7 @@ package band.effective.office.network.model
 
 data class ErrorResponse(val code: Int, val description: String) {
     companion object {
+        /**Create response by code*/
         fun getResponse(code: Int): ErrorResponse {
             val description = when (code) {
                 404 -> "Not found"

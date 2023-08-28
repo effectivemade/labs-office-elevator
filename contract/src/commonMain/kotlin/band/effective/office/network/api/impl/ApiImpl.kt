@@ -22,7 +22,9 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 class ApiImpl : Api {
+    /**Update collector*/
     val collector = Collector("")
+    /**KtorEitherClient for safe request*/
     private val client = KtorEtherClient
     private val baseUrl: String = "https://d5do2upft1rficrbubot.apigw.yandexcloud.net"
     override suspend fun getWorkspace(id: String): Either<ErrorResponse, WorkspaceDTO> =
@@ -38,11 +40,6 @@ class ApiImpl : Api {
                 }
             }
         }
-    /*client.securityResponse("$baseUrl/workspaces") {
-        url {
-            parameters.append("id", id)
-        }
-    } */
 
     override suspend fun getWorkspaces(
         tag: String,

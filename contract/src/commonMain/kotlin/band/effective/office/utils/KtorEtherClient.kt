@@ -17,7 +17,9 @@ import io.ktor.client.request.post
 import io.ktor.client.request.put
 
 object KtorEtherClient {
+    /**token for authorization*/
     var token = BuildConfig.apiKey
+    /**default http client with KtorEtherClient*/
     val httpClient by lazy {
         HttpClient(CIO) {
             install(KtorEitherPlugin)
@@ -37,6 +39,11 @@ object KtorEtherClient {
 
     enum class RestMethod { Get, Post, Delete, Put }
 
+    /**Safety response
+     * @param urlString request url
+     * @param method request rest method, default GET
+     * @param client ktor http client, default httpClient
+     * @param block ktor http request builder scope*/
     suspend inline fun <reified T> securityResponse(
         urlString: String,
         method: RestMethod = RestMethod.Get,
