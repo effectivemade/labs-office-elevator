@@ -81,7 +81,8 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         val bookingPeriod: BookingPeriod,
         val selectedType: TypesList,
         val bookingInfo: BookingInfo,
-        val selectedWorkspaceId: String
+        val selectedWorkspaceId: String,
+        val isLoadingListWorkspaces: Boolean
     ) {
         companion object {
             val initState = State(
@@ -120,7 +121,8 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
                 ),
                 selectedFinishDate = getCurrentDate(),
                 isStartDate = true,
-                selectedWorkspaceId = ""
+                selectedWorkspaceId = "",
+                isLoadingListWorkspaces = true
             )
         }
     }

@@ -359,13 +359,15 @@ fun BookingScreen(bookingComponent: BookingComponent) {
             )
         },
         selectedTypesList = state.selectedType,
-        onClickCloseRepeatDialog = {bookingComponent.onEvent(BookingStore.Intent.CloseRepeatDialog)}
+        onClickCloseRepeatDialog = {bookingComponent.onEvent(BookingStore.Intent.CloseRepeatDialog)},
+        isLoadingWorkspacesList = state.isLoadingListWorkspaces
     )
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun BookingScreenContent(
+    isLoadingWorkspacesList: Boolean,
     workSpaces: List<WorkSpaceUI>,
     multiBottomSheetController: MultiBottomSheetController,
     onClickOpenBookPeriod: () -> Unit,
@@ -433,7 +435,8 @@ private fun BookingScreenContent(
                 frequency = frequency,
                 repeatBooking=repeatBookings,
                 onClickChangeSelectedType = onClickChangeSelectedType,
-                selectedTypesList = selectedTypesList
+                selectedTypesList = selectedTypesList,
+                isLoadingWorkspacesList = isLoadingWorkspacesList
             )
         }
 

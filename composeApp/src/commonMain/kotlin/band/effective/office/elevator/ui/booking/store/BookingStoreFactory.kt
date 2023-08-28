@@ -74,6 +74,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         data class IsStartDatePicker(val isStart: Boolean) : Msg
 
         data class UpdateSelectedWorkspace(val workspaceId: String ) : Msg
+
+        data class ChangeLoadingWorkspace(val isLoading: Boolean) : Msg
     }
 
     private sealed interface Action {
@@ -135,8 +137,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                             val iteratorW = mListW.iterator()
                             while (iteratorW.hasNext()) {
                                 val workSpaceUI = iteratorW.next()
-                                val iteratorZ = list.iterator()
-                                while (iteratorZ.hasNext()) {
+                                val iteratorZ = list.iterator() //WTF???
+                                while (iteratorZ.hasNext()) {  //TODO (Artem Gruzdev) Slava refactor this shit
                                     val zone = iteratorZ.next()
                                     if (workSpaceUI.workSpaceName != zone.name) {
                                         iteratorW.remove()
@@ -241,9 +243,10 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                                 typeOfEndPeriod = TypeEndPeriodBooking.Never
                             )
                         )
-
-                        publish(BookingStore.Label.CloseBookAccept)
                         publish(BookingStore.Label.OpenConfirmBooking)
+                    }
+                    scope.launch {
+                        publish(BookingStore.Label.CloseBookAccept)
                     }
                 }
 
@@ -418,6 +421,9 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             state: BookingStore.State,
             dispatch: (List<WorkSpaceUI>) -> Unit,
         ) {
+
+            dispatch(Msg.ChangeLoadingWorkspace(isLoading = true))
+
             withContext(Dispatchers.IO) {
                 bookingInteractor.getWorkspaces(
                     tag = state.workSpacesType.type,
@@ -471,7 +477,10 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     selectedType = msg.type
                 )
 
-                is Msg.ChangeWorkSpacesUI -> copy(workSpaces = msg.workSpacesUI)
+                is Msg.ChangeWorkSpacesUI -> copy(
+                    isLoadingListWorkspaces = false,
+                    workSpaces = msg.workSpacesUI
+                )
                 is Msg.WholeDay -> copy(wholeDay = !msg.wholeDay)
                 is Msg.BeginningBookingTime -> copy(selectedStartTime = msg.time)
                 is Msg.EndBookingTime -> copy(selectedFinishTime = msg.time)
@@ -484,6 +493,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is Msg.EndBookingDate -> copy(selectedFinishDate = msg.date)
                 is Msg.IsStartDatePicker -> copy(isStartDate = msg.isStart)
                 is Msg.UpdateSelectedWorkspace -> copy(selectedWorkspaceId = msg.workspaceId)
+                is Msg.ChangeLoadingWorkspace -> copy(isLoadingListWorkspaces = msg.isLoading)
             }
         }
     }

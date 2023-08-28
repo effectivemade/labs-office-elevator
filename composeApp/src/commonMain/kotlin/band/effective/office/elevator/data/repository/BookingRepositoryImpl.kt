@@ -198,17 +198,20 @@ class BookingRepositoryImpl(
             )
         },
             successMapper = { bookingDTOS ->
-                bookingDTOS.filter {booking ->
-                    when {
-                        filter.workPlace && filter.meetRoom -> true
-                        filter.workPlace -> booking.workspace.tag == "regular"
-                        filter.meetRoom -> booking.workspace.tag == "meeting"
-                        else -> {false}
-                    }
-                }
-                    .toDomainZone() // TODO add filtration by workSpace or meetingRoom
+                placeFilter(filter = filter, list = bookingDTOS)
+                    .toDomainZone()
             }
         )
+
+    private fun placeFilter(filter: BookingsFilter, list: List<BookingDTO>) =
+        list.filter {booking ->
+            when {
+                filter.workPlace && filter.meetRoom -> true
+                filter.workPlace -> booking.workspace.tag == "regular"
+                filter.meetRoom -> booking.workspace.tag == "meeting"
+                else -> {false}
+            }
+        }
 
     private fun Either<ErrorResponse, List<BookingDTO>>.convertWithDateFilter(
         filter: BookingsFilter,
@@ -225,13 +228,12 @@ class BookingRepositoryImpl(
             )
         },
             successMapper = { bookingDTOS ->
-                println("bookings: $bookingDTOS")
-                bookingDTOS
+                placeFilter(filter = filter, list = bookingDTOS)
                     .toDomainZone()
                     .filter {
                         println("repository: ${it.dateOfStart.date} == ${dateFilter}")
                     it.dateOfStart.date == dateFilter
-                } // TODO add filtration by workSpace or meetingRoom
+                }
             }
         )
     private fun getRecurrenceModal(

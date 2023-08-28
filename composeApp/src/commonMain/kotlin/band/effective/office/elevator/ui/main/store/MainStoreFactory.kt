@@ -120,10 +120,6 @@ internal class MainStoreFactory(
                     }
                 }
 
-//                MainStore.Intent.OnClickShowMap -> {
-//                    publish(MainStore.Label.OpenBooking)
-//                }
-
                 is MainStore.Intent.OnClickDeleteBooking -> {
                     scope.launch {
                         publish(MainStore.Label.HideOptions)
@@ -240,7 +236,7 @@ internal class MainStoreFactory(
 
             scope.launch(Dispatchers.IO) {
                 bookingInteractor
-                    .getByDate(date = date)
+                    .getByDate(date = date, bookingsFilter = bookingsFilter)
                     .collect { bookings ->
                         withContext(Dispatchers.Main) {
                             when (bookings) {
@@ -270,7 +266,7 @@ internal class MainStoreFactory(
             scope.launch {
                 withContext(Dispatchers.IO) {
                     bookingInteractor
-                        .getByDate(date = date)
+                        .getByDate(date = date, bookingsFilter = bookingsFilter)
                         .collect { bookings ->
                             withContext(Dispatchers.Main) {
                                 when (bookings) {

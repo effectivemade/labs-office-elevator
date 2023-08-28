@@ -59,7 +59,7 @@ fun List<WorkspaceDTO>.toDomain() = map { it.toDomain() }
 fun WorkSpace.toUIModel() =
     WorkSpaceUI(
         workSpaceId = id,
-        workSpaceName = name,
+        workSpaceName = "${zone?.name.orEmpty()} $name",
         workSpaceType = when (workspaceType) {
             WorkspaceType.RegularSeat -> WorkSpaceType.WORK_PLACE
             WorkspaceType.MeetingRoom -> WorkSpaceType.MEETING_ROOM
