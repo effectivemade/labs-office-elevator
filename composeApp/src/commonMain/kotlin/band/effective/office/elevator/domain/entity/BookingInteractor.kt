@@ -32,10 +32,11 @@ class BookingInteractor(
 
     suspend fun getByDate(
         date: LocalDate,
+        bookingsFilter: BookingsFilter
     ): Flow<Either<ErrorWithData<List<ReservedSeat>>, List<ReservedSeat>>> =
         getBookingsUseCase.getBookingsByDate(
             date = date,
-            bookingsFilter = BookingsFilter(meetRoom = true, workPlace = true)
+            bookingsFilter = bookingsFilter
         )
 
     suspend fun change(bookingInfo: BookingInfo) {

@@ -1,5 +1,6 @@
 package band.effective.office.elevator.domain.models
 
+import band.effective.office.elevator.utils.localDateTimeToUnix
 import band.effective.office.network.dto.BookingDTO
 import band.effective.office.network.dto.RecurrenceDTO
 import band.effective.office.network.dto.UserDTO
@@ -59,7 +60,7 @@ fun CreatingBookModel.toDTO(
         participants = listOf(user),
         workspace = workspaceDTO,
         id = "",
-        beginBooking = dateOfStart.toInstant(timeZone = TimeZone.currentSystemDefault()).epochSeconds,
-        endBooking = dateOfEnd.toInstant(timeZone = TimeZone.currentSystemDefault()).epochSeconds,
+        beginBooking = localDateTimeToUnix(dateOfStart)!!,
+        endBooking = localDateTimeToUnix(dateOfEnd)!!,
         recurrence = recurrence
     )

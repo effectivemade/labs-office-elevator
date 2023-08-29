@@ -52,10 +52,17 @@ kotlin {
                 implementation(Dependencies.KotlinxDatetime.kotlinxDatetime)
                 implementation(Dependencies.Ktor.Client.CIO)
                 implementation(Dependencies.Ktor.Client.Auth)
+                implementation(Dependencies.Ktor.Client.negotiation)
+                implementation(Dependencies.Ktor.Client.jsonSerialization)
+
             }
         }
 
-        val androidMain by getting
+        val androidMain by getting {
+            dependencies{
+                api(Dependencies.Ktor.Client.Android)
+            }
+        }
 
         val iosX64Main by getting
         val iosArm64Main by getting

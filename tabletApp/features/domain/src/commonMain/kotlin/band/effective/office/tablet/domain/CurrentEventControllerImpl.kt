@@ -1,17 +1,17 @@
 package band.effective.office.tablet.domain
 
-import android.os.CountDownTimer
 import band.effective.office.network.model.Either
 import band.effective.office.tablet.domain.model.Settings
 import band.effective.office.tablet.domain.useCase.RoomInfoUseCase
 import band.effective.office.tablet.network.repository.CancelRepository
+import band.effective.office.tablet.utils.SingletonCountDownTimer
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.GregorianCalendar
 
 /**Controller implementation following for current event*/
 class CurrentEventControllerImpl(
-    private val roomUseCase: RoomInfoUseCase, private val cancelRepository: CancelRepository
+    private val roomUseCase: RoomInfoUseCase, cancelRepository: CancelRepository
 ) : CurrentEventController(roomUseCase, cancelRepository) {
     private val timer = SingletonCountDownTimer()
     override fun update() = scope.launch {
@@ -29,31 +29,5 @@ class CurrentEventControllerImpl(
                 onTick = { millisUntilFinished -> mutableTimeToUpdate.update { millisUntilFinished } },
                 onFinish = { handlersList.forEach { it() } })
         } else timer.cancel()
-    }
-}
-
-class SingletonCountDownTimer() {
-    private var timer: CountDownTimer? = null
-    fun start(
-        millisInFuture: Long,
-        countDownInterval: Long,
-        onTick: (Long) -> Unit = {},
-        onFinish: () -> Unit = {}
-    ) {
-        timer?.cancel()
-        timer = object : CountDownTimer(millisInFuture, countDownInterval) {
-
-            override fun onTick(millisUntilFinished: Long) {
-                onTick(millisUntilFinished)
-            }
-
-            override fun onFinish() {
-                onFinish()
-            }
-        }.apply { start() }
-    }
-
-    fun cancel() {
-        timer?.cancel()
     }
 }

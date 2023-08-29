@@ -9,7 +9,7 @@ enum class UserData
      val icon: ImageResource) {
     Phone(
         icon = MainRes.images.icon_call,
-        title = MainRes.strings.phone_number
+        title = MainRes.strings.phone
     ),
     Telegram(
         icon = MainRes.images.icon_telegram,

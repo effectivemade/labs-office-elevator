@@ -17,13 +17,14 @@ import io.ktor.http.contentType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 class ApiImpl : Api {
+    /**Update collector*/
     val collector = Collector("")
+    /**KtorEitherClient for safe request*/
     private val client = KtorEtherClient
     private val baseUrl: String = "https://d5do2upft1rficrbubot.apigw.yandexcloud.net"
     override suspend fun getWorkspace(id: String): Either<ErrorResponse, WorkspaceDTO> =
@@ -39,11 +40,6 @@ class ApiImpl : Api {
                 }
             }
         }
-    /*client.securityResponse("$baseUrl/workspaces") {
-        url {
-            parameters.append("id", id)
-        }
-    } */
 
     override suspend fun getWorkspaces(
         tag: String,
@@ -84,6 +80,7 @@ class ApiImpl : Api {
             urlString = "$baseUrl/users",
             method = KtorEtherClient.RestMethod.Put
         ) {
+            println("user = $user")
             contentType(ContentType.Application.Json)
             setBody(user)
             url {
@@ -118,30 +115,33 @@ class ApiImpl : Api {
             }
         }
 
-    override suspend fun createBooking(bookingInfo: BookingDTO): Either<ErrorResponse, SuccessResponse> =
+    override suspend fun createBooking(bookingInfo: BookingDTO): Either<ErrorResponse, BookingDTO> =
         client.securityResponse(
             urlString = "$baseUrl/bookings",
             method = KtorEtherClient.RestMethod.Post
+        ) {
+            contentType(ContentType.Application.Json)
+//            val body = Json.encodeToString(bookingInfo)
+//            println(body)
+            setBody(bookingInfo)
+        }
+
+    override suspend fun updateBooking(
+        bookingInfo: BookingDTO
+    ): Either<ErrorResponse, BookingDTO> =
+        client.securityResponse(
+            urlString = "$baseUrl/bookings",
+            method = KtorEtherClient.RestMethod.Put
         ) {
             contentType(ContentType.Application.Json)
             val body = Json.encodeToString(bookingInfo)
             setBody(body)
         }
 
-    override suspend fun updateBooking(
-        bookingInfo: BookingDTO
-    ): Either<ErrorResponse, SuccessResponse> =
-        client.securityResponse(
-            urlString = "$baseUrl/bookings",
-            method = KtorEtherClient.RestMethod.Put
-        ) {
-            contentType(ContentType.Application.Json)
-            setBody(bookingInfo)
-        }
-
     override suspend fun deleteBooking(bookingId: String): Either<ErrorResponse, SuccessResponse> =
         client.securityResponse(
             urlString = "$baseUrl/bookings",
+            method = KtorEtherClient.RestMethod.Delete
         ) {
             url {
                 appendPathSegments(bookingId)

@@ -26,6 +26,7 @@ import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun BookingContextMenu(
+    modifier: Modifier = Modifier,
     onClick: () -> Unit,
     onClickOpenDeleteBooking: () -> Unit,
     onClickBook: () -> Unit
@@ -33,12 +34,11 @@ fun BookingContextMenu(
     val dropDownList =
         listOf(
             MainRes.strings.show_map,
-            MainRes.strings.extend_booking,
             MainRes.strings.delete
         )
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .padding(end = 24.dp, bottom = 24.dp)
             .shadow(
                 elevation = 10.dp,
@@ -79,8 +79,8 @@ fun BookingContextMenu(
                                 .background(color = ExtendedThemeColors.colors._66x)
                         )
                 }
-                
-            }
+
             }
         }
     }
+}

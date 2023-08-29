@@ -42,6 +42,8 @@ object Dependencies {
             const val Android = "io.ktor:ktor-client-android:${Versions.ktor}"
             const val Darwin = "io.ktor:ktor-client-darwin:${Versions.ktor}"
             const val Auth = "io.ktor:ktor-client-auth:$ktorVersion"
+            const val negotiation = "io.ktor:ktor-client-content-negotiation:$ktorVersion"
+            const val jsonSerialization = "io.ktor:ktor-serialization-kotlinx-json:$ktorVersion"
         }
 
         object Server {

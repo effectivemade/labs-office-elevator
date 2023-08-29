@@ -27,6 +27,7 @@ import kotlinx.datetime.atTime
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import dev.icerock.moko.resources.StringResource
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
@@ -71,6 +72,10 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         data class ChangeWorkingUI(val bookingInfo: BookingInfo) : Msg
 
         data class IsStartDatePicker(val isStart: Boolean) : Msg
+
+        data class UpdateSelectedWorkspace(val workspaceId: String ) : Msg
+
+        data class ChangeLoadingWorkspace(val isLoading: Boolean) : Msg
     }
 
     private sealed interface Action {
@@ -97,52 +102,12 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is BookingStore.Intent.OpenChooseZone -> {
                     scope.launch {
                         publish(BookingStore.Label.OpenChooseZone)
-
-                        scope.launch {
-                            val list = getState().workSpacesZone.filter { it.isSelected == true }
-                                .toMutableList()
-                            val mListW = getState().workSpaces.toMutableList()
-
-                            val iteratorW = mListW.iterator()
-                            while (iteratorW.hasNext()) {
-                                val workSpaceUI = iteratorW.next()
-                                val iteratorZ = list.iterator()
-                                while (iteratorZ.hasNext()) {
-                                    val zone = iteratorZ.next()
-                                    if (workSpaceUI.workSpaceName != zone.name) {
-                                        iteratorW.remove()
-                                        break
-                                    }
-                                }
-                            }
-                            dispatch(Msg.ChangeWorkSpacesUI(workSpacesUI = mListW.toList()))
-                        }
                     }
                 }
 
                 is BookingStore.Intent.CloseChooseZone -> {
                     scope.launch {
                         publish(BookingStore.Label.CloseChooseZone)
-
-                        scope.launch {
-                            val list = getState().workSpacesZone.filter { it.isSelected == true }
-                                .toMutableList()
-                            val mListW = getState().workSpaces.toMutableList()
-
-                            val iteratorW = mListW.iterator()
-                            while (iteratorW.hasNext()) {
-                                val workSpaceUI = iteratorW.next()
-                                val iteratorZ = list.iterator()
-                                while (iteratorZ.hasNext()) {
-                                    val zone = iteratorZ.next()
-                                    if (workSpaceUI.workSpaceName != zone.name) {
-                                        iteratorW.remove()
-                                        break
-                                    }
-                                }
-                            }
-                            dispatch(Msg.ChangeWorkSpacesUI(workSpacesUI = mListW.toList()))
-                        }
                     }
                 }
 
@@ -168,6 +133,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     scope.launch {
                         publish(BookingStore.Label.OpenBookAccept(value = intent.value))
                         with(intent.value) {
+                            dispatch(Msg.UpdateSelectedWorkspace(workspaceId = workSpaceId))
                             dispatch(
                                 Msg.ChangeWorkingUI(
                                     bookingInfo = BookingInfo(
@@ -226,20 +192,21 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                 is BookingStore.Intent.OpenConfirmBooking -> {
                     scope.launch {
-
+                        Napier.d { "book period: ${getState().bookingPeriod is BookingPeriod.EveryWorkDay}" }
                         bookingInteractor.create(
                             coroutineScope = this@launch,
                             creatingBookModel = CreatingBookModel(
-                                workSpaceId = "", //TODO(Replace with value from DB)
+                                workSpaceId = getState().selectedWorkspaceId, //TODO(Replace with value from DB)
                                 dateOfStart = getState().selectedStartDate.atTime(getState().selectedStartTime),
                                 dateOfEnd = getState().selectedFinishDate.atTime(getState().selectedFinishTime),
                                 bookingPeriod = getState().bookingPeriod,
                                 typeOfEndPeriod = TypeEndPeriodBooking.Never
                             )
                         )
-
-                        publish(BookingStore.Label.CloseBookAccept)
                         publish(BookingStore.Label.OpenConfirmBooking)
+                    }
+                    scope.launch {
+                        publish(BookingStore.Label.CloseBookAccept)
                     }
                 }
 
@@ -281,13 +248,18 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 }
 
                 is BookingStore.Intent.SearchSuitableOptions -> {
+
                     scope.launch {
+                        getSpacesUI(
+                            workSpaceZone = getState().workSpacesZone,
+                            state = getState(),
+                            dispatch = {dispatch(Msg.ChangeWorkSpacesUI(it))}
+                        )
                         publish(BookingStore.Label.CloseBookPeriod)
                     }
-
                 }
 
-                is BookingStore.Intent.OpenBookRepeat -> {
+                is BookingStore.Intent.OnSelectBookingPeriod -> {
                     scope.launch {
                         publish(BookingStore.Label.CloseBookPeriod)
                         publish(BookingStore.Label.CloseRepeatDialog)
@@ -380,6 +352,12 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is BookingStore.Intent.ChangeSelectedType -> {
                     dispatch(Msg.SelectedTypeList(type = intent.selectedType))
                 }
+
+                BookingStore.Intent.CloseRepeatDialog -> {
+                    scope.launch {
+                        publish(BookingStore.Label.CloseRepeatDialog)
+                    }
+                }
             }
         }
 
@@ -403,6 +381,9 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             state: BookingStore.State,
             dispatch: (List<WorkSpaceUI>) -> Unit,
         ) {
+
+            dispatch(Msg.ChangeLoadingWorkspace(isLoading = true))
+
             withContext(Dispatchers.IO) {
                 bookingInteractor.getWorkspaces(
                     tag = state.workSpacesType.type,
@@ -420,6 +401,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                             is Either.Success -> {
                                 val list = workSpaceZone.filter { it.isSelected }
                                 val listWorkSpaces = response.data
+                                Napier.d { response.data.toString() }
                                 val newList = mutableListOf<WorkSpaceUI>()
 
                                 list.forEach {
@@ -432,7 +414,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                                 dispatch(newList.toList())
                             }
                             is Either.Error -> {
-                                println("ERROORRR!!!!")
+                                println("ERROORRR!!!! ${response.error.error}")
+                                dispatch(listOf())
                                 // TODO SHOW ERROR ON UI
                             }
                         }
@@ -455,7 +438,10 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     selectedType = msg.type
                 )
 
-                is Msg.ChangeWorkSpacesUI -> copy(workSpaces = msg.workSpacesUI)
+                is Msg.ChangeWorkSpacesUI -> copy(
+                    isLoadingListWorkspaces = false,
+                    workSpaces = msg.workSpacesUI
+                )
                 is Msg.WholeDay -> copy(wholeDay = !msg.wholeDay)
                 is Msg.BeginningBookingTime -> copy(selectedStartTime = msg.time)
                 is Msg.EndBookingTime -> copy(selectedFinishTime = msg.time)
@@ -467,6 +453,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is Msg.ChangeWorkingUI -> copy(bookingInfo = msg.bookingInfo)
                 is Msg.EndBookingDate -> copy(selectedFinishDate = msg.date)
                 is Msg.IsStartDatePicker -> copy(isStartDate = msg.isStart)
+                is Msg.UpdateSelectedWorkspace -> copy(selectedWorkspaceId = msg.workspaceId)
+                is Msg.ChangeLoadingWorkspace -> copy(isLoadingListWorkspaces = msg.isLoading)
             }
         }
     }

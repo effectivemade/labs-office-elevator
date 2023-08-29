@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 fun BookingRepeatElement(
     selected: Boolean,
     bookingText: String,
-    bookingPeriod: Any,
+    bookingPeriod: BookingPeriod,
     onSelect: (String) -> Unit,
     onSelected: (Pair<String, BookingPeriod>) -> Unit
 ) {
@@ -43,7 +43,7 @@ fun BookingRepeatElement(
             coroutineScope.launch {
                 onSelect(bookingText)
                 delay(100)
-                onSelected(Pair(first = bookingText, second = bookingPeriod) as Pair<String, BookingPeriod>)
+                onSelected((bookingText to bookingPeriod))
             }
         }
     ) {

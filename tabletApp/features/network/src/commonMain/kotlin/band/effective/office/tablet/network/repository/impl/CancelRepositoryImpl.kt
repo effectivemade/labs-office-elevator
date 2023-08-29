@@ -10,6 +10,6 @@ import band.effective.office.tablet.utils.map
 class CancelRepositoryImpl(private val api: Api) :
     CancelRepository {
     override suspend fun cancelEvent(eventInfo: EventInfo): Either<ErrorResponse, String> =
-        api.deleteBooking(eventInfo.id).map({ it }, { it.status })
+        api.deleteBooking(eventInfo.id).map({ it }, { "ok" })
 }
 

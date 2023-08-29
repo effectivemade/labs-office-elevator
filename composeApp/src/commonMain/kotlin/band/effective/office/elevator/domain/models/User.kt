@@ -32,14 +32,16 @@ fun User.toUserDTO(): UserDTO =
     UserDTO(
         id = id,
         fullName = userName,
-        avatarUrl = imageUrl,
+        active = true,
         role = post,
+        avatarUrl = imageUrl,
         integrations = listOf(
             IntegrationDTO(id = "", name = "email", value = email ),
             IntegrationDTO(id = "", name = "phoneNumber", value = phoneNumber ),
             IntegrationDTO(id = "", name = "telegram", value = telegram ),
             ),
-        active = true
+        email = email,
+        tag = "employee"
     )
 fun UserDTO.toUser() =
     User(

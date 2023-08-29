@@ -2,7 +2,6 @@ package band.effective.office.elevator.ui.employee.allEmployee.store
 
 
 import band.effective.office.elevator.domain.models.EmployeeInfo
-import band.effective.office.elevator.data.repository.EmployeeRepositoryImpl
 import band.effective.office.elevator.domain.useCase.EmployeeUseCase
 import band.effective.office.elevator.ui.employee.allEmployee.models.mappers.toUI
 import band.effective.office.elevator.utils.changeEmployeeShowedList
@@ -13,12 +12,11 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -27,49 +25,31 @@ internal class EmployeeStoreFactory(private val storeFactory: StoreFactory) : Ko
     private val employeesInfo: EmployeeUseCase by inject()
 
 
-    // TODO(Atem Gruzdev) Roman Zuzin fix this, its should be in state
-    private val _employList: MutableStateFlow<List<EmployeeInfo>> = MutableStateFlow(listOf())
-    val employList = _employList.asStateFlow()
-    var employeesNameFilter: String = ""
-
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): EmployeeStore =
         object : EmployeeStore,
             Store<EmployeeStore.Intent, EmployeeStore.State, EmployeeStore.Label> by storeFactory.create(
                 name = "EmployeeStore",
                 initialState = EmployeeStore.State(
-                    changeShowedEmployeeCards = employList.value.map(EmployeeInfo::toUI),
-                    countShowedEmployeeCards = employList.value.count().toString(),
-                    countInOfficeShowedEmployeeCards = employList.value.filter { it.state == "In office" }
-                        .count().toString(),
-                    query = employeesNameFilter
-
+                    changeShowedEmployeeCards = emptyList(),
+                    countShowedEmployeeCards = "0",
+                    countInOfficeShowedEmployeeCards = "0",
+                    query = "",
+                    allEmployeeList = listOf()
                 ),
                 bootstrapper = coroutineBootstrapper {
-                    launch(Dispatchers.IO) {
-                        employeesInfo.invoke().collect { newList ->
-                            when (newList) {
-                                is Either.Error -> {
-                                    // TODO show error on UI}
-                                }
-
-                                is Either.Success -> _employList.update { newList.data }
-                            }
-                        }
-                    }
                     launch {
                         dispatch(Action.UpdateEmployeesInfo)
                     }
                 },
                 executorFactory = ::ExecutorImpl,
                 reducer = ReducerIMPL
-
-            ) {
-
-        }
+            ){}
 
     private sealed interface Msg {
-        data class UpdateEmployees(val query: String, val employeesInfo: List<EmployeeInfo>) : Msg
+        data class InitListEmployees(val employeesInfo: List<EmployeeInfo>) : Msg
+
+        data class ChangeQuery(val query: String) : Msg
     }
 
     private sealed interface Action {
@@ -85,37 +65,47 @@ internal class EmployeeStoreFactory(private val storeFactory: StoreFactory) : Ko
             when (intent) {
                 is EmployeeStore.Intent.OnTextFieldUpdate -> {
                     scope.launch {
-                        employeesNameFilter = intent.query
                         dispatch(
-                            Msg.UpdateEmployees(
-                                query = employeesNameFilter,
-                                employeesInfo = employList.value
-                            )
+                            Msg.ChangeQuery(query = intent.query)
                         )
                     }
                 }
 
                 is EmployeeStore.Intent.OnClickOnEmployee -> {
                     scope.launch {
-                        publish(EmployeeStore.Label.ShowProfileScreen(employList.value.filter { it.id == intent.employeeId }[0]))
+                        publish(
+                            EmployeeStore.Label.ShowProfileScreen(
+                                employee = getState()
+                                    .allEmployeeList
+                                    .first { it.id == intent.employeeId }
+                            )
+                        )
                     }
                 }
-
             }
         }
 
         override fun executeAction(
-            action: EmployeeStoreFactory.Action,
+            action: Action,
             getState: () -> EmployeeStore.State
         ) {
             when (action) {
-                is EmployeeStoreFactory.Action.UpdateEmployeesInfo -> {
-                    dispatch(
-                        Msg.UpdateEmployees(
-                            query = employeesNameFilter,
-                            employeesInfo = employList.value
-                        )
-                    )//i need intent.query there so i made special variable
+                Action.UpdateEmployeesInfo -> {
+                    scope.launch(Dispatchers.IO) {
+                        employeesInfo.invoke().collect { response ->
+                            withContext(Dispatchers.Main) {
+                                when (response) {
+                                    is Either.Success ->
+                                        dispatch(Msg.InitListEmployees(employeesInfo = response.data))
+
+                                    is Either.Error -> {
+                                        // TODO show error on screen
+                                        Napier.e { "error get employees: ${response.error}" }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -124,26 +114,35 @@ internal class EmployeeStoreFactory(private val storeFactory: StoreFactory) : Ko
     private object ReducerIMPL : Reducer<EmployeeStore.State, Msg> {
         override fun EmployeeStore.State.reduce(msg: Msg): EmployeeStore.State =
             when (msg) {
-                is Msg.UpdateEmployees ->
-                    copy(
-                        changeShowedEmployeeCards = changeEmployeeShowedList(
-                            msg.query,
-                            msg.employeesInfo.map(EmployeeInfo::toUI)
-                        ),
-                        countShowedEmployeeCards = changeEmployeeShowedList(
-                            msg.query,
-                            msg.employeesInfo.map(EmployeeInfo::toUI)
-                        ).count().toString(),
-                        countInOfficeShowedEmployeeCards = changeEmployeeShowedList(
-                            msg.query,
-                            msg.employeesInfo.map(EmployeeInfo::toUI)
+                is Msg.InitListEmployees -> {
+                    val newEmployeesList =
+                        changeEmployeeShowedList(
+                            query = query,
+                            allEmployeesCards = msg.employeesInfo.map(EmployeeInfo::toUI)
                         )
+                    copy(
+                        changeShowedEmployeeCards = newEmployeesList,
+                        countShowedEmployeeCards = newEmployeesList.count().toString(),
+                        countInOfficeShowedEmployeeCards = newEmployeesList
                             .filter { it.state == "In office" }.count().toString(),
-                        query = msg.query
-
+                        allEmployeeList = msg.employeesInfo
                     )
+                }
+
+                is Msg.ChangeQuery -> {
+                    val newEmployeesList =
+                        changeEmployeeShowedList(
+                            query = msg.query,
+                            allEmployeesCards = allEmployeeList.map(EmployeeInfo::toUI)
+                        )
+                    copy(
+                        query = msg.query,
+                        changeShowedEmployeeCards = newEmployeesList,
+                        countShowedEmployeeCards = newEmployeesList.count().toString(),
+                        countInOfficeShowedEmployeeCards = newEmployeesList.count { it.state == "In office" }
+                            .toString(),
+                    )
+                }
             }
-
     }
-
 }

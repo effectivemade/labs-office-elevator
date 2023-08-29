@@ -55,8 +55,9 @@ class EmployeeRepositoryImpl(
             )
         },
             successMapper = { user ->
-                user.filter { it.role == "ADMIN" }.map { it.toEmployeeInfo() }
-            })
+                user.map { it.toEmployeeInfo() }
+            }
+        )
 
 
     private fun Either<ErrorResponse, UserDTO>.convert(

@@ -63,10 +63,64 @@ fun BookingScreen(bookingComponent: BookingComponent) {
 
     val state by bookingComponent.state.collectAsState()
 
-    val showChooseZone = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    val showBookPeriod = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    val showBookAccept = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    val showBookRepeat = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    val showChooseZone = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmValueChange = { sheetState ->
+            when(sheetState) {
+                ModalBottomSheetValue.Expanded -> true
+                ModalBottomSheetValue.Hidden -> {
+                    bookingComponent.onEvent(BookingStore.Intent.CloseChooseZone)
+                    true
+                }
+
+                ModalBottomSheetValue.HalfExpanded -> true
+            }
+        }
+    )
+    val showBookPeriod = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmValueChange = { sheetState ->
+            when (sheetState) {
+                ModalBottomSheetValue.Expanded -> true
+                ModalBottomSheetValue.Hidden -> {
+                    bookingComponent.onEvent(BookingStore.Intent.CloseBookPeriod)
+                    true
+                }
+                ModalBottomSheetValue.HalfExpanded ->  true
+            }
+        }
+    )
+    val showBookAccept = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmValueChange = { sheetState ->
+            when (sheetState) {
+                ModalBottomSheetValue.Expanded -> {
+                    true
+                }
+                ModalBottomSheetValue.Hidden -> {
+                    bookingComponent.onEvent(BookingStore.Intent.CloseBookAccept)
+                    true
+                }
+                ModalBottomSheetValue.HalfExpanded -> {
+                    true
+                }
+            }
+        }
+    )
+    val showBookRepeat = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        skipHalfExpanded = true,
+        confirmValueChange = { sheetState ->
+            when (sheetState) {
+                ModalBottomSheetValue.Expanded -> true
+                ModalBottomSheetValue.Hidden -> {
+                    bookingComponent.onEvent(BookingStore.Intent.CloseBookRepeat)
+                    true
+                }
+                ModalBottomSheetValue.HalfExpanded -> true
+            }
+        }
+    )
 
     val stackRemember: Stack<String> by remember { mutableStateOf(stackOf()) }
 
@@ -253,7 +307,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
         showTimePicker = showTimePicker,
         currentDate = state.currentDate,
         onClickOpenBookRepeat = { pair ->
-            bookingComponent.onEvent(BookingStore.Intent.OpenBookRepeat(pair = pair))
+            bookingComponent.onEvent(BookingStore.Intent.OnSelectBookingPeriod(pair = pair))
         },
         onClickCloseTimeModal = { bookingComponent.onEvent(BookingStore.Intent.CloseStartTimeModal) },
         onClickSelectTime = { time: LocalTime ->
@@ -304,13 +358,16 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                 )
             )
         },
-        selectedTypesList = state.selectedType
+        selectedTypesList = state.selectedType,
+        onClickCloseRepeatDialog = {bookingComponent.onEvent(BookingStore.Intent.CloseRepeatDialog)},
+        isLoadingWorkspacesList = state.isLoadingListWorkspaces
     )
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun BookingScreenContent(
+    isLoadingWorkspacesList: Boolean,
     workSpaces: List<WorkSpaceUI>,
     multiBottomSheetController: MultiBottomSheetController,
     onClickOpenBookPeriod: () -> Unit,
@@ -335,7 +392,8 @@ private fun BookingScreenContent(
     frequency: Frequency,
     repeatBookings: StringResource,
     onClickChangeSelectedType: (TypesList) -> Unit,
-    selectedTypesList: TypesList
+    selectedTypesList: TypesList,
+    onClickCloseRepeatDialog: () -> Unit
 ) {
     val scrollState = rememberLazyListState()
     val scrollIsDown = scrollState.isScrollingDown()
@@ -377,7 +435,8 @@ private fun BookingScreenContent(
                 frequency = frequency,
                 repeatBooking=repeatBookings,
                 onClickChangeSelectedType = onClickChangeSelectedType,
-                selectedTypesList = selectedTypesList
+                selectedTypesList = selectedTypesList,
+                isLoadingWorkspacesList = isLoadingWorkspacesList
             )
         }
 
@@ -389,7 +448,7 @@ private fun BookingScreenContent(
                     frequency = frequency
                 )
             },
-            onDismissRequest = {},
+            onDismissRequest = onClickCloseRepeatDialog,
             showDialog = showRepeatDialog,
             modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
         )

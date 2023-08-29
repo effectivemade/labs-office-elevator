@@ -34,14 +34,15 @@ class AuthorizationProfileStoreFactory(
 
     private sealed interface Msg {
         data class NameData(
-            var name: String,
-            var isNameError: Boolean
+            var name: String
         ) : Msg
 
         data class PostData(
-            var post: String,
-            var isPostError: Boolean
+            var post: String
         ) : Msg
+
+        data class PostError(val value: Boolean) : Msg
+        data class NameError(val value: Boolean) : Msg
     }
 
     private sealed interface Action {
@@ -53,13 +54,19 @@ class AuthorizationProfileStoreFactory(
         override fun AuthorizationProfileStore.State.reduce(msg: AuthorizationProfileStoreFactory.Msg): AuthorizationProfileStore.State =
             when (msg) {
                 is Msg.NameData -> copy(
-                    name = msg.name,
-                    isErrorName = msg.isNameError
+                    name = msg.name
                 )
 
                 is Msg.PostData -> copy(
-                    post = msg.post,
-                    isErrorPost = msg.isPostError
+                    post = msg.post
+                )
+
+                is Msg.NameError -> copy(
+                    isErrorName = msg.value
+                )
+
+                is Msg.PostError -> copy(
+                    isErrorPost = msg.value
                 )
             }
     }
@@ -72,16 +79,18 @@ class AuthorizationProfileStoreFactory(
         ) =
             when (intent) {
                 AuthorizationProfileStore.Intent.BackButtonClicked -> back()
-                AuthorizationProfileStore.Intent.ContinueButtonClicked -> checkUserdata(
-                    getState().name,
-                    getState().post
-                )
+                AuthorizationProfileStore.Intent.ContinueButtonClicked -> {
+                    checkUserdata(
+                        getState().name,
+                        getState().post
+                    )
+                }
 
                 is AuthorizationProfileStore.Intent.PostChanged -> with(intent.post) {
                     dispatch(
                         AuthorizationProfileStoreFactory.Msg.PostData(
-                            post = this,
-                            isPostError = validator.checkPost(this)
+                            post = this
+//                            isPostError = validator.checkPost(this)
                         )
                     )
                 }
@@ -89,8 +98,8 @@ class AuthorizationProfileStoreFactory(
                 is AuthorizationProfileStore.Intent.NameChanged ->
                     dispatch(
                         AuthorizationProfileStoreFactory.Msg.NameData(
-                            name = intent.name,
-                            isNameError = validator.checkName(intent.name)
+                            name = intent.name
+//                            isNameError = validator.checkName(intent.name)
                         )
                     )
             }
@@ -106,14 +115,14 @@ class AuthorizationProfileStoreFactory(
                     dispatch(
                         AuthorizationProfileStoreFactory.Msg.PostData(
                             post = post,
-                            isPostError = post == null
+//                            isPostError = post == null
                         )
                     )
 
                     dispatch(
                         AuthorizationProfileStoreFactory.Msg.NameData(
                             name = name,
-                            isNameError = false
+//                            isNameError = false
                         )
                     )
                 }
@@ -122,7 +131,7 @@ class AuthorizationProfileStoreFactory(
 
         private fun checkUserdata(name_: String, post_: String) {
 
-            if (!validator.checkName(name) && !validator.checkPost(post)) {
+            if (validator.checkName(name_) && validator.checkPost(post_)) {
                 post = post_
                 name = name_
                 publish(AuthorizationProfileStore.Label.AuthorizationProfileSuccess)

@@ -10,6 +10,7 @@ import band.effective.office.elevator.ui.models.ReservedSeat
 import band.effective.office.network.model.Either
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.LocalDate
 
@@ -29,12 +30,11 @@ class AboutEmployeeInteractor(
 
     suspend fun getBookingsByDate(
         date: LocalDate,
-        ownerId:String,
+        ownerId: String,
         bookingsFilter: BookingsFilter,
-        coroutineScope: CoroutineScope
     ): Flow<Either<ErrorWithData<List<ReservedSeat>>, List<ReservedSeat>>> =
         bookingRepository
-            .getBookingsByDate(date = date, bookingsFilter = bookingsFilter)
+            .getBookingsByDate(ownerId = ownerId , date = date, bookingsFilter = bookingsFilter)
             .map()
 
     private fun Flow<Either<ErrorWithData<List<BookingInfo>>, List<BookingInfo>>>.map() =

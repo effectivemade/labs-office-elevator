@@ -22,7 +22,6 @@ class ProfileEditComponent (
             private val profileEditStore = instanceKeeper.getStore {
                     ProfileEditStoreFactory(
                             storeFactory = storeFactory,
-                       user= userEdit
                     ).create()
             }
 

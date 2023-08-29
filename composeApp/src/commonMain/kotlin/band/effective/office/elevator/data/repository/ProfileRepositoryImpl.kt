@@ -34,6 +34,7 @@ class ProfileRepositoryImpl(
         )
 
     override suspend fun updateUser(user: User): Flow<Either<ErrorWithData<User>, User>> = flow {
+        println("User for auth: ${user}")
         val requestResult =
             api.updateUser(user.toUserDTO()).convert(this@ProfileRepositoryImpl.lastResponse.value)
         val newUser = requestResult.getData()
