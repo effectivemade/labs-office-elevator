@@ -14,7 +14,8 @@ technologies as little as possible.
 
 ## Project Structure: :dizzy:
 
-Pre-requisite: [Notion](https://www.notion.so/effectiveband/613e964862f44c9faefefd7958697dd9?pvs=4). Note: due to the incompleteness of the database, placeholders may appear in applications
+Pre-requisite: [Notion](https://www.notion.so/effectiveband/613e964862f44c9faefefd7958697dd9?pvs=4).
+Note: due to the incompleteness of the database, placeholders may appear in applications
 
 [Effective-Tablet](tabletApp/README.md)
 
@@ -33,29 +34,39 @@ call the elevator remotely, after logging in through your google account
 
 ## Contributing :raised_hands:
 
-Our project is open-source, so we welcome quality contributions! To make your contribution to the project efficient and easy to check out, you can familiarize yourself with the project's git flow and commit rules. If you want to solve an existing issue in the project, you can read the list in the issues tab in the repository.
+Our project is open-source, so we welcome quality contributions! To make your contribution to the
+project efficient and easy to check out, you can familiarize yourself with the project's git flow
+and commit rules. If you want to solve an existing issue in the project, you can read the list in
+the issues tab in the repository.
 
 ### Git flow
 
-The best way to start helping with project development is to do a fork of our project, then make changes and make a pull-request to the to the appropriate branch to which your contribution relates.
+The best way to start helping with project development is to do a fork of our project, then make
+changes and make a pull-request to the to the appropriate branch to which your contribution relates.
 
 <img src="/assets/git-flow-image.png"> 
 
 ### Rules on commit messages' content
 
 1. Use the body to explain what and why vs. how
-   * Please make an extra effort to explain why changes are needed for every non-trivial modification.
-2. If your pull request solves problem from the issues, please leave a link to it in the body of the pull request
-3. If possible, try to avoid commits like *"Fixed after check "* and replace them with meaningful ones.
-4. Keep the subject (the first line of the commit message) clean and readable. All additional information and directives for external tools 
-should be moved to the body of the message.
+    * Please make an extra effort to explain why changes are needed for every non-trivial
+      modification.
+2. If your pull request solves problem from the issues, please leave a link to it in the body of the
+   pull request
+3. If possible, try to avoid commits like *"Fixed after check "* and replace them with meaningful
+   ones.
+4. Keep the subject (the first line of the commit message) clean and readable. All additional
+   information and directives for external tools
+   should be moved to the body of the message.
 
 ### Rules on commit messages' style/formatting
 
 1. Before the subject line, add a symbol to show what your commit contains
+
 * [+] - Addition
-* [-] - Delete 
-* [~] - Fix, edit 
+* [-] - Delete
+* [~] - Fix, edit
+
 2. Separate subject from body with a blank line
 3. Do not capitalize the subject line
 4. Do not end the subject line with a period
@@ -69,6 +80,15 @@ versions:
 Android Studio Flamingo 2022.2.1 Patch 2
 
 JDK: Version 11.0.15
+
+## How to run
+
+* You need Android Studio Flamingo 2022.2.1 Patch 2
+* [Read the backend documentation]()
+* Add `apiKey=<YourKey>` in `local.properties` file, for
+  example `apiKey="72288ebc5b893cc92a76c701c6b700b6"`
+* Run -> Run 'app'
+
 
 ## Running an application using gradle: :arrow_forward:
 
