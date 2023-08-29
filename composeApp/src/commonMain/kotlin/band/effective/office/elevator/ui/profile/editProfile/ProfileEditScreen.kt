@@ -19,6 +19,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.TextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -54,6 +55,23 @@ import dev.icerock.moko.resources.compose.stringResource
 fun ProfileEditScreen(component: ProfileEditComponent){
     val user by component.user.collectAsState()
 
+    when{
+        user.isData -> {
+            ProfileEditView(
+                user = user,
+                component = component
+            )
+        }
+        user.isLoading -> {
+            Text("Loading")
+        }
+        else -> {}
+    }
+
+}
+
+@Composable
+fun ProfileEditView(user: ProfileEditStore.State, component: ProfileEditComponent){
     val errorMessage = stringResource(MainRes.strings.profile_format_error)
 
     LaunchedEffect(component){
@@ -94,6 +112,7 @@ private fun ProfileEditScreenContent(
     isErrorPost: Boolean,
     isErrorTelegram: Boolean
 ) {
+
     val userNameText = rememberSaveable { mutableStateOf(userName) }
     val phoneNumberText = rememberSaveable { mutableStateOf(phoneNumber) }
     val postText = rememberSaveable { mutableStateOf(post) }
@@ -156,8 +175,6 @@ private fun ProfileEditScreenContent(
         }
     }
 
-
-
 @Composable
 private fun FieldsItemStyle(
     item: UserDataEditProfile,
@@ -196,7 +213,7 @@ private fun FieldsItemStyle(
                 }
                           },
             trailingIcon = {
-                IconButton(onClick = {text.value = ""}){
+                IconButton(onClick = {text.value = "" }){
                     Icon(
                         painter = painterResource(MainRes.images.clear_icon),
                         contentDescription = null,

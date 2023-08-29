@@ -10,6 +10,8 @@ interface ProfileEditStore : Store<ProfileEditStore.Intent, ProfileEditStore.Sta
     }
 
     data class State(
+        val isData: Boolean = false,
+        val isLoading: Boolean = true,
         val user: User,
         val isErrorPhone: Boolean = false,
         var isErrorName: Boolean = false,
