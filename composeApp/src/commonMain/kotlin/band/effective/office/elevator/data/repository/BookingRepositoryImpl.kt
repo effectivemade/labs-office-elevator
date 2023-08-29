@@ -79,6 +79,7 @@ class BookingRepositoryImpl(
             userDTO = emptyUserDTO(
                 id = bookingInfo.ownerId,
                 email = user?.email?:"",
+                name = user?.userName.orEmpty()
             ),
             workspaceDTO = emptyWorkSpaceDTO(bookingInfo.workSpaceId),
             recurrence = recurrence
@@ -115,7 +116,8 @@ class BookingRepositoryImpl(
                     val bookingDTO = creatingBookModel.toDTO(
                         user = emptyUserDTO(
                             id = response.data.id,
-                            email = response.data.email
+                            email = response.data.email,
+                            name = response.data.userName
                         ),
                         workspaceDTO = emptyWorkSpaceDTO(creatingBookModel.workSpaceId),
                         recurrence = recurrence
