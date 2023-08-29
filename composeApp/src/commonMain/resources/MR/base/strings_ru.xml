@@ -156,7 +156,7 @@
 
     <!-- Employee -->
     <string name="about_the_employee">О сотруднике</string>
-    <string name="upcoming_bookings">Брони сотрудника</string>
+    <string name="upcoming_bookings">Брони</string>
     <string name="transfer">Перевод</string>
     <string name="none_booking_seats_by_the_employee">У этого сотрудника пока нет бронирований</string>
     <string name="none_such_booking_seats_by_the_employee">У этого сотрудника пока нет таких бронирований</string>

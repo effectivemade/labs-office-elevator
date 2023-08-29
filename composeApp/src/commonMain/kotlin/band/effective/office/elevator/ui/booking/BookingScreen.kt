@@ -98,7 +98,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                     true
                 }
                 ModalBottomSheetValue.Hidden -> {
-                    bookingComponent.onEvent(BookingStore.Intent.CloseChooseZone)
+                    bookingComponent.onEvent(BookingStore.Intent.CloseBookAccept)
                     true
                 }
                 ModalBottomSheetValue.HalfExpanded -> {
@@ -114,7 +114,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
             when (sheetState) {
                 ModalBottomSheetValue.Expanded -> true
                 ModalBottomSheetValue.Hidden -> {
-                    bookingComponent.onEvent(BookingStore.Intent.CloseChooseZone)
+                    bookingComponent.onEvent(BookingStore.Intent.CloseBookRepeat)
                     true
                 }
                 ModalBottomSheetValue.HalfExpanded -> true

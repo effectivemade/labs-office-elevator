@@ -102,52 +102,12 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is BookingStore.Intent.OpenChooseZone -> {
                     scope.launch {
                         publish(BookingStore.Label.OpenChooseZone)
-
-                        scope.launch {
-                            val list = getState().workSpacesZone.filter { it.isSelected == true }
-                                .toMutableList()
-                            val mListW = getState().workSpaces.toMutableList()
-
-                            val iteratorW = mListW.iterator()
-                            while (iteratorW.hasNext()) {
-                                val workSpaceUI = iteratorW.next()
-                                val iteratorZ = list.iterator()
-                                while (iteratorZ.hasNext()) {
-                                    val zone = iteratorZ.next()
-                                    if (workSpaceUI.workSpaceName != zone.name) {
-                                        iteratorW.remove()
-                                        break
-                                    }
-                                }
-                            }
-                            dispatch(Msg.ChangeWorkSpacesUI(workSpacesUI = mListW.toList()))
-                        }
                     }
                 }
 
                 is BookingStore.Intent.CloseChooseZone -> {
                     scope.launch {
                         publish(BookingStore.Label.CloseChooseZone)
-
-                        scope.launch {
-                            val list = getState().workSpacesZone.filter { it.isSelected == true }
-                                .toMutableList()
-                            val mListW = getState().workSpaces.toMutableList()
-
-                            val iteratorW = mListW.iterator()
-                            while (iteratorW.hasNext()) {
-                                val workSpaceUI = iteratorW.next()
-                                val iteratorZ = list.iterator() //WTF???
-                                while (iteratorZ.hasNext()) {  //TODO (Artem Gruzdev) Slava refactor this shit
-                                    val zone = iteratorZ.next()
-                                    if (workSpaceUI.workSpaceName != zone.name) {
-                                        iteratorW.remove()
-                                        break
-                                    }
-                                }
-                            }
-                            dispatch(Msg.ChangeWorkSpacesUI(workSpacesUI = mListW.toList()))
-                        }
                     }
                 }
 
@@ -441,6 +401,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                             is Either.Success -> {
                                 val list = workSpaceZone.filter { it.isSelected }
                                 val listWorkSpaces = response.data
+                                Napier.d { response.data.toString() }
                                 val newList = mutableListOf<WorkSpaceUI>()
 
                                 list.forEach {
