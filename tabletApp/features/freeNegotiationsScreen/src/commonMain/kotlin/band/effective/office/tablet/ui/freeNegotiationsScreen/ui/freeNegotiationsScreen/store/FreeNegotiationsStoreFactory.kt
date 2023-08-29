@@ -26,6 +26,7 @@ import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.Calendar
+import java.util.GregorianCalendar
 
 class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
 
@@ -108,7 +109,7 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
                 is Action.GetFreeRoomsInfo -> {
                     val roomsInfoUi = mutableListOf<RoomInfoUiState>()
                     action.roomsInfo.forEach {
-                        roomsInfoUi.add(RoomInfoUiState.defaultValue.copy(room = it))
+                        roomsInfoUi.add(RoomInfoUiState.defaultValue.copy(room = it.copy(eventList = it.eventList.filter { it.startTime > GregorianCalendar() })))
                     }
                     dispatch(
                         Message.GetFreeRoomsInfo(

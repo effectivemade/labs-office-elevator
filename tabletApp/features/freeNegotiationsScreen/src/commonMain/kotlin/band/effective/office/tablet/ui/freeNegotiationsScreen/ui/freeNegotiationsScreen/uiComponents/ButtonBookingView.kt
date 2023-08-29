@@ -37,7 +37,7 @@ fun ButtonBookingView(
         enabled = roomInfo.state != RoomState.BUSY
     ) {
         Text(
-            text = if(roomInfo.state == RoomState.SOON_BUSY) MainRes.string.occupy_on.format(
+            text = if(roomInfo.state == RoomState.SOON_BUSY && roomInfo.changeEventTime > 0) MainRes.string.occupy_on.format(
                 getDuration(roomInfo.changeEventTime)
             ) else MainRes.string.occupy,
             style = MaterialTheme.typography.h7

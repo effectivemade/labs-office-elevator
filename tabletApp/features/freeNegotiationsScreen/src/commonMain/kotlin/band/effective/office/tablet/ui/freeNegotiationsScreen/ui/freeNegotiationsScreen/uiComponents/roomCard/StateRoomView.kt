@@ -63,7 +63,7 @@ fun RoomIsBusy(changeEventTime: Int, timeFinish: Calendar, organizer: String) {
     Spacer(modifier = Modifier.height(20.dp))
     OrganizerView(organizer)
     Spacer(modifier = Modifier.height(10.dp))
-    InfoTimeNextEvent(MainRes.string.until_finish.format(time = getDuration(changeEventTime)))
+    InfoTimeNextEvent(if (changeEventTime > 0) MainRes.string.through_time.format(time = getDuration(changeEventTime)) else " ")
 }
 
 @Composable
@@ -78,7 +78,7 @@ fun RoomIsSoonBusy(changeEventTime: Int, timeStart: Calendar, organizer: String)
     Spacer(modifier = Modifier.height(20.dp))
     OrganizerView(organizer)
     Spacer(modifier = Modifier.height(10.dp))
-    InfoTimeNextEvent(MainRes.string.through_time.format(time = getDuration(changeEventTime)))
+    InfoTimeNextEvent(if (changeEventTime > 0) MainRes.string.through_time.format(time = getDuration(changeEventTime)) else " ")
 }
 
 fun getDuration(changeEventTime: Int): String {
