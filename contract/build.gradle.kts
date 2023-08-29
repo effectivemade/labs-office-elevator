@@ -58,7 +58,11 @@ kotlin {
             }
         }
 
-        val androidMain by getting
+        val androidMain by getting {
+            dependencies{
+                api(Dependencies.Ktor.Client.Android)
+            }
+        }
 
         val iosX64Main by getting
         val iosArm64Main by getting
