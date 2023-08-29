@@ -81,7 +81,7 @@ class RoomRepositoryImpl(
                         val loadEvents = loadEvents(id)
                         if (loadEvents is Either.Success) {
                             loadEvents.data.map { it.toEventInfo() }
-                        } else null
+                        } else listOf()
                     }
                     Either.Success(roomList.mapIndexed { index, room ->
                         room.toRoomInfo().addEvents(events[index])
