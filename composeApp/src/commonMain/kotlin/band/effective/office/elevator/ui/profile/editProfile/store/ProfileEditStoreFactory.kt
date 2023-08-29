@@ -25,7 +25,6 @@ import org.koin.core.component.inject
 
 internal class ProfileEditStoreFactory(
     private val storeFactory: StoreFactory,
-    private val user: String,
 ) : KoinComponent {
 
     private val getUserUseCase: GetUserUseCase by inject()
@@ -187,19 +186,19 @@ internal class ProfileEditStoreFactory(
             scope.launch(Dispatchers.IO) {
                 getUserUseCase.executeInFormat().collect { user ->
                     withContext(Dispatchers.Main) {
-                        withContext(Dispatchers.Main) {
-                            when (user) {
-                                is Either.Success -> {
-                                    dispatch(Msg.ProfileData(user = user.data))
-                                }
-                                is Either.Error -> {
-                                    // TODO show error on UI
-                                    user.error.saveData?.let {
-                                        dispatch(Msg.ProfileData(user = it))
-                                    }
+                        when (user) {
+                            is Either.Success -> {
+                                dispatch(Msg.ProfileData(user = user.data))
+                            }
+
+                            is Either.Error -> {
+                                // TODO show error on UI
+                                user.error.saveData?.let {
+                                    dispatch(Msg.ProfileData(user = it))
                                 }
                             }
                         }
+
                     }
                 }
             }
@@ -217,15 +216,7 @@ internal class ProfileEditStoreFactory(
                     copy(
                         isData = true,
                         isLoading = false,
-                        user = User(
-                            id = message.user.id,
-                            userName = message.user.userName,
-                            telegram = message.user.telegram,
-                            post = message.user.post,
-                            phoneNumber = message.user.phoneNumber,
-                            imageUrl = message.user.imageUrl,
-                            email = message.user.email
-                        )
+                        user = message.user
                     )
                 }
 

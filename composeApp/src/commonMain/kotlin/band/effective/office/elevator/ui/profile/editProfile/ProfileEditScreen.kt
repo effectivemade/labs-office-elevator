@@ -175,8 +175,6 @@ private fun ProfileEditScreenContent(
         }
     }
 
-
-
 @Composable
 private fun FieldsItemStyle(
     item: UserDataEditProfile,

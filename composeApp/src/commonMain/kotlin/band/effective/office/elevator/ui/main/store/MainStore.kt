@@ -1,6 +1,5 @@
 package band.effective.office.elevator.ui.main.store
 
-import band.effective.office.elevator.domain.models.BookingInfo
 import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsFilter
 import band.effective.office.elevator.ui.models.ElevatorState
 import band.effective.office.elevator.ui.models.ReservedSeat
