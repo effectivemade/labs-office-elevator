@@ -92,7 +92,9 @@ fun MainScreenView(
                 showUpdateModal -> UpdateEventView(
                     component = updateEventComponent,
                     event = updatedEvent,
-                    onCloseRequest = closeModal)
+                    onCloseRequest = closeModal,
+                    room = bookingRoomComponent.state.value.roomName
+                )
             }
         }
     }

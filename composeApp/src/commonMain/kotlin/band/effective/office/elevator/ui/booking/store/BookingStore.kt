@@ -30,8 +30,11 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         data class ApplyTime(val isStart: Boolean, val time: LocalTime) : Intent
         object CloseChooseZone : Intent
         object OpenRepeatDialog : Intent
+
+        object CloseRepeatDialog : Intent
+
         object CloseBookRepeat : Intent
-        data class OpenBookRepeat(val pair: Pair<String, BookingPeriod>) : Intent
+        data class OnSelectBookingPeriod(val pair: Pair<String, BookingPeriod>) : Intent
         data class OpenBookAccept(val value: WorkSpaceUI) : Intent
         object CloseBookAccept : Intent
         object OpenBookPeriod : Intent
@@ -77,7 +80,9 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         val repeatBooking: StringResource,
         val bookingPeriod: BookingPeriod,
         val selectedType: TypesList,
-        val bookingInfo: BookingInfo
+        val bookingInfo: BookingInfo,
+        val selectedWorkspaceId: String,
+        val isLoadingListWorkspaces: Boolean
     ) {
         companion object {
             val initState = State(
@@ -98,7 +103,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
                 selectedFinishTime = getCurrentTime(),
                 wholeDay = false,
                 isStart = true,
-                frequency = Frequency(days = listOf()),
+                frequency = Frequency(days = listOf(), researchEnd = Triple(Pair("ThisDay",""),"","")),
                 repeatBooking = MainRes.strings.booking_not_repeat,
                 bookingPeriod = BookingPeriod.NoPeriod,
                 selectedType = TypesList(
@@ -115,7 +120,9 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
                     dateOfEnd = LocalDateTime(date = getCurrentDate(), time = getCurrentTime())
                 ),
                 selectedFinishDate = getCurrentDate(),
-                isStartDate = true
+                isStartDate = true,
+                selectedWorkspaceId = "",
+                isLoadingListWorkspaces = true
             )
         }
     }

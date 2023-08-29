@@ -17,10 +17,10 @@ internal val dataModuleDI = module {
 
     single<DBSource> { DBSourceImpl(get()) }
 
-    single<Api> {
-        ApiMock(
-            realApi = ApiImpl(),
-            mockFactory = MockFactory()
-        )
-    }
+//    single<Api> { ApiMock(
+//        realApi = ApiImpl(),
+//        mockFactory = MockFactory()
+//    ) }
+
+    single<Api> { ApiImpl() }
 }

@@ -16,7 +16,9 @@ interface BookingRepository {
         bookingPeriod: BookingPeriod? = null,
         typeEndPeriod: TypeEndPeriodBooking? = null
     )
+    suspend fun deleteBooking(bookingInfo: BookingInfo)
 
+    suspend fun deleteBooking(book: String)
     suspend fun createBook(creatingBookModel: CreatingBookModel)
 
     suspend fun getBookingsForUser(
@@ -25,8 +27,8 @@ interface BookingRepository {
     ): Flow<Either<ErrorWithData<List<BookingInfo>>, List<BookingInfo>>>
 
     suspend fun getBookingsByDate(
+        ownerId: String? = null,
         date: LocalDate,
-        ownerId: String,
         bookingsFilter: BookingsFilter
     ): Flow<Either<ErrorWithData<List<BookingInfo>>, List<BookingInfo>>>
 }

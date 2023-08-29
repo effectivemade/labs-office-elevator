@@ -24,7 +24,7 @@ class AboutEmployeeComponent(
     private val aboutEmployeeStore = instanceKeeper.getStore {
         AboutEmployeeStoreFactory(
             storeFactory = storeFactory,
-            employee = employee
+            employeeInfo = employee
         ).create()
     }
 

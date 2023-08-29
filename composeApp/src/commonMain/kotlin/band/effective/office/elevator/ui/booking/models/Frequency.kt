@@ -2,7 +2,7 @@ package band.effective.office.elevator.ui.booking.models
 
 import band.effective.office.elevator.domain.models.DayOfWeek
 
-class Frequency(private val days: List<Pair<String, Int>>) {
+class Frequency(private val days: List<Pair<String, Int>>, private val researchEnd: Triple<Pair <String, String>, String, String>) {
 
     fun getDays(): List<DayOfWeek> {
         val list = listOf(
@@ -15,6 +15,11 @@ class Frequency(private val days: List<Pair<String, Int>>) {
         )
 
         return days.map { list[it.second] }
+    }
+
+    fun getResearchEnd(): Triple<Pair <String, String>, String, String>{
+
+        return researchEnd
     }
 
     override fun toString(): String {

@@ -70,4 +70,9 @@ object Plugins {
         const val version = "2.0.0-rc02"
         const val plugin = "app.cash.sqldelight"
     }
+
+    object GoogleServices{
+        const val implementation = "com.google.gms:google-services:4.3.15"
+        const val plugin = "com.google.gms.google-services"
+    }
 }

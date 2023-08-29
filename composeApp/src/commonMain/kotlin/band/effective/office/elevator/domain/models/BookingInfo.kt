@@ -9,12 +9,8 @@ import band.effective.office.network.dto.RecurrenceDTO
 import band.effective.office.network.dto.UserDTO
 import band.effective.office.network.dto.WorkspaceDTO
 import epicarchitect.calendar.compose.basis.localized
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toInstant
-import kotlinx.datetime.toLocalDateTime
 
 data class BookingInfo(
     val id: String,
@@ -30,20 +26,21 @@ fun BookingDTO.toDomainModel() =
         id = id!!,
         ownerId = owner.id,
         workSpaceId = workspace.id,
-        seatName = workspace.name,
+        seatName = "${workspace.zone?.name.orEmpty()} ${workspace.name}",
         dateOfStart = unixToLocalDateTime(beginBooking),
         dateOfEnd = unixToLocalDateTime(endBooking),
     )
 
 fun List<BookingDTO>.toDomainZone() = map { it.toDomainModel() }
-fun emptyUserDTO(id: String) =
+fun emptyUserDTO(id: String, email: String, name: String): UserDTO =
     UserDTO(
         id = id,
-        fullName = "",
+        fullName = name,
         active = false,
         role = "",
         avatarUrl = "",
-        integrations = null
+        integrations = null,
+        email = email
     )
 
 
@@ -52,13 +49,14 @@ fun emptyWorkSpaceDTO(id: String) =
         id = id,
         name = "",
         utilities = listOf(),
-        zone = null
+        zone = null,
+        tag = "regular"
     )
 
 fun BookingInfo.toDTOModel(userDTO: UserDTO, workspaceDTO: WorkspaceDTO, recurrence: RecurrenceDTO?) =
     BookingDTO(
         owner = userDTO,
-        participants = listOf(userDTO),
+        participants = listOf(),
         workspace = workspaceDTO,
         id = id,
         beginBooking = localDateTimeToUnix(dateOfStart)!!,

@@ -39,13 +39,10 @@ class MainComponent(
     }
 
     sealed interface Output {
+
         object OpenMap : Output
 
-        object ExtendBooking : Output
-
-        object RepeatBooking : Output
-
-        object DeleteBooking : Output
+        data class DeleteBooking(val id: String) : Output
 
         object OpenBookingScreen : Output
 

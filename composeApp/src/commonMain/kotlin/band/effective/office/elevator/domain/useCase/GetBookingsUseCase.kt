@@ -25,11 +25,10 @@ class GetBookingsUseCase(
 
     suspend fun getBookingsByDate(
         date: LocalDate,
-        ownerId:String,
         bookingsFilter: BookingsFilter,
     ): Flow<Either<ErrorWithData<List<ReservedSeat>>, List<ReservedSeat>>> =
         repository
-            .getBookingsByDate(date = date, ownerId = ownerId, bookingsFilter = bookingsFilter)
+            .getBookingsByDate(date = date, bookingsFilter = bookingsFilter)
             .map()
 
     private fun Flow<Either<ErrorWithData<List<BookingInfo>>, List<BookingInfo>>>.map() =

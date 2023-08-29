@@ -1,6 +1,7 @@
 package band.effective.office.network.api.impl
 
 import band.effective.office.network.api.Api
+import band.effective.office.network.api.Collector
 import band.effective.office.network.dto.BookingDTO
 import band.effective.office.network.dto.SuccessResponse
 import band.effective.office.network.dto.UserDTO
@@ -11,19 +12,32 @@ import band.effective.office.network.model.ErrorResponse
 import band.effective.office.utils.KtorEtherClient
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
-import io.ktor.http.append
 import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 class ApiImpl : Api {
+    /**Update collector*/
+    val collector = Collector("")
+    /**KtorEitherClient for safe request*/
     private val client = KtorEtherClient
     private val baseUrl: String = "https://d5do2upft1rficrbubot.apigw.yandexcloud.net"
     override suspend fun getWorkspace(id: String): Either<ErrorResponse, WorkspaceDTO> =
-        client.securityResponse("$baseUrl/workspaces") {
-            url {
-                parameters.append("id", id)
+        with(getWorkspaces("meeting")) {
+            when (this) {
+                is Either.Error -> this
+                is Either.Success -> data.firstOrNull { it.name == id }.let {
+                    if (it == null) {
+                        Either.Error(ErrorResponse.getResponse(404))
+                    } else {
+                        Either.Success(it)
+                    }
+                }
             }
         }
 
@@ -34,7 +48,7 @@ class ApiImpl : Api {
     ): Either<ErrorResponse, List<WorkspaceDTO>> =
         client.securityResponse("$baseUrl/workspaces") {
             url {
-                parameters.append("tag", tag)
+                parameters.append("workspace_tag", tag)
                 if (freeFrom != null) {
                     parameters.append("free_from", freeFrom.toString())
                 }
@@ -45,7 +59,7 @@ class ApiImpl : Api {
         }
 
     override suspend fun getZones(): Either<ErrorResponse, List<WorkspaceZoneDTO>> =
-        client.securityResponse("$baseUrl//workspaces/zones")
+        client.securityResponse("$baseUrl/workspaces/zones")
 
     override suspend fun getUser(id: String): Either<ErrorResponse, UserDTO> =
         client.securityResponse("$baseUrl/users") {
@@ -57,7 +71,7 @@ class ApiImpl : Api {
     override suspend fun getUsers(tag: String): Either<ErrorResponse, List<UserDTO>> =
         client.securityResponse("$baseUrl/users") {
             url {
-                parameters.append("tag", tag)
+                parameters.append("user_tag", tag)
             }
         }
 
@@ -66,6 +80,7 @@ class ApiImpl : Api {
             urlString = "$baseUrl/users",
             method = KtorEtherClient.RestMethod.Put
         ) {
+            println("user = $user")
             contentType(ContentType.Application.Json)
             setBody(user)
             url {
@@ -100,73 +115,48 @@ class ApiImpl : Api {
             }
         }
 
-    override suspend fun createBooking(bookingInfo: BookingDTO): Either<ErrorResponse, SuccessResponse> =
+    override suspend fun createBooking(bookingInfo: BookingDTO): Either<ErrorResponse, BookingDTO> =
         client.securityResponse(
             urlString = "$baseUrl/bookings",
             method = KtorEtherClient.RestMethod.Post
         ) {
             contentType(ContentType.Application.Json)
+//            val body = Json.encodeToString(bookingInfo)
+//            println(body)
             setBody(bookingInfo)
         }
 
     override suspend fun updateBooking(
         bookingInfo: BookingDTO
-    ): Either<ErrorResponse, SuccessResponse> =
+    ): Either<ErrorResponse, BookingDTO> =
         client.securityResponse(
             urlString = "$baseUrl/bookings",
             method = KtorEtherClient.RestMethod.Put
         ) {
             contentType(ContentType.Application.Json)
-            setBody(bookingInfo)
+            val body = Json.encodeToString(bookingInfo)
+            setBody(body)
         }
 
     override suspend fun deleteBooking(bookingId: String): Either<ErrorResponse, SuccessResponse> =
         client.securityResponse(
             urlString = "$baseUrl/bookings",
+            method = KtorEtherClient.RestMethod.Delete
         ) {
             url {
                 appendPathSegments(bookingId)
             }
         }
 
-    //TODO(Maksim Mishenko): Request not exist in swagger
-    override suspend fun subscribeOnWorkspaceUpdates(id: String): Flow<Either<ErrorResponse, WorkspaceDTO>> =
-        flow {
-            emit(
-                Either.Error(
-                    ErrorResponse(
-                        code = 601,
-                        description = "Request not exist in swagger"
-                    )
-                )
-            )
-        }
+    override fun subscribeOnWorkspaceUpdates(
+        id: String,
+        scope: CoroutineScope
+    ): Flow<Either<ErrorResponse, WorkspaceDTO>> =
+        collector.flow(scope).filter { it == "workspace" }.map { getWorkspace(id) }
 
-    //TODO(Maksim Mishenko): Request not exist in swagger
-    override suspend fun subscribeOnOrganizersList(): Flow<Either<ErrorResponse, List<UserDTO>>> =
-        flow {
-            emit(
-                Either.Error(
-                    ErrorResponse(
-                        code = 601,
-                        description = "Request not exist in swagger"
-                    )
-                )
-            )
-        }
+    override fun subscribeOnOrganizersList(scope: CoroutineScope): Flow<Either<ErrorResponse, List<UserDTO>>> =
+        collector.flow(scope).filter { it == "organizer" }.map { getUsers(tag = "employee") }
 
-    //TODO(Maksim Mishenko): Request not exist in swagger
-    override suspend fun subscribeOnBookingsList(workspaceId: String): Flow<Either<ErrorResponse, List<BookingDTO>>> =
-        flow {
-            emit(
-                Either.Error(
-                    ErrorResponse(
-                        code = 601,
-                        description = "Request not exist in swagger"
-                    )
-                )
-            )
-        }
 
     override suspend fun getUserByEmail(email: String): Either<ErrorResponse, UserDTO> =
         client.securityResponse("$baseUrl/users"){
@@ -174,4 +164,11 @@ class ApiImpl : Api {
                parameters.append(name = "email", value = email)
            }
         }
+
+    override fun subscribeOnBookingsList(
+        workspaceId: String,
+        scope: CoroutineScope
+    ): Flow<Either<ErrorResponse, List<BookingDTO>>> =
+        collector.flow(scope).filter { it == "booking" }
+            .map { getBookingsByWorkspaces(workspaceId) }
 }

@@ -7,14 +7,15 @@ import com.arkivanov.mvikotlin.core.store.Store
 interface EmployeeStore: Store<EmployeeStore.Intent, EmployeeStore.State, EmployeeStore.Label> {
     sealed interface Intent{
         data class OnTextFieldUpdate(val query: String): Intent
-        data class OnClickOnEmployee(val employeeId:String): Intent
+        data class OnClickOnEmployee(val employeeId: String): Intent
     }
 
     data class State(
         val changeShowedEmployeeCards: List<EmployeeCard>,
         val countShowedEmployeeCards:String,
         val countInOfficeShowedEmployeeCards:String,
-        val query:String
+        val query:String,
+        val allEmployeeList: List<EmployeeInfo> // TODO(Artem Gruzdev) change model of this list
     )
 
     sealed interface Label{

@@ -20,6 +20,7 @@ import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.LocalDate
@@ -28,11 +29,11 @@ import org.koin.core.component.inject
 
 class AboutEmployeeStoreFactory(
     private val storeFactory: StoreFactory,
-    private val employee: EmployeeInfo
+    private val employeeInfo: EmployeeInfo
 ) : KoinComponent {
 
     private val aboutEmployeeInteractor: AboutEmployeeInteractor by inject()
-    private var mokValueUser = EmployeeInfo.defaultEmployee.toUIAbout()
+    private var currentUser = EmployeeInfo.defaultEmployee.toUIAbout()
     private var recentDate = getCurrentDate()
     private var filtration = BookingsFilter(meetRoom = true, workPlace = true)
     private var datedList = false
@@ -42,7 +43,7 @@ class AboutEmployeeStoreFactory(
         object : AboutEmployeeStore, Store<Intent, State, Label> by storeFactory.create(
             name = "AboutEmployeeStore",
             initialState = State(
-                mokValueUser,
+                currentUser,
                 reservedSeatsList = listOf(),
                 currentDate = getCurrentDate(),
                 dateFiltrationOnReserves = datedList,
@@ -50,7 +51,7 @@ class AboutEmployeeStoreFactory(
             ),
             bootstrapper = coroutineBootstrapper {
                 launch {
-                    dispatch(Action.FetchUserInfo(employee = employee.toUIAbout()))
+                    dispatch(Action.FetchUserInfo(employee = employeeInfo.toUIAbout()))
                 }
             },
             executorFactory = ::ExecutorImpl,
@@ -124,7 +125,7 @@ class AboutEmployeeStoreFactory(
                         intent.date?.let { newDate ->
                             fetchUserInfoByDate(
                                 date = newDate,
-                                ownerId = mokValueUser.id,
+                                ownerId = currentUser.id,
                                 bookingsFilter = filtration
                             )
                         }
@@ -144,12 +145,13 @@ class AboutEmployeeStoreFactory(
                             if (datedList) {
                                 fetchUserInfoByDate(
                                     date = recentDate,
-                                    ownerId = mokValueUser.id,
+                                    ownerId = currentUser.id,
                                     bookingsFilter = bookingsFilter
                                 )
                             } else {
                                 fetchUserInfo(
-                                    employee = mokValueUser,
+                                    date = getState().currentDate,
+                                    employee = currentUser,
                                     bookingsFilter = bookingsFilter
                                 )
                             }
@@ -162,6 +164,7 @@ class AboutEmployeeStoreFactory(
         override fun executeAction(action: Action, getState: () -> State) {
             when (action) {
                 is Action.FetchUserInfo -> fetchUserInfo(
+                    date = getState().currentDate,
                     employee = action.employee,
                     bookingsFilter = filtration
                 )
@@ -184,7 +187,6 @@ class AboutEmployeeStoreFactory(
                         date = date,
                         ownerId = ownerId,
                         bookingsFilter = bookingsFilter,
-                        coroutineScope = this
                     )
                     .collect { newList ->
                         withContext(Dispatchers.Main) {
@@ -209,20 +211,19 @@ class AboutEmployeeStoreFactory(
             }
         }
 
-        private fun fetchUserInfo(employee: User, bookingsFilter: BookingsFilter) {
-            if (mokValueUser != employee)
-                mokValueUser = employee
-            else
-                filtration = bookingsFilter
+        private fun fetchUserInfo(
+            date: LocalDate,
+            employee: User,
+            bookingsFilter: BookingsFilter
+        ){
 
             scope.launch(Dispatchers.IO) {
                 aboutEmployeeInteractor
-                    .getBookingsForUser(
+                    .getBookingsByDate(
+                        date = date,
                         ownerId = employee.id,
                         bookingsFilter = bookingsFilter,
-                        coroutineScope = this
-                    )
-                    .collect { newList ->
+                    ).collect { newList ->
                         withContext(Dispatchers.Main) {
                             when (newList) {
                                 is Either.Error -> {

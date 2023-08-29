@@ -172,14 +172,17 @@ class AuthorizationComponent(
                 CoroutineScope(Dispatchers.IO).launch {
                     val response = updateUserInfoUseCase.execute(authorizationStore.state.userData)
                     response.collect { result ->
-                        when (result) {
-                            is Either.Success -> {
-                                withContext(Dispatchers.Main) {
+                        withContext(Dispatchers.Main) {
+                            when (result) {
+                                is Either.Success -> {
                                     openContentFlow()
                                 }
-                            }
-                            else -> {
-                            //TODO show error
+
+                                is Either.Error -> {
+                                    println("error show content: ${result.error.error} ")
+                                    openContentFlow()
+                                    //TODO show error
+                                }
                             }
                         }
                     }

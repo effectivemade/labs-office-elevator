@@ -1,28 +1,42 @@
 package band.effective.office.elevator.ui.authorization.store
 
+import band.effective.office.elevator.domain.models.User
+import band.effective.office.elevator.domain.useCase.GetUserUseCase
+import band.effective.office.network.model.Either
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
+import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class AuthorizationStoreFactory(
     private val storeFactory: StoreFactory
 ) : KoinComponent {
 
+    val getUserUseCase: GetUserUseCase by inject()
     fun create(): AuthorizationStore =
         object : AuthorizationStore,
             Store<AuthorizationStore.Intent, AuthorizationStore.State, AuthorizationStore.Label> by storeFactory.create(
                 name = "Authorization store",
                 initialState = AuthorizationStore.State(),
                 executorFactory = ::ExecutorImpl,
-                reducer = ReducerImpl
+                reducer = ReducerImpl,
+                bootstrapper = coroutineBootstrapper {
+                    launch {
+                        dispatch(Action.LoadUserData)
+                    }
+                }
             ) {
         }
 
     private inner class ExecutorImpl :
-        CoroutineExecutor<AuthorizationStore.Intent, Nothing, AuthorizationStore.State, Msg, AuthorizationStore.Label>() {
+        CoroutineExecutor<AuthorizationStore.Intent, Action, AuthorizationStore.State, Msg, AuthorizationStore.Label>() {
         override fun executeIntent(
             intent: AuthorizationStore.Intent,
             getState: () -> AuthorizationStore.State
@@ -40,6 +54,27 @@ class AuthorizationStoreFactory(
                 }
             }
         }
+
+        override fun executeAction(action: Action, getState: () -> AuthorizationStore.State) {
+            when(action) {
+                is Action.LoadUserData -> {
+                    scope.launch(Dispatchers.IO) {
+                        getUserUseCase.execute().collect{ user ->
+                            withContext(Dispatchers.Main) {
+                                when(user) {
+                                    is Either.Error -> {
+                                        println("Error get user")
+                                    }
+                                    is Either.Success -> {
+                                        dispatch(Msg.ChangeUser(user.data))
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private object ReducerImpl: Reducer<AuthorizationStore.State, Msg > {
@@ -50,6 +85,7 @@ class AuthorizationStoreFactory(
                 is Msg.ChangePhoneNumber -> copy(userData = userData.copy(phoneNumber = msg.phoneNumber))
                 is Msg.ChangePost -> copy(userData = userData.copy(post = msg.post))
                 is Msg.ChangeTelegram -> copy(userData = userData.copy(telegram = msg.telegram))
+                is Msg.ChangeUser -> copy(userData = msg.user)
             }
     }
 
@@ -59,5 +95,11 @@ class AuthorizationStoreFactory(
         data class ChangeName(val name: String) : Msg
         data class ChangePost(val post: String) : Msg
         data class ChangeTelegram(val telegram: String) : Msg
+
+        data class ChangeUser(val user: User) : Msg
+    }
+
+    private sealed interface Action{
+        object LoadUserData : Action
     }
 }
