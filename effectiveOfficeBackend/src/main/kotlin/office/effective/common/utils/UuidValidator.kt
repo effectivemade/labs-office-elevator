@@ -4,6 +4,9 @@ import office.effective.common.exception.ValidationException
 import java.lang.IllegalArgumentException
 import java.util.UUID
 
+/**
+ * Class for UUID validation and conversion
+ */
 class UuidValidator {
     /**
      * Converts string to UUID
