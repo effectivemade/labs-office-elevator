@@ -11,16 +11,23 @@ import office.effective.model.Workspace
 import office.effective.serviceapi.IWorkspaceService
 import java.time.Instant
 
+/**
+ * Class used in routes to handle requests.
+ * Provides business transaction, data conversion and validation.
+ *
+ * In case of an error, the database transaction will be rolled back.
+ */
 class WorkspaceFacade(private val service: IWorkspaceService,
                       private val converter: WorkspaceFacadeConverter,
                       private val transactionManager: DatabaseTransactionManager,
                       private val uuidValidator: UuidValidator) {
 
     /**
-     * Retrieves a workspace model by its id
+     * Retrieves a [WorkspaceDTO] by its id
      *
+     * @param id id of requested workspace. Should be valid UUID
+     * @return [WorkspaceDTO] with the given [id]
      * @throws InstanceNotFoundException if workspace with the given id doesn't exist in database
-     *
      * @author Daniil Zavyalov
      */
     fun findById(id: String): WorkspaceDTO {
@@ -36,8 +43,10 @@ class WorkspaceFacade(private val service: IWorkspaceService,
     }
 
     /**
-     * Returns all workspaces with the given tag
+     * Returns all [WorkspaceDTO] with the given tag
      *
+     * @param tag tag name of requested workspaces
+     * @return List of [WorkspaceDTO] with the given [tag]
      * @author Daniil Zavyalov
      */
     fun findAllByTag(tag: String): List<WorkspaceDTO> {
@@ -49,11 +58,14 @@ class WorkspaceFacade(private val service: IWorkspaceService,
     }
 
     /**
-     * Returns all workspaces with the given tag which are free during the given period
+     * Returns all [Workspace]s with the given tag which are free during the given period
      *
+     * @param tag tag name of requested workspaces
+     * @param beginTimestamp period start time
+     * @param endTimestamp period end time
+     * @return List of [WorkspaceDTO] with the given [tag]
      * @throws ValidationException if begin or end timestamp less than 0, greater than max timestamp
      * or if end timestamp less than or equal to begin timestamp
-     *
      * @author Daniil Zavyalov
      */
     fun findAllFreeByPeriod(tag: String, beginTimestamp: Long, endTimestamp: Long): List<WorkspaceDTO> {
@@ -78,6 +90,7 @@ class WorkspaceFacade(private val service: IWorkspaceService,
     /**
      * Returns all workspace zones
      *
+     * @return List of all [WorkspaceZoneDTO]
      * @author Daniil Zavyalov
      */
     fun findAllZones(): List<WorkspaceZoneDTO> {

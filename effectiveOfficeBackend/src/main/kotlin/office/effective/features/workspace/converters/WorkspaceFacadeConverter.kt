@@ -9,11 +9,19 @@ import office.effective.model.Workspace
 import office.effective.model.WorkspaceZone
 import java.util.*
 
+/**
+ * Converts between [WorkspaceDTO] (with contained [WorkspaceZoneDTO] and [UtilityDTO]s)
+ * and [Workspace] (with contained [WorkspaceZone] and [Utilities][Utility]) objects.
+ *
+ * This converter helps in the transformation of data between the DTO and model representations of a workspace.
+ */
 class WorkspaceFacadeConverter(private val uuidValidator: UuidValidator) {
 
     /**
-     * Converts Workspace with utilities to WorkspaceDTO
-     *
+     * Converts [Workspace] with [WorkspaceZone] and [Utilities][Utility]
+     * to [WorkspaceDTO] with [WorkspaceZoneDTO] and [UtilityDTO]s
+     * @param model The [Workspace] object to be converted
+     * @return The resulting [WorkspaceDTO] object
      * @author Daniil Zavyalov
      */
     fun modelToDto(model: Workspace): WorkspaceDTO {
@@ -24,8 +32,10 @@ class WorkspaceFacadeConverter(private val uuidValidator: UuidValidator) {
     }
 
     /**
-     * Converts Utility to UtilityDTO
+     * Converts [Utility] to [UtilityDTO]
      *
+     * @param model The [Utility] object to be converted
+     * @return The resulting [UtilityDTO] object
      * @author Daniil Zavyalov
      */
     private fun utilityModelToDto(model: Utility): UtilityDTO {
@@ -33,8 +43,10 @@ class WorkspaceFacadeConverter(private val uuidValidator: UuidValidator) {
     }
 
     /**
-     * Converts WorkspaceZone to WorkspaceZoneDTO
+     * Converts [WorkspaceZone] to [WorkspaceZoneDTO]
      *
+     * @param model The [WorkspaceZone] object to be converted
+     * @return The resulting [WorkspaceZoneDTO] object
      * @author Daniil Zavyalov
      */
     fun zoneModelToDto(model: WorkspaceZone): WorkspaceZoneDTO {
@@ -42,9 +54,12 @@ class WorkspaceFacadeConverter(private val uuidValidator: UuidValidator) {
     }
 
     /**
-     * Converts WorkspaceDTO with utilities to Workspace
-     *
-     * @author Daniil Zavyalov
+     * Converts [Workspace] with [WorkspaceZone] and [Utilities][Utility]
+     * to [WorkspaceDTO] with [WorkspaceZoneDTO] and [UtilityDTO]s.
+     * Uses [UuidValidator] to convert workspace id to UUID, but if [WorkspaceDTO.id]=="null" [Workspace.id] will be null
+     * @param dto The WorkspaceDTO object to be converted
+     * @return The resulting Workspace object
+     * @author Daniil Zavyalov, Danil Kiselev
      */
     fun dtoToModel(dto: WorkspaceDTO): Workspace {
         var workspaceId: UUID? = null
@@ -53,16 +68,20 @@ class WorkspaceFacadeConverter(private val uuidValidator: UuidValidator) {
         }
 
         val utilities = dto.utilities.map { utilityDtoToModel(it) }
-        return Workspace(id = workspaceId,
+        return Workspace(
+            id = workspaceId,
             name = dto.name,
             tag = dto.tag,
             utilities = utilities,
-            zone = dto.zone?.let { zoneDtoToModel(it) })
+            zone = dto.zone?.let { zoneDtoToModel(it) }
+        )
     }
 
     /**
-     * Converts UtilityDTO to Utility
+     * Converts [UtilityDTO] to [Utility]
      *
+     * @param dto The [UtilityDTO] object to be converted
+     * @return The resulting [Utility] object
      * @author Daniil Zavyalov
      */
     private fun utilityDtoToModel(dto: UtilityDTO): Utility {
@@ -70,8 +89,10 @@ class WorkspaceFacadeConverter(private val uuidValidator: UuidValidator) {
     }
 
     /**
-     * Converts WorkspaceZoneDTO to WorkspaceZone
+     * Converts [WorkspaceZoneDTO] to [WorkspaceZone]
      *
+     * @param dto The [WorkspaceZoneDTO] object to be converted
+     * @return The resulting [WorkspaceZone] object
      * @author Daniil Zavyalov
      */
     private fun zoneDtoToModel(dto: WorkspaceZoneDTO): WorkspaceZone {
