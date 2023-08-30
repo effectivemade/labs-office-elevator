@@ -66,8 +66,8 @@ class BookingCalendarRepository(
     }
 
     private fun checkEventOrganizer(event: Event, email: String): Boolean {
-        if (event.organizer?.email?.equals(defaultCalendar) == false) {
-            return event?.description?.contains(email)?: false
+        if (event.organizer?.email?.equals(defaultCalendar) ?: false) { //Don't replace '?: false' with '== true'
+            return event.description.contains(email)
         }
         return event.organizer?.email?.equals(email) ?: false
     }
