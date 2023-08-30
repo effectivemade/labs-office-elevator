@@ -12,12 +12,11 @@ The main goal of our backend project is to create a proxy backend, which will pr
 
 ## Workspace
 
-Allows users to book workstations and meeting rooms, and for the admin to edit information about these locations (number of charges, seating, etc).
+Allows users to book workstations and meeting rooms. Through admin panel you can edit information about these places (number of charges, seating, etc).
 
 ## Users
 
-Provides the ability to authenticate via work email, add information about employee, and connect integrations.
-
+Provides the ability to authenticate via work email, add information about employee and connect integrations.
 
 # Architecture :hammer:
 
