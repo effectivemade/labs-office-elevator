@@ -19,18 +19,12 @@ Allows users to book workstations and meeting rooms, and for the admin to edit i
 Provides the ability to authenticate via work email, add information about employee, and connect integrations.
 
 
-# Architecture
+# Architecture :hammer:
 
 ## System Context
 
 <p align="center">
-  <img src="..\assets\logo.jpg" width=""  height="250">
-</p>
-
-## Container Context
-
-<p align="center">
-  <img src="..\assets\logo.jpg" width=""  height="250">
+  <img src="..\assets\system_context.png" width="2000">
 </p>
 
 # Swagger :sparkles:
