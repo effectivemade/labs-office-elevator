@@ -11,6 +11,9 @@ import org.ktorm.dsl.*
 import org.ktorm.entity.*
 import java.util.*
 
+/**
+ * Perform database queries with users
+ * */
 class UserRepository(
     private val db: Database,
     private val converter: UserModelEntityConverter,
@@ -19,8 +22,9 @@ class UserRepository(
 
     /**
      * Checks existence of user by id, using count
-     * @return Boolean (true - exists)
      *
+     * @return [Boolean] (true - exists)
+     * @param userId user id in [UUID] format
      * @author Danil Kiselev
      * */
     fun existsById(userId: UUID): Boolean {
@@ -28,10 +32,11 @@ class UserRepository(
     }
 
     /**
-     * @return UserModel if user exists
-     * @throws InstanceNotFoundException if user not found
+     * Retrieves user model by id
      *
-     * @author Danil Kiselev
+     * @return [UserModel] if user exists
+     * @param userId user id in [UUID] format
+     * @author Danil Kiselev, Daniil Zavyalov
      * */
     fun findById(userId: UUID): UserModel? {
         val userEnt: UserEntity? = db.users.find { it.id eq userId }
@@ -43,7 +48,7 @@ class UserRepository(
 
     /**
      * Retrieves all users
-     * @return Set<UserModel>
+     * @return [Set]<[UserModel]>
      *
      * @author Daniil Zavyalov
      * */
@@ -67,9 +72,9 @@ class UserRepository(
 
     /**
      * Used to find multiple users with one tag
-     * @return Set<UserModel> - users with tag name like input
+     * @return [Set]<[UserModel]> - users with tag name like input
      *
-     * @author Danil Kiselev
+     * @author Danil Kiselev, Daniil Zavyalov
      * */
     fun findByTag(tagId: UUID): Set<UserModel> {
 
@@ -87,25 +92,12 @@ class UserRepository(
     /**
      * Retrieves a user model by email
      *
-     * @return UserModel
+     * @return [UserModel]
      * @throws InstanceNotFoundException if user with the given email doesn't exist in database
      * @author Daniil Zavyalov
      */
     fun findByEmail(email: String): UserModel? {
         val entity: UserEntity? = db.users.find { it.email eq email }
-        //?: throw InstanceNotFoundException(UserEntity::class, "User with email $email not found")
-//        if (entity == null) {
-//            return UserModel(
-//                fullName = "",
-//                id = UUID.randomUUID(),
-//                tag = null,
-//                active = false,
-//                role = "",
-//                avatarURL = "",
-//                integrations = null,
-//                email = email
-//            )
-//        }
         var integrations: MutableSet<IntegrationModel>? = null
 
         if (entity != null) {
@@ -117,8 +109,8 @@ class UserRepository(
 
     /**
      * Returns Integration entity by id
-     * @return IntegrationEntity
-     * @throws InstanceNotFoundException(IntegrationEntity, "Integration with id ${id} not found")
+     * @return [IntegrationEntity]
+     * @throws InstanceNotFoundException([IntegrationEntity], "Integration with id ${id} not found")
      *
      * @author Danil Kiselev
      * */
@@ -130,10 +122,10 @@ class UserRepository(
 
     /**
      * Returns all integrations of user (by user id)
-     * @return MutableSet<IntegrationModel>
-     * @throws InstanceNotFoundException(UserEntity::class, "User $userId")
-     *
-     * @author Danil Kiselev
+     * @return [MutableSet]<[IntegrationModel]>
+     * @throws InstanceNotFoundException([UserEntity]::class, "User $userId")
+     * @param userId user id in [UUID] format
+     * @author Danil Kiselev, Daniil Zavyalov
      * */
     fun findSetOfIntegrationsByUser(userId: UUID): MutableSet<IntegrationModel> {
         if (!existsById(userId)) {
@@ -159,10 +151,10 @@ class UserRepository(
 
     /**
      * Returns a HashMap that maps user ids and their integrations
-     * @return HashMap<UUID, MutableSet<IntegrationModel>>
+     * @return [HashMap]<[UUID], [MutableSet]<[IntegrationModel]>>
      * @throws InstanceNotFoundException if user with the given id doesn't exist in the database
-     *
-     * @author Daniil Zavyalov
+     * @param ids [Collection]<[UUID]> of users id
+     * @author Daniil Zavyalov, Danil Kiselev
      * */
     fun findAllIntegrationsByUserIds(ids: Collection<UUID>): HashMap<UUID, MutableSet<IntegrationModel>> {
         if (ids.isEmpty()) {
@@ -186,10 +178,10 @@ class UserRepository(
     }
 
     /**
-     * Returns TagModel by value
-     * @return UserTagModel
-     * @throws InstanceNotFoundException(UsersTagEntity::class, "Tag with name ${tagName} not found")
-     *
+     * Returns [UserTagModel] by tag name
+     * @return [UserTagModel]
+     * @throws InstanceNotFoundException([UsersTagEntity]::class, "Tag with name ${tagName} not found")
+     * @param tagName name of the tag
      * @author Danil Kiselev
      * */
     fun findTagByName(tagName: String): UserTagModel {
@@ -200,11 +192,11 @@ class UserRepository(
     }
 
     /**
-     * Updates a given user. Use the returned model for further operations
-     *
+     * Updates a given user. User searched in db by id. Use the returned model for further operations.
+     * @return [UserModel] updated user model
      * @throws MissingIdException if the user or integration id is null
-     *
      * @throws InstanceNotFoundException if the given user or integration don't exist
+     * @param model [UserModel] with updated information
      *
      * @author Danil Kiselev, Daniil Zavyalov
      */
@@ -234,10 +226,11 @@ class UserRepository(
      * Adds many-to-many relationship between user and its integrations
      *
      * @throws MissingIdException if the integration id is null
-     *
+     * @param integrationModels [Set]<[IntegrationModel]> set of integrations to save
+     * @param userId user id in [UUID] format
      * @throws InstanceNotFoundException if the given integration don't exist
      *
-     * @author Daniil Zavyalov
+     * @author Daniil Zavyalov, Danil Kiselev
      */
     private fun saveIntegrations(integrationModels: Set<IntegrationModel>, userId: UUID) {
         db.usersinegrations.removeIf { it.userId eq userId }
@@ -259,7 +252,7 @@ class UserRepository(
     /**
      * Returns Tag entity or null, if user with such id doesn't exist
      * @return UsersTagEntity?
-     *
+     * @param userId user id in [UUID] format
      * @author Danil Kiselev
      * */
     fun findTagByUserOrNull(userId: UUID): UsersTagEntity? {
