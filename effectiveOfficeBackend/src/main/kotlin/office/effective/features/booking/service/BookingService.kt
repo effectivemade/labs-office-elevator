@@ -10,6 +10,9 @@ import office.effective.model.*
 import office.effective.serviceapi.IBookingService
 import java.util.UUID
 
+/**
+ * Class that implements the [IBookingService] methods
+ */
 class BookingService(
     private val bookingRepository: IBookingRepository,
     private val userRepository: UserRepository,
@@ -177,7 +180,7 @@ class BookingService(
      */
     private fun findUtilities(workspace: Workspace): List<Utility> {
         val workspaceId =
-            workspace.id ?: return emptyList()
+            workspace.id ?: return emptyList() //TODO: return MissingIdException
         return workspaceRepository.findUtilitiesByWorkspaceId(workspaceId)
     }
 

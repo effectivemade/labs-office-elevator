@@ -10,6 +10,9 @@ import office.effective.features.user.di.userDIModule
 import office.effective.features.workspace.DI.workspaceDiModule
 import org.koin.ktor.plugin.Koin
 
+/**
+ * Koin dependency injection modules
+ */
 fun Application.configureDI() {
     install(Koin) {
         modules(

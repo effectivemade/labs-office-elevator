@@ -10,6 +10,7 @@ import java.util.*
 
 /**
  * Subscribe to Google Calendar push notifications. Should be called after DI configuration
+ * Google will send notifications on APPLICATION_URL/notifications
  *
  * @author Daniil Zavyalov
  */
