@@ -6,7 +6,7 @@
 
 # Goal :dart:
 
-The main goal of our backend project is to create a proxy backend, which will provide abilities to book workspaces and meeting rooms, edit workspaces information, authentication and more! It was important to us that the application synchronizes with Google Calendar, in order to keep the ability to perform the same tasks with the same tools, if suddenly, the employee will not be able to use the application.
+The main goal of subproject is to create a proxy backend, which will provide abilities to book workspaces and meeting rooms, edit workspaces information, authentication and more! It was important to us that the application synchronizes with Google Calendar, in order to keep the ability to perform the same tasks with the same tools, if suddenly, the employee will not be able to use the application.
 
 # Features :fire:
 
