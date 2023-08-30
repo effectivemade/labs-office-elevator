@@ -19,6 +19,8 @@ class BookingService(
     /**
      * Returns whether a booking with the given id exists
      *
+     * @param id booking id
+     * @return true if booking exists
      * @author Daniil Zavyalov
      */
     override fun existsById(id: String): Boolean {
@@ -28,6 +30,7 @@ class BookingService(
     /**
      * Deletes the booking with the given id
      *
+     * @param id booking id
      * @author Daniil Zavyalov
      */
     override fun deleteById(id: String) {
@@ -37,6 +40,8 @@ class BookingService(
     /**
      * Retrieves a booking model by its id
      *
+     * @param id - booking id
+     * @return [Booking] with the given [id] or null if workspace with the given id doesn't exist
      * @author Daniil Zavyalov
      */
     override fun findById(id: String): Booking? {
@@ -58,8 +63,9 @@ class BookingService(
     /**
      * Returns all bookings. Bookings can be filtered by owner and workspace id
      *
-     * @throws InstanceNotFoundException if user or workspace with the given id doesn't exist in database
-     *
+     * @param userId use to filter by booking owner id
+     * @param workspaceId use to filter by booking workspace id
+     * @throws InstanceNotFoundException if [UserModel] or [Workspace] with the given id doesn't exist in database
      * @author Daniil Zavyalov
      */
     override fun findAll(userId: UUID?, workspaceId: UUID?): List<Booking> {
@@ -98,8 +104,9 @@ class BookingService(
      * Adds integrations and utilities to related user and workspace models.
      * Use the returned booking list for further operations
      *
+     * @param bookingList bookings for which user integrations and workspace utilities need to be found and added.
+     * @return bookings with user integrations and workspace utilities
      * @throws MissingIdException if user or workspace doesn't have an id
-     *
      * @author Daniil Zavyalov
      */
     private fun findIntegrationsAndUtilities(bookingList: List<Booking>): List<Booking> {
@@ -127,8 +134,9 @@ class BookingService(
      * Adds integrations and utilities to users and workspace
      * related with the given booking model
      *
+     * @param bookingList bookings for which user integrations and workspace utilities need to be added.
+     * @return bookings with user integrations and workspace utilities
      * @throws MissingIdException if user model doesn't have an id
-     *
      * @author Daniil Zavyalov
      */
     private fun addIntegrationsAndUtilities(
@@ -147,10 +155,11 @@ class BookingService(
     }
 
     /**
-     * Retrieves all integrations for a given user model
+     * Retrieves all integrations for a given user model. Uses [UserModel.id] to find integrations
      *
+     * @param user for which integrations need to be added
+     * @return List of [IntegrationModel] for the given [UserModel]
      * @throws MissingIdException if user model doesn't have an id
-     *
      * @author Daniil Zavyalov
      */
     private fun findIntegrations(user: UserModel): Set<IntegrationModel> {
@@ -159,10 +168,11 @@ class BookingService(
     }
 
     /**
-     * Retrieves all utilities for a given workspace model
+     * Retrieves all utilities for a given workspace model. Uses [Workspace.id] to find utilities
      *
+     * @param workspace for which utilities need to be added
+     * @return List of [Utility] for the given [Workspace]
      * @throws MissingIdException if workspace doesn't have an id
-     *
      * @author Daniil Zavyalov
      */
     private fun findUtilities(workspace: Workspace): List<Utility> {
@@ -174,6 +184,8 @@ class BookingService(
     /**
      * Saves a given booking. Use the returned model for further operations
      *
+     * @param booking [Booking] to be saved
+     * @return saved [Booking]
      * @author Daniil Zavyalov
      */
     override fun save(booking: Booking): Booking {
@@ -183,6 +195,8 @@ class BookingService(
     /**
      * Updates a given booking. Use the returned model for further operations
      *
+     * @param booking changed booking
+     * @return [Booking] after change saving
      * @author Daniil Zavyalov
      */
     override fun update(booking: Booking): Booking {

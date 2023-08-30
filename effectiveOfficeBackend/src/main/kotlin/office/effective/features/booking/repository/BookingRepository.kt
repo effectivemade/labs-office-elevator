@@ -13,7 +13,14 @@ import org.ktorm.dsl.*
 import org.ktorm.entity.*
 import java.util.*
 import kotlin.collections.List
+import office.effective.model.Workspace
 
+/**
+ * Class that executes database queries with workspaces
+ *
+ * All WorkspaceRepository methods return [Booking] objects with
+ * [Workspace] and [UserModel] objects with empty [Workspace.utilities] and [UserModel.integrations]
+ */
 class BookingRepository(private val database: Database,
                         private val converter: BookingRepositoryConverter,
                         private val uuidValidator: UuidValidator) : IBookingRepository{
@@ -21,6 +28,8 @@ class BookingRepository(private val database: Database,
     /**
      * Returns whether a booking with the given id exists
      *
+     * @param id booking id
+     * @return true if booking exists
      * @author Daniil Zavyalov
      */
     override fun existsById(id: String): Boolean {
@@ -32,6 +41,7 @@ class BookingRepository(private val database: Database,
      *
      * If the booking is not found in the database it is silently ignored
      *
+     * @param id booking id
      * @author Daniil Zavyalov
      */
     override fun deleteById(id: String) {
@@ -44,6 +54,8 @@ class BookingRepository(private val database: Database,
      * Retrieves a booking model by its id.
      * Retrieved booking contains user and workspace models without integrations and utilities
      *
+     * @param bookingId - booking id
+     * @return [Booking] with the given [bookingId] or null if workspace with the given id doesn't exist
      * @author Daniil Zavyalov
      */
     override fun findById(bookingId: String): Booking? {
@@ -56,6 +68,8 @@ class BookingRepository(private val database: Database,
     /**
      * Returns all bookings with the given owner id
      *
+     * @param ownerId
+     * @return List of all user [Booking]
      * @author Daniil Zavyalov
      */
     override fun findAllByOwnerId(ownerId: UUID): List<Booking> {
@@ -69,6 +83,8 @@ class BookingRepository(private val database: Database,
     /**
      * Returns all bookings with the given workspace id
      *
+     * @param workspaceId
+     * @return List of all workspace [Booking]
      * @author Daniil Zavyalov
      */
     override fun findAllByWorkspaceId(workspaceId: UUID): List<Booking> {
@@ -82,6 +98,9 @@ class BookingRepository(private val database: Database,
     /**
      * Returns all bookings with the given workspace and owner id
      *
+     * @param ownerId
+     * @param workspaceId
+     * @return List of all [Booking]s with the given workspace and owner id
      * @author Daniil Zavyalov
      */
     override fun findAllByOwnerAndWorkspaceId(ownerId: UUID, workspaceId: UUID): List<Booking> {
@@ -96,8 +115,9 @@ class BookingRepository(private val database: Database,
     }
 
     /**
-     * Returns all bookings
+     * Retrieves all bookings
      *
+     * @return All [Booking]s
      * @author Daniil Zavyalov
      */
     override fun findAll(): List<Booking> {
@@ -109,8 +129,10 @@ class BookingRepository(private val database: Database,
     }
 
     /**
-     * Retrieves all users who participate in the booking with the given id
+     * Retrieves all [users][UserEntity] who participate in the [booking][Booking] with the given id
      *
+     * @param bookingId
+     * @return booking participants
      * @author Daniil Zavyalov
      */
     private fun findParticipants(bookingId: UUID): List<UserEntity> {
@@ -125,6 +147,8 @@ class BookingRepository(private val database: Database,
     /**
      * Checks whether the workspace is available for booking for the given period
      *
+     * @param bookingEntity
+     * @return true if workspace can be booked in period from [Booking.beginBooking] to [Booking.endBooking]
      * @author Daniil Zavyalov
      */
     private fun workspaceAvailableForBooking(bookingEntity: WorkspaceBookingEntity): Boolean {
@@ -137,8 +161,9 @@ class BookingRepository(private val database: Database,
      * Saves a given booking. If given model will have an id, it will be ignored.
      * Use the returned model for further operations
      *
+     * @param booking [Booking] to be saved
+     * @return saved [Booking]
      * @throws WorkspaceUnavailableException if workspace can't be booked in a given period
-     *
      * @author Daniil Zavyalov
      */
     override fun save(booking: Booking): Booking {
@@ -165,6 +190,8 @@ class BookingRepository(private val database: Database,
     /**
      * Checks whether the booking can be updated with the given booking period
      *
+     * @param entity
+     * @return true if workspace can be booked in period from [Booking.beginBooking] to [Booking.endBooking]
      * @author Daniil Zavyalov
      */
     private fun bookingCanBeUpdated(entity: WorkspaceBookingEntity): Boolean {
@@ -176,10 +203,10 @@ class BookingRepository(private val database: Database,
     /**
      * Updates a given booking. Use the returned model for further operations
      *
+     * @param booking changed booking
+     * @return [Booking] after change saving
      * @throws InstanceNotFoundException if booking given id doesn't exist in the database
-     *
      * @throws WorkspaceUnavailableException if workspace can't be booked in a given period
-     *
      * @author Daniil Zavyalov
      */
     override fun update(booking: Booking): Booking {
@@ -202,8 +229,11 @@ class BookingRepository(private val database: Database,
     }
 
     /**
-     * Adds many-to-many relationship between booking and its participants
+     * Adds many-to-many relationship between booking and its participants.
+     * Uses [UserModel.id] to find actual [participant entity][UserEntity].
      *
+     * @param participantModels
+     * @return actual participant entities
      * @author Daniil Zavyalov
      */
     private fun saveParticipants(participantModels: List<UserModel>, bookingId: UUID): List<UserEntity> {
@@ -219,7 +249,10 @@ class BookingRepository(private val database: Database,
 
     /**
      * Retrieves user entities by the ids of the given user models
+     * Uses [UserModel.id] to find actual [participant entity][UserEntity].
      *
+     * @param participantModels
+     * @return actual participant entities
      * @author Daniil Zavyalov
      */
     private fun findParticipantEntities(participantModels: List<UserModel>): List<UserEntity> {

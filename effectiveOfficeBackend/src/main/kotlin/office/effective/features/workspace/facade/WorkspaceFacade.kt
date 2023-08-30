@@ -12,7 +12,7 @@ import office.effective.serviceapi.IWorkspaceService
 import java.time.Instant
 
 /**
- * Class used in routes to handle requests.
+ * Class used in routes to handle workspaces requests.
  * Provides business transaction, data conversion and validation.
  *
  * In case of an error, the database transaction will be rolled back.
