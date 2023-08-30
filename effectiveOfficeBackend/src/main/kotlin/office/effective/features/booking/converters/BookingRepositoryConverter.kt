@@ -18,6 +18,12 @@ import org.ktorm.dsl.eq
 import org.ktorm.entity.find
 import java.util.*
 
+/**
+ * Converts between [Booking] and [WorkspaceBookingEntity] objects.
+ * Uses [UserModelEntityConverter] and [WorkspaceRepositoryConverter] to convert contained users and workspaces
+ *
+ * Performs own database queries to user and workspace entities
+ */
 class BookingRepositoryConverter(private val database: Database,
                                  private val workspaceConverter: WorkspaceRepositoryConverter,
                                  private val userConverter: UserModelEntityConverter,
@@ -25,7 +31,16 @@ class BookingRepositoryConverter(private val database: Database,
 
     /**
      * Converts booking entity to model which contains user and workspace models.
+     *
      * User/workspace models contain an empty list of integrations/utilities.
+     * Use WorkspaceRepository and UserRepository to find it
+     *
+     * TODO: this method can create only Bookings without recurrence
+     *
+     * @param bookingEntity [WorkspaceBookingEntity] to be converted
+     * @param participants users who participate in the booking
+     * @return The resulting [Booking] object
+     * @author Daniil Zavyalov
      */
     fun entityToModel(bookingEntity: WorkspaceBookingEntity,
                       participants: List<UserEntity>): Booking {
@@ -44,11 +59,14 @@ class BookingRepositoryConverter(private val database: Database,
     }
 
     /**
-     * Converts booking model to entity
+     * Converts booking model to entity.
+     * Uses ids from contained [UserModel] and [Workspace] to find actual entities in database
      *
+     * @param bookingModel [Booking] to be converted
+     * @return The resulting [WorkspaceBookingEntity] object
      * @throws MissingIdException if the booking, owner or workspace id is null
-     *
      * @throws InstanceNotFoundException if the given user or workspace don't exist
+     * @author Daniil Zavyalov
      */
     fun modelToEntity(bookingModel: Booking): WorkspaceBookingEntity {
         return WorkspaceBookingEntity {
@@ -62,11 +80,13 @@ class BookingRepositoryConverter(private val database: Database,
     }
 
     /**
-     * Returns the user entity for the given model
+     * Finds booking owner entity
      *
+     * @param ownerModel
+     * @return the [UserEntity] for the given booking model
      * @throws MissingIdException if the user id is null
-     *
      * @throws InstanceNotFoundException if the given user don't exist
+     * @author Daniil Zavyalov
      */
     private fun findOwnerEntity(ownerModel: UserModel): UserEntity {
         val ownerId: UUID = ownerModel.id
@@ -77,11 +97,13 @@ class BookingRepositoryConverter(private val database: Database,
     }
 
     /**
-     * Returns the workspace entity for the given model
+     * Finds booking workspace entity
      *
+     * @param workspaceModel
+     * @return the [WorkspaceEntity] for the given booking model
      * @throws MissingIdException if the workspace id is null
-     *
      * @throws InstanceNotFoundException if the given workspace don't exist
+     * @author Daniil Zavyalov
      */
     private fun findWorkspaceEntity(workspaceModel: Workspace): WorkspaceEntity {
         val workspaceId: UUID = workspaceModel.id
