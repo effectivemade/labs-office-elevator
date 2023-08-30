@@ -12,7 +12,7 @@ import org.ktorm.entity.find
 import org.ktorm.entity.toList
 import java.util.UUID
 
-class CalendarRepository(
+class CalendarIdsRepository(
     private val db: Database,
     private val converter: WorkspaceRepositoryConverter,
     private val workspaceRepository: WorkspaceRepository,

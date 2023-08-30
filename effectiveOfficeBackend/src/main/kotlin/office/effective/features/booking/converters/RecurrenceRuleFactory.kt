@@ -1,4 +1,4 @@
-package utils
+package office.effective.features.booking.converters
 
 import model.Ending
 import model.Freq

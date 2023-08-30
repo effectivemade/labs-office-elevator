@@ -7,20 +7,21 @@ import office.effective.features.user.repository.UserEntity
 import office.effective.features.user.repository.UserRepository
 import office.effective.features.workspace.repository.WorkspaceRepository
 import office.effective.model.*
+import office.effective.serviceapi.IBookingService
 import java.util.UUID
 
 class BookingService(
     private val bookingRepository: IBookingRepository,
     private val userRepository: UserRepository,
     private val workspaceRepository: WorkspaceRepository
-) {
+): IBookingService {
 
     /**
      * Returns whether a booking with the given id exists
      *
      * @author Daniil Zavyalov
      */
-    fun existsById(id: String): Boolean {
+    override fun existsById(id: String): Boolean {
         return bookingRepository.existsById(id)
     }
 
@@ -29,7 +30,7 @@ class BookingService(
      *
      * @author Daniil Zavyalov
      */
-    fun deleteById(id: String) {
+    override fun deleteById(id: String) {
         bookingRepository.deleteById(id)
     }
 
@@ -38,7 +39,7 @@ class BookingService(
      *
      * @author Daniil Zavyalov
      */
-    fun findById(id: String): Booking? {
+    override fun findById(id: String): Booking? {
         val booking = bookingRepository.findById(id) ?: return null
         val userIds = mutableSetOf<UUID>()
         for (participant in booking.participants) {
@@ -61,7 +62,7 @@ class BookingService(
      *
      * @author Daniil Zavyalov
      */
-    fun findAll(userId: UUID?, workspaceId: UUID?): List<Booking> {
+    override fun findAll(userId: UUID?, workspaceId: UUID?): List<Booking> {
         val bookingList = when {
             userId != null && workspaceId != null -> {
                 if (!workspaceRepository.workspaceExistsById(workspaceId)) throw InstanceNotFoundException(
@@ -175,7 +176,7 @@ class BookingService(
      *
      * @author Daniil Zavyalov
      */
-    fun save(booking: Booking): Booking {
+    override fun save(booking: Booking): Booking {
         return bookingRepository.save(booking)
     }
 
@@ -184,7 +185,7 @@ class BookingService(
      *
      * @author Daniil Zavyalov
      */
-    fun update(booking: Booking): Booking {
+    override fun update(booking: Booking): Booking {
         return bookingRepository.update(booking)
     }
 }
