@@ -1,4 +1,43 @@
-# How to launch backend
+<p align="center">
+  <img src="..\assets\logo.jpg" width=""  height="250">
+</p>
+
+# Effective-Office-EffectiveBackend
+
+# Goal :dart:
+
+The main goal of our backend project is to create a proxy backend, which will provide abilities to book workspaces and meeting rooms, edit workspaces information, authentication and more! It was important to us that the application synchronizes with Google Calendar, in order to keep the ability to perform the same tasks with the same tools, if suddenly, the employee will not be able to use the application.
+
+# Features :fire:
+
+## Workspace
+
+Allows users to book workstations and meeting rooms, and for the admin to edit information about these locations (number of charges, seating, etc).
+
+## Users
+
+Provides the ability to authenticate via work email, add information about employee, and connect integrations.
+
+
+# Architecture
+
+## System Context
+
+<p align="center">
+  <img src="..\assets\logo.jpg" width=""  height="250">
+</p>
+
+## Container Context
+
+<p align="center">
+  <img src="..\assets\logo.jpg" width=""  height="250">
+</p>
+
+# Swagger :sparkles:
+
+[Link](https://d5do2upft1rficrbubot.apigw.yandexcloud.net/swagger/index.html)
+
+# How to launch backend :running:
 
 ## Receiving code
 
@@ -65,3 +104,9 @@ postgres container from docker. In that case you may run named container by comm
 **APPLICATION_URL** - actual url address of application itself. Must not be "localhost""<br>
 
 You may use file .env.example as an example.
+
+## Authors: :writing_hand:
+
+- [Daniil Zavyalov](https://github.com/zavyalov-daniil)
+- [Danil Kiselev](https://github.com/kiselev-danil)
+- [Egor Parkhomenko](https://github.com/1MPULSEONE)
