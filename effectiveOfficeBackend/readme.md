@@ -26,9 +26,34 @@ Provides the ability to authenticate via work email, add information about emplo
   <img src="..\assets\system_context.png" width="2000">
 </p>
 
+## Container Context
+
+<p align="center">
+  <img src="..\assets\container_context.png" width="2000">
+</p>
+
 # Swagger :sparkles:
 
 [Link](https://d5do2upft1rficrbubot.apigw.yandexcloud.net/swagger/index.html)
+
+## Used libraries 📚
+
+A list of technologies used within the project:
+
+* ktor-server
+* koin
+* ktorm
+* postgresql drivers
+* google api client
+* google oauth client
+* google api services calendar
+* liquibase
+* ktor swagger
+* firebase
+* kotlin tests junit
+* mockito
+* h2 database drivers (for tests)
+* logback classic
 
 # How to launch backend :running:
 
