@@ -12,6 +12,9 @@ import org.ktorm.entity.find
 import org.ktorm.entity.toList
 import java.util.UUID
 
+/**
+ * Class that executes database queries with workspace calendar ids
+ */
 class CalendarIdsRepository(
     private val db: Database,
     private val converter: WorkspaceRepositoryConverter,
@@ -34,8 +37,8 @@ class CalendarIdsRepository(
     }
 
     /**
-     * @return Workspace model by calendar id (String)
-     *
+     * @param calendarId
+     * @return [Workspace] model by calendar id (String)
      * @author Danil Kiselev
      * */
     fun findWorkspaceById(calendarId: String): Workspace {
@@ -52,8 +55,13 @@ class CalendarIdsRepository(
         }
     }
 
+    /**
+     * Finds all Google calendar ids
+     * @return all calendar ids from database including default
+     * @author Danil Kiselev
+     * */
     fun findAllCalendarsId(): List<String> {
-        var list = mutableListOf<String>()
+        val list = mutableListOf<String>()
         list.add(
             config.propertyOrNull("auth.app.defaultAppEmail")?.getString() ?: throw Exception(
                 "Config file does not contain default gmail value"
