@@ -21,8 +21,6 @@ interface IBookingRepository {
     /**
      * Deletes the booking with the given id
      *
-     * If the booking is not found it is silently ignored
-     *
      * @param id booking id
      * @author Daniil Zavyalov, Danil Kiselev
      */
@@ -32,8 +30,8 @@ interface IBookingRepository {
      * Retrieves a booking model by its id.
      * Retrieved booking contains user and workspace models without integrations and utilities
      *
-     * @param bookingId - booking id
-     * @return [Booking] with the given [bookingId] or null if workspace with the given id doesn't exist
+     * @param bookingId booking id
+     * @return [Booking] with the given [bookingId] or null if booking with the given id doesn't exist
      * @author Daniil Zavyalov, Danil Kiselev
      */
     fun findById(bookingId: String): Booking?
@@ -80,7 +78,6 @@ interface IBookingRepository {
      *
      * @param booking [Booking] to be saved
      * @return saved [Booking]
-     * @throws WorkspaceUnavailableException if workspace can't be booked in a given period
      * @author Daniil Zavyalov, Danil Kiselev
      */
     fun save(booking: Booking): Booking
@@ -91,7 +88,6 @@ interface IBookingRepository {
      * @param booking changed booking
      * @return [Booking] after change saving
      * @throws InstanceNotFoundException if booking given id doesn't exist in the database
-     * @throws WorkspaceUnavailableException if workspace can't be booked in a given period
      * @author Daniil Zavyalov, Danil Kiselev
      */
     fun update(booking: Booking): Booking

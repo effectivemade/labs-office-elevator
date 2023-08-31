@@ -16,7 +16,7 @@ import kotlin.collections.List
 import office.effective.model.Workspace
 
 /**
- * Class that executes database queries with workspaces
+ * Class that executes database queries with bookings
  *
  * All WorkspaceRepository methods return [Booking] objects with
  * [Workspace] and [UserModel] objects with empty [Workspace.utilities] and [UserModel.integrations]
@@ -54,8 +54,8 @@ class BookingRepository(private val database: Database,
      * Retrieves a booking model by its id.
      * Retrieved booking contains user and workspace models without integrations and utilities
      *
-     * @param bookingId - booking id
-     * @return [Booking] with the given [bookingId] or null if workspace with the given id doesn't exist
+     * @param bookingId booking id
+     * @return [Booking] with the given [bookingId] or null if booking with the given id doesn't exist
      * @author Daniil Zavyalov
      */
     override fun findById(bookingId: String): Booking? {
