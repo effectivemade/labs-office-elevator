@@ -29,7 +29,7 @@ Provides the ability to authenticate via work email, add information about emplo
 ## Container Context
 
 <p align="center">
-  <img src="..\assets\container_context.png" width="2000">
+  <img src="..\assets\demo_container_context.png" width="2000">
 </p>
 
 # Swagger :sparkles:
