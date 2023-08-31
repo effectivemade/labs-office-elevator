@@ -8,6 +8,9 @@ import io.ktor.server.routing.*
 import office.effective.common.notifications.INotificationSender
 import org.koin.core.context.GlobalContext
 
+/**
+ * Route for Google calendar push notifications
+ */
 fun Route.calendarNotificationsRouting() {
     route("/notifications") {
         val messageSender: INotificationSender = GlobalContext.get().get()

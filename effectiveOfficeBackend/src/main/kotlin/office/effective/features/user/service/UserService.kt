@@ -5,6 +5,9 @@ import office.effective.model.UserModel
 import office.effective.serviceapi.IUserService
 import java.util.*
 
+/**
+ * Class that provides methods to manipulate [UserModel] objects
+ * */
 class UserService(private val repository: UserRepository) : IUserService {
 
     override fun getUsersByTag(tagStr: String): Set<UserModel> {
@@ -13,7 +16,7 @@ class UserService(private val repository: UserRepository) : IUserService {
 
     /**
      * Retrieves all users
-     * @return Set<UserModel>
+     * @return [Set]<[UserModel]>
      *
      * @author Daniil Zavyalov
      * */
@@ -28,17 +31,21 @@ class UserService(private val repository: UserRepository) : IUserService {
     /**
      * Updates a given user. Use the returned model for further operations
      *
-     * @author Danil Kiselev
+     * @param user User's model
+     * @return [UserModel]
+     * @author Kiselev Danil
      */
     override fun updateUser(user: UserModel): UserModel {
         return repository.updateUser(user)
     }
 
     /**
-     * Retrieves a user model by email
+     * Return user with specified email
      *
-     * @author Danil Kiselev
-     */
+     * @param emailStr user email
+     * @return [UserModel]
+     * @author Kiselev Danil
+     * */
     override fun getUserByEmail(emailStr: String): UserModel? {
         return repository.findByEmail(emailStr)
     }

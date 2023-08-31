@@ -4,11 +4,16 @@ import office.effective.common.exception.InstanceNotFoundException
 import office.effective.model.*
 import java.util.*
 
+/**
+ * Interface that provides methods for manipulating [Booking] objects.
+ */
 interface IBookingService {
 
     /**
      * Returns whether a booking with the given id exists
      *
+     * @param id booking id
+     * @return true if booking exists
      * @author Daniil Zavyalov
      */
     fun existsById(id: String): Boolean
@@ -16,6 +21,7 @@ interface IBookingService {
     /**
      * Deletes the booking with the given id
      *
+     * @param id booking id
      * @author Daniil Zavyalov
      */
     fun deleteById(id: String)
@@ -23,6 +29,8 @@ interface IBookingService {
     /**
      * Retrieves a booking model by its id
      *
+     * @param id - booking id
+     * @return [Booking] with the given [id] or null if workspace with the given id doesn't exist
      * @author Daniil Zavyalov
      */
     fun findById(id: String): Booking?
@@ -30,8 +38,9 @@ interface IBookingService {
     /**
      * Returns all bookings. Bookings can be filtered by owner and workspace id
      *
-     * @throws InstanceNotFoundException if user or workspace with the given id doesn't exist in database
-     *
+     * @param userId use to filter by booking owner id
+     * @param workspaceId use to filter by booking workspace id
+     * @throws InstanceNotFoundException if [UserModel] or [Workspace] with the given id doesn't exist in database
      * @author Daniil Zavyalov
      */
     fun findAll(userId: UUID?, workspaceId: UUID?): List<Booking>
@@ -39,6 +48,8 @@ interface IBookingService {
     /**
      * Saves a given booking. Use the returned model for further operations
      *
+     * @param booking [Booking] to be saved
+     * @return saved [Booking]
      * @author Daniil Zavyalov
      */
     fun save(booking: Booking): Booking
@@ -46,6 +57,8 @@ interface IBookingService {
     /**
      * Updates a given booking. Use the returned model for further operations
      *
+     * @param booking changed booking
+     * @return [Booking] after change saving
      * @author Daniil Zavyalov
      */
     fun update(booking: Booking): Booking
