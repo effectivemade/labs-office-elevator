@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.components.LoadingIndicator
 import band.effective.office.elevator.textInBorderGray
 import band.effective.office.elevator.theme_light_onPrimary
 import band.effective.office.elevator.ui.employee.allEmployee.models.mappers.EmployeeCard
@@ -66,6 +67,7 @@ fun EmployeeScreen(component: EmployeeComponent) {
         }
     }
     EmployeeScreenContent(
+        isLoading = employState.isLoading,
         employeesData = employeesData,
         employeesCount = employeesCount,
         userMessageState = userMessageState,
@@ -79,7 +81,8 @@ fun EmployeeScreenContent(
     employeesCount: String,
     userMessageState: String,
     onCardClick: (String) -> Unit,
-    onTextFieldUpdate: (String) -> Unit
+    onTextFieldUpdate: (String) -> Unit,
+    isLoading: Boolean
 ) {
 
     Column {
@@ -156,9 +159,16 @@ fun EmployeeScreenContent(
                 )
             }
 
-            LazyColumn {
-                items(employeesData) { employee_Data ->
-                    EveryEmployeeCard(emp = employee_Data, onCardClick)
+            when (isLoading){
+                true -> {
+                    LoadingIndicator()
+                }
+                false -> {
+                    LazyColumn {
+                        items(employeesData) { employee_Data ->
+                            EveryEmployeeCard(emp = employee_Data, onCardClick)
+                        }
+                    }
                 }
             }
         }

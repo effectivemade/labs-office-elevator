@@ -122,7 +122,8 @@ internal class EmployeeStoreFactory(private val storeFactory: StoreFactory) : Ko
                     copy(
                         changeShowedEmployeeCards = newEmployeesList,
                         countShowedEmployeeCards = newEmployeesList.count().toString(),
-                        allEmployeeList = msg.employeesInfo
+                        allEmployeeList = msg.employeesInfo,
+                        isLoading = false
                     )
                 }
 
@@ -135,7 +136,8 @@ internal class EmployeeStoreFactory(private val storeFactory: StoreFactory) : Ko
                     copy(
                         query = msg.query,
                         changeShowedEmployeeCards = newEmployeesList,
-                        countShowedEmployeeCards = newEmployeesList.count().toString()
+                        countShowedEmployeeCards = newEmployeesList.count().toString(),
+                        isLoading = false
                     )
                 }
             }
