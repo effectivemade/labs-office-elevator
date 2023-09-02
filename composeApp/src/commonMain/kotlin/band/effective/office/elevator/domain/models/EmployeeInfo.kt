@@ -1,10 +1,6 @@
 package band.effective.office.elevator.domain.models
 
-import band.effective.office.elevator.MainRes.strings.map
-import band.effective.office.elevator.utils.map
 import band.effective.office.network.dto.UserDTO
-import band.effective.office.network.model.Either
-import band.effective.office.network.model.ErrorResponse
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
 
@@ -22,14 +18,14 @@ data class EmployeeInfo(
     companion object {
         val defaultEmployee =
             EmployeeInfo(
-                id = "1B",
-                name = "Romanov Roman",
-                post = "IOS Developer",
-                state = "In office",
-                logoUrl  = "https://wampi.ru/image/R9C6OC7",
-                phoneNum = "+79137894523",
-                eMail = "employee@effective.com",
-                telegramProfile = "@Romanov_Roman"
+                id = "",
+                name = "",
+                post = "",
+                state = "",
+                logoUrl  = "",
+                phoneNum = "",
+                eMail = "",
+                telegramProfile = ""
             )
     }
 }

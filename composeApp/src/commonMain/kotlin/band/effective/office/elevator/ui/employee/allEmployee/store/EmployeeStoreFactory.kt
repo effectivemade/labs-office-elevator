@@ -33,7 +33,6 @@ internal class EmployeeStoreFactory(private val storeFactory: StoreFactory) : Ko
                 initialState = EmployeeStore.State(
                     changeShowedEmployeeCards = emptyList(),
                     countShowedEmployeeCards = "0",
-                    countInOfficeShowedEmployeeCards = "0",
                     query = "",
                     allEmployeeList = listOf()
                 ),
@@ -123,8 +122,6 @@ internal class EmployeeStoreFactory(private val storeFactory: StoreFactory) : Ko
                     copy(
                         changeShowedEmployeeCards = newEmployeesList,
                         countShowedEmployeeCards = newEmployeesList.count().toString(),
-                        countInOfficeShowedEmployeeCards = newEmployeesList
-                            .filter { it.state == "In office" }.count().toString(),
                         allEmployeeList = msg.employeesInfo
                     )
                 }
@@ -138,9 +135,7 @@ internal class EmployeeStoreFactory(private val storeFactory: StoreFactory) : Ko
                     copy(
                         query = msg.query,
                         changeShowedEmployeeCards = newEmployeesList,
-                        countShowedEmployeeCards = newEmployeesList.count().toString(),
-                        countInOfficeShowedEmployeeCards = newEmployeesList.count { it.state == "In office" }
-                            .toString(),
+                        countShowedEmployeeCards = newEmployeesList.count().toString()
                     )
                 }
             }
