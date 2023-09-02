@@ -39,15 +39,17 @@ class MultiBottomSheetController(
         sheetContents[nameSheet]?.showBottomSheet()
     }
 
+    @OptIn(ExperimentalMaterialApi::class)
     suspend fun closeCurrentSheet() {
         sheetContents[sheetStack.pop()]?.hideBottomSheet()
+        currentState.update { getCurrentSheetState()}
     }
 
     @OptIn(ExperimentalMaterialApi::class)
     fun getCurrentSheetState(): ModalBottomSheetState {
         println(sheetStack.size)
         return sheetContents[sheetStack.peek()]?.bottomSheetContentState
-            ?: sheetContents[BottomSheetNames.BOOK_REPEAT.name]?.bottomSheetContentState!!
+            ?: emptyModalState
     }
 
     fun getCurrentSheetContent(): @Composable ColumnScope.() -> Unit {
