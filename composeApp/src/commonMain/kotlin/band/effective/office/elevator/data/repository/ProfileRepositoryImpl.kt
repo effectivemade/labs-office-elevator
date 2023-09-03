@@ -3,10 +3,10 @@ package band.effective.office.elevator.data.repository
 
 import band.effective.office.elevator.data.database.DBSource
 import band.effective.office.elevator.domain.models.ErrorWithData
-import band.effective.office.elevator.domain.repository.ProfileRepository
 import band.effective.office.elevator.domain.models.User
 import band.effective.office.elevator.domain.models.toUser
 import band.effective.office.elevator.domain.models.toUserDTO
+import band.effective.office.elevator.domain.repository.ProfileRepository
 import band.effective.office.elevator.utils.map
 import band.effective.office.network.api.Api
 import band.effective.office.network.dto.UserDTO
@@ -24,6 +24,10 @@ class ProfileRepositoryImpl(
     private val bdSource: DBSource
 ) : ProfileRepository, KoinComponent {
 
+    private var idEmail = ""
+    private var idPhoneNumber = ""
+    private var idTelegram = ""
+
     private val lastResponse: MutableStateFlow<Either<ErrorWithData<User>, User>> =
         MutableStateFlow(
             Either.Error(
@@ -36,7 +40,8 @@ class ProfileRepositoryImpl(
     override suspend fun updateUser(user: User): Flow<Either<ErrorWithData<User>, User>> = flow {
         println("User for auth: ${user}")
         val requestResult =
-            api.updateUser(user.toUserDTO()).convert(this@ProfileRepositoryImpl.lastResponse.value)
+            api.updateUser(user.toUserDTO(idEmail = idEmail, idPhoneNumber = idPhoneNumber,
+                idTelegram = idTelegram )).convert(this@ProfileRepositoryImpl.lastResponse.value)
         val newUser = requestResult.getData()
         val cashedUser = bdSource.getCurrentUserInfo()
         if (newUser != null && newUser != cashedUser) {
@@ -49,6 +54,7 @@ class ProfileRepositoryImpl(
 
     //TODO(Artem Gruzdev) maybe can easier this method
     override suspend fun getUser(): Flow<Either<ErrorWithData<User>, User>> = flow {
+
         val cashedUser = bdSource.getCurrentUserInfo()
         if (cashedUser == null) {
             emit(Either.Error(ErrorWithData(
@@ -59,6 +65,7 @@ class ProfileRepositoryImpl(
         else {
             val requestResult = api.getUser(cashedUser.id).convert(lastResponse.value)
             val userFromApi = requestResult.getData()
+            println("User : ${userFromApi}")
             if (userFromApi != null && userFromApi != cashedUser) {
                 bdSource.update(userFromApi)
                 lastResponse.update { requestResult }
@@ -97,6 +104,9 @@ class ProfileRepositoryImpl(
             )
         },
             successMapper = { userDTO ->
+                idEmail = userDTO.integrations?.find { it.name == "email" }?.id ?: ""
+                idPhoneNumber = userDTO.integrations?.find { it.name == "phoneNumber" }?.id ?: ""
+                idTelegram = userDTO.integrations?.find { it.name == "telegram" }?.id ?: ""
                 userDTO.toUser()
             })
 }
