@@ -273,4 +273,40 @@ class BookingCalendarRepository(
 //                Booking::class, "Cannot to found booking directly after booking", null
 //            )
     }
+
+
+    private fun checkBookingAvailable(incomingEvent: Event): Boolean {
+        if (incomingEvent.recurrence != null) {
+            val events = calendarEvents.instances(defaultCalendar, incomingEvent.id).execute()
+            events.forEach { event ->
+                checkSingleEventCollision(event.value as Event)
+            }
+        } else {
+            checkSingleEventCollision(incomingEvent)
+        }
+        return false
+    }
+
+    private fun checkSingleEventCollision(event: Event): Boolean {
+        var flag: Boolean = true
+        val workspaceId = googleCalendarConverter.toBookingModel(event).workspace.id
+            ?: throw Exception("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+        val savedEvents = findAllByWorkspaceId(workspaceId)
+        for (okEvent in savedEvents) {
+
+            /*
+            Условия не-букинга [] - saved events, () - new event
+            1) ---[]---(--[--)---]-----[]-------------------------
+            2) ---[]-----[---(--]--)---[]-------------------------
+            3) ---[]-----[--(--)-]-----[]-------------------------
+            4.1) ---[]----(-[-----]--)---[]-----------------------
+            4.2) ---[]---(--[-----]-----[----]---)----------------
+            */
+
+            if (TODO("Check events collision")) {
+                flag = false
+            }
+        }
+        return flag
+    }
 }
