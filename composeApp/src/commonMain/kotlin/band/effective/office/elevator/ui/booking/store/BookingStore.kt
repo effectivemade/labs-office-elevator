@@ -60,6 +60,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         data class ChangeBookingRepeat(val bookingRepeat: StringResource) : Intent
 
         data class ChangeSelectedType(val selectedType: TypesList) : Intent
+
     }
 
     data class State(
@@ -147,5 +148,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         object CloseStartTimeModal : Label
         object CloseBookRepeat : Label
         object OpenBookRepeat : Label
+
+        data class ShowToast(val message: String) : Label
     }
 }
