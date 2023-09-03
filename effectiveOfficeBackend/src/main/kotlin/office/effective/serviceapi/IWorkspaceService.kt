@@ -1,16 +1,14 @@
-package office.effective.features.workspace.service
+package office.effective.serviceapi
 
-import office.effective.features.workspace.repository.WorkspaceRepository
 import office.effective.model.Workspace
 import office.effective.model.WorkspaceZone
-import office.effective.serviceapi.IWorkspaceService
 import java.time.Instant
-import java.util.UUID
+import java.util.*
 
 /**
- * Class that implements the [IWorkspaceService] methods
+ * Interface that provides methods for manipulating [Workspace] objects.
  */
-class WorkspaceService(private val repository: WorkspaceRepository): IWorkspaceService {
+interface IWorkspaceService {
 
     /**
      * Retrieves a Workspace model by its id
@@ -19,9 +17,7 @@ class WorkspaceService(private val repository: WorkspaceRepository): IWorkspaceS
      * @return [Workspace] with the given [id] or null if workspace with the given id doesn't exist
      * @author Daniil Zavyalov
      */
-    override fun findById(id: UUID): Workspace? {
-        return repository.findById(id)
-    }
+    fun findById(id: UUID): Workspace?
 
     /**
      * Returns all workspaces with the given tag
@@ -30,9 +26,7 @@ class WorkspaceService(private val repository: WorkspaceRepository): IWorkspaceS
      * @return List of [Workspace] with the given [tag]
      * @author Daniil Zavyalov
      */
-    override fun findAllByTag(tag: String): List<Workspace> {
-        return repository.findAllByTag(tag)
-    }
+    fun findAllByTag(tag: String): List<Workspace>
 
     /**
      * Returns all workspaces with the given tag which are free during the given period
@@ -43,9 +37,7 @@ class WorkspaceService(private val repository: WorkspaceRepository): IWorkspaceS
      * @return List of [Workspace] with the given [tag]
      * @author Daniil Zavyalov
      */
-    override fun findAllFreeByPeriod(tag: String, beginTimestamp: Instant, endTimestamp: Instant): List<Workspace> {
-        return repository.findAllFreeByPeriod(tag, beginTimestamp, endTimestamp)
-    }
+    fun findAllFreeByPeriod(tag: String, beginTimestamp: Instant, endTimestamp: Instant): List<Workspace>
 
     /**
      * Returns all workspace zones
@@ -53,7 +45,5 @@ class WorkspaceService(private val repository: WorkspaceRepository): IWorkspaceS
      * @return List of all [WorkspaceZone]
      * @author Daniil Zavyalov
      */
-    override fun findAllZones(): List<WorkspaceZone> {
-        return repository.findAllZones()
-    }
+    fun findAllZones(): List<WorkspaceZone>
 }

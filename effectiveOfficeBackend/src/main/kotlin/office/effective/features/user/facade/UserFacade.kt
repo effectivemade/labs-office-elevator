@@ -5,15 +5,26 @@ import office.effective.common.utils.DatabaseTransactionManager
 import office.effective.features.user.ITokenVerifier
 import office.effective.features.user.converters.UserDTOModelConverter
 import office.effective.dto.UserDTO
-import office.effective.features.user.service.IUserService
+import office.effective.serviceapi.IUserService
 import office.effective.model.UserModel
 
+/**
+ * Class used in routes to handle user-related requests.
+ * Provides business transaction, data conversion and validation.
+ * */
 class UserFacade(
     private val service: IUserService,
     private val converterDTO: UserDTOModelConverter,
     private val verifier: ITokenVerifier,
     private val transactionManager: DatabaseTransactionManager
 ) {
+    /**
+     * Return all users with given tag
+     *
+     * @param tagStr name of the tag
+     * @return [Set]<[UserDTO]>
+     * @author Kiselev Danil, Daniil Zavyalov
+     * */
     fun getUsersByTag(tagStr: String): Set<UserDTO> {
         val models: Set<UserModel> =
             transactionManager.useTransaction<Set<UserModel>>({ service.getUsersByTag(tagStr) })
@@ -24,7 +35,8 @@ class UserFacade(
 
     /**
      * Retrieves all users
-     * @return Set<UserDTO>
+     * @return [Set]<[UserDTO]>
+     * @throws InstanceNotFoundException(UserModel::class, "User with id ${userIdStr} not found", null)
      *
      * @author Daniil Zavyalov
      * */
@@ -38,6 +50,14 @@ class UserFacade(
         })
     }
 
+    /**
+     * Return user by id, or returns null, if user not found
+     *
+     * @param userIdStr string value of user id
+     * @return [UserDTO]
+     * @throws InstanceNotFoundException(UserModel::class, "User with id ${userIdStr} not found", null)
+     * @author Kiselev Danil
+     * */
     fun getUserById(userIdStr: String): UserDTO {
         return transactionManager.useTransaction<UserDTO>({
             converterDTO.modelToDTO(
@@ -49,10 +69,13 @@ class UserFacade(
     }
 
     /**
-     * Retrieves a user model by email
+     * Return user by email
      *
-     * @author Daniil Zavyalov
-     */
+     * @param email user email
+     * @return [UserDTO]
+     * @throws InstanceNotFoundException(UserModel::class, "User with email $email not found", null)
+     * @author Kiselev Danil, Daniil Zavyalov
+     * */
     fun getUserByEmail(email: String): UserDTO {
         return transactionManager.useTransaction<UserDTO>({
             converterDTO.modelToDTO(
@@ -66,7 +89,10 @@ class UserFacade(
     /**
      * Updates a given user. Use the returned model for further operations
      *
-     * @author Danil Kiselev
+     * @param user [UserDTO] - user dto with changed information
+     * @return [UserDTO] - updated user
+     *
+     * @author Danil Kiselev, Daniil Zavyalov
      */
     fun updateUser(user: UserDTO): UserDTO {
         return transactionManager.useTransaction({
@@ -77,9 +103,4 @@ class UserFacade(
             )
         })
     }
-
-//    fun getUserByToken(tokenStr: String): UserDTO {
-//        val userEmail = verifier.isCorrectToken(tokenStr)
-//        return converterDTO.modelToDTO(transactionManager.useTransaction<UserModel>({ service.getUserByEmail(userEmail) }))
-//    }
 }
