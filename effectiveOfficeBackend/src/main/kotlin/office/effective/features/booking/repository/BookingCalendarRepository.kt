@@ -1,5 +1,6 @@
 package office.effective.features.booking.repository
 
+import com.google.api.client.util.DateTime
 import com.google.api.services.calendar.Calendar
 import com.google.api.services.calendar.model.Event
 import office.effective.common.exception.InstanceNotFoundException
@@ -240,7 +241,7 @@ class BookingCalendarRepository(
      * @author Daniil Zavyalov
      */
     private fun findAllEntities(): List<Event> {
-        return calendarEvents.list(defaultCalendar).execute().items.filter { event ->
+        return calendarEvents.list(defaultCalendar).setTimeMin(DateTime(minTime)).execute().items.filter { event ->
             event.status != "cancelled"
         }.filter { (it?.start?.dateTime?.value ?: 0) > minTime }
     }
