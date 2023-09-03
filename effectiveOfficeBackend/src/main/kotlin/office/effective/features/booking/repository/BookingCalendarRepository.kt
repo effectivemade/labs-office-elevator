@@ -1,11 +1,11 @@
 package office.effective.features.booking.repository
 
+import com.google.api.client.googleapis.json.GoogleJsonResponseException
 import com.google.api.client.util.DateTime
 import com.google.api.services.calendar.Calendar
 import com.google.api.services.calendar.model.Event
 import office.effective.common.exception.InstanceNotFoundException
 import office.effective.common.exception.MissingIdException
-import office.effective.common.exception.WorkspaceUnavailableException
 import office.effective.config
 import office.effective.features.calendar.repository.CalendarIdsRepository
 import office.effective.features.booking.converters.GoogleCalendarConverter
@@ -13,8 +13,6 @@ import office.effective.features.user.repository.UserRepository
 import office.effective.model.Booking
 import office.effective.features.user.repository.UserEntity
 import office.effective.features.workspace.repository.WorkspaceRepository
-import office.effective.model.UserModel
-import office.effective.model.Workspace
 import java.util.*
 
 /**
@@ -59,7 +57,7 @@ class BookingCalendarRepository(
      */
     override fun existsById(id: String): Boolean {
         val event: Any?
-        event = calendarEvents.get(defaultCalendar, id).execute()
+        event = findByCalendarIdAndBookingId(defaultCalendar, id)
         return event != null
     }
 
@@ -97,7 +95,12 @@ class BookingCalendarRepository(
      * @author Danil Kiselev
      */
     private fun findByCalendarIdAndBookingId(calendarId: String, bookingId: String): Event? {
-        return calendar.events().get(calendarId, bookingId).execute()//calendarEvents.list(calendarId).execute().items.find { it.id.equals(bookingId) }
+        return try {
+            calendar.events().get(calendarId, bookingId).execute()
+        } catch (e: GoogleJsonResponseException) {
+            if(e.statusCode == 404) return null
+            else throw e
+        }
     }
 
     /**
