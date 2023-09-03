@@ -69,7 +69,11 @@ fun EmployeeScreen(component: EmployeeComponent) {
     LaunchedEffect(component) {
         component.employLabel.collect { label ->
             when (label) {
-                is EmployeeStore.Label.ShowProfileScreen -> component.onOutput(EmployeeComponent.Output.OpenProfileScreen(label.employee))
+                is EmployeeStore.Label.ShowProfileScreen -> component.onOutput(
+                    EmployeeComponent.Output.OpenProfileScreen(
+                        label.employee
+                    )
+                )
             }
         }
     }
@@ -91,6 +95,12 @@ fun EmployeeScreenContent(
     onCardClick: (String) -> Unit,
     onTextFieldUpdate: (String) -> Unit
 ) {
+    /*
+        NOTE: textField bug https://issuetracker.google.com/issues/160257648?pli=1
+        in https://medium.com/androiddevelopers/effective-state-management-for-textfield-in-compose-d6e5b070fbe5
+        recommend don`t  use stateFlow, but in mviKotlin - state is stateFlow
+     */
+    var userNameQuery by remember { mutableStateOf(userMessageState) }
 
     Column {
         Column(
@@ -107,7 +117,9 @@ fun EmployeeScreenContent(
                 modifier = Modifier.padding(start = 20.dp, top = 55.dp, end = 15.dp, bottom = 25.dp)
             )
             TextField(
-                value = userMessageState, onValueChange = {
+                value = userNameQuery,
+                onValueChange = {
+                    userNameQuery = it
                     onTextFieldUpdate(it)
                 }, modifier = Modifier
                     .fillMaxWidth()
@@ -214,7 +226,7 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: (String) -> Unit) {
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom=15.dp)
+            .padding(bottom = 15.dp)
             .animateContentSize()
             .clickable { isExpanded = !isExpanded },
         color = MaterialTheme.colors.onPrimary
@@ -222,7 +234,7 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: (String) -> Unit) {
         Row(modifier = Modifier.padding(6.dp, 15.dp)) {
 
             CompositionLocalProvider(
-                LocalImageLoader provides remember {generateImageLoader()},
+                LocalImageLoader provides remember { generateImageLoader() },
             ) {
                 emp.logoUrl.let { url ->
                     val request = remember(url) {
@@ -259,8 +271,10 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: (String) -> Unit) {
                 Spacer(modifier = Modifier.padding(0.dp, 8.dp))
                 OutlinedButton(
                     onClick = { isExpanded = !isExpanded },
-                    colors = ButtonDefaults.buttonColors(backgroundColor =
-                    MaterialTheme.colors.onPrimary),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor =
+                        MaterialTheme.colors.onPrimary
+                    ),
                     elevation = ButtonDefaults.elevation(
                         defaultElevation = 0.dp,
                         pressedElevation = 2.dp,
