@@ -33,8 +33,6 @@ import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.LoadingIndicator
 import band.effective.office.elevator.components.ModalCalendar
 import band.effective.office.elevator.components.TitlePage
-import band.effective.office.elevator.ui.booking.components.modals.DeleteBooking
-import band.effective.office.elevator.successGreen
 import band.effective.office.elevator.ui.booking.components.modals.BookingContextMenu
 import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsFilter
 import band.effective.office.elevator.ui.main.components.BookingInformation
@@ -182,10 +180,11 @@ fun MainScreen(component: MainComponent) {
 }
 
 @Composable
-private fun SnackBarErrorMessage(modifier: Modifier, isVisible: Boolean, message: String) {
+fun SnackBarErrorMessage(modifier: Modifier, isVisible: Boolean, message: String) {
     AnimatedVisibility(modifier = modifier, visible = isVisible) {
         Snackbar(modifier.padding(16.dp), backgroundColor = MaterialTheme.colors.error) {
-            Text(text = message)
+            Text(text = message,
+                color = ExtendedThemeColors.colors.whiteColor)
         }
     }
 }
