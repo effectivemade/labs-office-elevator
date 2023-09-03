@@ -97,7 +97,7 @@ class BookingCalendarRepository(
      * @author Danil Kiselev
      */
     private fun findByCalendarIdAndBookingId(calendarId: String, bookingId: String): Event? {
-        return calendarEvents.list(calendarId).execute().items.find { it.id.equals(bookingId) }
+        return calendar.events().get(calendarId, bookingId).execute()//calendarEvents.list(calendarId).execute().items.find { it.id.equals(bookingId) }
     }
 
     /**
