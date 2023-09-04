@@ -49,7 +49,7 @@ class MultiBottomSheetController(
     fun getCurrentSheetState(): ModalBottomSheetState {
         println(sheetStack.size)
         return sheetContents[sheetStack.peek()]?.bottomSheetContentState
-            ?: emptyModalState
+            ?: sheetContents[BottomSheetNames.BOOK_REPEAT.name]?.bottomSheetContentState!!
     }
 
     fun getCurrentSheetContent(): @Composable ColumnScope.() -> Unit {
