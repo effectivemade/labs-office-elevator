@@ -1,6 +1,9 @@
 package office.effective.features.workspace.converters
 
 import office.effective.common.exception.InstanceNotFoundException
+import office.effective.dto.UtilityDTO
+import office.effective.dto.WorkspaceDTO
+import office.effective.dto.WorkspaceZoneDTO
 import office.effective.features.workspace.repository.*
 import office.effective.model.Utility
 import office.effective.model.Workspace
@@ -11,11 +14,19 @@ import org.ktorm.entity.find
 import java.lang.IllegalArgumentException
 import java.util.UUID
 
+/**
+ * Converts between [WorkspaceEntity] and [Workspace] objects.
+ *
+ * This converter helps in the transformation of data between the entity and model representations of a workspace.
+ */
 class WorkspaceRepositoryConverter(private val database: Database) {
 
     /**
-     * Converts WorkspaceEntity to Workspace
+     * Converts [WorkspaceEntity] with its [WorkspaceZoneEntity] to [Workspace] with [WorkspaceZone]
      *
+     * @param entity The [WorkspaceEntity] object to be converted
+     * @param utilities [Utilities][Utility] for [Workspace]
+     * @return The resulting [Workspace] object
      * @author Daniil Zavyalov
      */
     fun entityToModel(entity: WorkspaceEntity, utilities: List<Utility>): Workspace {
@@ -29,8 +40,11 @@ class WorkspaceRepositoryConverter(private val database: Database) {
     }
 
     /**
-     * Converts UtilityEntity to Utility with given count
+     * Converts [UtilityEntity] to [Utility] with given count
      *
+     * @param entity The [WorkspaceEntity] object to be converted
+     * @param count The number of this utility in the workspace
+     * @return The resulting [Utility] object
      * @author Daniil Zavyalov
      */
     fun utilityEntityToModel(entity: UtilityEntity, count: Int): Utility {
@@ -38,8 +52,10 @@ class WorkspaceRepositoryConverter(private val database: Database) {
     }
 
     /**
-     * Converts WorkspaceZoneEntity to WorkspaceZone model
+     * Converts [WorkspaceZoneEntity] to [WorkspaceZone] model
      *
+     * @param zoneEntity The [WorkspaceZoneEntity] object to be converted
+     * @return The resulting [WorkspaceZone] object
      * @author Daniil Zavyalov
      */
     fun zoneEntityToModel(zoneEntity: WorkspaceZoneEntity): WorkspaceZone {
@@ -47,8 +63,8 @@ class WorkspaceRepositoryConverter(private val database: Database) {
     }
 
     /**
-     * Converts Workspace and WorkspaceTagEntity to WorkspaceEntity with random UUID.
-     * Use database connection to find tag
+     * Converts [Workspace] to [WorkspaceEntity] with random UUID.
+     * Use database connection to find [WorkspaceTagEntity] by [Workspace.tag]
      *
      * @throws InstanceNotFoundException if tag doesn't exist in the database
      *
@@ -70,8 +86,10 @@ class WorkspaceRepositoryConverter(private val database: Database) {
     }
 
     /**
-     * Converts WorkspaceZoneEntity to WorkspaceZone model
+     * Converts [WorkspaceZoneEntity] to [WorkspaceZone] model
      *
+     * @param zoneModel The [WorkspaceZone] object to be converted
+     * @return The resulting [WorkspaceZoneEntity] object
      * @author Daniil Zavyalov
      */
     fun zoneModelToEntity(zoneModel: WorkspaceZone): WorkspaceZoneEntity {

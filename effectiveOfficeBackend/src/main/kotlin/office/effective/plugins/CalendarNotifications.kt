@@ -4,12 +4,13 @@ import com.google.api.services.calendar.Calendar
 import com.google.api.services.calendar.model.Channel
 import io.ktor.server.application.*
 import office.effective.config
-import office.effective.features.calendar.repository.CalendarRepository
+import office.effective.features.calendar.repository.CalendarIdsRepository
 import org.koin.core.context.GlobalContext
 import java.util.*
 
 /**
  * Subscribe to Google Calendar push notifications. Should be called after DI configuration
+ * Google will send notifications on APPLICATION_URL/notifications
  *
  * @author Daniil Zavyalov
  */
@@ -19,8 +20,8 @@ fun Application.configureCalendarNotifications() {
 
     val calendar: Calendar = GlobalContext.get().get()
     val appAddress: String = System.getenv("APPLICATION_URL")
-    val calendarRepository: CalendarRepository = GlobalContext.get().get()
-    val calendarIds = calendarRepository.findAllCalendarsId().toMutableList()
+    val calendarIdsRepository: CalendarIdsRepository = GlobalContext.get().get()
+    val calendarIds = calendarIdsRepository.findAllCalendarsId().toMutableList()
     calendarIds.add(defaultCalendar)
     calendarIds.forEach { calendar_id ->
         val channel = Channel().apply {

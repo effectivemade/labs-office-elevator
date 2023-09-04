@@ -5,12 +5,17 @@ import office.effective.features.user.repository.UserEntity
 import office.effective.model.IntegrationModel
 import office.effective.model.UserModel
 
+/**
+ * Converters between [UserModel] and [UserEntity]
+ * */
 class UserModelEntityConverter {
 
     /**
-     * Converts user model to entity
+     * Converts [UserModel] to [UserEntity]
      *
      * @throws MissingIdException if the user id is null
+     * @param userModel [UserModel] to be converted
+     * @return converted [UserEntity]
      *
      * @author Danil Kiselev, Daniil Zavyalov
      */
@@ -27,7 +32,11 @@ class UserModelEntityConverter {
     }
 
     /**
-     * Converts user entity to model
+     * Converts [UserModel] to [UserEntity]
+     *
+     * @param userEntity [UserEntity] to be converted
+     * @param integrations [Set]<[IntegrationModel]>? to add into user model
+     * @return converted [UserModel]
      *
      * @author Danil Kiselev, Daniil Zavyalov
      */

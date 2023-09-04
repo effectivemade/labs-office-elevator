@@ -32,7 +32,7 @@ class AboutEmployeeStoreFactory(
 ) : KoinComponent {
 
     private val aboutEmployeeInteractor: AboutEmployeeInteractor by inject()
-    private var currentUser = EmployeeInfo.defaultEmployee.toUIAbout()
+    private var currentUser = employeeInfo.toUIAbout()
     private var recentDate = getCurrentDate()
     private var filtration = BookingsFilter(meetRoom = true, workPlace = true)
     private var datedList = false

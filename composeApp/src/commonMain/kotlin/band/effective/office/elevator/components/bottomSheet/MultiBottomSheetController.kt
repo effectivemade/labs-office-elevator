@@ -39,8 +39,10 @@ class MultiBottomSheetController(
         sheetContents[nameSheet]?.showBottomSheet()
     }
 
+    @OptIn(ExperimentalMaterialApi::class)
     suspend fun closeCurrentSheet() {
         sheetContents[sheetStack.pop()]?.hideBottomSheet()
+        currentState.update { getCurrentSheetState()}
     }
 
     @OptIn(ExperimentalMaterialApi::class)

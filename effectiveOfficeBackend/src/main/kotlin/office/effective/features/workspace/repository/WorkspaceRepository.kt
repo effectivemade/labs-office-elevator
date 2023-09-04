@@ -1,11 +1,8 @@
 package office.effective.features.workspace.repository
 
 import office.effective.common.exception.InstanceNotFoundException
-import office.effective.features.booking.repository.BookingCalendarRepository
 import office.effective.features.booking.repository.IBookingRepository
-import office.effective.features.booking.repository.WorkspaceBooking
 import office.effective.features.workspace.converters.WorkspaceRepositoryConverter
-import office.effective.model.IntegrationModel
 import office.effective.model.Utility
 import office.effective.model.Workspace
 import office.effective.model.WorkspaceZone
@@ -17,11 +14,19 @@ import org.ktorm.support.postgresql.insertOrUpdate
 import java.time.Instant
 import java.util.UUID
 
+/**
+ * Class that executes database queries with workspaces
+ *
+ * All WorkspaceRepository methods return workspaces with workspace zone and all utilities
+ */
 class WorkspaceRepository(private val database: Database, private val converter: WorkspaceRepositoryConverter) {
 
     /**
-     * Returns whether a workspace with the given id exists
+     * Returns whether a workspace with the given id exists.
      *
+     * TODO: existence check temporary always returns true
+     * @param workspaceId id of requested workspace
+     * @return true if [Workspace] with the given [workspaceId] exists in the database
      * @author Daniil Zavyalov
      */
     fun workspaceExistsById(workspaceId: UUID): Boolean {
@@ -31,6 +36,8 @@ class WorkspaceRepository(private val database: Database, private val converter:
     /**
      * Returns whether a utility with the given id exists
      *
+     * @param utilityId id of requested utility
+     * @return true if [Utility] with the given [utilityId] exists in the database
      * @author Daniil Zavyalov
      */
     fun utilityExistsById(utilityId: UUID): Boolean {
@@ -38,10 +45,11 @@ class WorkspaceRepository(private val database: Database, private val converter:
     }
 
     /**
-     * Returns all workspace utilities by workspace id
+     * Returns all workspace utilities by workspace id.
      *
+     * @param workspaceId
+     * @return List of [Utility] for [Workspace] with the given id
      * @throws InstanceNotFoundException if workspace with given id doesn't exist in the database
-     *
      * @author Daniil Zavyalov
      */
     fun findUtilitiesByWorkspaceId(workspaceId: UUID): List<Utility> {
@@ -52,8 +60,10 @@ class WorkspaceRepository(private val database: Database, private val converter:
     }
 
     /**
-     * Returns all workspace utilities by workspace id
+     * Returns all workspace utilities by workspace id without throwing an exception
      *
+     * @param workspaceId
+     * @return List of [Utility] for [Workspace] with the given id
      * @author Daniil Zavyalov
      */
     private fun findUtilityModels(workspaceId: UUID): List<Utility> {
@@ -70,8 +80,11 @@ class WorkspaceRepository(private val database: Database, private val converter:
     }
 
     /**
-     * Returns a HashMap that maps user ids and their integrations
-     * @return HashMap<UUID, MutableList<Utility>>
+     * Finds utilities for multiple workspaces in a single query.
+     *
+     * To reduce the number of database queries, use this method when you need to get utilities for multiple workspaces.
+     *
+     * @return Returns a HashMap that maps user ids and lists with their integrations
      * @throws InstanceNotFoundException if user with the given id doesn't exist in the database
      *
      * @author Daniil Zavyalov
@@ -104,6 +117,8 @@ class WorkspaceRepository(private val database: Database, private val converter:
     /**
      * Retrieves a workspace model by its id
      *
+     * @param workspaceId id of requested workspace
+     * @return [Workspace] with the given [workspaceId] or null if workspace with the given id doesn't exist
      * @author Daniil Zavyalov
      */
     fun findById(workspaceId: UUID): Workspace? {
@@ -115,8 +130,9 @@ class WorkspaceRepository(private val database: Database, private val converter:
     /**
      * Returns all workspaces with the given tag
      *
+     * @param tag tag name of requested workspaces
+     * @return List of [Workspace] with the given [tag]
      * @throws InstanceNotFoundException if tag doesn't exist in the database
-     *
      * @author Daniil Zavyalov
      */
     fun findAllByTag(tag: String): List<Workspace> {
@@ -133,8 +149,11 @@ class WorkspaceRepository(private val database: Database, private val converter:
     /**
      * Returns all workspaces with the given tag which are free during the given period
      *
+     * @param tag tag name of requested workspaces
+     * @param beginTimestamp period start time
+     * @param endTimestamp period end time
+     * @return List of [Workspace] with the given [tag]
      * @throws InstanceNotFoundException if tag doesn't exist in the database
-     *
      * @author Daniil Zavyalov
      */
     fun findAllFreeByPeriod(tag: String, beginTimestamp: Instant, endTimestamp: Instant): List<Workspace> {
@@ -157,6 +176,7 @@ class WorkspaceRepository(private val database: Database, private val converter:
     /**
      * Returns all workspace zones
      *
+     * @return List of all [WorkspaceZone]
      * @author Daniil Zavyalov
      */
     fun findAllZones(): List<WorkspaceZone> {
@@ -167,8 +187,10 @@ class WorkspaceRepository(private val database: Database, private val converter:
      * Adds utility to workspace by their id.
      * If the utility has already been added to the workspace, the count value will be overwritten
      *
+     * @param utilityId
+     * @param workspaceId
+     * @param count quantity of the given utility in the workspace
      * @throws InstanceNotFoundException if workspace or utility with given id doesn't exist in the database
-     *
      * @author Daniil Zavyalov
      */
     @Deprecated("API does not involve adding utility to workspaces")
@@ -192,6 +214,8 @@ class WorkspaceRepository(private val database: Database, private val converter:
     /**
      * Saves a given workspace. If given model will have id, it will be ignored. Use the returned model for further operations
      *
+     * @param workspace [Workspace] to be saved
+     * @return saved [Workspace]
      * @author Daniil Zavyalov
      */
     @Deprecated("API does not involve saving workspace entities")
@@ -209,6 +233,7 @@ class WorkspaceRepository(private val database: Database, private val converter:
      *
      * If the workspace is not found in the database it is silently ignored
      *
+     * @param workspaceId
      * @author Daniil Zavyalov
      */
     @Deprecated("API does not involve deleting workspace entities")

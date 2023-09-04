@@ -5,11 +5,17 @@ import office.effective.common.utils.DatabaseTransactionManager
 import office.effective.common.utils.UuidValidator
 import office.effective.features.booking.converters.BookingFacadeConverter
 import office.effective.dto.BookingDTO
-import office.effective.features.booking.service.BookingService
 import office.effective.model.Booking
 import office.effective.model.Workspace
+import office.effective.serviceapi.IBookingService
 
-class BookingFacade(private val bookingService: BookingService,
+/**
+ * Class used in routes to handle bookings requests.
+ * Provides business transaction, data conversion and validation.
+ *
+ * In case of an error, the database transaction will be rolled back.
+ */
+class BookingFacade(private val bookingService: IBookingService,
                     private val transactionManager: DatabaseTransactionManager,
                     private val uuidValidator: UuidValidator,
                     private val bookingConverter: BookingFacadeConverter
@@ -18,6 +24,7 @@ class BookingFacade(private val bookingService: BookingService,
     /**
      * Deletes the booking with the given id
      *
+     * @param id booking id
      * @author Daniil Zavyalov
      */
     fun deleteById(id: String) {
@@ -29,8 +36,9 @@ class BookingFacade(private val bookingService: BookingService,
     /**
      * Retrieves a booking model by its id
      *
+     * @param id id of requested booking
+     * @return [BookingDTO] with the given id
      * @throws InstanceNotFoundException if booking with the given id doesn't exist in database
-     *
      * @author Daniil Zavyalov
      */
     fun findById(id: String): BookingDTO {
@@ -45,6 +53,9 @@ class BookingFacade(private val bookingService: BookingService,
     /**
      * Returns all bookings. Bookings can be filtered by owner and workspace id
      *
+     * @param userId use to filter by booking owner id. Should be valid UUID
+     * @param workspaceId use to filter by booking workspace id. Should be valid UUID
+     * @return [BookingDTO] list
      * @author Daniil Zavyalov
      */
     fun findAll(userId: String?, workspaceId: String?): List<BookingDTO> {
@@ -62,6 +73,8 @@ class BookingFacade(private val bookingService: BookingService,
     /**
      * Saves a given booking. Use the returned model for further operations
      *
+     * @param bookingDTO [BookingDTO] to be saved
+     * @return saved [BookingDTO]
      * @author Daniil Zavyalov
      */
     fun post(bookingDTO: BookingDTO): BookingDTO {
@@ -76,8 +89,9 @@ class BookingFacade(private val bookingService: BookingService,
     /**
      * Updates a given booking. Use the returned model for further operations
      *
+     * @param bookingDTO changed booking
+     * @return [BookingDTO] after change saving
      * @throws BadRequestException if booking id is null
-     *
      * @author Daniil Zavyalov
      */
     fun put(bookingDTO: BookingDTO): BookingDTO {

@@ -1,23 +1,20 @@
 package band.effective.office.elevator.ui.profile.editProfile.store
 
+import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.domain.models.User
-import band.effective.office.elevator.domain.useCase.GetUserByIdUseCase
 import band.effective.office.elevator.domain.useCase.GetUserUseCase
 import band.effective.office.elevator.domain.useCase.UpdateUserUseCase
 import band.effective.office.elevator.ui.models.validator.Validator
 import band.effective.office.elevator.ui.profile.editProfile.store.ProfileEditStore.*
+import band.effective.office.network.model.Either
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
-import band.effective.office.elevator.ui.profile.editProfile.store.ProfileEditStore.*
-import band.effective.office.elevator.ui.profile.mainProfile.store.ProfileStoreFactory
-import band.effective.office.network.model.Either
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
@@ -79,24 +76,38 @@ internal class ProfileEditStoreFactory(
         }
 
         private fun doSaveChange(user: State, intent: Intent.SaveChangeClicked) {
-            scope.launch {
+            scope.launch  {
                 val uptUser = User(
                     id = user.user.id,
                     imageUrl = user.user.imageUrl,
                     userName = intent.userName, post = intent.post,
                     phoneNumber = intent.phoneNumber,
                     telegram = intent.telegram,
-                    email = user.user.email
+                    email = user.user.email,
                 )
                 dispatch(Msg.ProfileData(user = uptUser))
-                if (checkPhoneNumber(intent.phoneNumber) && checkUserdata(userName = intent.userName) && checkPost(
-                        intent.post
-                    ) && checkTelegram(intent.telegram)
+                if (checkPhoneNumber(intent.phoneNumber)
+                    && checkUserdata(userName = intent.userName)
+                    && checkPost(
+                        intent.post) && checkTelegram(intent.telegram)
                 ) {
-                    updateUserUseCase.execute(uptUser)
-                    publish(Label.SavedChange)
-                } else {
-                    publish(Label.Error)
+                    updateUserUseCase.execute(uptUser).collect{ user ->
+                            withContext(Dispatchers.Main) {
+                                when (user) {
+                                    is Either.Success -> {
+                                        dispatch(Msg.ProfileData(user = user.data))
+                                        publish(Label.SavedChange)
+                                    }
+
+                                    is Either.Error -> {
+                                      publish(Label.Error(MainRes.strings.server_error))
+                                    }
+                                }
+
+                            }
+
+                    }
+
                 }
             }
 
@@ -116,12 +127,13 @@ internal class ProfileEditStoreFactory(
                         isTelegramError = true
                     )
                 )
+                publish(Label.Error(MainRes.strings.telegram_format_error))
                 false
             }
         }
 
         private fun checkPost(post: String): Boolean {
-            return if (!validator.checkPost(post)) {
+            return if (validator.checkPost(post)) {
                 dispatch(
                     Msg.ErrorPost(
                         isPostError = false
@@ -134,12 +146,13 @@ internal class ProfileEditStoreFactory(
                         isPostError = true
                     )
                 )
+                publish(Label.Error(MainRes.strings.profile_post_format_error))
                 false
             }
         }
 
         private fun checkUserdata(userName: String): Boolean {
-            return if (!validator.checkName(userName)) {
+            return if (validator.checkName(userName)) {
                 dispatch(
                     Msg.ErrorName(
                         isNameError = false
@@ -152,6 +165,7 @@ internal class ProfileEditStoreFactory(
                         isNameError = true
                     )
                 )
+                publish(Label.Error(MainRes.strings.profile_name_format_error))
                 false
             }
         }
@@ -170,6 +184,7 @@ internal class ProfileEditStoreFactory(
                         errorPhone = true
                     )
                 )
+                publish(Label.Error(MainRes.strings.number_format_error))
                 false
             }
 

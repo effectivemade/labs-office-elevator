@@ -4,6 +4,9 @@ import org.ktorm.database.Database
 import org.ktorm.database.TransactionIsolation
 import org.ktorm.database.TransactionManager
 
+/**
+ * Class used for creation database transaction on the facade layer
+ */
 class DatabaseTransactionManager(database: Database) {
     private val transactionManager: TransactionManager
     init {
@@ -12,7 +15,11 @@ class DatabaseTransactionManager(database: Database) {
 
     /**
      * Executes code in a database transaction.
-     * Cancels the transaction if an exception was thrown.
+     *
+     * Rollbacks the transaction if an exception was thrown.
+     *
+     * @param serviceCall lambda function to be executed
+     * @param isolation transaction isolation
      */
     fun <T> useTransaction(serviceCall: () -> T,
                            isolation: TransactionIsolation = TransactionIsolation.READ_COMMITTED): T {
