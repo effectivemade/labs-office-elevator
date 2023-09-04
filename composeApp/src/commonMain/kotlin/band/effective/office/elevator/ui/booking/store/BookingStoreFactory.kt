@@ -354,11 +354,16 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 }
 
                 is BookingStore.Intent.ChangeWholeDay -> {
-                    dispatch(Msg.WholeDay(wholeDay = intent.wholeDay))
-                    dispatch(Msg.BeginningBookingTime(time = LocalTime(hour = 8, minute = 0)))
-                    dispatch(Msg.EndBookingTime(time = LocalTime(hour = 20, minute = 0)))
-                    dispatch(Msg.BeginningBookingDate(date = getCurrentDate()))
-                    dispatch(Msg.EndBookingDate(date = getCurrentDate()))
+                    val dateOfStart = getState().selectedStartDate
+                    val dateOfEnd = getState().selectedFinishDate
+                    if (dateOfStart == dateOfEnd) {
+                        dispatch(Msg.WholeDay(wholeDay = intent.wholeDay))
+                        dispatch(Msg.BeginningBookingTime(time = LocalTime(hour = 8, minute = 0)))
+                        dispatch(Msg.EndBookingTime(time = LocalTime(hour = 20, minute = 0)))
+                    }
+                    else {
+                        publish(BookingStore.Label.ShowToast("У вас выбраны разные даты"))
+                    }
                 }
 
                 BookingStore.Intent.OpenFinishTimeModal -> {
