@@ -9,7 +9,6 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import band.effective.office.tablet.di.initRoomInfoKoin
 import band.effective.office.tablet.domain.model.SharedPref
 import com.arkivanov.decompose.defaultComponentContext
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
@@ -56,7 +55,6 @@ class MainActivity : AppCompatActivity() {
         runKioskMode()
         super.onCreate(savedInstanceState)
         SharedPref.sharedPref.init(this)
-        initRoomInfoKoin()
         setContent {
             App(defaultComponentContext(), DefaultStoreFactory())
         }
