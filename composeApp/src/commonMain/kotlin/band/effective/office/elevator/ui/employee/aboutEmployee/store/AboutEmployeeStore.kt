@@ -23,6 +23,7 @@ interface AboutEmployeeStore : Store<AboutEmployeeStore.Intent,AboutEmployeeStor
 
     data class State(
         val user: User,
+        val isLoading: Boolean = true,
         val reservedSeatsList: List<ReservedSeat>,
         val dateFiltrationOnReserves: Boolean,
         val filtrationOnReserves: Boolean,
