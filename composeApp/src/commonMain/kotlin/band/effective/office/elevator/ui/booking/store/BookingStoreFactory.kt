@@ -300,7 +300,6 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                 is BookingStore.Intent.OnSelectBookingPeriod -> {
                     scope.launch {
-                        publish(BookingStore.Label.CloseBookPeriod)
                         publish(BookingStore.Label.CloseRepeatDialog)
                         with(intent.pair) {
                             if (second == BookingPeriod.Another)
