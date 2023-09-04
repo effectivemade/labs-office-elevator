@@ -141,8 +141,8 @@ fun ProfileInfoAboutUser(imageUrl: String, userName: String, post: String, onEdi
             ) {
                 Image(
                     modifier = Modifier.fillMaxSize().align(Alignment.Center),
-                    painter = painterResource(MainRes.images.job_icon),
-                    contentScale = ContentScale.Inside,
+                    painter = painter,
+                    contentScale = ContentScale.Crop,
                     contentDescription = null,
                 )
             }

@@ -55,6 +55,8 @@ import band.effective.office.elevator.ui.main.components.BottomDialog
 import band.effective.office.elevator.ui.main.components.CalendarTitle
 import band.effective.office.elevator.ui.main.components.FilterButton
 import band.effective.office.elevator.ui.models.ReservedSeat
+import com.seiko.imageloader.model.ImageRequest
+import com.seiko.imageloader.rememberAsyncImagePainter
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.datetime.LocalDate
@@ -173,6 +175,12 @@ private fun AboutEmployeeContent(
                     modifier = Modifier.align(Alignment.CenterVertically).padding(start = 16.dp)
                 )
             }
+                val request = remember(imageUrl) {
+                    ImageRequest {
+                        data(imageUrl)
+                    }
+                }
+                val painter = rememberAsyncImagePainter(request)
 
             Row(modifier = Modifier.padding(top = 24.dp)) {
                 Column {
@@ -196,8 +204,8 @@ private fun AboutEmployeeContent(
                 ) {
                     Image(
                         modifier = Modifier.fillMaxSize(),
-                        painter = painterResource(MainRes.images.job_icon),
-                        contentScale = ContentScale.Inside,
+                        painter = painter,
+                        contentScale = ContentScale.Crop,
                         contentDescription = null,
                     )
                 }
