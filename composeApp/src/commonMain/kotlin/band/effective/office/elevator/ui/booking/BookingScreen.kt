@@ -362,7 +362,8 @@ fun BookingScreen(bookingComponent: BookingComponent) {
         },
         selectedTypesList = state.selectedType,
         onClickCloseRepeatDialog = {bookingComponent.onEvent(BookingStore.Intent.CloseRepeatDialog)},
-        isLoadingWorkspacesList = state.isLoadingListWorkspaces
+        isLoadingWorkspacesList = state.isLoadingListWorkspaces,
+        isLoadingBookingCreation = state.isLoadingBookingCreation
     )
 }
 
@@ -395,7 +396,8 @@ private fun BookingScreenContent(
     repeatBookings: StringResource,
     onClickChangeSelectedType: (TypesList) -> Unit,
     selectedTypesList: TypesList,
-    onClickCloseRepeatDialog: () -> Unit
+    onClickCloseRepeatDialog: () -> Unit,
+    isLoadingBookingCreation: Boolean
 ) {
     val scrollState = rememberLazyListState()
     val scrollIsDown = scrollState.isScrollingDown()
@@ -491,7 +493,8 @@ private fun BookingScreenContent(
                 BookingSuccess(
                     onMain = onClickMainScreen,
                     close = onClickCloseBookingConfirm,
-                    modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
+                    modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center),
+                    isLoading = isLoadingBookingCreation
                 )
             },
             onDismissRequest = onClickCloseBookingConfirm,

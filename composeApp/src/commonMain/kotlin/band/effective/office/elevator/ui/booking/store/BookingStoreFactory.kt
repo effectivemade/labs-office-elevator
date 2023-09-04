@@ -78,6 +78,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         data class UpdateSelectedWorkspace(val workspaceId: String ) : Msg
 
         data class ChangeLoadingWorkspace(val isLoading: Boolean) : Msg
+
+        data class IsLoadingBookingCreation(val isLoadingBookingCreation: Boolean) : Msg
     }
 
     private sealed interface Action {
@@ -205,6 +207,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                 is BookingStore.Intent.OpenConfirmBooking -> {
                     scope.launch {
+                        dispatch(BookingStoreFactory.Msg.IsLoadingBookingCreation(isLoadingBookingCreation = true))
+                        publish(BookingStore.Label.OpenConfirmBooking)
                         Napier.d { "book period: ${getState().bookingPeriod is BookingPeriod.EveryWorkDay}" }
                         bookingInteractor.create(
                             coroutineScope = this@launch,
@@ -216,7 +220,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                                 typeOfEndPeriod = TypeEndPeriodBooking.Never
                             )
                         )
-                        publish(BookingStore.Label.OpenConfirmBooking)
+                        dispatch(BookingStoreFactory.Msg.IsLoadingBookingCreation(isLoadingBookingCreation = false))
                     }
                     scope.launch {
                         publish(BookingStore.Label.CloseBookAccept)
@@ -407,7 +411,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                         getSpacesUI(
                             workSpaceZone = getState().workSpacesZone,
                             state = getState(),
-                            dispatch = { dispatch(Msg.ChangeWorkSpacesUI(it)) },
+                            dispatch = { dispatch(Msg.ChangeWorkSpacesUI(it)) }
                         )
                     }
                 }
@@ -493,6 +497,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is Msg.IsStartDatePicker -> copy(isStartDate = msg.isStart)
                 is Msg.UpdateSelectedWorkspace -> copy(selectedWorkspaceId = msg.workspaceId)
                 is Msg.ChangeLoadingWorkspace -> copy(isLoadingListWorkspaces = msg.isLoading)
+                is Msg.IsLoadingBookingCreation -> copy(isLoadingBookingCreation = msg.isLoadingBookingCreation)
             }
         }
     }
