@@ -135,7 +135,8 @@ class ApiImpl : Api {
         ) {
             contentType(ContentType.Application.Json)
             val body = Json.encodeToString(bookingInfo)
-            setBody(body)
+            println(bookingInfo)
+            setBody(bookingInfo)
         }
 
     override suspend fun deleteBooking(bookingId: String): Either<ErrorResponse, SuccessResponse> =
