@@ -172,7 +172,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                     startDate = "${state.selectedStartDate.dayOfMonth} ${
                         MonthLocalizations.getMonthName(
                             month = state.selectedStartDate.month,
-                            locale = Locale.current
+                            locale = Locale(languageTag = Locale.current.language)
                         )
                     } ${state.selectedStartDate.year}",
                     startTime = "${
@@ -233,7 +233,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                     finishDate = "${state.selectedFinishDate.dayOfMonth} ${
                         MonthLocalizations.getMonthName(
                             month = state.selectedFinishDate.month,
-                            locale = Locale.current
+                            locale = Locale(languageTag = Locale.current.language)
                         )
                     } ${state.selectedFinishDate.year}",
                 )
