@@ -29,8 +29,8 @@ class GetUserUseCase(
             id = id,
             imageUrl = imageUrl,
             post = post,
-            phoneNumber = phoneNumber.substring(3).replace("-", ""),
-            telegram = telegram.substring(1),
+            phoneNumber = phoneNumber.substring(1),
+            telegram = telegram.substring(13),
             email = email
         )
 }

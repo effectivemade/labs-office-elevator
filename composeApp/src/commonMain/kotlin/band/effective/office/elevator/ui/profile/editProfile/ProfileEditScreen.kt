@@ -2,6 +2,7 @@ package band.effective.office.elevator.ui.profile.editProfile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,7 +20,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.TextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -28,11 +28,12 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
@@ -42,14 +43,16 @@ import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.components.TitlePage
-import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.textGrayColor
+import band.effective.office.elevator.ui.main.SnackBarErrorMessage
 import band.effective.office.elevator.ui.models.PhoneMaskTransformation
 import band.effective.office.elevator.ui.models.UserDataEditProfile
 import band.effective.office.elevator.ui.models.getAllUserDataEditProfile
 import band.effective.office.elevator.ui.profile.editProfile.store.ProfileEditStore
+import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
+import kotlinx.coroutines.delay
 
 @Composable
 fun ProfileEditScreen(component: ProfileEditComponent){
@@ -72,7 +75,9 @@ fun ProfileEditScreen(component: ProfileEditComponent){
 
 @Composable
 fun ProfileEditView(user: ProfileEditStore.State, component: ProfileEditComponent){
-    val errorMessage = stringResource(MainRes.strings.profile_format_error)
+
+    var errorMessage by remember { mutableStateOf(MainRes.strings.something_went_wrong) }
+    var isErrorMessageVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(component){
         component.label.collect{label->
@@ -80,12 +85,17 @@ fun ProfileEditView(user: ProfileEditStore.State, component: ProfileEditComponen
                 is ProfileEditStore.Label.ReturnedInProfile ->component.onOutput(ProfileEditComponent.Output.NavigationBack)
                 is ProfileEditStore.Label.SavedChange -> component.onOutput(ProfileEditComponent.Output.NavigationBack)
                 is ProfileEditStore.Label.Error -> {
-                    showToast(errorMessage)
+                  errorMessage =  label.name
+                    isErrorMessageVisible = true
+                    delay(3000)
+                    isErrorMessageVisible = false
                 }
             }
         }
     }
     ProfileEditScreenContent(
+        isErrorMessageVisible = isErrorMessageVisible,
+        errorMessage = errorMessage,
         isErrorTelegram = user.isErrorTelegram,
         isErrorPost = user.isErrorPost,
         isErrorName = user.isErrorName,
@@ -110,7 +120,9 @@ private fun ProfileEditScreenContent(
     onSaveChange: (userName: String, post: String, phoneNumber: String, telegram: String) -> Unit,
     isErrorName: Boolean,
     isErrorPost: Boolean,
-    isErrorTelegram: Boolean
+    isErrorTelegram: Boolean,
+    errorMessage: StringResource,
+    isErrorMessageVisible: Boolean
 ) {
 
     val userNameText = rememberSaveable { mutableStateOf(userName) }
@@ -118,62 +130,71 @@ private fun ProfileEditScreenContent(
     val postText = rememberSaveable { mutableStateOf(post) }
     val telegramText = rememberSaveable { mutableStateOf(telegram) }
 
-    Column (
-        modifier = Modifier.fillMaxSize().background(ExtendedThemeColors.colors.whiteColor).padding(horizontal = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
-    ){
-        ProfileEditHeader(onReturnToProfile)
-        LazyColumn(modifier = Modifier.padding(top= 28.dp)){
-            items(getAllUserDataEditProfile()){item->
+    Box{
+        Column (
+            modifier = Modifier.fillMaxSize().background(ExtendedThemeColors.colors.whiteColor).padding(horizontal = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ){
+            ProfileEditHeader(onReturnToProfile)
+            LazyColumn(modifier = Modifier.padding(top= 28.dp)){
+                items(getAllUserDataEditProfile()){item->
                     when(item){
-                    UserDataEditProfile.Phone -> {
-                        FieldsItemStyle(
-                            item = item,
-                            text = phoneNumberText,
-                            error =  isErrorPhone,
-                            visualTransformation = PhoneMaskTransformation(),
-                            keyboardType = KeyboardType.Phone
-                        )
-                    }
-                    UserDataEditProfile.Person -> {
-                        FieldsItemStyle(
-                            item = item,
-                            text = userNameText,
-                            error =  isErrorName
-                        )
-                    }
-                    UserDataEditProfile.Post -> {
-                        FieldsItemStyle(
-                            item = item,
-                            text = postText,
-                            error =  isErrorPost
-                        )
-                    }
-                    UserDataEditProfile.Telegram ->{
-                        FieldsItemStyle(
-                            item = item,
-                            text = telegramText,
-                            error =  isErrorTelegram
-                        )
+                        UserDataEditProfile.Phone -> {
+                            FieldsItemStyle(
+                                item = item,
+                                text = phoneNumberText,
+                                error =  isErrorPhone,
+                                visualTransformation = PhoneMaskTransformation(),
+                                keyboardType = KeyboardType.Phone
+                            )
+                        }
+                        UserDataEditProfile.Person -> {
+                            FieldsItemStyle(
+                                item = item,
+                                text = userNameText,
+                                error =  isErrorName
+                            )
+                        }
+                        UserDataEditProfile.Post -> {
+                            FieldsItemStyle(
+                                item = item,
+                                text = postText,
+                                error =  isErrorPost
+                            )
+                        }
+                        UserDataEditProfile.Telegram ->{
+                            FieldsItemStyle(
+                                item = item,
+                                text = telegramText,
+                                error =  isErrorTelegram
+                            )
+                        }
                     }
                 }
-            }
-            item {
-                EffectiveButton(
-                    onClick = {onSaveChange(
-                        userNameText.value,
-                        postText.value,
-                        phoneNumberText.value,
-                        telegramText.value
-                    )},
-                    buttonText = stringResource(MainRes.strings.save),
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp, top = 32.dp)
+                item {
+                    EffectiveButton(
+                        onClick = {onSaveChange(
+                            userNameText.value,
+                            postText.value,
+                            phoneNumberText.value,
+                            telegramText.value
+                        )},
+                        buttonText = stringResource(MainRes.strings.save),
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp, top = 32.dp)
                     )
                 }
             }
         }
+        SnackBarErrorMessage(
+            message = stringResource( errorMessage),
+            isVisible =  isErrorMessageVisible,
+            modifier = Modifier.align(Alignment.BottomCenter),
+        )
     }
+}
+
+
 
 @Composable
 private fun FieldsItemStyle(

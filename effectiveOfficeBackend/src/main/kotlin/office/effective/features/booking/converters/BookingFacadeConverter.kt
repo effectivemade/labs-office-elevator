@@ -1,21 +1,25 @@
 package office.effective.features.booking.converters
 
 import model.RecurrenceDTO
-import office.effective.common.utils.UuidValidator
 import office.effective.dto.BookingDTO
-import office.effective.features.calendar.converters.RecurrenceConverter
 import office.effective.features.user.converters.UserDTOModelConverter
 import office.effective.features.workspace.converters.WorkspaceFacadeConverter
-import office.effective.model.Booking
-import office.effective.model.RecurrenceModel
+import office.effective.model.*
 import java.time.Instant
 
+/**
+ * Converts between [BookingDTO] and [Booking]
+ *
+ * Uses [UserDTOModelConverter] and [WorkspaceFacadeConverter] to convert contained users and workspaces
+ */
 class BookingFacadeConverter(private val userConverter: UserDTOModelConverter,
                              private val workspaceConverter: WorkspaceFacadeConverter) {
     /**
-     * Converts WorkspaceEntity to BookingDTO
+     * Converts [Booking] to [BookingDTO]
      *
-     * @author Daniil Zavyalov
+     * @param booking [Booking] to be converted
+     * @return The resulting [BookingDTO] object
+     * @author Daniil Zavyalov, Danil Kiselev
      */
     fun modelToDto(booking: Booking): BookingDTO {
         var recurrenceDTO : RecurrenceDTO? = null
@@ -34,9 +38,11 @@ class BookingFacadeConverter(private val userConverter: UserDTOModelConverter,
     }
 
     /**
-     * Converts BookingDTO to Booking
+     * Converts [BookingDTO] to [Booking]
      *
-     * @author Daniil Zavyalov
+     * @param bookingDTO [BookingDTO] to be converted
+     * @return The resulting [Booking] object
+     * @author Daniil Zavyalov, Danil Kiselev
      */
     fun dtoToModel(bookingDTO: BookingDTO): Booking {
         var recurrenceModel : RecurrenceModel? = null

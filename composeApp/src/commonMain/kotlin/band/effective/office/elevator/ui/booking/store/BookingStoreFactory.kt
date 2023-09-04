@@ -19,6 +19,7 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
+import com.commandiron.wheel_picker_compose.utils.getCurrentTime
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
@@ -31,6 +32,7 @@ import io.github.aakira.napier.Napier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
+import org.koin.core.component.get
 
 class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
 
@@ -178,14 +180,25 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                 is BookingStore.Intent.ApplyDate -> {
                     scope.launch {
+                        val currentDate = getCurrentDate()
                         publish(BookingStore.Label.CloseCalendar)
                         if (intent.isStart)
                             intent.date?.let { newDate ->
-                                dispatch(Msg.BeginningBookingDate(date = newDate))
+                                if (newDate >= currentDate) {
+                                    dispatch(Msg.BeginningBookingDate(date = newDate))
+                                }
+                                else {
+                                    publish(BookingStore.Label.ShowToast("Некорректная дата"))
+                                }
                             }
                         else
                             intent.date?.let { newDate ->
-                                dispatch(Msg.EndBookingDate(date = newDate))
+                               if (newDate < getState().selectedStartDate) {
+                                   publish(BookingStore.Label.ShowToast("Некорректная дата"))
+                                }
+                                else {
+                                   dispatch(Msg.EndBookingDate(date = newDate))
+                               }
                             }
                     }
                 }
@@ -222,11 +235,37 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 }
 
                 is BookingStore.Intent.ApplyTime -> {
+                    val currentTime = getCurrentTime()
+                    val currentDate = getCurrentDate()
+                    val dateOfStart = getState().selectedStartDate
+
+                    val newTime = intent.time
                     scope.launch {
                         if (intent.isStart) {
-                            dispatch(Msg.BeginningBookingTime(intent.time))
+                            if (currentDate == dateOfStart) {
+                                if (newTime >= currentTime)
+                                    dispatch(Msg.BeginningBookingTime(intent.time))
+                                else
+                                    publish(BookingStore.Label.ShowToast("Некорретное время"))
+                            }
+                            else {
+                                dispatch(Msg.BeginningBookingTime(intent.time))
+                            }
+
                         } else {
-                            dispatch(Msg.EndBookingTime(intent.time))
+
+                            val dateOfStart = getState().selectedStartDate
+                            val dateOfEnd = getState().selectedFinishDate
+
+                            val timeOfStart = getState().selectedStartTime
+
+                            if (dateOfStart == dateOfEnd) {
+                                if (newTime > timeOfStart) dispatch(Msg.EndBookingTime(intent.time))
+                                else publish(BookingStore.Label.ShowToast("Некорретное время"))
+                            }
+                            else {
+                                dispatch(Msg.EndBookingTime(intent.time))
+                            }
                         }
                         publish(BookingStore.Label.CloseStartTimeModal)
                     }

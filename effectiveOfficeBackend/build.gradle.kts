@@ -13,6 +13,7 @@ plugins {
     id("io.ktor.plugin") version "2.3.2"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.8.22"
     id("org.liquibase.gradle") version "2.2.0"
+    id("org.jetbrains.dokka") version "1.8.20"
 }
 
 group = "office.effective"

@@ -4,12 +4,15 @@ import office.effective.common.exception.InstanceNotFoundException
 import office.effective.common.utils.UuidValidator
 import office.effective.dto.IntegrationDTO
 import office.effective.dto.UserDTO
+import office.effective.features.user.repository.IntegrationEntity
 import office.effective.features.user.repository.UserRepository
 import office.effective.features.user.repository.UsersTagEntity
 import office.effective.model.IntegrationModel
 import office.effective.model.UserModel
 import java.util.*
-
+/**
+ * Converters between [UserDTO] and [UserModel]
+ * */
 class UserDTOModelConverter(
     private val repository: UserRepository,
     private val converter: IntegrationDTOModelConverter,
@@ -17,7 +20,9 @@ class UserDTOModelConverter(
 ) {
 
     /**
-     * Converts user dto to model
+     * Converts [UserDTO] to [UserModel]. Search user tags in [UserRepository] by id. Takes user's integrations from DTO.
+     * @param userDTO [UserDTO] to be converted
+     * @return converted [UserModel]
      *
      * @author Danil Kiselev, Daniil Zavyalov
      */
@@ -48,7 +53,9 @@ class UserDTOModelConverter(
     }
 
     /**
-     * Converts user model to dto
+     * Converts [UserModel] to [UserDTO]
+     * @param userModel [UserModel] to be converted
+     * @return converted [UserDTO]
      *
      * @author Danil Kiselev, Daniil Zavyalov
      */

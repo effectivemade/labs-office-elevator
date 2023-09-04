@@ -22,8 +22,8 @@ fun main() {
 }
 
 fun Application.module() {
-    configureMigration()
-    configureDI()
+    configureMigration() //should be first
+    configureDI() //some further configure methods may use DI
     configureAuthentication()
     configureSerialization()
     configureRouting()

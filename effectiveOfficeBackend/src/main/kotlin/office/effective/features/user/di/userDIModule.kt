@@ -8,7 +8,7 @@ import office.effective.features.user.converters.UserDTOModelConverter
 import office.effective.features.user.converters.UserModelEntityConverter
 import office.effective.features.user.facade.UserFacade
 import office.effective.features.user.repository.UserRepository
-import office.effective.features.user.service.IUserService
+import office.effective.serviceapi.IUserService
 import office.effective.features.user.service.UserService
 import org.koin.dsl.module
 

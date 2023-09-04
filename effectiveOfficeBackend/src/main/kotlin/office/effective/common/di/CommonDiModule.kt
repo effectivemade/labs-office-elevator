@@ -1,5 +1,7 @@
-package office.effective.common.utils
+package office.effective.common.di
 
+import office.effective.common.utils.DatabaseTransactionManager
+import office.effective.common.utils.UuidValidator
 import org.koin.dsl.module
 import org.ktorm.database.Database
 

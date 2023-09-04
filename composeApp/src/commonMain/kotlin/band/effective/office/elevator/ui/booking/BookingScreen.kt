@@ -32,6 +32,7 @@ import band.effective.office.elevator.components.bottomSheet.MultiBottomSheetCon
 import band.effective.office.elevator.components.bottomSheet.rememberMultiBottomSheetController
 import band.effective.office.elevator.domain.models.BookingInfo
 import band.effective.office.elevator.domain.models.BookingPeriod
+import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.ui.booking.components.BookingMainContentScreen
 import band.effective.office.elevator.ui.booking.components.modals.BookAccept
 import band.effective.office.elevator.ui.booking.components.modals.BookingPeriod
@@ -294,6 +295,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                 is BookingStore.Label.CloseBookRepeat -> multiBottomSheetController.closeCurrentSheet()
                 BookingStore.Label.OpenFinishTimeModal -> showTimePicker = true
                 BookingStore.Label.CloseFinishTimeModal -> showTimePicker = false
+                is BookingStore.Label.ShowToast -> showToast(label.message)
             }
         }
     }
@@ -466,7 +468,6 @@ private fun BookingScreenContent(
             showDialog = showCalendar,
             modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
         )
-
         Dialog(
             content = {
                 TimePickerModal(

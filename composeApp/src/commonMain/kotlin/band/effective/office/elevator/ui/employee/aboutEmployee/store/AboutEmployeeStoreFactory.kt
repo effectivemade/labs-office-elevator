@@ -20,7 +20,6 @@ import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.LocalDate
@@ -33,7 +32,7 @@ class AboutEmployeeStoreFactory(
 ) : KoinComponent {
 
     private val aboutEmployeeInteractor: AboutEmployeeInteractor by inject()
-    private var currentUser = EmployeeInfo.defaultEmployee.toUIAbout()
+    private var currentUser = employeeInfo.toUIAbout()
     private var recentDate = getCurrentDate()
     private var filtration = BookingsFilter(meetRoom = true, workPlace = true)
     private var datedList = false
