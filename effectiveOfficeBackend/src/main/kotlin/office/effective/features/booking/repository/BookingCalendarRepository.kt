@@ -260,7 +260,7 @@ class BookingCalendarRepository(
      */
     override fun update(booking: Booking): Booking {
         val bookingId = booking.id ?: throw MissingIdException("Update model must have id")
-        if (existsById(bookingId)) {
+        if (!existsById(bookingId)) {
             throw InstanceNotFoundException(WorkspaceBookingEntity::class, "Booking with id $bookingId not wound")
         }
         deleteById(bookingId)
