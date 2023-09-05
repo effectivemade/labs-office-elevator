@@ -80,7 +80,7 @@
     <string name="delete_booking">Удалить бронь?</string>
 
     <string name="take_from">Занять с</string>
-    <string name="take_before">Занять до</string>
+    <string name="take_before">Занять по</string>
 
     <string name="filter_by_category">Фильтры по категории</string>
     <string name="reset_filter">Сбросить</string>
