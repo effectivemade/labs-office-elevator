@@ -35,6 +35,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.components.LoadingIndicator
 import band.effective.office.elevator.components.TitlePage
 import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.ui.models.UserData
@@ -59,12 +60,13 @@ fun ProfileScreen(component: MainProfileComponent) {
     }
 
     ProfileScreenContent(
-        imageUrl = user.imageUrl,
-        userName = user.userName,
-        post = user.post,
-        telegram = user.telegram,
-        phoneNumber = user.phoneNumber,
-        id = user.id,
+        imageUrl = user.user.imageUrl,
+        userName = user.user.userName,
+        post = user.user.post,
+        telegram = user.user.telegram,
+        isLoading = user.isLoading,
+        phoneNumber = user.user.phoneNumber,
+        id = user.user.id,
         onSignOut = { component.onEvent(ProfileStore.Intent.SignOutClicked) },
         onEditProfile = {id -> component.onOutput(MainProfileComponent.Output.NavigateToEdit(userEdit = id))}
     )
@@ -80,7 +82,8 @@ internal fun ProfileScreenContent(
     phoneNumber: String,
     onSignOut: () -> Unit,
     onEditProfile: (id: String) -> Unit,
-    id: String
+    id: String,
+    isLoading: Boolean
 ) {
     Column(
         modifier = Modifier.fillMaxSize().background(Color.White),
@@ -114,11 +117,16 @@ internal fun ProfileScreenContent(
                 }
             }
         }
-        ProfileInfoAboutUser(imageUrl, userName, post, {onEditProfile(id)},id)
-        LazyColumn(modifier = Modifier.fillMaxSize().padding(top = 24.dp))
-        {
-            items(getAllUserDataProfile()){ item ->
-                FieldsItemStyle(item = item, { onEditProfile(id) },id = id, telegram = telegram, phoneNumber = phoneNumber)
+        when(isLoading){
+            true -> LoadingIndicator()
+            false-> {
+                ProfileInfoAboutUser(imageUrl, userName, post, {onEditProfile(id)},id)
+                LazyColumn(modifier = Modifier.fillMaxSize().padding(top = 24.dp))
+                {
+                    items(getAllUserDataProfile()){ item ->
+                        FieldsItemStyle(item = item, { onEditProfile(id) },id = id, telegram = telegram, phoneNumber = phoneNumber)
+                    }
+                }
             }
         }
     }
