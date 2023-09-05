@@ -1,6 +1,5 @@
 package band.effective.office.elevator.ui.profile.mainProfile
 
-import band.effective.office.elevator.domain.models.User
 import band.effective.office.elevator.ui.profile.mainProfile.store.ProfileStore
 import band.effective.office.elevator.ui.profile.mainProfile.store.ProfileStoreFactory
 import com.arkivanov.decompose.ComponentContext
@@ -10,7 +9,6 @@ import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class MainProfileComponent(
@@ -27,7 +25,7 @@ class MainProfileComponent(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val user: StateFlow<User> = profileStore.stateFlow
+    val user: StateFlow<ProfileStore.State> = profileStore.stateFlow
 
     val label: Flow<ProfileStore.Label> = profileStore.labels
     fun onEvent(event: ProfileStore.Intent) {

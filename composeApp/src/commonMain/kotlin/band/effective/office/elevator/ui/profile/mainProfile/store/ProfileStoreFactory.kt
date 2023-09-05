@@ -13,7 +13,6 @@ import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
@@ -28,9 +27,9 @@ internal class ProfileStoreFactory(
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): ProfileStore =
-        object : ProfileStore, Store<Intent, User, Label> by storeFactory.create(
+        object : ProfileStore, Store<Intent, State, Label> by storeFactory.create(
             name = "ProfileStore",
-            initialState =   User.defaultUser,
+            initialState =   State(user = User.defaultUser),
             bootstrapper = coroutineBootstrapper {
                 dispatch(Action.FetchUserInfo)
             },
@@ -47,8 +46,8 @@ internal class ProfileStoreFactory(
     }
 
     private inner class ExecutorImpl :
-        CoroutineExecutor<Intent, Action, User, Msg, Label>() {
-        override fun executeIntent(intent: Intent, getState: () -> User) {
+        CoroutineExecutor<Intent, Action, State, Msg, Label>() {
+        override fun executeIntent(intent: Intent, getState: () -> State) {
             when (intent) {
                 is Intent.SignOutClicked -> doSignOut()
             }
@@ -60,7 +59,7 @@ internal class ProfileStoreFactory(
             publish(Label.OnSignedOut)
         }
 
-        override fun executeAction(action: Action, getState: () -> User) {
+        override fun executeAction(action: Action, getState: () -> State) {
             when (action) {
                 Action.FetchUserInfo -> fetchUserInfo()
             }
@@ -87,10 +86,11 @@ internal class ProfileStoreFactory(
         }
     }
 
-    private object ReducerImpl : Reducer<User, Msg> {
-        override fun User.reduce(message: Msg): User =
+    private object ReducerImpl : Reducer<State, Msg> {
+        override fun State.reduce(message: Msg): State =
             when (message) {
-                is Msg.ProfileData -> message.user
+                is Msg.ProfileData -> copy(user = message.user,
+                    isLoading = false)
             }
     }
 
