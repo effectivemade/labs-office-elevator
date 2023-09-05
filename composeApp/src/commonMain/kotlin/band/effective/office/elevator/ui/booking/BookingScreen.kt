@@ -415,6 +415,11 @@ private fun BookingScreenContent(
         }
     }
 
+    timeTitle = if (isStart){
+        MainRes.strings.take_from
+    }else{
+        MainRes.strings.take_before
+    }
     Box {
         MultiBottomSheet(
             multiBottomSheetController = multiBottomSheetController
@@ -471,7 +476,7 @@ private fun BookingScreenContent(
         Dialog(
             content = {
                 TimePickerModal(
-                    titleText = if (isStart) "Занять с" else "Занять до",
+                    titleText = stringResource(timeTitle),
                     modifier = Modifier.padding(horizontal = 16.dp)
                         .clip(shape = RoundedCornerShape(16.dp)).background(Color.White)
                         .align(Alignment.Center),

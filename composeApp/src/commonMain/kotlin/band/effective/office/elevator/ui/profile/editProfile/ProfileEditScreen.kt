@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
+import band.effective.office.elevator.components.LoadingIndicator
 import band.effective.office.elevator.components.TitlePage
 import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.ui.main.SnackBarErrorMessage
@@ -66,7 +67,7 @@ fun ProfileEditScreen(component: ProfileEditComponent){
             )
         }
         user.isLoading -> {
-            Text("Loading")
+            LoadingIndicator()
         }
         else -> {}
     }

@@ -92,7 +92,7 @@
     <string name="delete_booking">Delete booked room?</string>
 
     <string name="take_from">Take from</string>
-    <string name="take_before">Take before</string>
+    <string name="take_before">Take by</string>
 
     <string name="booking_not_repeat">Booking not repeatable</string>
     <string name="every_year">Every year</string>
