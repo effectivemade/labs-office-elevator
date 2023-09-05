@@ -21,16 +21,19 @@ Note: due to the incompleteness of the database, placeholders may appear in appl
 
 An application for booking meeting rooms on a tablet.
 
-[Effective-TV](tv-app/effecticeTV/README.md)
+[Office-Elevator](composeApp/README.md)
 
-Application for Android TV, which will show various interesting statistics about
-employees, report about interesting events, show important messages pinned by employees in chats in
-Mattermost.
+Mobile cross-platform application for interacting with the elevator in the office. Allows you to
+call the elevator remotely, after logging in through your google account
 
 [Office-Elevator](composeApp/README.md)
 
 Mobile cross-platform application for interacting with the elevator in the office. Allows you to
 call the elevator remotely, after logging in through your google account
+
+[EffectiveOfficeBackend](effectiveOfficeBackend/readme.md)
+
+Backend application which will provide abilities to book workspaces and meeting rooms, edit workspaces information, authentication and more! It was important to us that the application synchronizes with Google Calendar
 
 ## Contributing :raised_hands:
 
