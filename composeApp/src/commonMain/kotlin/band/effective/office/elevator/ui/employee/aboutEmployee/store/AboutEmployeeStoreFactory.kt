@@ -64,7 +64,8 @@ class AboutEmployeeStoreFactory(
                     copy(
                         user = msg.user,
                         reservedSeatsList = msg.reservedSeatsList,
-                        filtrationOnReserves = msg.filtrationOnReserves
+                        filtrationOnReserves = msg.filtrationOnReserves,
+                        isLoading = false
                     )
 
                 is Msg.UpdateSeatsReservation -> {
@@ -72,7 +73,8 @@ class AboutEmployeeStoreFactory(
                         currentDate = msg.date,
                         reservedSeatsList = msg.reservedSeatsList,
                         dateFiltrationOnReserves = msg.dateFiltrationOnReserves,
-                        filtrationOnReserves = msg.filtrationOnReserves
+                        filtrationOnReserves = msg.filtrationOnReserves,
+                        isLoading = false
                     )
                 }
             }

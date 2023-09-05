@@ -44,6 +44,7 @@ import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveOutlinedButton
 import band.effective.office.elevator.components.InfoAboutUserUIComponent
+import band.effective.office.elevator.components.LoadingIndicator
 import band.effective.office.elevator.components.ModalCalendar
 import band.effective.office.elevator.components.TitlePage
 import band.effective.office.elevator.textGrayColor
@@ -85,8 +86,8 @@ fun AboutEmployee (component: AboutEmployeeComponent){
             .background(Color.White)
             .fillMaxSize()
     ) {
-
         AboutEmployeeContent(
+            isLoading = state.isLoading,
             imageUrl = state.user.imageUrl,
             userName = state.user.userName,
             post = state.user.post,
@@ -133,12 +134,13 @@ private fun AboutEmployeeContent(
     bottomSheetState: ModalBottomSheetState,
     currentDate: LocalDate,
     onClickBack: () -> Unit,
-    onClickOpenPhone: () ->Unit,
-    onClickOpenTelegram: () ->Unit,
-    onClickOpenSpb: () ->Unit,
-    onClickOpenCalendar: () ->Unit,
-    onClickOpenBottomDialog: () ->Unit,
-    onClickCloseBottomDialog: (BookingsFilter) ->Unit
+    onClickOpenPhone: () -> Unit,
+    onClickOpenTelegram: () -> Unit,
+    onClickOpenSpb: () -> Unit,
+    onClickOpenCalendar: () -> Unit,
+    onClickOpenBottomDialog: () -> Unit,
+    onClickCloseBottomDialog: (BookingsFilter) -> Unit,
+    isLoading: Boolean
 ){
     ModalBottomSheetLayout(
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
@@ -175,41 +177,47 @@ private fun AboutEmployeeContent(
                     modifier = Modifier.align(Alignment.CenterVertically).padding(start = 16.dp)
                 )
             }
-                val request = remember(imageUrl) {
-                    ImageRequest {
-                        data(imageUrl)
+                when(isLoading) {
+                    true -> {
+                        LoadingIndicator()
+                    }
+                    false -> {
+                        val request = remember(imageUrl) {
+                            ImageRequest {
+                                data(imageUrl)
+                            }
+                        }
+                        val painter = rememberAsyncImagePainter(request)
+                        Row(modifier = Modifier.padding(top = 24.dp)) {
+                            Column {
+                                InfoAboutUserUIComponent(userName, post)
+                                ContactUserUIComponent(
+                                    MainRes.images.icon_telegram,
+                                    telegram,
+                                    modifier = Modifier.padding(top = 18.dp)
+                                )
+                                ContactUserUIComponent(
+                                    MainRes.images.mail,
+                                    email,
+                                    modifier = Modifier.padding(top = 10.dp)
+                                )
+                            }
+                            Spacer(modifier = Modifier.weight(.1f))
+                            Surface(
+                                modifier = Modifier.size(88.dp),
+                                shape = CircleShape,
+                                color = ExtendedThemeColors.colors.purple_heart_100
+                            ) {
+                                Image(
+                                    modifier = Modifier.fillMaxSize(),
+                                    painter = painter,
+                                    contentScale = ContentScale.Inside,
+                                    contentDescription = null,
+                                )
+                            }
+                        }
                     }
                 }
-                val painter = rememberAsyncImagePainter(request)
-
-            Row(modifier = Modifier.padding(top = 24.dp)) {
-                Column {
-                    InfoAboutUserUIComponent(userName, post)
-                    ContactUserUIComponent(
-                        MainRes.images.icon_telegram,
-                        telegram,
-                        modifier = Modifier.padding(top = 18.dp)
-                    )
-                    ContactUserUIComponent(
-                        MainRes.images.mail,
-                        email,
-                        modifier = Modifier.padding(top = 10.dp)
-                    )
-                }
-                Spacer(modifier = Modifier.weight(.1f))
-                Surface(
-                    modifier = Modifier.size(88.dp),
-                    shape = CircleShape,
-                    color = ExtendedThemeColors.colors.purple_heart_100
-                ) {
-                    Image(
-                        modifier = Modifier.fillMaxSize(),
-                        painter = painter,
-                        contentScale = ContentScale.Crop,
-                        contentDescription = null,
-                    )
-                }
-            }
 
             Row(
                 modifier = Modifier.padding(top = 16.dp).fillMaxWidth(),

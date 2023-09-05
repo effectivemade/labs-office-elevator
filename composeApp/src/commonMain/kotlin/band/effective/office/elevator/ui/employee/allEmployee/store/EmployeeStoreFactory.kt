@@ -2,7 +2,9 @@ package band.effective.office.elevator.ui.employee.allEmployee.store
 
 
 import band.effective.office.elevator.domain.models.EmployeeInfo
+import band.effective.office.elevator.domain.models.User
 import band.effective.office.elevator.domain.useCase.EmployeeUseCase
+import band.effective.office.elevator.domain.useCase.GetUserUseCase
 import band.effective.office.elevator.ui.employee.allEmployee.models.mappers.toUI
 import band.effective.office.elevator.utils.changeEmployeeShowedList
 import band.effective.office.network.model.Either
@@ -23,6 +25,7 @@ import org.koin.core.component.inject
 internal class EmployeeStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
 
     private val employeesInfo: EmployeeUseCase by inject()
+    private val userUseCase: GetUserUseCase by inject()
 
 
     @OptIn(ExperimentalMviKotlinApi::class)
@@ -33,7 +36,6 @@ internal class EmployeeStoreFactory(private val storeFactory: StoreFactory) : Ko
                 initialState = EmployeeStore.State(
                     changeShowedEmployeeCards = emptyList(),
                     countShowedEmployeeCards = "0",
-                    countInOfficeShowedEmployeeCards = "0",
                     query = "",
                     allEmployeeList = listOf()
                 ),
@@ -95,9 +97,21 @@ internal class EmployeeStoreFactory(private val storeFactory: StoreFactory) : Ko
                         employeesInfo.invoke().collect { response ->
                             withContext(Dispatchers.Main) {
                                 when (response) {
-                                    is Either.Success ->
-                                        dispatch(Msg.InitListEmployees(employeesInfo = response.data))
-
+                                    is Either.Success ->{
+                                        var getUser : User = User.defaultUser
+                                       userUseCase.execute().collect{
+                                               user ->
+                                           withContext(Dispatchers.Main) {
+                                               when (user) {
+                                                   is Either.Success -> {
+                                                       getUser = user.data
+                                                   }
+                                                   else -> {}
+                                               }
+                                           }
+                                        }
+                                        dispatch(Msg.InitListEmployees(employeesInfo = response.data.filter { it.id != getUser.id }))
+                                    }
                                     is Either.Error -> {
                                         // TODO show error on screen
                                         Napier.e { "error get employees: ${response.error}" }
@@ -123,9 +137,8 @@ internal class EmployeeStoreFactory(private val storeFactory: StoreFactory) : Ko
                     copy(
                         changeShowedEmployeeCards = newEmployeesList,
                         countShowedEmployeeCards = newEmployeesList.count().toString(),
-                        countInOfficeShowedEmployeeCards = newEmployeesList
-                            .filter { it.state == "In office" }.count().toString(),
-                        allEmployeeList = msg.employeesInfo
+                        allEmployeeList = msg.employeesInfo,
+                        isLoading = false
                     )
                 }
 
@@ -139,8 +152,7 @@ internal class EmployeeStoreFactory(private val storeFactory: StoreFactory) : Ko
                         query = msg.query,
                         changeShowedEmployeeCards = newEmployeesList,
                         countShowedEmployeeCards = newEmployeesList.count().toString(),
-                        countInOfficeShowedEmployeeCards = newEmployeesList.count { it.state == "In office" }
-                            .toString(),
+                        isLoading = false
                     )
                 }
             }

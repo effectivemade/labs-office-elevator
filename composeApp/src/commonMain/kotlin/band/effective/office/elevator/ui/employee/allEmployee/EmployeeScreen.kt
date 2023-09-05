@@ -1,7 +1,6 @@
 package band.effective.office.elevator.ui.employee.allEmployee
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,10 +16,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -35,16 +32,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
-import band.effective.office.elevator.borderGray
-import band.effective.office.elevator.borderGreen
+import band.effective.office.elevator.components.LoadingIndicator
 import band.effective.office.elevator.textInBorderGray
 import band.effective.office.elevator.theme_light_onPrimary
 import band.effective.office.elevator.ui.employee.allEmployee.models.mappers.EmployeeCard
@@ -62,25 +56,20 @@ fun EmployeeScreen(component: EmployeeComponent) {
     val employState by component.employState.collectAsState()
     val employeesData = employState.changeShowedEmployeeCards
     val employeesCount = employState.countShowedEmployeeCards
-    val employeesInOfficeCount = employState.countInOfficeShowedEmployeeCards
     val userMessageState = employState.query
 
 
     LaunchedEffect(component) {
         component.employLabel.collect { label ->
             when (label) {
-                is EmployeeStore.Label.ShowProfileScreen -> component.onOutput(
-                    EmployeeComponent.Output.OpenProfileScreen(
-                        label.employee
-                    )
-                )
+                is EmployeeStore.Label.ShowProfileScreen -> component.onOutput(EmployeeComponent.Output.OpenProfileScreen(label.employee))
             }
         }
     }
     EmployeeScreenContent(
+        isLoading = employState.isLoading,
         employeesData = employeesData,
         employeesCount = employeesCount,
-        employeesInOfficeCount = employeesInOfficeCount,
         userMessageState = userMessageState,
         onCardClick = { component.onEvent(EmployeeStore.Intent.OnClickOnEmployee(it)) },
         onTextFieldUpdate = { component.onEvent(EmployeeStore.Intent.OnTextFieldUpdate(it)) })
@@ -90,17 +79,11 @@ fun EmployeeScreen(component: EmployeeComponent) {
 fun EmployeeScreenContent(
     employeesData: List<EmployeeCard>,
     employeesCount: String,
-    employeesInOfficeCount: String,
     userMessageState: String,
     onCardClick: (String) -> Unit,
-    onTextFieldUpdate: (String) -> Unit
+    onTextFieldUpdate: (String) -> Unit,
+    isLoading: Boolean
 ) {
-    /*
-        NOTE: textField bug https://issuetracker.google.com/issues/160257648?pli=1
-        in https://medium.com/androiddevelopers/effective-state-management-for-textfield-in-compose-d6e5b070fbe5
-        recommend don`t  use stateFlow, but in mviKotlin - state is stateFlow
-     */
-    var userNameQuery by remember { mutableStateOf(userMessageState) }
 
     Column {
         Column(
@@ -117,9 +100,7 @@ fun EmployeeScreenContent(
                 modifier = Modifier.padding(start = 20.dp, top = 55.dp, end = 15.dp, bottom = 25.dp)
             )
             TextField(
-                value = userNameQuery,
-                onValueChange = {
-                    userNameQuery = it
+                value = userMessageState, onValueChange = {
                     onTextFieldUpdate(it)
                 }, modifier = Modifier
                     .fillMaxWidth()
@@ -176,23 +157,19 @@ fun EmployeeScreenContent(
                     fontWeight = FontWeight(400),
                     color = ExtendedThemeColors.colors.purple_heart_800
                 )
-                Text(
-                    text = stringResource(MainRes.strings.employee_in_office)
-                            + ": $employeesInOfficeCount",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight(400),
-                    color = ExtendedThemeColors.colors.purple_heart_800,
-                    textAlign = TextAlign.End,
-                    modifier = Modifier.fillMaxWidth()
-                )
             }
 
-            LazyColumn {
-                items(employeesData) { employee_Data ->
-                    EveryEmployeeCard(emp = employee_Data, onCardClick)
-
+            when (isLoading){
+                true -> {
+                    LoadingIndicator()
                 }
-
+                false -> {
+                    LazyColumn {
+                        items(employeesData) { employee_Data ->
+                            EveryEmployeeCard(emp = employee_Data, onCardClick)
+                        }
+                    }
+                }
             }
         }
     }
@@ -202,22 +179,6 @@ fun EmployeeScreenContent(
 
 fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: (String) -> Unit) {
     var isExpanded by remember { mutableStateOf(false) }
-    val stateColorBorder: Color
-    val stateColorText: Color
-    if (emp.state == "In office") {
-        stateColorBorder = borderGreen
-        stateColorText = borderGreen
-    } else {
-        if (emp.state == "Will be today") {
-
-            stateColorBorder = ExtendedThemeColors.colors.purple_heart_700
-            stateColorText = ExtendedThemeColors.colors.purple_heart_800
-        } else {
-            stateColorBorder = borderGray
-            stateColorText = textInBorderGray
-        }
-
-    }
     if (isExpanded) {
         onCardClick(emp.id)
     }
@@ -226,7 +187,7 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: (String) -> Unit) {
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = 15.dp)
+            .padding(bottom=15.dp)
             .animateContentSize()
             .clickable { isExpanded = !isExpanded },
         color = MaterialTheme.colors.onPrimary
@@ -234,7 +195,7 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: (String) -> Unit) {
         Row(modifier = Modifier.padding(6.dp, 15.dp)) {
 
             CompositionLocalProvider(
-                LocalImageLoader provides remember { generateImageLoader() },
+                LocalImageLoader provides remember {generateImageLoader()},
             ) {
                 emp.logoUrl.let { url ->
                     val request = remember(url) {
@@ -268,29 +229,6 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: (String) -> Unit) {
                     fontWeight = FontWeight(400),
                     color = textInBorderGray
                 )
-                Spacer(modifier = Modifier.padding(0.dp, 8.dp))
-                OutlinedButton(
-                    onClick = { isExpanded = !isExpanded },
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor =
-                        MaterialTheme.colors.onPrimary
-                    ),
-                    elevation = ButtonDefaults.elevation(
-                        defaultElevation = 0.dp,
-                        pressedElevation = 2.dp,
-                        disabledElevation = 0.dp,
-                        hoveredElevation = 0.dp
-                    ),
-                    shape = RoundedCornerShape(12.dp),
-                    border = BorderStroke(width = 1.dp, color = stateColorBorder)
-                ) {
-                    Text(
-                        text = "•   " + emp.state,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight(400),
-                        color = stateColorText
-                    )
-                }
             }
         }
     }
