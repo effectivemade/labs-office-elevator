@@ -205,7 +205,7 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: (String) -> Unit) {
                     }
                     val painter = rememberAsyncImagePainter(request)
                     Image(
-                        painter = painterResource(MainRes.images.logo_default),
+                        painter = painter,
                         contentDescription = "Employee logo",
                         modifier = Modifier
                             .clip(CircleShape)

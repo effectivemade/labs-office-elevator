@@ -121,8 +121,6 @@ class ApiImpl : Api {
             method = KtorEtherClient.RestMethod.Post
         ) {
             contentType(ContentType.Application.Json)
-//            val body = Json.encodeToString(bookingInfo)
-//            println(body)
             setBody(bookingInfo)
         }
 

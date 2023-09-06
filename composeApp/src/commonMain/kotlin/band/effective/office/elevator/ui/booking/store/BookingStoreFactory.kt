@@ -207,7 +207,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                 is BookingStore.Intent.OpenConfirmBooking -> {
                     scope.launch {
-                        dispatch(BookingStoreFactory.Msg.IsLoadingBookingCreation(isLoadingBookingCreation = true))
+                        dispatch(Msg.IsLoadingBookingCreation(isLoadingBookingCreation = true))
                         publish(BookingStore.Label.OpenConfirmBooking)
                         Napier.d { "book period: ${getState().bookingPeriod is BookingPeriod.EveryWorkDay}" }
                         bookingInteractor.create(
@@ -217,10 +217,10 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                                 dateOfStart = getState().selectedStartDate.atTime(getState().selectedStartTime),
                                 dateOfEnd = getState().selectedFinishDate.atTime(getState().selectedFinishTime),
                                 bookingPeriod = getState().bookingPeriod,
-                                typeOfEndPeriod = TypeEndPeriodBooking.Never
+                                typeOfEndPeriod = getState().typeOfEnd
                             )
                         )
-                        dispatch(BookingStoreFactory.Msg.IsLoadingBookingCreation(isLoadingBookingCreation = false))
+                        dispatch(Msg.IsLoadingBookingCreation(isLoadingBookingCreation = false))
                     }
                     scope.launch {
                         publish(BookingStore.Label.CloseBookAccept)
@@ -385,8 +385,11 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                 is BookingStore.Intent.ChangeFrequency -> {
                     scope.launch {
-                        dispatch(Msg.ChangeFrequency(frequency = intent.frequency))
+                        Napier.d { "Close book repeat" }
                         publish(BookingStore.Label.CloseBookRepeat)
+                    }
+                    scope.launch {
+                        dispatch(Msg.ChangeFrequency(frequency = intent.frequency))
                     }
                 }
 
@@ -494,7 +497,14 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is Msg.EndBookingTime -> copy(selectedFinishTime = msg.time)
                 is Msg.IsStartTimePicked -> copy(isStart = msg.isStart)
                 is Msg.BeginningBookingDate -> copy(selectedStartDate = msg.date)
-                is Msg.ChangeFrequency -> copy(frequency = msg.frequency)
+                is Msg.ChangeFrequency -> {
+                    val frequency = msg.frequency
+                    copy(
+                        frequency = frequency,
+                        bookingPeriod = frequency.getBookPeriod(),
+                        typeOfEnd = frequency.getTypeOfEndBooking()
+                    )
+                }
                 is Msg.ChangeBookingRepeat -> copy(repeatBooking = msg.bookingRepeat)
                 is Msg.ChangeBookingPeriod -> copy(bookingPeriod = msg.bookingPeriod)
                 is Msg.ChangeWorkingUI -> copy(bookingInfo = msg.bookingInfo)
