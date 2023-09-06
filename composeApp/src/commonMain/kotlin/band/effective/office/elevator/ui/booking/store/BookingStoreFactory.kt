@@ -314,7 +314,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                                 is BookingPeriod.NoPeriod -> MainRes.strings.booking_not_repeat
                                 is BookingPeriod.Week -> MainRes.strings.every_week
                                 is BookingPeriod.Year -> MainRes.strings.every_month
-                                is BookingPeriod.Another -> MainRes.strings.every_year
+                                is BookingPeriod.Another -> MainRes.strings.another
                             }
                             dispatch(Msg.ChangeBookingRepeat(bookingRepeat = name))
                             dispatch(Msg.ChangeBookingPeriod(bookingPeriod = intent.pair.second))
