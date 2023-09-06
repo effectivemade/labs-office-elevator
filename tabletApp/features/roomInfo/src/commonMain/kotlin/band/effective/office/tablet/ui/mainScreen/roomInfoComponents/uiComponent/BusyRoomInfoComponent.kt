@@ -60,7 +60,7 @@ fun BusyRoomInfoComponent(
             if (timeToFinish > 0) {
                 Text(
                     text = MainRes.string.room_occupancy.format(
-                        time = event.startTime.time(),
+                        time = event.finishTime.time(),
                         duration = timeToFinish.getDuration()
                     ),
                     style = MaterialTheme.typography.h5,

@@ -24,6 +24,7 @@ import kotlinx.serialization.json.Json
 class ApiImpl : Api {
     /**Update collector*/
     val collector = Collector("")
+
     /**KtorEitherClient for safe request*/
     private val client = KtorEtherClient
     private val baseUrl: String = "https://d5do2upft1rficrbubot.apigw.yandexcloud.net"
@@ -153,17 +154,24 @@ class ApiImpl : Api {
         id: String,
         scope: CoroutineScope
     ): Flow<Either<ErrorResponse, WorkspaceDTO>> =
-        collector.flow(scope).filter { it == "workspace" }.map { getWorkspace(id) }
+        collector.flow(scope).filter { it == "workspace" }.map {
+            Either.Success(
+                WorkspaceDTO(
+                    id = "", name = "",
+                    utilities = listOf(), zone = null, tag = ""
+                )
+            )
+        }
 
     override fun subscribeOnOrganizersList(scope: CoroutineScope): Flow<Either<ErrorResponse, List<UserDTO>>> =
-        collector.flow(scope).filter { it == "organizer" }.map { getUsers(tag = "employee") }
+        collector.flow(scope).filter { it == "organizer" }.map { Either.Success(listOf()) }
 
 
     override suspend fun getUserByEmail(email: String): Either<ErrorResponse, UserDTO> =
-        client.securityResponse("$baseUrl/users"){
-           url {
-               parameters.append(name = "email", value = email)
-           }
+        client.securityResponse("$baseUrl/users") {
+            url {
+                parameters.append(name = "email", value = email)
+            }
         }
 
     override fun subscribeOnBookingsList(
@@ -171,5 +179,5 @@ class ApiImpl : Api {
         scope: CoroutineScope
     ): Flow<Either<ErrorResponse, List<BookingDTO>>> =
         collector.flow(scope).filter { it == "booking" }
-            .map { getBookingsByWorkspaces(workspaceId) }
+            .map { Either.Success(listOf()) }
 }

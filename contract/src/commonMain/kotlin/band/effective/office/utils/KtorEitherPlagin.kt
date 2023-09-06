@@ -27,6 +27,7 @@ val KtorEitherPlugin = createClientPlugin("KtorEitherPlugin") {
             }
 
         } else {
+            println("${response.status.value}: ${response.status.description}")
             Either.Error(ErrorResponse.getResponse(response.status.value))
         }
     }

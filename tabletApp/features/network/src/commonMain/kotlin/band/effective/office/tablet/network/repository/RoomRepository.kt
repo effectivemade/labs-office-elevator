@@ -16,4 +16,6 @@ interface RoomRepository {
         roomId: String,
         scope: CoroutineScope
     ): Flow<Either<ErrorWithData<RoomInfo>, RoomInfo>>
+
+    suspend fun updateCashe()
 }

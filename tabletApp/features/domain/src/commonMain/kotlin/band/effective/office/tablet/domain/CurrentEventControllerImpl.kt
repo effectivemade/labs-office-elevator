@@ -22,12 +22,16 @@ class CurrentEventControllerImpl(
         val nextEventTime = roomInfo?.currentEvent?.finishTime
             ?: roomInfo?.eventList?.firstOrNull()?.startTime // get next update time
         if (nextEventTime != null) { // if we have next event
+            roomUseCase.updateCashe()
             mutableTimeToUpdate.update { nextEventTime.time.time - GregorianCalendar().time.time }// calc time to next update
             timer.start(
                 millisInFuture = timeToUpdate.value,
                 countDownInterval = 1000,
                 onTick = { millisUntilFinished -> mutableTimeToUpdate.update { millisUntilFinished } },
-                onFinish = { handlersList.forEach { it() } })
+                onFinish = {
+                    handlersList.forEach { it() }
+                    scope.launch { roomUseCase.updateCashe() }
+                })
         } else timer.cancel()
     }
 }

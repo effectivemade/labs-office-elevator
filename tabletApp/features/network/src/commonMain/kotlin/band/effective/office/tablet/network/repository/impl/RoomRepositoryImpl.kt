@@ -62,13 +62,17 @@ class RoomRepositoryImpl(
     override suspend fun getRoomsInfo(): Either<ErrorWithData<List<RoomInfo>>, List<RoomInfo>> =
         with(roomInfo.value) {
             if (this is Either.Error) {
-                val response = loadRooms().map(
-                    errorMapper = { ErrorWithData<List<RoomInfo>>(it, null) },
-                    successMapper = { it })
-                roomInfo.update { response }
-                response
+                updateCashe()
+                roomInfo.value
             } else this
         }
+
+    override suspend fun updateCashe(){
+        val response = loadRooms().map(
+            errorMapper = { ErrorWithData<List<RoomInfo>>(it, null) },
+            successMapper = { it })
+        roomInfo.update { response }
+    }
 
     private suspend fun loadRooms() =
         api.getWorkspaces("meeting").run {
