@@ -54,6 +54,8 @@ import band.effective.office.elevator.utils.stackOf
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
 import effective.office.modalcustomdialog.Dialog
+import io.github.aakira.napier.Napier
+import kotlinx.coroutines.flow.collect
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.atTime
@@ -292,7 +294,10 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                     BottomSheetNames.BOOK_REPEAT.name
                 )
 
-                is BookingStore.Label.CloseBookRepeat -> multiBottomSheetController.closeCurrentSheet()
+                is BookingStore.Label.CloseBookRepeat -> {
+                    Napier.d { "Close book repeat label" }
+                    multiBottomSheetController.closeCurrentSheet()
+                }
                 BookingStore.Label.OpenFinishTimeModal -> showTimePicker = true
                 BookingStore.Label.CloseFinishTimeModal -> showTimePicker = false
                 is BookingStore.Label.ShowToast -> showToast(label.message)

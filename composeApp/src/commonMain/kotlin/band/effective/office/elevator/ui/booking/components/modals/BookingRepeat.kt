@@ -71,6 +71,7 @@ import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+//TODO (Artem Gruzdev) refactor this.
 @Composable
 fun BookingRepeat(
     periodMeasure: BookingPeriod,
@@ -530,6 +531,9 @@ fun BookingRepeat(
                         OutlinedTextField(
                             value = endPeriod.value,
                             onValueChange = {
+                                selected3.value = true
+                                selected1.value = false
+                                selected2.value = false
                                 endPeriod.value=it
                             },
                             shape = RoundedCornerShape(8.dp),
