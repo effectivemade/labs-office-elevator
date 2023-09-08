@@ -27,6 +27,8 @@ fun OutlinedTextColorsSetup() = TextFieldDefaults.outlinedTextFieldColors(
 
 //                    region::Cursor colors
     cursorColor = ExtendedThemeColors.colors.trinidad_400,
-    errorCursorColor = ExtendedThemeColors.colors.error
+    errorCursorColor = ExtendedThemeColors.colors.error,
 //                    endregion
+    textColor = Color.Black,
+    disabledTextColor = textGrayColor
 )

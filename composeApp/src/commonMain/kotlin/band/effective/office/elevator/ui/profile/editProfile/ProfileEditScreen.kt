@@ -43,6 +43,7 @@ import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.components.LoadingIndicator
+import band.effective.office.elevator.components.OutlinedTextColorsSetup
 import band.effective.office.elevator.components.TitlePage
 import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.ui.main.SnackBarErrorMessage
@@ -56,37 +57,42 @@ import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.coroutines.delay
 
 @Composable
-fun ProfileEditScreen(component: ProfileEditComponent){
+fun ProfileEditScreen(component: ProfileEditComponent) {
     val user by component.user.collectAsState()
 
-    when{
+    when {
         user.isData -> {
             ProfileEditView(
                 user = user,
                 component = component
             )
         }
+
         user.isLoading -> {
             LoadingIndicator()
         }
+
         else -> {}
     }
 
 }
 
 @Composable
-fun ProfileEditView(user: ProfileEditStore.State, component: ProfileEditComponent){
+fun ProfileEditView(user: ProfileEditStore.State, component: ProfileEditComponent) {
 
     var errorMessage by remember { mutableStateOf(MainRes.strings.something_went_wrong) }
     var isErrorMessageVisible by remember { mutableStateOf(false) }
 
-    LaunchedEffect(component){
-        component.label.collect{label->
-            when(label){
-                is ProfileEditStore.Label.ReturnedInProfile ->component.onOutput(ProfileEditComponent.Output.NavigationBack)
+    LaunchedEffect(component) {
+        component.label.collect { label ->
+            when (label) {
+                is ProfileEditStore.Label.ReturnedInProfile -> component.onOutput(
+                    ProfileEditComponent.Output.NavigationBack
+                )
+
                 is ProfileEditStore.Label.SavedChange -> component.onOutput(ProfileEditComponent.Output.NavigationBack)
                 is ProfileEditStore.Label.Error -> {
-                  errorMessage =  label.name
+                    errorMessage = label.name
                     isErrorMessageVisible = true
                     delay(3000)
                     isErrorMessageVisible = false
@@ -106,7 +112,16 @@ fun ProfileEditView(user: ProfileEditStore.State, component: ProfileEditComponen
         telegram = user.user.telegram,
         phoneNumber = user.user.phoneNumber,
         onReturnToProfile = { component.onEvent(ProfileEditStore.Intent.BackInProfileClicked) },
-        onSaveChange = { userName,post, phoneNumber,telegram -> component.onEvent(ProfileEditStore.Intent.SaveChangeClicked(userName = userName, post = post, telegram = telegram, phoneNumber = phoneNumber))}
+        onSaveChange = { userName, post, phoneNumber, telegram ->
+            component.onEvent(
+                ProfileEditStore.Intent.SaveChangeClicked(
+                    userName = userName,
+                    post = post,
+                    telegram = telegram,
+                    phoneNumber = phoneNumber
+                )
+            )
+        }
     )
 }
 
@@ -131,56 +146,62 @@ private fun ProfileEditScreenContent(
     val postText = rememberSaveable { mutableStateOf(post) }
     val telegramText = rememberSaveable { mutableStateOf(telegram) }
 
-    Box{
-        Column (
-            modifier = Modifier.fillMaxSize().background(ExtendedThemeColors.colors.whiteColor).padding(horizontal = 16.dp),
+    Box {
+        Column(
+            modifier = Modifier.fillMaxSize().background(ExtendedThemeColors.colors.whiteColor)
+                .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
-        ){
+        ) {
             ProfileEditHeader(onReturnToProfile)
-            LazyColumn(modifier = Modifier.padding(top= 28.dp)){
-                items(getAllUserDataEditProfile()){item->
-                    when(item){
+            LazyColumn(modifier = Modifier.padding(top = 28.dp)) {
+                items(getAllUserDataEditProfile()) { item ->
+                    when (item) {
                         UserDataEditProfile.Phone -> {
                             FieldsItemStyle(
                                 item = item,
                                 text = phoneNumberText,
-                                error =  isErrorPhone,
+                                error = isErrorPhone,
                                 visualTransformation = PhoneMaskTransformation(),
                                 keyboardType = KeyboardType.Phone
                             )
                         }
+
                         UserDataEditProfile.Person -> {
                             FieldsItemStyle(
                                 item = item,
                                 text = userNameText,
-                                error =  isErrorName
+                                error = isErrorName
                             )
                         }
+
                         UserDataEditProfile.Post -> {
                             FieldsItemStyle(
                                 item = item,
                                 text = postText,
-                                error =  isErrorPost
+                                error = isErrorPost
                             )
                         }
-                        UserDataEditProfile.Telegram ->{
+
+                        UserDataEditProfile.Telegram -> {
                             FieldsItemStyle(
                                 item = item,
                                 text = telegramText,
-                                error =  isErrorTelegram
+                                error = isErrorTelegram
                             )
                         }
                     }
                 }
                 item {
                     EffectiveButton(
-                        onClick = {onSaveChange(
-                            userNameText.value,
-                            postText.value,
-                            phoneNumberText.value,
-                            telegramText.value
-                        )},
+                        onClick = {
+                            onSaveChange(
+                                userNameText.value,
+                                postText.value,
+                                phoneNumberText.value,
+                                telegramText.value
+                            )
+                        },
                         buttonText = stringResource(MainRes.strings.save),
                         modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp, top = 32.dp)
                     )
@@ -188,13 +209,12 @@ private fun ProfileEditScreenContent(
             }
         }
         SnackBarErrorMessage(
-            message = stringResource( errorMessage),
-            isVisible =  isErrorMessageVisible,
+            message = stringResource(errorMessage),
+            isVisible = isErrorMessageVisible,
             modifier = Modifier.align(Alignment.BottomCenter),
         )
     }
 }
-
 
 
 @Composable
@@ -204,7 +224,7 @@ private fun FieldsItemStyle(
     visualTransformation: VisualTransformation = VisualTransformation.None,
     text: MutableState<String>,
     keyboardType: KeyboardType = KeyboardType.Text
-){
+) {
     Column(
         modifier = Modifier.padding(top = 16.dp).fillMaxWidth()
     ) {
@@ -217,7 +237,7 @@ private fun FieldsItemStyle(
         OutlinedTextField(
             value = text.value,
             modifier = Modifier.fillMaxWidth(),
-            onValueChange = { text.value = it},
+            onValueChange = { text.value = it },
             shape = RoundedCornerShape(12.dp),
             singleLine = true,
             textStyle = TextStyle(fontSize = 16.sp),
@@ -225,27 +245,27 @@ private fun FieldsItemStyle(
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start,
-                    modifier = Modifier.padding(horizontal = 16.dp)) {
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                ) {
                     Icon(
-                        painter= painterResource(item.icon),
+                        painter = painterResource(item.icon),
                         contentDescription = null,
                     )
                     Spacer(modifier = Modifier.width(16.dp))
-                    Divider(modifier = Modifier.height(28.dp).width(2.dp).clip(RoundedCornerShape(4.dp)))
+                    Divider(
+                        modifier = Modifier.height(28.dp).width(2.dp).clip(RoundedCornerShape(4.dp))
+                    )
                 }
-                          },
+            },
             trailingIcon = {
-                IconButton(onClick = {text.value = "" }){
+                IconButton(onClick = { text.value = "" }) {
                     Icon(
                         painter = painterResource(MainRes.images.clear_icon),
                         contentDescription = null,
-                        )
+                    )
                 }
-                           },
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                textColor = textGrayColor,
-                leadingIconColor = textGrayColor,
-                trailingIconColor = textGrayColor),
+            },
+            colors = OutlinedTextColorsSetup(),
             isError = error,
             visualTransformation = visualTransformation,
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType)
@@ -259,8 +279,8 @@ fun ProfileEditHeader(onReturnToProfile: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth().padding(top = 40.dp)
-    ){
-        IconButton(onClick = onReturnToProfile){
+    ) {
+        IconButton(onClick = onReturnToProfile) {
             Icon(
                 painter = painterResource(MainRes.images.back_button),
                 contentDescription = null,
