@@ -24,14 +24,11 @@ class BookingCalendarRepository(
     private val calendarIdsRepository: CalendarIdsRepository,
     private val userRepository: UserRepository,
     private val calendar: Calendar,
-    private val workspaceRepository: WorkspaceRepository,
     private val googleCalendarConverter: GoogleCalendarConverter
 ) : IBookingRepository {
     private val calendarEvents = calendar.Events()
     private val defaultCalendar = config.propertyOrNull("auth.app.defaultAppEmail")?.getString()
         ?: throw Exception("Config file does not contain default gmail value")
-    private val minTime = config.propertyOrNull("calendar.minTime")?.getString()?.toLong()
-        ?: throw Exception("Config file does not contain minimum time")
 
     /**
      * Finds workspace calendar id by workspace id
@@ -68,7 +65,7 @@ class BookingCalendarRepository(
      * @author Danil Kiselev
      */
     override fun deleteById(id: String) {
-        calendarEvents.delete(defaultCalendar, id).execute() //We can't delete from workspace calendar
+        calendarEvents.delete(defaultCalendar, id).execute() //We can't delete directly from workspace calendar
     }
 
     /**
@@ -103,15 +100,25 @@ class BookingCalendarRepository(
         }
     }
 
+    /**
+     * Request template containing all required parameters
+     *
+     * @param timeMin lover bound for filtering bookings by start time.
+     * Old Google calendar events may not appear correctly in the system and cause unexpected exceptions
+     * @param timeMax
+     * @param singleEvents
+     * @param calendarId
+     * @author Daniil Zavyalov
+     */
     private fun basicQuery(
-        timeMin: Long? = minTime,
+        timeMin: Long,
         timeMax: Long? = null,
         singleEvents: Boolean = true,
         calendarId: String = defaultCalendar
     ): Calendar.Events.List {
         return calendarEvents.list(calendarId)
             .setSingleEvents(singleEvents)
-            .setTimeMin(timeMin?.let { DateTime(it) })
+            .setTimeMin(DateTime(timeMin))
             .setTimeMax(timeMax?.let { DateTime(it) })
             .setTimeZone("Asia/Omsk")
             .setMaxResults(2500)
@@ -137,12 +144,15 @@ class BookingCalendarRepository(
      * Returns all bookings with the given workspace id
      *
      * @param workspaceId
+     * @param minStartTime lover bound for filtering bookings by start time.
+     * Old Google calendar events may not appear correctly in the system and cause unexpected exceptions
+     * @param maxStartTime use to set an upper bound for filtering bookings by start time
      * @return List of all workspace [Booking]
      * @author Danil Kiselev
      */
-    override fun findAllByWorkspaceId(workspaceId: UUID): List<Booking> {
+    override fun findAllByWorkspaceId(workspaceId: UUID, minStartTime: Long, maxStartTime: Long?): List<Booking> {
         val workspaceCalendarId = getCalendarIdByWorkspace(workspaceId)
-        val eventsWithWorkspace = basicQuery()
+        val eventsWithWorkspace = basicQuery(minStartTime, maxStartTime)
             .setQ(workspaceCalendarId)
             .execute().items
 
@@ -190,14 +200,17 @@ class BookingCalendarRepository(
      * Returns all bookings with the given owner id
      *
      * @param ownerId
+     * @param minStartTime lover bound for filtering bookings by start time.
+     * Old Google calendar events may not appear correctly in the system and cause unexpected exceptions
+     * @param maxStartTime use to set an upper bound for filtering bookings by start time
      * @return List of all user [Booking]
      * @throws InstanceNotFoundException if user with the given id doesn't exist in database
      * @author Danil Kiselev
      */
-    override fun findAllByOwnerId(ownerId: UUID): List<Booking> {
+    override fun findAllByOwnerId(ownerId: UUID, minStartTime: Long, maxStartTime: Long?): List<Booking> {
         val userEmail: String = findUserEmailByUserId(ownerId)
 
-        val eventsWithUser = basicQuery()
+        val eventsWithUser = basicQuery(minStartTime, maxStartTime)
             .setQ(userEmail)
             .execute().items
 
@@ -216,14 +229,22 @@ class BookingCalendarRepository(
      *
      * @param ownerId
      * @param workspaceId
+     * @param minStartTime lover bound for filtering bookings by start time.
+     * Old Google calendar events may not appear correctly in the system and cause unexpected exceptions
+     * @param maxStartTime use to set an upper bound for filtering bookings by start time
      * @return List of all [Booking]s with the given workspace and owner id
      * @author anil Kiselev
      */
-    override fun findAllByOwnerAndWorkspaceId(ownerId: UUID, workspaceId: UUID): List<Booking> {
+    override fun findAllByOwnerAndWorkspaceId(
+        ownerId: UUID,
+        workspaceId: UUID,
+        minStartTime: Long,
+        maxStartTime: Long?
+    ): List<Booking> {
         val userEmail: String = findUserEmailByUserId(ownerId)
         val workspaceCalendarId = getCalendarIdByWorkspace(workspaceId)
 
-        val eventsWithUserAndWorkspace = basicQuery()
+        val eventsWithUserAndWorkspace = basicQuery(minStartTime, maxStartTime)
             .setQ("$userEmail $workspaceCalendarId")
             .execute().items
 
@@ -240,11 +261,14 @@ class BookingCalendarRepository(
     /**
      * Retrieves all bookings
      *
+     * @param minStartTime lover bound for filtering bookings by start time.
+     * Old Google calendar events may not appear correctly in the system and cause unexpected exceptions
+     * @param maxStartTime use to set an upper bound for filtering bookings by start time
      * @return All [Booking]s
      * @author Danil Kiselev
      */
-    override fun findAll(): List<Booking> {
-        return basicQuery().execute().items.map { event ->
+    override fun findAll(minStartTime: Long, maxStartTime: Long?): List<Booking> {
+        return basicQuery(minStartTime, maxStartTime).execute().items.map { event ->
             googleCalendarConverter.toBookingModel(event)
         }
     }
