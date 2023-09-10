@@ -228,7 +228,6 @@ fun MainScreenContent(
                 onClickCloseBottomDialog
             )
         }
-        //,sheetPeekHeight = 0.dp
     ) {
         Column(
             modifier = modifier.fillMaxSize()
