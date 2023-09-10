@@ -116,7 +116,7 @@ fun OptionMenu(
                 modifier = Modifier
                     .padding(16.dp)
                     .fillMaxWidth()
-                    .fillMaxHeight(.3f)
+                    .fillMaxHeight(.4f)
                     .background(Color.White),
                 verticalArrangement = Arrangement.Center
             ) {
@@ -127,7 +127,6 @@ fun OptionMenu(
                             .graphicsLayer(
                                 scaleX = scale,
                                 scaleY = scale,
-                                //rotationZ = rotation,
                                 translationX = offsetX,
                                 translationY = offsetY
                             ),
