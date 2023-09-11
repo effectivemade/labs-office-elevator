@@ -10,14 +10,15 @@ import io.ktor.server.response.*
 import office.effective.features.user.ApiKeyVerifier
 import office.effective.features.user.ITokenVerifier
 
-
+/**
+ * Allows to check Authentication plugins automatically. Run every time when receiving input call. Checks Authentication (bearer) header containment
+ * */
 val VerificationPlugin = createApplicationPlugin(name = "VerificationPlugin") {
     val verifierOAuth: ITokenVerifier = TokenVerifier()
     val verifierLine = ApiKeyVerifier()
     val pluginOn: Boolean = System.getenv("VERIFICATION_PLUGIN_ENABLE").equals("true")
     println("Verification plugin mode enabled?: $pluginOn")
     println("==========================[ verification plugin installed ]==========================")
-
 
     onCall {
         run {

@@ -1,6 +1,5 @@
 package band.effective.office.elevator.ui.main.store
 
-import band.effective.office.elevator.domain.models.BookingInfo
 import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsFilter
 import band.effective.office.elevator.ui.models.ElevatorState
 import band.effective.office.elevator.ui.models.ReservedSeat
@@ -60,7 +59,8 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, MainStore.Label> 
         val elevatorState: ElevatorState,
         val currentDate: LocalDate,
         val dateFiltrationOnReserves: Boolean,
-        val idSelectedBooking: String
+        val idSelectedBooking: String,
+        val isLoading: Boolean
     )
 
     data class ErrorState(val message: StringResource)

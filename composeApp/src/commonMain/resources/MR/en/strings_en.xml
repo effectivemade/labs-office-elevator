@@ -92,7 +92,7 @@
     <string name="delete_booking">Delete booked room?</string>
 
     <string name="take_from">Take from</string>
-    <string name="take_before">Take before</string>
+    <string name="take_before">Take by</string>
 
     <string name="booking_not_repeat">Booking not repeatable</string>
     <string name="every_year">Every year</string>
@@ -121,7 +121,9 @@
     <string name="timout_error">Request time is up. Try again</string>
     <string name="server_error">Server error ${code}</string>
     <string name="number_format_error">Invalid phone number format</string>
-    <string name="profile_format_error">Enter your profile</string>
+    <string name="profile_format_error">Fill out the profile</string>
+    <string name="profile_name_format_error">Fill in the first and last name</string>
+    <string name="profile_post_format_error">Fill out the position</string>
     <string name="telegram_format_error">Specify nickname in telegram</string>
     <string name="phone_plus_seven">+7</string>
     <string name="telegram_symbol">@</string>

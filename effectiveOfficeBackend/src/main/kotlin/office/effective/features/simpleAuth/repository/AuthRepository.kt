@@ -5,8 +5,19 @@ import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.entity.find
 
+/**
+ * Provides methods to access to api_keys table in database
+ * */
 class AuthRepository(private val db: Database) {
-    fun findApiKey(keyEncrypted: String):String{
-        return db.apikeys.find { it.value.eq(keyEncrypted)  }?.keyValue ?: throw InstanceNotFoundException(ApiKeyEntity::class, "No such key found")
+    /**
+     * @return encrypted api key [String]
+     * @param keyEncrypted encrypted input [String]
+     * @throws InstanceNotFoundException(ApiKeyEntity::class, "No such key found")
+     *
+     * @author Kiselev Danil
+     * */
+    fun findApiKey(keyEncrypted: String): String {
+        return db.apikeys.find { it.value.eq(keyEncrypted) }?.keyValue
+            ?: throw InstanceNotFoundException(ApiKeyEntity::class, "No such key found")
     }
 }

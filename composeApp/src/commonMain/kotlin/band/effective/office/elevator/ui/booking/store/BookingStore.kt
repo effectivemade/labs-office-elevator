@@ -30,8 +30,11 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         data class ApplyTime(val isStart: Boolean, val time: LocalTime) : Intent
         object CloseChooseZone : Intent
         object OpenRepeatDialog : Intent
+
+        object CloseRepeatDialog : Intent
+
         object CloseBookRepeat : Intent
-        data class OpenBookRepeat(val pair: Pair<String, BookingPeriod>) : Intent
+        data class OnSelectBookingPeriod(val pair: Pair<String, BookingPeriod>) : Intent
         data class OpenBookAccept(val value: WorkSpaceUI) : Intent
         object CloseBookAccept : Intent
         object OpenBookPeriod : Intent
@@ -57,6 +60,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         data class ChangeBookingRepeat(val bookingRepeat: StringResource) : Intent
 
         data class ChangeSelectedType(val selectedType: TypesList) : Intent
+
     }
 
     data class State(
@@ -78,7 +82,10 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         val bookingPeriod: BookingPeriod,
         val selectedType: TypesList,
         val bookingInfo: BookingInfo,
-        val selectedWorkspaceId: String
+        val selectedWorkspaceId: String,
+        val isLoadingListWorkspaces: Boolean,
+        val isLoadingBookingCreation: Boolean,
+        val typeOfEnd: TypeEndPeriodBooking
     ) {
         companion object {
             val initState = State(
@@ -117,7 +124,10 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
                 ),
                 selectedFinishDate = getCurrentDate(),
                 isStartDate = true,
-                selectedWorkspaceId = ""
+                selectedWorkspaceId = "",
+                isLoadingListWorkspaces = true,
+                isLoadingBookingCreation = true,
+                typeOfEnd = TypeEndPeriodBooking.CountRepeat(1)
             )
         }
     }
@@ -142,5 +152,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         object CloseStartTimeModal : Label
         object CloseBookRepeat : Label
         object OpenBookRepeat : Label
+
+        data class ShowToast(val message: String) : Label
     }
 }

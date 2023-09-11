@@ -32,6 +32,7 @@ import band.effective.office.elevator.components.bottomSheet.MultiBottomSheetCon
 import band.effective.office.elevator.components.bottomSheet.rememberMultiBottomSheetController
 import band.effective.office.elevator.domain.models.BookingInfo
 import band.effective.office.elevator.domain.models.BookingPeriod
+import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.ui.booking.components.BookingMainContentScreen
 import band.effective.office.elevator.ui.booking.components.modals.BookAccept
 import band.effective.office.elevator.ui.booking.components.modals.BookingPeriod
@@ -53,6 +54,8 @@ import band.effective.office.elevator.utils.stackOf
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
 import effective.office.modalcustomdialog.Dialog
+import io.github.aakira.napier.Napier
+import kotlinx.coroutines.flow.collect
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.atTime
@@ -63,10 +66,64 @@ fun BookingScreen(bookingComponent: BookingComponent) {
 
     val state by bookingComponent.state.collectAsState()
 
-    val showChooseZone = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    val showBookPeriod = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    val showBookAccept = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    val showBookRepeat = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    val showChooseZone = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmValueChange = { sheetState ->
+            when(sheetState) {
+                ModalBottomSheetValue.Expanded -> true
+                ModalBottomSheetValue.Hidden -> {
+                    bookingComponent.onEvent(BookingStore.Intent.CloseChooseZone)
+                    true
+                }
+
+                ModalBottomSheetValue.HalfExpanded -> true
+            }
+        }
+    )
+    val showBookPeriod = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmValueChange = { sheetState ->
+            when (sheetState) {
+                ModalBottomSheetValue.Expanded -> true
+                ModalBottomSheetValue.Hidden -> {
+                    bookingComponent.onEvent(BookingStore.Intent.CloseBookPeriod)
+                    true
+                }
+                ModalBottomSheetValue.HalfExpanded ->  true
+            }
+        }
+    )
+    val showBookAccept = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmValueChange = { sheetState ->
+            when (sheetState) {
+                ModalBottomSheetValue.Expanded -> {
+                    true
+                }
+                ModalBottomSheetValue.Hidden -> {
+                    bookingComponent.onEvent(BookingStore.Intent.CloseBookAccept)
+                    true
+                }
+                ModalBottomSheetValue.HalfExpanded -> {
+                    true
+                }
+            }
+        }
+    )
+    val showBookRepeat = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        skipHalfExpanded = true,
+        confirmValueChange = { sheetState ->
+            when (sheetState) {
+                ModalBottomSheetValue.Expanded -> true
+                ModalBottomSheetValue.Hidden -> {
+                    bookingComponent.onEvent(BookingStore.Intent.CloseBookRepeat)
+                    true
+                }
+                ModalBottomSheetValue.HalfExpanded -> true
+            }
+        }
+    )
 
     val stackRemember: Stack<String> by remember { mutableStateOf(stackOf()) }
 
@@ -117,7 +174,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                     startDate = "${state.selectedStartDate.dayOfMonth} ${
                         MonthLocalizations.getMonthName(
                             month = state.selectedStartDate.month,
-                            locale = Locale.current
+                            locale = Locale(languageTag = Locale.current.language)
                         )
                     } ${state.selectedStartDate.year}",
                     startTime = "${
@@ -178,7 +235,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                     finishDate = "${state.selectedFinishDate.dayOfMonth} ${
                         MonthLocalizations.getMonthName(
                             month = state.selectedFinishDate.month,
-                            locale = Locale.current
+                            locale = Locale(languageTag = Locale.current.language)
                         )
                     } ${state.selectedFinishDate.year}",
                 )
@@ -237,9 +294,13 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                     BottomSheetNames.BOOK_REPEAT.name
                 )
 
-                is BookingStore.Label.CloseBookRepeat -> multiBottomSheetController.closeCurrentSheet()
+                is BookingStore.Label.CloseBookRepeat -> {
+                    Napier.d { "Close book repeat label" }
+                    multiBottomSheetController.closeCurrentSheet()
+                }
                 BookingStore.Label.OpenFinishTimeModal -> showTimePicker = true
                 BookingStore.Label.CloseFinishTimeModal -> showTimePicker = false
+                is BookingStore.Label.ShowToast -> showToast(label.message)
             }
         }
     }
@@ -253,7 +314,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
         showTimePicker = showTimePicker,
         currentDate = state.currentDate,
         onClickOpenBookRepeat = { pair ->
-            bookingComponent.onEvent(BookingStore.Intent.OpenBookRepeat(pair = pair))
+            bookingComponent.onEvent(BookingStore.Intent.OnSelectBookingPeriod(pair = pair))
         },
         onClickCloseTimeModal = { bookingComponent.onEvent(BookingStore.Intent.CloseStartTimeModal) },
         onClickSelectTime = { time: LocalTime ->
@@ -304,13 +365,17 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                 )
             )
         },
-        selectedTypesList = state.selectedType
+        selectedTypesList = state.selectedType,
+        onClickCloseRepeatDialog = {bookingComponent.onEvent(BookingStore.Intent.CloseRepeatDialog)},
+        isLoadingWorkspacesList = state.isLoadingListWorkspaces,
+        isLoadingBookingCreation = state.isLoadingBookingCreation
     )
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun BookingScreenContent(
+    isLoadingWorkspacesList: Boolean,
     workSpaces: List<WorkSpaceUI>,
     multiBottomSheetController: MultiBottomSheetController,
     onClickOpenBookPeriod: () -> Unit,
@@ -335,7 +400,9 @@ private fun BookingScreenContent(
     frequency: Frequency,
     repeatBookings: StringResource,
     onClickChangeSelectedType: (TypesList) -> Unit,
-    selectedTypesList: TypesList
+    selectedTypesList: TypesList,
+    onClickCloseRepeatDialog: () -> Unit,
+    isLoadingBookingCreation: Boolean
 ) {
     val scrollState = rememberLazyListState()
     val scrollIsDown = scrollState.isScrollingDown()
@@ -355,6 +422,11 @@ private fun BookingScreenContent(
         }
     }
 
+    timeTitle = if (isStart){
+        MainRes.strings.take_from
+    }else{
+        MainRes.strings.take_before
+    }
     Box {
         MultiBottomSheet(
             multiBottomSheetController = multiBottomSheetController
@@ -377,7 +449,8 @@ private fun BookingScreenContent(
                 frequency = frequency,
                 repeatBooking=repeatBookings,
                 onClickChangeSelectedType = onClickChangeSelectedType,
-                selectedTypesList = selectedTypesList
+                selectedTypesList = selectedTypesList,
+                isLoadingWorkspacesList = isLoadingWorkspacesList
             )
         }
 
@@ -389,7 +462,7 @@ private fun BookingScreenContent(
                     frequency = frequency
                 )
             },
-            onDismissRequest = {},
+            onDismissRequest = onClickCloseRepeatDialog,
             showDialog = showRepeatDialog,
             modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
         )
@@ -407,11 +480,10 @@ private fun BookingScreenContent(
             showDialog = showCalendar,
             modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
         )
-
         Dialog(
             content = {
                 TimePickerModal(
-                    titleText = if (isStart) "Занять с" else "Занять до",
+                    titleText = stringResource(timeTitle),
                     modifier = Modifier.padding(horizontal = 16.dp)
                         .clip(shape = RoundedCornerShape(16.dp)).background(Color.White)
                         .align(Alignment.Center),
@@ -431,7 +503,8 @@ private fun BookingScreenContent(
                 BookingSuccess(
                     onMain = onClickMainScreen,
                     close = onClickCloseBookingConfirm,
-                    modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
+                    modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center),
+                    isLoading = isLoadingBookingCreation
                 )
             },
             onDismissRequest = onClickCloseBookingConfirm,

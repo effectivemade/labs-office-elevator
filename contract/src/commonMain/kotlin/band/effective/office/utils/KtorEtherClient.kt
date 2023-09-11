@@ -1,5 +1,6 @@
 package band.effective.office.utils
 
+import band.effective.office.network.createHttpEngine
 import band.effective.office.network.model.Either
 import band.effective.office.network.model.ErrorResponse
 import effective_office.contract.BuildConfig
@@ -23,7 +24,7 @@ object KtorEtherClient {
     var token = BuildConfig.apiKey
     /**default http client with KtorEtherClient*/
     val httpClient by lazy {
-        HttpClient(CIO) {
+        createHttpEngine().config {
             install(KtorEitherPlugin)
             install(Auth) {
                 bearer {

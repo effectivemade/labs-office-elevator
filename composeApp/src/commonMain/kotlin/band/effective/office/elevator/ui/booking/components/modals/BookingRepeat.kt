@@ -71,6 +71,7 @@ import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+//TODO (Artem Gruzdev) refactor this.
 @Composable
 fun BookingRepeat(
     periodMeasure: BookingPeriod,
@@ -124,8 +125,7 @@ fun BookingRepeat(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
+            .fillMaxSize()
             .background(
                 color = Color.White,
                 shape = RoundedCornerShape(
@@ -429,50 +429,31 @@ fun BookingRepeat(
                             .fillMaxWidth()
                             .padding(start = 54.dp, end = 16.dp, top = 8.dp)
                     ) {
-//                        Button(
-//                            colors = ButtonDefaults.buttonColors(
-//                                backgroundColor = Color.Transparent
-//                            ),
-//                            elevation = Elevation(),
-//                            modifier = Modifier.fillMaxWidth().wrapContentHeight(),
-//                            onClick = {
-//                                selected1.value = !selected1.value
-//                                selected2.value = false
-//                                selected3.value = false
-//                            }.also { onSelected() },
-//                            contentPadding = PaddingValues(all = 0.dp)
-//                        ) {
-//                            Row(
-//                                horizontalArrangement = Arrangement.spacedBy(0.dp, Alignment.Start),
-//                                verticalAlignment = Alignment.CenterVertically,
-//                            ) {
-                                RadioButton(
-                                    //enabled = false,
-                                    selected = selected1.value,
-                                    onClick = {
-                                        selected1.value = true//!selected1.value
-                                        selected2.value = false
-                                        selected3.value = false
-                                    }.also { onSelected() },
-                                    colors = RadioButtonDefaults.colors(
-                                        disabledSelectedColor = MaterialTheme.colors.primary,
-                                        disabledUnselectedColor = Color.Black,
-                                        selectedColor = MaterialTheme.colors.primary
-                                    )
-                                )
+                         RadioButton(
+                             selected = selected1.value,
+                             onClick = {
+                                 selected1.value = true//!selected1.value
+                                 selected2.value = false
+                                 selected3.value = false
+                             }.also { onSelected() },
+                             colors = RadioButtonDefaults.colors(
+                                 disabledSelectedColor = MaterialTheme.colors.primary,
+                                 disabledUnselectedColor = Color.Black,
+                                 selectedColor = MaterialTheme.colors.primary
+                             )
+                         )
 
                         Spacer(modifier = Modifier.width(width = 16.dp))
 
-                                Text(
-                                    text = stringResource(MainRes.strings.never),
-                                    style = MaterialTheme.typography.button.copy(
-                                        color = ExtendedThemeColors.colors.radioTextColor,
-                                        fontWeight = FontWeight(400)
-                                    ),
-                                    modifier = Modifier.wrapContentHeight()
-                                )
-                            //}
-                        //}
+                            Text(
+                                text = stringResource(MainRes.strings.never),
+                                style = MaterialTheme.typography.button.copy(
+                                    color = ExtendedThemeColors.colors.radioTextColor,
+                                    fontWeight = FontWeight(400)
+                                ),
+                                modifier = Modifier.wrapContentHeight()
+                            )
+
                     }
 
                     Row(
@@ -501,7 +482,10 @@ fun BookingRepeat(
                         OutlinedTextField(
                             value = endDate.value,
                             onValueChange = {
-                                endDate.value=it
+                                endDate.value = it
+                                selected2.value = true
+                                selected1.value = false
+                                selected3.value = false
                             },
                             shape = RoundedCornerShape(8.dp),
                             modifier = Modifier
@@ -547,6 +531,9 @@ fun BookingRepeat(
                         OutlinedTextField(
                             value = endPeriod.value,
                             onValueChange = {
+                                selected3.value = true
+                                selected1.value = false
+                                selected2.value = false
                                 endPeriod.value=it
                             },
                             shape = RoundedCornerShape(8.dp),

@@ -27,8 +27,7 @@ data class User(
     }
 }
 
-// TODO(Artem Gruzdev) ID for integrations ??????
-fun User.toUserDTO(): UserDTO =
+fun User.toUserDTO(idEmail: String, idPhoneNumber: String, idTelegram: String): UserDTO =
     UserDTO(
         id = id,
         fullName = userName,
@@ -36,9 +35,9 @@ fun User.toUserDTO(): UserDTO =
         role = post,
         avatarUrl = imageUrl,
         integrations = listOf(
-            IntegrationDTO(id = "", name = "email", value = email ),
-            IntegrationDTO(id = "", name = "phoneNumber", value = phoneNumber ),
-            IntegrationDTO(id = "", name = "telegram", value = telegram ),
+            IntegrationDTO(id = idEmail , name = "email", value = email ),
+            IntegrationDTO(id = idPhoneNumber, name = "phoneNumber", value = phoneNumber ),
+            IntegrationDTO(id = idTelegram, name = "telegram", value = telegram ),
             ),
         email = email,
         tag = "employee"
@@ -51,7 +50,7 @@ fun UserDTO.toUser() =
         post = role,
         phoneNumber = integrations?.find { it.name == "phoneNumber" }?.value?:"None",
         email = integrations?.find { it.name == "email" }?.value?:"None",
-        telegram = integrations?.find { it.name == "telegram" }?.value?:"None",
+        telegram = integrations?.find { it.name == "telegram" }?.value?:"None"
     )
 
 fun ProfileData.toUser() =

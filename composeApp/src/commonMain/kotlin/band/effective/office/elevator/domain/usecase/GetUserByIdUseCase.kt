@@ -29,7 +29,7 @@ class GetUserByIdUseCase(private val employeeRepository: EmployeeRepository) {
             id  = id,
             name = name,
             post = post,
-            phoneNum = phoneNum.substring(3).replace("-",""),
+            phoneNum = phoneNum.substring(2),
             telegramProfile = telegramProfile.substring(1),
             eMail = eMail,
             state = state,

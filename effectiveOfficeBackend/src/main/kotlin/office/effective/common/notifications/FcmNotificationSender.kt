@@ -9,10 +9,13 @@ import office.effective.dto.BookingDTO
 import office.effective.dto.UserDTO
 import office.effective.dto.WorkspaceDTO
 
+/**
+ * Class for sending Firebase cloud messages
+ */
 class FcmNotificationSender(private val fcm: FirebaseMessaging): INotificationSender {
 
     /**
-     * Sends an FCM message about topic modification
+     * Sends empty FCM message on topic
      *
      * @author Daniil Zavyalov
      */
@@ -25,7 +28,7 @@ class FcmNotificationSender(private val fcm: FirebaseMessaging): INotificationSe
     }
 
     /**
-     * Sends an FCM message about workspace modification
+     * Sends an FCM message about workspace modification. Uses "workspace" topic
      *
      * @param action will be put as "action" in message data
      * @param modifiedWorkspace will be put as "object" in message data
@@ -43,7 +46,7 @@ class FcmNotificationSender(private val fcm: FirebaseMessaging): INotificationSe
     }
 
     /**
-     * Sends an FCM message about user modification
+     * Sends an FCM message about user modification. Uses "user" topic
      *
      * @param action will be put as "action" in message data
      * @param modifiedUser will be put as "object" in message data
@@ -61,7 +64,7 @@ class FcmNotificationSender(private val fcm: FirebaseMessaging): INotificationSe
     }
 
     /**
-     * Sends an FCM message about booking modification
+     * Sends an FCM message about booking modification. Uses "booking" topic
      *
      * @param action will be put as "action" in message data
      * @param modifiedBooking will be put as "object" in message data

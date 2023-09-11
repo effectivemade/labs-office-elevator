@@ -80,7 +80,7 @@
     <string name="delete_booking">Удалить бронь?</string>
 
     <string name="take_from">Занять с</string>
-    <string name="take_before">Занять до</string>
+    <string name="take_before">Занять по</string>
 
     <string name="filter_by_category">Фильтры по категории</string>
     <string name="reset_filter">Сбросить</string>
@@ -135,8 +135,10 @@
     <string name="invalid_account_error">Вы используете неправильный аккаунт</string>
     <string name="timout_error">Время вышло. Попробуйте снова</string>
     <string name="server_error">Ошибка сервера ${code}</string>
-    <string name="number_format_error">Неверный формат номера телефона</string>
     <string name="profile_format_error">Заполните профиль</string>
+    <string name="number_format_error">Неверный формат номера телефона</string>
+    <string name="profile_name_format_error">Заполните имя и фамилию</string>
+    <string name="profile_post_format_error">Заполните должность</string>
     <string name="telegram_format_error">Укажите ник в телеграмме</string>
 
     <!-- Success messages -->
@@ -156,7 +158,7 @@
 
     <!-- Employee -->
     <string name="about_the_employee">О сотруднике</string>
-    <string name="upcoming_bookings">Брони сотрудника</string>
+    <string name="upcoming_bookings">Брони</string>
     <string name="transfer">Перевод</string>
     <string name="none_booking_seats_by_the_employee">У этого сотрудника пока нет бронирований</string>
     <string name="none_such_booking_seats_by_the_employee">У этого сотрудника пока нет таких бронирований</string>

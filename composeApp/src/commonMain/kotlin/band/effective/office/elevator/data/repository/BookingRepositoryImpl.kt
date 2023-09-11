@@ -14,12 +14,14 @@ import band.effective.office.elevator.domain.models.toDomainZone
 import band.effective.office.elevator.domain.repository.BookingRepository
 import band.effective.office.elevator.domain.repository.ProfileRepository
 import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsFilter
+import band.effective.office.elevator.utils.localDateTimeToUnix
 import band.effective.office.elevator.utils.map
 import band.effective.office.network.api.Api
 import band.effective.office.network.dto.BookingDTO
 import band.effective.office.network.dto.RecurrenceDTO
 import band.effective.office.network.model.Either
 import band.effective.office.network.model.ErrorResponse
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -29,8 +31,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.atTime
 
 class BookingRepositoryImpl(
     private val api: Api,
@@ -75,6 +76,7 @@ class BookingRepositoryImpl(
             userDTO = emptyUserDTO(
                 id = bookingInfo.ownerId,
                 email = user?.email?:"",
+                name = user?.userName.orEmpty()
             ),
             workspaceDTO = emptyWorkSpaceDTO(bookingInfo.workSpaceId),
             recurrence = recurrence
@@ -105,11 +107,14 @@ class BookingRepositoryImpl(
                         bookingPeriod = creatingBookModel.bookingPeriod,
                         typeEndPeriod = creatingBookModel.typeOfEndPeriod
                     )
-
+                    Napier.d {
+                        "Creaing booking is: $recurrence"
+                    }
                     val bookingDTO = creatingBookModel.toDTO(
                         user = emptyUserDTO(
                             id = response.data.id,
-                            email = response.data.email
+                            email = response.data.email,
+                            name = response.data.userName
                         ),
                         workspaceDTO = emptyWorkSpaceDTO(creatingBookModel.workSpaceId),
                         recurrence = recurrence
@@ -192,17 +197,20 @@ class BookingRepositoryImpl(
             )
         },
             successMapper = { bookingDTOS ->
-                bookingDTOS.filter {booking ->
-                    when {
-                        filter.workPlace && filter.meetRoom -> true
-                        filter.workPlace -> booking.workspace.tag == "regular"
-                        filter.meetRoom -> booking.workspace.tag == "meeting"
-                        else -> {false}
-                    }
-                }
-                    .toDomainZone() // TODO add filtration by workSpace or meetingRoom
+                placeFilter(filter = filter, list = bookingDTOS)
+                    .toDomainZone()
             }
         )
+
+    private fun placeFilter(filter: BookingsFilter, list: List<BookingDTO>) =
+        list.filter {booking ->
+            when {
+                filter.workPlace && filter.meetRoom -> true
+                filter.workPlace -> booking.workspace.tag == "regular"
+                filter.meetRoom -> booking.workspace.tag == "meeting"
+                else -> {false}
+            }
+        }
 
     private fun Either<ErrorResponse, List<BookingDTO>>.convertWithDateFilter(
         filter: BookingsFilter,
@@ -219,13 +227,12 @@ class BookingRepositoryImpl(
             )
         },
             successMapper = { bookingDTOS ->
-                println("bookings: $bookingDTOS")
-                bookingDTOS
+                placeFilter(filter = filter, list = bookingDTOS)
                     .toDomainZone()
                     .filter {
                         println("repository: ${it.dateOfStart.date} == ${dateFilter}")
                     it.dateOfStart.date == dateFilter
-                } // TODO add filtration by workSpace or meetingRoom
+                }
             }
         )
     private fun getRecurrenceModal(
@@ -239,7 +246,7 @@ class BookingRepositoryImpl(
                 is BookingPeriod.Month -> "MONTHLY"
                 is BookingPeriod.Week -> "WEEKLY"
                 is BookingPeriod.Year -> "YEARLY"
-                is BookingPeriod.EveryWorkDay -> "DAILY"
+                is BookingPeriod.EveryWorkDay -> "WEEKLY"
                 else -> "DAILY"
             },
             count = when (typeEndPeriod) {
@@ -248,12 +255,14 @@ class BookingRepositoryImpl(
             },
             until = when (typeEndPeriod) {
                 is TypeEndPeriodBooking.DatePeriodEnd ->
-                    typeEndPeriod.date.atStartOfDayIn(timeZone = TimeZone.currentSystemDefault()).epochSeconds
-
+                    localDateTimeToUnix(typeEndPeriod.date.atTime(hour = 0, minute = 0))
                 else -> null
             },
             byDay = when (bookingPeriod) {
                 is BookingPeriod.Week -> bookingPeriod.selectedDayOfWeek.map { it.dayOfWeekNumber }
+                is BookingPeriod.EveryWorkDay -> {
+                    listOf(1, 2, 3, 4, 5)
+                }
                 else -> listOf()
             }
         )
