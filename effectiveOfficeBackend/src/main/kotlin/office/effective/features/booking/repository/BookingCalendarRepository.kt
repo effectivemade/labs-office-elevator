@@ -12,7 +12,6 @@ import office.effective.features.booking.converters.GoogleCalendarConverter
 import office.effective.features.user.repository.UserRepository
 import office.effective.model.Booking
 import office.effective.features.user.repository.UserEntity
-import office.effective.features.workspace.repository.WorkspaceRepository
 import java.util.*
 
 /**
@@ -120,7 +119,6 @@ class BookingCalendarRepository(
             .setSingleEvents(singleEvents)
             .setTimeMin(DateTime(timeMin))
             .setTimeMax(timeMax?.let { DateTime(it) })
-            .setTimeZone("Asia/Omsk")
             .setMaxResults(2500)
     }
 
