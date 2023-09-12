@@ -1,7 +1,6 @@
 package office.effective.features.booking.repository
 
 import office.effective.common.exception.InstanceNotFoundException
-import office.effective.common.exception.WorkspaceUnavailableException
 import office.effective.model.Booking
 import java.util.*
 
@@ -40,37 +39,54 @@ interface IBookingRepository {
      * Returns all bookings with the given owner id
      *
      * @param ownerId
+     * @param eventRangeTo use to set an upper bound for filtering bookings by start time
+     * @param eventRangeFrom lover bound for filtering bookings by start time
      * @return List of all user [Booking]
      * @author Daniil Zavyalov, Danil Kiselev
      */
-    fun findAllByOwnerId(ownerId: UUID): List<Booking>
+    fun findAllByOwnerId(ownerId: UUID, eventRangeFrom: Long, eventRangeTo: Long? = null): List<Booking>
 
     /**
      * Returns all bookings with the given workspace id
      *
      * @param workspaceId
+     * @param eventRangeFrom use to set an upper bound for filtering bookings by start time
+     * @param eventRangeTo lover bound for filtering bookings by start time
      * @return List of all workspace [Booking]
      * @author Daniil Zavyalov, Danil Kiselev
      */
-    fun findAllByWorkspaceId(workspaceId: UUID): List<Booking>
+    fun findAllByWorkspaceId(
+        workspaceId: UUID,
+        eventRangeFrom: Long,
+        eventRangeTo: Long? = null
+    ): List<Booking>
 
     /**
      * Returns all bookings with the given workspace and owner id
      *
      * @param ownerId
      * @param workspaceId
+     * @param eventRangeFrom use to set an upper bound for filtering bookings by start time
+     * @param eventRangeTo lover bound for filtering bookings by start time
      * @return List of all [Booking]s with the given workspace and owner id
      * @author Daniil Zavyalov, Danil Kiselev
      */
-    fun findAllByOwnerAndWorkspaceId(ownerId: UUID, workspaceId: UUID): List<Booking>
+    fun findAllByOwnerAndWorkspaceId(
+        ownerId: UUID,
+        workspaceId: UUID,
+        eventRangeFrom: Long,
+        eventRangeTo: Long? = null
+    ): List<Booking>
 
     /**
      * Retrieves all bookings
      *
+     * @param eventRangeFrom use to set an upper bound for filtering bookings by start time
+     * @param eventRangeTo lover bound for filtering bookings by start time
      * @return All [Booking]s
      * @author Daniil Zavyalov, Danil Kiselev
      */
-    fun findAll(): List<Booking>
+    fun findAll(eventRangeFrom: Long, eventRangeTo: Long? = null): List<Booking>
 
     /**
      * Saves a given booking. If given model will have an id, it will be ignored.

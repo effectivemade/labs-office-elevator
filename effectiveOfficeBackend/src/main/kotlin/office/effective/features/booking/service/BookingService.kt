@@ -17,7 +17,7 @@ class BookingService(
     private val bookingRepository: IBookingRepository,
     private val userRepository: UserRepository,
     private val workspaceRepository: WorkspaceRepository
-): IBookingService {
+) : IBookingService {
 
     /**
      * Returns whether a booking with the given id exists
@@ -68,10 +68,12 @@ class BookingService(
      *
      * @param userId use to filter by booking owner id
      * @param workspaceId use to filter by booking workspace id
+     * @param bookingRangeTo upper bound (exclusive) for a beginBooking to filter by. Optional.
+     * @param bookingRangeFrom lower bound (exclusive) for a endBooking to filter by.
      * @throws InstanceNotFoundException if [UserModel] or [Workspace] with the given id doesn't exist in database
      * @author Daniil Zavyalov
      */
-    override fun findAll(userId: UUID?, workspaceId: UUID?): List<Booking> {
+    override fun findAll(userId: UUID?, workspaceId: UUID?, bookingRangeTo: Long?, bookingRangeFrom: Long): List<Booking> {
         val bookingList = when {
             userId != null && workspaceId != null -> {
                 if (!workspaceRepository.workspaceExistsById(workspaceId)) throw InstanceNotFoundException(
@@ -80,24 +82,24 @@ class BookingService(
                 if (!userRepository.existsById(userId)) throw InstanceNotFoundException(
                     UserEntity::class, "User with id $userId not found", userId
                 )
-                bookingRepository.findAllByOwnerAndWorkspaceId(userId, workspaceId)
+                bookingRepository.findAllByOwnerAndWorkspaceId(userId, workspaceId, bookingRangeFrom, bookingRangeTo)
             }
 
             userId != null -> {
                 if (!userRepository.existsById(userId)) throw InstanceNotFoundException(
                     UserEntity::class, "User with id $userId not found", userId
                 )
-                bookingRepository.findAllByOwnerId(userId)
+                bookingRepository.findAllByOwnerId(userId, bookingRangeFrom, bookingRangeTo)
             }
 
             workspaceId != null -> {
                 if (!workspaceRepository.workspaceExistsById(workspaceId)) throw InstanceNotFoundException(
                     UserEntity::class, "User with id $workspaceId not found", workspaceId
                 )
-                bookingRepository.findAllByWorkspaceId(workspaceId)
+                bookingRepository.findAllByWorkspaceId(workspaceId, bookingRangeFrom, bookingRangeTo)
             }
 
-            else -> bookingRepository.findAll()
+            else -> bookingRepository.findAll(bookingRangeFrom, bookingRangeTo)
         }
         if (bookingList.isEmpty()) return bookingList
         return findIntegrationsAndUtilities(bookingList)

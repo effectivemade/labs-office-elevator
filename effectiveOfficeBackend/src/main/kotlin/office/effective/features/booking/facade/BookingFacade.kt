@@ -1,5 +1,7 @@
 package office.effective.features.booking.facade
+
 import io.ktor.server.plugins.*
+import office.effective.common.constants.BookingConstants
 import office.effective.common.exception.InstanceNotFoundException
 import office.effective.common.utils.DatabaseTransactionManager
 import office.effective.common.utils.UuidValidator
@@ -15,10 +17,11 @@ import office.effective.serviceapi.IBookingService
  *
  * In case of an error, the database transaction will be rolled back.
  */
-class BookingFacade(private val bookingService: IBookingService,
-                    private val transactionManager: DatabaseTransactionManager,
-                    private val uuidValidator: UuidValidator,
-                    private val bookingConverter: BookingFacadeConverter
+class BookingFacade(
+    private val bookingService: IBookingService,
+    private val transactionManager: DatabaseTransactionManager,
+    private val uuidValidator: UuidValidator,
+    private val bookingConverter: BookingFacadeConverter
 ) {
 
     /**
@@ -55,14 +58,28 @@ class BookingFacade(private val bookingService: IBookingService,
      *
      * @param userId use to filter by booking owner id. Should be valid UUID
      * @param workspaceId use to filter by booking workspace id. Should be valid UUID
+     * @param bookingRangeTo upper bound (exclusive) for a beginBooking to filter by. Optional.
+     * Should be greater than range_from.
+     * @param bookingRangeFrom lower bound (exclusive) for a endBooking to filter by.
+     * Should be lover than [bookingRangeFrom]. Default value: [BookingConstants.MIN_SEARCH_START_TIME]
      * @return [BookingDTO] list
      * @author Daniil Zavyalov
      */
-    fun findAll(userId: String?, workspaceId: String?): List<BookingDTO> {
+    fun findAll(
+        userId: String?,
+        workspaceId: String?,
+        bookingRangeTo: Long?,
+        bookingRangeFrom: Long = BookingConstants.MIN_SEARCH_START_TIME
+    ): List<BookingDTO> {
+        if (bookingRangeTo != null && bookingRangeTo <= bookingRangeFrom) {
+            throw BadRequestException("Max booking start time should be null or greater than min start time")
+        }
         val bookingList: List<Booking> = transactionManager.useTransaction({
             bookingService.findAll(
                 userId?.let { uuidValidator.uuidFromString(it) },
-                workspaceId?.let { uuidValidator.uuidFromString(it) }
+                workspaceId?.let { uuidValidator.uuidFromString(it) },
+                bookingRangeTo,
+                bookingRangeFrom
             )
         })
         return bookingList.map {
