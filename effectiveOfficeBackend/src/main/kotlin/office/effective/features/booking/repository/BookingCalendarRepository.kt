@@ -1,3 +1,4 @@
+
 package office.effective.features.booking.repository
 
 import com.google.api.client.googleapis.json.GoogleJsonResponseException
@@ -32,6 +33,8 @@ class BookingCalendarRepository(
         ?: throw Exception("Config file does not contain default gmail value")
     private val minTime = config.propertyOrNull("calendar.minTime")?.getString()?.toLong()
         ?: throw Exception("Config file does not contain minimum time")
+    private val checkBorder: Int = 12;
+    private val hourMillisecond: Long = 3600000
 
     /**
      * Finds workspace calendar id by workspace id
@@ -98,7 +101,7 @@ class BookingCalendarRepository(
         return try {
             calendar.events().get(calendarId, bookingId).execute()
         } catch (e: GoogleJsonResponseException) {
-            if(e.statusCode == 404) return null
+            if (e.statusCode == 404) return null
             else throw e
         }
     }
@@ -280,6 +283,7 @@ class BookingCalendarRepository(
 
 
     private fun checkBookingAvailable(incomingEvent: Event): Boolean {
+        val eventid = calendarEvents.insert(defaultCalendar, incomingEvent).execute().id
         if (incomingEvent.recurrence != null) {
             val events = calendarEvents.instances(defaultCalendar, incomingEvent.id).execute()
             events.forEach { event ->
@@ -288,29 +292,26 @@ class BookingCalendarRepository(
         } else {
             checkSingleEventCollision(incomingEvent)
         }
+        calendarEvents.delete(defaultCalendar, eventid)
         return false
     }
 
     private fun checkSingleEventCollision(event: Event): Boolean {
-        var flag: Boolean = true
         val workspaceId = googleCalendarConverter.toBookingModel(event).workspace.id
-            ?: throw Exception("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-        val savedEvents = findAllByWorkspaceId(workspaceId)
-        for (okEvent in savedEvents) {
+            ?: throw Exception("Booking model does not contains workspace")
+        val leftBorder = event.start.dateTime.value - (checkBorder * hourMillisecond)
+        val rightBorder = event.start.dateTime.value + (checkBorder * hourMillisecond)
+        val savedEvents = calendarEvents.list(defaultCalendar).setSingleEvents(true)
+            .setTimeMin(DateTime(leftBorder))
+            .setTimeMax(DateTime(rightBorder))
+            .execute().items//TODO: turn into findByWorkspace call with time borders
 
-            /*
-            Условия не-букинга [] - saved events, () - new event
-            1) ---[]---(--[--)---]-----[]-------------------------
-            2) ---[]-----[---(--]--)---[]-------------------------
-            3) ---[]-----[--(--)-]-----[]-------------------------
-            4.1) ---[]----(-[-----]--)---[]-----------------------
-            4.2) ---[]---(--[-----]-----[----]---)----------------
-            */
-
-            if (TODO("Check events collision")) {
-                flag = false
+        for (i in savedEvents) {
+            if (!((i.start.dateTime.value > event.end.dateTime.value) || (i.end.dateTime.value < event.start.dateTime.value))) {
+                return false
             }
         }
-        return flag
+
+        return true
     }
 }
