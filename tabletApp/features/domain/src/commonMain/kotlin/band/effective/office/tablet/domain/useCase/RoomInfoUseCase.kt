@@ -34,5 +34,7 @@ class RoomInfoUseCase(private val repository: RoomRepository) {
             val save = error.saveData
             if (save != null) error.copy(saveData = save.copy(eventList = save.eventList.filter { it.startTime > GregorianCalendar() })) else error
         },
-        successMapper = { it.copy(eventList = it.eventList.filter { it.startTime > GregorianCalendar() }) })
+        successMapper = {
+            it.copy(eventList = it.eventList.filter { it.startTime > GregorianCalendar() })
+        })
 }

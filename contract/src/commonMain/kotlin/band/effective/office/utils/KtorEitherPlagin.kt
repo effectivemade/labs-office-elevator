@@ -18,6 +18,7 @@ val KtorEitherPlugin = createClientPlugin("KtorEitherPlugin") {
                 Either.Success(SuccessResponse("ok"))
             }
             else{
+                println("KtorEitherPluginSuccess: $response")
                 Either.Success(
                     Json.decodeFromString(
                         serializer(requestedType.kotlinType!!.arguments[1].type!!), // get serializer for success response model
@@ -27,7 +28,7 @@ val KtorEitherPlugin = createClientPlugin("KtorEitherPlugin") {
             }
 
         } else {
-            println("${response.status.value}: ${response.status.description}")
+            println("KtorEitherPluginError: ${response.status.value}: ${response.status.description}")
             Either.Error(ErrorResponse.getResponse(response.status.value))
         }
     }

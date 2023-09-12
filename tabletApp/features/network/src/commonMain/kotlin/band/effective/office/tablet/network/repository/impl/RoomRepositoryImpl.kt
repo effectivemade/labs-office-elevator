@@ -12,6 +12,7 @@ import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.network.repository.OrganizerRepository
 import band.effective.office.tablet.network.repository.RoomRepository
 import band.effective.office.tablet.utils.map
+import band.effective.office.tablet.utils.unbox
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -31,7 +32,10 @@ class RoomRepositoryImpl(
         MutableStateFlow(Either.Error(ErrorWithData<List<RoomInfo>>(ErrorResponse(0, ""), null)))
 
     private suspend fun loadEvents(roomId: String) =
-        api.getBookingsByWorkspaces(roomId)
+        api.getBookings()
+            .map(
+                errorMapper = { it },
+                successMapper = { eventList -> eventList.filter { it.workspace.id == roomId } })
 
     override suspend fun getRoomInfo(room: String): Either<ErrorWithData<RoomInfo>, RoomInfo> =
         getRoomsInfo().run {
@@ -57,6 +61,13 @@ class RoomRepositoryImpl(
                     } else Either.Success(room)
                 }
             }
+        }.run {
+            addEvents(
+                loadEvents(
+                    this.map(errorMapper = { it }, successMapper = { it.id })
+                        .unbox({ it.saveData?.id ?: "" })
+                )
+            )
         }
 
     override suspend fun getRoomsInfo(): Either<ErrorWithData<List<RoomInfo>>, List<RoomInfo>> =
@@ -67,9 +78,14 @@ class RoomRepositoryImpl(
             } else this
         }
 
-    override suspend fun updateCashe(){
+    override suspend fun updateCashe() {
         val response = loadRooms().map(
-            errorMapper = { ErrorWithData<List<RoomInfo>>(it, null) },
+            errorMapper = {
+                val save = when(val info = roomInfo.value){
+                    is Either.Error -> info.error.saveData
+                    is Either.Success -> info.data
+                }
+                ErrorWithData<List<RoomInfo>>(it, save) },
             successMapper = { it })
         roomInfo.update { response }
     }
@@ -80,11 +96,11 @@ class RoomRepositoryImpl(
                 is Either.Error -> this
                 is Either.Success -> {
                     val roomList = this.data
+                    val bookings = api.getBookings()
                     val events = roomList.mapNotNull { workspace ->
                         val id = workspace.id
-                        val loadEvents = loadEvents(id)
-                        if (loadEvents is Either.Success) {
-                            loadEvents.data.map { it.toEventInfo() }
+                        if (bookings is Either.Success) {
+                            bookings.data.filter { it.workspace.id == id }.map { it.toEventInfo() }
                         } else listOf()
                     }
                     Either.Success(roomList.mapIndexed { index, room ->
@@ -108,10 +124,11 @@ class RoomRepositoryImpl(
                             errorMapper = { ErrorWithData<List<RoomInfo>>(it, null) },
                             successMapper = { it })
                     }
-                    // NOTE send update about current room
-                    send(
-                        it.convert(getRoomInfo(roomId)).addEvents(loadEvents(roomId))
-                    )
+                }
+            }
+            launch {
+                roomInfo.collect {
+                    send(getRoomInfo(roomId))
                 }
             }
             launch {
@@ -122,10 +139,6 @@ class RoomRepositoryImpl(
                             errorMapper = { ErrorWithData<List<RoomInfo>>(it, null) },
                             successMapper = { it })
                     }
-                    // NOTE send update about current room
-                    send(
-                        getRoomInfo(roomId).addEvents(it)
-                    )
                 }
             }
             awaitClose()

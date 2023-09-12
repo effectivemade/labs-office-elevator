@@ -216,7 +216,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
         fun booking(isCurrentRoom: Boolean, state: BookingStore.State, booking: () -> Unit) =
             scope.launch {
-                val busyEvent = checkBookingUseCase(state.toEvent()).unbox({ it.saveData })
+                val busyEvent: EventInfo? = null //checkBookingUseCase(state.toEvent()).unbox({ it.saveData }) //TODO
                 when {
                     !state.isCorrectOrganizer() -> dispatch(Message.OrganizerError)
                     isCurrentRoom && busyEvent != null -> dispatch(Message.NotCorrectEvent(busyEvent))

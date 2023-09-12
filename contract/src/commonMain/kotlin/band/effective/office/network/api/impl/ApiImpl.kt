@@ -172,6 +172,11 @@ class ApiImpl : Api {
             }
         }
 
+    override suspend fun getBookings(): Either<ErrorResponse, List<BookingDTO>> =
+        client.securityResponse(
+            urlString = "$baseUrl/bookings",
+        )
+
     override fun subscribeOnBookingsList(
         workspaceId: String,
         scope: CoroutineScope

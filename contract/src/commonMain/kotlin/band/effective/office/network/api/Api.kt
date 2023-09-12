@@ -100,4 +100,6 @@ interface Api {
     ): Flow<Either<ErrorResponse, List<BookingDTO>>>
 
     suspend fun getUserByEmail(email: String): Either<ErrorResponse, UserDTO>
+
+    suspend fun getBookings(): Either<ErrorResponse, List<BookingDTO>>
 }
