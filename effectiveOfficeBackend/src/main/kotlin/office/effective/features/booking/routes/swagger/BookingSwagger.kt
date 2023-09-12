@@ -41,7 +41,7 @@ fun SwaggerDocument.returnBookingById(): OpenApiRoute.() -> Unit = {
 }
 
 fun SwaggerDocument.returnBookings(): OpenApiRoute.() -> Unit = {
-    description = "Return all bookings. Bookings can be filtered by booking owner id, workspace id and start time.\n" +
+    description = "Return all bookings. Bookings can be filtered by booking owner id, workspace id and start time." +
             "Returns only non-recurring bookings (recurring bookings are expanded into non-recurring ones)."
     tags = listOf("bookings")
     request {
