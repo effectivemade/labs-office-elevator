@@ -2,12 +2,14 @@ package office.effective.features.booking.routes.swagger
 
 import io.github.smiley4.ktorswaggerui.dsl.OpenApiRoute
 import io.ktor.http.*
+import office.effective.common.constants.BookingConstants
 import office.effective.common.swagger.SwaggerDocument
 import office.effective.dto.BookingDTO
 import office.effective.dto.IntegrationDTO
 import office.effective.dto.UserDTO
 import office.effective.dto.UtilityDTO
 import office.effective.dto.WorkspaceDTO
+import java.time.Instant
 
 fun SwaggerDocument.returnBookingById(): OpenApiRoute.() -> Unit = {
     description = "Returns booking found by id"
@@ -39,7 +41,7 @@ fun SwaggerDocument.returnBookingById(): OpenApiRoute.() -> Unit = {
 }
 
 fun SwaggerDocument.returnBookings(): OpenApiRoute.() -> Unit = {
-    description = "Return all bookings. Bookings can be filtered by owner and workspace id"
+    description = "Return all bookings. Bookings can be filtered by booking owner id, workspace id and start time"
     tags = listOf("bookings")
     request {
         queryParameter<String>("user_id") {
@@ -51,6 +53,21 @@ fun SwaggerDocument.returnBookings(): OpenApiRoute.() -> Unit = {
         queryParameter<String>("workspace_id") {
             description = "Booked workspace id"
             example = "50d89406-2bc6-11ee-be56-0242ac120002"
+            required = false
+            allowEmptyValue = false
+        }
+        queryParameter<Long>("min_start_time") {
+            description = "Minimum booking start time. Default value: ${BookingConstants.MIN_SEARCH_START_TIME} (${
+                Instant.ofEpochMilli(BookingConstants.MIN_SEARCH_START_TIME)
+            }). Old Google calendar events may not appear correctly in the system and cause unexpected exceptions"
+            example = 1692927200000
+            required = false
+            allowEmptyValue = false
+
+        }
+        queryParameter<Long>("max_start_time") {
+            description = "Maximum booking start time. If provided, should be greater then min_start_time."
+            example = 1697027200000
             required = false
             allowEmptyValue = false
         }
@@ -67,7 +84,7 @@ fun SwaggerDocument.returnBookings(): OpenApiRoute.() -> Unit = {
             }
         }
         HttpStatusCode.BadRequest to {
-            description = "Bad request"
+            description = "Max start time isn't greater then min start time, or one of them can't be parsed to Long"
         }
         HttpStatusCode.NotFound to {
             description = "User or workspace with the given id doesn't exist"
@@ -88,10 +105,12 @@ fun SwaggerDocument.postBooking(): OpenApiRoute.() -> Unit = {
                         active = true,
                         role = "Fullstack developer",
                         avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                        integrations = listOf(IntegrationDTO(
-                            "c717cf6e-28b3-4148-a469-032991e5d9e9",
-                            "phoneNumber",
-                            "89087659880")
+                        integrations = listOf(
+                            IntegrationDTO(
+                                "c717cf6e-28b3-4148-a469-032991e5d9e9",
+                                "phoneNumber",
+                                "89087659880"
+                            )
                         ),
                         email = "cool.fullstack.developer@effective.band",
                         tag = "employee"
@@ -103,10 +122,12 @@ fun SwaggerDocument.postBooking(): OpenApiRoute.() -> Unit = {
                             active = true,
                             role = "Android developer",
                             avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-                            integrations = listOf(IntegrationDTO(
-                                "c717cf6e-28b3-4148-a469-032991e5d9e9",
-                                "phoneNumber",
-                                "89236379887")
+                            integrations = listOf(
+                                IntegrationDTO(
+                                    "c717cf6e-28b3-4148-a469-032991e5d9e9",
+                                    "phoneNumber",
+                                    "89236379887"
+                                )
                             ),
                             email = "cool.backend.developer@effective.band",
                             tag = "employee"
@@ -183,7 +204,8 @@ fun SwaggerDocument.putBooking(): OpenApiRoute.() -> Unit = {
 }
 
 fun SwaggerDocument.deleteBookingById(): OpenApiRoute.() -> Unit = {
-    description = "Deletes a booking with the given id. If the booking is not found in the database it is silently ignored"
+    description =
+        "Deletes a booking with the given id. If the booking is not found in the database it is silently ignored"
     tags = listOf("bookings")
     request {
         pathParameter<String>("id") {
@@ -210,10 +232,12 @@ private val bookingExample1 = BookingDTO(
         active = true,
         role = "Backend developer",
         avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-        integrations = listOf(IntegrationDTO(
-            "c717cf6e-28b3-4148-a469-032991e5d9e9",
-            "phoneNumber",
-            "89236379887")
+        integrations = listOf(
+            IntegrationDTO(
+                "c717cf6e-28b3-4148-a469-032991e5d9e9",
+                "phoneNumber",
+                "89236379887"
+            )
         ),
         email = "cool.backend.developer@effective.band",
         tag = "employee"
@@ -225,10 +249,12 @@ private val bookingExample1 = BookingDTO(
             active = true,
             role = "Backend developer",
             avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-            integrations = listOf(IntegrationDTO(
-                "c717cf6e-28b3-4148-a469-032991e5d9e9",
-                "phoneNumber",
-                "89236379887")
+            integrations = listOf(
+                IntegrationDTO(
+                    "c717cf6e-28b3-4148-a469-032991e5d9e9",
+                    "phoneNumber",
+                    "89236379887"
+                )
             ),
             email = "cool.backend.developer@effective.band",
             tag = "employee"
@@ -239,10 +265,12 @@ private val bookingExample1 = BookingDTO(
             active = true,
             role = "Guest",
             avatarUrl = "https://img.freepik.com/free-photo/capybara-in-the-nature-habitat-of-northern-pantanal_475641-1029.jpg",
-            integrations = listOf(IntegrationDTO(
-                "c717cf6e-28b3-4148-a469-032991e5d9e9",
-                "phoneNumber",
-                "89086379880")
+            integrations = listOf(
+                IntegrationDTO(
+                    "c717cf6e-28b3-4148-a469-032991e5d9e9",
+                    "phoneNumber",
+                    "89086379880"
+                )
             ),
             email = "email@yahoo.com",
             tag = "employee"
@@ -277,10 +305,12 @@ private val bookingExample2 = BookingDTO(
         active = true,
         role = "Backend developer",
         avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-        integrations = listOf(IntegrationDTO(
-            "c717cf6e-28b3-4148-a469-032991e5d9e9",
-            "phoneNumber",
-            "89236379887")
+        integrations = listOf(
+            IntegrationDTO(
+                "c717cf6e-28b3-4148-a469-032991e5d9e9",
+                "phoneNumber",
+                "89236379887"
+            )
         ),
         email = "cool.backend.developer@effective.band",
         tag = "employee"
@@ -292,10 +322,12 @@ private val bookingExample2 = BookingDTO(
             active = true,
             role = "Backend developer",
             avatarUrl = "https://img.freepik.com/free-photo/beautiful-shot-of-a-white-british-shorthair-kitten_181624-57681.jpg",
-            integrations = listOf(IntegrationDTO(
-                "c717cf6e-28b3-4148-a469-032991e5d9e9",
-                "phoneNumber",
-                "89236379887")
+            integrations = listOf(
+                IntegrationDTO(
+                    "c717cf6e-28b3-4148-a469-032991e5d9e9",
+                    "phoneNumber",
+                    "89236379887"
+                )
             ),
             email = "cool.backend.developer@effective.band",
             tag = "employee"

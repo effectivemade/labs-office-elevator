@@ -40,10 +40,17 @@ interface IBookingService {
      *
      * @param userId use to filter by booking owner id
      * @param workspaceId use to filter by booking workspace id
+     * @param maxStartTime use to set an upper bound for filtering bookings by start time
+     * @param minStartTime lover bound for filtering bookings by start time
      * @throws InstanceNotFoundException if [UserModel] or [Workspace] with the given id doesn't exist in database
      * @author Daniil Zavyalov
      */
-    fun findAll(userId: UUID?, workspaceId: UUID?): List<Booking>
+    fun findAll(
+        userId: UUID? = null,
+        workspaceId: UUID? = null,
+        maxStartTime: Long? = null,
+        minStartTime: Long
+    ): List<Booking>
 
     /**
      * Saves a given booking. Use the returned model for further operations
