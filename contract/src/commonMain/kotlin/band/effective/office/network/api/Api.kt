@@ -9,6 +9,7 @@ import band.effective.office.network.model.Either
 import band.effective.office.network.model.ErrorResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+
 /**Effective office rest api*/
 interface Api {
     /**Get workspace by name
@@ -105,5 +106,8 @@ interface Api {
 
     suspend fun getUserByEmail(email: String): Either<ErrorResponse, UserDTO>
 
-    suspend fun getBookings(): Either<ErrorResponse, List<BookingDTO>>
+    suspend fun getBookings(
+        rangeFrom: Long? = null,
+        rangeTo: Long? = null
+    ): Either<ErrorResponse, List<BookingDTO>>
 }

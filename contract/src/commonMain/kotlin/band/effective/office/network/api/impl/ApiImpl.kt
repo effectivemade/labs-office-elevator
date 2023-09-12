@@ -178,10 +178,22 @@ class ApiImpl : Api {
             }
         }
 
-    override suspend fun getBookings(): Either<ErrorResponse, List<BookingDTO>> =
+    override suspend fun getBookings(
+        rangeFrom: Long?,
+        rangeTo: Long?
+    ): Either<ErrorResponse, List<BookingDTO>> =
         client.securityResponse(
             urlString = "$baseUrl/bookings",
-        )
+        ) {
+            url {
+                if (rangeFrom != null) {
+                    parameters.append("range_from", rangeFrom.toString())
+                }
+                if (rangeTo != null) {
+                    parameters.append("range_to", rangeTo.toString())
+                }
+            }
+        }
 
     override fun subscribeOnBookingsList(
         workspaceId: String,

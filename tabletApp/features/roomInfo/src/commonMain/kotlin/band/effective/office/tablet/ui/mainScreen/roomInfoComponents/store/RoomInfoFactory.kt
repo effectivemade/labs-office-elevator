@@ -80,6 +80,7 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
                             )
                         )
                         updateUseCase(
+                            room = checkSettingsUseCase(),
                             scope = this,
                             roomUpdateHandler = { roomInfo ->
                                 launch(Dispatchers.Main.immediate) {
@@ -106,7 +107,7 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
     private sealed interface Action {
         data class UpdateRoomInfo(val roomInfo: RoomInfo) : Action
         data class UpdateChangeEventTime(val newValue: Int) : Action
-        data class UpdateNameRoom(val nameRoom: String): Action
+        data class UpdateNameRoom(val nameRoom: String) : Action
         data class OnResponse(val isSuccess: Boolean) : Action
     }
 
@@ -114,7 +115,7 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
         data class UpdateRoomInfo(val roomInfo: RoomInfo, val nextEvent: EventInfo) : Message
         data class UpdateChangeEventTime(val newValue: Int) : Message
         data class UpdateDate(val newValue: Calendar, val eventList: List<EventInfo>) : Message
-        data class UpdateNameRoom(val nameRoom: String): Message
+        data class UpdateNameRoom(val nameRoom: String) : Message
         data class OnResponse(val isSuccess: Boolean) : Message
     }
 
@@ -129,6 +130,7 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
                     newDate = intent.newValue,
                     nameRoom = getState().roomInfo.name
                 )
+
                 else -> {}
             }
         }
@@ -153,6 +155,7 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
                 is Action.UpdateNameRoom -> dispatch(Message.UpdateNameRoom(action.nameRoom))
             }
         }
+
         private fun updateDate(newDate: Calendar, nameRoom: String) = scope.launch {
             dispatch(
                 Message.UpdateDate(

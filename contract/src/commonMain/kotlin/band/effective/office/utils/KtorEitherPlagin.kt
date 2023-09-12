@@ -13,11 +13,10 @@ val KtorEitherPlugin = createClientPlugin("KtorEitherPlugin") {
     transformResponseBody { response, content, requestedType ->
         if (response.status.value in 200..299) {
             val response = content.readUTF8Line()
-            if (response == null){
+            if (response == null) {
                 // if response success and empty, return SuccessResponse
                 Either.Success(SuccessResponse("ok"))
-            }
-            else{
+            } else {
                 println("KtorEitherPluginSuccess: $response")
                 Either.Success(
                     Json.decodeFromString(
@@ -28,7 +27,10 @@ val KtorEitherPlugin = createClientPlugin("KtorEitherPlugin") {
             }
 
         } else {
-            println("KtorEitherPluginError: ${response.status.value}: ${response.status.description}")
+            println(
+                "KtorEitherPluginError: ${response.status.value}: ${response.status.description}\n" +
+                        "${content.readUTF8Line()}"
+            )
             Either.Error(ErrorResponse.getResponse(response.status.value))
         }
     }

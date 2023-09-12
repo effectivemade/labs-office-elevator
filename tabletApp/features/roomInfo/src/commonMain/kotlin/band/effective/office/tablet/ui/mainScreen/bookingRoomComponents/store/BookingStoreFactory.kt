@@ -57,8 +57,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                                         .unbox({ it.saveData ?: listOf() })
                                 )
                             )
-                            updateUseCase(scope = this,
-                                {
+                            updateUseCase(room = checkSettingsUseCase(),scope = this,
+                                roomUpdateHandler = {
                                     launch(Dispatchers.Main) {
                                         dispatch(Action.UpdateEvents(it.unbox({
                                             it.saveData ?: RoomInfo.defaultValue
@@ -66,7 +66,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                                     }
 
                                 },
-                                {
+                                organizerUpdateHandler = {
                                     launch(Dispatchers.Main) {
                                         dispatch(Action.UpdateOrganizers(it.unbox({
                                             it.saveData ?: listOf()

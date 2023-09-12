@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Calendar
 import java.util.Date
 import java.util.GregorianCalendar
 
@@ -32,7 +33,10 @@ class RoomRepositoryImpl(
         MutableStateFlow(Either.Error(ErrorWithData<List<RoomInfo>>(ErrorResponse(0, ""), null)))
 
     private suspend fun loadEvents(roomId: String) =
-        api.getBookings()
+        api.getBookings(
+            rangeFrom = GregorianCalendar().timeInMillis,
+            rangeTo = GregorianCalendar().apply { add(Calendar.DAY_OF_MONTH,7) }.timeInMillis
+        )
             .map(
                 errorMapper = { it },
                 successMapper = { eventList -> eventList.filter { it.workspace.id == roomId } })
@@ -96,7 +100,10 @@ class RoomRepositoryImpl(
                 is Either.Error -> this
                 is Either.Success -> {
                     val roomList = this.data
-                    val bookings = api.getBookings()
+                    val bookings = api.getBookings(
+                        rangeFrom = GregorianCalendar().timeInMillis,
+                        rangeTo = GregorianCalendar().apply { add(Calendar.DAY_OF_MONTH,7) }.timeInMillis
+                    )
                     val events = roomList.mapNotNull { workspace ->
                         val id = workspace.id
                         if (bookings is Either.Success) {

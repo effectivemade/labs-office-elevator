@@ -185,7 +185,10 @@ class ApiMock(private val realApi: Api, mockFactory: MockFactory) : Api {
             realResponse = realApi.getUserByEmail(email)
         )
 
-    override suspend fun getBookings(): Either<ErrorResponse, List<BookingDTO>> {
+    override suspend fun getBookings(
+        freeFrom: Long?,
+        rangeTo: Long?
+    ): Either<ErrorResponse, List<BookingDTO>> {
         TODO("Not yet implemented")
     }
 

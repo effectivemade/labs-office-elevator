@@ -27,6 +27,7 @@ class UpdateUseCase(
      * @param roomUpdateHandler handler for room event update
      * @param organizerUpdateHandler handler for org list update*/
     operator fun invoke(
+        room: String,
         scope: CoroutineScope,
         roomUpdateHandler: (Either<ErrorWithData<RoomInfo>, RoomInfo>) -> Unit,
         organizerUpdateHandler: (Either<ErrorWithData<List<Organizer>>, List<Organizer>>) -> Unit
@@ -36,7 +37,7 @@ class UpdateUseCase(
         currentEventController.start(scope)
         currentEventController.subscribe {
             scope.launch(Dispatchers.IO) {
-                roomUpdateHandler(roomInfoUseCase())
+                roomUpdateHandler(roomInfoUseCase(room = room))
             }
         }
     }
