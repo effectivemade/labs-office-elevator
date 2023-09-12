@@ -10,26 +10,25 @@ import band.effective.office.network.model.Either
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 
 class GetBookingsUseCase(
     private val repository: BookingRepository
 ) {
     suspend fun getBookingsForUser(
-        ownerId:String,
+        ownerId:String? = null,
+        beginDateTime: LocalDateTime,
+        endDateTime: LocalDateTime,
         bookingsFilter: BookingsFilter,
     ): Flow<Either<ErrorWithData<List<ReservedSeat>>, List<ReservedSeat>>> =
         repository
-            .getBookingsForUser(ownerId = ownerId, bookingsFilter = bookingsFilter)
+            .getBookingsForUser(
+                ownerId = ownerId,
+                beginDate = beginDateTime,
+                endDate = endDateTime,
+                bookingsFilter = bookingsFilter
+            )
             .map ()
-
-
-    suspend fun getBookingsByDate(
-        date: LocalDate,
-        bookingsFilter: BookingsFilter,
-    ): Flow<Either<ErrorWithData<List<ReservedSeat>>, List<ReservedSeat>>> =
-        repository
-            .getBookingsByDate(date = date, bookingsFilter = bookingsFilter)
-            .map()
 
     private fun Flow<Either<ErrorWithData<List<BookingInfo>>, List<BookingInfo>>>.map() =
         this.map{ response ->
