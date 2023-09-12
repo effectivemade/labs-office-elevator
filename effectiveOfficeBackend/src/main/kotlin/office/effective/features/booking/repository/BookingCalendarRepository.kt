@@ -142,15 +142,15 @@ class BookingCalendarRepository(
      * Returns all bookings with the given workspace id
      *
      * @param workspaceId
-     * @param minStartTime lover bound for filtering bookings by start time.
+     * @param eventRangeFrom lower bound (exclusive) for a endBooking to filter by.
      * Old Google calendar events may not appear correctly in the system and cause unexpected exceptions
-     * @param maxStartTime use to set an upper bound for filtering bookings by start time
+     * @param eventRangeTo upper bound (exclusive) for a beginBooking to filter by. Optional.
      * @return List of all workspace [Booking]
      * @author Daniil Zavyalov, Danil Kiselev
      */
-    override fun findAllByWorkspaceId(workspaceId: UUID, minStartTime: Long, maxStartTime: Long?): List<Booking> {
+    override fun findAllByWorkspaceId(workspaceId: UUID, eventRangeFrom: Long, eventRangeTo: Long?): List<Booking> {
         val workspaceCalendarId = getCalendarIdByWorkspace(workspaceId)
-        val eventsWithWorkspace = basicQuery(minStartTime, maxStartTime)
+        val eventsWithWorkspace = basicQuery(eventRangeFrom, eventRangeTo)
             .setQ(workspaceCalendarId)
             .execute().items
 
@@ -198,17 +198,17 @@ class BookingCalendarRepository(
      * Returns all bookings with the given owner id
      *
      * @param ownerId
-     * @param minStartTime lover bound for filtering bookings by start time.
+     * @param eventRangeFrom lower bound (exclusive) for a endBooking to filter by.
      * Old Google calendar events may not appear correctly in the system and cause unexpected exceptions
-     * @param maxStartTime use to set an upper bound for filtering bookings by start time
+     * @param eventRangeTo upper bound (exclusive) for a beginBooking to filter by. Optional.
      * @return List of all user [Booking]
      * @throws InstanceNotFoundException if user with the given id doesn't exist in database
      * @author Daniil Zavyalov, Danil Kiselev
      */
-    override fun findAllByOwnerId(ownerId: UUID, minStartTime: Long, maxStartTime: Long?): List<Booking> {
+    override fun findAllByOwnerId(ownerId: UUID, eventRangeFrom: Long, eventRangeTo: Long?): List<Booking> {
         val userEmail: String = findUserEmailByUserId(ownerId)
 
-        val eventsWithUser = basicQuery(minStartTime, maxStartTime)
+        val eventsWithUser = basicQuery(eventRangeFrom, eventRangeTo)
             .setQ(userEmail)
             .execute().items
 
@@ -227,22 +227,22 @@ class BookingCalendarRepository(
      *
      * @param ownerId
      * @param workspaceId
-     * @param minStartTime lover bound for filtering bookings by start time.
+     * @param eventRangeFrom lower bound (exclusive) for a endBooking to filter by.
      * Old Google calendar events may not appear correctly in the system and cause unexpected exceptions
-     * @param maxStartTime use to set an upper bound for filtering bookings by start time
+     * @param eventRangeTo upper bound (exclusive) for a beginBooking to filter by. Optional.
      * @return List of all [Booking]s with the given workspace and owner id
      * @author Daniil Zavyalov
      */
     override fun findAllByOwnerAndWorkspaceId(
         ownerId: UUID,
         workspaceId: UUID,
-        minStartTime: Long,
-        maxStartTime: Long?
+        eventRangeFrom: Long,
+        eventRangeTo: Long?
     ): List<Booking> {
         val userEmail: String = findUserEmailByUserId(ownerId)
         val workspaceCalendarId = getCalendarIdByWorkspace(workspaceId)
 
-        val eventsWithUserAndWorkspace = basicQuery(minStartTime, maxStartTime)
+        val eventsWithUserAndWorkspace = basicQuery(eventRangeFrom, eventRangeTo)
             .setQ("$userEmail $workspaceCalendarId")
             .execute().items
 
@@ -259,14 +259,14 @@ class BookingCalendarRepository(
     /**
      * Retrieves all bookings
      *
-     * @param minStartTime lover bound for filtering bookings by start time.
+     * @param eventRangeFrom lower bound (exclusive) for a endBooking to filter by.
      * Old Google calendar events may not appear correctly in the system and cause unexpected exceptions
-     * @param maxStartTime use to set an upper bound for filtering bookings by start time
+     * @param eventRangeTo upper bound (exclusive) for a beginBooking to filter by. Optional.
      * @return All [Booking]s
      * @author Daniil Zavyalov
      */
-    override fun findAll(minStartTime: Long, maxStartTime: Long?): List<Booking> {
-        return basicQuery(minStartTime, maxStartTime).execute().items.map { event ->
+    override fun findAll(eventRangeFrom: Long, eventRangeTo: Long?): List<Booking> {
+        return basicQuery(eventRangeFrom, eventRangeTo).execute().items.map { event ->
             googleCalendarConverter.toBookingModel(event)
         }
     }
