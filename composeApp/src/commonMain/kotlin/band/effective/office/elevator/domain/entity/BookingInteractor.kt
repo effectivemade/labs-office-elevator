@@ -23,19 +23,16 @@ class BookingInteractor(
     private val workspaceUseCase: WorkspacesUseCase,
     private val repository: BookingRepository // todo replace this
 ) {
-    suspend fun getForUser(ownerId:String): Flow<Either<ErrorWithData<List<ReservedSeat>>, List<ReservedSeat>>> =
-        getBookingsUseCase.getBookingsForUser(
-            ownerId = ownerId,
-            bookingsFilter = BookingsFilter(meetRoom = true, workPlace = true)
-        )
-
-
-    suspend fun getByDate(
-        date: LocalDate,
+    suspend fun getForUser(
+        ownerId:String? = null,
+        beginDateTime: LocalDateTime,
+        endDateTime: LocalDateTime,
         bookingsFilter: BookingsFilter
     ): Flow<Either<ErrorWithData<List<ReservedSeat>>, List<ReservedSeat>>> =
-        getBookingsUseCase.getBookingsByDate(
-            date = date,
+        getBookingsUseCase.getBookingsForUser(
+            ownerId = ownerId,
+            beginDateTime = beginDateTime,
+            endDateTime = endDateTime,
             bookingsFilter = bookingsFilter
         )
 

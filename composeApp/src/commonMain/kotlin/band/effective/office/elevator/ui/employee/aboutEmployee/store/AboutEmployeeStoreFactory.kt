@@ -18,11 +18,15 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
+import com.commandiron.wheel_picker_compose.utils.Max
+import com.commandiron.wheel_picker_compose.utils.Min
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -184,10 +188,11 @@ class AboutEmployeeStoreFactory(
 
             scope.launch(Dispatchers.IO) {
                 aboutEmployeeInteractor
-                    .getBookingsByDate(
-                        date = date,
-                        ownerId = ownerId,
+                    .getBookingsForUser(
                         bookingsFilter = bookingsFilter,
+                        ownerId = ownerId,
+                        beginDateTime = LocalDateTime(date = date, time = LocalTime.Min),
+                        endDateTime = LocalDateTime(date = date, time = LocalTime.Max),
                     )
                     .collect { newList ->
                         withContext(Dispatchers.Main) {
@@ -216,21 +221,20 @@ class AboutEmployeeStoreFactory(
             date: LocalDate,
             employee: User,
             bookingsFilter: BookingsFilter
-        ){
-
+        ) {
             scope.launch(Dispatchers.IO) {
                 aboutEmployeeInteractor
-                    .getBookingsByDate(
-                        date = date,
-                        ownerId = employee.id,
+                    .getBookingsForUser(
                         bookingsFilter = bookingsFilter,
+                        ownerId = employee.id,
+                        beginDateTime = LocalDateTime(date = date, time = LocalTime.Min),
+                        endDateTime = LocalDateTime(date = date, time = LocalTime.Max),
                     ).collect { newList ->
                         withContext(Dispatchers.Main) {
                             when (newList) {
                                 is Either.Error -> {
                                     //TODO show error on UI
                                 }
-
                                 is Either.Success -> {
                                     dispatch(
                                         Msg.ProfileData(
