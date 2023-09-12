@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.booking.components.modals
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material3.CircularProgressIndicator
@@ -22,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
+import band.effective.office.elevator.textInBorderGray
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
@@ -71,14 +74,26 @@ fun BookingSuccess(onMain: () -> Unit, close: () -> Unit, modifier: Modifier, is
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
                 horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
             ) {
                 EffectiveButton(
                     buttonText = stringResource(resource = MainRes.strings.move_to_main_from_booking),
-                    onClick = onMain
+                    onClick = onMain,
+                    modifier = Modifier.fillMaxWidth()
                 )
                 EffectiveButton(
+                    modifier = Modifier.fillMaxWidth(),
                     buttonText = stringResource(resource = MainRes.strings.close_booking),
-                    onClick = close
+                    onClick = close,
+                    buttonColors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color.White,
+                        contentColor = MaterialTheme.colors.primary
+                    ),
+                    border = BorderStroke(
+                        width = 1.dp,
+                        color = MaterialTheme.colors.primary
+                    )
                 )
             }
         }

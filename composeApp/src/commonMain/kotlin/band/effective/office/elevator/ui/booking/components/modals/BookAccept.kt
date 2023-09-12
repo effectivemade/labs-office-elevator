@@ -112,12 +112,6 @@ fun BookAccept(
                         modifier = Modifier.padding(top = 10.dp, bottom = 5.dp)
                     )
                     Text(
-                        //                        text = when(frequency.getResearchEnd().first.first){
-//                            "ThisDay" -> noPeriodReserve(bookingInfoDomain, frequency)
-//                            "Never" -> noEndsPeriodReserve(bookingInfoDomain, frequency)
-//                            "Date" ->  noEndsPeriodReserve(bookingInfoDomain, frequency)
-//                            else ->  coupleTimesPeriodReserve(bookingInfoDomain, frequency)
-//                        },
                         text = "${if (frequency.toString().isEmpty()) "$date $time" else "$frequency $time"}",
                         style = MaterialTheme.typography.subtitle1,
                         fontSize = 16.sp,
