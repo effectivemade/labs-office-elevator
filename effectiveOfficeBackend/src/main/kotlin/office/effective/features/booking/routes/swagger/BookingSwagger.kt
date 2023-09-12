@@ -41,8 +41,9 @@ fun SwaggerDocument.returnBookingById(): OpenApiRoute.() -> Unit = {
 }
 
 fun SwaggerDocument.returnBookings(): OpenApiRoute.() -> Unit = {
-    description = "Return all bookings. Bookings can be filtered by booking owner id, workspace id and start time." +
-            "Returns only non-recurring bookings (recurring bookings are expanded into non-recurring ones)."
+    description = "Return all bookings. Bookings can be filtered by booking owner id, workspace id and time range. " +
+            "Returns only non-recurring bookings (recurring bookings are expanded into non-recurring ones). " +
+            "Can return no more than 2500 bookings."
     tags = listOf("bookings")
     request {
         queryParameter<String>("user_id") {
@@ -59,7 +60,7 @@ fun SwaggerDocument.returnBookings(): OpenApiRoute.() -> Unit = {
         }
         queryParameter<Long>("range_from") {
             description = "Lower bound (exclusive) for a endBooking to filter by. Should be lover than range_to. " +
-                    "\nDefault value: ${BookingConstants.MIN_SEARCH_START_TIME} " +
+                    "Default value: ${BookingConstants.MIN_SEARCH_START_TIME} " +
                     "(${Instant.ofEpochMilli(BookingConstants.MIN_SEARCH_START_TIME)}). " +
                     "Old Google calendar events may not appear correctly in the system and cause unexpected exceptions"
             example = 1692927200000
