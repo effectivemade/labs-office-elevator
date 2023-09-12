@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.atTime
 
 class BookingRepositoryImpl(
@@ -39,6 +40,7 @@ class BookingRepositoryImpl(
 ) : BookingRepository {
 
     private var user: User? = null
+
     init {
         CoroutineScope(Dispatchers.IO).launch {
             val currentUserResponse = profileRepository.getUser()
@@ -75,7 +77,7 @@ class BookingRepositoryImpl(
         val bookingDTO = bookingInfo.toDTOModel(
             userDTO = emptyUserDTO(
                 id = bookingInfo.ownerId,
-                email = user?.email?:"",
+                email = user?.email ?: "",
                 name = user?.userName.orEmpty()
             ),
             workspaceDTO = emptyWorkSpaceDTO(bookingInfo.workSpaceId),
@@ -119,11 +121,14 @@ class BookingRepositoryImpl(
                         workspaceDTO = emptyWorkSpaceDTO(creatingBookModel.workSpaceId),
                         recurrence = recurrence
                     )
-                    when(val creating= api.createBooking(bookingDTO)){
+                    when (val creating = api.createBooking(bookingDTO)) {
                         is Either.Error -> {
-                            println("Error create booking: ${creating.error}" +
-                                    "BooKingDTO: $bookingDTO")
+                            println(
+                                "Error create booking: ${creating.error}" +
+                                        "BooKingDTO: $bookingDTO"
+                            )
                         }
+
                         is Either.Success -> println("Creating ok")
                     }
                 }
@@ -136,52 +141,51 @@ class BookingRepositoryImpl(
     }
 
     override suspend fun getBookingsForUser(
-        ownerId: String,
+        ownerId: String?,
+        beginDate: LocalDateTime,
+        endDate: LocalDateTime,
         bookingsFilter: BookingsFilter
     ): Flow<Either<ErrorWithData<List<BookingInfo>>, List<BookingInfo>>> = flow {
-        val response = api.getBookingsByUser(ownerId)
-            .convert(oldValue = lastResponse.value, filter = bookingsFilter)
-        lastResponse.update { response }
-        emit(response)
-    }
-
-
-    override suspend fun getBookingsByDate(
-        ownerId: String?,
-        date: LocalDate,
-        bookingsFilter: BookingsFilter
-    ): Flow<Either<ErrorWithData<List<BookingInfo>>, List<BookingInfo>>> = flow  {
         if (ownerId == null) {
-            val currentUserResponse = profileRepository.getUser()
+            val currentUserResponse = profileRepository.getUser() // TODO (Artem Gruzdev) use saved user params
             currentUserResponse.collect { userResponse ->
                 when (userResponse) {
                     is Either.Success -> {
-                        val bookings = api.getBookingsByUser(userResponse.data.id)
-                            .convertWithDateFilter(
-                                oldValue = lastResponse.value,
+                        val bookings = api
+                            .getBookingsByUser(
+                                userId = userResponse.data.id,
+                                beginDate = localDateTimeToUnix(beginDate)!!,
+                                endDate = localDateTimeToUnix(endDate)!!
+                            )
+                            .convert(
                                 filter = bookingsFilter,
-                                dateFilter = date
+                                oldValue = lastResponse.value
                             )
                         lastResponse.update { bookings }
                         emit(bookings)
                     }
+
                     is Either.Error -> {
                         // TODO add implemetation for error
                     }
                 }
             }
-        }
-        else {
-            val bookings = api.getBookingsByUser(ownerId)
-                .convertWithDateFilter(
-                    oldValue = lastResponse.value,
+        } else {
+            val bookings = api
+                .getBookingsByUser(
+                    userId = ownerId,
+                    beginDate = localDateTimeToUnix(beginDate)!!,
+                    endDate = localDateTimeToUnix(endDate)!!
+                )
+                .convert(
                     filter = bookingsFilter,
-                    dateFilter = date
+                    oldValue = lastResponse.value
                 )
             lastResponse.update { bookings }
             emit(bookings)
         }
     }
+
 
     private fun Either<ErrorResponse, List<BookingDTO>>.convert(
         filter: BookingsFilter,
@@ -203,18 +207,20 @@ class BookingRepositoryImpl(
         )
 
     private fun placeFilter(filter: BookingsFilter, list: List<BookingDTO>) =
-        list.filter {booking ->
+        list.filter { booking ->
             when {
                 filter.workPlace && filter.meetRoom -> true
                 filter.workPlace -> booking.workspace.tag == "regular"
                 filter.meetRoom -> booking.workspace.tag == "meeting"
-                else -> {false}
+                else -> {
+                    false
+                }
             }
         }
 
     private fun Either<ErrorResponse, List<BookingDTO>>.convertWithDateFilter(
         filter: BookingsFilter,
-        oldValue: Either<ErrorWithData<List<BookingInfo>>,List<BookingInfo>>,
+        oldValue: Either<ErrorWithData<List<BookingInfo>>, List<BookingInfo>>,
         dateFilter: LocalDate
     ) =
         map(errorMapper = { error ->
@@ -231,10 +237,11 @@ class BookingRepositoryImpl(
                     .toDomainZone()
                     .filter {
                         println("repository: ${it.dateOfStart.date} == ${dateFilter}")
-                    it.dateOfStart.date == dateFilter
-                }
+                        it.dateOfStart.date == dateFilter
+                    }
             }
         )
+
     private fun getRecurrenceModal(
         bookingPeriod: BookingPeriod?,
         typeEndPeriod: TypeEndPeriodBooking?
@@ -256,6 +263,7 @@ class BookingRepositoryImpl(
             until = when (typeEndPeriod) {
                 is TypeEndPeriodBooking.DatePeriodEnd ->
                     localDateTimeToUnix(typeEndPeriod.date.atTime(hour = 0, minute = 0))
+
                 else -> null
             },
             byDay = when (bookingPeriod) {

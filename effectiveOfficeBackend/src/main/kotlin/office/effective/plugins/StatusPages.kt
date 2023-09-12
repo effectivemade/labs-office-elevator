@@ -1,5 +1,6 @@
 package office.effective.plugins
 
+import com.google.api.client.googleapis.json.GoogleJsonResponseException
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.*
@@ -27,6 +28,12 @@ fun Application.configureExceptionHandling() {
         }
         exception<RequestValidationException> { call, cause ->
             call.respondText(text = "400: ${cause.reasons.joinToString()}", status = HttpStatusCode.BadRequest)
+        }
+        exception<GoogleJsonResponseException> { call, cause ->
+            call.respondText(
+                text = "${cause.statusCode}: ${cause.message}",
+                status = HttpStatusCode.fromValue(cause.statusCode)
+            )
         }
         exception<MissingIdException> { call, cause ->
             call.respondText(text = "500: $cause", status = HttpStatusCode.InternalServerError)

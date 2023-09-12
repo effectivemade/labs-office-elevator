@@ -162,7 +162,7 @@ class WorkspaceRepository(private val database: Database, private val converter:
 
         val calendarRepository: IBookingRepository = GlobalContext.get().get() //TODO: REWRITE IT FROM SCRATCH
         val freeWorkspaces = mutableListOf<Workspace>()
-        val bookings = calendarRepository.findAll()
+        val bookings = calendarRepository.findAll(beginTimestamp.toEpochMilli())
         findAllByTag(tag).forEach {
             if (bookings.none { booking ->
                 booking.beginBooking.isBefore(endTimestamp) && booking.endBooking.isAfter(beginTimestamp)

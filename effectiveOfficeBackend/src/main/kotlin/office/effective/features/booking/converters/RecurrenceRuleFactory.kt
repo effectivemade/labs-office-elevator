@@ -13,8 +13,8 @@ import java.lang.Exception
 object RecurrenceRuleFactory {
 
     /**
-    * @author Max Mishenko
-    */
+     * @author Max Mishenko
+     */
     fun String.getRecurrence(): Recurrence = trim('[', ']').substringAfter(":").split(";").fold(
         Recurrence(
             interval = 0,
@@ -33,11 +33,7 @@ object RecurrenceRuleFactory {
             "COUNT" -> recurrence.copy(ending = Ending.Count(parts.last().toInt()))
             "UNTIL" -> recurrence.copy(
                 ending = Ending.Until(
-                    try {
-                        parts.last().trim(Char(34), 'Z').toLong()
-                    } catch (ex: Exception) {
-                        0 /*TODO FIX ME, SEMPAI (двойная кавычка в конце строки, которая парсится в лонг)*/
-                    }
+                    parts.last()
                 )
             )
 

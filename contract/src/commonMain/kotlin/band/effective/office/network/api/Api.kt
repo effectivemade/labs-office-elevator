@@ -50,7 +50,11 @@ interface Api {
     /**Get user's bookings
      * @param userId user id whose booking need get
      * @return list bookings current user*/
-    suspend fun getBookingsByUser(userId: String): Either<ErrorResponse, List<BookingDTO>>
+    suspend fun getBookingsByUser(
+        userId: String,
+        beginDate: Long,
+        endDate: Long
+    ): Either<ErrorResponse, List<BookingDTO>>
 
     /**Get bookings in workspace
      * @param workspaceId workspace id to be reserved
