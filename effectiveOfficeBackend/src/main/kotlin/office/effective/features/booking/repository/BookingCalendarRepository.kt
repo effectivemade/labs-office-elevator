@@ -132,7 +132,7 @@ class BookingCalendarRepository(
      * @author Danil Kiselev
      */
     private fun hasAttendee(event: Event, attendeeEmail: String): Boolean {
-        event.attendees.forEach {
+        event.attendees?.forEach {
             if (it.email == attendeeEmail) return true
         }
         return false
@@ -155,7 +155,7 @@ class BookingCalendarRepository(
             .execute().items
 
         val result: MutableList<Booking> = mutableListOf()
-        eventsWithWorkspace.forEach { event ->
+        eventsWithWorkspace?.forEach { event ->
             if (hasAttendee(event, workspaceCalendarId)) {
                 result.add(googleCalendarConverter.toBookingModel(event))
             }
