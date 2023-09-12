@@ -30,6 +30,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.LocalContentColor
+import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
@@ -209,13 +210,14 @@ fun BookingRepeat(
                     itemWidthDp = with(localDensity) { coordinates.size.width.toDp() }
                     itemHeightDp = with(localDensity) { coordinates.size.height.toDp() }
                 }
+                    .padding(start = 32.dp)
             ) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.Start),
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 54.dp, end = 16.dp, top = 16.dp)
+                            .padding(end = 16.dp, top = 16.dp)
                     ) {
                         Text(
                             text = stringResource(resource = MainRes.strings.booking_repeat_in),
@@ -228,7 +230,7 @@ fun BookingRepeat(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .wrapContentWidth()
-                            .padding(start = 54.dp, end = 16.dp)
+                            .padding( end = 16.dp)
                     ) {
                         OutlinedTextField(
                             value = periodicity.value,
@@ -325,7 +327,7 @@ fun BookingRepeat(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(start = 54.dp, end = 16.dp, top = 16.dp)
+                                .padding(end = 16.dp, top = 16.dp)
                         ) {
                             Text(
                                 text = stringResource(MainRes.strings.when_repeat),
@@ -339,7 +341,6 @@ fun BookingRepeat(
 
                         LazyRow(
                             modifier = Modifier.padding(
-                                start = 54.dp,
                                 end = 16.dp,
                                 top = 16.dp,
                                 bottom = 16.dp
@@ -409,7 +410,7 @@ fun BookingRepeat(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 54.dp, end = 16.dp, top = 16.dp)
+                            .padding(end = 16.dp, top = 16.dp)
                     ) {
                         Text(
                             text = stringResource(MainRes.strings.book_finish),
@@ -427,7 +428,7 @@ fun BookingRepeat(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 54.dp, end = 16.dp, top = 8.dp)
+                            .padding(end = 16.dp, top = 8.dp)
                     ) {
                          RadioButton(
                              selected = selected1.value,
@@ -461,7 +462,7 @@ fun BookingRepeat(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 54.dp, end = 16.dp, top = 6.dp)
+                            .padding(end = 16.dp, top = 6.dp)
                     ) {
                         RadioButton(
                             selected = selected2.value,
@@ -504,7 +505,7 @@ fun BookingRepeat(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 54.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
+                            .padding(end = 16.dp, top = 8.dp, bottom = 8.dp)
                     ) {
                         RadioButton(
                             selected = selected3.value,
@@ -542,7 +543,8 @@ fun BookingRepeat(
                                 .weight(weight = 0.1f),
                             singleLine = true,
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            keyboardActions = KeyboardActions.Default
+                            keyboardActions = KeyboardActions.Default,
+                            textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center)
                         )
 
                         Spacer(modifier = Modifier.width(width = 16.dp))
@@ -559,24 +561,27 @@ fun BookingRepeat(
                         Spacer(modifier = Modifier.width(width = 48.dp))
                     }
 
-                    EffectiveButton(
-                        buttonText = stringResource(MainRes.strings.confirm_booking),
-                        onClick = {
-                            if(selected2.value)
-                                researchClose.value=Triple(Pair("Date", endDate.value), periodicity.value, periodMeasureState.value)
-                            else{
-                                if(selected3.value)
-                                    researchClose.value=Triple(Pair("CoupleTimes", endPeriod.value), periodicity.value, periodMeasureState.value)
-                                else
-                                    researchClose.value=Triple(Pair("Never",""), periodicity.value, periodMeasureState.value)
-                            }
-                            val frequency = Frequency(days = list.toList(), researchEnd =researchClose.value)
-                            confirmBooking(frequency)
-                        },
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                    )
                 }
             }
         }
+        EffectiveButton(
+            buttonText = stringResource(MainRes.strings.confirm_booking),
+            onClick = {
+                if(selected2.value)
+                    researchClose.value=Triple(Pair("Date", endDate.value), periodicity.value, periodMeasureState.value)
+                else{
+                    if(selected3.value)
+                        researchClose.value=Triple(Pair("CoupleTimes", endPeriod.value), periodicity.value, periodMeasureState.value)
+                    else
+                        researchClose.value=Triple(Pair("Never",""), periodicity.value, periodMeasureState.value)
+                }
+                val frequency = Frequency(days = list.toList(), researchEnd =researchClose.value)
+                confirmBooking(frequency)
+            },
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(horizontal = 16.dp)
+                .fillMaxWidth(),
+        )
     }
 }
