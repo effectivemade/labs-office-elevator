@@ -32,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -39,14 +40,13 @@ import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.LoadingIndicator
+import band.effective.office.elevator.components.generateImageLoader
 import band.effective.office.elevator.textInBorderGray
 import band.effective.office.elevator.theme_light_onPrimary
 import band.effective.office.elevator.ui.employee.allEmployee.models.mappers.EmployeeCard
 import band.effective.office.elevator.ui.employee.allEmployee.store.EmployeeStore
-import band.effective.office.elevator.utils.generateImageLoader
-import com.seiko.imageloader.LocalImageLoader
 import com.seiko.imageloader.model.ImageRequest
-import com.seiko.imageloader.rememberAsyncImagePainter
+import com.seiko.imageloader.rememberImagePainter
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 
@@ -62,7 +62,11 @@ fun EmployeeScreen(component: EmployeeComponent) {
     LaunchedEffect(component) {
         component.employLabel.collect { label ->
             when (label) {
-                is EmployeeStore.Label.ShowProfileScreen -> component.onOutput(EmployeeComponent.Output.OpenProfileScreen(label.employee))
+                is EmployeeStore.Label.ShowProfileScreen -> component.onOutput(
+                    EmployeeComponent.Output.OpenProfileScreen(
+                        label.employee
+                    )
+                )
             }
         }
     }
@@ -159,10 +163,11 @@ fun EmployeeScreenContent(
                 )
             }
 
-            when (isLoading){
+            when (isLoading) {
                 true -> {
                     LoadingIndicator()
                 }
+
                 false -> {
                     LazyColumn {
                         items(employeesData) { employee_Data ->
@@ -183,37 +188,40 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: (String) -> Unit) {
         onCardClick(emp.id)
     }
 
+    val imageLoader = generateImageLoader()
+
     Surface(
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom=15.dp)
+            .padding(bottom = 15.dp)
             .animateContentSize()
             .clickable { isExpanded = !isExpanded },
         color = MaterialTheme.colors.onPrimary
     ) {
         Row(modifier = Modifier.padding(6.dp, 15.dp)) {
-
-            CompositionLocalProvider(
-                LocalImageLoader provides remember {generateImageLoader()},
-            ) {
-                emp.logoUrl.let { url ->
-                    val request = remember(url) {
-                        ImageRequest {
-                            data(url)
-                        }
+            emp.logoUrl.let { url ->
+                val request = remember(url) {
+                    ImageRequest {
+                        data(url)
                     }
-                    val painter = rememberAsyncImagePainter(request)
-                    Image(
-                        painter = painter,
-                        contentDescription = "Employee logo",
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .size(56.dp)
-                    )
-
                 }
+                val painter = rememberImagePainter(
+                    request = request,
+                    imageLoader = imageLoader,
+                    placeholderPainter = { painterResource(MainRes.images.logo_default) },
+                    errorPainter = { painterResource(MainRes.images.logo_default) }
+                )
+                Image(
+                    painter = painter,
+                    contentDescription = "Employee logo",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .size(56.dp)
+                )
             }
+
             Column(modifier = Modifier.padding(15.dp, 0.dp)) {
                 Text(
                     text = emp.name,
@@ -233,3 +241,4 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: (String) -> Unit) {
         }
     }
 }
+

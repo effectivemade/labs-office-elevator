@@ -47,6 +47,7 @@ import band.effective.office.elevator.components.InfoAboutUserUIComponent
 import band.effective.office.elevator.components.LoadingIndicator
 import band.effective.office.elevator.components.ModalCalendar
 import band.effective.office.elevator.components.TitlePage
+import band.effective.office.elevator.components.generateImageLoader
 import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.ui.employee.aboutEmployee.components.BookingCardUser
 import band.effective.office.elevator.ui.employee.aboutEmployee.components.ContactUserUIComponent
@@ -58,6 +59,7 @@ import band.effective.office.elevator.ui.main.components.FilterButton
 import band.effective.office.elevator.ui.models.ReservedSeat
 import com.seiko.imageloader.model.ImageRequest
 import com.seiko.imageloader.rememberAsyncImagePainter
+import com.seiko.imageloader.rememberImagePainter
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.datetime.LocalDate
@@ -142,6 +144,8 @@ private fun AboutEmployeeContent(
     onClickCloseBottomDialog: (BookingsFilter) -> Unit,
     isLoading: Boolean
 ){
+    val imageLoader = generateImageLoader()
+
     ModalBottomSheetLayout(
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
         sheetState = bottomSheetState,
@@ -187,7 +191,12 @@ private fun AboutEmployeeContent(
                                 data(imageUrl)
                             }
                         }
-                        val painter = rememberAsyncImagePainter(request)
+                        val painter = rememberImagePainter(
+                            request = request,
+                            imageLoader = imageLoader,
+                            placeholderPainter = { painterResource(MainRes.images.logo_default) },
+                            errorPainter = { painterResource(MainRes.images.logo_default) }
+                        )
                         Row(modifier = Modifier.padding(top = 24.dp)) {
                             Column {
                                 InfoAboutUserUIComponent(userName, post)
@@ -211,7 +220,7 @@ private fun AboutEmployeeContent(
                                 Image(
                                     modifier = Modifier.fillMaxSize(),
                                     painter = painter,
-                                    contentScale = ContentScale.Inside,
+                                    contentScale = ContentScale.Crop,
                                     contentDescription = null,
                                 )
                             }
