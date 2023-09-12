@@ -88,7 +88,7 @@ class BookingCalendarRepository(
      * @param calendarId the calendar in which to search for the event
      * @return [Event] with the given [bookingId] from calendar with [calendarId]
      * or null if event with the given id doesn't exist
-     * @author Danil Kiselev
+     * @author Danil Kiselev, Daniil Zavyalov
      */
     private fun findByCalendarIdAndBookingId(bookingId: String, calendarId: String = defaultCalendar): Event? {
         return try {
@@ -129,7 +129,7 @@ class BookingCalendarRepository(
      * @param event
      * @param attendeeEmail
      * @return List of all workspace [Event]s
-     * @author Danil Kiselev
+     * @author Danil Kiselev, Daniil Zavyalov
      */
     private fun hasAttendee(event: Event, attendeeEmail: String): Boolean {
         event.attendees?.forEach {
@@ -146,7 +146,7 @@ class BookingCalendarRepository(
      * Old Google calendar events may not appear correctly in the system and cause unexpected exceptions
      * @param maxStartTime use to set an upper bound for filtering bookings by start time
      * @return List of all workspace [Booking]
-     * @author Danil Kiselev
+     * @author Daniil Zavyalov, Danil Kiselev
      */
     override fun findAllByWorkspaceId(workspaceId: UUID, minStartTime: Long, maxStartTime: Long?): List<Booking> {
         val workspaceCalendarId = getCalendarIdByWorkspace(workspaceId)
@@ -170,7 +170,7 @@ class BookingCalendarRepository(
      * @param event
      * @param email
      * @return List of all user [Booking]
-     * @author Danil Kiselev
+     * @author Danil Kiselev, Daniil Zavyalov
      */
     private fun checkEventOrganizer(event: Event, email: String): Boolean {
         if (event.organizer?.email == defaultCalendar) {
@@ -203,7 +203,7 @@ class BookingCalendarRepository(
      * @param maxStartTime use to set an upper bound for filtering bookings by start time
      * @return List of all user [Booking]
      * @throws InstanceNotFoundException if user with the given id doesn't exist in database
-     * @author Danil Kiselev
+     * @author Daniil Zavyalov, Danil Kiselev
      */
     override fun findAllByOwnerId(ownerId: UUID, minStartTime: Long, maxStartTime: Long?): List<Booking> {
         val userEmail: String = findUserEmailByUserId(ownerId)
@@ -231,7 +231,7 @@ class BookingCalendarRepository(
      * Old Google calendar events may not appear correctly in the system and cause unexpected exceptions
      * @param maxStartTime use to set an upper bound for filtering bookings by start time
      * @return List of all [Booking]s with the given workspace and owner id
-     * @author anil Kiselev
+     * @author Daniil Zavyalov
      */
     override fun findAllByOwnerAndWorkspaceId(
         ownerId: UUID,
@@ -263,7 +263,7 @@ class BookingCalendarRepository(
      * Old Google calendar events may not appear correctly in the system and cause unexpected exceptions
      * @param maxStartTime use to set an upper bound for filtering bookings by start time
      * @return All [Booking]s
-     * @author Danil Kiselev
+     * @author Daniil Zavyalov
      */
     override fun findAll(minStartTime: Long, maxStartTime: Long?): List<Booking> {
         return basicQuery(minStartTime, maxStartTime).execute().items.map { event ->
