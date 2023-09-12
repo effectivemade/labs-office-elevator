@@ -90,10 +90,15 @@ class ApiMock(private val realApi: Api, mockFactory: MockFactory) : Api {
         realResponse = realApi.getBooking(id = id)
     )
 
-    override suspend fun getBookingsByUser(userId: String): Either<ErrorResponse, List<BookingDTO>> =
+    override suspend fun getBookingsByUser(userId: String, beginDate: Long, endDate: Long): Either<ErrorResponse, List<BookingDTO>> =
         response(
             mock = bookings.value.filter { it.owner.id == userId },
-            realResponse = realApi.getBookingsByUser(userId = userId)
+            realResponse = realApi
+                .getBookingsByUser(
+                    userId = userId,
+                    beginDate = beginDate,
+                    endDate = endDate
+                )
         )
 
     override suspend fun getBookingsByWorkspaces(workspaceId: String): Either<ErrorResponse, List<BookingDTO>> =

@@ -8,7 +8,7 @@ import band.effective.office.elevator.domain.models.TypeEndPeriodBooking
 import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsFilter
 import band.effective.office.network.model.Either
 import kotlinx.coroutines.flow.Flow
-import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 
 interface BookingRepository {
     suspend fun changeBooking(
@@ -22,13 +22,10 @@ interface BookingRepository {
     suspend fun createBook(creatingBookModel: CreatingBookModel)
 
     suspend fun getBookingsForUser(
-        ownerId: String,
+        ownerId: String? = null,
+        beginDate: LocalDateTime,
+        endDate: LocalDateTime,
         bookingsFilter: BookingsFilter
     ): Flow<Either<ErrorWithData<List<BookingInfo>>, List<BookingInfo>>>
 
-    suspend fun getBookingsByDate(
-        ownerId: String? = null,
-        date: LocalDate,
-        bookingsFilter: BookingsFilter
-    ): Flow<Either<ErrorWithData<List<BookingInfo>>, List<BookingInfo>>>
 }

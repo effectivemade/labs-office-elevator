@@ -98,12 +98,18 @@ class ApiImpl : Api {
             }
         }
 
-    override suspend fun getBookingsByUser(userId: String): Either<ErrorResponse, List<BookingDTO>> =
+    override suspend fun getBookingsByUser(
+        userId: String,
+        beginDate: Long,
+        endDate: Long
+    ): Either<ErrorResponse, List<BookingDTO>> =
         client.securityResponse(
             urlString = "$baseUrl/bookings",
         ) {
             url {
                 parameters.append("user_id", userId)
+                parameters.append("range_from", beginDate.toString())
+                parameters.append("range_to", endDate.toString())
             }
         }
 

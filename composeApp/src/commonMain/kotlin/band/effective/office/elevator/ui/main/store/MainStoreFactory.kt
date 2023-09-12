@@ -16,6 +16,8 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
+import com.commandiron.wheel_picker_compose.utils.Max
+import com.commandiron.wheel_picker_compose.utils.Min
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.format
 import io.github.aakira.napier.Napier
@@ -25,6 +27,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -236,7 +240,11 @@ internal class MainStoreFactory(
 
             scope.launch(Dispatchers.IO) {
                 bookingInteractor
-                    .getByDate(date = date, bookingsFilter = bookingsFilter)
+                    .getForUser(
+                        beginDateTime = LocalDateTime(date = date, time = LocalTime.Min),
+                        endDateTime  = LocalDateTime(date = date, time = LocalTime.Max),
+                        bookingsFilter = bookingsFilter
+                    )
                     .collect { bookings ->
                         withContext(Dispatchers.Main) {
                             when (bookings) {
@@ -266,7 +274,11 @@ internal class MainStoreFactory(
             scope.launch {
                 withContext(Dispatchers.IO) {
                     bookingInteractor
-                        .getByDate(date = date, bookingsFilter = bookingsFilter)
+                        .getForUser(
+                            beginDateTime = LocalDateTime(date = date, time = LocalTime.Min),
+                            endDateTime  = LocalDateTime(date = date, time = LocalTime.Max),
+                            bookingsFilter = bookingsFilter
+                        )
                         .collect { bookings ->
                             withContext(Dispatchers.Main) {
                                 when (bookings) {

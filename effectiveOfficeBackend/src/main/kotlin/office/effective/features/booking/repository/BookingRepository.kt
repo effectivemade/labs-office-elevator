@@ -20,10 +20,12 @@ import office.effective.model.Workspace
  *
  * All WorkspaceRepository methods return [Booking] objects with
  * [Workspace] and [UserModel] objects with empty [Workspace.utilities] and [UserModel.integrations]
+ *
+ * TODO: should implements IBookingRepository interface (add minStartTime and maxStartTime to queries)
  */
 class BookingRepository(private val database: Database,
                         private val converter: BookingRepositoryConverter,
-                        private val uuidValidator: UuidValidator) : IBookingRepository{
+                        private val uuidValidator: UuidValidator){
 
     /**
      * Returns whether a booking with the given id exists
@@ -32,7 +34,7 @@ class BookingRepository(private val database: Database,
      * @return true if booking exists
      * @author Daniil Zavyalov
      */
-    override fun existsById(id: String): Boolean {
+    fun existsById(id: String): Boolean {
         return database.workspaceBooking.count { it.id eq uuidValidator.uuidFromString(id) } > 0
     }
 
@@ -44,7 +46,7 @@ class BookingRepository(private val database: Database,
      * @param id booking id
      * @author Daniil Zavyalov
      */
-    override fun deleteById(id: String) {
+    fun deleteById(id: String) {
         val uuid = uuidValidator.uuidFromString(id)
         database.bookingParticipants.removeIf { it.bookingId eq uuid }
         database.workspaceBooking.removeIf { it.id eq uuid }
@@ -58,7 +60,7 @@ class BookingRepository(private val database: Database,
      * @return [Booking] with the given [bookingId] or null if booking with the given id doesn't exist
      * @author Daniil Zavyalov
      */
-    override fun findById(bookingId: String): Booking? {
+    fun findById(bookingId: String): Booking? {
         val uuid = uuidValidator.uuidFromString(bookingId)
         val entity = database.workspaceBooking.find { it.id eq uuid } ?: return null
         val participants = findParticipants(uuid)
@@ -72,7 +74,7 @@ class BookingRepository(private val database: Database,
      * @return List of all user [Booking]
      * @author Daniil Zavyalov
      */
-    override fun findAllByOwnerId(ownerId: UUID): List<Booking> {
+    fun findAllByOwnerId(ownerId: UUID): List<Booking> {
         val entityList = database.workspaceBooking.filter { it.ownerId eq ownerId }.toList()
         return entityList.map {
             val participants = findParticipants(it.id)
@@ -87,7 +89,7 @@ class BookingRepository(private val database: Database,
      * @return List of all workspace [Booking]
      * @author Daniil Zavyalov
      */
-    override fun findAllByWorkspaceId(workspaceId: UUID): List<Booking> {
+    fun findAllByWorkspaceId(workspaceId: UUID): List<Booking> {
         val entityList = database.workspaceBooking.filter { it.workspaceId eq workspaceId }.toList()
         return entityList.map {
             val participants = findParticipants(it.id)
@@ -103,7 +105,7 @@ class BookingRepository(private val database: Database,
      * @return List of all [Booking]s with the given workspace and owner id
      * @author Daniil Zavyalov
      */
-    override fun findAllByOwnerAndWorkspaceId(ownerId: UUID, workspaceId: UUID): List<Booking> {
+    fun findAllByOwnerAndWorkspaceId(ownerId: UUID, workspaceId: UUID): List<Booking> {
         val entityList = database.workspaceBooking
             .filter { it.ownerId eq ownerId }
             .filter { it.workspaceId eq workspaceId }.toList()
@@ -120,7 +122,7 @@ class BookingRepository(private val database: Database,
      * @return All [Booking]s
      * @author Daniil Zavyalov
      */
-    override fun findAll(): List<Booking> {
+    fun findAll(): List<Booking> {
         val entityList = database.workspaceBooking.toList()
         return entityList.map {
             val participants = findParticipants(it.id)
@@ -166,7 +168,7 @@ class BookingRepository(private val database: Database,
      * @throws WorkspaceUnavailableException if workspace can't be booked in a given period
      * @author Daniil Zavyalov
      */
-    override fun save(booking: Booking): Booking {
+    fun save(booking: Booking): Booking {
         val id = UUID.randomUUID()
         booking.id = id.toString()
         val entity = converter.modelToEntity(booking)
@@ -209,7 +211,7 @@ class BookingRepository(private val database: Database,
      * @throws WorkspaceUnavailableException if workspace can't be booked in a given period
      * @author Daniil Zavyalov
      */
-    override fun update(booking: Booking): Booking {
+    fun update(booking: Booking): Booking {
         booking.id?.let {
             if(!existsById(it))
                 throw InstanceNotFoundException(WorkspaceBookingEntity::class, "Booking with id $it not wound")

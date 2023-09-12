@@ -6,6 +6,7 @@ import io.github.smiley4.ktorswaggerui.dsl.post
 import io.github.smiley4.ktorswaggerui.dsl.put
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.plugins.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -18,12 +19,7 @@ import org.koin.core.context.GlobalContext
 
 fun Route.bookingRouting() {
     route("/bookings") {
-        val bookingFacade = BookingFacade(
-            GlobalContext.get().get(),
-            GlobalContext.get().get(),
-            GlobalContext.get().get(),
-            GlobalContext.get().get()
-        )
+        val bookingFacade: BookingFacade = GlobalContext.get().get()
         val sender: INotificationSender = GlobalContext.get().get()
 
         get("/{id}", SwaggerDocument.returnBookingById()) {
@@ -35,7 +31,17 @@ fun Route.bookingRouting() {
         get(SwaggerDocument.returnBookings()) {
             val userId: String? = call.request.queryParameters["user_id"]
             val workspaceId: String? = call.request.queryParameters["workspace_id"]
-            call.respond(bookingFacade.findAll(userId, workspaceId))
+            val bookingRangeTo: Long? = call.request.queryParameters["range_to"]?.let {
+                it.toLongOrNull()
+                    ?: throw BadRequestException("range_to can't be parsed to Long")
+            }
+            call.request.queryParameters["range_from"]?.let {
+                val bookingRangeFrom: Long = it.toLongOrNull()
+                    ?: throw BadRequestException("range_from can't be parsed to Long")
+                call.respond(bookingFacade.findAll(userId, workspaceId, bookingRangeTo, bookingRangeFrom))
+                return@get
+            }
+            call.respond(bookingFacade.findAll(userId, workspaceId, bookingRangeTo))
         }
         post(SwaggerDocument.postBooking()) {
             val dto = call.receive<BookingDTO>()
