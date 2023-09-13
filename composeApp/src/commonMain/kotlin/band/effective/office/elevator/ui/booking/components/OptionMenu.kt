@@ -5,11 +5,18 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.gestures.rememberTransformableState
+import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.selectable
@@ -19,15 +26,21 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.components.ZoomableBox
 import band.effective.office.elevator.ui.booking.components.modals.noPeriodReserve
 import band.effective.office.elevator.ui.booking.models.Frequency
 import band.effective.office.elevator.ui.booking.models.WorkSpaceType
@@ -67,50 +80,56 @@ fun OptionMenu(
     val startYear = startDate.year
     val finishYear = finishDate.year
 
-    val repeatBookingsOnShow = when(repeatBooking){
-        MainRes.strings.every_work_day_repeat ->  stringResource( repeatBooking) + " "
-        MainRes.strings.every_week -> stringResource( repeatBooking) + " "
-        MainRes.strings.every_month -> stringResource( repeatBooking) + " "
+    val repeatBookingsOnShow = when (repeatBooking) {
+        MainRes.strings.every_work_day_repeat -> stringResource(repeatBooking) + " "
+        MainRes.strings.every_week -> stringResource(repeatBooking) + " "
+        MainRes.strings.every_month -> stringResource(repeatBooking) + " "
         else -> ""
     }
-    val period = when(frequency.getResearchEnd().third){
+    val period = when (frequency.getResearchEnd().third) {
         "Week" -> "недели"
         "Month" -> "месяц"
         else -> "лет"
     }
-    val periodicity = when(frequency.getResearchEnd().first.first) {
+    val periodicity = when (frequency.getResearchEnd().first.first) {
         //"ThisDay" -> ""
         "Never" -> "раз в ${frequency.getResearchEnd().second} ${period} c "
         "Date" -> "раз в ${frequency.getResearchEnd().second} ${period} c "
         else -> ""
     }
-    val extendedPeriodInfo = when(frequency.getResearchEnd().first.first){
+    val extendedPeriodInfo = when (frequency.getResearchEnd().first.first) {
         "Date" -> " по ${frequency.getResearchEnd().first.second}"
         "CoupleTimes" -> "в ближайшие ${frequency.getResearchEnd().first.second} ${period}"
         else -> ""
     }
 
     val date = repeatBookingsOnShow + periodicity +
-        if (startYear == finishYear) if (startMonth == finishMonth) if (startDay == finishDay) "$startDay $startMonth $startYear" else "$startDay - $finishDay $startMonth $startYear"
-        else "$startDay $startMonth - $finishDay $finishMonth $startYear"
-        else "$startDay $startMonth $startYear - $finishDay $finishMonth $finishYear" +
-                extendedPeriodInfo
-
-
+            if (startYear == finishYear) if (startMonth == finishMonth) if (startDay == finishDay) "$startDay $startMonth $startYear" else "$startDay - $finishDay $startMonth $startYear"
+            else "$startDay $startMonth - $finishDay $finishMonth $startYear"
+            else "$startDay $startMonth $startYear - $finishDay $finishMonth $finishYear" +
+                    extendedPeriodInfo
 
 
     Column {
         AnimatedVisibility(visible = isExpandedCard) {
             Column(
-                modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
-                    .background(color = Color.White)
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+                    .fillMaxHeight(.4f)
+                    .background(Color.White),
+                verticalArrangement = Arrangement.Center
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
+                ZoomableBox {
                     Image(
-                        modifier = Modifier.padding(vertical = 20.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .graphicsLayer(
+                                scaleX = scale,
+                                scaleY = scale,
+                                translationX = offsetX,
+                                translationY = offsetY
+                            ),
                         painter = painterResource(MainRes.images.super_map),
                         contentDescription = "office map"
                     )

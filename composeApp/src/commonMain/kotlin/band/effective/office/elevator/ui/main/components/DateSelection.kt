@@ -18,12 +18,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.domain.models.timePad
+import band.effective.office.elevator.utils.dateFormat
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.datetime.LocalDate
 
 @Composable
-fun DateSelection(onClickOpenCalendar: () -> Unit, onClickOpenBottomDialog: () -> Unit, currentDate: LocalDate, dateFiltration: Boolean) {
+fun DateSelection(
+    onClickOpenCalendar: () -> Unit,
+    onClickOpenBottomDialog: () -> Unit,
+    beginDate: LocalDate,
+    endDate: LocalDate?,
+    dateFiltration: Boolean
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -45,7 +53,8 @@ fun DateSelection(onClickOpenCalendar: () -> Unit, onClickOpenBottomDialog: () -
             CalendarTitle(
                 onClickOpenCalendar = onClickOpenCalendar,
                 fromMainScreen = true,
-                currentDate = currentDate,
+                beginDate = beginDate,
+                endDate = endDate,
                 dateFiltration = dateFiltration
             )
             FilterButton(
@@ -56,7 +65,13 @@ fun DateSelection(onClickOpenCalendar: () -> Unit, onClickOpenBottomDialog: () -
 }
 
 @Composable
-fun CalendarTitle(onClickOpenCalendar: () -> Unit, fromMainScreen: Boolean, currentDate: LocalDate, dateFiltration: Boolean) {
+fun CalendarTitle(
+    onClickOpenCalendar: () -> Unit,
+    fromMainScreen: Boolean,
+    beginDate: LocalDate,
+    endDate: LocalDate?,
+    dateFiltration: Boolean
+) {
     Row(
         modifier = Modifier
             .clickable { onClickOpenCalendar() },
@@ -69,9 +84,12 @@ fun CalendarTitle(onClickOpenCalendar: () -> Unit, fromMainScreen: Boolean, curr
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             text =
-            if(dateFiltration)
-                if(currentDate.dayOfMonth<10) "0" else {""} + "${currentDate.dayOfMonth}." +
-                        if(currentDate.monthNumber<10) "0" else {""} + "${currentDate.monthNumber}"
+            if(dateFiltration) {
+                if (endDate == null)
+                    dateFormat(beginDate)
+                else
+                    "${dateFormat(beginDate)} - ${dateFormat(endDate)}"
+            }
             else{
                 stringResource(
                     if (fromMainScreen) MainRes.strings.on_today
@@ -83,3 +101,5 @@ fun CalendarTitle(onClickOpenCalendar: () -> Unit, fromMainScreen: Boolean, curr
         )
     }
 }
+
+

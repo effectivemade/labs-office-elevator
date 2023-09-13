@@ -9,7 +9,7 @@ object Dependencies {
         const val androidxActivityCompose = "1.7.2"
         const val composeUiTooling = "1.4.3"
         const val libres = "1.1.8"
-        const val composeImageLoader = "1.3.1"
+        const val composeImageLoader = "1.6.0"
         const val napier = "2.6.1"
         const val buildConfig = "3.1.0"
         const val kotlinxCoroutines = "1.7.1"

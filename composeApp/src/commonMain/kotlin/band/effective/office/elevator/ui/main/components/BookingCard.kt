@@ -34,7 +34,6 @@ fun BookingCard(
     seat: ReservedSeat,
     onClickOptionMenu: (String) -> Unit,
 ) {
-
     Row(
         modifier = Modifier
             .clip(RoundedCornerShape(16.dp))
@@ -46,28 +45,21 @@ fun BookingCard(
         Spacer(modifier = Modifier.width(12.dp))
         SeatTitle(seat)
         Spacer(modifier = Modifier.height(24.dp))
-        Row(
-            horizontalArrangement = Arrangement.End,
-            verticalAlignment = Alignment.CenterVertically,
+        IconButton(
+            onClick = {
+                onClickOptionMenu(seat.bookingId)
+            },
             modifier = Modifier
-                .fillMaxWidth()
+                .align(Alignment.CenterVertically)
+                .clip(RoundedCornerShape(80.dp)),
+            colors = IconButtonDefaults.iconButtonColors(),
         ) {
-            IconButton(
-                onClick = {
-                    onClickOptionMenu(seat.bookingId)
-                },
-                modifier = Modifier
-                    .clip(RoundedCornerShape(80.dp)),
-                colors = IconButtonDefaults.iconButtonColors(),
-            ) {
-                Icon(
-                    imageVector = Icons.Default.MoreVert,
-                    contentDescription = "show option menu",
-                    modifier = Modifier,
-                    tint = MaterialTheme.colors.secondaryVariant
-                )
-
-            }
+            Icon(
+                imageVector = Icons.Default.MoreVert,
+                contentDescription = "show option menu",
+                modifier = Modifier,
+                tint = MaterialTheme.colors.secondaryVariant
+            )
         }
     }
 }
@@ -92,12 +84,6 @@ fun SeatTitle(seat: ReservedSeat) {
                 text = seat.bookingDay,
                 style = MaterialTheme.typography.subtitle1.copy(color = textGrayColor),
                 modifier = Modifier.wrapContentSize()
-            )
-            Divider(
-                modifier = Modifier
-                    .width(6.dp)
-                    .rotate(90f),
-                thickness = 2.dp,
             )
             Text(
                 text = seat.bookingTime,

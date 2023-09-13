@@ -15,6 +15,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.components.Elevation
@@ -54,16 +55,17 @@ fun BookingRepeatElement(
             RadioButton(
                 enabled = false,
                 selected = selected,
-                onClick = { },
                 colors = RadioButtonDefaults.colors(
                     disabledSelectedColor = radioButtonColor,
-                )
+                ),
+                onClick = null
             )
             Text(
                 text = bookingText,
                 style = MaterialTheme.typography.button.copy(
                     color = ExtendedThemeColors.colors.radioTextColor,
-                    fontWeight = FontWeight(400)
+                    fontWeight = FontWeight(400),
+                    textAlign = TextAlign.Start
                 ),
                 modifier = Modifier.fillMaxWidth().wrapContentHeight()
             )

@@ -159,7 +159,6 @@ private fun AuthorizationPhoneComponent(
                     Text(
                         text = stringResource(MainRes.strings.number_hint),
                         style = MaterialTheme.typography.button,
-                        color = textGrayColor
                     )
                 },
                 isError = state.isErrorPhoneNumber,
