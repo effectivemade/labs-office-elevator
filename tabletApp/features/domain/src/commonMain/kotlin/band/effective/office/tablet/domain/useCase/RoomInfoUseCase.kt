@@ -25,9 +25,9 @@ class RoomInfoUseCase(private val repository: RoomRepository) {
         repository.subscribeOnUpdates(roomId, scope).collect { emit(it.filter()) }
     }
 
-    suspend fun getOtherRoom(roomId: String = "Sirius") = repository.getRoomsInfo().map(
+    suspend fun getOtherRoom(roomId: String) = repository.getRoomsInfo().map(
         errorMapper = { it },
-        successMapper = { it.filter { room -> room.id != roomId } })
+        successMapper = { it.filter { room -> room.name != roomId } })
 
     private fun Either<ErrorWithData<RoomInfo>, RoomInfo>.filter() = map(
         errorMapper = { error ->

@@ -22,7 +22,7 @@ class CurrentEventControllerImpl(
         val nextEventTime = roomInfo?.currentEvent?.finishTime
             ?: roomInfo?.eventList?.firstOrNull()?.startTime // get next update time
         if (nextEventTime != null) { // if we have next event
-            roomUseCase.updateCashe()
+            //roomUseCase.updateCashe()
             mutableTimeToUpdate.update { nextEventTime.time.time - GregorianCalendar().time.time }// calc time to next update
             timer.start(
                 millisInFuture = timeToUpdate.value,

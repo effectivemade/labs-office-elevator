@@ -34,12 +34,13 @@ fun FreeRoomInfoComponent(
         backgroundColor = LocalCustomColorsPalette.current.freeStatus,
         isError = isError
     ) {
-        if (nextEvent != EventInfo.emptyEvent && timeToNextEvent > 0) {
+        if (nextEvent != EventInfo.emptyEvent) {
             Text(
-                text = MainRes.string.free_room_occupancy.format(
-                    time = nextEvent.startTime.time(),
-                    duration = timeToNextEvent.getDuration()
-                ),
+                text = "${MainRes.string.room_occupancy_date.format(time = nextEvent.startTime.time())} ${
+                    if (timeToNextEvent > 0) MainRes.string.room_occupancy_time.format(
+                        timeToNextEvent.getDuration()
+                    ) else ""
+                }",
                 style = MaterialTheme.typography.h5,
                 color = roomInfoColor
             )

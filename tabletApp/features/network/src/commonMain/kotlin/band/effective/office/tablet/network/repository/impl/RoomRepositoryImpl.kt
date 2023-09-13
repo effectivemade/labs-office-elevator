@@ -12,7 +12,6 @@ import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.network.repository.OrganizerRepository
 import band.effective.office.tablet.network.repository.RoomRepository
 import band.effective.office.tablet.utils.map
-import band.effective.office.tablet.utils.unbox
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -20,6 +19,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.util.Calendar
 import java.util.Date
 import java.util.GregorianCalendar
@@ -31,11 +32,12 @@ class RoomRepositoryImpl(
 
     private val roomInfo: MutableStateFlow<Either<ErrorWithData<List<RoomInfo>>, List<RoomInfo>>> =
         MutableStateFlow(Either.Error(ErrorWithData<List<RoomInfo>>(ErrorResponse(0, ""), null)))
+    private val mutex = Mutex()
 
     private suspend fun loadEvents(roomId: String) =
         api.getBookings(
             rangeFrom = GregorianCalendar().timeInMillis,
-            rangeTo = GregorianCalendar().apply { add(Calendar.DAY_OF_MONTH,7) }.timeInMillis
+            rangeTo = GregorianCalendar().apply { add(Calendar.DAY_OF_MONTH, 7) }.timeInMillis
         )
             .map(
                 errorMapper = { it },
@@ -65,31 +67,27 @@ class RoomRepositoryImpl(
                     } else Either.Success(room)
                 }
             }
-        }.run {
-            addEvents(
-                loadEvents(
-                    this.map(errorMapper = { it }, successMapper = { it.id })
-                        .unbox({ it.saveData?.id ?: "" })
-                )
-            )
         }
 
     override suspend fun getRoomsInfo(): Either<ErrorWithData<List<RoomInfo>>, List<RoomInfo>> =
-        with(roomInfo.value) {
-            if (this is Either.Error) {
-                updateCashe()
-                roomInfo.value
-            } else this
+        mutex.withLock {
+            with(roomInfo.value) {
+                if (this is Either.Error) {
+                    updateCashe()
+                    roomInfo.value
+                } else this
+            }
         }
 
     override suspend fun updateCashe() {
         val response = loadRooms().map(
             errorMapper = {
-                val save = when(val info = roomInfo.value){
+                val save = when (val info = roomInfo.value) {
                     is Either.Error -> info.error.saveData
                     is Either.Success -> info.data
                 }
-                ErrorWithData<List<RoomInfo>>(it, save) },
+                ErrorWithData<List<RoomInfo>>(it, save)
+            },
             successMapper = { it })
         roomInfo.update { response }
     }
@@ -102,9 +100,11 @@ class RoomRepositoryImpl(
                     val roomList = this.data
                     val bookings = api.getBookings(
                         rangeFrom = GregorianCalendar().timeInMillis,
-                        rangeTo = GregorianCalendar().apply { add(Calendar.DAY_OF_MONTH,7) }.timeInMillis
+                        rangeTo = GregorianCalendar().apply {
+                            add(Calendar.DAY_OF_MONTH, 7)
+                        }.timeInMillis
                     )
-                    val events = roomList.mapNotNull { workspace ->
+                    val events = roomList.map { workspace ->
                         val id = workspace.id
                         if (bookings is Either.Success) {
                             bookings.data.filter { it.workspace.id == id }.map { it.toEventInfo() }
@@ -125,12 +125,7 @@ class RoomRepositoryImpl(
             send(getRoomInfo(roomId))
             launch {
                 api.subscribeOnWorkspaceUpdates(roomId, scope).collect {
-                    // NOTE update info about all rooms
-                    roomInfo.update {
-                        loadRooms().map(
-                            errorMapper = { ErrorWithData<List<RoomInfo>>(it, null) },
-                            successMapper = { it })
-                    }
+                    updateCashe()
                 }
             }
             launch {
@@ -140,12 +135,7 @@ class RoomRepositoryImpl(
             }
             launch {
                 api.subscribeOnBookingsList(roomId, scope).collect {
-                    // NOTE update info about all rooms
-                    roomInfo.update {
-                        loadRooms().map(
-                            errorMapper = { ErrorWithData<List<RoomInfo>>(it, null) },
-                            successMapper = { it })
-                    }
+                    updateCashe()
                 }
             }
             awaitClose()

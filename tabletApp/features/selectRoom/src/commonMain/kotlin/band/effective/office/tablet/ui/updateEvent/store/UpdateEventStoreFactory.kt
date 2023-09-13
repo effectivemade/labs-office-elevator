@@ -148,12 +148,11 @@ class UpdateEventStoreFactory(private val storeFactory: StoreFactory) : KoinComp
                 set(Calendar.HOUR, hour)
                 set(Calendar.MINUTE, minute)
             }
-            val busyEvent: List<EventInfo> = listOf()
-//                checkBookingUseCase.busyEvents(
-//                state.copy(
-//                    date = newDate
-//                ).toEvent()
-//            ).unbox({ it.saveData })?.filter { it.startTime != state.date } ?: listOf()
+            val busyEvent: List<EventInfo> = checkBookingUseCase.busyEvents(
+                state.copy(
+                    date = newDate
+                ).toEvent()
+            ).unbox({ it.saveData })?.filter { it.startTime != state.date } ?: listOf()
             dispatch(
                 Message.UpdateInformation(
                     newDate = newDate,
@@ -223,14 +222,13 @@ class UpdateEventStoreFactory(private val storeFactory: StoreFactory) : KoinComp
             val newDuration = state.duration + changeDuration
             val newOrganizer = state.organizers.firstOrNull { it.fullName == newOrg.fullName }
                 ?: state.event.organizer
-            val busyEvent: List<EventInfo> = listOf()
-//                checkBookingUseCase.busyEvents( //TODO
-//                state.copy(
-//                    date = newDate,
-//                    duration = newDuration,
-//                    selectOrganizer = newOrganizer
-//                ).toEvent()
-//            ).unbox({ it.saveData })?.filter { it.startTime != state.date } ?: listOf()
+            val busyEvent: List<EventInfo> = checkBookingUseCase.busyEvents(
+                state.copy(
+                    date = newDate,
+                    duration = newDuration,
+                    selectOrganizer = newOrganizer
+                ).toEvent()
+            ).unbox({ it.saveData })?.filter { it.startTime != state.date } ?: listOf()
             if (newDuration > 0 && newDate > today()) {
                 dispatch(
                     Message.UpdateInformation(

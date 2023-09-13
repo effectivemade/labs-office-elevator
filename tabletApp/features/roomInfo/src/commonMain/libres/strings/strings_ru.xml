@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="room_occupancy">Занято до ${time} · До конца ${duration}</string>
-    <string name="free_room_occupancy">Свободна до ${time} · До начала ${duration}</string>
+    <string name="room_occupancy_date">Занято до ${time}</string>
+    <string name="room_occupancy_time">· До конца ${duration}</string>
+    <string name="free_room_occupancy_date">Свободна до ${time}</string>
+    <string name="free_room_occupancy_time">· До начала ${duration}</string>
     <string name="stop_meeting_button">Освободить</string>
     <string name="tv_property">TV</string>
     <string name="usb_property">USB</string>
