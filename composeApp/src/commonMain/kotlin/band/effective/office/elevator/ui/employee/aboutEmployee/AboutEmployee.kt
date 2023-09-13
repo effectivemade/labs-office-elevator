@@ -273,12 +273,12 @@ private fun AboutEmployeeContent(
                     horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.End),
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()){
-                        CalendarTitle(
-                            onClickOpenCalendar = onClickOpenCalendar,
-                            fromMainScreen = false,
-                            currentDate = currentDate,
-                            dateFiltration = dateFiltrationOnReserves
-                        )
+//                        CalendarTitle(
+//                            onClickOpenCalendar = onClickOpenCalendar,
+//                            fromMainScreen = false,
+//                            currentDate = currentDate,
+//                            dateFiltration = dateFiltrationOnReserves
+//                        )
                         FilterButton(
                             onClickOpenBottomSheetDialog = onClickOpenBottomDialog
                         )

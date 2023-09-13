@@ -202,6 +202,9 @@ class BookingRepositoryImpl(
         },
             successMapper = { bookingDTOS ->
                 placeFilter(filter = filter, list = bookingDTOS)
+                    .sortedWith(
+                        compareBy{it.beginBooking}
+                    )
                     .toDomainZone()
             }
         )

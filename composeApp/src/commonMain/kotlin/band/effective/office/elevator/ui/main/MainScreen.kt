@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.LoadingIndicator
-import band.effective.office.elevator.components.ModalCalendar
+import band.effective.office.elevator.components.ModalCalendarDateRange
 import band.effective.office.elevator.components.TitlePage
 import band.effective.office.elevator.ui.booking.components.modals.BookingContextMenu
 import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsFilter
@@ -118,7 +118,8 @@ fun MainScreen(component: MainComponent) {
         MainScreenContent(
             reservedSeats = state.reservedSeats,
             bottomSheetState = bottomSheetState,
-            currentDate = state.currentDate,
+            beginDate = state.beginDate,
+            endDate = state.endDate,
             dateFiltrationOnReserves = state.dateFiltrationOnReserves,
             onClickBook = { component.onOutput(MainComponent.Output.OpenBookingScreen) },
             onClickOptionMenu = { id ->
@@ -138,12 +139,12 @@ fun MainScreen(component: MainComponent) {
 
         Dialog(
             content = {
-                ModalCalendar(
+                ModalCalendarDateRange(
                     modifier = Modifier
                         .padding(horizontal = 16.dp),
                     onClickCansel = { component.onEvent(MainStore.Intent.OnClickCloseCalendar) },
                     onClickOk = { component.onEvent(MainStore.Intent.OnClickApplyDate(it)) },
-                    currentDate = state.currentDate
+                    currentDate = state.beginDate
                 )
             },
             onDismissRequest = { component.onEvent(MainStore.Intent.OnClickCloseCalendar) },
@@ -210,7 +211,8 @@ fun MainScreenContent(
     bottomSheetState: ModalBottomSheetState,
     reservedSeats: List<ReservedSeat>,
     isLoadingBooking: Boolean,
-    currentDate: LocalDate,
+    beginDate: LocalDate,
+    endDate: LocalDate?,
     dateFiltrationOnReserves: Boolean,
     onClickBook: () -> Unit,
     onClickOptionMenu: (String) -> Unit,
@@ -259,7 +261,8 @@ fun MainScreenContent(
                         Napier.d { "showing main content" }
                         BookingInformation(
                             reservedSeats = reservedSeats,
-                            currentDate = currentDate,
+                            beginDate = beginDate,
+                            endDate = endDate,
                             dateFiltrationOnReserves = dateFiltrationOnReserves,
                             onClickBook = onClickBook,
                             onClickOptionMenu = onClickOptionMenu,
@@ -268,7 +271,6 @@ fun MainScreenContent(
                         )
                     }
                 }
-
             }
         }
     }

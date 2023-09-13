@@ -89,5 +89,5 @@ private fun convertDateTimeToUiTimeString(
 ) = "${timePad(startTime.hour.toString())}:${timePad(startTime.minute.toString())} " +
         "- ${timePad(endTime.hour.toString())}:${timePad(endTime.minute.toString())}"
 
-private fun timePad(time: String) =
+fun timePad(time: String) =
     time.padStart(2, '0')
