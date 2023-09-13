@@ -21,17 +21,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.common.compose.components.GrayText
+import band.effective.office.elevator.utils.MonthLocalizations
+import band.effective.office.elevator.utils.capitalizeFirstLetter
+import band.effective.office.elevator.utils.convertDateTimeToUiDateString
+import band.effective.office.elevator.utils.convertTimeToString
+import epicarchitect.calendar.compose.basis.localized
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
 
 @Composable
 fun TimeLine(
-    date: String,
-    time: String,
+    startDate: LocalDate,
+    endDate: LocalDate,
+    startTime: LocalTime,
+    endTime: LocalTime,
     selectTimeActive: Boolean,
     onPickDate: () -> Unit,
-    onPickTime: () -> Unit,
+    onPickStartTime: () -> Unit,
+    onPickEndTime: () -> Unit,
 ) {
     Row(
         horizontalArrangement = Arrangement.Center,
@@ -42,7 +54,10 @@ fun TimeLine(
     ) {
 
         Text(
-            text = date,
+            text = if (endDate == startDate)
+                convertDateTimeToUiDateString(startDate)
+            else
+                convertDateTimeToUiDateString(startDate, endDate),
             modifier = Modifier.clickable { onPickDate() },
             style = MaterialTheme.typography.button.copy(
                 fontWeight = FontWeight(
@@ -56,8 +71,19 @@ fun TimeLine(
 
         if (selectTimeActive) {
             Text(
-                text = time,
-                modifier = Modifier.clickable { if (selectTimeActive) onPickTime() },
+                text = "c ${convertTimeToString(startTime)}",
+                modifier = Modifier.clickable { if (selectTimeActive) onPickStartTime() },
+                style = MaterialTheme.typography.button.copy(
+                    fontWeight = FontWeight(
+                        weight = 400
+                    ),
+                    color = Color.Black
+                )
+            )
+            Spacer(modifier = Modifier.width(2.dp))
+            Text(
+                text = "до ${convertTimeToString(endTime)}",
+                modifier = Modifier.clickable { if (selectTimeActive) onPickEndTime() },
                 style = MaterialTheme.typography.button.copy(
                     fontWeight = FontWeight(
                         weight = 400
@@ -67,7 +93,15 @@ fun TimeLine(
             )
         } else {
             GrayText(
-                text = time,
+                text = "c ${convertTimeToString(startTime)}",
+                style = MaterialTheme.typography.button.copy(
+                    fontWeight = FontWeight(
+                        weight = 400
+                    ),
+                )
+            )
+            GrayText(
+                text = "до ${convertTimeToString(endTime)}",
                 style = MaterialTheme.typography.button.copy(
                     fontWeight = FontWeight(
                         weight = 400
@@ -77,3 +111,5 @@ fun TimeLine(
         }
     }
 }
+
+

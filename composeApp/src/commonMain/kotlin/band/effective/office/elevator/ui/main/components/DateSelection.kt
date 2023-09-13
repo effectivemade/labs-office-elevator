@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.domain.models.timePad
+import band.effective.office.elevator.utils.dateFormat
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.datetime.LocalDate
@@ -101,5 +102,4 @@ fun CalendarTitle(
     }
 }
 
-private fun dateFormat(date: LocalDate) =
-    "${timePad(date.dayOfMonth.toString())}.${timePad(date.monthNumber.toString())}"
+

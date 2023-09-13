@@ -41,13 +41,13 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         object OpenConfirmBooking : Intent
         object SearchSuitableOptions : Intent
         object CloseBookPeriod : Intent
-        data class OpenCalendar(val isStart: Boolean, val date: LocalDate?) : Intent
+        object OpenCalendar : Intent
 
         object CloseCalendar : Intent
         object OpenMainScreen : Intent
         object CloseConfirmBooking : Intent
         data class ChangeSelectedWorkSpacesZone(val workSpaceZone: List<WorkSpaceZone>) : Intent
-        data class ApplyDate(val date: LocalDate?, val isStart: Boolean) : Intent
+        data class ApplyDate(val date: List<LocalDate>) : Intent
         data class ShowPlace(val type: String) : Intent
 
         data class ChangeWorkSpacesUI(val workSpaces: List<WorkSpaceUI>) : Intent

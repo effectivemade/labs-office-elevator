@@ -21,10 +21,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.MainRes
-import band.effective.office.elevator.components.ModalCalendar
+import band.effective.office.elevator.components.ModalCalendarDateRange
 import band.effective.office.elevator.components.MultiBottomSheet
 import band.effective.office.elevator.components.TimePickerModal
 import band.effective.office.elevator.components.bottomSheet.BottomSheetItem
@@ -47,7 +46,6 @@ import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import band.effective.office.elevator.ui.booking.store.BookingStore
 import band.effective.office.elevator.ui.models.TypesList
-import band.effective.office.elevator.utils.MonthLocalizations
 import band.effective.office.elevator.utils.Stack
 import band.effective.office.elevator.utils.isScrollingDown
 import band.effective.office.elevator.utils.stackOf
@@ -55,7 +53,6 @@ import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
 import effective.office.modalcustomdialog.Dialog
 import io.github.aakira.napier.Napier
-import kotlinx.coroutines.flow.collect
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.atTime
@@ -171,20 +168,9 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                 bottomSheetContentState = showBookPeriod
             ) {
                 BookingPeriod(
-                    startDate = "${state.selectedStartDate.dayOfMonth} ${
-                        MonthLocalizations.getMonthName(
-                            month = state.selectedStartDate.month,
-                            locale = Locale(languageTag = Locale.current.language)
-                        )
-                    } ${state.selectedStartDate.year}",
-                    startTime = "${
-                        state.selectedStartTime.hour.toString().padStart(2, '0')
-                    }:${state.selectedStartTime.minute.toString().padStart(2, '0').padEnd(2, '0')}",
-                    finishTime = "${
-                        state.selectedFinishTime.hour.toString().padStart(2, '0')
-                    }:${
-                        state.selectedFinishTime.minute.toString().padStart(2, '0').padEnd(2, '0')
-                    }",
+                    startDate = state.selectedStartDate,
+                    startTime = state.selectedStartTime,
+                    finishTime = state.selectedFinishTime,
                     repeatBooking = stringResource(state.repeatBooking),
                     switchChecked = state.wholeDay,
                     closeClick = { bookingComponent.onEvent(BookingStore.Intent.CloseBookPeriod) },
@@ -195,12 +181,9 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                             )
                         )
                     },
-                    bookStartDate = {
+                    bookDates = {
                         bookingComponent.onEvent(
-                            BookingStore.Intent.OpenCalendar(
-                                isStart = true,
-                                date = state.selectedStartDate
-                            )
+                            BookingStore.Intent.OpenCalendar
                         )
                     },
                     bookStartTime = {
@@ -219,25 +202,12 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                             )
                         )
                     },
-                    bookFinishDate = {
-                        bookingComponent.onEvent(
-                            BookingStore.Intent.OpenCalendar(
-                                isStart = false,
-                                date = state.selectedFinishDate
-                            )
-                        )
-                    },
                     bookingRepeat = {
                         bookingComponent.onEvent(BookingStore.Intent.OpenRepeatDialog)
                     },
                     onClickSearchSuitableOptions = { bookingComponent.onEvent(BookingStore.Intent.SearchSuitableOptions) },
                     frequency = state.frequency,
-                    finishDate = "${state.selectedFinishDate.dayOfMonth} ${
-                        MonthLocalizations.getMonthName(
-                            month = state.selectedFinishDate.month,
-                            locale = Locale(languageTag = Locale.current.language)
-                        )
-                    } ${state.selectedFinishDate.year}",
+                    finishDate = state.selectedFinishDate,
                 )
             },
             BottomSheetNames.BOOK_REPEAT.name to BottomSheetItem(
@@ -333,11 +303,10 @@ fun BookingScreen(bookingComponent: BookingComponent) {
         onClickOpenBookAccept = { workSpacesUI ->
             bookingComponent.onEvent(BookingStore.Intent.OpenBookAccept(value = workSpacesUI))
         },
-        onClickApplyDate = { date: LocalDate? ->
+        onClickApplyDate = { dates: List<LocalDate> ->
             bookingComponent.onEvent(
                 BookingStore.Intent.ApplyDate(
-                    date = date,
-                    isStart = state.isStartDate
+                    date = dates
                 )
             )
         },
@@ -384,7 +353,7 @@ private fun BookingScreenContent(
     onClickOpenBookAccept: (WorkSpaceUI) -> Unit,
     onClickCloseCalendar: () -> Unit,
     showCalendar: Boolean,
-    onClickApplyDate: (LocalDate?) -> Unit,
+    onClickApplyDate: (List<LocalDate>) -> Unit,
     currentDate: LocalDate,
     onClickCloseBookingConfirm: () -> Unit,
     showConfirm: Boolean,
@@ -469,7 +438,7 @@ private fun BookingScreenContent(
 
         Dialog(
             content = {
-                ModalCalendar(
+                ModalCalendarDateRange(
                     currentDate = currentDate,
                     onClickOk = onClickApplyDate,
                     onClickCansel = onClickCloseCalendar,

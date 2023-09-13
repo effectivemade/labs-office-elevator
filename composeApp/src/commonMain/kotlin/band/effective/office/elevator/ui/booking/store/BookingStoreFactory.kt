@@ -75,7 +75,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
         data class IsStartDatePicker(val isStart: Boolean) : Msg
 
-        data class UpdateSelectedWorkspace(val workspaceId: String ) : Msg
+        data class UpdateSelectedWorkspace(val workspaceId: String) : Msg
 
         data class ChangeLoadingWorkspace(val isLoading: Boolean) : Msg
 
@@ -168,9 +168,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                 is BookingStore.Intent.OpenCalendar -> {
                     scope.launch {
-                        dispatch(Msg.IsStartDatePicker(isStart = intent.isStart))
                         publish(BookingStore.Label.OpenCalendar)
-
                     }
                 }
 
@@ -181,27 +179,23 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 }
 
                 is BookingStore.Intent.ApplyDate -> {
+                    if (intent.date.isEmpty()) return
+
+                    val startDate = intent.date.first()
+                    val endDate = intent.date.last()
+
                     scope.launch {
                         val currentDate = getCurrentDate()
                         publish(BookingStore.Label.CloseCalendar)
-                        if (intent.isStart)
-                            intent.date?.let { newDate ->
-                                if (newDate >= currentDate) {
-                                    dispatch(Msg.BeginningBookingDate(date = newDate))
-                                }
-                                else {
-                                    publish(BookingStore.Label.ShowToast("Некорректная дата"))
-                                }
-                            }
-                        else
-                            intent.date?.let { newDate ->
-                               if (newDate < getState().selectedStartDate) {
-                                   publish(BookingStore.Label.ShowToast("Некорректная дата"))
-                                }
-                                else {
-                                   dispatch(Msg.EndBookingDate(date = newDate))
-                               }
-                            }
+                        if (startDate >= currentDate) {
+                            dispatch(Msg.BeginningBookingDate(date = startDate))
+                        } else {
+                            publish(BookingStore.Label.ShowToast("Некорректная дата"))
+                        }
+                        dispatch(
+                            Msg.EndBookingDate(endDate)
+                        )
+
                     }
                 }
 
@@ -251,8 +245,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                                     dispatch(Msg.BeginningBookingTime(intent.time))
                                 else
                                     publish(BookingStore.Label.ShowToast("Некорретное время"))
-                            }
-                            else {
+                            } else {
                                 dispatch(Msg.BeginningBookingTime(intent.time))
                             }
 
@@ -266,8 +259,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                             if (dateOfStart == dateOfEnd) {
                                 if (newTime > timeOfStart) dispatch(Msg.EndBookingTime(intent.time))
                                 else publish(BookingStore.Label.ShowToast("Некорретное время"))
-                            }
-                            else {
+                            } else {
                                 dispatch(Msg.EndBookingTime(intent.time))
                             }
                         }
@@ -296,7 +288,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                         getSpacesUI(
                             workSpaceZone = getState().workSpacesZone,
                             state = getState(),
-                            dispatch = {dispatch(Msg.ChangeWorkSpacesUI(it))}
+                            dispatch = { dispatch(Msg.ChangeWorkSpacesUI(it)) }
                         )
                         publish(BookingStore.Label.CloseBookPeriod)
                     }
@@ -364,8 +356,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                         dispatch(Msg.WholeDay(wholeDay = intent.wholeDay))
                         dispatch(Msg.BeginningBookingTime(time = LocalTime(hour = 8, minute = 0)))
                         dispatch(Msg.EndBookingTime(time = LocalTime(hour = 20, minute = 0)))
-                    }
-                    else {
+                    } else {
                         publish(BookingStore.Label.ShowToast("У вас выбраны разные даты"))
                     }
                 }
@@ -456,13 +447,15 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                                 list.forEach {
                                     val nameSpace = it.name
-                                    val foundedSpace = listWorkSpaces.firstOrNull { it.zoneName == nameSpace }
-                                    foundedSpace?.let{
+                                    val foundedSpace =
+                                        listWorkSpaces.firstOrNull { it.zoneName == nameSpace }
+                                    foundedSpace?.let {
                                         newList.add(it)
                                     }
                                 }
                                 dispatch(newList.toList())
                             }
+
                             is Either.Error -> {
                                 println("ERROORRR!!!! ${response.error.error}")
                                 dispatch(listOf())
@@ -492,6 +485,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     isLoadingListWorkspaces = false,
                     workSpaces = msg.workSpacesUI
                 )
+
                 is Msg.WholeDay -> copy(wholeDay = !msg.wholeDay)
                 is Msg.BeginningBookingTime -> copy(selectedStartTime = msg.time)
                 is Msg.EndBookingTime -> copy(selectedFinishTime = msg.time)
@@ -505,6 +499,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                         typeOfEnd = frequency.getTypeOfEndBooking()
                     )
                 }
+
                 is Msg.ChangeBookingRepeat -> copy(repeatBooking = msg.bookingRepeat)
                 is Msg.ChangeBookingPeriod -> copy(bookingPeriod = msg.bookingPeriod)
                 is Msg.ChangeWorkingUI -> copy(bookingInfo = msg.bookingInfo)
