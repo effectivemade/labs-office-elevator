@@ -31,6 +31,8 @@ sealed class BookingPeriod(val durationPeriod: Int) {
     object NoPeriod : BookingPeriod(0)
 
     object Another : BookingPeriod(-1)
+
+    object Day : BookingPeriod (0)
 }
 
 sealed interface TypeEndPeriodBooking{
