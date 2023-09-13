@@ -12,7 +12,7 @@ fun OutlinedTextColorsSetup() = TextFieldDefaults.outlinedTextFieldColors(
     focusedBorderColor = ExtendedThemeColors.colors.trinidad_400,
     unfocusedBorderColor = textGrayColor,
     disabledBorderColor = textGrayColor,
-   errorBorderColor = ExtendedThemeColors.colors.error,
+    errorBorderColor = ExtendedThemeColors.colors.error,
 //                    endregion
 
 //                    region::Trailing icon
@@ -27,6 +27,8 @@ fun OutlinedTextColorsSetup() = TextFieldDefaults.outlinedTextFieldColors(
 
 //                    region::Cursor colors
     cursorColor = ExtendedThemeColors.colors.trinidad_400,
-    errorCursorColor = ExtendedThemeColors.colors.error
+    errorCursorColor = ExtendedThemeColors.colors.error,
 //                    endregion
+    textColor = Color.Black,
+    disabledTextColor = Color.Black
 )

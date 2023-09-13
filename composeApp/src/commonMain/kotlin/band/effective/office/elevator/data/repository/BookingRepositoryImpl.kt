@@ -202,6 +202,9 @@ class BookingRepositoryImpl(
         },
             successMapper = { bookingDTOS ->
                 placeFilter(filter = filter, list = bookingDTOS)
+                    .sortedWith(
+                        compareBy{it.beginBooking}
+                    )
                     .toDomainZone()
             }
         )
@@ -254,6 +257,7 @@ class BookingRepositoryImpl(
                 is BookingPeriod.Week -> "WEEKLY"
                 is BookingPeriod.Year -> "YEARLY"
                 is BookingPeriod.EveryWorkDay -> "WEEKLY"
+                is BookingPeriod.Day -> "DAILY"
                 else -> "DAILY"
             },
             count = when (typeEndPeriod) {

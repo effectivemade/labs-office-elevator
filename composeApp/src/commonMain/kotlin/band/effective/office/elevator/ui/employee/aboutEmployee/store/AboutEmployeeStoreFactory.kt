@@ -37,7 +37,6 @@ class AboutEmployeeStoreFactory(
 
     private val aboutEmployeeInteractor: AboutEmployeeInteractor by inject()
     private var currentUser = employeeInfo.toUIAbout()
-    private var recentDate = getCurrentDate()
     private var filtration = BookingsFilter(meetRoom = true, workPlace = true)
     private var datedList = false
 
@@ -48,7 +47,9 @@ class AboutEmployeeStoreFactory(
             initialState = State(
                 currentUser,
                 reservedSeatsList = listOf(),
-                currentDate = getCurrentDate(),
+                beginDate = getCurrentDate(),
+                endDate = getCurrentDate(),
+                isLoadingBookings = true,
                 dateFiltrationOnReserves = datedList,
                 filtrationOnReserves = false
             ),
@@ -74,11 +75,17 @@ class AboutEmployeeStoreFactory(
 
                 is Msg.UpdateSeatsReservation -> {
                     copy(
-                        currentDate = msg.date,
+                        beginDate = msg.beginDate,
+                        endDate = msg.endDate,
                         reservedSeatsList = msg.reservedSeatsList,
                         dateFiltrationOnReserves = msg.dateFiltrationOnReserves,
                         filtrationOnReserves = msg.filtrationOnReserves,
                         isLoading = false
+                    )
+                }
+                is Msg.UpdateLoadingBookingState -> {
+                    copy(
+                        isLoadingBookings = msg.isLoading
                     )
                 }
             }
@@ -96,11 +103,14 @@ class AboutEmployeeStoreFactory(
         ) : Msg
 
         data class UpdateSeatsReservation(
-            val date: LocalDate,
+            val beginDate: LocalDate,
+            val endDate: LocalDate?,
             val reservedSeatsList: List<ReservedSeat>,
             val dateFiltrationOnReserves: Boolean,
             val filtrationOnReserves: Boolean
         ) : Msg
+
+        data class UpdateLoadingBookingState(val isLoading: Boolean) : Msg
     }
 
     private inner class ExecutorImpl :
@@ -127,13 +137,11 @@ class AboutEmployeeStoreFactory(
                     scope.launch {
                         publish(Label.CloseCalendar)
                         datedList = true
-                        intent.date?.let { newDate ->
-                            fetchUserInfoByDate(
-                                date = newDate,
-                                ownerId = currentUser.id,
-                                bookingsFilter = filtration
-                            )
-                        }
+                        fetchUserInfoByDate(
+                            dates = intent.date,
+                            ownerId = currentUser.id,
+                            bookingsFilter = filtration
+                        )
                     }
                 }
 
@@ -146,53 +154,78 @@ class AboutEmployeeStoreFactory(
                 is Intent.CloseBottomDialog -> {
                     scope.launch {
                         publish(Label.CloseBottomDialog)
+                        dispatch(Msg.UpdateLoadingBookingState(true))
                         intent.bookingsFilter.let { bookingsFilter ->
                             if (datedList) {
                                 fetchUserInfoByDate(
-                                    date = recentDate,
+                                    dates = listOf(
+                                        getState().beginDate,
+                                        getState().endDate
+                                    )
+                                        .mapNotNull { it },
                                     ownerId = currentUser.id,
                                     bookingsFilter = bookingsFilter
                                 )
                             } else {
                                 fetchUserInfo(
-                                    date = getState().currentDate,
+                                    dates = listOf(
+                                        getState().beginDate,
+                                        getState().endDate
+                                    )
+                                        .mapNotNull { it },
                                     employee = currentUser,
                                     bookingsFilter = bookingsFilter
                                 )
                             }
                         }
+                        dispatch(Msg.UpdateLoadingBookingState(false))
                     }
                 }
             }
         }
 
         override fun executeAction(action: Action, getState: () -> State) {
-            when (action) {
-                is Action.FetchUserInfo -> fetchUserInfo(
-                    date = getState().currentDate,
-                    employee = action.employee,
-                    bookingsFilter = filtration
-                )
+            scope.launch {
+                when (action) {
+                    is Action.FetchUserInfo -> {
+                        dispatch(Msg.UpdateLoadingBookingState(true))
+                        fetchUserInfo(
+                            dates = listOf(
+                                getState().beginDate,
+                                getState().endDate
+                            )
+                                .mapNotNull { it },
+                            employee = action.employee,
+                            bookingsFilter = filtration
+                        )
+                        dispatch(Msg.UpdateLoadingBookingState(false))
+                    }
+                }
             }
         }
 
         private fun fetchUserInfoByDate(
-            date: LocalDate,
+            dates: List<LocalDate>,
             ownerId: String,
             bookingsFilter: BookingsFilter
         ) {
-            if (recentDate != date)
-                recentDate = date
-            else
-                filtration = bookingsFilter
+            if (dates.isEmpty()) return
 
+            val beginDate = dates.first()
+            val endDate = dates.last()
+
+            val beginDateTime = LocalDateTime(date = beginDate, time = LocalTime.Min)
+            val endDateTime = LocalDateTime(date = endDate, time = LocalTime.Max)
+
+            filtration = bookingsFilter
+            dispatch(Msg.UpdateLoadingBookingState(true))
             scope.launch(Dispatchers.IO) {
                 aboutEmployeeInteractor
                     .getBookingsForUser(
                         bookingsFilter = bookingsFilter,
                         ownerId = ownerId,
-                        beginDateTime = LocalDateTime(date = date, time = LocalTime.Min),
-                        endDateTime = LocalDateTime(date = date, time = LocalTime.Max),
+                        beginDateTime = beginDateTime,
+                        endDateTime = endDateTime,
                     )
                     .collect { newList ->
                         withContext(Dispatchers.Main) {
@@ -204,12 +237,14 @@ class AboutEmployeeStoreFactory(
                                 is Either.Success -> {
                                     dispatch(
                                         Msg.UpdateSeatsReservation(
-                                            date = recentDate,
+                                            beginDate = beginDate,
+                                            endDate = if (beginDate == endDate) null else endDate,
                                             reservedSeatsList = newList.data,
                                             dateFiltrationOnReserves = datedList,
                                             filtrationOnReserves = !(filtration.workPlace && filtration.meetRoom)
                                         )
                                     )
+                                    dispatch(Msg.UpdateLoadingBookingState(false))
                                 }
                             }
                         }
@@ -218,17 +253,25 @@ class AboutEmployeeStoreFactory(
         }
 
         private fun fetchUserInfo(
-            date: LocalDate,
+            dates: List<LocalDate>,
             employee: User,
             bookingsFilter: BookingsFilter
         ) {
+            if (dates.isEmpty()) return
+
+            val beginDate = dates.first()
+            val endDate = dates.last()
+
+            val beginDateTime = LocalDateTime(date = beginDate, time = LocalTime.Min)
+            val endDateTime = LocalDateTime(date = endDate, time = LocalTime.Max)
+
             scope.launch(Dispatchers.IO) {
                 aboutEmployeeInteractor
                     .getBookingsForUser(
                         bookingsFilter = bookingsFilter,
                         ownerId = employee.id,
-                        beginDateTime = LocalDateTime(date = date, time = LocalTime.Min),
-                        endDateTime = LocalDateTime(date = date, time = LocalTime.Max),
+                        beginDateTime = beginDateTime,
+                        endDateTime = endDateTime,
                     ).collect { newList ->
                         withContext(Dispatchers.Main) {
                             when (newList) {

@@ -53,10 +53,15 @@ fun Calendar(state: EpicDatePickerState) {
 
     Column {
         CalendarTitle(
-            selectedDate = if (state.selectedDates.isEmpty())
+            selectedDate = if (state.selectedDates.isEmpty()) {
                 MonthLocalizations.getMonthName(pagerState.currentMonth.month, Locale("ru"))
-            else
-                stringFormatDate(state.selectedDates.first()),
+            }
+            else {
+                if (state.selectedDates.first().month == pagerState.currentMonth.month)
+                    stringFormatDate(state.selectedDates.first())
+                else
+                    MonthLocalizations.getMonthName(pagerState.currentMonth.month, Locale("ru"))
+            },
             onClickNextMonth = { scrollMonth(coroutineScope, pagerState, 1) },
             onClickPreviousMonth = { scrollMonth(coroutineScope, pagerState, -1) }
         )

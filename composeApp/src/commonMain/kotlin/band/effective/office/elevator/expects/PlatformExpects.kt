@@ -1,7 +1,7 @@
 package band.effective.office.elevator.expects
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import com.seiko.imageloader.component.ComponentRegistryBuilder
+import okio.Path
 
 expect fun showToast(message: String)
 
@@ -12,3 +12,6 @@ expect fun makeCall(phoneNumber: String)
 expect fun pickTelegram(telegramNick: String)
 
 expect fun pickSBP(phoneNumber: String)
+
+internal expect fun ComponentRegistryBuilder.setupDefaultComponents()
+internal expect fun getImageCacheDirectoryPath(): Path

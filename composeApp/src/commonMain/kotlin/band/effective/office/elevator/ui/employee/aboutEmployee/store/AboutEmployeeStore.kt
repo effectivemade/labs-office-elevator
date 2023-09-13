@@ -15,7 +15,7 @@ interface AboutEmployeeStore : Store<AboutEmployeeStore.Intent,AboutEmployeeStor
         object TransferMoneyClicked: Intent
         object OpenCalendarClicked: Intent
         object CloseCalendarClicked: Intent
-        data class OnClickApplyDate(val date: LocalDate?): Intent
+        data class OnClickApplyDate(val date: List<LocalDate>): Intent
         object OpenBottomDialog: Intent
         data class CloseBottomDialog(val bookingsFilter: BookingsFilter): Intent
 
@@ -24,10 +24,12 @@ interface AboutEmployeeStore : Store<AboutEmployeeStore.Intent,AboutEmployeeStor
     data class State(
         val user: User,
         val isLoading: Boolean = true,
+        val isLoadingBookings: Boolean,
         val reservedSeatsList: List<ReservedSeat>,
         val dateFiltrationOnReserves: Boolean,
         val filtrationOnReserves: Boolean,
-        val currentDate: LocalDate
+        val beginDate: LocalDate,
+        val endDate: LocalDate?
     )
 
     sealed interface Label{

@@ -9,6 +9,14 @@ import android.widget.Toast
 import android.content.Intent
 import android.net.Uri
 import band.effective.office.elevator.AndroidApp
+import com.seiko.imageloader.ImageLoader
+import com.seiko.imageloader.cache.memory.maxSizePercent
+import com.seiko.imageloader.component.ComponentRegistryBuilder
+import com.seiko.imageloader.component.setupDefaultComponents
+import com.seiko.imageloader.option.androidContext
+import okio.Path
+import okio.Path.Companion.toOkioPath
+import okio.Path.Companion.toPath
 
 actual fun showToast(message: String) {
     Toast.makeText(AndroidApp.INSTANCE.applicationContext, message, Toast.LENGTH_SHORT).show()
@@ -56,11 +64,12 @@ actual fun pickSBP(phoneNumber: String) {
         val intent = Intent(Intent.ACTION_VIEW).apply {
             data = Uri.parse("tel:$phoneNumber")
             flags = 0x24000000 or Intent.FLAG_ACTIVITY_NEW_TASK
-//            component = ComponentName(
-//                "ru.sberbankmobile",
-//                "ru.sberbank.mobile.auth.presentation.splash.SplashActivity"
-//            )
         }
         this@with.startActivity(intent)
     }
 }
+
+actual fun ComponentRegistryBuilder.setupDefaultComponents() =
+    this.setupDefaultComponents(AndroidApp.INSTANCE.applicationContext)
+actual fun getImageCacheDirectoryPath(): Path =
+    AndroidApp.INSTANCE.applicationContext.cacheDir.absolutePath.toPath()

@@ -81,7 +81,7 @@ fun BookingMainContentScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.background(Color.White)
                             .padding(horizontal = 16.dp)
-                            .padding(top = 48.dp)
+                            .padding(top = 16.dp)
                     ) {
                         TitlePage(
                             title = stringResource(MainRes.strings.booking)

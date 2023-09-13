@@ -37,12 +37,14 @@ import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.LoadingIndicator
 import band.effective.office.elevator.components.TitlePage
+import band.effective.office.elevator.components.generateImageLoader
 import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.ui.models.UserData
 import band.effective.office.elevator.ui.models.getAllUserDataProfile
 import band.effective.office.elevator.ui.profile.mainProfile.store.ProfileStore
 import com.seiko.imageloader.model.ImageRequest
 import com.seiko.imageloader.rememberAsyncImagePainter
+import com.seiko.imageloader.rememberImagePainter
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 
@@ -134,13 +136,20 @@ internal fun ProfileScreenContent(
 
 @Composable
 fun ProfileInfoAboutUser(imageUrl: String, userName: String, post: String, onEditProfile: (id: String)-> Unit, id: String) {
+    val imageLoader = generateImageLoader()
+
     imageUrl.let { url ->
         val request = remember(url) {
             ImageRequest {
                 data(url)
             }
         }
-        val painter = rememberAsyncImagePainter(request)
+        val painter = rememberImagePainter(
+            request = request,
+            imageLoader = imageLoader,
+            placeholderPainter = { painterResource(MainRes.images.logo_default) },
+            errorPainter = { painterResource(MainRes.images.logo_default) }
+        )
         Box {
             Surface(
                 modifier = Modifier.size(88.dp).align(Alignment.Center),

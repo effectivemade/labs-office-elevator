@@ -38,21 +38,22 @@ import band.effective.office.elevator.components.Elevation
 import band.effective.office.elevator.ui.booking.models.Frequency
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalTime
 
 @Composable
 fun BookingPeriod(
-    startDate: String,
-    startTime: String,
-    finishDate: String,
-    finishTime: String,
+    startDate: LocalDate,
+    startTime: LocalTime,
+    finishDate: LocalDate,
+    finishTime: LocalTime,
     repeatBooking: String,
     switchChecked: Boolean,
     closeClick: () -> Unit,
     onSelectAllDay: (Boolean) -> Unit,
-    bookStartDate: () -> Unit,
+    bookDates: () -> Unit,
     bookStartTime: () -> Unit,
     bookFinishTime: () -> Unit,
-    bookFinishDate: () -> Unit,
     bookingRepeat: () -> Unit,
     onClickSearchSuitableOptions: () -> Unit,
     frequency: Frequency
@@ -169,19 +170,13 @@ fun BookingPeriod(
 
                 //Start booking date
                 TimeLine(
-                    date = startDate,
-                    time = startTime.padStart(2, '0'),
-                    onPickDate = bookStartDate,
-                    onPickTime = bookStartTime,
-                    selectTimeActive = !switchChecked,
-                )
-
-                //Finish booking date
-                TimeLine(
-                    date = finishDate,
-                    time = finishTime.padStart(2, '0'),
-                    onPickDate = bookFinishDate,
-                    onPickTime = bookFinishTime,
+                    startDate = startDate,
+                    endDate = finishDate,
+                    startTime = startTime,
+                    endTime = finishTime,
+                    onPickDate = bookDates,
+                    onPickStartTime = bookStartTime,
+                    onPickEndTime = bookFinishTime,
                     selectTimeActive = !switchChecked,
                 )
 

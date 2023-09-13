@@ -13,7 +13,8 @@ import kotlinx.datetime.LocalDate
 @Composable
 fun BookingInformation(
     reservedSeats: List<ReservedSeat>,
-    currentDate: LocalDate,
+    beginDate: LocalDate,
+    endDate: LocalDate?,
     dateFiltrationOnReserves: Boolean,
     onClickBook: () -> Unit,
     onClickOptionMenu: (String) -> Unit,
@@ -28,7 +29,8 @@ fun BookingInformation(
         DateSelection(
             onClickOpenCalendar = onClickOpenCalendar,
             onClickOpenBottomDialog = onClickOpenBottomDialog,
-            currentDate = currentDate,
+            beginDate = beginDate,
+            endDate = endDate,
             dateFiltration = dateFiltrationOnReserves
         )
         Spacer(modifier = Modifier.height(24.dp))

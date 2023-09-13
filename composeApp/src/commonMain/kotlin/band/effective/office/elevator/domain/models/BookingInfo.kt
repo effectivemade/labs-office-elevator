@@ -1,6 +1,8 @@
 package band.effective.office.elevator.domain.models
 
+import androidx.compose.ui.text.intl.Locale
 import band.effective.office.elevator.ui.models.ReservedSeat
+import band.effective.office.elevator.utils.MonthLocalizations
 import band.effective.office.elevator.utils.capitalizeFirstLetter
 import band.effective.office.elevator.utils.localDateTimeToUnix
 import band.effective.office.elevator.utils.unixToLocalDateTime
@@ -78,9 +80,14 @@ fun BookingInfo.toUiModel() = ReservedSeat(
 fun List<BookingInfo>.toUIModel() = map { it.toUiModel() }
 
 private fun convertDateTimeToUiDateString(dateOfStart: LocalDateTime) =
-    "${capitalizeFirstLetter(dateOfStart.dayOfWeek.localized())}, ${dateOfStart.dayOfMonth} ${dateOfStart.month}"
+    "${capitalizeFirstLetter(dateOfStart.dayOfWeek.localized())}, ${dateOfStart.dayOfMonth} ${
+        MonthLocalizations.getMonthName(dateOfStart.month, Locale("ru"))}"
 
 private fun convertDateTimeToUiTimeString(
     startTime: LocalTime,
     endTime: LocalTime
-) = "${startTime.hour}:${startTime.minute} - ${endTime.hour}:${endTime.minute}"
+) = "${timePad(startTime.hour.toString())}:${timePad(startTime.minute.toString())} " +
+        "- ${timePad(endTime.hour.toString())}:${timePad(endTime.minute.toString())}"
+
+fun timePad(time: String) =
+    time.padStart(2, '0')

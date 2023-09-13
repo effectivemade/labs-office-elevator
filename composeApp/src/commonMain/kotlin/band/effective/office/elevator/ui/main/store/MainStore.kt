@@ -20,7 +20,7 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, MainStore.Label> 
 
         object OnClickCloseCalendar : Intent
 
-        data class OnClickApplyDate(val date: LocalDate?) : Intent
+        data class OnClickApplyDate(val dates: List<LocalDate>) : Intent
 
         object OpenFiltersBottomDialog : Intent
       
@@ -57,7 +57,8 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, MainStore.Label> 
     data class State(
         val reservedSeats: List<ReservedSeat>,
         val elevatorState: ElevatorState,
-        val currentDate: LocalDate,
+        val beginDate: LocalDate,
+        val endDate: LocalDate?,
         val dateFiltrationOnReserves: Boolean,
         val idSelectedBooking: String,
         val isLoading: Boolean
