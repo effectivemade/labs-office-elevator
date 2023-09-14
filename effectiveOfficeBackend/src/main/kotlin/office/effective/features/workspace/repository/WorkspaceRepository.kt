@@ -3,6 +3,7 @@ package office.effective.features.workspace.repository
 import office.effective.common.exception.InstanceNotFoundException
 import office.effective.features.booking.repository.IBookingRepository
 import office.effective.features.workspace.converters.WorkspaceRepositoryConverter
+import office.effective.model.Booking
 import office.effective.model.Utility
 import office.effective.model.Workspace
 import office.effective.model.WorkspaceZone
@@ -54,7 +55,9 @@ class WorkspaceRepository(private val database: Database, private val converter:
      */
     fun findUtilitiesByWorkspaceId(workspaceId: UUID): List<Utility> {
         if (!workspaceExistsById(workspaceId)) {
-            throw InstanceNotFoundException(WorkspaceEntity::class, "Workspace with id $workspaceId not found", workspaceId)
+            throw InstanceNotFoundException(
+                WorkspaceEntity::class, "Workspace with id $workspaceId not found", workspaceId
+            )
         }
         return findUtilityModels(workspaceId)
     }
@@ -67,14 +70,11 @@ class WorkspaceRepository(private val database: Database, private val converter:
      * @author Daniil Zavyalov
      */
     private fun findUtilityModels(workspaceId: UUID): List<Utility> {
-        return database
-            .from(WorkspaceUtilities)
-            .innerJoin(right = Utilities, on = WorkspaceUtilities.utilityId eq Utilities.id)
-            .select()
-            .where { WorkspaceUtilities.workspaceId eq workspaceId }
-            .map { row ->
+        return database.from(WorkspaceUtilities)
+            .innerJoin(right = Utilities, on = WorkspaceUtilities.utilityId eq Utilities.id).select()
+            .where { WorkspaceUtilities.workspaceId eq workspaceId }.map { row ->
                 converter.utilityEntityToModel(
-                    Utilities.createEntity(row), row[WorkspaceUtilities.count]?:0
+                    Utilities.createEntity(row), row[WorkspaceUtilities.count] ?: 0
                 )
             }
     }
@@ -94,16 +94,14 @@ class WorkspaceRepository(private val database: Database, private val converter:
             return HashMap<UUID, MutableList<Utility>>()
         }
         for (id in ids) {
-            if (!workspaceExistsById(id))
-                throw InstanceNotFoundException(WorkspaceEntity::class, "Workspace with id $id not found")
+            if (!workspaceExistsById(id)) throw InstanceNotFoundException(
+                WorkspaceEntity::class, "Workspace with id $id not found"
+            )
         }
         val result = hashMapOf<UUID, MutableList<Utility>>()
-        database
-            .from(WorkspaceUtilities)
-            .innerJoin(right = Utilities, on = WorkspaceUtilities.utilityId eq Utilities.id)
-            .select()
-            .where { WorkspaceUtilities.workspaceId inList ids }
-            .forEach { row ->
+        database.from(WorkspaceUtilities)
+            .innerJoin(right = Utilities, on = WorkspaceUtilities.utilityId eq Utilities.id).select()
+            .where { WorkspaceUtilities.workspaceId inList ids }.forEach { row ->
                 val workspaceId: UUID = row[WorkspaceUtilities.workspaceId] ?: return@forEach
                 val utility = converter.utilityEntityToModel(
                     Utilities.createEntity(row), row[WorkspaceUtilities.count] ?: 0
@@ -136,8 +134,10 @@ class WorkspaceRepository(private val database: Database, private val converter:
      * @author Daniil Zavyalov
      */
     fun findAllByTag(tag: String): List<Workspace> {
-        val tagEntity: WorkspaceTagEntity = database.workspaceTags.find { it.name eq tag }
-            ?: throw InstanceNotFoundException(WorkspaceTagEntity::class, "Workspace tag $tag not found")
+        val tagEntity: WorkspaceTagEntity =
+            database.workspaceTags.find { it.name eq tag } ?: throw InstanceNotFoundException(
+                WorkspaceTagEntity::class, "Workspace tag $tag not found"
+            )
 
         val entityList = database.workspaces.filter { it.tagId eq tagEntity.id }.toList()
         return entityList.map {
@@ -157,20 +157,25 @@ class WorkspaceRepository(private val database: Database, private val converter:
      * @author Daniil Zavyalov
      */
     fun findAllFreeByPeriod(tag: String, beginTimestamp: Instant, endTimestamp: Instant): List<Workspace> {
-        if (database.workspaceTags.count { it.name eq tag } == 0)
-            throw InstanceNotFoundException(WorkspaceTagEntity::class, "Workspace tag $tag not found")
+        if (database.workspaceTags.count { it.name eq tag } == 0) throw InstanceNotFoundException(
+            WorkspaceTagEntity::class, "Workspace tag $tag not found"
+        )
 
-        val calendarRepository: IBookingRepository = GlobalContext.get().get() //TODO: REWRITE IT FROM SCRATCH
+        val calendarRepository: IBookingRepository = GlobalContext.get().get() //TODO: Fix global context call
         val freeWorkspaces = mutableListOf<Workspace>()
-        val bookings = calendarRepository.findAll(beginTimestamp.toEpochMilli())
-        findAllByTag(tag).forEach {
-            if (bookings.none { booking ->
-                booking.beginBooking.isBefore(endTimestamp) && booking.endBooking.isAfter(beginTimestamp)
-            }) {
-                freeWorkspaces.add(it)
+        val bookings = calendarRepository.findAll(beginTimestamp.toEpochMilli(), endTimestamp.toEpochMilli())
+        freeWorkspaces.addAll(findAllByTag(tag).filter { !findAllWorkspacesIdFromBookings(bookings).contains(it.id.toString()) })
+        return freeWorkspaces
+    }
+
+    private fun findAllWorkspacesIdFromBookings(bookings: List<Booking>): List<String> {
+        var workspacesIdList: MutableList<String> = mutableListOf()
+        bookings.forEach {
+            if (!workspacesIdList.contains(it.workspace.id.toString())) {
+                workspacesIdList.add(it.workspace.id.toString())
             }
         }
-        return freeWorkspaces
+        return workspacesIdList
     }
 
     /**
@@ -196,7 +201,9 @@ class WorkspaceRepository(private val database: Database, private val converter:
     @Deprecated("API does not involve adding utility to workspaces")
     fun addUtilityToWorkspace(utilityId: UUID, workspaceId: UUID, count: UInt) {
         if (!workspaceExistsById(workspaceId)) {
-            throw InstanceNotFoundException(WorkspaceEntity::class, "Workspace with id $workspaceId not found", workspaceId)
+            throw InstanceNotFoundException(
+                WorkspaceEntity::class, "Workspace with id $workspaceId not found", workspaceId
+            )
         }
         if (!utilityExistsById(utilityId)) {
             throw InstanceNotFoundException(UtilityEntity::class, "Utility with id $utilityId not found", utilityId)
