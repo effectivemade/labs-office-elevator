@@ -1,12 +1,15 @@
 package band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.uiComponents
 
+import android.util.Log
+import java.text.SimpleDateFormat
 import java.util.Calendar
 import kotlin.math.abs
 
 fun checkCurrentTime(startTime: Calendar): Boolean {
     val currentTime = Calendar.getInstance()
     val ml = startTime.timeInMillis - currentTime.timeInMillis
-    return abs(ml) < 60000
+    Log.e("check azaza",SimpleDateFormat("HH:mm").format(startTime.time))
+    return abs(ml) <= 60000
 }
 
 fun checkDuration(startEvent: Calendar, newEventDuration: Int): Boolean{
