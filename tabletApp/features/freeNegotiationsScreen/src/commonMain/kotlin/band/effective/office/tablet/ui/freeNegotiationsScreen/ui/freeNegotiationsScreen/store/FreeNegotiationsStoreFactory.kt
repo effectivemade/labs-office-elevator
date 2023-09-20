@@ -1,8 +1,10 @@
 package band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.store
 
+import android.util.Log
 import band.effective.office.network.model.Either
 import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.domain.model.RoomInfo
+import band.effective.office.tablet.domain.useCase.CheckBookingUseCase
 import band.effective.office.tablet.domain.useCase.CheckSettingsUseCase
 import band.effective.office.tablet.domain.useCase.RoomInfoUseCase
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.roomUiState.RoomInfoUiState
@@ -33,6 +35,7 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
     private val timer = Timer()
     private val roomInfoUseCase: RoomInfoUseCase by inject()
     private val checkSettingsUseCase: CheckSettingsUseCase by inject()
+    private val checkBookingUseCase: CheckBookingUseCase by inject()
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): FreeNegotiationsStore =
@@ -106,10 +109,13 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
 
         override fun executeAction(action: Action, getState: () -> FreeNegotiationsStore.State) {
             when (action) {
-                is Action.GetFreeRoomsInfo -> {
-                    val roomsInfoUi = mutableListOf<RoomInfoUiState>()
-                    action.roomsInfo.forEach {
-                        roomsInfoUi.add(RoomInfoUiState.defaultValue.copy(room = it.copy(eventList = it.eventList.filter { it.startTime > GregorianCalendar() })))
+                is Action.GetFreeRoomsInfo -> scope.launch {
+                    val roomsInfoUi = action.roomsInfo.map {
+                        RoomInfoUiState(
+                            room = it.copy(eventList = it.eventList.filter { it.startTime > GregorianCalendar() }),
+                            changeEventTime = 0,
+                            state = RoomState.FREE
+                        )
                     }
                     dispatch(
                         Message.GetFreeRoomsInfo(
@@ -139,23 +145,26 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
             }
         }
 
-        fun updateEventList(
+        suspend fun updateEventList(
             booking: Booking,
             listRooms: List<RoomInfoUiState>,
             getState: () -> FreeNegotiationsStore.State
         ): List<RoomInfoUiState> {
             val updateListRooms = mutableListOf<RoomInfoUiState>()
             listRooms.forEach {
+                val busyEvents =
+                    checkBookingUseCase.busyEvents(booking.eventInfo,it.room.name).unbox({ listOf() })
                 val newRoom = it.copy(room = it.room.filter(booking.eventInfo.startTime))
+                if (it.room.name == "Sun") Log.e(
+                    "check azaza",
+                    "${checkCurrentTime(booking.eventInfo.startTime)}"
+                )
                 val roomState =
-                    if (checkCurrentTime(booking.eventInfo.startTime)) getStateBusyRoomCurrent(
-                        room = it.room,
-                        state = getState()
-                    )
-                    else getStateBusyRoom(
-                        room = it.room,
-                        booking = booking
-                    )
+                    when{
+                        busyEvents.isEmpty() -> RoomState.FREE
+                        busyEvents.first().startTime < booking.eventInfo.startTime -> RoomState.BUSY.apply { event = busyEvents.first() }
+                        else -> RoomState.SOON_BUSY.apply { event = busyEvents.first() }
+                    }
                 updateListRooms.add(
                     newRoom.copy(
                         state = roomState,

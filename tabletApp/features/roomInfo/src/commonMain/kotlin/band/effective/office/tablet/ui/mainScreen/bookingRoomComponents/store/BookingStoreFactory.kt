@@ -17,6 +17,7 @@ import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -57,7 +58,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                                         .unbox({ it.saveData ?: listOf() })
                                 )
                             )
-                            updateUseCase(room = checkSettingsUseCase(),scope = this,
+                            updateUseCase(room = checkSettingsUseCase(), scope = this,
                                 roomUpdateHandler = {
                                     launch(Dispatchers.Main) {
                                         dispatch(Action.UpdateEvents(it.unbox({
@@ -76,6 +77,16 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                         }
                         launch(Dispatchers.Main) {
                             currentEventController.timeToUpdate.collect { dispatch(Action.UpdateSelectTime) }
+                        }
+                        launch(Dispatchers.Main) {
+                            flow {
+                                while (true) {
+                                    emit(0)
+                                    delay(1000L)
+                                }
+                            }.collect {
+                                dispatch(Action.UpdateSelectTime)
+                            } // TODO(Maksim Mishenko) think about program tact generator
                         }
                     }
                 },
@@ -216,7 +227,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
         fun booking(isCurrentRoom: Boolean, state: BookingStore.State, booking: () -> Unit) =
             scope.launch {
-                val busyEvent: EventInfo? = checkBookingUseCase(state.toEvent()).unbox({ it.saveData })
+                val busyEvent: EventInfo? =
+                    checkBookingUseCase(state.toEvent()).unbox({ it.saveData })
                 when {
                     !state.isCorrectOrganizer() -> dispatch(Message.OrganizerError)
                     isCurrentRoom && busyEvent != null -> dispatch(Message.NotCorrectEvent(busyEvent))

@@ -36,8 +36,8 @@ fun FreeRoomInfoComponent(
     ) {
         if (nextEvent != EventInfo.emptyEvent) {
             Text(
-                text = "${MainRes.string.room_occupancy_date.format(time = nextEvent.startTime.time())} ${
-                    if (timeToNextEvent > 0) MainRes.string.room_occupancy_time.format(
+                text = "${MainRes.string.free_room_occupancy_date.format(time = nextEvent.startTime.time())} ${
+                    if (timeToNextEvent > 0) MainRes.string.free_room_occupancy_time.format(
                         timeToNextEvent.getDuration()
                     ) else ""
                 }",

@@ -26,22 +26,23 @@ class CheckBookingUseCase(
             it.firstOrNull()
         })
 
-    suspend fun busyEvents(event: EventInfo) = when (val eventList = eventList()) {
-        is Either.Error -> Either.Error(
-            ErrorWithData(
-                error = eventList.error.error,
-                saveData = eventList.error.saveData?.getBusy(event)
+    suspend fun busyEvents(event: EventInfo, room: String = checkSettingsUseCase()) =
+        when (val eventList = eventList(room)) {
+            is Either.Error -> Either.Error(
+                ErrorWithData(
+                    error = eventList.error.error,
+                    saveData = eventList.error.saveData?.getBusy(event)
+                )
             )
-        )
 
-        is Either.Success -> Either.Success(eventList.data.getBusy(event))
-    }
+            is Either.Success -> Either.Success(eventList.data.getBusy(event))
+        }
 
 
     /**
      * @return All events in current room*/
-    private suspend fun eventList(): Either<ErrorWithData<List<EventInfo>>, List<EventInfo>> =
-        when (val response = roomInfoUseCase(checkSettingsUseCase())) {
+    private suspend fun eventList(room: String): Either<ErrorWithData<List<EventInfo>>, List<EventInfo>> =
+        when (val response = roomInfoUseCase(room)) {
             is Either.Error -> Either.Error(
                 ErrorWithData(
                     response.error.error,

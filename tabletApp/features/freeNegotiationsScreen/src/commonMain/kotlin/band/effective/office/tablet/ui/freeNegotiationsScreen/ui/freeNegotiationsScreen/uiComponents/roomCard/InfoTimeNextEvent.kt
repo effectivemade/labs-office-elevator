@@ -8,7 +8,7 @@ import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 @Composable
 fun InfoTimeNextEvent(info: String){
     Text(
-        text = info,
+        text = "",//info,
         style = MaterialTheme.typography.h6,
         color = LocalCustomColorsPalette.current.secondaryTextAndIcon
     )
