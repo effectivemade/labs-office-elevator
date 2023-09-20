@@ -163,7 +163,7 @@ fun AuthorizationProfileComponent(
                     Text(
                         text = stringResource(MainRes.strings.profile_hint),
                         style = MaterialTheme.typography.button,
-                        color = textGrayColor
+                        color = Color(0x80000000) // TODO(Maksim Mishenko) fix theme
                     )
                 },
                 isError = state.isErrorName,
@@ -244,7 +244,7 @@ fun AuthorizationProfileComponent(
                     Text(
                         text = stringResource(MainRes.strings.profile_hint_),
                         style = MaterialTheme.typography.button,
-                        color = textGrayColor
+                        color = Color(0x80000000) // TODO(Maksim Mishenko) fix theme
                     )
                 },
                 isError = state.isErrorPost,

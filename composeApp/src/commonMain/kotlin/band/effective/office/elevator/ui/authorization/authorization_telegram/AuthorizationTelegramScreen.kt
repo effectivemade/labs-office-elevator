@@ -147,7 +147,7 @@ private fun AuthorizationTelegramComponent(
                 placeholder = {
                     Text(
                         text = stringResource(MainRes.strings.employee_hint),
-                        color = textGrayColor,
+                        color = Color(0x80000000), //TODO(Maksim Mishenko) fix theme
                         style = MaterialTheme.typography.button
                     )
                 },
