@@ -31,17 +31,17 @@ fun Route.bookingRouting() {
         get(SwaggerDocument.returnBookings()) {
             val userId: String? = call.request.queryParameters["user_id"]
             val workspaceId: String? = call.request.queryParameters["workspace_id"]
-            val maxStartTime: Long? = call.request.queryParameters["max_start_time"]?.let {
+            val bookingRangeTo: Long? = call.request.queryParameters["range_to"]?.let {
                 it.toLongOrNull()
-                    ?: throw BadRequestException("max_start_time can't be parsed to Long")
+                    ?: throw BadRequestException("range_to can't be parsed to Long")
             }
-            call.request.queryParameters["min_start_time"]?.let {
-                val minStartTime: Long = it.toLongOrNull()
-                    ?: throw BadRequestException("min_start_time can't be parsed to Long")
-                call.respond(bookingFacade.findAll(userId, workspaceId, maxStartTime, minStartTime))
+            call.request.queryParameters["range_from"]?.let {
+                val bookingRangeFrom: Long = it.toLongOrNull()
+                    ?: throw BadRequestException("range_from can't be parsed to Long")
+                call.respond(bookingFacade.findAll(userId, workspaceId, bookingRangeTo, bookingRangeFrom))
                 return@get
             }
-            call.respond(bookingFacade.findAll(userId, workspaceId, maxStartTime))
+            call.respond(bookingFacade.findAll(userId, workspaceId, bookingRangeTo))
         }
         post(SwaggerDocument.postBooking()) {
             val dto = call.receive<BookingDTO>()

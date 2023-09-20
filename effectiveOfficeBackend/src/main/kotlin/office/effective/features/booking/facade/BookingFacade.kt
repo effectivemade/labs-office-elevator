@@ -58,27 +58,28 @@ class BookingFacade(
      *
      * @param userId use to filter by booking owner id. Should be valid UUID
      * @param workspaceId use to filter by booking workspace id. Should be valid UUID
-     * @param maxStartTime use to set an upper bound for filtering bookings by start time
-     * @param minStartTime lover bound for filtering bookings by start time,
-     * default value [BookingConstants.MIN_SEARCH_START_TIME]
+     * @param bookingRangeTo upper bound (exclusive) for a beginBooking to filter by. Optional.
+     * Should be greater than range_from.
+     * @param bookingRangeFrom lower bound (exclusive) for a endBooking to filter by.
+     * Should be lover than [bookingRangeFrom]. Default value: [BookingConstants.MIN_SEARCH_START_TIME]
      * @return [BookingDTO] list
      * @author Daniil Zavyalov
      */
     fun findAll(
         userId: String?,
         workspaceId: String?,
-        maxStartTime: Long?,
-        minStartTime: Long = BookingConstants.MIN_SEARCH_START_TIME
+        bookingRangeTo: Long?,
+        bookingRangeFrom: Long = BookingConstants.MIN_SEARCH_START_TIME
     ): List<BookingDTO> {
-        if (maxStartTime != null && maxStartTime <= minStartTime) {
+        if (bookingRangeTo != null && bookingRangeTo <= bookingRangeFrom) {
             throw BadRequestException("Max booking start time should be null or greater than min start time")
         }
         val bookingList: List<Booking> = transactionManager.useTransaction({
             bookingService.findAll(
                 userId?.let { uuidValidator.uuidFromString(it) },
                 workspaceId?.let { uuidValidator.uuidFromString(it) },
-                maxStartTime,
-                minStartTime
+                bookingRangeTo,
+                bookingRangeFrom
             )
         })
         return bookingList.map {
