@@ -94,6 +94,7 @@ fun MainScreen(component: MainComponent) {
                     selectSeat = label.seat
                     showDeleteBooking = true
                 }
+
                 MainStore.Label.OnClickCloseDeleteBooking -> showDeleteBooking = false
                 MainStore.Label.OnClickOpenEditBooking -> {}
                 MainStore.Label.OnClickCloseEditBooking -> {}
@@ -134,7 +135,9 @@ fun MainScreen(component: MainComponent) {
                     )
                 )
             },
-            isLoadingBooking = state.isLoading
+            isLoadingBooking = state.isLoading,
+            onCallElevator = { component.onEvent(MainStore.Intent.OnClickCallElevator) },
+            enableCallElevator = state.enableCallElevator
         )
 
         Dialog(
@@ -184,8 +187,10 @@ fun MainScreen(component: MainComponent) {
 fun SnackBarErrorMessage(modifier: Modifier, isVisible: Boolean, message: String) {
     AnimatedVisibility(modifier = modifier, visible = isVisible) {
         Snackbar(modifier.padding(16.dp), backgroundColor = MaterialTheme.colors.error) {
-            Text(text = message,
-                color = ExtendedThemeColors.colors.whiteColor)
+            Text(
+                text = message,
+                color = ExtendedThemeColors.colors.whiteColor
+            )
         }
     }
 }
@@ -214,11 +219,13 @@ fun MainScreenContent(
     beginDate: LocalDate,
     endDate: LocalDate?,
     dateFiltrationOnReserves: Boolean,
+    enableCallElevator: Boolean,
     onClickBook: () -> Unit,
     onClickOptionMenu: (String) -> Unit,
     onClickOpenCalendar: () -> Unit,
     onClickOpenBottomDialog: () -> Unit,
     onClickCloseBottomDialog: (BookingsFilter) -> Unit,
+    onCallElevator: () -> Unit
 ) {
     ModalBottomSheetLayout(
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
@@ -244,7 +251,8 @@ fun MainScreenContent(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 ElevatorUIComponent(
-                    onClickCallElevator = {}
+                    enable = enableCallElevator,
+                    onClickCallElevator = onCallElevator
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }
@@ -253,10 +261,11 @@ fun MainScreenContent(
                     .background(MaterialTheme.colors.onBackground)
                     .padding(horizontal = 16.dp),
             ) {
-                when(isLoadingBooking) {
+                when (isLoadingBooking) {
                     true -> {
                         LoadingIndicator()
                     }
+
                     false -> {
                         Napier.d { "showing main content" }
                         BookingInformation(

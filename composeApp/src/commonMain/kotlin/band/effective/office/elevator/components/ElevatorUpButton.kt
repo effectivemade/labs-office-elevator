@@ -13,6 +13,7 @@ import band.effective.office.elevator.ExtendedThemeColors
 @Composable
 fun ElevatorUpButton(
     buttonText: String,
+    enable: Boolean,
     onClick: () -> Unit
 ) {
     Button(
@@ -22,7 +23,8 @@ fun ElevatorUpButton(
             contentColor = MaterialTheme.colors.background
         ),
         shape = RoundedCornerShape(48.dp),
-        contentPadding = PaddingValues(horizontal = 24.dp, vertical = 5.dp)
+        contentPadding = PaddingValues(horizontal = 24.dp, vertical = 5.dp),
+        enabled = enable
     ) {
         Text(
             text = buttonText,

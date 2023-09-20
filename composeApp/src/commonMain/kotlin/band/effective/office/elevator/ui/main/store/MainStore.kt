@@ -61,7 +61,8 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, MainStore.Label> 
         val endDate: LocalDate?,
         val dateFiltrationOnReserves: Boolean,
         val idSelectedBooking: String,
-        val isLoading: Boolean
+        val isLoading: Boolean,
+        val enableCallElevator: Boolean
     )
 
     data class ErrorState(val message: StringResource)
