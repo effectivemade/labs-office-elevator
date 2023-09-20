@@ -38,6 +38,10 @@ class AuthorizationRepositoryImpl(
         emit(userResponse)
     }
 
+    override fun logout() {
+        bdSource.deleteUserData()
+    }
+
     private suspend fun getUserInfoFromDB() = bdSource.getCurrentUserInfo()
     private suspend fun Either<ErrorResponse, UserDTO>.convert(
 

@@ -3,7 +3,7 @@ package band.effective.office.elevator.ui.authorization.authorization_google.sto
 import band.effective.office.elevator.data.ApiResponse
 import band.effective.office.elevator.domain.GoogleSignIn
 import band.effective.office.elevator.domain.SignInResultCallback
-import band.effective.office.elevator.domain.entity.AuthorizationUseCase
+import band.effective.office.elevator.domain.useCase.AuthorizationUseCase
 import band.effective.office.elevator.ui.authorization.authorization_google.store.AuthorizationGoogleStore.Intent
 import band.effective.office.elevator.ui.authorization.authorization_google.store.AuthorizationGoogleStore.Label
 import band.effective.office.elevator.ui.authorization.authorization_google.store.AuthorizationGoogleStore.State
@@ -53,48 +53,13 @@ internal class AuthorizationGoogleStoreFactory(
         }
 
         private fun startAuthorization() {
-            signInClient.signIn(object : SignInResultCallback {
-                override fun onSuccess() {
-                    scope.launch {
-                        when (val result = signInClient.retrieveAuthorizedUser()) {
-                            is ApiResponse.Error.HttpError -> {}
-                            ApiResponse.Error.NetworkError -> {}
-                            ApiResponse.Error.SerializationError -> {}
-                            ApiResponse.Error.UnknownError -> {}
-                            is ApiResponse.Success -> {
-                                withContext(Dispatchers.IO) {
-                                    result.body.idToken?.let { token ->
-                                        authorizationUseCase.authorize(
-                                            idToken = token,
-                                            email = result.body.email
-                                        ).collect { response ->
-                                            when (response) {
-                                                is Either.Success -> {
-                                                    withContext(Dispatchers.Main) {
-                                                        println("autorize success")
-                                                        publish(Label.AuthorizationSuccess(response.data))
-                                                    }
-                                                }
-
-                                                is Either.Error -> {
-                                                    println("autorize error ${response.error.description}")
-
-                                                    // TODO show error and data
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-
-                            }
-                        }
-                    }
-                }
-
-                override fun onFailure(message: String) {
-                    publish(Label.AuthorizationFailure(message))
-                }
-            })
+            scope.launch {
+                authorizationUseCase.authorize(
+                    scope = scope,
+                    successCallBack = { publish(Label.AuthorizationSuccess(it)) },
+                    failureCallBack = { publish(Label.AuthorizationFailure(it)) }
+                )
+            }
         }
     }
 }

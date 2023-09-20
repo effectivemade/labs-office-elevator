@@ -2,6 +2,7 @@ package band.effective.office.elevator.ui.profile.mainProfile.store
 
 import band.effective.office.elevator.domain.GoogleSignIn
 import band.effective.office.elevator.domain.models.User
+import band.effective.office.elevator.domain.useCase.AuthorizationUseCase
 import band.effective.office.elevator.domain.useCase.GetUserUseCase
 import band.effective.office.elevator.ui.profile.mainProfile.store.ProfileStore.*
 import band.effective.office.network.model.Either
@@ -22,7 +23,7 @@ internal class ProfileStoreFactory(
     private val storeFactory: StoreFactory,
 ) : KoinComponent {
 
-    private val signInClient: GoogleSignIn by inject<GoogleSignIn>()
+    private val authorizationUseCase: AuthorizationUseCase by inject()
     private val getUserUseCase: GetUserUseCase by inject()
 
     @OptIn(ExperimentalMviKotlinApi::class)
@@ -55,7 +56,7 @@ internal class ProfileStoreFactory(
 
 
         private fun doSignOut() {
-            signInClient.signOut()
+            authorizationUseCase.logout()
             publish(Label.OnSignedOut)
         }
 
