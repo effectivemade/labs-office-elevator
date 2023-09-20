@@ -44,7 +44,6 @@ import band.effective.office.elevator.components.OutlinedTextColorsSetup
 import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.ui.authorization.authorization_profile.store.AuthorizationProfileStore
-import band.effective.office.elevator.ui.authorization.components.AuthSubTitle
 import band.effective.office.elevator.ui.authorization.components.AuthTabRow
 import band.effective.office.elevator.ui.authorization.components.AuthTitle
 import dev.icerock.moko.resources.compose.stringResource
@@ -132,12 +131,6 @@ fun AuthorizationProfileComponent(
             AuthTitle(
                 text = stringResource(MainRes.strings.input_profile),
                 modifier = Modifier.padding(bottom = 7.dp),
-                textAlign = TextAlign.Start
-            )
-
-            AuthSubTitle(
-                text = stringResource(MainRes.strings.select_profile),
-                modifier = Modifier.padding(bottom = 24.dp),
                 textAlign = TextAlign.Start
             )
 
