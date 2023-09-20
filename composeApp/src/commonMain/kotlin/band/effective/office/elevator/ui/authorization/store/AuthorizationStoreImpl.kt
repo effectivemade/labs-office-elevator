@@ -51,6 +51,7 @@ class AuthorizationStoreFactory(
                     is AuthorizationStore.Intent.ChangePhoneNumber -> dispatch(Msg.ChangePhoneNumber(intent.phoneNumber))
                     is AuthorizationStore.Intent.ChangePost -> dispatch(Msg.ChangePost(intent.post))
                     is AuthorizationStore.Intent.ChangeTelegram -> dispatch(Msg.ChangeTelegram(intent.telegram))
+                    is AuthorizationStore.Intent.UpdateUserInfo -> dispatch(Msg.ChangeUser(intent.user))
                 }
             }
         }
@@ -58,17 +59,21 @@ class AuthorizationStoreFactory(
         override fun executeAction(action: Action, getState: () -> AuthorizationStore.State) {
             when(action) {
                 is Action.LoadUserData -> {
-                    scope.launch(Dispatchers.IO) {
-                        getUserUseCase.execute().collect{ user ->
-                            withContext(Dispatchers.Main) {
-                                when(user) {
-                                    is Either.Error -> {
-                                        println("Error get user")
-                                    }
-                                    is Either.Success -> {
-                                        dispatch(Msg.ChangeUser(user.data))
-                                    }
-                                }
+                    featchUserInfo()
+                }
+            }
+        }
+
+        private fun featchUserInfo() {
+            scope.launch(Dispatchers.IO) {
+                getUserUseCase.execute().collect{ user ->
+                    withContext(Dispatchers.Main) {
+                        when(user) {
+                            is Either.Error -> {
+                                println("Error get user")
+                            }
+                            is Either.Success -> {
+                                dispatch(Msg.ChangeUser(user.data))
                             }
                         }
                     }
