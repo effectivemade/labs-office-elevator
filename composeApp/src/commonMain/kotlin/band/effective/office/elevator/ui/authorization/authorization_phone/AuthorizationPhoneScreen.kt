@@ -153,7 +153,9 @@ private fun AuthorizationPhoneComponent(
                 },
                 visualTransformation = PhoneMaskTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                textStyle = MaterialTheme.typography.body1,
+                textStyle = MaterialTheme.typography.body1.copy(
+                    color = Color.Black
+                ),
                 colors = OutlinedTextColorsSetup(),
                 placeholder = {
                     Text(
