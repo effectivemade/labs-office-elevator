@@ -7,4 +7,6 @@ interface DBSource {
 
     suspend fun update(user: User, idToken: String)
     suspend fun update(user: User)
+
+    fun deleteUserData()
 }

@@ -14,6 +14,8 @@ interface AuthorizationStore :
         data class ChangeName(val name: String) : Intent
         data class ChangePost(val post: String) : Intent
         data class ChangeTelegram(val telegram: String) : Intent
+
+        data class UpdateUserInfo(val user: User) : Intent
     }
 
     data class State(

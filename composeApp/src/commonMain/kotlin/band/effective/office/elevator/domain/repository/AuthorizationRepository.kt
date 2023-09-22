@@ -9,4 +9,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface AuthorizationRepository {
     suspend fun authorizeUser(idToken: String, email: String): Flow<Either<ErrorResponse, User>>
+
+     fun logout()
 }

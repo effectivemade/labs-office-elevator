@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.authorization
 
+import band.effective.office.elevator.domain.models.User
 import band.effective.office.elevator.domain.useCase.UpdateUserInfoUseCase
 import band.effective.office.elevator.ui.authorization.authorization_google.AuthorizationGoogleComponent
 import band.effective.office.elevator.ui.authorization.authorization_phone.AuthorizationPhoneComponent
@@ -43,6 +44,9 @@ class AuthorizationComponent(
     private val validator: Validator = Validator()
     private val navigation = StackNavigation<AuthorizationComponent.Config>()
     private val updateUserInfoUseCase: UpdateUserInfoUseCase by inject()
+    // TODO (Artem Gruzdev) replace this.This is a temporary crutch. It is necessary to synchronize the state somehow
+    private var userData: User = User.defaultUser
+
     private val authorizationStore =
         instanceKeeper.getStore {
             AuthorizationStoreFactory(
@@ -98,7 +102,7 @@ class AuthorizationComponent(
                     componentContext,
                     storeFactory,
                     validator,
-                    authorizationStore.state.userData.phoneNumber,
+                    userData.phoneNumber,
                     ::phoneAuthOutput,
                     ::changePhoneNumber
                 )
@@ -109,8 +113,8 @@ class AuthorizationComponent(
                     componentContext,
                     storeFactory,
                     validator,
-                    authorizationStore.state.userData.userName,
-                    authorizationStore.state.userData.post!!,
+                    userData.userName,
+                    userData.post,
                     ::profileAuthOutput,
                     ::changeName,
                     ::changePost
@@ -122,7 +126,7 @@ class AuthorizationComponent(
                     componentContext,
                     storeFactory,
                     validator,
-                    authorizationStore.state.userData.telegram,
+                    userData.telegram,
                     ::telegramAuthOutput,
                     ::changeTelegramNick
                 )
@@ -131,9 +135,13 @@ class AuthorizationComponent(
 
     private fun googleAuthOutput(output: AuthorizationGoogleComponent.Output) {
         when (output) {
-            is AuthorizationGoogleComponent.Output.OpenAuthorizationPhoneScreen -> navigation.replaceAll(
-                Config.PhoneAuth
-            )
+            is AuthorizationGoogleComponent.Output.OpenAuthorizationPhoneScreen -> {
+                authorizationStore.accept(AuthorizationStore.Intent.UpdateUserInfo(output.userData))
+                userData = output.userData
+                navigation.replaceAll(
+                    Config.PhoneAuth
+                )
+            }
         }
     }
 

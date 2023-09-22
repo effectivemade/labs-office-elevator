@@ -18,7 +18,7 @@ CREATE TABLE googleIdoken(
 CREATE INDEX idTokenIndex ON profileData(id);
 
 updateIdToken:
-REPLACE
+INSERT OR REPLACE
 INTO googleIdoken(idToken)
 VALUES (?);
 
@@ -33,6 +33,14 @@ FROM profileData
 LIMIT 1;
 
 updateUser:
-REPLACE
+INSERT OR REPLACE
 INTO profileData(id, name, post, email, phoneNumber, telegramNick, imageUrl)
 VALUES (?,?,?,?,?,?, ?);
+
+deleteUser:
+DELETE FROM profileData;
+
+deleteToken:
+DELETE FROM googleIdoken;
+
+

@@ -10,7 +10,7 @@ import band.effective.office.elevator.domain.repository.OfficeElevatorRepository
 import band.effective.office.elevator.domain.useCase.EmployeeUseCase
 import band.effective.office.elevator.domain.useCase.ElevatorCallUseCase
 import band.effective.office.elevator.domain.useCase.GetBookingsUseCase
-import band.effective.office.elevator.domain.entity.AuthorizationUseCase
+import band.effective.office.elevator.domain.useCase.AuthorizationUseCase
 import band.effective.office.elevator.domain.entity.BookingInteractor
 import band.effective.office.elevator.domain.repository.AuthorizationRepository
 import band.effective.office.elevator.domain.repository.EmployeeRepository
@@ -33,7 +33,10 @@ internal val domainModuleDI = module {
     single { ElevatorCallUseCase(get()) }
     single<BookingRepository> { BookingRepositoryImpl(api = get(), profileRepository = get()) }
     single {
-        AuthorizationUseCase(authorizationRepository = get())
+        AuthorizationUseCase(
+            authorizationRepository = get(),
+            googleSignIn = get()
+        )
     }
     single {
         BookingInteractor(
@@ -45,7 +48,7 @@ internal val domainModuleDI = module {
         )
     }
 
-    single<UpdateUserInfoUseCase> {UpdateUserInfoUseCase(userProfileRepository = get())}
+    single {UpdateUserInfoUseCase(userProfileRepository = get())}
 
     single<AuthorizationRepository> {
         AuthorizationRepositoryImpl(

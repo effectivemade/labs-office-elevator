@@ -42,4 +42,9 @@ class DBSourceImpl(
             )
         }
     }
+
+    override fun deleteUserData() {
+        profileQueries.deleteUser()
+        profileQueries.deleteToken()
+    }
 }
