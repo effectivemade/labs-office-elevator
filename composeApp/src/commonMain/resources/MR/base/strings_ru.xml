@@ -71,6 +71,8 @@
     <string name="extend_booking">Продлить</string>
     <string name="repeat_booking">Повторить</string>
 
+    <string name="period_selection">Выбор периода</string>
+
     <string name="Monday">Пн</string>
     <string name="Tuesday">Вт</string>
     <string name="Wednesday">Ср</string>
