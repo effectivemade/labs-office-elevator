@@ -44,7 +44,6 @@ import band.effective.office.elevator.components.OutlinedTextColorsSetup
 import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.ui.authorization.authorization_telegram.store.AuthorizationTelegramStore
-import band.effective.office.elevator.ui.authorization.components.AuthSubTitle
 import band.effective.office.elevator.ui.authorization.components.AuthTabRow
 import band.effective.office.elevator.ui.authorization.components.AuthTitle
 import dev.icerock.moko.resources.compose.stringResource
@@ -128,12 +127,6 @@ private fun AuthorizationTelegramComponent(
                 textAlign = TextAlign.Start
             )
 
-            AuthSubTitle(
-                text = stringResource(MainRes.strings.select_employee),
-                modifier = Modifier.padding(bottom = 24.dp),
-                textAlign = TextAlign.Start
-            )
-
             OutlinedTextField(
                 value = state.nick,
                 onValueChange = {
@@ -154,7 +147,7 @@ private fun AuthorizationTelegramComponent(
                 placeholder = {
                     Text(
                         text = stringResource(MainRes.strings.employee_hint),
-                        color = textGrayColor,
+                        color = Color(0x80000000), //TODO(Maksim Mishenko) fix theme
                         style = MaterialTheme.typography.button
                     )
                 },

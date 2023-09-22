@@ -2,8 +2,8 @@ package band.effective.office.elevator.ui.main.store
 
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.data.ApiResponse
-import band.effective.office.elevator.domain.useCase.DeleteBookingUseCase
 import band.effective.office.elevator.domain.entity.BookingInteractor
+import band.effective.office.elevator.domain.useCase.DeleteBookingUseCase
 import band.effective.office.elevator.domain.useCase.ElevatorCallUseCase
 import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsFilter
 import band.effective.office.elevator.ui.models.ElevatorState
@@ -55,7 +55,8 @@ internal class MainStoreFactory(
                     dateFiltrationOnReserves = updatedList,
                     idSelectedBooking = "",
                     isLoading = true,
-                    endDate = null
+                    endDate = null,
+                    enableCallElevator = true
                 ),
                 executorFactory = ::ExecutorImpl,
                 reducer = ReducerImpl,
@@ -83,6 +84,7 @@ internal class MainStoreFactory(
         ) : Msg
 
         data class UpdateBookingLoadingState(val isLoading: Boolean) : Msg
+        data class UpdateCallElevator(val newValue: Boolean) : Msg
     }
 
     private sealed interface Action {
@@ -94,8 +96,13 @@ internal class MainStoreFactory(
         override fun executeIntent(intent: MainStore.Intent, getState: () -> MainStore.State) {
             when (intent) {
                 MainStore.Intent.OnClickCallElevator -> {
-                    if (getState().elevatorState is ElevatorState.Below)
-                        doElevatorCall()
+                    //doElevatorCall() TODO(Maksim Mishenko) uncomment call elevator
+                    // NOTE(Maksim Mishenko) if call success do this:
+                    scope.launch {
+                        dispatch(Msg.UpdateCallElevator(false))
+                        delay(10000L)
+                        dispatch(Msg.UpdateCallElevator(true))
+                    }
                 }
 
                 is MainStore.Intent.OnClickShowOption -> {
@@ -157,7 +164,7 @@ internal class MainStoreFactory(
                                     dates = listOf(
                                         getState().beginDate,
                                         getState().endDate
-                                        )
+                                    )
                                         .mapNotNull { it },
                                     bookingsFilter = bookingsFilter
                                 )
@@ -173,6 +180,7 @@ internal class MainStoreFactory(
                         }
                     }
                 }
+
                 MainStore.Intent.OnClickHideOption -> {
                     scope.launch {
                         publish(MainStore.Label.HideOptions)
@@ -250,7 +258,7 @@ internal class MainStoreFactory(
             val beginDateTime = LocalDateTime(date = beginDate, time = LocalTime.Min)
             val endDateTime = LocalDateTime(date = endDate, time = LocalTime.Max)
 
-                filtration = bookingsFilter
+            filtration = bookingsFilter
 
             scope.launch {
                 dispatch(Msg.UpdateBookingLoadingState(isLoading = true))
@@ -260,7 +268,7 @@ internal class MainStoreFactory(
                 bookingInteractor
                     .getForUser(
                         beginDateTime = beginDateTime,
-                        endDateTime  = endDateTime,
+                        endDateTime = endDateTime,
                         bookingsFilter = bookingsFilter
                     )
                     .collect { bookings ->
@@ -300,7 +308,7 @@ internal class MainStoreFactory(
                     bookingInteractor
                         .getForUser(
                             beginDateTime = beginDateTime,
-                            endDateTime  = endDateTime,
+                            endDateTime = endDateTime,
                             bookingsFilter = bookingsFilter
                         )
                         .collect { bookings ->
@@ -353,6 +361,7 @@ internal class MainStoreFactory(
 
                 is Msg.UpdateBookingSelectedId -> copy(idSelectedBooking = message.bookingId)
                 is Msg.UpdateBookingLoadingState -> copy(isLoading = message.isLoading)
+                is Msg.UpdateCallElevator -> copy(enableCallElevator = message.newValue)
             }
     }
 }

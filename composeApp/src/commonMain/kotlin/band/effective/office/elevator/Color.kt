@@ -174,7 +174,7 @@ internal val borderGray = Color (0xFF666666)
 internal val successGreen = Color(0xFF4BB543)
 
 internal val borderGreen = Color(0xFF34C759)
-internal val textGrayColor = Color(0x80000000)
+internal val textGrayColor = Color(0xFF000000) // TODO(Maksim Mishenko) i don't know how fix text color in OutlinedTextField, because i chenge textGrayColor on black. True value is 0x80000000
 
 internal val companyColor = Color(0xFF323E48)
 

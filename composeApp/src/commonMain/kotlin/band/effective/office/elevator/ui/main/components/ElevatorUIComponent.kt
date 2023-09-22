@@ -7,10 +7,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.ElevatorUpButton
@@ -18,9 +15,10 @@ import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun ElevatorUIComponent(
+    enable: Boolean,
     onClickCallElevator: () -> Unit
 ) {
-    Row(verticalAlignment =Alignment.CenterVertically) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
             text = stringResource(MainRes.strings.elevator),
             style = MaterialTheme.typography.subtitle1,
@@ -28,15 +26,16 @@ fun ElevatorUIComponent(
             fontWeight = FontWeight(500)
         )
         Spacer(Modifier.weight(.1f))
-        ActionCall(onClickCallElevator)
-        }
+        ActionCall(enable = enable, onClickCallElevator = onClickCallElevator)
+    }
 }
 
 @Composable
-private fun ActionCall(onClickCallElevator: () -> Unit) {
+private fun ActionCall(enable: Boolean, onClickCallElevator: () -> Unit) {
     ElevatorUpButton(
         buttonText = stringResource(MainRes.strings.elevator_button),
         onClick = onClickCallElevator,
+        enable = enable
     )
 }
 
