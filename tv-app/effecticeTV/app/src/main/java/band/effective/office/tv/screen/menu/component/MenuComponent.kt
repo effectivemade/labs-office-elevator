@@ -13,7 +13,7 @@ import band.effective.office.tv.screen.navigation.Screen
 sealed class MenuItemType {
     object SimpleItem : MenuItemType()
     data class SelectableItem(
-        val defaultState: Boolean,
+        val defaultState: (Screen) -> Boolean,
         val onCheckedChange: (Pair<Screen, Boolean>) -> Unit
     ) : MenuItemType()
 }
@@ -51,7 +51,7 @@ fun MenuComponent(
                         weight = if (it) 1.1f else 1f
                     },
                     onCheckedChange = { menuItemType.onCheckedChange(Pair(item.first,it)) },
-                    defaultState = menuItemType.defaultState
+                    defaultState = menuItemType.defaultState(item.first)
                 )
             }
 

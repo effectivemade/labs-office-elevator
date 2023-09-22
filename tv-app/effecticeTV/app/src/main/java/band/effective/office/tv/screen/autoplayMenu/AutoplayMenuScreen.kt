@@ -103,7 +103,7 @@ fun AutoplayMenuScreen(
                 ),
             ),
             onNavigate = {},
-            menuItemType = MenuItemType.SelectableItem(true) {
+            menuItemType = MenuItemType.SelectableItem({ screen -> state.screenList.contains(screen) }) {
                 if (it.second) {
                     viewModel.addScreen(it.first)
                 } else {
