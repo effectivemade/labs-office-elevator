@@ -20,6 +20,9 @@ import office.effective.model.UserModel
 import office.effective.model.Workspace
 import office.effective.features.booking.converters.RecurrenceRuleFactory.getRecurrence
 import office.effective.features.booking.converters.RecurrenceRuleFactory.rule
+import office.effective.features.workspace.repository.WorkspaceRepository
+import java.time.Instant
+import java.util.*
 
 /**
  * Converts between Google Calendar [Event] and [BookingDTO] objects.
@@ -30,7 +33,8 @@ class GoogleCalendarConverter(
     private val workspaceConverter: WorkspaceFacadeConverter,
     private val userConverter: UserDTOModelConverter,
     private val bookingConverter: BookingFacadeConverter,
-    private val verifier: UuidValidator
+    private val verifier: UuidValidator,
+    private val workspaceRepository: WorkspaceRepository
 ) {
 
     private val defaultAccount: String =
@@ -41,8 +45,7 @@ class GoogleCalendarConverter(
     /**
      * Converts [Event] to [BookingDTO]
      *
-     * Creates placeholders if some event doesn't have some fields
-     * (for compatibility with old events from Google calendar).
+     * Creates placeholders if workspace, owner or participant doesn't exist in database
      *
      * @param event [Event] to be converted
      * @return The resulting [BookingDTO] object
@@ -63,6 +66,51 @@ class GoogleCalendarConverter(
             beginBooking = event.start?.dateTime?.value ?: 0,//TODO FIX date placeholder
             endBooking = event.end?.dateTime?.value ?: ((event.start?.dateTime?.value ?: 0) + 86400000),
             recurrence = recurrence
+        )
+    }
+
+    /**
+     * Converts [Event] to [Booking]
+     *
+     * Creates placeholders if workspace or owner doesn't exist in database
+     *
+     * @param event [Event] to be converted
+     * @return The resulting [Booking] object
+     * @throws Exception if it fails to get user id from description or workspace id from summary of Google Calendar event
+     * @author Danil Kiselev, Max Mishenko, Daniil Zavyalov
+     */
+    fun toWorkspaceBooking(event: Event): Booking {
+        val userId: UUID = try {
+            UUID.fromString(event.description.substringBefore(" "))
+        } catch (e: Exception) {
+            throw Exception("Can't get user UUID from Google Calendar event description. Reason: ${e.printStackTrace()}")
+        }
+        val workspaceID: UUID = try {
+            UUID.fromString(event.summary.substringBefore(" "))
+        } catch (e: Exception) {
+            throw Exception("Can't get user UUID from Google Calendar event summary. Reason: ${e.printStackTrace()}")
+        }
+        val recurrence = event.recurrence?.toString()?.getRecurrence()
+        return Booking(
+            owner = userRepository.findById(userId) ?: UserModel(
+                id = null,
+                fullName = "Nonexistent user",
+                tag = null,
+                active = false,
+                role = null,
+                avatarURL = null,
+                integrations = emptySet(),
+                email = ""
+            ),
+            participants = emptyList(),
+            workspace = workspaceRepository.findById(workspaceID)
+                ?: Workspace(null, "Nonexistent workspace", "placeholder", listOf(), null),
+            id = event.id ?: null,
+            beginBooking = Instant.ofEpochMilli(event.start?.dateTime?.value ?: 0),//TODO FIX date placeholder
+            endBooking = Instant.ofEpochMilli(event.end?.dateTime?.value ?: ((event.start?.dateTime?.value ?: 0) + 86400000)),
+            recurrence = recurrence?.toDto()?.let {
+                RecurrenceConverter.dtoToModel(it)
+            } //TODO: add converter Recurrence to RecurrenceModel, or unite Recurrence and RecurrenceModel to a single class
         )
     }
 
@@ -122,9 +170,49 @@ class GoogleCalendarConverter(
         }
     }
 
+    /**
+     * Converts workspace [BookingDTO] to [Event]. [Event.description] is used to indicate the booking author,
+     * because [Event.organizer] is [defaultAccount] of application.
+     * [Event.summary] is used to indicate the booking workspace.
+     *
+     * @param dto [BookingDTO] to be converted
+     * @return The resulting [Event] object
+     * @author Daniil Zavyalov
+     */
+    fun toGoogleWorkspaceEvent(dto: BookingDTO): Event {
+        return Event().apply {
+            summary = "${dto.workspace.id} - workspace id"
+            description =
+                "${dto.owner.id} - organizer id"
+            if (dto.recurrence != null) recurrence = listOf(dto.recurrence.toRecurrence().rule())
+            start = dto.beginBooking.toGoogleDateTime()
+            end = dto.endBooking.toGoogleDateTime()
+        }
+    }
 
-    fun toGoogleEvent(booking: Booking): Event {
-        return toGoogleEvent(bookingConverter.modelToDto(booking))
+    /**
+     * Converts workspace [Booking] to [Event]. [Event.description] is used to indicate the booking author,
+     * because [Event.organizer] is [defaultAccount] of application.
+     * [Event.summary] is used to indicate the booking workspace.
+     *
+     * @param model [BookingDTO] to be converted
+     * @return The resulting [Event] object
+     * @author Daniil Zavyalov
+     */
+    fun toGoogleWorkspaceEvent(model: Booking): Event {
+        return toGoogleWorkspaceEvent(bookingConverter.modelToDto(model))
+    }
+
+    /**
+     * Converts meeting room [Booking] to [Event]. [Event.description] is used to indicate the booking author,
+     * because [Event.organizer] is [defaultAccount] of application
+     *
+     * @param model [BookingDTO] to be converted
+     * @return The resulting [Event] object
+     * @author Danil Kiselev
+     */
+    fun toGoogleEvent(model: Booking): Event {
+        return toGoogleEvent(bookingConverter.modelToDto(model))
     }
 
     /**

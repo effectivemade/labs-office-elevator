@@ -2,6 +2,8 @@ package office.effective.features.booking.service
 
 import office.effective.common.exception.InstanceNotFoundException
 import office.effective.common.exception.MissingIdException
+import office.effective.features.booking.repository.BookingCalendarRepository
+import office.effective.features.booking.repository.BookingWorkspaceRepository
 import office.effective.features.booking.repository.IBookingRepository
 import office.effective.features.user.repository.UserEntity
 import office.effective.features.user.repository.UserRepository
@@ -12,11 +14,15 @@ import java.util.UUID
 
 /**
  * Class that implements the [IBookingService] methods
+ *
+ * Uses [BookingCalendarRepository] for operations with meeting rooms.
+ * Uses [BookingWorkspaceRepository] for operations with workspaces.
  */
 class BookingService(
-    private val bookingRepository: IBookingRepository,
+    private val bookingRepository: BookingCalendarRepository,
+    private val bookingWorkspaceRepository: BookingWorkspaceRepository,
     private val userRepository: UserRepository,
-    private val workspaceRepository: WorkspaceRepository
+    private val workspaceRepository: WorkspaceRepository,
 ) : IBookingService {
 
     /**
@@ -27,7 +33,7 @@ class BookingService(
      * @author Daniil Zavyalov
      */
     override fun existsById(id: String): Boolean {
-        return bookingRepository.existsById(id)
+        return bookingRepository.existsById(id) || bookingWorkspaceRepository.existsById(id)
     }
 
     /**
@@ -38,6 +44,7 @@ class BookingService(
      */
     override fun deleteById(id: String) {
         bookingRepository.deleteById(id)
+        bookingWorkspaceRepository.deleteById(id)
     }
 
     /**
@@ -48,7 +55,9 @@ class BookingService(
      * @author Daniil Zavyalov
      */
     override fun findById(id: String): Booking? {
-        val booking = bookingRepository.findById(id) ?: return null
+        val booking = bookingRepository.findById(id)
+            ?: bookingWorkspaceRepository.findById(id)
+            ?: return null
         val userIds = mutableSetOf<UUID>()
         for (participant in booking.participants) {
             participant.id?.let { userIds.add(it) }
@@ -73,33 +82,86 @@ class BookingService(
      * @throws InstanceNotFoundException if [UserModel] or [Workspace] with the given id doesn't exist in database
      * @author Daniil Zavyalov
      */
-    override fun findAll(userId: UUID?, workspaceId: UUID?, bookingRangeTo: Long?, bookingRangeFrom: Long): List<Booking> {
+    override fun findAll(
+        userId: UUID?,
+        workspaceId: UUID?,
+        bookingRangeTo: Long?,
+        bookingRangeFrom: Long
+    ): List<Booking> {
         val bookingList = when {
             userId != null && workspaceId != null -> {
-                if (!workspaceRepository.workspaceExistsById(workspaceId)) throw InstanceNotFoundException(
-                    UserEntity::class, "User with id $workspaceId not found", workspaceId
-                )
+                val workspace = workspaceRepository.findById(workspaceId)
+                    ?: throw InstanceNotFoundException(
+                        UserEntity::class, "User with id $workspaceId not found", workspaceId
+                    )
                 if (!userRepository.existsById(userId)) throw InstanceNotFoundException(
                     UserEntity::class, "User with id $userId not found", userId
                 )
-                bookingRepository.findAllByOwnerAndWorkspaceId(userId, workspaceId, bookingRangeFrom, bookingRangeTo)
+
+                if (workspace.tag == "meeting") {
+                    bookingRepository.findAllByOwnerAndWorkspaceId(
+                        userId,
+                        workspaceId,
+                        bookingRangeFrom,
+                        bookingRangeTo
+                    )
+                } else {
+                    bookingWorkspaceRepository.findAllByOwnerAndWorkspaceId(
+                        userId,
+                        workspaceId,
+                        bookingRangeFrom,
+                        bookingRangeTo
+                    )
+                }
             }
 
             userId != null -> {
                 if (!userRepository.existsById(userId)) throw InstanceNotFoundException(
                     UserEntity::class, "User with id $userId not found", userId
                 )
-                bookingRepository.findAllByOwnerId(userId, bookingRangeFrom, bookingRangeTo)
+
+                val bookings = bookingRepository.findAllByOwnerId(
+                        userId,
+                        bookingRangeFrom,
+                        bookingRangeTo
+                    ).toMutableList()
+                bookings.addAll(
+                    bookingWorkspaceRepository.findAllByOwnerId(
+                        userId,
+                        bookingRangeFrom,
+                        bookingRangeTo
+                    )
+                )
+                bookings
             }
 
             workspaceId != null -> {
-                if (!workspaceRepository.workspaceExistsById(workspaceId)) throw InstanceNotFoundException(
-                    UserEntity::class, "User with id $workspaceId not found", workspaceId
-                )
-                bookingRepository.findAllByWorkspaceId(workspaceId, bookingRangeFrom, bookingRangeTo)
+                val workspace = workspaceRepository.findById(workspaceId)
+                    ?: throw InstanceNotFoundException(
+                        UserEntity::class, "User with id $workspaceId not found", workspaceId
+                    )
+
+                if (workspace.tag == "meeting") {
+                    bookingRepository.findAllByWorkspaceId(
+                        workspaceId,
+                        bookingRangeFrom,
+                        bookingRangeTo
+                    )
+                } else {
+                    bookingWorkspaceRepository.findAllByWorkspaceId(
+                        workspaceId,
+                        bookingRangeFrom,
+                        bookingRangeTo
+                    )
+                }
+
             }
 
-            else -> bookingRepository.findAll(bookingRangeFrom, bookingRangeTo)
+            else -> {
+                val bookings = bookingRepository.findAll(bookingRangeFrom, bookingRangeTo).toMutableList()
+                bookings.addAll(bookingWorkspaceRepository.findAll(bookingRangeFrom, bookingRangeTo))
+                bookings
+            }
         }
         if (bookingList.isEmpty()) return bookingList
         return findIntegrationsAndUtilities(bookingList)
@@ -194,7 +256,11 @@ class BookingService(
      * @author Daniil Zavyalov
      */
     override fun save(booking: Booking): Booking {
-        return bookingRepository.save(booking)
+        return if (booking.workspace.tag == "meeting") {
+            bookingRepository.save(booking)
+        } else {
+            bookingWorkspaceRepository.save(booking)
+        }
     }
 
     /**
@@ -205,6 +271,10 @@ class BookingService(
      * @author Daniil Zavyalov
      */
     override fun update(booking: Booking): Booking {
-        return bookingRepository.update(booking)
+        return if (booking.workspace.tag == "meeting") {
+            bookingRepository.update(booking)
+        } else {
+            bookingWorkspaceRepository.update(booking)
+        }
     }
 }
