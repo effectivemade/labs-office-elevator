@@ -239,7 +239,7 @@ class GoogleCalendarConverter(
     private fun Long.toGoogleDateTime(): EventDateTime {
         return EventDateTime().also {
             it.dateTime = DateTime(this)
-            //it.timeZone = "Asia/Omsk"
+            it.timeZone = TimeZone.getDefault().id
         }
     }
 

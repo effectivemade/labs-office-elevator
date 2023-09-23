@@ -119,7 +119,6 @@ class BookingCalendarRepository(
             .setSingleEvents(singleEvents)
             .setTimeMin(DateTime(timeMin))
             .setTimeMax(timeMax?.let { DateTime(it) })
-            .setMaxResults(2500)
     }
 
     /**

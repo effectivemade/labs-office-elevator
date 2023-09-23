@@ -8,10 +8,6 @@ import office.effective.common.exception.InstanceNotFoundException
 import office.effective.common.exception.MissingIdException
 import office.effective.config
 import office.effective.features.booking.converters.GoogleCalendarConverter
-import office.effective.features.user.repository.UserEntity
-import office.effective.features.user.repository.UserRepository
-import office.effective.features.workspace.repository.WorkspaceEntity
-import office.effective.features.workspace.repository.WorkspaceRepository
 import office.effective.model.Booking
 import java.util.*
 
@@ -21,13 +17,11 @@ import java.util.*
  * Filters out all events that have a start less than the calendar.minTime from application.conf
  */
 class BookingWorkspaceRepository(
-    private val workspaceRepository: WorkspaceRepository,
-    private val userRepository: UserRepository,
     private val calendar: Calendar,
     private val googleCalendarConverter: GoogleCalendarConverter
 ) : IBookingRepository {
     private val calendarEvents = calendar.Events()
-    private val defaultCalendar = config.propertyOrNull("calendar.workspaceCalendar")?.getString()
+    private val workspaceCalendar = config.propertyOrNull("calendar.workspaceCalendar")?.getString()
         ?: throw Exception("Config file does not contain workspace Google calendar id")
 
     /**
@@ -50,7 +44,7 @@ class BookingWorkspaceRepository(
      * @author Daniil Zavyalov
      */
     override fun deleteById(id: String) {
-        calendarEvents.delete(defaultCalendar, id).execute() //We can't delete directly from workspace calendar
+        calendarEvents.delete(workspaceCalendar, id).execute() //We can't delete directly from workspace calendar
     }
 
     /**
@@ -76,7 +70,7 @@ class BookingWorkspaceRepository(
      * or null if event with the given id doesn't exist
      * @author Daniil Zavyalov
      */
-    private fun findByCalendarIdAndBookingId(bookingId: String, calendarId: String = defaultCalendar): Event? {
+    private fun findByCalendarIdAndBookingId(bookingId: String, calendarId: String = workspaceCalendar): Event? {
         return try {
             calendar.events().get(calendarId, bookingId).execute()
         } catch (e: GoogleJsonResponseException) {
@@ -99,13 +93,12 @@ class BookingWorkspaceRepository(
         timeMin: Long,
         timeMax: Long? = null,
         singleEvents: Boolean = true,
-        calendarId: String = defaultCalendar
+        calendarId: String = workspaceCalendar
     ): Calendar.Events.List {
         return calendarEvents.list(calendarId)
             .setSingleEvents(singleEvents)
             .setTimeMin(DateTime(timeMin))
             .setTimeMax(timeMax?.let { DateTime(it) })
-            .setMaxResults(2500)
     }
 
     /**
@@ -202,7 +195,7 @@ class BookingWorkspaceRepository(
     override fun save(booking: Booking): Booking {
         //TODO: add throwing WorkspaceUnavailableException if workspace can't be booked in a given period
         val event = googleCalendarConverter.toGoogleWorkspaceEvent(booking)
-        val savedEvent = calendar.Events().insert(defaultCalendar, event).execute()
+        val savedEvent = calendar.Events().insert(workspaceCalendar, event).execute()
         return googleCalendarConverter.toWorkspaceBooking(savedEvent)//findById(savedEvent.id) ?: throw Exception("Calendar save goes wrong")
     }
 
