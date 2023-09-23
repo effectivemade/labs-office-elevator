@@ -7,6 +7,7 @@ val postgresql_driver_version: String by project
 val snakeyaml_version: String by project
 val liquibase_version: String by project
 val mockito_version: String by project
+val prometheus_version: String by project
 
 plugins {
     kotlin("jvm") version "1.8.22"
@@ -66,6 +67,10 @@ dependencies {
     implementation("com.google.auth:google-auth-library-oauth2-http:1.3.0")
     implementation("com.google.oauth-client:google-oauth-client-jetty:1.34.1")
     implementation("com.google.firebase:firebase-admin:8.2.0")
+
+    implementation("io.ktor:ktor-server-metrics-micrometer:$ktor_version")
+    implementation("io.micrometer:micrometer-registry-prometheus:$prometheus_version")
+    implementation("io.ktor:ktor-server-metrics-micrometer-jvm:2.3.2")
 
     liquibaseRuntime("org.liquibase:liquibase-core:$liquibase_version")
     liquibaseRuntime("org.postgresql:postgresql:$postgresql_driver_version")
