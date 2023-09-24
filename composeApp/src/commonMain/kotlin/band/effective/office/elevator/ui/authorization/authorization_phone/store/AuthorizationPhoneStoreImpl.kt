@@ -1,7 +1,7 @@
 package band.effective.office.elevator.ui.authorization.authorization_phone.store
 
 import band.effective.office.elevator.ui.authorization.authorization_phone.store.AuthorizationPhoneStore.*
-import band.effective.office.elevator.ui.models.validator.Validator
+import band.effective.office.elevator.ui.models.validator.UserInfoValidator
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -13,7 +13,7 @@ import org.koin.core.component.KoinComponent
 
 internal class AuthorizationPhoneStoreFactory(
     private val storeFactory: StoreFactory,
-    private val validator: Validator,
+    private val validator: UserInfoValidator,
     private var userPhoneNumber: String
 ) : KoinComponent {
 
@@ -84,19 +84,19 @@ internal class AuthorizationPhoneStoreFactory(
         private fun checkPhoneNumber(phoneNumber: String) {
             if (validator.checkPhone(phoneNumber)) {
                 userPhoneNumber = phoneNumber
-                publish(AuthorizationPhoneStore.Label.AuthorizationPhoneSuccess)
+                publish(Label.AuthorizationPhoneSuccess)
                 dispatch(
-                    AuthorizationPhoneStoreFactory.Msg.Error(
+                    Msg.Error(
                         error = false
                     )
                 )
             } else {
                 dispatch(
-                    AuthorizationPhoneStoreFactory.Msg.Error(
+                    Msg.Error(
                         error = true
                     )
                 )
-                publish(AuthorizationPhoneStore.Label.AuthorizationPhoneFailure)
+                publish(Label.AuthorizationPhoneFailure)
             }
         }
 
@@ -105,8 +105,14 @@ internal class AuthorizationPhoneStoreFactory(
         }
 
         private fun initPhoneNumber() {
+            val phoneNumber = if (userPhoneNumber.length > UserInfoValidator.phoneNumberSize)
+                userPhoneNumber.substring(
+                    startIndex = userPhoneNumber.length % UserInfoValidator.phoneNumberSize,
+                )
+            else
+                userPhoneNumber
             scope.launch {
-                dispatch(AuthorizationPhoneStoreFactory.Msg.Data(phoneNumber = userPhoneNumber))
+                dispatch(AuthorizationPhoneStoreFactory.Msg.Data(phoneNumber = phoneNumber))
             }
         }
     }

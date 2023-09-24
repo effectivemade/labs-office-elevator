@@ -1,6 +1,6 @@
 package band.effective.office.elevator.ui.authorization.authorization_telegram.store
 
-import band.effective.office.elevator.ui.models.validator.Validator
+import band.effective.office.elevator.ui.models.validator.UserInfoValidator
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -12,7 +12,7 @@ import org.koin.core.component.KoinComponent
 
 class AuthorizationTelegramStoreFactory(
     private val storeFactory: StoreFactory,
-    private val validator: Validator,
+    private val validator: UserInfoValidator,
     private var nick: String
 ) :
     KoinComponent {
