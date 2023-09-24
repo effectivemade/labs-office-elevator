@@ -345,7 +345,7 @@ class BookingCalendarRepository(
             //TODO: Check, if we can receive instances without pushing this event into calendar
             calendarEvents.instances(defaultCalendar, incomingEvent.id).execute().items.forEach { event ->
                 if (!checkSingleEventCollision(event)) {
-                    return false
+                    return@checkBookingAvailable false
                 } else {
                     isAvailable = true
                 }
