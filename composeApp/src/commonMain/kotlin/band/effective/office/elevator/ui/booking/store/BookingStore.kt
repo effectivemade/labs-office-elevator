@@ -61,6 +61,11 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
 
         data class ChangeSelectedType(val selectedType: TypesList) : Intent
 
+        object OpenCalendarForEndDate : Intent
+
+        data class SelectNewDateOfEnd(val date: LocalDate?) : Intent
+
+        object CloseCalendarForEndDate : Intent
     }
 
     data class State(
@@ -85,7 +90,8 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         val selectedWorkspaceId: String,
         val isLoadingListWorkspaces: Boolean,
         val isLoadingBookingCreation: Boolean,
-        val typeOfEnd: TypeEndPeriodBooking
+        val typeOfEnd: TypeEndPeriodBooking,
+        val dateOfEndPeriod: LocalDate
     ) {
         companion object {
             val initState = State(
@@ -127,7 +133,8 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
                 selectedWorkspaceId = "",
                 isLoadingListWorkspaces = true,
                 isLoadingBookingCreation = true,
-                typeOfEnd = TypeEndPeriodBooking.CountRepeat(1)
+                typeOfEnd = TypeEndPeriodBooking.CountRepeat(1),
+                dateOfEndPeriod = getCurrentDate()
             )
         }
     }
@@ -154,5 +161,9 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         object OpenBookRepeat : Label
 
         data class ShowToast(val message: String) : Label
+
+        object OpenCalendarForDateOfEnd : Label
+
+        object CloseCalendarForDateOfEnd : Label
     }
 }

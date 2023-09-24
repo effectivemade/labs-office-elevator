@@ -86,6 +86,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         data class ChangeLoadingWorkspace(val isLoading: Boolean) : Msg
 
         data class IsLoadingBookingCreation(val isLoadingBookingCreation: Boolean) : Msg
+
+        data class ChangeDateOfEndPeriod(val date: LocalDate) : Msg
     }
 
     private sealed interface Action {
@@ -423,6 +425,21 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                         publish(BookingStore.Label.CloseRepeatDialog)
                     }
                 }
+
+                BookingStore.Intent.OpenCalendarForEndDate -> {
+                    publish(BookingStore.Label.OpenCalendarForDateOfEnd)
+                }
+                is BookingStore.Intent.SelectNewDateOfEnd -> {
+                    scope.launch {
+                        publish(BookingStore.Label.CloseCalendarForDateOfEnd)
+                    }
+                    intent.date?.let {
+                        dispatch(Msg.ChangeDateOfEndPeriod(it))
+                    }
+                }
+
+                BookingStore.Intent.CloseCalendarForEndDate ->
+                    publish(BookingStore.Label.CloseCalendarForDateOfEnd)
             }
         }
 
@@ -534,6 +551,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is Msg.IsLoadingBookingCreation -> copy(isLoadingBookingCreation = msg.isLoadingBookingCreation)
                 is Msg.ChangeBookingRepeatAndTypeOfEnd ->
                     copy(bookingPeriod = msg.bookingPeriod, typeOfEnd = msg.typeEndPeriodBooking)
+
+                is Msg.ChangeDateOfEndPeriod -> copy(dateOfEndPeriod = msg.date)
             }
         }
     }
