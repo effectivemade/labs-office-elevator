@@ -276,10 +276,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                             }
 
                         } else {
-
-                            val dateOfStart = getState().selectedStartDate
                             val dateOfEnd = getState().selectedFinishDate
-
                             val timeOfStart = getState().selectedStartTime
 
                             if (dateOfStart == dateOfEnd) {

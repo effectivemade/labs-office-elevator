@@ -13,7 +13,7 @@ class PhoneMaskTransformation : VisualTransformation {
     private fun maskFilter(text: AnnotatedString): TransformedText {
 
         // 000-000-00-00
-        val trimmed = if (text.text.length >= 10) text.text.substring(0..9) else text.text
+        val trimmed = if (text.text.length >= 13) text.text.substring(0..12) else text.text
         var out = ""
 
         for (i in trimmed.indices) {
@@ -27,7 +27,6 @@ class PhoneMaskTransformation : VisualTransformation {
                 if (offset <= 6) return offset + 1
                 if (offset <= 8) return offset + 2
                 if (offset <= 10) return offset + 3
-               // return 11
                 return 13
             }
 
