@@ -358,7 +358,7 @@ class BookingCalendarRepository(
 
     private fun checkSingleEventCollision(event: Event, workspaceCalendarId: String): Boolean {
         val leftBorder = event.start.dateTime.value - 1
-        val rightBorder = event.start.dateTime.value + 1
+        val rightBorder = event.end.dateTime.value + 1
         val savedEvents = basicQuery(leftBorder, rightBorder).execute().items
         for (i in savedEvents) {
             if (!((i.start.dateTime.value > event.end.dateTime.value) || (i.end.dateTime.value < event.start.dateTime.value)) && (i.id != event.id)) {
