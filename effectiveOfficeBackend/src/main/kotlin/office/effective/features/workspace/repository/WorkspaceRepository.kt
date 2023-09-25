@@ -1,6 +1,8 @@
 package office.effective.features.workspace.repository
 
 import office.effective.common.exception.InstanceNotFoundException
+import office.effective.features.booking.repository.BookingCalendarRepository
+import office.effective.features.booking.repository.BookingWorkspaceRepository
 import office.effective.features.booking.repository.IBookingRepository
 import office.effective.features.workspace.converters.WorkspaceRepositoryConverter
 import office.effective.model.Booking
@@ -161,15 +163,19 @@ class WorkspaceRepository(private val database: Database, private val converter:
             WorkspaceTagEntity::class, "Workspace tag $tag not found"
         )
 
-        val calendarRepository: IBookingRepository = GlobalContext.get().get() //TODO: Fix global context call
+        val googleRepository: IBookingRepository = if (tag == "meeting") {
+            GlobalContext.get().get<BookingCalendarRepository>() //TODO: Fix global context call
+        } else {
+            GlobalContext.get().get<BookingWorkspaceRepository>() //TODO: Fix global context call
+        }
         val freeWorkspaces = mutableListOf<Workspace>()
-        val bookings = calendarRepository.findAll(beginTimestamp.toEpochMilli(), endTimestamp.toEpochMilli())
+        val bookings = googleRepository.findAll(beginTimestamp.toEpochMilli(), endTimestamp.toEpochMilli())
         freeWorkspaces.addAll(findAllByTag(tag).filter { !findAllWorkspacesIdFromBookings(bookings).contains(it.id.toString()) })
         return freeWorkspaces
     }
 
     private fun findAllWorkspacesIdFromBookings(bookings: List<Booking>): List<String> {
-        var workspacesIdList: MutableList<String> = mutableListOf()
+        val workspacesIdList: MutableList<String> = mutableListOf()
         bookings.forEach {
             if (!workspacesIdList.contains(it.workspace.id.toString())) {
                 workspacesIdList.add(it.workspace.id.toString())
