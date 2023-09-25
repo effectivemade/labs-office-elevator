@@ -32,6 +32,7 @@ import io.github.aakira.napier.Napier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.minus
 import org.koin.core.component.get
 
 class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
@@ -191,6 +192,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                     val startDate = intent.date.first()
                     val endDate = intent.date.last()
+                    val datePeriod = endDate - startDate
 
                     scope.launch {
                         val currentDate = getCurrentDate()
@@ -207,7 +209,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                             dispatch(
                                 Msg.ChangeBookingRepeatAndTypeOfEnd(
                                     bookingPeriod = BookingPeriod.Day,
-                                    typeEndPeriodBooking = TypeEndPeriodBooking.DatePeriodEnd(endDate)
+                                    typeEndPeriodBooking = TypeEndPeriodBooking.CountRepeat(datePeriod.days)
                                 )
                             )
                         else
