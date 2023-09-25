@@ -65,7 +65,13 @@ class BookingCalendarRepository(
      * @author Danil Kiselev
      */
     override fun deleteById(id: String) {
-        calendarEvents.delete(defaultCalendar, id).execute() //We can't delete directly from workspace calendar
+        try {
+            calendarEvents.delete(defaultCalendar, id).execute() //We can't delete directly from workspace calendar
+        } catch (e: GoogleJsonResponseException) {
+            if (e.statusCode != 404) {
+                throw e
+            }
+        }
     }
 
     /**
@@ -287,7 +293,8 @@ class BookingCalendarRepository(
             return googleCalendarConverter.toBookingModel(savedEvent)
         } else {
             deleteById(savedEvent.id)
-            throw WorkspaceUnavailableException("Booking unavailable. Workspace ${booking.workspace.name} (id = ${booking.workspace.id}) has already booked by someone")
+            throw WorkspaceUnavailableException("Workspace ${booking.workspace.name} " +
+                    "unavailable at time between ${booking.beginBooking} and ${booking.endBooking}")
         }
 
     }
@@ -304,7 +311,7 @@ class BookingCalendarRepository(
      */
     override fun update(booking: Booking): Booking {
         val bookingId = booking.id ?: throw MissingIdException("Update model must have id")
-        val previosVersionOfEvent = findByCalendarIdAndBookingId(bookingId) ?: throw InstanceNotFoundException(
+        val previousVersionOfEvent = findByCalendarIdAndBookingId(bookingId) ?: throw InstanceNotFoundException(
             WorkspaceBookingEntity::class, "Booking with id $bookingId not wound"
         )
         val eventOnUpdate = googleCalendarConverter.toGoogleEvent(booking)
@@ -315,14 +322,16 @@ class BookingCalendarRepository(
         if (checkBookingAvailable(updatedEvent)) {
             return googleCalendarConverter.toBookingModel(updatedEvent)
         } else {
-            previosVersionOfEvent.sequence = sequence
-            calendarEvents.update(defaultCalendar, bookingId, previosVersionOfEvent).execute()
-            throw WorkspaceUnavailableException("Booking unavailable. Workspace ${booking.workspace.name} (id = ${booking.workspace.id}) has already booked by someone")
+            previousVersionOfEvent.sequence = sequence
+            calendarEvents.update(defaultCalendar, bookingId, previousVersionOfEvent).execute()
+            throw WorkspaceUnavailableException("Workspace ${booking.workspace.name} " +
+                    "unavailable at time between ${booking.beginBooking} and ${booking.endBooking}")
         }
     }
 
     /**
-     * Launch checkSingleEventCollision for non-cycle event or receive instances for recurrent event and checks all instances.
+     * Launch checkSingleEventCollision for non-cycle event
+     * or receive instances for recurrent event and checks all instances.
      *
      * @param incomingEvent: [Event] - Must take only SAVED event
      * @return Boolean. True if booking available
@@ -358,7 +367,10 @@ class BookingCalendarRepository(
         val rightBorder = event.end.dateTime.value + 1
         val savedEvents = basicQuery(leftBorder, rightBorder).execute().items
         for (i in savedEvents) {
-            if (!((i.start.dateTime.value > event.end.dateTime.value) || (i.end.dateTime.value < event.start.dateTime.value)) && (i.id != event.id)) {
+            if (
+                !((i.start.dateTime.value > event.end.dateTime.value) || (i.end.dateTime.value < event.start.dateTime.value))
+                && (i.id != event.id)
+            ) {
                 return false
             }
         }

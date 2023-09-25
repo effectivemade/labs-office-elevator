@@ -6,8 +6,12 @@ import com.google.api.services.calendar.Calendar
 import com.google.api.services.calendar.model.Event
 import office.effective.common.exception.InstanceNotFoundException
 import office.effective.common.exception.MissingIdException
+import office.effective.common.exception.WorkspaceUnavailableException
 import office.effective.config
 import office.effective.features.booking.converters.GoogleCalendarConverter
+import office.effective.features.user.repository.UserRepository
+import office.effective.features.workspace.repository.WorkspaceEntity
+import office.effective.features.workspace.repository.WorkspaceRepository
 import office.effective.model.Booking
 import java.util.*
 
@@ -18,7 +22,9 @@ import java.util.*
  */
 class BookingWorkspaceRepository(
     private val calendar: Calendar,
-    private val googleCalendarConverter: GoogleCalendarConverter
+    private val googleCalendarConverter: GoogleCalendarConverter,
+    private val workspaceRepository: WorkspaceRepository,
+    private val userRepository: UserRepository
 ) : IBookingRepository {
     private val calendarEvents = calendar.Events()
     private val workspaceCalendar = config.propertyOrNull("calendar.workspaceCalendar")?.getString()
@@ -44,7 +50,13 @@ class BookingWorkspaceRepository(
      * @author Daniil Zavyalov
      */
     override fun deleteById(id: String) {
-        calendarEvents.delete(workspaceCalendar, id).execute() //We can't delete directly from workspace calendar
+        try {
+            calendarEvents.delete(workspaceCalendar, id).execute()
+        } catch (e: GoogleJsonResponseException) {
+            if (e.statusCode != 404) {
+                throw e
+            }
+        }
     }
 
     /**
@@ -190,13 +202,27 @@ class BookingWorkspaceRepository(
      *
      * @param booking [Booking] to be saved
      * @return saved [Booking]
-     * @author Daniil Zavyalov
+     * @author Daniil Zavyalov, Danil Kiselev
      */
     override fun save(booking: Booking): Booking {
-        //TODO: add throwing WorkspaceUnavailableException if workspace can't be booked in a given period
+        val workspaceId = booking.workspace.id ?: throw MissingIdException("Missing booking workspace id")
+        val userId = booking.owner.id ?: throw MissingIdException("Missing booking owner id")
+        if (!userRepository.existsById(userId)) {
+            throw InstanceNotFoundException(
+                WorkspaceEntity::class, "User with id $workspaceId not wound"
+            )
+        }
         val event = googleCalendarConverter.toGoogleWorkspaceEvent(booking)
+
         val savedEvent = calendar.Events().insert(workspaceCalendar, event).execute()
-        return googleCalendarConverter.toWorkspaceBooking(savedEvent)//findById(savedEvent.id) ?: throw Exception("Calendar save goes wrong")
+
+        if (checkBookingAvailable(savedEvent, workspaceId)) {
+            return googleCalendarConverter.toWorkspaceBooking(savedEvent)
+        } else {
+            deleteById(savedEvent.id)
+            throw WorkspaceUnavailableException("Workspace ${booking.workspace.name} " +
+                    "unavailable at time between ${booking.beginBooking} and ${booking.endBooking}")
+        }
     }
 
     /**
@@ -206,16 +232,75 @@ class BookingWorkspaceRepository(
      * @return [Booking] after change saving
      * @throws MissingIdException if [Booking.id] is null
      * @throws InstanceNotFoundException if booking given id doesn't exist in the database
-     * @author Daniil Zavyalov
+     * @author Daniil Zavyalov, Danil Kiselev
      */
     override fun update(booking: Booking): Booking {
+        val workspaceId = booking.workspace.id ?: throw MissingIdException("Missing booking workspace id")
         val bookingId = booking.id ?: throw MissingIdException("Update model must have id")
-        if (!existsById(bookingId)) {
-            throw InstanceNotFoundException(WorkspaceBookingEntity::class, "Booking with id $bookingId not wound")
+        val previousVersionOfEvent = findByCalendarIdAndBookingId(bookingId) ?: throw InstanceNotFoundException(
+            WorkspaceBookingEntity::class, "Booking with id $bookingId not wound"
+        )
+        val eventOnUpdate = googleCalendarConverter.toGoogleWorkspaceEvent(booking)
+
+        val updatedEvent: Event = calendarEvents.update(workspaceCalendar, bookingId, eventOnUpdate).execute()
+
+        val sequence = updatedEvent.sequence
+        if (checkBookingAvailable(updatedEvent, workspaceId)) {
+            return googleCalendarConverter.toWorkspaceBooking(updatedEvent)
+        } else {
+            previousVersionOfEvent.sequence = sequence
+            calendarEvents.update(workspaceCalendar, bookingId, previousVersionOfEvent).execute()
+            throw WorkspaceUnavailableException("Workspace ${booking.workspace.name} " +
+                    "unavailable at time between ${booking.beginBooking} and ${booking.endBooking}")
         }
-        deleteById(bookingId)
-        return save(booking)
-        //TODO: add throwing WorkspaceUnavailableException if workspace can't be booked in a given period
     }
 
+    /**
+     * Launch checkSingleEventCollision for non-cycle event or
+     * receive instances for recurrent event and checks all instances.
+     *
+     * @param incomingEvent: [Event] - Must take only SAVED event
+     * @return Boolean. True if booking available
+     * @author Kiselev Danil, Daniil Zavyalov
+     * */
+    private fun checkBookingAvailable(incomingEvent: Event, workspaceId: UUID): Boolean {
+        var isAvailable = false;
+
+        if (incomingEvent.recurrence != null) {
+            //TODO: Check, if we can receive instances without pushing this event into calendar
+            val instances = calendarEvents.instances(workspaceCalendar, incomingEvent.id).execute().items
+            for (instance in instances) {
+                if (!checkSingleEventCollision(instance, workspaceId)) {
+                    return false
+                } else {
+                    isAvailable = true
+                }
+            }
+        } else {
+            isAvailable = checkSingleEventCollision(incomingEvent, workspaceId)
+        }
+        return isAvailable
+    }
+
+    /**
+     * Contains collision condition. Checks collision between single event from param
+     * and all saved events from [Event.start] until [Event.end]
+     *
+     * @param event: [Event] - Must take only SAVED event
+     * @author Kiselev Danil, Daniil Zavyalov
+     * */
+    private fun checkSingleEventCollision(event: Event, workspaceId: UUID): Boolean {
+        val events = basicQuery(event.start.dateTime.value, event.end.dateTime.value)
+            .setQ(workspaceId.toString())
+            .execute().items
+        for (i in events) {
+            if (
+                !((i.start.dateTime.value >= event.end.dateTime.value) || (i.end.dateTime.value <= event.start.dateTime.value))
+                && (i.id != event.id)
+            ) {
+                return false
+            }
+        }
+        return true
+    }
 }

@@ -5,6 +5,7 @@ import office.effective.common.exception.MissingIdException
 import office.effective.features.booking.repository.BookingCalendarRepository
 import office.effective.features.booking.repository.BookingWorkspaceRepository
 import office.effective.features.booking.repository.IBookingRepository
+import office.effective.features.booking.repository.WorkspaceBookingEntity
 import office.effective.features.user.repository.UserEntity
 import office.effective.features.user.repository.UserRepository
 import office.effective.features.workspace.repository.WorkspaceRepository
@@ -253,10 +254,14 @@ class BookingService(
      *
      * @param booking [Booking] to be saved
      * @return saved [Booking]
+     * @throws InstanceNotFoundException if workspace with the given id not found
      * @author Daniil Zavyalov
      */
     override fun save(booking: Booking): Booking {
-        return if (booking.workspace.tag == "meeting") {
+        val workspaceId = booking.workspace.id ?: throw MissingIdException("Missing booking workspace id")
+        val workspace = workspaceRepository.findById(workspaceId)
+            ?: throw InstanceNotFoundException(WorkspaceBookingEntity::class, "Workspace with id $workspaceId not wound")
+        return if (workspace.tag == "meeting") {
             bookingRepository.save(booking)
         } else {
             bookingWorkspaceRepository.save(booking)
@@ -268,10 +273,14 @@ class BookingService(
      *
      * @param booking changed booking
      * @return [Booking] after change saving
+     * @throws InstanceNotFoundException if workspace with the given id not found
      * @author Daniil Zavyalov
      */
     override fun update(booking: Booking): Booking {
-        return if (booking.workspace.tag == "meeting") {
+        val workspaceId = booking.workspace.id ?: throw MissingIdException("Missing booking workspace id")
+        val workspace = workspaceRepository.findById(workspaceId)
+            ?: throw InstanceNotFoundException(WorkspaceBookingEntity::class, "Workspace with id $workspaceId not wound")
+        return if (workspace.tag == "meeting") {
             bookingRepository.update(booking)
         } else {
             bookingWorkspaceRepository.update(booking)
