@@ -75,7 +75,7 @@ fun Calendar(state: EpicDatePickerState) {
 }
 
 @Composable
-fun CalendarTitle(
+private fun CalendarTitle(
     onClickPreviousMonth: () -> Unit,
     onClickNextMonth: () -> Unit,
     selectedDate: String

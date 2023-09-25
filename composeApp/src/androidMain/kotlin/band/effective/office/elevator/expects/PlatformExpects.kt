@@ -52,7 +52,7 @@ actual fun pickTelegram(telegramNick: String) {
         val intent = Intent(Intent.ACTION_VIEW).apply {
             data = Uri.parse("https://t.me/$telegramNick")
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//            `package` = "org.telegram.messenger"
+            `package` = "org.telegram.messenger"
         }
         this@with.startActivity(intent)
     }

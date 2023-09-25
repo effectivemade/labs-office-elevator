@@ -18,7 +18,7 @@ data class CreatingBookModel(
     val typeOfEndPeriod: TypeEndPeriodBooking
 )
 
-sealed class BookingPeriod(val durationPeriod: Int) {
+sealed class BookingPeriod(val durationPeriod: Int?) {
     data class Month(val monthPeriod: Int) : BookingPeriod(monthPeriod)
 
     data class Year(val yearPeriod: Int) : BookingPeriod(yearPeriod)
@@ -28,11 +28,11 @@ sealed class BookingPeriod(val durationPeriod: Int) {
     data class Week(val weekPeriod: Int, val selectedDayOfWeek: List<DayOfWeek>) :
         BookingPeriod(weekPeriod)
 
-    object NoPeriod : BookingPeriod(0)
+    object NoPeriod : BookingPeriod(null)
 
-    object Another : BookingPeriod(-1)
+    object Another : BookingPeriod(null)
 
-    object Day : BookingPeriod (0)
+    object Day : BookingPeriod (null)
 }
 
 sealed interface TypeEndPeriodBooking{

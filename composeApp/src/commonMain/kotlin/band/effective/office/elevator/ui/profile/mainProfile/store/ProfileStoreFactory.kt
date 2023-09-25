@@ -30,7 +30,7 @@ internal class ProfileStoreFactory(
     fun create(): ProfileStore =
         object : ProfileStore, Store<Intent, State, Label> by storeFactory.create(
             name = "ProfileStore",
-            initialState =   State(user = User.defaultUser),
+            initialState = State(user = User.defaultUser),
             bootstrapper = coroutineBootstrapper {
                 dispatch(Action.FetchUserInfo)
             },

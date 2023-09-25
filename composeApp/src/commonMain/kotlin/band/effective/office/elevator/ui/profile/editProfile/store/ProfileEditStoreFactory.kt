@@ -4,7 +4,7 @@ import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.domain.models.User
 import band.effective.office.elevator.domain.useCase.GetUserUseCase
 import band.effective.office.elevator.domain.useCase.UpdateUserUseCase
-import band.effective.office.elevator.ui.models.validator.Validator
+import band.effective.office.elevator.ui.models.validator.UserInfoValidator
 import band.effective.office.elevator.ui.profile.editProfile.store.ProfileEditStore.*
 import band.effective.office.network.model.Either
 import com.arkivanov.mvikotlin.core.store.Reducer
@@ -26,7 +26,7 @@ internal class ProfileEditStoreFactory(
 
     private val getUserUseCase: GetUserUseCase by inject()
     private val updateUserUseCase: UpdateUserUseCase by inject()
-    private val validator: Validator = Validator()
+    private val validator: UserInfoValidator = UserInfoValidator()
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): ProfileEditStore =

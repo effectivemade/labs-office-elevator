@@ -17,8 +17,14 @@ fun convertDateTimeToUiDateString(dateOfStart: LocalDate) =
     }"
 
 fun convertDateTimeToUiDateString(dateOfStart: LocalDate, dateOfEnd: LocalDate) =
-    ("${capitalizeFirstLetter(dateOfStart.dayOfWeek.localized()).lowercase()}, ${dateFormat(dateOfStart)} - " +
-            "${capitalizeFirstLetter(dateOfEnd.dayOfWeek.localized()).lowercase()}, ${dateFormat(dateOfEnd)}")
+    ("${capitalizeFirstLetter(dateOfStart.dayOfWeek.localized()).lowercase()}, ${dateOfStart.dayOfMonth} ${
+        MonthLocalizations.getMonthName(dateOfStart.month, Locale("ru"))
+            .lowercase()
+    } - " +
+            "${capitalizeFirstLetter(dateOfEnd.dayOfWeek.localized()).lowercase()}, ${dateOfEnd.dayOfMonth} ${
+                MonthLocalizations.getMonthName(dateOfEnd.month, Locale("ru"))
+                    .lowercase()
+            }")
 
 fun convertTimeToString(time: LocalTime) =
     "${timePad(time.hour.toString())}:${timePad(time.minute.toString())}"

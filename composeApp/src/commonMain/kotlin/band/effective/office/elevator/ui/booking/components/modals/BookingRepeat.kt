@@ -3,6 +3,8 @@ package band.effective.office.elevator.ui.booking.components.modals
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -59,28 +61,32 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.borderGray
 import band.effective.office.elevator.components.DropDownMenu
 import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.domain.models.BookingPeriod
+import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.textInBorderGray
 import band.effective.office.elevator.ui.booking.models.Frequency
+import band.effective.office.elevator.utils.MonthLocalizations
 import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDate
 
-//TODO (Artem Gruzdev) refactor this.
+//TODO (Artem Gruzdev) refactor this. ALL FILE
 @Composable
 fun BookingRepeat(
-    periodMeasure: BookingPeriod,
+    selectedDayOfEnd: LocalDate,
     backButtonClicked: () -> Unit,
-    dropDownClick: (Int) -> Unit,
     confirmBooking: (Frequency) -> Unit,
+    onClickOpenCalendar: () -> Unit,
     onSelected: () -> Unit,
-    onDaySelected: (Int) -> Unit,
 ) {
     var periodMeasureState = remember {mutableStateOf("Week")}
     val periodicity = remember { mutableStateOf("1") }
@@ -103,7 +109,6 @@ fun BookingRepeat(
         mutableStateOf(false)
     }
     val list = mutableListOf<Pair<String, Int>>()
-    val endDate = remember { mutableStateOf("01.01.2023") }
     val endPeriod = remember { mutableStateOf("1") }
 
     var researchClose = mutableStateOf(Triple(Pair("",""), "",""))
@@ -239,9 +244,13 @@ fun BookingRepeat(
                             },
                             shape = RoundedCornerShape(8.dp),
                             modifier = Modifier
-                                .padding(top = 12.dp, bottom = 12.dp)
+                                .padding(12.dp)
                                 .weight(.3f),
                             singleLine = true,
+                            textStyle = MaterialTheme.typography.button.copy(
+                                textAlign = TextAlign.Center,
+                                color = ExtendedThemeColors.colors.radioTextColor
+                            ),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             keyboardActions = KeyboardActions.Default
                         )
@@ -428,6 +437,11 @@ fun BookingRepeat(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .fillMaxWidth()
+                            .clickable {
+                                selected1.value = true
+                                selected2.value = false
+                                selected3.value = false
+                            }
                             .padding(end = 16.dp, top = 8.dp)
                     ) {
                          RadioButton(
@@ -477,26 +491,24 @@ fun BookingRepeat(
                                 selectedColor = MaterialTheme.colors.primary
                             )
                         )
-
                         Spacer(modifier = Modifier.width(width = 16.dp))
-
-                        OutlinedTextField(
-                            value = endDate.value,
-                            onValueChange = {
-                                endDate.value = it
-                                selected2.value = true
-                                selected1.value = false
-                                selected3.value = false
-                            },
-                            shape = RoundedCornerShape(8.dp),
+                        Text(
+                            text = dateConvert(selectedDayOfEnd),
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.button.copy(
+                                color = ExtendedThemeColors.colors.radioTextColor,
+                                fontWeight = FontWeight(400)
+                            ),
                             modifier = Modifier
-                                .padding(top = 12.dp, bottom = 12.dp)
-                                .weight(0.4f),
-                            singleLine = true,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            keyboardActions = KeyboardActions.Default
+                                .clickable {
+                                    selected2.value = true
+                                    selected1.value = false
+                                    selected3.value = false
+                                    onClickOpenCalendar()
+                                }
+                                .border(width = 1.dp, color = borderGray, shape = RoundedCornerShape(8.dp))
+                                .padding(12.dp),
                         )
-
                         Spacer(modifier = Modifier.width(width = 48.dp))
                     }
 
@@ -539,12 +551,15 @@ fun BookingRepeat(
                             },
                             shape = RoundedCornerShape(8.dp),
                             modifier = Modifier
-                                .padding(top = 12.dp, bottom = 12.dp)
+                                .padding(12.dp)
                                 .weight(weight = 0.1f),
                             singleLine = true,
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             keyboardActions = KeyboardActions.Default,
-                            textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center)
+                            textStyle = MaterialTheme.typography.button.copy(
+                                textAlign = TextAlign.Center,
+                                color = ExtendedThemeColors.colors.radioTextColor
+                            )
                         )
 
                         Spacer(modifier = Modifier.width(width = 16.dp))
@@ -568,7 +583,7 @@ fun BookingRepeat(
             buttonText = stringResource(MainRes.strings.confirm_booking),
             onClick = {
                 if(selected2.value)
-                    researchClose.value=Triple(Pair("Date", endDate.value), periodicity.value, periodMeasureState.value)
+                    researchClose.value=Triple(Pair("Date", selectedDayOfEnd.toString()), periodicity.value, periodMeasureState.value)
                 else{
                     if(selected3.value)
                         researchClose.value=Triple(Pair("CoupleTimes", endPeriod.value), periodicity.value, periodMeasureState.value)
@@ -585,3 +600,9 @@ fun BookingRepeat(
         )
     }
 }
+
+private fun dateConvert(date: LocalDate) =
+    "${date.dayOfMonth} " +
+            "${ MonthLocalizations.getMonthName(date.month, Locale("ru"))
+                .substring(0, 3)}." +
+            "${date.year}г."

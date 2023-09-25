@@ -120,7 +120,7 @@ fun OptionMenu(
                     .background(Color.White),
                 verticalArrangement = Arrangement.Center
             ) {
-                ZoomableBox {
+                ZoomableBox(minScale = 1f) {
                     Image(
                         modifier = Modifier
                             .fillMaxSize()

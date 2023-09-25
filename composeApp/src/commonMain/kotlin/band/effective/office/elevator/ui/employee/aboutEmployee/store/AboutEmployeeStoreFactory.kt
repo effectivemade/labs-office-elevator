@@ -11,6 +11,7 @@ import band.effective.office.elevator.ui.employee.aboutEmployee.models.toUIAbout
 import band.effective.office.elevator.ui.employee.aboutEmployee.store.AboutEmployeeStore.*
 import band.effective.office.elevator.ui.models.ReservedSeat
 import band.effective.office.elevator.utils.getCurrentDate
+import band.effective.office.elevator.utils.telegramNickParse
 import band.effective.office.network.model.Either
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
@@ -118,9 +119,9 @@ class AboutEmployeeStoreFactory(
         override fun executeIntent(intent: Intent, getState: () -> State) {
             when (intent) {
                 Intent.BackClicked -> TODO()
-                Intent.TelegramClicked -> pickTelegram(getState().user.telegram!!)
-                Intent.TelephoneClicked -> makeCall(getState().user.phoneNumber!!)
-                Intent.TransferMoneyClicked -> pickSBP(getState().user.phoneNumber!!)
+                Intent.TelegramClicked -> pickTelegram(telegramNickParse(getState().user.telegram))
+                Intent.TelephoneClicked -> makeCall(getState().user.phoneNumber)
+                Intent.TransferMoneyClicked -> pickSBP(getState().user.phoneNumber)
                 Intent.OpenCalendarClicked -> {
                     scope.launch {
                         publish(Label.OpenCalendar)

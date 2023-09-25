@@ -48,6 +48,7 @@ import band.effective.office.elevator.ui.authorization.components.AuthSubTitle
 import band.effective.office.elevator.ui.authorization.components.AuthTabRow
 import band.effective.office.elevator.ui.authorization.components.AuthTitle
 import band.effective.office.elevator.ui.models.PhoneMaskTransformation
+import band.effective.office.elevator.ui.models.validator.UserInfoValidator
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
@@ -89,6 +90,12 @@ private fun AuthorizationPhoneComponent(
     val closeIcon = remember { mutableStateOf(false) }
     val borderColor = remember { mutableStateOf(textGrayColor) }
     val leadingColor = remember { mutableStateOf(textGrayColor) }
+    val phoneNumber = if (state.phoneNumber.length > UserInfoValidator.phoneNumberSize)
+        state.phoneNumber.substring(
+            startIndex = state.phoneNumber.length % UserInfoValidator.phoneNumberSize,
+        )
+    else
+        state.phoneNumber
 
     Column(
         horizontalAlignment = Alignment.Start,
@@ -136,7 +143,7 @@ private fun AuthorizationPhoneComponent(
             )
 
             OutlinedTextField(
-                value = state.phoneNumber,
+                value = phoneNumber,
                 onValueChange = {
                     if (it.isNotEmpty()) {
                         closeIcon.value = true
@@ -153,7 +160,9 @@ private fun AuthorizationPhoneComponent(
                 },
                 visualTransformation = PhoneMaskTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                textStyle = MaterialTheme.typography.body1,
+                textStyle = MaterialTheme.typography.body1.copy(
+                    color = Color.Black
+                ),
                 colors = OutlinedTextColorsSetup(),
                 placeholder = {
                     Text(

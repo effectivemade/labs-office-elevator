@@ -12,12 +12,11 @@ class UpdateUserUseCase (private val profileRepository: ProfileRepository) {
             imageUrl = user.imageUrl,
             userName = user.userName,
             post = user.post,
-            phoneNumber = "7" + user.phoneNumber.replace("-", ""),
-            telegram = "https://t.me/"+user.telegram,
+            phoneNumber = "+7" + user.phoneNumber.replace("-", ""),
+            telegram = user.telegram,
             email = user.email,
         )
-        ).map{
-                user ->
+        ).map{ user ->
             when (user) {
                 is Either.Success -> Either.Success(user.data)
                 is Either.Error -> Either.Error(

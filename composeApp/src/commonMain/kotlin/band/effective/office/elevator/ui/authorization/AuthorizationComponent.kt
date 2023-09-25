@@ -8,7 +8,7 @@ import band.effective.office.elevator.ui.authorization.authorization_profile.Aut
 import band.effective.office.elevator.ui.authorization.authorization_telegram.AuthorizationTelegramComponent
 import band.effective.office.elevator.ui.authorization.store.AuthorizationStore
 import band.effective.office.elevator.ui.authorization.store.AuthorizationStoreFactory
-import band.effective.office.elevator.ui.models.validator.Validator
+import band.effective.office.elevator.ui.models.validator.UserInfoValidator
 import band.effective.office.network.model.Either
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
@@ -41,7 +41,7 @@ class AuthorizationComponent(
 ) :
     ComponentContext by componentContext, KoinComponent {
 
-    private val validator: Validator = Validator()
+    private val validator: UserInfoValidator = UserInfoValidator()
     private val navigation = StackNavigation<AuthorizationComponent.Config>()
     private val updateUserInfoUseCase: UpdateUserInfoUseCase by inject()
     // TODO (Artem Gruzdev) replace this.This is a temporary crutch. It is necessary to synchronize the state somehow

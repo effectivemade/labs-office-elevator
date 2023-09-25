@@ -35,6 +35,7 @@ import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.components.Elevation
+import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.ui.booking.models.Frequency
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
@@ -58,6 +59,12 @@ fun BookingPeriod(
     onClickSearchSuitableOptions: () -> Unit,
     frequency: Frequency
 ) {
+    val bookPeriodTextColor =
+        if (finishDate == startDate)
+            Color.Black
+        else
+            textGrayColor
+
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -183,10 +190,13 @@ fun BookingPeriod(
                 //Book period
                 Button(
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = ExtendedThemeColors.colors.transparentColor
+                        backgroundColor = ExtendedThemeColors.colors.transparentColor,
+                        disabledBackgroundColor = ExtendedThemeColors.colors.transparentColor,
+                        disabledContentColor = Color.Black
                     ),
                     elevation = Elevation(),
-                    onClick = bookingRepeat
+                    onClick = bookingRepeat,
+                    enabled = startDate == finishDate
                 ) {
                     Row(
                         horizontalArrangement = Arrangement.Start,
@@ -204,7 +214,7 @@ fun BookingPeriod(
                             text = frequency.toString().ifEmpty { repeatBooking },
                             style = MaterialTheme.typography.button.copy(
                                 fontWeight = FontWeight(weight = 400),
-                                color = Color.Black
+                                color = bookPeriodTextColor
                             )
                         )
                     }

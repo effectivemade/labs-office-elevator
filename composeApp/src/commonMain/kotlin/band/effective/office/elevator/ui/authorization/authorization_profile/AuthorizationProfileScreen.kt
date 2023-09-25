@@ -150,7 +150,9 @@ fun AuthorizationProfileComponent(
 
                     onEvent(AuthorizationProfileStore.Intent.NameChanged(name = it))
                 },
-                textStyle = MaterialTheme.typography.body1,
+                textStyle = MaterialTheme.typography.body1.copy(
+                    color = Color.Black
+                ),
                 colors = OutlinedTextColorsSetup(),
                 placeholder = {
                     Text(
@@ -231,7 +233,9 @@ fun AuthorizationProfileComponent(
 
                     onEvent(AuthorizationProfileStore.Intent.PostChanged(post = it))
                 },
-                textStyle = MaterialTheme.typography.body1,
+                textStyle = MaterialTheme.typography.body1.copy(
+                    color = Color.Black
+                ),
                 colors = OutlinedTextColorsSetup(),
                 placeholder = {
                     Text(

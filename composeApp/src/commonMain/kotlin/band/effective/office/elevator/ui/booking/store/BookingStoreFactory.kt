@@ -32,6 +32,7 @@ import io.github.aakira.napier.Napier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.minus
 import org.koin.core.component.get
 
 class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
@@ -54,6 +55,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             ) {}
 
     private sealed interface Msg {
+        data class ChangeTypeOfEnd(val type: TypeEndPeriodBooking) : Msg
         data class BeginningBookingTime(val time: LocalTime) : Msg
         data class BeginningBookingDate(val date: LocalDate) : Msg
         data class EndBookingTime(val time: LocalTime) : Msg
@@ -86,6 +88,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         data class ChangeLoadingWorkspace(val isLoading: Boolean) : Msg
 
         data class IsLoadingBookingCreation(val isLoadingBookingCreation: Boolean) : Msg
+
+        data class ChangeDateOfEndPeriod(val date: LocalDate) : Msg
     }
 
     private sealed interface Action {
@@ -189,6 +193,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                     val startDate = intent.date.first()
                     val endDate = intent.date.last()
+                    val datePeriod = endDate - startDate
 
                     scope.launch {
                         val currentDate = getCurrentDate()
@@ -205,7 +210,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                             dispatch(
                                 Msg.ChangeBookingRepeatAndTypeOfEnd(
                                     bookingPeriod = BookingPeriod.Day,
-                                    typeEndPeriodBooking = TypeEndPeriodBooking.DatePeriodEnd(endDate)
+                                    typeEndPeriodBooking = TypeEndPeriodBooking.CountRepeat(datePeriod.days)
                                 )
                             )
                         else
@@ -276,10 +281,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                             }
 
                         } else {
-
-                            val dateOfStart = getState().selectedStartDate
                             val dateOfEnd = getState().selectedFinishDate
-
                             val timeOfStart = getState().selectedStartTime
 
                             if (dateOfStart == dateOfEnd) {
@@ -336,6 +338,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                                 BookingPeriod.Day -> MainRes.strings.another
                             }
                             dispatch(Msg.ChangeBookingRepeat(bookingRepeat = name))
+                            dispatch(Msg.ChangeTypeOfEnd(TypeEndPeriodBooking.CountRepeat(4)))
                             dispatch(Msg.ChangeBookingPeriod(bookingPeriod = intent.pair.second))
                         }
                     }
@@ -426,6 +429,21 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                         publish(BookingStore.Label.CloseRepeatDialog)
                     }
                 }
+
+                BookingStore.Intent.OpenCalendarForEndDate -> {
+                    publish(BookingStore.Label.OpenCalendarForDateOfEnd)
+                }
+                is BookingStore.Intent.SelectNewDateOfEnd -> {
+                    scope.launch {
+                        publish(BookingStore.Label.CloseCalendarForDateOfEnd)
+                    }
+                    intent.date?.let {
+                        dispatch(Msg.ChangeDateOfEndPeriod(it))
+                    }
+                }
+
+                BookingStore.Intent.CloseCalendarForEndDate ->
+                    publish(BookingStore.Label.CloseCalendarForDateOfEnd)
             }
         }
 
@@ -537,6 +555,9 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is Msg.IsLoadingBookingCreation -> copy(isLoadingBookingCreation = msg.isLoadingBookingCreation)
                 is Msg.ChangeBookingRepeatAndTypeOfEnd ->
                     copy(bookingPeriod = msg.bookingPeriod, typeOfEnd = msg.typeEndPeriodBooking)
+
+                is Msg.ChangeDateOfEndPeriod -> copy(dateOfEndPeriod = msg.date)
+                is Msg.ChangeTypeOfEnd -> copy(typeOfEnd = msg.type)
             }
         }
     }

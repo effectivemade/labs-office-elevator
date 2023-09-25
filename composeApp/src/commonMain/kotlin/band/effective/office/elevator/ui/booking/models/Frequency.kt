@@ -53,13 +53,8 @@ class Frequency(
         when(researchEnd.first.first) {
             "Date" -> {
                 val date = researchEnd.first.second
-                val formattedDate = getFormattedDate(
-                    date = date,
-                    format = "dd.MM.yyyy"
-                )
-                println(formattedDate)
                 TypeEndPeriodBooking.DatePeriodEnd(
-                    date = LocalDate.parse(formattedDate)
+                    date = LocalDate.parse(date)
                 )
             }
             "CoupleTimes" -> TypeEndPeriodBooking.CountRepeat(

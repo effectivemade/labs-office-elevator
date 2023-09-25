@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.components.ModalCalendar
 import band.effective.office.elevator.components.ModalCalendarDateRange
 import band.effective.office.elevator.components.MultiBottomSheet
 import band.effective.office.elevator.components.TimePickerModal
@@ -214,14 +215,13 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                 bottomSheetContentState = showBookRepeat
             ) {
                 BookingRepeat(
-                    periodMeasure = state.bookingPeriod,
                     backButtonClicked = { bookingComponent.onEvent(BookingStore.Intent.CloseBookRepeat) },
-                    dropDownClick = {},
                     confirmBooking = { frequency ->
                         bookingComponent.onEvent(BookingStore.Intent.ChangeFrequency(frequency = frequency))
                     },
                     onSelected = {},
-                    onDaySelected = {}
+                    onClickOpenCalendar = {bookingComponent.onEvent(BookingStore.Intent.OpenCalendarForEndDate)},
+                    selectedDayOfEnd = state.dateOfEndPeriod
                 )
             },
         )
@@ -231,6 +231,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
     var showCalendar by remember { mutableStateOf(false) }
     var showConfirm by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
+    var showCalendarForEndDate by remember { mutableStateOf(false) }
 
     LaunchedEffect(bookingComponent) {
         bookingComponent.label.collect { label ->
@@ -271,6 +272,8 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                 BookingStore.Label.OpenFinishTimeModal -> showTimePicker = true
                 BookingStore.Label.CloseFinishTimeModal -> showTimePicker = false
                 is BookingStore.Label.ShowToast -> showToast(label.message)
+                BookingStore.Label.CloseCalendarForDateOfEnd -> showCalendarForEndDate = false
+                BookingStore.Label.OpenCalendarForDateOfEnd -> showCalendarForEndDate = true
             }
         }
     }
@@ -337,7 +340,11 @@ fun BookingScreen(bookingComponent: BookingComponent) {
         selectedTypesList = state.selectedType,
         onClickCloseRepeatDialog = {bookingComponent.onEvent(BookingStore.Intent.CloseRepeatDialog)},
         isLoadingWorkspacesList = state.isLoadingListWorkspaces,
-        isLoadingBookingCreation = state.isLoadingBookingCreation
+        isLoadingBookingCreation = state.isLoadingBookingCreation,
+        dateOfEndPeriod = state.dateOfEndPeriod,
+        showCalendarForEndDate = showCalendarForEndDate,
+        onClickApplyDateOfEndPeriod = {bookingComponent.onEvent(BookingStore.Intent.SelectNewDateOfEnd(it))},
+        onClickCloseCalendarForDateOfEnd = {bookingComponent.onEvent(BookingStore.Intent.CloseCalendarForEndDate)}
     )
 }
 
@@ -353,6 +360,9 @@ private fun BookingScreenContent(
     onClickOpenBookAccept: (WorkSpaceUI) -> Unit,
     onClickCloseCalendar: () -> Unit,
     showCalendar: Boolean,
+    showCalendarForEndDate: Boolean,
+    onClickApplyDateOfEndPeriod: (LocalDate?) -> Unit,
+    onClickCloseCalendarForDateOfEnd: () -> Unit,
     onClickApplyDate: (List<LocalDate>) -> Unit,
     currentDate: LocalDate,
     onClickCloseBookingConfirm: () -> Unit,
@@ -371,7 +381,8 @@ private fun BookingScreenContent(
     onClickChangeSelectedType: (TypesList) -> Unit,
     selectedTypesList: TypesList,
     onClickCloseRepeatDialog: () -> Unit,
-    isLoadingBookingCreation: Boolean
+    isLoadingBookingCreation: Boolean,
+    dateOfEndPeriod: LocalDate
 ) {
     val scrollState = rememberLazyListState()
     val scrollIsDown = scrollState.isScrollingDown()
@@ -447,6 +458,19 @@ private fun BookingScreenContent(
             },
             onDismissRequest = onClickCloseCalendar,
             showDialog = showCalendar,
+            modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
+        )
+        Dialog(
+            content = {
+                ModalCalendar(
+                    currentDate = dateOfEndPeriod,
+                    onClickOk = onClickApplyDateOfEndPeriod,
+                    onClickCansel = onClickCloseCalendarForDateOfEnd,
+                    modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
+                )
+            },
+            onDismissRequest = onClickCloseCalendarForDateOfEnd,
+            showDialog = showCalendarForEndDate,
             modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
         )
         Dialog(

@@ -50,6 +50,7 @@ import band.effective.office.elevator.ui.main.SnackBarErrorMessage
 import band.effective.office.elevator.ui.models.PhoneMaskTransformation
 import band.effective.office.elevator.ui.models.UserDataEditProfile
 import band.effective.office.elevator.ui.models.getAllUserDataEditProfile
+import band.effective.office.elevator.ui.models.validator.UserInfoValidator
 import band.effective.office.elevator.ui.profile.editProfile.store.ProfileEditStore
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.painterResource
@@ -140,9 +141,15 @@ private fun ProfileEditScreenContent(
     errorMessage: StringResource,
     isErrorMessageVisible: Boolean
 ) {
+    val phone = if (phoneNumber.length > UserInfoValidator.phoneNumberSize)
+        phoneNumber.substring(
+            startIndex = phoneNumber.length % UserInfoValidator.phoneNumberSize,
+        )
+    else
+        phoneNumber
 
     val userNameText = rememberSaveable { mutableStateOf(userName) }
-    val phoneNumberText = rememberSaveable { mutableStateOf(phoneNumber) }
+    val phoneNumberText = rememberSaveable { mutableStateOf(phone) }
     val postText = rememberSaveable { mutableStateOf(post) }
     val telegramText = rememberSaveable { mutableStateOf(telegram) }
 

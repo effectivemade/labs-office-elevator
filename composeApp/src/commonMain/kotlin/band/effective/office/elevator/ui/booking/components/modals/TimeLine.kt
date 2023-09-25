@@ -2,6 +2,7 @@ package band.effective.office.elevator.ui.booking.components.modals
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -52,12 +53,112 @@ fun TimeLine(
             .fillMaxWidth()
             .padding(start = 30.dp, end = 16.dp, top = 16.dp, bottom = 16.dp)
     ) {
+        when(startDate == endDate) {
+            true -> SingleTimeLine(
+                startDate = startDate,
+                startTime = startTime,
+                endTime = endTime,
+                selectTimeActive = selectTimeActive,
+                onPickDate = onPickDate,
+                onPickStartTime = onPickStartTime,
+                onPickEndTime = onPickEndTime
+            )
+            false -> NonSingleTimeLine(
+                startDate = startDate,
+                startTime = startTime,
+                endDate = endDate,
+                endTime = endTime,
+                selectTimeActive = selectTimeActive,
+                onPickDate = onPickDate,
+                onPickStartTime = onPickStartTime,
+                onPickEndTime = onPickEndTime
+            )
+        }
+    }
+}
 
+@Composable
+private fun SingleTimeLine(
+    startDate: LocalDate,
+    startTime: LocalTime,
+    endTime: LocalTime,
+    selectTimeActive: Boolean,
+    onPickDate: () -> Unit,
+    onPickStartTime: () -> Unit,
+    onPickEndTime: () -> Unit,
+) {
+    Text(
+        text = convertDateTimeToUiDateString(startDate),
+        modifier = Modifier.clickable { onPickDate() },
+        style = MaterialTheme.typography.button.copy(
+            fontWeight = FontWeight(
+                weight = 400
+            ),
+            color = Color.Black
+        )
+    )
+
+    Spacer(modifier = Modifier.width(24.dp))
+
+    if (selectTimeActive) {
         Text(
-            text = if (endDate == startDate)
-                convertDateTimeToUiDateString(startDate)
-            else
-                convertDateTimeToUiDateString(startDate, endDate),
+            text = "c ${convertTimeToString(startTime)}",
+            modifier = Modifier.clickable { if (selectTimeActive) onPickStartTime() },
+            style = MaterialTheme.typography.button.copy(
+                fontWeight = FontWeight(
+                    weight = 400
+                ),
+                color = Color.Black
+            )
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = "до ${convertTimeToString(endTime)}",
+            modifier = Modifier.clickable { if (selectTimeActive) onPickEndTime() },
+            style = MaterialTheme.typography.button.copy(
+                fontWeight = FontWeight(
+                    weight = 400
+                ),
+                color = Color.Black
+            )
+        )
+    } else {
+        GrayText(
+            text = "c ${convertTimeToString(startTime)}",
+            style = MaterialTheme.typography.button.copy(
+                fontWeight = FontWeight(
+                    weight = 400
+                ),
+            )
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        GrayText(
+            text = "до ${convertTimeToString(endTime)}",
+            style = MaterialTheme.typography.button.copy(
+                fontWeight = FontWeight(
+                    weight = 400
+                ),
+            )
+        )
+    }
+}
+
+@Composable
+private fun NonSingleTimeLine(
+    startDate: LocalDate,
+    startTime: LocalTime,
+    endDate: LocalDate,
+    endTime: LocalTime,
+    selectTimeActive: Boolean,
+    onPickDate: () -> Unit,
+    onPickStartTime: () -> Unit,
+    onPickEndTime: () -> Unit,
+) {
+    Column (
+        horizontalAlignment = Alignment.Start
+    ) {
+        Text(
+            text = convertDateTimeToUiDateString(startDate, endDate),
             modifier = Modifier.clickable { onPickDate() },
             style = MaterialTheme.typography.button.copy(
                 fontWeight = FontWeight(
@@ -66,50 +167,52 @@ fun TimeLine(
                 color = Color.Black
             )
         )
-
-        Spacer(modifier = Modifier.width(24.dp))
-
-        if (selectTimeActive) {
-            Text(
-                text = "c ${convertTimeToString(startTime)}",
-                modifier = Modifier.clickable { if (selectTimeActive) onPickStartTime() },
-                style = MaterialTheme.typography.button.copy(
-                    fontWeight = FontWeight(
-                        weight = 400
-                    ),
-                    color = Color.Black
+        Spacer(modifier = Modifier.width(8.dp))
+        Row {
+            if (selectTimeActive) {
+                Text(
+                    text = "c ${convertTimeToString(startTime)}",
+                    modifier = Modifier.clickable { if (selectTimeActive) onPickStartTime() },
+                    style = MaterialTheme.typography.button.copy(
+                        fontWeight = FontWeight(
+                            weight = 400
+                        ),
+                        color = Color.Black
+                    )
                 )
-            )
-            Spacer(modifier = Modifier.width(2.dp))
-            Text(
-                text = "до ${convertTimeToString(endTime)}",
-                modifier = Modifier.clickable { if (selectTimeActive) onPickEndTime() },
-                style = MaterialTheme.typography.button.copy(
-                    fontWeight = FontWeight(
-                        weight = 400
-                    ),
-                    color = Color.Black
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "до ${convertTimeToString(endTime)}",
+                    modifier = Modifier.clickable { if (selectTimeActive) onPickEndTime() },
+                    style = MaterialTheme.typography.button.copy(
+                        fontWeight = FontWeight(
+                            weight = 400
+                        ),
+                        color = Color.Black
+                    )
                 )
-            )
-        } else {
-            GrayText(
-                text = "c ${convertTimeToString(startTime)}",
-                style = MaterialTheme.typography.button.copy(
-                    fontWeight = FontWeight(
-                        weight = 400
-                    ),
+            } else {
+                GrayText(
+                    text = "c ${convertTimeToString(startTime)}",
+                    style = MaterialTheme.typography.button.copy(
+                        fontWeight = FontWeight(
+                            weight = 400
+                        ),
+                    )
                 )
-            )
-            GrayText(
-                text = "до ${convertTimeToString(endTime)}",
-                style = MaterialTheme.typography.button.copy(
-                    fontWeight = FontWeight(
-                        weight = 400
-                    ),
+                Spacer(modifier = Modifier.width(8.dp))
+                GrayText(
+                    text = "до ${convertTimeToString(endTime)}",
+                    style = MaterialTheme.typography.button.copy(
+                        fontWeight = FontWeight(
+                            weight = 400
+                        ),
+                    )
                 )
-            )
+            }
         }
     }
 }
+
 
 
