@@ -55,6 +55,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             ) {}
 
     private sealed interface Msg {
+        data class ChangeTypeOfEnd(val type: TypeEndPeriodBooking) : Msg
         data class BeginningBookingTime(val time: LocalTime) : Msg
         data class BeginningBookingDate(val date: LocalDate) : Msg
         data class EndBookingTime(val time: LocalTime) : Msg
@@ -337,6 +338,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                                 BookingPeriod.Day -> MainRes.strings.another
                             }
                             dispatch(Msg.ChangeBookingRepeat(bookingRepeat = name))
+                            dispatch(Msg.ChangeTypeOfEnd(TypeEndPeriodBooking.CountRepeat(4)))
                             dispatch(Msg.ChangeBookingPeriod(bookingPeriod = intent.pair.second))
                         }
                     }
@@ -555,6 +557,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     copy(bookingPeriod = msg.bookingPeriod, typeOfEnd = msg.typeEndPeriodBooking)
 
                 is Msg.ChangeDateOfEndPeriod -> copy(dateOfEndPeriod = msg.date)
+                is Msg.ChangeTypeOfEnd -> copy(typeOfEnd = msg.type)
             }
         }
     }

@@ -31,9 +31,9 @@ fun BookingRepeatCard(
     val strings = listOf(
         Pair(first = MainRes.strings.do_not_repeat, second = BookingPeriod.NoPeriod),
         Pair(first = MainRes.strings.every_work_day, second = BookingPeriod.EveryWorkDay(5)),
-        Pair(first = MainRes.strings.every_week, second = BookingPeriod.Week(7, days)),
+        Pair(first = MainRes.strings.every_week, second = BookingPeriod.Week(1, days)),
         Pair(
-            first = MainRes.strings.every_month, second = BookingPeriod.Month(31),
+            first = MainRes.strings.every_month, second = BookingPeriod.Month(1),
         ),
         Pair(first = MainRes.strings.another, second = BookingPeriod.Another)
     )
