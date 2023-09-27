@@ -373,7 +373,7 @@ class BookingCalendarRepository(
             .execute().items
         for (i in savedEvents) {
             if (
-                !((i.start.dateTime.value > event.end.dateTime.value) || (i.end.dateTime.value < event.start.dateTime.value))
+                !((i.start.dateTime.value >= event.end.dateTime.value) || (i.end.dateTime.value <= event.start.dateTime.value))
                 && (i.id != event.id)
             ) {
                 return false
