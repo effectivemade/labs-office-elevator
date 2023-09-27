@@ -53,7 +53,7 @@ class BookingWorkspaceRepository(
         try {
             calendarEvents.delete(workspaceCalendar, id).execute()
         } catch (e: GoogleJsonResponseException) {
-            if (e.statusCode != 404) {
+            if (e.statusCode != 404 && e.statusCode != 410) {
                 throw e
             }
         }
