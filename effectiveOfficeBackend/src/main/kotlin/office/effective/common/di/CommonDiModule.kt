@@ -1,5 +1,7 @@
 package office.effective.common.di
 
+import io.micrometer.prometheus.PrometheusConfig
+import io.micrometer.prometheus.PrometheusMeterRegistry
 import office.effective.common.utils.DatabaseTransactionManager
 import office.effective.common.utils.UuidValidator
 import org.koin.dsl.module
@@ -24,4 +26,5 @@ val commonDiModule = module(createdAtStart = true) {
     }
     single { DatabaseTransactionManager(get()) }
     single { UuidValidator() }
+    single { PrometheusMeterRegistry(PrometheusConfig.DEFAULT) }
 }

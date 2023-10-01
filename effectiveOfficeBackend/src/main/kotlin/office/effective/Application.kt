@@ -31,5 +31,6 @@ fun Application.module() {
     configureExceptionHandling()
     configureSwagger()
     configureCalendarNotifications()
+    configureMicrometer()
     install(VerificationPlugin)
 }
