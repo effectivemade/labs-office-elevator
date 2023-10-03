@@ -37,12 +37,13 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
     private val checkBookingUseCase: CheckBookingUseCase by inject()
 
     @OptIn(ExperimentalMviKotlinApi::class)
-    fun create(): FreeNegotiationsStore =
+    fun create(getBooking: () -> Booking): FreeNegotiationsStore =
         object : FreeNegotiationsStore,
             Store<FreeNegotiationsStore.Intent, FreeNegotiationsStore.State, Nothing> by storeFactory.create(
                 name = "FreeNegotiationsStore",
                 initialState = FreeNegotiationsStore.State.defaultState,
                 bootstrapper = coroutineBootstrapper {
+                    dispatch(Action.SetBooking(getBooking()))
                     launch() {
                         val response = roomInfoUseCase.getOtherRoom(checkSettingsUseCase())
                         when (response) {
@@ -68,6 +69,7 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
         object UpdateChangeEventTime : Action
         object ResponseError : Action
         object FailLoad : Action
+        data class SetBooking(val booking: Booking) : Action
     }
 
     private sealed interface Message {
@@ -119,17 +121,18 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
                     dispatch(
                         Message.GetFreeRoomsInfo(
                             updateEventList(
-                                booking = getState().booking.let {
-                                    if (it.eventInfo.startTime == it.eventInfo.finishTime)
-                                        it.copy(
-                                            eventInfo = it.eventInfo.copy(
-                                                finishTime = it.eventInfo.finishTime
-                                                    .apply { add(Calendar.MINUTE, 30) }
-                                            )
-                                        ) else {
-                                        it
-                                    }
-                                },
+                                booking = getState().booking,
+//                                    .let {
+//                                    if (it.eventInfo.startTime == it.eventInfo.finishTime)
+//                                        it.copy(
+//                                            eventInfo = it.eventInfo.copy(
+//                                                finishTime = it.eventInfo.finishTime
+//                                                    .apply { add(Calendar.MINUTE, 30) }
+//                                            )
+//                                        ) else {
+//                                        it
+//                                    }
+//                                },
                                 listRooms = roomsInfoUi,
                                 getState = getState
                             )
@@ -151,6 +154,7 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
                 }
 
                 Action.FailLoad -> dispatch(Message.ResponseError)
+                is Action.SetBooking -> dispatch(Message.SetBooking(bookingInfo = action.booking))
             }
         }
 
@@ -170,10 +174,10 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
                             changeEventTime = room.duration()
                         )
 
-//                        booking.eventInfo.startTime < first().startTime -> room.copy(
-//                            state = RoomState.SOON_BUSY(first()),
-//                            changeEventTime = (first().startTime.time.time - booking.eventInfo.startTime.time.time).toInt()
-//                        )
+                        booking.eventInfo.startTime < first().startTime -> room.copy(
+                            state = RoomState.SOON_BUSY(first()),
+                            changeEventTime = (first().startTime.time.time - booking.eventInfo.startTime.time.time).toInt()
+                        )
 
                         else -> room.copy(
                             state = RoomState.BUSY(first()),

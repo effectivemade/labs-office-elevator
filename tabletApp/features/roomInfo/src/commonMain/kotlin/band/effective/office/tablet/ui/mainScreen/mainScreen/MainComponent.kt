@@ -1,5 +1,6 @@
 package band.effective.office.tablet.ui.mainScreen.mainScreen
 
+import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.ui.bookingComponents.pickerDateTime.DateTimePickerComponent
 import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomComponent
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingRoomComponent
@@ -22,7 +23,7 @@ import kotlinx.coroutines.launch
 class MainComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
-    private val OnSelectOtherRoomRequest: () -> Unit,
+    private val OnSelectOtherRoomRequest: (() -> Booking) -> Unit,
     val onSettings: () -> Unit
 ) : ComponentContext by componentContext {
 
@@ -36,7 +37,7 @@ class MainComponent(
         componentContext = childContext(key = "bookingRoom"),
         onCurrentBookingRoom = { mainStore.accept(MainStore.Intent.OnBookingCurrentRoomRequest) },
         storeFactory = storeFactory,
-        onBookingOtherRoom = { OnSelectOtherRoomRequest() },
+        onBookingOtherRoom = { OnSelectOtherRoomRequest { onSelectOtherRoomRequest() } },
         onChangeDate = { roomInfoComponent.sendIntent(RoomInfoStore.Intent.OnChangeSelectDate(it)) },
     )
 
@@ -45,7 +46,7 @@ class MainComponent(
             componentContext = childContext(key = "bookingCurrentRoom"),
             storeFactory = storeFactory,
             onBookingRoom = { bookingRoomComponent.getBooking() },
-            onBookingOtherRoom = { OnSelectOtherRoomRequest() },
+            onBookingOtherRoom = { OnSelectOtherRoomRequest { onSelectOtherRoomRequest() } },
             onMainScreen = {
                 mainStore.accept(MainStore.Intent.CloseModal)
                 bookingRoomComponent.sendIntent(BookingStore.Intent.OnChangeIsActive(true))
@@ -90,6 +91,10 @@ class MainComponent(
         MainFactory(
             storeFactory = storeFactory
         ).create()
+    }
+
+    private fun onSelectOtherRoomRequest(): Booking {
+        return bookingRoomComponent.getBooking()
     }
 
 

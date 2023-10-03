@@ -24,9 +24,9 @@ class FreeNegotiationsComponentImpl(
     override fun onIntent(intent: FreeNegotiationsStore.Intent) {
         when (intent) {
             is FreeNegotiationsStore.Intent.SetBooking -> {
-                val l = onBookingInfo().eventInfo.run { finishTime.time.time - startTime.time.time }.toInt()
-                println(l)
-                freeNegotiationsStore.accept(intent.copy(bookingInfo = onBookingInfo()))
+//                val l = onBookingInfo().eventInfo.run { finishTime.time.time - startTime.time.time }.toInt()
+//                println(l)
+//                freeNegotiationsStore.accept(intent.copy(bookingInfo = onBookingInfo()))
             }
 
             is FreeNegotiationsStore.Intent.OnMainScreen -> {
@@ -46,7 +46,7 @@ class FreeNegotiationsComponentImpl(
     private val freeNegotiationsStore = instanceKeeper.getStore {
         FreeNegotiationsStoreFactory(
             storeFactory = storeFactory
-        ).create()
+        ).create(getBooking = onBookingInfo)
     }
 
     override val selectRoomComponent: SelectRoomComponentImpl =
