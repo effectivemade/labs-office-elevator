@@ -26,5 +26,9 @@
 	<dict/>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>CFBundleLocalizations</key><array>
+    <string>en</string>
+    <string>ru</string>
+    </array>
 </dict>
 </plist>
