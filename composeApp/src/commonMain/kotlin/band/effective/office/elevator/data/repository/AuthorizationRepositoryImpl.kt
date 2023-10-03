@@ -11,6 +11,7 @@ import band.effective.office.network.dto.UserDTO
 import band.effective.office.network.model.Either
 import band.effective.office.network.model.ErrorResponse
 import band.effective.office.utils.KtorEtherClient
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -24,6 +25,9 @@ class AuthorizationRepositoryImpl(
         email: String
     ): Flow<Either<ErrorResponse, User>> = flow {
         KtorEtherClient.token = idToken
+        Napier.d {
+            "Token: ${KtorEtherClient.token}"
+        }
         val apiResponse = api.getUserByEmail(email = email)
         val userResponse = apiResponse.map(
             errorMapper = {it},

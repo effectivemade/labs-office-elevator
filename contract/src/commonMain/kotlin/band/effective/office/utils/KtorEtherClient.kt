@@ -24,6 +24,7 @@ object KtorEtherClient {
     var token = BuildConfig.apiKey
     /**default http client with KtorEtherClient*/
     val httpClient by lazy {
+        println("used token = $token")
         createHttpEngine().config {
             install(KtorEitherPlugin)
             install(Auth) {

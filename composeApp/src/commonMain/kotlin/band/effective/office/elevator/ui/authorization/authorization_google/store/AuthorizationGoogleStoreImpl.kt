@@ -33,19 +33,11 @@ internal class AuthorizationGoogleStoreFactory(
         object : AuthorizationGoogleStore, Store<Intent, State, Label> by storeFactory.create(
             name = "AuthorizationStore",
             initialState = State(),
-            bootstrapper = coroutineBootstrapper {
-                launch { dispatch(Action.CheckUserAlreadySigned) }
-            },
             executorFactory = ::ExecutorImpl,
         ) {}
 
-    private sealed interface Action {
-        object CheckUserAlreadySigned : Action
-    }
-
-
     private inner class ExecutorImpl :
-        CoroutineExecutor<Intent, Action, State, AuthorizationPhoneStoreFactory.Msg, Label>() {
+        CoroutineExecutor<Intent, Unit, State, AuthorizationPhoneStoreFactory.Msg, Label>() {
         override fun executeIntent(intent: Intent, getState: () -> State) {
             when (intent) {
                 Intent.SignInButtonClicked -> startAuthorization()
