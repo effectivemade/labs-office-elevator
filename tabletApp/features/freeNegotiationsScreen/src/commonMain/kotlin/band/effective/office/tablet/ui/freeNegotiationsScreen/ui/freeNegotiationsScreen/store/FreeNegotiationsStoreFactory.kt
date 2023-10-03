@@ -1,6 +1,5 @@
 package band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.store
 
-import android.util.Log
 import band.effective.office.network.model.Either
 import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.domain.model.RoomInfo
@@ -150,35 +149,36 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
             listRooms: List<RoomInfoUiState>,
             getState: () -> FreeNegotiationsStore.State
         ): List<RoomInfoUiState> {
-            val updateListRooms = mutableListOf<RoomInfoUiState>()
-            listRooms.forEach {
-                val busyEvents =
-                    checkBookingUseCase.busyEvents(booking.eventInfo,it.room.name).unbox({ listOf() })
-                val newRoom = it.copy(room = it.room.filter(booking.eventInfo.startTime))
-                if (it.room.name == "Sun") Log.e(
-                    "check azaza",
-                    "${checkCurrentTime(booking.eventInfo.startTime)}"
-                )
-                val roomState =
-                    when{
-                        busyEvents.isEmpty() -> RoomState.FREE
-                        busyEvents.first().startTime < booking.eventInfo.startTime -> RoomState.BUSY.apply { event = busyEvents.first() }
-                        else -> RoomState.SOON_BUSY.apply { event = busyEvents.first() }
-                    }
-                updateListRooms.add(
-                    newRoom.copy(
-                        state = roomState,
-                        changeEventTime = getChangeEventTime(
-                            roomState = roomState,
-                            startTime = booking.eventInfo.startTime,
-                            room = it.room
+            return listRooms.map { room ->
+                with(
+                    checkBookingUseCase.busyEvents(booking.eventInfo, room.room.name)
+                        .unbox({ listOf() })
+                ) {
+                    when {
+                        isEmpty() -> room.copy(
+                            state = RoomState.FREE,
+                            changeEventTime = room.duration()
                         )
-                    )
-                )
 
+                        booking.eventInfo.startTime < first().startTime -> room.copy(
+                            state = RoomState.SOON_BUSY.apply { event = first() },
+                            changeEventTime = (first().startTime.time.time - booking.eventInfo.startTime.time.time).toInt()
+                        )
+
+                        else -> room.copy(state = RoomState.BUSY.apply { event = first() }, changeEventTime = room.duration())
+                    }
+                }
             }
-            updateListRooms.sortBy { it.state.codeState }
-            return updateListRooms.toList()
+        }
+
+        private fun RoomInfoUiState.duration(): Int {
+            val currentEvent = room.currentEvent
+            return if (currentEvent == null) {
+                room.eventList.firstOrNull()
+                    ?.run { (startTime.time.time - GregorianCalendar().time.time).toInt() } ?: -1
+            } else {
+                (currentEvent.finishTime.time.time - GregorianCalendar().time.time).toInt()
+            }
         }
 
         private fun RoomInfo.filter(date: Calendar): RoomInfo =
