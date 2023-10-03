@@ -8,8 +8,8 @@ data class EventInfo(
     val finishTime: Calendar,
     val organizer: Organizer,
     val id: String
-){
-    companion object{
+) {
+    companion object {
         val emptyEvent = EventInfo(
             startTime = GregorianCalendar(),
             finishTime = GregorianCalendar(),

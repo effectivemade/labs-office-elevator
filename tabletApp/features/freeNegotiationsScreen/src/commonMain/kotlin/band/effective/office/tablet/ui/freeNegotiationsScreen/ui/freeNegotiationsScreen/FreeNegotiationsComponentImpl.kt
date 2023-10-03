@@ -5,7 +5,6 @@ import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.store.FreeNegotiationsStore
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.store.FreeNegotiationsStoreFactory
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponentImpl
-import band.effective.office.tablet.utils.time24
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.childContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
@@ -24,8 +23,11 @@ class FreeNegotiationsComponentImpl(
 ) : ComponentContext by componentContext, FreeNegotiationsComponent, KoinComponent {
     override fun onIntent(intent: FreeNegotiationsStore.Intent) {
         when (intent) {
-            is FreeNegotiationsStore.Intent.SetBooking ->
+            is FreeNegotiationsStore.Intent.SetBooking -> {
+                val l = onBookingInfo().eventInfo.run { finishTime.time.time - startTime.time.time }.toInt()
+                println(l)
                 freeNegotiationsStore.accept(intent.copy(bookingInfo = onBookingInfo()))
+            }
 
             is FreeNegotiationsStore.Intent.OnMainScreen -> {
                 onMainScreen(intent.reset)

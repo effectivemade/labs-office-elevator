@@ -7,7 +7,7 @@ data class RoomInfoUiState(
     val room: RoomInfo,
     val changeEventTime: Int,
     val state: RoomState
-){
+) {
     companion object {
         val defaultValue =
             RoomInfoUiState(
@@ -18,8 +18,14 @@ data class RoomInfoUiState(
     }
 }
 
-enum class RoomState(val codeState: Int, var event: EventInfo? = null) {
-    FREE(0),
-    SOON_BUSY(1),
-    BUSY(2);
+sealed class RoomState(val codeState: Int, open var event: EventInfo? = null) {
+    object FREE : RoomState(0)
+    data class SOON_BUSY(override var event: EventInfo? = null): RoomState(1,event)
+    data class BUSY(override var event: EventInfo? = null): RoomState(1,event)
 }
+
+//enum class RoomState(val codeState: Int, var event: EventInfo? = null) {
+//    FREE(0),
+//    SOON_BUSY(1),
+//    BUSY(2);
+//}

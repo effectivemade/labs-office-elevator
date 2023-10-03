@@ -4,7 +4,6 @@ import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiation
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.FreeNegotiationsComponentImpl
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store.BookingStore
 import band.effective.office.tablet.ui.mainScreen.mainScreen.MainComponent
-import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
 import band.effective.office.tablet.ui.mainScreen.settingsComponents.SettingsComponent
 import band.effective.office.tablet.ui.mainScreen.settingsComponents.SettingsComponentImpl
 import com.arkivanov.decompose.ComponentContext
@@ -61,8 +60,9 @@ class RootComponent(componentContext: ComponentContext, private val storeFactory
                         )
                     },
                     onBookingInfo = {
-                        (childStack.value.backStack.last().instance as Child.MainChild).component
-                            .bookingRoomComponent.getBooking()
+                        val component = (childStack.value.backStack.last().instance as Child.MainChild).component
+                            .bookingRoomComponent
+                        component.getBooking()
                     }
                 )
             )

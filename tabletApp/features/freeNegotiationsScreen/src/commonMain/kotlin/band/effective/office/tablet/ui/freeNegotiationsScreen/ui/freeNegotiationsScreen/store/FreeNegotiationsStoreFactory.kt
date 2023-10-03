@@ -119,7 +119,17 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
                     dispatch(
                         Message.GetFreeRoomsInfo(
                             updateEventList(
-                                booking = getState().booking,
+                                booking = getState().booking.let {
+                                    if (it.eventInfo.startTime == it.eventInfo.finishTime)
+                                        it.copy(
+                                            eventInfo = it.eventInfo.copy(
+                                                finishTime = it.eventInfo.finishTime
+                                                    .apply { add(Calendar.MINUTE, 30) }
+                                            )
+                                        ) else {
+                                        it
+                                    }
+                                },
                                 listRooms = roomsInfoUi,
                                 getState = getState
                             )
@@ -160,12 +170,15 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
                             changeEventTime = room.duration()
                         )
 
-                        booking.eventInfo.startTime < first().startTime -> room.copy(
-                            state = RoomState.SOON_BUSY.apply { event = first() },
-                            changeEventTime = (first().startTime.time.time - booking.eventInfo.startTime.time.time).toInt()
-                        )
+//                        booking.eventInfo.startTime < first().startTime -> room.copy(
+//                            state = RoomState.SOON_BUSY(first()),
+//                            changeEventTime = (first().startTime.time.time - booking.eventInfo.startTime.time.time).toInt()
+//                        )
 
-                        else -> room.copy(state = RoomState.BUSY.apply { event = first() }, changeEventTime = room.duration())
+                        else -> room.copy(
+                            state = RoomState.BUSY(first()),
+                            changeEventTime = room.duration()
+                        )
                     }
                 }
             }
@@ -191,8 +204,7 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
             var stateRoom: RoomState? = null
             when {
                 room.currentEvent != null -> {
-                    stateRoom = RoomState.BUSY
-                    stateRoom.event = room.currentEvent
+                    stateRoom = RoomState.BUSY(room.currentEvent)
                     return stateRoom
                 }
 
@@ -201,8 +213,7 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
                     startEvent = room.eventList.first().startTime,
                     newEventDuration = state.chosenDurationBooking
                 ) -> {
-                    stateRoom = RoomState.SOON_BUSY
-                    stateRoom.event = room.eventList.first()
+                    stateRoom = RoomState.SOON_BUSY(room.eventList.first())
                     return stateRoom
                 }
 
@@ -210,40 +221,21 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
             }
         }
 
-        fun getStateBusyRoom(room: RoomInfo, booking: Booking): RoomState {
-            room.eventList.forEach {
-                var stateRoom: RoomState? = null
-                when {
-                    (booking.eventInfo.startTime.isMore(it.startTime) &&
-                            it.finishTime.isMore(booking.eventInfo.startTime)) ->
-                        stateRoom = RoomState.BUSY
-
-                    (it.startTime.isMore(booking.eventInfo.startTime) &&
-                            booking.eventInfo.finishTime.isMore(it.startTime)) ->
-                        stateRoom = RoomState.SOON_BUSY
-                }
-                if (stateRoom != null) {
-                    stateRoom.event = it
-                    return stateRoom
-                }
-            }
-            return RoomState.FREE
-        }
 
         fun getChangeEventTime(roomState: RoomState, startTime: Calendar, room: RoomInfo): Int {
             val time = if (checkCurrentTime(startTime)) Calendar.getInstance() else startTime
             return when {
-                roomState == RoomState.BUSY -> getDurationRelativeCurrentTime(
+                roomState is RoomState.BUSY -> getDurationRelativeCurrentTime(
                     time,
                     roomState.event!!.finishTime
                 )
 
-                roomState == RoomState.SOON_BUSY -> getDurationRelativeCurrentTime(
+                roomState is RoomState.SOON_BUSY -> getDurationRelativeCurrentTime(
                     time,
                     roomState.event!!.startTime
                 )
 
-                roomState == RoomState.FREE && room.eventList.isNotEmpty() ->
+                roomState is RoomState.FREE && room.eventList.isNotEmpty() ->
                     getDurationRelativeCurrentTime(time, room.eventList.first().startTime)
 
                 else -> -1
@@ -276,7 +268,7 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
                     newEventDuration = state.chosenDurationBooking
                 )
             ) {
-                return roomInfo.copy(state = RoomState.SOON_BUSY)
+                return roomInfo.copy(state = RoomState.SOON_BUSY())
             }
             if (roomInfo.changeEventTime == 0) {
                 return withContext(Dispatchers.IO) {

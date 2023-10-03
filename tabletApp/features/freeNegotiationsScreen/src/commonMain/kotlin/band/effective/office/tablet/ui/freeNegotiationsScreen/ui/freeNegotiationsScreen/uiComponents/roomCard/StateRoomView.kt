@@ -21,8 +21,8 @@ fun StateRoomView(
 ) {
     Column {
         when (roomInfo.state) {
-            RoomState.FREE -> RoomIsFree()
-            RoomState.BUSY -> RoomIsBusy(
+            is RoomState.FREE -> RoomIsFree()
+            is RoomState.BUSY -> RoomIsBusy(
                 changeEventTime = roomInfo.changeEventTime,
                 timeFinish = roomInfo.state.event?.finishTime ?: Calendar.getInstance(),
                 organizer = roomInfo.state.event?.organizer?.fullName ?: Organizer.default.fullName
