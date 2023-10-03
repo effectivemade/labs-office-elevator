@@ -102,7 +102,7 @@ fun RoomInfoComponent(
                 )
             }
         }
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(10.dp))
         RoomEventListComponent(
             modifier = Modifier.padding(paddings),
             eventsList = room.eventList,
