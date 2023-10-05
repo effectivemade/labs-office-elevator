@@ -2,12 +2,19 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>ru</string>
+	</array>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.726357293621-hegk0410bsb1a5hvl3ihpc4d2bfkmlgb</string>
+				<string>com.googleusercontent.apps.503255112190-a3n1441gcnl7alamoqkvk9omtv5q97tl</string>
 			</array>
 		</dict>
 	</array>
@@ -26,9 +33,5 @@
 	<dict/>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>CFBundleLocalizations</key><array>
-    <string>en</string>
-    <string>ru</string>
-    </array>
 </dict>
 </plist>

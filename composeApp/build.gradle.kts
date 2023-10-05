@@ -215,7 +215,7 @@ buildConfig {
     buildConfigField(
         "String",
         "iosClient",
-        "\"503255112190-4flfuu86ihrpismfl70nuae6u6n5gk4p.apps.googleusercontent.com\""
+        "\"503255112190-a3n1441gcnl7alamoqkvk9omtv5q97tl.apps.googleusercontent.com\""
     )
 }
 
