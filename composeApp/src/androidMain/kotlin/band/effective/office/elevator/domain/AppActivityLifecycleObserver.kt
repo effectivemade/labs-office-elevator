@@ -9,6 +9,7 @@ import androidx.lifecycle.LifecycleOwner
 import band.effective.office.elevator.AppActivity
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.OfficeElevatorConfig
+import band.effective.office.elevator.domain.models.GoogleAccount
 import band.effective.office.elevator.utils.getStringResource
 import com.google.android.gms.auth.api.proxy.AuthApiStatusCodes
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -56,7 +57,8 @@ class AppActivityLifecycleObserver(
         try {
             val account: GoogleSignInAccount = task.getResult(ApiException::class.java)
             Napier.d { "ID_TOKEN = ${account.idToken}" }
-            callback.onSuccess()
+
+            callback.onSuccess(account.toGoogleAccount())
         } catch (e: ApiException) {
             Napier.e(
                 "signInResult:failed code=" + e.statusCode + " | description: ${
@@ -86,6 +88,27 @@ class AppActivityLifecycleObserver(
 
     fun retrieveAuthorizedUser(callback: SignInResultCallback) {
         val task = signInClient.silentSignIn()
-        when
+        if (task.isSuccessful) {
+            // There's immediate result available.
+            val signInAccount = task.result
+            callback.onSuccess(signInAccount.toGoogleAccount())
+        } else {
+            task.addOnCompleteListener { task ->
+                try {
+                    val signInAccount = task.getResult(ApiException::class.java)
+                    callback.onSuccess(signInAccount.toGoogleAccount())
+                } catch (apiException: ApiException) {
+                    callback.onFailure(apiException.message.orEmpty())
+                }
+            }
+        }
     }
+
+    private fun GoogleSignInAccount.toGoogleAccount() =
+        GoogleAccount(
+            email = email!!,
+            name = displayName!!,
+            photoUrl = photoUrl.toString(),
+            idToken = idToken
+        )
 }

@@ -3,11 +3,9 @@ package band.effective.office.elevator.domain.useCase
 import band.effective.office.elevator.data.ApiResponse
 import band.effective.office.elevator.domain.GoogleSignIn
 import band.effective.office.elevator.domain.repository.AuthorizationRepository
-import band.effective.office.elevator.ui.root.store.RootStore
 import band.effective.office.network.model.Either
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 
 class SignInUseCase(
     private val signInClient: GoogleSignIn,
