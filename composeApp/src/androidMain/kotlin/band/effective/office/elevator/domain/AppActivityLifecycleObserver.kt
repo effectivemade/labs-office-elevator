@@ -1,6 +1,5 @@
 package band.effective.office.elevator.domain
 
-import android.content.Context
 import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.ActivityResultRegistry
@@ -19,8 +18,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes
 import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes.SIGN_IN_CANCELLED
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
-import dev.icerock.moko.resources.desc.Resource
-import dev.icerock.moko.resources.desc.StringDesc
 import io.github.aakira.napier.Napier
 
 
@@ -85,5 +82,10 @@ class AppActivityLifecycleObserver(
     }
     fun signOut() {
         signInClient.signOut()
+    }
+
+    fun retrieveAuthorizedUser(callback: SignInResultCallback) {
+        val task = signInClient.silentSignIn()
+        when
     }
 }

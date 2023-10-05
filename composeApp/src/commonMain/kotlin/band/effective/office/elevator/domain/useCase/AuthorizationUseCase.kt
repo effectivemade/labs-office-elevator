@@ -3,15 +3,13 @@ package band.effective.office.elevator.domain.useCase
 import band.effective.office.elevator.data.ApiResponse
 import band.effective.office.elevator.domain.GoogleSignIn
 import band.effective.office.elevator.domain.SignInResultCallback
+import band.effective.office.elevator.domain.models.GoogleAccount
 import band.effective.office.elevator.domain.models.User
 import band.effective.office.elevator.domain.repository.AuthorizationRepository
-import band.effective.office.elevator.ui.authorization.authorization_google.store.AuthorizationGoogleStore
 import band.effective.office.network.model.Either
-import band.effective.office.network.model.ErrorResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -24,7 +22,7 @@ class AuthorizationUseCase(
         successCallBack: (User) -> Unit,
         failureCallBack: (String) -> Unit,
     ) = googleSignIn.signIn(object : SignInResultCallback {
-            override fun onSuccess() {
+            override fun onSuccess(googleAccount: GoogleAccount) {
                 scope.launch  {
                     when (val result = googleSignIn.retrieveAuthorizedUser()) {
                         is ApiResponse.Error.HttpError -> {}
