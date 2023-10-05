@@ -24,7 +24,7 @@ class FcmNotificationSender(private val fcm: FirebaseMessaging): INotificationSe
             .setTopic(topic)
             .putData("message", "$topic was changed")
             .build()
-        fcm.sendAsync(msg)
+        fcm.send(msg)
     }
 
     /**
@@ -42,7 +42,7 @@ class FcmNotificationSender(private val fcm: FirebaseMessaging): INotificationSe
             .putData("action", action.value)
             .putData("object", json)
             .build()
-        fcm.sendAsync(msg)
+        fcm.send(msg)
     }
 
     /**
@@ -60,7 +60,7 @@ class FcmNotificationSender(private val fcm: FirebaseMessaging): INotificationSe
             .putData("action", action.value)
             .putData("object", json)
             .build()
-        fcm.sendAsync(msg)
+        fcm.send(msg)
     }
 
     /**
@@ -78,6 +78,6 @@ class FcmNotificationSender(private val fcm: FirebaseMessaging): INotificationSe
             .putData("action", action.value)
             .putData("object", json)
             .build()
-        fcm.sendAsync(msg)
+        fcm.send(msg)
     }
 }
