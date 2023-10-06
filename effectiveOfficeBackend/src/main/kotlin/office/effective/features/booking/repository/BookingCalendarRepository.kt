@@ -13,6 +13,7 @@ import office.effective.features.booking.converters.GoogleCalendarConverter
 import office.effective.features.user.repository.UserRepository
 import office.effective.model.Booking
 import office.effective.features.user.repository.UserEntity
+import org.slf4j.LoggerFactory
 import java.util.*
 
 /**
@@ -29,6 +30,7 @@ class BookingCalendarRepository(
     private val calendarEvents = calendar.Events()
     private val defaultCalendar = config.propertyOrNull("calendar.defaultCalendar")?.getString()
         ?: throw Exception("Config file does not contain Google default calendar id")
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
     /**
      * Finds workspace calendar id by workspace id
@@ -66,6 +68,7 @@ class BookingCalendarRepository(
      */
     override fun deleteById(id: String) {
         try {
+            logger.trace("Deleting event from {} calendar by id", defaultCalendar)
             calendarEvents.delete(defaultCalendar, id).execute() //We can't delete directly from workspace calendar
         } catch (e: GoogleJsonResponseException) {
             if (e.statusCode != 404 && e.statusCode != 410) {
@@ -98,6 +101,7 @@ class BookingCalendarRepository(
      * @author Danil Kiselev, Daniil Zavyalov
      */
     private fun findByCalendarIdAndBookingId(bookingId: String, calendarId: String = defaultCalendar): Event? {
+        logger.trace("Retrieving event from {} calendar by id", calendarId)
         return try {
             calendar.events().get(calendarId, bookingId).execute()
         } catch (e: GoogleJsonResponseException) {
@@ -122,6 +126,13 @@ class BookingCalendarRepository(
         singleEvents: Boolean = true,
         calendarId: String = defaultCalendar
     ): Calendar.Events.List {
+        logger.trace(
+            "Retrieving events from {} to {} from {} calendar. SingleEvents={}. ",
+            timeMin,
+            timeMax,
+            calendarId,
+            singleEvents
+        )
         return calendarEvents.list(calendarId)
             .setSingleEvents(singleEvents)
             .setTimeMin(DateTime(timeMin))
