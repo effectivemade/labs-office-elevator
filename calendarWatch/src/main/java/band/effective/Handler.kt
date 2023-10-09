@@ -9,7 +9,6 @@ import com.google.api.services.calendar.CalendarScopes
 import com.google.api.services.calendar.model.Channel
 import com.google.auth.http.HttpCredentialsAdapter
 import com.google.auth.oauth2.GoogleCredentials
-import kotlinx.coroutines.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.ByteArrayInputStream
@@ -17,15 +16,10 @@ import java.util.UUID
 import java.util.function.Function
 
 class Handler : Function<Unit, Unit> {
-    override fun apply(p0: Unit) =
-        runBlocking {
-            subscribeOnNotifications()
-        }
+    override fun apply(p0: Unit) = subscribeOnNotifications()
 }
 
-fun main (): Unit = runBlocking {
-    subscribeOnNotifications()
-}
+fun main (): Unit = subscribeOnNotifications()
 
 fun subscribeOnNotifications() {
     val logger : Logger = LoggerFactory.getLogger(JsonFactory::class.java)
