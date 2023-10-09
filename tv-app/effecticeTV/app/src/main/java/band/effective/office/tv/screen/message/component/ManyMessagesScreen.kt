@@ -1,10 +1,11 @@
 package band.effective.office.tv.screen.message.component
 
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -12,6 +13,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.tv.domain.model.message.BotMessage
+import band.effective.office.tv.screen.components.ProgressIndicator
 import coil.ImageLoader
 
 @Composable
@@ -21,7 +23,8 @@ fun ManyMessagesScreen(
     messagesList: List<BotMessage>,
     currentIndex: Int = 0,
     textColor: Color = Color.Black,
-    onClickButton: (() -> Unit)? = null
+    onClickButton: (() -> Unit)? = null,
+    messageProcess: Float
 ) {
     Box(modifier = modifier) {
         Box(
@@ -30,9 +33,10 @@ fun ManyMessagesScreen(
         ) {
             ProgressIndicator(
                 modifier = Modifier,
-                elementModifier = Modifier.clip(CircleShape),
+                elementModifier = Modifier.width(1.dp).clip(CircleShape),
                 count = messagesList.size,
-                currentIndex = currentIndex
+                currentIndex = currentIndex,
+                progress = messageProcess
             )
         }
         Box(
@@ -46,36 +50,6 @@ fun ManyMessagesScreen(
                 onClickBackButton = onClickButton,
                 textColor = textColor
             )
-        }
-    }
-}
-
-
-// TODO(Maksim Mishenko): delete after merge
-@Composable
-fun ProgressIndicator(
-    modifier: Modifier,
-    elementModifier: Modifier,
-    count: Int,
-    currentIndex: Int,
-    elementColor: Color = MaterialTheme.colors.secondary,
-    currentElementColor: Color = Color.White
-) {
-    Row(modifier = modifier, horizontalArrangement = Arrangement.Center) {
-        for (index in 0 until count) {
-            val animatedColor =
-                animateColorAsState(
-                    if (index == currentIndex) currentElementColor else elementColor
-                )
-            Row {
-                Box(
-                    modifier = elementModifier
-                        .width(8.dp)
-                        .height(8.dp)
-                        .background(animatedColor.value)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-            }
         }
     }
 }

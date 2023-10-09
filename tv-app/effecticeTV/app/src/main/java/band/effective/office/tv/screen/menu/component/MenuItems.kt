@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,7 +19,6 @@ import band.effective.office.tv.ui.theme.robotoFontFamily
 
 @Composable
 fun MenuItem(
-    text: String,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     onFocus: (Boolean) -> Unit,
@@ -32,12 +32,6 @@ fun MenuItem(
     )
 
     Box(modifier = modifier
-        .graphicsLayer {
-            scaleX = if (isFocus) 1.1f
-            else 1f
-            scaleY = if (isFocus) 1.1f
-            else 1f
-        }
         .background(animatedBackgroundColor)
         .fillMaxHeight(0.9f)
         .onFocusChanged {
@@ -47,7 +41,22 @@ fun MenuItem(
         .clickable { onClick() }, contentAlignment = Alignment.Center
     ) {
         content()
-        androidx.tv.material3.Text(
+    }
+}
+
+@Composable
+fun TextMenuItem(
+    text: String,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    onFocus: (Boolean) -> Unit
+) {
+    MenuItem(
+        modifier = modifier,
+        onClick = { onClick() },
+        onFocus = { onFocus(it) },
+    ) {
+        Text(
             text = text, color = Color.White, fontSize = 30.sp, fontFamily = robotoFontFamily()
         )
     }

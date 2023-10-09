@@ -15,6 +15,7 @@ import band.effective.office.tv.screen.duolingo.DuolingoScreen
 fun EventStoryScreenContent(
     eventsInfo: List<StoryModel>,
     currentStoryIndex: Int,
+    storyProgress: Float = 1f,
     modifier: Modifier = Modifier,
     imageLoader: ImageLoader,
     onImageLoading: () -> Unit,
@@ -31,6 +32,7 @@ fun EventStoryScreenContent(
                     .padding(32.dp)
                     .fillMaxWidth()
                     .height(8.dp),
+                progress = storyProgress
             )
             when (eventsInfo[currentStoryIndex].storyType) {
                 StoryType.Employee -> {

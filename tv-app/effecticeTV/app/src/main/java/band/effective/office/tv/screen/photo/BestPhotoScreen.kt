@@ -17,7 +17,7 @@ import band.effective.office.tv.core.network.UnsafeOkHttpClient
 import band.effective.office.tv.core.ui.screen_with_controls.ScreenWithControlsTemplate
 import band.effective.office.tv.core.ui.screen_with_controls.model.MenuButton
 import band.effective.office.tv.core.ui.screen_with_controls.model.MenuState
-import band.effective.office.tv.domain.autoplay.model.NavigateRequests
+import band.effective.office.tv.screen.photo.NavigateRequests
 import band.effective.office.tv.screen.error.ErrorScreen
 import band.effective.office.tv.screen.load.LoadScreen
 import band.effective.office.tv.screen.photo.components.PhotoSlideShow
@@ -34,7 +34,6 @@ fun BestPhotoScreen(viewModel: PhotoViewModel = hiltViewModel()) {
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
-            Log.e("scroll","screen")
             when (effect) {
                 is BestPhotoEffect.ChangePlayState -> {}
                 is BestPhotoEffect.ScrollToItem -> {

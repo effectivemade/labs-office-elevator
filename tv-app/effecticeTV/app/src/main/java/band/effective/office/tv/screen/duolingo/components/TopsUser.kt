@@ -1,8 +1,11 @@
 package band.effective.office.tv.screen.duolingo.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -45,6 +48,7 @@ fun TopsUser(
                     when (keySort) {
                         KeySortDuolingoUser.Xp -> {
                             GirdItem(
+                                modifier = Modifier.width(370.dp),
                                 name = item.username,
                                 indicatorUsers = "${item.totalXp} XP",
                                 indicatorUsersColor = Color.Green,
@@ -55,6 +59,7 @@ fun TopsUser(
                         }
                         KeySortDuolingoUser.Streak -> {
                             GirdItem(
+                                modifier = Modifier.width(370.dp),
                                 name = item.username,
                                 indicatorUsers = "${item.streakDay} " +
                                         getCorrectDeclension(

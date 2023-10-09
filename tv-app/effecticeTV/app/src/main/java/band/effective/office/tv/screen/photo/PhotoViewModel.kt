@@ -2,17 +2,19 @@ package band.effective.office.tv.screen.photo
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import band.effective.office.tv.BuildConfig
-import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
 import band.effective.office.tv.core.network.entity.Either
-import band.effective.office.tv.domain.autoplay.AutoplayableViewModel
-import band.effective.office.tv.domain.autoplay.model.AutoplayState
+import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
+import band.effective.office.tv.screen.autoplayController.AutoplayController
+import band.effective.office.tv.screen.autoplayController.model.ScreenState
 import band.effective.office.tv.network.UnsafeOkHttpClient
 import band.effective.office.tv.repository.synology.SynologyRepository
+import band.effective.office.tv.screen.autoplayController.model.AutoplayState
+import band.effective.office.tv.screen.autoplayController.model.OnSwitchCallbacks
+import band.effective.office.tv.screen.navigation.Screen
 import band.effective.office.tv.screen.photo.model.toUIModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import javax.inject.Inject
 
@@ -20,40 +22,15 @@ import javax.inject.Inject
 class PhotoViewModel @Inject constructor(
     private val repository: SynologyRepository,
     private val slideShow: TimerSlideShow,
-    @UnsafeOkHttpClient val unsafeOkHttpClient: OkHttpClient
-): ViewModel(), AutoplayableViewModel {
+    @UnsafeOkHttpClient val unsafeOkHttpClient: OkHttpClient,
+    private val autoplayController: AutoplayController
+) : ViewModel() {
 
     private val mutableState = MutableStateFlow(BestPhotoState.Empty)
-    override val state = mutableState.asStateFlow()
+    val state = mutableState.asStateFlow()
 
     private val mutableEffect = MutableSharedFlow<BestPhotoEffect>()
     val effect = mutableEffect.asSharedFlow()
-
-    override fun switchToFirstItem(prevScreenState: AutoplayState) {
-        if (prevScreenState.isPlay) slideShow.startTimer()
-        mutableState.update { it.copy(isPlay = prevScreenState.isPlay) }
-        viewModelScope.launch {
-            mutableEffect.emit(BestPhotoEffect.ScrollToItem(0))
-        }
-    }
-
-    override fun switchToLastItem(prevScreenState: AutoplayState) {
-        if (prevScreenState.isPlay) slideShow.startTimer()
-        mutableState.update { it.copy(isPlay = prevScreenState.isPlay) }
-        viewModelScope.launch {
-            mutableEffect.emit(BestPhotoEffect.ScrollToItem(state.value.photos.size-1))
-        }
-    }
-
-    override fun stopTimer() {
-        slideShow.stopTimer()
-        mutableState.update { it.copy(isPlay = false) }
-    }
-
-    override fun startTimer() {
-        slideShow.startTimer()
-        mutableState.update { it.copy(isPlay = true) }
-    }
 
     init {
         slideShow.init(
@@ -65,6 +42,24 @@ class PhotoViewModel @Inject constructor(
             repository.auth()
             updatePhoto()
         }
+
+        autoplayController.addCallbacks(screen = Screen.BestPhoto, callbacks = object : OnSwitchCallbacks{
+            override fun onForwardSwitch(controllerState: AutoplayState) {
+                if (autoplayController.state.value.screenState.isPlay) slideShow.startTimer()
+                //TODO(Maksim Mishenko) @Artem Gruzdev add switch to first and last photo
+                mutableState.update { it.copy(isPlay = autoplayController.state.value.screenState.isPlay) }
+            }
+
+            override fun onBackSwitch(controllerState: AutoplayState) {
+                if (autoplayController.state.value.screenState.isPlay) slideShow.startTimer()
+                //TODO(Maksim Mishenko) @Artem Gruzdev add switch to first and last photo
+                mutableState.update { it.copy(isPlay = autoplayController.state.value.screenState.isPlay) }
+            }
+
+            override fun onLeave() {
+                slideShow.stopTimer()
+            }
+        })
     }
 
     fun sendEvent(event: BestPhotoEvent) {
@@ -94,9 +89,20 @@ class PhotoViewModel @Inject constructor(
                     mutableEffect.emit(BestPhotoEffect.ChangePlayState(isPlay))
                 }
             }
-            is BestPhotoEvent.OnRequestSwitchScreen ->{
+            is BestPhotoEvent.OnRequestSwitchScreen -> {
                 slideShow.stopTimer()
-                mutableState.update { it.copy(navigateRequest = event.request) }
+                when (event.request) {
+                    NavigateRequests.Forward -> autoplayController.nextScreen(
+                        state.value.toScreenModel(
+                            true
+                        )
+                    )
+                    NavigateRequests.Back -> autoplayController.prevScreen(
+                        state.value.toScreenModel(
+                            false
+                        )
+                    )
+                }
             }
         }
     }
@@ -109,6 +115,7 @@ class PhotoViewModel @Inject constructor(
         repository.getPhotosUrl().collect { result ->
             when (result) {
                 is Either.Failure -> {
+                    autoplayController.addError(Screen.BestPhoto)
                     mutableState.update { state ->
                         state.copy(isError = true, error = result.error, isLoading = false)
                     }
@@ -127,4 +134,7 @@ class PhotoViewModel @Inject constructor(
             }
         }
     }
+
+    private fun BestPhotoState.toScreenModel(direction: Boolean): ScreenState =
+        ScreenState(isPlay = isPlay, isForwardDirection = direction)
 }

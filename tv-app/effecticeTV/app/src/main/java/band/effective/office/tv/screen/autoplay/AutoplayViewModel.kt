@@ -2,7 +2,9 @@ package band.effective.office.tv.screen.autoplay
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import band.effective.office.tv.domain.autoplay.AutoplayController
+import band.effective.office.tv.screen.autoplayController.AutoplayController
+import band.effective.office.tv.screen.autoplayController.model.AutoplayState
+import band.effective.office.tv.screen.navigation.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,27 +13,26 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AutoplayViewModel @Inject constructor(val autoplayController: AutoplayController) : ViewModel() {
+class AutoplayViewModel @Inject constructor(val autoplayController: AutoplayController) :
+    ViewModel() {
     private var mutableState = MutableStateFlow(AutoplayUiState.defaultState)
     val state = mutableState.asStateFlow()
 
     init {
-        autoplayController.init(viewModelScope)
         load()
+        autoplayController.start(viewModelScope)
     }
 
-    fun load() = viewModelScope.launch {
-        autoplayController.currentScreenIndex.collect { currentScreenIndex ->
-            if (currentScreenIndex < 0) mutableState.update { it.copy(isLoading = true) }
-            else mutableState.update {
-                it.copy(
-                    isLoading = false,
-                    isLoaded = true,
-                    currentScreen = currentScreenIndex
-                )
-            }
+    private fun load() = viewModelScope.launch {
+        autoplayController.state.collect {
+            mutableState.update { autoplayController.state.value.toUiState() }
         }
     }
 
-    fun getScreen(screenIndex: Int) = autoplayController.screensList[screenIndex].screen
+    private fun AutoplayState.toUiState() = AutoplayUiState(
+        isLoading = isLoading,
+        isLoaded = isData,
+        isError = isError,
+        currentScreen = screensList.getOrNull(currentScreenNumber) ?: Screen.Menu
+    )
 }

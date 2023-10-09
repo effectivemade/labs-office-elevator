@@ -51,7 +51,6 @@ private fun EventStoryScreenContent(
     viewModel: EventStoryViewModel,
 ) {
     val state by viewModel.state.collectAsState()
-    var oldPlayValue by remember { mutableStateOf(false) }
     val (contentFocus, playButton) = remember { FocusRequester.createRefs() }
     ScreenWithControlsTemplate(
         modifier = Modifier
@@ -78,16 +77,10 @@ private fun EventStoryScreenContent(
             imageLoader = viewModel.imageLoader,
             eventsInfo = state.eventsInfo,
             currentStoryIndex = state.currentStoryIndex,
-            onImageLoaded = {
-                if (oldPlayValue){
-                    viewModel.startTimer()
-                    oldPlayValue = false
-                }
-                            },
-            onImageLoading = {
-                oldPlayValue = state.isPlay || oldPlayValue
-                viewModel.stopTimer()
-            })
+            onImageLoaded = { if (state.isPlay) viewModel.startTimer() },
+            onImageLoading = { viewModel.stopTimer() },
+            storyProgress = state.storyProcess
+        )
     }
 
 }

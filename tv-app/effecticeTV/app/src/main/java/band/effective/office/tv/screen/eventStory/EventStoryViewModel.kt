@@ -4,20 +4,25 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.core.network.entity.Either
 import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
-import band.effective.office.tv.domain.autoplay.AutoplayableViewModel
-import band.effective.office.tv.domain.autoplay.model.AutoplayState
-import band.effective.office.tv.domain.autoplay.model.NavigateRequests
+import band.effective.office.tv.screen.autoplayController.AutoplayController
+import band.effective.office.tv.screen.autoplayController.model.ScreenState
 import band.effective.office.tv.domain.model.message.BotMessage
 import band.effective.office.tv.domain.model.message.MessageQueue
 import band.effective.office.tv.domain.use_cases.EventStoryDataCombinerUseCase
 import band.effective.office.tv.network.MattermostClient
+import band.effective.office.tv.screen.autoplayController.model.AutoplayState
+import band.effective.office.tv.screen.autoplayController.model.OnSwitchCallbacks
 import band.effective.office.tv.screen.eventStory.models.MessageInfo
 import band.effective.office.tv.screen.eventStory.models.StoryModel
+import band.effective.office.tv.screen.navigation.Screen
 import coil.ImageLoader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -26,36 +31,44 @@ import javax.inject.Inject
 class EventStoryViewModel @Inject constructor(
     private val eventStoryData: EventStoryDataCombinerUseCase,
     private val timer: TimerSlideShow,
-    @MattermostClient val imageLoader: ImageLoader
-) : ViewModel(), AutoplayableViewModel {
+    @MattermostClient val imageLoader: ImageLoader,
+    private val autoplayController: AutoplayController
+) : ViewModel() {
     private val mutableState = MutableStateFlow(LatestEventInfoUiState.empty)
-    override val state = mutableState.asStateFlow()
-
-    override fun switchToFirstItem(prevScreenState: AutoplayState) {
-        if (prevScreenState.isPlay) startTimer()
-        mutableState.update { state ->
-            state.copy(
-                currentStoryIndex = 0
-            )
-        }
-    }
-
-    override fun switchToLastItem(prevScreenState: AutoplayState) {
-        if (prevScreenState.isPlay) stopTimer()
-        mutableState.update { state ->
-            state.copy(
-                currentStoryIndex = state.eventsInfo.size - 1
-            )
-        }
-    }
+    val state = mutableState.asStateFlow()
 
     init {
         viewModelScope.launch {
             initDataStory()
         }
         initTimer()
-        startTimer()
         checkMessage()
+
+        autoplayController.addCallbacks(Screen.Stories, object : OnSwitchCallbacks {
+            override fun onForwardSwitch(controllerState: AutoplayState) {
+                mutableState.update {
+                    it.copy(
+                        isPlay = autoplayController.state.value.screenState.isPlay,
+                        currentStoryIndex = 0
+                    )
+                }
+                if (autoplayController.state.value.screenState.isPlay) timer.startTimer()
+            }
+
+            override fun onBackSwitch(controllerState: AutoplayState) {
+                mutableState.update {
+                    it.copy(
+                        isPlay = autoplayController.state.value.screenState.isPlay,
+                        currentStoryIndex = it.eventsInfo.size - 1
+                    )
+                }
+                if (autoplayController.state.value.screenState.isPlay) timer.startTimer()
+            }
+
+            override fun onLeave() {
+                timer.stopTimer()
+            }
+        })
     }
 
     private fun checkMessage() = viewModelScope.launch {
@@ -67,7 +80,8 @@ class EventStoryViewModel @Inject constructor(
             val commonMessages =
                 messagesInStory.filter { messagesInStory -> messages.any { messageInQueue -> messageInQueue.id == messagesInStory.id } }
             val addMessages = (messages - commonMessages.toSet()).map { it.toMessageInfo() }
-            val deleteMessages = (messagesInStory - commonMessages.toSet()).map { it.toMessageInfo() }
+            val deleteMessages =
+                (messagesInStory - commonMessages.toSet()).map { it.toMessageInfo() }
             val newEventInfo = state.value.eventsInfo + addMessages - deleteMessages.toSet()
             mutableState.update {
                 it.copy(
@@ -93,9 +107,11 @@ class EventStoryViewModel @Inject constructor(
                 }
             }
         }
+        startTimer()
     }
 
     private fun updateStateAsException(error: String) {
+        autoplayController.addError(Screen.Stories)
         mutableState.update { state ->
             state.copy(
                 isError = true,
@@ -109,10 +125,10 @@ class EventStoryViewModel @Inject constructor(
         mutableState.update { state ->
             state.copy(
                 eventsInfo = events,
-                currentStoryIndex = 0,
+                currentStoryIndex = if (autoplayController.state.value.screenState.isForwardDirection) 0 else events.size - 1,
                 isLoading = false,
                 isData = true,
-                isPlay = true,
+                isPlay = autoplayController.state.value.screenState.isPlay,
             )
         }
     }
@@ -122,9 +138,11 @@ class EventStoryViewModel @Inject constructor(
             is EventStoryScreenEvents.OnClickPlayButton -> {
                 handlePlayState()
             }
+
             is EventStoryScreenEvents.OnClickNextItem -> {
                 playNextStory()
             }
+
             is EventStoryScreenEvents.OnClickPreviousItem -> {
                 playPreviousStory()
             }
@@ -168,23 +186,23 @@ class EventStoryViewModel @Inject constructor(
     private fun isFirstStory() = state.value.currentStoryIndex == 0
 
     private fun onLastStory() {
-        mutableState.update { it.copy(navigateRequest = NavigateRequests.Forward) }
+        autoplayController.nextScreen(state.value.toScreenState(true))
         mutableState.update { it.copy(currentStoryIndex = 0) }
     }
 
     private fun onFirstStory() {
-        mutableState.update { it.copy(navigateRequest = NavigateRequests.Back) }
+        autoplayController.prevScreen(state.value.toScreenState(false))
         mutableState.update { it.copy(currentStoryIndex = state.value.eventsInfo.size - 1) }
     }
 
-    override fun startTimer() {
+    fun startTimer() {
         timer.startTimer()
-        mutableState.update { it.copy(isPlay = true) }
+        //mutableState.update { it.copy(isPlay = true) }
     }
 
-    override fun stopTimer() {
+    fun stopTimer() {
         timer.stopTimer()
-        mutableState.update { it.copy(isPlay = false) }
+        //mutableState.update { it.copy(isPlay = false) }
     }
 
     private fun initTimer() {
@@ -199,10 +217,15 @@ class EventStoryViewModel @Inject constructor(
             },
             isPlay = state.value.isPlay
         )
+        viewModelScope.launch {
+            timer.process.collect { progress -> mutableState.update { it.copy(storyProcess = progress) } }
+        }
     }
 
     private fun BotMessage.toMessageInfo(): MessageInfo = MessageInfo(this)
 
     private val countShowUsers = 10
+    private fun LatestEventInfoUiState.toScreenState(direction: Boolean): ScreenState =
+        ScreenState(isPlay = isPlay, isForwardDirection = direction)
 }
 

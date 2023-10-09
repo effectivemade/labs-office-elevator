@@ -32,7 +32,8 @@ fun PrimaryMessageScreen(
             onClickPreviousItemButton = { viewModel.onEvent(PrimaryMessageScreenEvents.OnClickPrevButton) },
             onClickNextItemButton = { viewModel.onEvent(PrimaryMessageScreenEvents.OnClickNextButton) },
             onClickPlayButton = { viewModel.onEvent(PrimaryMessageScreenEvents.OnClickPlayButton) },
-            onClickButton = { viewModel.endShow() }
+            onClickButton = { viewModel.endShow() },
+            messageProgress = state.messageProcess
         )
     }
 }
