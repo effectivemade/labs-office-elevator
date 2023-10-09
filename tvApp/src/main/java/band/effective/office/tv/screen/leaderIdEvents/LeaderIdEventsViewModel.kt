@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.core.network.Either
 import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
 import band.effective.office.tv.repository.leaderId.LeaderIdEventsInfoRepository
+import band.effective.office.tv.repository.workTogether.WorkTogether
 import band.effective.office.tv.screen.autoplayController.AutoplayController
 import band.effective.office.tv.screen.autoplayController.model.AutoplayState
 import band.effective.office.tv.screen.autoplayController.model.OnSwitchCallbacks
@@ -23,7 +24,8 @@ import javax.inject.Inject
 class LeaderIdEventsViewModel @Inject constructor(
     private val leaderIdEventsInfoRepository: LeaderIdEventsInfoRepository,
     private val timer: TimerSlideShow,
-    private val autoplayController: AutoplayController
+    private val autoplayController: AutoplayController,
+    private val workTogether: WorkTogether
 ) : ViewModel() {
     private var mutableState = MutableStateFlow(LeaderIdEventsUiState.empty)
     val state = mutableState.asStateFlow()

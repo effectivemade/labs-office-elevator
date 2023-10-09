@@ -39,7 +39,7 @@ val Typography = Typography(
     h2 = TextStyle(
         fontFamily = robotoFontFamily(),
         fontWeight = FontWeight.Normal,
-        fontSize = 20.sp,
+        fontSize = 19.sp,
         color = Color.Black
     ),
     h3 = TextStyle(

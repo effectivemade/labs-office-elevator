@@ -58,7 +58,7 @@ fun EventStoryScreenContent(
                     val duolingoItem = eventsInfo[currentStoryIndex] as DuolingoUserInfo
                     DuolingoScreen(
                         keySort = duolingoItem.keySort,
-                        duolingoUser = duolingoItem.users
+                        duolingoUser = duolingoItem.users.take(10)
                     )
                 }
                 StoryType.Message -> {

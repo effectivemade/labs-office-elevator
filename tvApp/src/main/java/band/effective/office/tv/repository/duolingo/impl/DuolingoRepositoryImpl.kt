@@ -8,12 +8,11 @@ import band.effective.office.tv.domain.model.duolingo.DuolingoUser
 import band.effective.office.tv.domain.model.duolingo.toDomain
 import band.effective.office.tv.network.duolingo.DuolingoApi
 import band.effective.office.tv.repository.duolingo.DuolingoRepository
+import band.effective.office.tv.repository.workTogether.WorkTogether
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.withContext
 import notion.api.v1.NotionClient
 import notion.api.v1.model.pages.Page
@@ -23,21 +22,30 @@ import javax.inject.Inject
 class DuolingoRepositoryImpl @Inject constructor(
     private val duolingoApi: DuolingoApi,
     private val notionClient: NotionClient,
+    private val workTogether: WorkTogether,
     @ApplicationContext private val context: Context
 ) : DuolingoRepository {
 
-    private val duolingoAttributeName = context.resources.getString(R.string.duolingo_attribute_name)
+    private val duolingoAttributeName =
+        context.resources.getString(R.string.duolingo_attribute_name)
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     override suspend fun getUsers(): Flow<Either<String, List<DuolingoUser>>> =
-        getDuolingoUserName().mapLatest { userNamesRequest ->
-            when (userNamesRequest) {
-                is Either.Success -> {
-                    getDuolingoUsersInfoFromApi(userNamesRequest.data)
+        flow {
+            val users = workTogether.getAll().filter { it.duolingo != null }
+            var error = false
+            val data = users.mapNotNull {
+                when (val response = duolingoApi.getUserInfo(it.duolingo!!)) {
+                    is Either.Failure -> {
+                        emit(Either.Failure(response.error.message))
+                        error = true
+                        null
+                    }
+
+                    is Either.Success -> response.data.toDomain()?.copy(username = it.name)
                 }
-                is Either.Failure -> {
-                    userNamesRequest
-                }
+            }
+            if (!error){
+                emit(Either.Success(data))
             }
         }
 
@@ -58,6 +66,7 @@ class DuolingoRepositoryImpl @Inject constructor(
                         val user = duolingoUser.data.toDomain()
                         if (user != null) duolingoUsersInfo.add(user)
                     }
+
                     is Either.Failure -> {
                         errorRequest = duolingoUser.error.message
                     }
