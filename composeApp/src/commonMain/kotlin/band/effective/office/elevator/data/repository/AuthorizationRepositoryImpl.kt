@@ -24,7 +24,7 @@ class AuthorizationRepositoryImpl(
         idToken: String,
         email: String
     ): Flow<Either<ErrorResponse, User>> = flow {
-        KtorEtherClient.token = idToken
+        KtorEtherClient.token.add(idToken)
         Napier.d {
             "Token: ${KtorEtherClient.token}"
         }
