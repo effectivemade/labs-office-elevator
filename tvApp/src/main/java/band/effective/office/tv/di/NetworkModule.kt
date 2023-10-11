@@ -3,6 +3,7 @@ package band.effective.office.tv.di
 import android.content.Context
 import band.effective.office.tv.BuildConfig
 import band.effective.office.tv.core.network.*
+import band.effective.office.tv.core.network.UnsafeOkHttpClient
 import band.effective.office.tv.network.*
 import band.effective.office.tv.network.duolingo.DuolingoApi
 import band.effective.office.tv.network.leader.LeaderApi
