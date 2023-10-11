@@ -15,12 +15,21 @@ import java.io.ByteArrayInputStream
 import java.util.UUID
 import java.util.function.Function
 
+/**
+ * Handler for Yandex Cloud Functions
+ */
 class Handler : Function<Unit, Unit> {
     override fun apply(p0: Unit) = subscribeOnNotifications()
 }
 
+/**
+ * For testing on local machine
+ */
 fun main (): Unit = subscribeOnNotifications()
 
+/**
+ * Subscribe to all owned calendars. Should be called every 7 days.
+ */
 fun subscribeOnNotifications() {
     val logger : Logger = LoggerFactory.getLogger(JsonFactory::class.java)
 
