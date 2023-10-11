@@ -48,14 +48,12 @@ fun Route.bookingRouting() {
 
             call.response.status(HttpStatusCode.Created)
             val result = bookingFacade.post(dto)
-            sender.sendEmptyMessage("booking")
             call.respond(result)
         }
         put(SwaggerDocument.putBooking()) {
             val dto = call.receive<BookingDTO>()
 
             val result = bookingFacade.put(dto)
-            sender.sendEmptyMessage("booking")
             call.respond(result)
         }
         delete("{id}", SwaggerDocument.deleteBookingById()) {
@@ -63,7 +61,6 @@ fun Route.bookingRouting() {
                 ?: return@delete call.respond(HttpStatusCode.BadRequest)
 
             bookingFacade.deleteById(id)
-            sender.sendEmptyMessage("booking")
             call.respond(HttpStatusCode.NoContent)
         }
     }
