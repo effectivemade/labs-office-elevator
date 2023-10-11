@@ -22,7 +22,7 @@ val VerificationPlugin = createApplicationPlugin(name = "VerificationPlugin") {
 
     onCall {
         run {
-            if (pluginOn) {
+            if (pluginOn && it.request.path() != "/notifications") {
                 val token = it.request.parseAuthorizationHeader()?.render()?.split("Bearer ")?.last() ?: it.respond(
                     HttpStatusCode.Unauthorized
                 )
@@ -46,7 +46,7 @@ val VerificationPlugin = createApplicationPlugin(name = "VerificationPlugin") {
                 }
 
                 //If both authentications ways cannot verify header containment, this condition must throw 401 Unauthorised
-                if (exOAuth != null && exLine != null && it.request.path() != "/notifications") {
+                if (exOAuth != null && exLine != null) {
                     it.response.status(HttpStatusCode.Unauthorized)
                     it.respond("verification error. \nCause by:\nOAuth exception: $exOAuth\nLine exception: $exLine")
                 }
