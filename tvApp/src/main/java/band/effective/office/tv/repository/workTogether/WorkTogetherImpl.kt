@@ -19,11 +19,11 @@ class WorkTogetherImpl @Inject constructor(private val notionClient: NotionClien
 
     }
 
-    fun Page.toTeammate() =
+    private fun Page.toTeammate() =
         Teammate(
             id = id,
             name = getStringFromProp("Name") ?: "Null name",
-            positions = getMultiselectProp("Position"),
+            positions = getStringFromProp("Position")?.split(" ") ?: listOf(),
             employment = getStringFromProp("Employment") ?: "Null employment",
             startDate = GregorianCalendar().apply {
                 val date = getStringFromProp("Start Date")
@@ -40,17 +40,10 @@ class WorkTogetherImpl @Inject constructor(private val notionClient: NotionClien
             when (type) {
                 PropertyType.Title -> title?.firstOrNull()?.text?.content
                 PropertyType.RichText -> richText?.firstOrNull()?.text?.content
-                PropertyType.MultiSelect -> multiSelect?.firstOrNull()?.name
+                PropertyType.MultiSelect -> multiSelect?.fold("") { acc, option -> "$acc ${option.name}" }
                 PropertyType.Select -> select?.name
                 PropertyType.Date -> date?.start
                 else -> null
             }
         }
-
-    private fun Page.getMultiselectProp(propName: String) =
-        properties[propName]?.run {
-            if (type == PropertyType.MultiSelect) {
-                multiSelect?.mapNotNull { it.name }
-            } else listOf()
-        } ?: listOf()
 }
