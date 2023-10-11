@@ -105,6 +105,12 @@ dependencies {
 
     //notion
     implementation(libs.notion)
+
+    //test
+    testImplementation (libs.junit)
+    androidTestImplementation (libs.androidJunit)
+    androidTestImplementation (libs.espresso)
+
 }
 kapt {
     correctErrorTypes = true
