@@ -19,6 +19,12 @@ class WorkTogetherImpl @Inject constructor(private val notionClient: NotionClien
 
     }
 
+    override fun getProperty(name: String): Map<String, String?> {
+        return notionClient.queryDatabase(
+            request = QueryDatabaseRequest(BuildConfig.notionDatabaseId)
+        ).results.associate { it.id to it.getStringFromProp(name) }
+    }
+
     private fun Page.toTeammate() =
         Teammate(
             id = id,
