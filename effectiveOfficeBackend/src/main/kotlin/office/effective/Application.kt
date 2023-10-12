@@ -30,6 +30,5 @@ fun Application.module() {
     configureValidation()
     configureExceptionHandling()
     configureSwagger()
-    configureCalendarNotifications()
     install(VerificationPlugin)
 }
