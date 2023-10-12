@@ -1,5 +1,6 @@
 package band.effective.office.tv.screen.leaderIdEvents
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import band.effective.office.tv.core.network.Either
@@ -12,10 +13,12 @@ import band.effective.office.tv.screen.autoplayController.model.OnSwitchCallback
 import band.effective.office.tv.screen.autoplayController.model.ScreenState
 import band.effective.office.tv.screen.navigation.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.GregorianCalendar
 import javax.inject.Inject
@@ -24,8 +27,7 @@ import javax.inject.Inject
 class LeaderIdEventsViewModel @Inject constructor(
     private val leaderIdEventsInfoRepository: LeaderIdEventsInfoRepository,
     private val timer: TimerSlideShow,
-    private val autoplayController: AutoplayController,
-    private val workTogether: WorkTogether
+    private val autoplayController: AutoplayController
 ) : ViewModel() {
     private var mutableState = MutableStateFlow(LeaderIdEventsUiState.empty)
     val state = mutableState.asStateFlow()

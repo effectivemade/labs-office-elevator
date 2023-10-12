@@ -8,5 +8,8 @@ data class Teammate(
     val positions: List<String>,
     val employment: String,
     val startDate: Calendar,
+    val nextBDay: Calendar,
+    val workEmail: String?,
+    val personalEmail: String,
     val duolingo: String?
 )

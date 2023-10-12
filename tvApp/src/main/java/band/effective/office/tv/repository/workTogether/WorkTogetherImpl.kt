@@ -1,5 +1,6 @@
 package band.effective.office.tv.repository.workTogether
 
+import android.util.Log
 import band.effective.office.tv.BuildConfig
 import notion.api.v1.NotionClient
 import notion.api.v1.model.common.PropertyType
@@ -31,25 +32,32 @@ class WorkTogetherImpl @Inject constructor(private val notionClient: NotionClien
             name = getStringFromProp("Name") ?: "Null name",
             positions = getStringFromProp("Position")?.split(" ") ?: listOf(),
             employment = getStringFromProp("Employment") ?: "Null employment",
-            startDate = GregorianCalendar().apply {
-                val date = getStringFromProp("Start Date")
-                val simpleDateFormatter = SimpleDateFormat("yyyy-MM-dd")
-                if (date != null) {
-                    time = simpleDateFormatter.parse(date) ?: time
-                }
-            },
+            startDate = getDateFromProp("Start Date"),
+            nextBDay = getDateFromProp("Next B-DAY"),
+            workEmail = getStringFromProp("Effective Email"),
+            personalEmail = getStringFromProp("Personal Email") ?: "",
             duolingo = getStringFromProp("Профиль Duolingo")
         )
 
     private fun Page.getStringFromProp(propName: String) =
         properties[propName]?.run {
+            if (propName == "Next B-DAY") Log.e("check", toString())
             when (type) {
                 PropertyType.Title -> title?.firstOrNull()?.text?.content
                 PropertyType.RichText -> richText?.firstOrNull()?.text?.content
                 PropertyType.MultiSelect -> multiSelect?.fold("") { acc, option -> "$acc ${option.name}" }
                 PropertyType.Select -> select?.name
                 PropertyType.Date -> date?.start
+                PropertyType.Email -> email
                 else -> null
             }
         }
+
+    private fun Page.getDateFromProp(propName: String) = GregorianCalendar().apply {
+        val date = getStringFromProp(propName)
+        val simpleDateFormatter = SimpleDateFormat("yyyy-MM-dd")
+        if (date != null) {
+            time = simpleDateFormatter.parse(date) ?: time
+        }
+    }
 }
