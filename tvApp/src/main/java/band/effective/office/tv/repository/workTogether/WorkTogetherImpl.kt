@@ -1,12 +1,13 @@
 package band.effective.office.tv.repository.workTogether
 
-import android.util.Log
 import band.effective.office.tv.BuildConfig
 import notion.api.v1.NotionClient
+import notion.api.v1.model.common.File
 import notion.api.v1.model.common.PropertyType
 import notion.api.v1.model.pages.Page
 import notion.api.v1.request.databases.QueryDatabaseRequest
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.GregorianCalendar
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -36,12 +37,12 @@ class WorkTogetherImpl @Inject constructor(private val notionClient: NotionClien
             nextBDay = getDateFromProp("Next B-DAY"),
             workEmail = getStringFromProp("Effective Email"),
             personalEmail = getStringFromProp("Personal Email") ?: "",
-            duolingo = getStringFromProp("Профиль Duolingo")
+            duolingo = getStringFromProp("Профиль Duolingo"),
+            photo = getIconUrl() ?: ""
         )
 
     private fun Page.getStringFromProp(propName: String) =
         properties[propName]?.run {
-            if (propName == "Next B-DAY") Log.e("check", toString())
             when (type) {
                 PropertyType.Title -> title?.firstOrNull()?.text?.content
                 PropertyType.RichText -> richText?.firstOrNull()?.text?.content
@@ -56,8 +57,12 @@ class WorkTogetherImpl @Inject constructor(private val notionClient: NotionClien
     private fun Page.getDateFromProp(propName: String) = GregorianCalendar().apply {
         val date = getStringFromProp(propName)
         val simpleDateFormatter = SimpleDateFormat("yyyy-MM-dd")
-        if (date != null) {
-            time = simpleDateFormatter.parse(date) ?: time
+        time = if (date != null) {
+            simpleDateFormatter.parse(date) ?: Date(0)
+        } else {
+            Date(0)
         }
     }
+
+    private fun Page.getIconUrl() = (icon as? File)?.file?.url
 }
