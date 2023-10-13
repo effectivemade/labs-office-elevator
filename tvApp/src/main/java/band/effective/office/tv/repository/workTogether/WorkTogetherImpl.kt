@@ -38,7 +38,8 @@ class WorkTogetherImpl @Inject constructor(private val notionClient: NotionClien
             workEmail = getStringFromProp("Effective Email"),
             personalEmail = getStringFromProp("Personal Email") ?: "",
             duolingo = getStringFromProp("Профиль Duolingo"),
-            photo = getIconUrl() ?: ""
+            photo = getIconUrl() ?: "",
+            status = getStringFromProp("Status") ?: "Empty status"
         )
 
     private fun Page.getStringFromProp(propName: String) =

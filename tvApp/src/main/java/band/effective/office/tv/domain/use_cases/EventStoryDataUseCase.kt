@@ -24,14 +24,13 @@ import kotlinx.coroutines.flow.flow as flow
 
 // this use case combine data from many data sources for EvenStory screen
 class EventStoryDataCombinerUseCase @Inject constructor(
-    private val employeeInfoRepository: EmployeeInfoRepository,
     private val duolingoRepository: DuolingoRepository,
     private val workTogether: WorkTogether
 ) {
     private val countShowUsers = 10
 
     private fun Teammate.toEmployeeInfoEntity() =
-        SimpleDateFormat("yyyy-MM-dd").let{formater ->
+        SimpleDateFormat("yyyy-MM-dd").let { formater ->
             EmployeeInfoEntity(
                 firstName = name,
                 startDate = formater.format(startDate.time),
@@ -42,7 +41,9 @@ class EventStoryDataCombinerUseCase @Inject constructor(
 
     private fun getNotionDataForStories() = flow {
         val response = try {
-            Either.Success(workTogether.getAll())
+            Either.Success(
+                workTogether.getAll()
+                    .filter { it.employment in setOf("Band", "Intern") && it.status == "Active" })
         } catch (t: Throwable) {
             Either.Failure(
                 t.message ?: "Error in EventStoryDataCombinerUseCase.getNotionDataForStories"
@@ -50,9 +51,11 @@ class EventStoryDataCombinerUseCase @Inject constructor(
         }
         emit(response)
     }.map {
-        when(it){
+        when (it) {
             is Either.Failure -> it
-            is Either.Success -> Either.Success(it.data.map { it.toEmployeeInfoEntity() })
+            is Either.Success -> {
+                Either.Success(it.data.map { it.toEmployeeInfoEntity() })
+            }
         }
     }
 
@@ -64,7 +67,6 @@ class EventStoryDataCombinerUseCase @Inject constructor(
                     is Either.Success -> {
                         setDuolingoDataForScreens(usersDuolingo.data)
                     }
-
                     is Either.Failure -> {
                         error = usersDuolingo.error
                         emptyList()

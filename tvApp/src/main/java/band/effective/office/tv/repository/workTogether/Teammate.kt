@@ -12,5 +12,6 @@ data class Teammate(
     val workEmail: String?,
     val personalEmail: String,
     val duolingo: String?,
-    val photo: String
+    val photo: String,
+    val status: String,
 )

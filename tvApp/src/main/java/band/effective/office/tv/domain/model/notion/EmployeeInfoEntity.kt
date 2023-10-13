@@ -14,47 +14,38 @@ class EmployeeInfoEntity(
     val photoUrl: String,
 )
 
-fun List<EmployeeInfoEntity>.processEmployeeInfo(): List<EmployeeInfoUI> {
-    val resultList = mutableListOf<EmployeeInfoUI>()
-    this.forEach { employee ->
-        if (employee.nextBirthdayDate.isNotBlank() && isCelebrationToday(employee.nextBirthdayDate)) {
-            resultList.add(
+fun List<EmployeeInfoEntity>.processEmployeeInfo(): List<EmployeeInfoUI> =
+    map { employee ->
+        listOfNotNull(
+            if (employee.nextBirthdayDate.isNotBlank() && isCelebrationToday(employee.nextBirthdayDate)) {
                 BirthdayUI(
                     employee.firstName,
                     employee.photoUrl,
                 )
-            )
-        }
-        if (employee.startDate.isNotBlank() && isCelebrationToday(employee.startDate)) {
-            resultList.add(
+            } else null,
+            if (employee.startDate.isNotBlank() && isCelebrationToday(employee.startDate)) {
                 AnniversaryUI(
                     employee.firstName,
                     employee.photoUrl,
                     DateUtlils.getYearsFromStartDate(employee.startDate)
-                )
-            )
-        } else {
+                ).run { if (yearsInCompany == 0) null else this }
+            } else null,
             if (employee.startDate.isNotBlank() && isNewEmployeeToday(employee.startDate)) {
-                resultList.add(
-                    NewEmployeeUI(
-                        employee.firstName,
-                        employee.photoUrl,
-                    )
+                NewEmployeeUI(
+                    employee.firstName,
+                    employee.photoUrl,
                 )
-            }
-        }
-    }
-    return resultList
-}
+            } else null
+        )
+    }.flatten()
 
 fun isCelebrationToday(date: String): Boolean {
     val dateInfo = date.split('-')
     val dayOfMonth = dateInfo[2].toInt()
     val monthNumber = dateInfo[1].toInt()
     val calendar = Calendar.getInstance()
-    return (calendar.get(Calendar.DAY_OF_MONTH) == dayOfMonth && calendar.get(
-        Calendar.MONTH
-    ) + 1 == monthNumber)
+    return (calendar.get(Calendar.DAY_OF_MONTH) == dayOfMonth
+            && calendar.get(Calendar.MONTH) + 1 == monthNumber)
 }
 
 fun isNewEmployeeToday(date: String): Boolean {
