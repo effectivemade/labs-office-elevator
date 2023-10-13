@@ -18,8 +18,7 @@ import javax.inject.Singleton
 @Singleton
 class EmployeeInfoRemoteDataSourceImpl @Inject constructor(
     private val notionClient: NotionClient
-    ): EmployeeInfoRemoteDataSource
-{
+) : EmployeeInfoRemoteDataSource {
 
     private var employeeInfoList: MutableList<EmployeeInfoDto> = mutableListOf()
 
@@ -32,6 +31,7 @@ class EmployeeInfoRemoteDataSourceImpl @Inject constructor(
                         emit(Either.Success(res.data))
                         Log.d("test", employeeInfoList.size.toString())
                     }
+
                     is Either.Failure -> {
                         emit(Either.Failure(res.error.message))
                     }

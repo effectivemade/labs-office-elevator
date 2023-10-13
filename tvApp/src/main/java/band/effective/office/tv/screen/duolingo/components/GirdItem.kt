@@ -39,7 +39,11 @@ fun GirdItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Row(){
+        Row(
+            modifier = Modifier.width(270.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             Text(
                 text = place.toString(),
                 fontStyle = MaterialTheme.typography.h2.fontStyle,
@@ -48,36 +52,38 @@ fun GirdItem(
                 textAlign = TextAlign.Center,
                 color = Color.Black
             )
-            Spacer(modifier = Modifier.width(30.dp))
-            AsyncImage(
-                model = photo,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(32.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop,
-                placeholder = painterResource(id = R.drawable.duolingo_logo),
-                error = painterResource(id = R.drawable.duolingo_logo)
-            )
-            Spacer(modifier = Modifier.width(15.dp))
-            Column {
-                Text(
-                    modifier = Modifier.width(100.dp),
-                    text = name,
-                    fontStyle = MaterialTheme.typography.h2.fontStyle,
-                    fontSize = MaterialTheme.typography.h2.fontSize,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.Black,
-                    textAlign = TextAlign.Start,
-                    maxLines = 1
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                AsyncImage(
+                    model = photo,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop,
+                    placeholder = painterResource(id = R.drawable.duolingo_logo),
+                    error = painterResource(id = R.drawable.duolingo_logo)
                 )
-                Row {
-                    flags.forEach { flag ->
-                        Flag(modifier = Modifier.size(15.dp), drawableFlagId = flag.drawableId)
-                        Spacer(modifier = Modifier.width(5.dp))
+                Spacer(modifier = Modifier.width(15.dp))
+                Column {
+                    Text(
+                        modifier = Modifier.width(190.dp),
+                        text = name,
+                        fontStyle = MaterialTheme.typography.h2.fontStyle,
+                        fontSize = MaterialTheme.typography.h2.fontSize,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.Black,
+                        textAlign = TextAlign.Start,
+                        maxLines = 1
+                    )
+                    Row {
+                        flags.forEach { flag ->
+                            Flag(modifier = Modifier.size(15.dp), drawableFlagId = flag.drawableId)
+                            Spacer(modifier = Modifier.width(5.dp))
+                        }
                     }
                 }
             }
+
         }
         Text(
             text = indicatorUsers,

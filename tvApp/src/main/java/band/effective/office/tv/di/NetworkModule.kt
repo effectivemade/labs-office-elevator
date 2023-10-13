@@ -10,6 +10,8 @@ import band.effective.office.tv.network.leader.LeaderApi
 import band.effective.office.tv.network.mattermost.MattermostApi
 import band.effective.office.tv.network.synology.SynologyApi
 import band.effective.office.tv.network.uselessFact.UselessFactApi
+import band.effective.office.tv.repository.workTogether.WorkTogether
+import band.effective.office.tv.repository.workTogether.WorkTogetherImpl
 import band.effective.office.tv.utils.GregorianCalendarMoshiAdapter
 import band.effective.office.tv.utils.RStringGetter
 import com.squareup.moshi.Moshi
@@ -58,19 +60,20 @@ class NetworkModule {
     @Singleton
     @Provides
     @MattermostClient
-    fun provideAuthInterceptor() : AuthInterceptor = AuthInterceptor(BuildConfig.mattermostBotToken)
+    fun provideAuthInterceptor(): AuthInterceptor = AuthInterceptor(BuildConfig.mattermostBotToken)
 
     @Singleton
     @Provides
     @MattermostClient
-    fun provideMattermostOkHttpClient(@MattermostClient authInterceptor: AuthInterceptor) = OkHttpClient.Builder()
-        .addInterceptor(AuthInterceptor(BuildConfig.mattermostBotToken))
-        .addInterceptor(
-            HttpLoggingInterceptor()
-                .apply {
-                    level = HttpLoggingInterceptor.Level.BODY
-                })
-        .build()
+    fun provideMattermostOkHttpClient(@MattermostClient authInterceptor: AuthInterceptor) =
+        OkHttpClient.Builder()
+            .addInterceptor(AuthInterceptor(BuildConfig.mattermostBotToken))
+            .addInterceptor(
+                HttpLoggingInterceptor()
+                    .apply {
+                        level = HttpLoggingInterceptor.Level.BODY
+                    })
+            .build()
 
     @Singleton
     @Provides
@@ -117,6 +120,7 @@ class NetworkModule {
     @DualingoRetrofitClient
     fun provideEitherDuolingoAdapterFactory(): CallAdapter.Factory =
         EitherDuolingoAdapterFactory()
+
     @Singleton
     @Provides
     @MattermostClient
@@ -198,6 +202,7 @@ class NetworkModule {
     fun providesCoroutineScope(): CoroutineScope {
         return CoroutineScope(SupervisorJob() + Dispatchers.Default)
     }
+
     @Singleton
     @Provides
     fun provideNotionClient(): NotionClient {
@@ -206,5 +211,11 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun provideRStringGetter(@ApplicationContext appContext: Context): RStringGetter = RStringGetter(context = appContext)
+    fun provideRStringGetter(@ApplicationContext appContext: Context): RStringGetter =
+        RStringGetter(context = appContext)
+
+    @Singleton
+    @Provides
+    fun provideWorkTogether(notionClient: NotionClient): WorkTogether =
+        WorkTogetherImpl(notionClient)
 }
