@@ -30,7 +30,6 @@ fun Application.module() {
     configureValidation()
     configureExceptionHandling()
     configureSwagger()
-    configureCalendarNotifications()
     configureMicrometer()
     install(VerificationPlugin)
 }

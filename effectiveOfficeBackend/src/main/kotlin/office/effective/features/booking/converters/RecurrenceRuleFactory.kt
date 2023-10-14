@@ -3,7 +3,6 @@ package office.effective.features.booking.converters
 import model.Ending
 import model.Freq
 import model.Recurrence
-import java.lang.Exception
 
 /**
  * Object for creating Google calendar recurrence rule

@@ -8,49 +8,34 @@ import office.effective.common.exception.InstanceNotFoundException
 import office.effective.common.exception.MissingIdException
 import office.effective.common.exception.WorkspaceUnavailableException
 import office.effective.config
-import office.effective.features.calendar.repository.CalendarIdsRepository
 import office.effective.features.booking.converters.GoogleCalendarConverter
 import office.effective.features.user.repository.UserRepository
+import office.effective.features.workspace.repository.WorkspaceEntity
+import office.effective.features.workspace.repository.WorkspaceRepository
 import office.effective.model.Booking
-import office.effective.features.user.repository.UserEntity
 import java.util.*
 
 /**
- * Class that executes Google calendar queries for booking meeting rooms
+ * Class that executes Google calendar queries for booking workspaces
  *
  * Filters out all events that have a start less than the calendar.minTime from application.conf
  */
-class BookingCalendarRepository(
-    private val calendarIdsRepository: CalendarIdsRepository,
-    private val userRepository: UserRepository,
+class BookingWorkspaceRepository(
     private val calendar: Calendar,
-    private val googleCalendarConverter: GoogleCalendarConverter
+    private val googleCalendarConverter: GoogleCalendarConverter,
+    private val workspaceRepository: WorkspaceRepository,
+    private val userRepository: UserRepository
 ) : IBookingRepository {
     private val calendarEvents = calendar.Events()
-    private val defaultCalendar = config.propertyOrNull("calendar.defaultCalendar")?.getString()
-        ?: throw Exception("Config file does not contain Google default calendar id")
-
-    /**
-     * Finds workspace calendar id by workspace id
-     *
-     * @param workspaceId
-     * @return calendar id by workspace id in database
-     * @author Danil Kiselev, Daniil Zavyalov
-     */
-    private fun getCalendarIdByWorkspace(workspaceId: UUID): String {
-        return try {
-            calendarIdsRepository.findByWorkspace(workspaceId)
-        } catch (e: InstanceNotFoundException) {
-            defaultCalendar
-        }
-    }
+    private val workspaceCalendar = config.propertyOrNull("calendar.workspaceCalendar")?.getString()
+        ?: throw Exception("Config file does not contain workspace Google calendar id")
 
     /**
      * Returns whether a booking with the given id exists
      *
      * @param id booking id
      * @return true if booking exists
-     * @author Danil Kiselev
+     * @author Daniil Zavyalov
      */
     override fun existsById(id: String): Boolean {
         val event: Any?
@@ -62,11 +47,11 @@ class BookingCalendarRepository(
      * Deletes the booking with the given id
      *
      * @param id booking id
-     * @author Danil Kiselev
+     * @author Daniil Zavyalov
      */
     override fun deleteById(id: String) {
         try {
-            calendarEvents.delete(defaultCalendar, id).execute() //We can't delete directly from workspace calendar
+            calendarEvents.delete(workspaceCalendar, id).execute()
         } catch (e: GoogleJsonResponseException) {
             if (e.statusCode != 404 && e.statusCode != 410) {
                 throw e
@@ -80,11 +65,11 @@ class BookingCalendarRepository(
      *
      * @param bookingId booking id
      * @return [Booking] with the given [bookingId] or null if booking with the given id doesn't exist
-     * @author Daniil Zavyalov, Danil Kiselev
+     * @author Daniil Zavyalov
      */
     override fun findById(bookingId: String): Booking? {
         val event: Event? = findByCalendarIdAndBookingId(bookingId)
-        return event?.let { googleCalendarConverter.toBookingModel(it) }
+        return event?.let { googleCalendarConverter.toWorkspaceBooking(it) }
     }
 
     /**
@@ -95,9 +80,9 @@ class BookingCalendarRepository(
      * @param calendarId the calendar in which to search for the event
      * @return [Event] with the given [bookingId] from calendar with [calendarId]
      * or null if event with the given id doesn't exist
-     * @author Danil Kiselev, Daniil Zavyalov
+     * @author Daniil Zavyalov
      */
-    private fun findByCalendarIdAndBookingId(bookingId: String, calendarId: String = defaultCalendar): Event? {
+    private fun findByCalendarIdAndBookingId(bookingId: String, calendarId: String = workspaceCalendar): Event? {
         return try {
             calendar.events().get(calendarId, bookingId).execute()
         } catch (e: GoogleJsonResponseException) {
@@ -120,28 +105,12 @@ class BookingCalendarRepository(
         timeMin: Long,
         timeMax: Long? = null,
         singleEvents: Boolean = true,
-        calendarId: String = defaultCalendar
+        calendarId: String = workspaceCalendar
     ): Calendar.Events.List {
         return calendarEvents.list(calendarId)
             .setSingleEvents(singleEvents)
             .setTimeMin(DateTime(timeMin))
             .setTimeMax(timeMax?.let { DateTime(it) })
-    }
-
-    /**
-     * Checks whether the event contains workspace with the given calendar id
-     * (Rooms (workspaces) are also attendees of event).
-     *
-     * @param event
-     * @param attendeeEmail
-     * @return List of all workspace [Event]s
-     * @author Danil Kiselev, Daniil Zavyalov
-     */
-    private fun hasAttendee(event: Event, attendeeEmail: String): Boolean {
-        event.attendees?.forEach {
-            if (it.email == attendeeEmail) return true
-        }
-        return false
     }
 
     /**
@@ -152,53 +121,18 @@ class BookingCalendarRepository(
      * Old Google calendar events may not appear correctly in the system and cause unexpected exceptions
      * @param eventRangeTo upper bound (exclusive) for a beginBooking to filter by. Optional.
      * @return List of all workspace [Booking]
-     * @author Daniil Zavyalov, Danil Kiselev
+     * @author Daniil Zavyalov
      */
     override fun findAllByWorkspaceId(workspaceId: UUID, eventRangeFrom: Long, eventRangeTo: Long?): List<Booking> {
-        val workspaceCalendarId = getCalendarIdByWorkspace(workspaceId)
         val eventsWithWorkspace = basicQuery(eventRangeFrom, eventRangeTo)
-            .setQ(workspaceCalendarId)
+            .setQ(workspaceId.toString())
             .execute().items
 
-        val result: MutableList<Booking> = mutableListOf()
-        eventsWithWorkspace?.forEach { event ->
-            if (hasAttendee(event, workspaceCalendarId)) {
-                result.add(googleCalendarConverter.toBookingModel(event))
-            }
+        return eventsWithWorkspace.map { event ->
+            googleCalendarConverter.toWorkspaceBooking(event)
         }
-        return result
     }
 
-    /**
-     * Checks whether the given event organised by user with the given email.
-     * Organiser email may be specified at [Event.description] or [Event.organizer].email
-     *
-     * @param event
-     * @param email
-     * @return List of all user [Booking]
-     * @author Danil Kiselev, Daniil Zavyalov
-     */
-    private fun checkEventOrganizer(event: Event, email: String): Boolean {
-        if (event.organizer?.email == defaultCalendar) {
-            return event.description.contains(email)
-        }
-        //TODO: if event was created by defaultCalendar account, but not from Effective Office, this method will return false
-        return event.organizer?.email == email
-    }
-
-    /**
-     * Retrieves user email from database by user id
-     *
-     * @param id
-     * @return user email
-     * @throws InstanceNotFoundException if user with the given id doesn't exist in database
-     * @author Danil Kiselev
-     */
-    private fun findUserEmailByUserId(id: UUID): String {
-        return userRepository.findById(id)?.email ?: throw InstanceNotFoundException(
-            UserEntity::class, "User with id $id not found"
-        )
-    }
 
     /**
      * Returns all bookings with the given owner id
@@ -209,23 +143,16 @@ class BookingCalendarRepository(
      * @param eventRangeTo upper bound (exclusive) for a beginBooking to filter by. Optional.
      * @return List of all user [Booking]
      * @throws InstanceNotFoundException if user with the given id doesn't exist in database
-     * @author Daniil Zavyalov, Danil Kiselev
+     * @author Daniil Zavyalov
      */
     override fun findAllByOwnerId(ownerId: UUID, eventRangeFrom: Long, eventRangeTo: Long?): List<Booking> {
-        val userEmail: String = findUserEmailByUserId(ownerId)
-
         val eventsWithUser = basicQuery(eventRangeFrom, eventRangeTo)
-            .setQ(userEmail)
+            .setQ(ownerId.toString())
             .execute().items
 
-        val result = mutableListOf<Booking>()
-        eventsWithUser.forEach { event ->
-            if (checkEventOrganizer(event, userEmail)) {
-                result.add(googleCalendarConverter.toBookingModel(event))
-            }
+        return eventsWithUser.map { event ->
+            googleCalendarConverter.toWorkspaceBooking(event)
         }
-
-        return result
     }
 
     /**
@@ -245,21 +172,13 @@ class BookingCalendarRepository(
         eventRangeFrom: Long,
         eventRangeTo: Long?
     ): List<Booking> {
-        val userEmail: String = findUserEmailByUserId(ownerId)
-        val workspaceCalendarId = getCalendarIdByWorkspace(workspaceId)
-
         val eventsWithUserAndWorkspace = basicQuery(eventRangeFrom, eventRangeTo)
-            .setQ("$userEmail $workspaceCalendarId")
+            .setQ("$workspaceId $ownerId")
             .execute().items
 
-        val result = mutableListOf<Booking>()
-        eventsWithUserAndWorkspace.forEach { event ->
-            if (checkEventOrganizer(event, userEmail) && hasAttendee(event, workspaceCalendarId)) {
-                result.add(googleCalendarConverter.toBookingModel(event))
-            }
+        return eventsWithUserAndWorkspace.map { event ->
+            googleCalendarConverter.toWorkspaceBooking(event)
         }
-
-        return result
     }
 
     /**
@@ -273,7 +192,7 @@ class BookingCalendarRepository(
      */
     override fun findAll(eventRangeFrom: Long, eventRangeTo: Long?): List<Booking> {
         return basicQuery(eventRangeFrom, eventRangeTo).execute().items.map { event ->
-            googleCalendarConverter.toBookingModel(event)
+            googleCalendarConverter.toWorkspaceBooking(event)
         }
     }
 
@@ -283,23 +202,27 @@ class BookingCalendarRepository(
      *
      * @param booking [Booking] to be saved
      * @return saved [Booking]
-     * @author Danil Kiselev
+     * @author Daniil Zavyalov, Danil Kiselev
      */
     override fun save(booking: Booking): Booking {
-        val workspaceCalendar = calendarIdsRepository.findByWorkspace(
-            booking.workspace.id ?: throw MissingIdException("Missing workspace id")
-        )
-        val event = googleCalendarConverter.toGoogleEvent(booking)
+        val workspaceId = booking.workspace.id ?: throw MissingIdException("Missing booking workspace id")
+        val userId = booking.owner.id ?: throw MissingIdException("Missing booking owner id")
+        if (!userRepository.existsById(userId)) {
+            throw InstanceNotFoundException(
+                WorkspaceEntity::class, "User with id $workspaceId not wound"
+            )
+        }
+        val event = googleCalendarConverter.toGoogleWorkspaceEvent(booking)
 
-        val savedEvent = calendar.Events().insert(defaultCalendar, event).execute()
-        if (checkBookingAvailable(savedEvent, workspaceCalendar)) {
-            return googleCalendarConverter.toBookingModel(savedEvent)
+        val savedEvent = calendar.Events().insert(workspaceCalendar, event).execute()
+
+        if (checkBookingAvailable(savedEvent, workspaceId)) {
+            return googleCalendarConverter.toWorkspaceBooking(savedEvent)
         } else {
             deleteById(savedEvent.id)
             throw WorkspaceUnavailableException("Workspace ${booking.workspace.name} " +
                     "unavailable at time between ${booking.beginBooking} and ${booking.endBooking}")
         }
-
     }
 
     /**
@@ -307,71 +230,70 @@ class BookingCalendarRepository(
      *
      * @param booking changed booking
      * @return [Booking] after change saving
-     * @throws MissingIdException if [Booking.id] or [Booking.workspace].id is null
+     * @throws MissingIdException if [Booking.id] is null
      * @throws InstanceNotFoundException if booking given id doesn't exist in the database
-     * @throws WorkspaceUnavailableException if booking unavailable because of collision check
      * @author Daniil Zavyalov, Danil Kiselev
      */
     override fun update(booking: Booking): Booking {
-        val workspaceCalendar = calendarIdsRepository.findByWorkspace(
-            booking.workspace.id ?: throw MissingIdException("Missing workspace id")
-        )
+        val workspaceId = booking.workspace.id ?: throw MissingIdException("Missing booking workspace id")
         val bookingId = booking.id ?: throw MissingIdException("Update model must have id")
         val previousVersionOfEvent = findByCalendarIdAndBookingId(bookingId) ?: throw InstanceNotFoundException(
             WorkspaceBookingEntity::class, "Booking with id $bookingId not wound"
         )
-        val eventOnUpdate = googleCalendarConverter.toGoogleEvent(booking)
+        val eventOnUpdate = googleCalendarConverter.toGoogleWorkspaceEvent(booking)
 
-        val updatedEvent: Event = calendarEvents.update(defaultCalendar, bookingId, eventOnUpdate).execute()
+        val updatedEvent: Event = calendarEvents.update(workspaceCalendar, bookingId, eventOnUpdate).execute()
 
         val sequence = updatedEvent.sequence
-        if (checkBookingAvailable(updatedEvent, workspaceCalendar)) {
-            return googleCalendarConverter.toBookingModel(updatedEvent)
+        if (checkBookingAvailable(updatedEvent, workspaceId)) {
+            return googleCalendarConverter.toWorkspaceBooking(updatedEvent)
         } else {
             previousVersionOfEvent.sequence = sequence
-            calendarEvents.update(defaultCalendar, bookingId, previousVersionOfEvent).execute()
+            calendarEvents.update(workspaceCalendar, bookingId, previousVersionOfEvent).execute()
             throw WorkspaceUnavailableException("Workspace ${booking.workspace.name} " +
                     "unavailable at time between ${booking.beginBooking} and ${booking.endBooking}")
         }
     }
 
     /**
-     * Launch checkSingleEventCollision for non-cycle event
-     * or receive instances for recurrent event and checks all instances.
+     * Launch checkSingleEventCollision for non-cycle event or
+     * receive instances for recurrent event and checks all instances.
      *
      * @param incomingEvent: [Event] - Must take only SAVED event
      * @return Boolean. True if booking available
-     * @author Kiselev Danil
+     * @author Kiselev Danil, Daniil Zavyalov
      * */
-    private fun checkBookingAvailable(incomingEvent: Event, workspaceCalendar: String): Boolean {
+    private fun checkBookingAvailable(incomingEvent: Event, workspaceId: UUID): Boolean {
         var isAvailable = false;
 
         if (incomingEvent.recurrence != null) {
             //TODO: Check, if we can receive instances without pushing this event into calendar
-            calendarEvents.instances(defaultCalendar, incomingEvent.id).setMaxResults(50).execute().items.forEach { event ->
-                if (!checkSingleEventCollision(event, workspaceCalendar)) {
-                    return@checkBookingAvailable false
+            val instances = calendarEvents.instances(workspaceCalendar, incomingEvent.id).execute().items
+            for (instance in instances) {
+                if (!checkSingleEventCollision(instance, workspaceId)) {
+                    return false
                 } else {
                     isAvailable = true
                 }
             }
         } else {
-            isAvailable = checkSingleEventCollision(incomingEvent, workspaceCalendar)
+            isAvailable = checkSingleEventCollision(incomingEvent, workspaceId)
         }
         return isAvailable
     }
 
     /**
-     * Contains collision condition. Checks collision between single event from param and all saved events from event.start (leftBorder) until event.end (rightBorder)
+     * Contains collision condition. Checks collision between single event from param
+     * and all saved events from [Event.start] until [Event.end]
      *
      * @param event: [Event] - Must take only SAVED event
-     * @author Kiselev Danil
+     * @author Kiselev Danil, Daniil Zavyalov
      * */
-    private fun checkSingleEventCollision(event: Event, workspaceCalendar: String): Boolean {
-        val savedEvents = basicQuery(event.start.dateTime.value, event.end.dateTime.value)
-            .setQ(workspaceCalendar)
+    private fun checkSingleEventCollision(event: Event, workspaceId: UUID): Boolean {
+        val events = basicQuery(event.start.dateTime.value, event.end.dateTime.value)
+            .setQ(workspaceId.toString())
             .execute().items
-        for (i in savedEvents) {
+        for (i in events) {
             if (
                 !((i.start.dateTime.value >= event.end.dateTime.value) || (i.end.dateTime.value <= event.start.dateTime.value))
                 && (i.id != event.id)
@@ -379,7 +301,6 @@ class BookingCalendarRepository(
                 return false
             }
         }
-
         return true
     }
 }
