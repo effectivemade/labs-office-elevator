@@ -50,7 +50,6 @@ private fun EventStoryScreenContent(
     state: LatestEventInfoUiState,
     viewModel: EventStoryViewModel,
 ) {
-    val state by viewModel.state.collectAsState()
     val (contentFocus, playButton) = remember { FocusRequester.createRefs() }
     ScreenWithControlsTemplate(
         modifier = Modifier
