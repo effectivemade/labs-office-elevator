@@ -29,7 +29,6 @@ class EmployeeInfoRemoteDataSourceImpl @Inject constructor(
                     queryDatabasePages(client)) {
                     is Either.Success -> {
                         emit(Either.Success(res.data))
-                        Log.d("test", employeeInfoList.size.toString())
                     }
 
                     is Either.Failure -> {
