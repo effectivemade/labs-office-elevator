@@ -1,9 +1,6 @@
 package band.effective.office.tv.domain.model.notion
 
-import band.effective.office.tv.screen.eventStory.models.AnniversaryUI
-import band.effective.office.tv.screen.eventStory.models.BirthdayUI
-import band.effective.office.tv.screen.eventStory.models.EmployeeInfoUI
-import band.effective.office.tv.screen.eventStory.models.NewEmployeeUI
+import band.effective.office.tv.screen.eventStory.models.*
 import band.effective.office.tv.utils.DateUtlils
 import java.util.Calendar
 
@@ -17,14 +14,22 @@ class EmployeeInfoEntity(
 fun List<EmployeeInfoEntity>.processEmployeeInfo(): List<EmployeeInfoUI> =
     map { employee ->
         listOfNotNull(
-            if (employee.nextBirthdayDate.isNotBlank() && isCelebrationToday(employee.nextBirthdayDate)) {
+            if (employee.nextBirthdayDate.isNotBlank() && isYearCelebrationToday(employee.nextBirthdayDate)) {
                 BirthdayUI(
                     employee.firstName,
                     employee.photoUrl,
                 )
             } else null,
-            if (employee.startDate.isNotBlank() && isCelebrationToday(employee.startDate)) {
-                AnniversaryUI(
+            if (employee.startDate.isNotBlank() && isFirstOrThirdMonthCelebrationToday(employee.startDate)) {
+                MonthAnniversaryUI(
+                    employee.firstName,
+                    employee.photoUrl,
+                    DateUtlils.getYearsFromStartDate(employee.startDate),
+                    DateUtlils.getMonthsFromStartDate(employee.startDate),
+                ).run { if (yearsInCompany == 0) this else null }
+            } else null,
+            if (employee.startDate.isNotBlank() && isYearCelebrationToday(employee.startDate)) {
+                AnnualAnniversaryUI(
                     employee.firstName,
                     employee.photoUrl,
                     DateUtlils.getYearsFromStartDate(employee.startDate)
@@ -39,13 +44,24 @@ fun List<EmployeeInfoEntity>.processEmployeeInfo(): List<EmployeeInfoUI> =
         )
     }.flatten()
 
-fun isCelebrationToday(date: String): Boolean {
+fun isYearCelebrationToday(date: String): Boolean {
     val dateInfo = date.split('-')
     val dayOfMonth = dateInfo[2].toInt()
     val monthNumber = dateInfo[1].toInt()
     val calendar = Calendar.getInstance()
     return (calendar.get(Calendar.DAY_OF_MONTH) == dayOfMonth
             && calendar.get(Calendar.MONTH) + 1 == monthNumber)
+}
+
+fun isFirstOrThirdMonthCelebrationToday(date: String): Boolean {
+    val dateInfo = date.split('-')
+    val dayOfMonth = dateInfo[2].toInt()
+    val monthNumber = dateInfo[1].toInt()
+    val year = dateInfo[0].toInt()
+    val calendar = Calendar.getInstance()
+    return (calendar.get(Calendar.DAY_OF_MONTH) == dayOfMonth
+            && (calendar.get(Calendar.MONTH)  == monthNumber ||
+            calendar.get(Calendar.MONTH) - 2 == monthNumber) && year == calendar.get(Calendar.YEAR))
 }
 
 fun isNewEmployeeToday(date: String): Boolean {
