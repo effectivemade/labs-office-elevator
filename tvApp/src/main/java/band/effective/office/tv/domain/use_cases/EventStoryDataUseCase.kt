@@ -1,13 +1,11 @@
 package band.effective.office.tv.domain.use_cases
 
-import android.util.Log
 import band.effective.office.tv.core.network.entity.Either
 import band.effective.office.tv.domain.model.duolingo.DuolingoUser
 import band.effective.office.tv.domain.model.message.MessageQueue
 import band.effective.office.tv.domain.model.notion.EmployeeInfoEntity
 import band.effective.office.tv.domain.model.notion.processEmployeeInfo
 import band.effective.office.tv.repository.duolingo.DuolingoRepository
-import band.effective.office.tv.repository.notion.EmployeeInfoRepository
 import band.effective.office.tv.repository.workTogether.Teammate
 import band.effective.office.tv.repository.workTogether.WorkTogether
 import band.effective.office.tv.screen.duolingo.model.toUI
@@ -18,7 +16,6 @@ import band.effective.office.tv.screen.eventStory.models.StoryModel
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import java.text.SimpleDateFormat
-import java.util.GregorianCalendar
 import javax.inject.Inject
 import kotlinx.coroutines.flow.flow as flow
 
