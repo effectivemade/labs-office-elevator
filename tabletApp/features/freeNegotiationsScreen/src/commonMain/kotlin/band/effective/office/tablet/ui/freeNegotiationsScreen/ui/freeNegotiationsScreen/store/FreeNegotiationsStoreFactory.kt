@@ -122,17 +122,6 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
                         Message.GetFreeRoomsInfo(
                             updateEventList(
                                 booking = getState().booking,
-//                                    .let {
-//                                    if (it.eventInfo.startTime == it.eventInfo.finishTime)
-//                                        it.copy(
-//                                            eventInfo = it.eventInfo.copy(
-//                                                finishTime = it.eventInfo.finishTime
-//                                                    .apply { add(Calendar.MINUTE, 30) }
-//                                            )
-//                                        ) else {
-//                                        it
-//                                    }
-//                                },
                                 listRooms = roomsInfoUi,
                                 getState = getState
                             )
@@ -176,7 +165,7 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
 
                         booking.eventInfo.startTime < first().startTime -> room.copy(
                             state = RoomState.SOON_BUSY(first()),
-                            changeEventTime = (first().startTime.time.time - booking.eventInfo.startTime.time.time).toInt()
+                            changeEventTime = ((first().startTime.time.time - booking.eventInfo.startTime.time.time)/60000).toInt()
                         )
 
                         else -> room.copy(
