@@ -20,8 +20,6 @@ import band.effective.office.tablet.features.core.MainRes
 import band.effective.office.tablet.ui.common.CrossButtonView
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.header8
-import band.effective.office.tablet.utils.date
-import band.effective.office.tablet.utils.time24
 import epicarchitect.calendar.compose.basis.EpicMonth
 import epicarchitect.calendar.compose.basis.config.rememberBasisEpicCalendarConfig
 import epicarchitect.calendar.compose.datepicker.config.rememberEpicDatePickerConfig
@@ -103,7 +101,7 @@ fun DateTimePickerModalView(
     ) {
         Box(
             modifier = Modifier
-                .fillMaxHeight(0.6f)
+                .fillMaxHeight(0.8f)
                 .fillMaxWidth(0.8f)
                 .clip(RoundedCornerShape(3))
                 .background(LocalCustomColorsPalette.current.elevationBackground)

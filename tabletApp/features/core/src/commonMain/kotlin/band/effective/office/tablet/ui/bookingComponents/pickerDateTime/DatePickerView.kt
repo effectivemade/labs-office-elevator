@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.material3.Button
@@ -27,7 +26,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.features.core.MainRes
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
-import band.effective.office.tablet.ui.theme.header4
 import band.effective.office.tablet.ui.theme.header6
 import epicarchitect.calendar.compose.basis.BasisDayOfMonthContent
 import epicarchitect.calendar.compose.basis.BasisDayOfWeekContent
@@ -74,7 +72,7 @@ fun DatePickerView(epicDatePickerState: EpicDatePickerState) {
                 state = epicDatePickerState,
                 dayOfWeekContent = CustomDayOfWeekContent,
                 dayOfMonthContent = CustomDayOfMonthContent,
-                modifier = Modifier.background(Color.Transparent).height(180.dp),
+                modifier = Modifier.background(Color.Transparent),
             )
         }
     }

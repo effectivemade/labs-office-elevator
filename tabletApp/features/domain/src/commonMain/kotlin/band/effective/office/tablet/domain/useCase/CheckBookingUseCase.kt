@@ -35,7 +35,9 @@ class CheckBookingUseCase(
                 )
             )
 
-            is Either.Success -> Either.Success(eventList.data.getBusy(event))
+            is Either.Success -> {
+                Either.Success(eventList.data.getBusy(event))
+            }
         }
 
 
@@ -67,5 +69,5 @@ class CheckBookingUseCase(
         if (currentEvent != null) eventList + currentEvent!! else eventList
 
     private fun List<EventInfo>.getBusy(event: EventInfo) =
-        filter { it.startTime.belong(event) || event.startTime.belong(it) }
+        filter { it.startTime.belong(event) || event.startTime.belong(it)  }
 }

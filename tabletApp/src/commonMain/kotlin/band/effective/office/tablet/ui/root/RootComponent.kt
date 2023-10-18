@@ -1,10 +1,10 @@
 package band.effective.office.tablet.ui.root
 
+import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.FreeNegotiationsComponent
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.FreeNegotiationsComponentImpl
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store.BookingStore
 import band.effective.office.tablet.ui.mainScreen.mainScreen.MainComponent
-import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
 import band.effective.office.tablet.ui.mainScreen.settingsComponents.SettingsComponent
 import band.effective.office.tablet.ui.mainScreen.settingsComponents.SettingsComponentImpl
 import com.arkivanov.decompose.ComponentContext
@@ -39,7 +39,7 @@ class RootComponent(componentContext: ComponentContext, private val storeFactory
                 MainComponent(
                     componentContext = componentContext,
                     OnSelectOtherRoomRequest = {
-                        navigation.push(Config.SelectRoom)
+                        navigation.push(Config.SelectRoom(it()))
                     },
                     onSettings = {
                         navigation.replaceAll(Config.Settings)
@@ -60,10 +60,7 @@ class RootComponent(componentContext: ComponentContext, private val storeFactory
                             BookingStore.Intent.OnChangeIsActive(reset)
                         )
                     },
-                    onBookingInfo = {
-                        (childStack.value.backStack.last().instance as Child.MainChild).component
-                            .bookingRoomComponent.getBooking()
-                    }
+                    onBookingInfo = { config.booking }
                 )
             )
         }
@@ -97,7 +94,7 @@ class RootComponent(componentContext: ComponentContext, private val storeFactory
         object Settings : Config()
 
         @Parcelize
-        object SelectRoom : Config()
+        data class SelectRoom( val booking: Booking) : Config()
 
         @Parcelize
         object Main : Config()
