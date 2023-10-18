@@ -88,6 +88,10 @@ fun EmployeeScreenContent(
     onTextFieldUpdate: (String) -> Unit,
     isLoading: Boolean
 ) {
+    //TODO(Artem Gruzdev) need to fix this. We should to use snapshotFlow or derivedStateOf for showing
+    // query result
+    // see there: https://medium.com/androiddevelopers/effective-state-management-for-textfield-in-compose-d6e5b070fbe5
+    var query by remember { mutableStateOf(userMessageState) }
 
     Column {
         Column(
@@ -104,7 +108,8 @@ fun EmployeeScreenContent(
                 modifier = Modifier.padding(start = 20.dp, top = 55.dp, end = 15.dp, bottom = 25.dp)
             )
             TextField(
-                value = userMessageState, onValueChange = {
+                value = query, onValueChange = {
+                    query = it
                     onTextFieldUpdate(it)
                 }, modifier = Modifier
                     .fillMaxWidth()

@@ -3,8 +3,10 @@ package band.effective.office.elevator.ui.root.store
 import band.effective.office.elevator.data.ApiResponse
 import band.effective.office.elevator.data.database.DBSource
 import band.effective.office.elevator.domain.GoogleSignIn
+import band.effective.office.elevator.domain.useCase.SignInUseCase
 import band.effective.office.elevator.ui.root.store.RootStore.Label
 import band.effective.office.elevator.ui.root.store.RootStore.State
+import band.effective.office.network.model.Either
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
@@ -18,7 +20,7 @@ internal class RootStoreImplFactory(
     private val storeFactory: StoreFactory
 ) : KoinComponent {
 
-    private val signInClient: GoogleSignIn by inject<GoogleSignIn>()
+    private val signInUseCase: SignInUseCase by inject()
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): RootStore =
@@ -44,15 +46,19 @@ internal class RootStoreImplFactory(
 
         private fun checkUserAlreadySigned() {
             scope.launch {
-                when (signInClient.retrieveAuthorizedUser()) {
-                    is ApiResponse.Error.HttpError -> TODO()
-                    ApiResponse.Error.NetworkError -> TODO()
-                    ApiResponse.Error.SerializationError -> TODO()
-                    ApiResponse.Error.UnknownError -> {
-                        publish(Label.UserNotSigned)
+                signInUseCase
+                    .signIn()
+                    .collect { response ->
+                        when (response) {
+                            is Either.Error<*> -> {
+                                publish(Label.UserNotSigned)
+                            }
+
+                            is Either.Success<*> -> {
+                                publish(Label.UserAlreadySigned)
+                            }
+                        }
                     }
-                    is ApiResponse.Success -> publish(Label.UserAlreadySigned)
-                }
             }
         }
     }

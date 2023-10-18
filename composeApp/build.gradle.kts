@@ -151,7 +151,7 @@ android {
         minSdk = 26
         targetSdk = 33
 
-        applicationId = "band.effective.office.elevator.android"
+        applicationId = "band.effective.office.elevator"
         versionCode = 1
         versionName = "1.0.0"
     }
@@ -210,12 +210,12 @@ buildConfig {
 
     buildConfigField(
         "String",
-        "webClient", "\"726357293621-s4lju93oibotmefghoh3b3ucckalh933.apps.googleusercontent.com\""
+        "webClient", "\"503255112190-4flfuu86ihrpismfl70nuae6u6n5gk4p.apps.googleusercontent.com\""
     )
     buildConfigField(
         "String",
         "iosClient",
-        "\"726357293621-hegk0410bsb1a5hvl3ihpc4d2bfkmlgb.apps.googleusercontent.com\""
+        "\"503255112190-a3n1441gcnl7alamoqkvk9omtv5q97tl.apps.googleusercontent.com\""
     )
 }
 

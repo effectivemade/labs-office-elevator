@@ -9,4 +9,5 @@ interface DBSource {
     suspend fun update(user: User)
 
     fun deleteUserData()
+
 }

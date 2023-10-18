@@ -21,15 +21,21 @@ import io.ktor.serialization.kotlinx.json.json
 
 object KtorEtherClient {
     /**token for authorization*/
-    var token = BuildConfig.apiKey
+    var token = mutableListOf<String>(BuildConfig.apiKey)
     /**default http client with KtorEtherClient*/
     val httpClient by lazy {
+
         createHttpEngine().config {
             install(KtorEitherPlugin)
             install(Auth) {
                 bearer {
                     loadTokens {
-                        BearerTokens(token, "")
+                        println("used token = ${token.last()}")
+                        BearerTokens(token.last(), "")
+                    }
+                    refreshTokens {
+                        println("calling refresh")
+                        BearerTokens(token.last(), "")
                     }
                 }
             }
