@@ -25,8 +25,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import band.effective.office.tv.R
 import band.effective.office.tv.domain.model.notion.EventType
-import band.effective.office.tv.screen.eventStory.models.AnniversaryUI
+import band.effective.office.tv.screen.eventStory.models.AnnualAnniversaryUI
 import band.effective.office.tv.screen.eventStory.models.EmployeeInfoUI
+import band.effective.office.tv.screen.eventStory.models.MonthAnniversaryUI
 import band.effective.office.tv.screen.eventStory.models.NewEmployeeUI
 import band.effective.office.tv.ui.theme.drukLCGWideMedium
 import band.effective.office.tv.ui.theme.museoCyrl
@@ -39,12 +40,12 @@ import coil.size.Size
 @Composable
 fun StoryContent(
     employeeInfo: EmployeeInfoUI,
-    onImageLoading: () -> Unit,
-    onImageLoaded: () -> Unit,
     modifier: Modifier
 ) {
-    val isAnniversary = employeeInfo.eventType == EventType.Anniversary
+    val isAnnualAnnualAnniversary = employeeInfo.eventType == EventType.AnnualAnniversary
     val isBirthday = employeeInfo.eventType == EventType.Birthday
+    val isMonthAnniversary  = employeeInfo.eventType == EventType.MonthAnniversary
+
     val painter = rememberAsyncImagePainter(
         model = ImageRequest.Builder(LocalContext.current)
             .data(employeeInfo.photoUrl).size(Size.ORIGINAL).build()
@@ -87,8 +88,8 @@ fun StoryContent(
                     color = Color.Black,
                     fontStyle = FontStyle.Italic
                 )
-                if (isAnniversary) {
-                    val story = employeeInfo as AnniversaryUI
+                if (isAnnualAnnualAnniversary) {
+                    val story = employeeInfo as AnnualAnniversaryUI
                     Text(
                         text =
                         stringResource(id = R.string.with_us) + " " + story.yearsInCompany + " " + getCorrectDeclension(
@@ -108,9 +109,24 @@ fun StoryContent(
                         color = Color.Black,
                         fontFamily = drukLCGWideMedium,
                     )
-                } else {
+                } else if (isMonthAnniversary) {
+                    val story = employeeInfo as MonthAnniversaryUI
                     Text(
-                        text = stringResource(id = R.string.now_in_team),
+                        text =
+                        stringResource(id = R.string.with_us) + " " + story.monthsInCompany + " " + getCorrectDeclension(
+                            story.monthsInCompany,
+                            "месяц",
+                            "месяца",
+                            "месяцев"
+                        ),
+                        fontSize = 54.sp,
+                        color = Color.Black,
+                        fontFamily = drukLCGWideMedium,
+                    )
+                }
+                else {
+                    Text(
+                        text = stringResource(id = R.string.welcome_to_the_team),
                         fontSize = 54.sp,
                         color = Color.Black,
                         fontFamily = drukLCGWideMedium,
@@ -135,7 +151,6 @@ fun StoryContent(
 fun PreviewStoryContent() {
     StoryContent(
         employeeInfo = NewEmployeeUI("John Doe", "testUrl"),
-        {}, {},
         Modifier
             .fillMaxSize()
             .padding(vertical = 64.dp)

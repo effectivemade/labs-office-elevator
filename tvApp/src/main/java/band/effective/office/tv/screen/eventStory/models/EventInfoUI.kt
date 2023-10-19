@@ -16,11 +16,19 @@ data class BirthdayUI(
     val employeePhotoUrl: String,
 ) : EmployeeInfoUI(employeeName, employeePhotoUrl, EventType.Birthday)
 
-data class AnniversaryUI(
+data class AnnualAnniversaryUI(
     private val employeeName: String,
     private val employeePhotoUrl: String,
     val yearsInCompany: Int
-) : EmployeeInfoUI(employeeName, employeePhotoUrl, EventType.Anniversary)
+) : EmployeeInfoUI(employeeName, employeePhotoUrl, EventType.AnnualAnniversary)
+
+data class MonthAnniversaryUI(
+    private val employeeName: String,
+    private val employeePhotoUrl: String,
+    val yearsInCompany: Int,
+    val monthsInCompany: Int
+) : EmployeeInfoUI(employeeName, employeePhotoUrl, EventType.MonthAnniversary)
+
 
 data class NewEmployeeUI(
     private val employeeName: String,
