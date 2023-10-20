@@ -320,7 +320,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
             ) {
                 bookingComponent.onEvent(
                     BookingStore.Intent.ChangeSelectedWorkSpacesZone(
-                        workSpaceZone = this@with
+                        workspaceZoneUI = this@with
                     )
                 )
             }

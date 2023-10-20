@@ -13,7 +13,6 @@ import band.effective.office.elevator.ui.models.ReservedSeat
 import band.effective.office.network.model.Either
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 
 class BookingInteractor(
@@ -50,6 +49,8 @@ class BookingInteractor(
     }
 
     suspend fun getZones() = workspaceUseCase.getZones()
+
+
     suspend fun getWorkspaces(
         tag: String,
         freeFrom: LocalDateTime? = null,

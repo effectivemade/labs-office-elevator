@@ -9,7 +9,7 @@ import band.effective.office.elevator.domain.models.TypeEndPeriodBooking
 import band.effective.office.elevator.ui.booking.models.Frequency
 import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
-import band.effective.office.elevator.ui.booking.models.WorkSpaceZone
+import band.effective.office.elevator.ui.booking.models.WorkspaceZoneUI
 import band.effective.office.elevator.ui.models.TypesList
 import band.effective.office.elevator.utils.getCurrentDate
 import band.effective.office.network.model.Either
@@ -33,7 +33,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.minus
-import org.koin.core.component.get
 
 class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
 
@@ -55,6 +54,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             ) {}
 
     private sealed interface Msg {
+        data class UpdateAllZones(val zones: List<WorkspaceZoneUI>) : Msg
         data class ChangeTypeOfEnd(val type: TypeEndPeriodBooking) : Msg
         data class BeginningBookingTime(val time: LocalTime) : Msg
         data class BeginningBookingDate(val date: LocalDate) : Msg
@@ -64,7 +64,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         data class DateBooking(val date: LocalDate) : Msg
         data class TimeBooking(val time: LocalTime) : Msg
 
-        data class ChangeSelectedWorkSpacesZone(val workSpacesZone: List<WorkSpaceZone>) : Msg
+        data class ChangeSelectedWorkSpacesZone(val workSpacesZone: List<WorkspaceZoneUI>) : Msg
 
         data class ChangeWorkSpacesUI(val workSpacesUI: List<WorkSpaceUI>) : Msg
 
@@ -315,7 +315,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     scope.launch {
                         publish(BookingStore.Label.CloseBookPeriod)
                         getSpacesUI(
-                            workSpaceZone = getState().workSpacesZone,
+                            workspaceZoneUI = getState().workSpacesZone,
                             state = getState(),
                             dispatch = { dispatch(Msg.ChangeWorkSpacesUI(it)) }
                         )
@@ -355,18 +355,17 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is BookingStore.Intent.ChangeSelectedWorkSpacesZone -> {
                     scope.launch {
                         getSpacesUI(
-                            workSpaceZone = intent.workSpaceZone,
+                            workspaceZoneUI = intent.workspaceZoneUI,
                             state = getState(),
                             dispatch = {
                                 dispatch(Msg.ChangeWorkSpacesUI(it))
-                                dispatch(Msg.ChangeSelectedWorkSpacesZone(intent.workSpaceZone))
+                                dispatch(Msg.ChangeSelectedWorkSpacesZone(intent.workspaceZoneUI))
                             }
                         )
                     }
                 }
 
                 is BookingStore.Intent.ChangeWorkSpacesUI -> {
-                    val list = getState().workSpacesZone.filter { zone -> zone.isSelected == true }
                     intent.workSpaces.forEachIndexed { index1, workSpaceUI ->
                         getState().workSpacesZone.forEachIndexed { index2, workSpaceZone ->
                             intent.workSpaces.filter { workSpaceUI -> workSpaceUI.workSpaceName == workSpaceZone.name }
@@ -453,17 +452,38 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 Action.InitWorkSpaces -> {
                     scope.launch {
                         getSpacesUI(
-                            workSpaceZone = getState().workSpacesZone,
+                            workspaceZoneUI = getState().workSpacesZone,
                             state = getState(),
                             dispatch = { dispatch(Msg.ChangeWorkSpacesUI(it)) }
                         )
+                    }
+                    scope.launch {
+                        initZones()
+                    }
+                }
+            }
+        }
+
+        private suspend fun initZones() {
+            withContext(Dispatchers.IO) {
+                bookingInteractor.getZones().collect { zonesResponse ->
+                    withContext(Dispatchers.Main) {
+                        when (zonesResponse) {
+                            is Either.Success -> {
+                                val zones: List<WorkspaceZoneUI> = zonesResponse.data
+                                dispatch(Msg.UpdateAllZones(zones = zones))
+                            }
+                            is Either.Error -> {
+                                //TODO(Artem Gruzdev) schedule error
+                            }
+                        }
                     }
                 }
             }
         }
 
         private suspend fun getSpacesUI(
-            workSpaceZone: List<WorkSpaceZone>,
+            workspaceZoneUI: List<WorkspaceZoneUI>,
             state: BookingStore.State,
             dispatch: (List<WorkSpaceUI>) -> Unit,
         ) {
@@ -485,7 +505,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     withContext(Dispatchers.Main) {
                         when (response) {
                             is Either.Success -> {
-                                val list = workSpaceZone.filter { it.isSelected }
+                                val list = workspaceZoneUI.filter { it.isSelected }
                                 val listWorkSpaces = response.data
                                 Napier.d { response.data.toString() }
                                 val newList = mutableListOf<WorkSpaceUI>()
@@ -558,6 +578,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                 is Msg.ChangeDateOfEndPeriod -> copy(dateOfEndPeriod = msg.date)
                 is Msg.ChangeTypeOfEnd -> copy(typeOfEnd = msg.type)
+                is Msg.UpdateAllZones -> copy(workSpacesZone = msg.zones)
             }
         }
     }

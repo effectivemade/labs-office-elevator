@@ -2,6 +2,7 @@ package band.effective.office.elevator.domain.models
 
 import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
+import band.effective.office.elevator.ui.booking.models.WorkspaceZoneUI
 import band.effective.office.network.dto.UtilityDTO
 import band.effective.office.network.dto.WorkspaceDTO
 import band.effective.office.network.dto.WorkspaceZoneDTO
@@ -21,6 +22,14 @@ sealed interface WorkspaceType {
 }
 
 data class WorkspaceZone(val id: String, val name: String)
+
+fun WorkspaceZone.toUIModelZone() =
+    WorkspaceZoneUI(
+        isSelected = true,
+        name = name
+    )
+
+fun List<WorkspaceZone>.toUIModelZones() = map { it.toUIModelZone() }
 
 fun WorkspaceZone.toDTO() =
     WorkspaceZoneDTO(id = id, name = name)
