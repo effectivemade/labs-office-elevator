@@ -9,7 +9,7 @@ import band.effective.office.elevator.ui.booking.models.Frequency
 import band.effective.office.elevator.ui.booking.models.MockDataSpaces
 import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
-import band.effective.office.elevator.ui.booking.models.WorkSpaceZone
+import band.effective.office.elevator.ui.booking.models.WorkspaceZoneUI
 import band.effective.office.elevator.ui.models.TypesList
 import band.effective.office.elevator.utils.getCurrentDate
 import com.arkivanov.mvikotlin.core.store.Store
@@ -46,7 +46,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         object CloseCalendar : Intent
         object OpenMainScreen : Intent
         object CloseConfirmBooking : Intent
-        data class ChangeSelectedWorkSpacesZone(val workSpaceZone: List<WorkSpaceZone>) : Intent
+        data class ChangeSelectedWorkSpacesZone(val workspaceZoneUI: List<WorkspaceZoneUI>) : Intent
         data class ApplyDate(val date: List<LocalDate>) : Intent
         data class ShowPlace(val type: String) : Intent
 
@@ -74,7 +74,8 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         val creatingBookModel: CreatingBookModel,
         val currentDate: LocalDate,
         val workSpacesType: WorkSpaceType,
-        val workSpacesZone: List<WorkSpaceZone>,
+        val currentWorkspaceZones: List<WorkspaceZoneUI>,
+        val allZonesList: List<WorkspaceZoneUI>,
         val selectedStartDate: LocalDate,
         val selectedStartTime: LocalTime,
         val selectedFinishTime: LocalTime,
@@ -106,7 +107,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
                     typeOfEndPeriod = TypeEndPeriodBooking.Never
                 ),
                 workSpacesType = WorkSpaceType.WORK_PLACE,
-                workSpacesZone = MockDataSpaces.allBookingZone,
+                currentWorkspaceZones = MockDataSpaces.allBookingZone,
                 selectedStartDate = getCurrentDate(),
                 selectedStartTime = getCurrentTime(),
                 selectedFinishTime = getCurrentTime(),
@@ -134,7 +135,8 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
                 isLoadingListWorkspaces = true,
                 isLoadingBookingCreation = true,
                 typeOfEnd = TypeEndPeriodBooking.CountRepeat(1),
-                dateOfEndPeriod = getCurrentDate()
+                dateOfEndPeriod = getCurrentDate(),
+                allZonesList = listOf()
             )
         }
     }
