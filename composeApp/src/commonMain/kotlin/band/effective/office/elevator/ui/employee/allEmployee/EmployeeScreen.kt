@@ -113,7 +113,6 @@ fun EmployeeScreenContent(
                     onTextFieldUpdate(it)
                 }, modifier = Modifier
                     .fillMaxWidth()
-                    .height(70.dp)
                     .padding(start = 20.dp, top = 10.dp, end = 20.dp, bottom = 5.dp),
                 textStyle = TextStyle(
                     color = ExtendedThemeColors.colors.trinidad_400,
