@@ -74,7 +74,8 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         val creatingBookModel: CreatingBookModel,
         val currentDate: LocalDate,
         val workSpacesType: WorkSpaceType,
-        val workSpacesZone: List<WorkspaceZoneUI>,
+        val currentWorkspaceZones: List<WorkspaceZoneUI>,
+        val allZonesList: List<WorkspaceZoneUI>,
         val selectedStartDate: LocalDate,
         val selectedStartTime: LocalTime,
         val selectedFinishTime: LocalTime,
@@ -106,7 +107,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
                     typeOfEndPeriod = TypeEndPeriodBooking.Never
                 ),
                 workSpacesType = WorkSpaceType.WORK_PLACE,
-                workSpacesZone = MockDataSpaces.allBookingZone,
+                currentWorkspaceZones = MockDataSpaces.allBookingZone,
                 selectedStartDate = getCurrentDate(),
                 selectedStartTime = getCurrentTime(),
                 selectedFinishTime = getCurrentTime(),
@@ -134,7 +135,8 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
                 isLoadingListWorkspaces = true,
                 isLoadingBookingCreation = true,
                 typeOfEnd = TypeEndPeriodBooking.CountRepeat(1),
-                dateOfEndPeriod = getCurrentDate()
+                dateOfEndPeriod = getCurrentDate(),
+                allZonesList = listOf()
             )
         }
     }

@@ -7,11 +7,13 @@ import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.domain.models.CreatingBookModel
 import band.effective.office.elevator.domain.models.TypeEndPeriodBooking
 import band.effective.office.elevator.ui.booking.models.Frequency
+import band.effective.office.elevator.ui.booking.models.MockDataSpaces
 import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import band.effective.office.elevator.ui.booking.models.WorkspaceZoneUI
 import band.effective.office.elevator.ui.models.TypesList
 import band.effective.office.elevator.utils.getCurrentDate
+import band.effective.office.elevator.utils.stackOf
 import band.effective.office.network.model.Either
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
@@ -315,7 +317,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     scope.launch {
                         publish(BookingStore.Label.CloseBookPeriod)
                         getSpacesUI(
-                            workspaceZoneUI = getState().workSpacesZone,
+                            workspaceZoneUI = getState().currentWorkspaceZones,
                             state = getState(),
                             dispatch = { dispatch(Msg.ChangeWorkSpacesUI(it)) }
                         )
@@ -367,7 +369,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                 is BookingStore.Intent.ChangeWorkSpacesUI -> {
                     intent.workSpaces.forEachIndexed { index1, workSpaceUI ->
-                        getState().workSpacesZone.forEachIndexed { index2, workSpaceZone ->
+                        getState().currentWorkspaceZones.forEachIndexed { index2, workSpaceZone ->
                             intent.workSpaces.filter { workSpaceUI -> workSpaceUI.workSpaceName == workSpaceZone.name }
                         }
                     }
@@ -420,6 +422,21 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 }
 
                 is BookingStore.Intent.ChangeSelectedType -> {
+
+                    val zones = when(intent.selectedType.type) {
+                        WorkSpaceType.WORK_PLACE -> getState().allZonesList
+                        WorkSpaceType.MEETING_ROOM -> MockDataSpaces.allMeetingRooms
+                    }
+                    scope.launch {
+                        getSpacesUI(
+                            workspaceZoneUI = zones,
+                            state = getState(),
+                            dispatch = {
+                                dispatch(Msg.ChangeSelectedWorkSpacesZone(zones))
+                                dispatch(Msg.ChangeWorkSpacesUI(it))
+                            }
+                        )
+                    }
                     dispatch(Msg.SelectedTypeList(type = intent.selectedType))
                 }
 
@@ -447,12 +464,11 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         }
 
         override fun executeAction(action: Action, getState: () -> BookingStore.State) {
-            println("Init book type")
             when (action) {
                 Action.InitWorkSpaces -> {
                     scope.launch {
                         getSpacesUI(
-                            workspaceZoneUI = getState().workSpacesZone,
+                            workspaceZoneUI = getState().currentWorkspaceZones,
                             state = getState(),
                             dispatch = { dispatch(Msg.ChangeWorkSpacesUI(it)) }
                         )
@@ -507,6 +523,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                             is Either.Success -> {
                                 val list = workspaceZoneUI.filter { it.isSelected }
                                 val listWorkSpaces = response.data
+
                                 Napier.d { response.data.toString() }
                                 val newList = mutableListOf<WorkSpaceUI>()
 
@@ -538,7 +555,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
     private object ReducerImpl : Reducer<BookingStore.State, Msg> {
         override fun BookingStore.State.reduce(msg: Msg): BookingStore.State {
             return when (msg) {
-                is Msg.ChangeSelectedWorkSpacesZone -> copy(workSpacesZone = msg.workSpacesZone)
+                is Msg.ChangeSelectedWorkSpacesZone -> copy(currentWorkspaceZones = msg.workSpacesZone)
                 is Msg.DateBooking -> copy(selectedStartDate = msg.date)
                 is Msg.TimeBooking -> copy(selectedStartTime = msg.time)
                 is Msg.SelectedTypeList -> copy(
@@ -578,7 +595,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                 is Msg.ChangeDateOfEndPeriod -> copy(dateOfEndPeriod = msg.date)
                 is Msg.ChangeTypeOfEnd -> copy(typeOfEnd = msg.type)
-                is Msg.UpdateAllZones -> copy(workSpacesZone = msg.zones)
+                is Msg.UpdateAllZones -> copy(currentWorkspaceZones = msg.zones, allZonesList = msg.zones)
             }
         }
     }

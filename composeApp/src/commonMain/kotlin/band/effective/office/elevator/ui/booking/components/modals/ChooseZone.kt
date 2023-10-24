@@ -45,6 +45,7 @@ fun ChooseZone(
     onClickCloseChoseZone: () -> Unit,
     onClickConfirmSelectedZone: (List<WorkspaceZoneUI>) -> Unit
 ) {
+    val countItemsInRow = 2
     val selectedZones: MutableList<WorkspaceZoneUI> = mutableListOf()
     selectedZones.addAll(workSpacecZone)
 
@@ -101,12 +102,12 @@ fun ChooseZone(
 
         HorizontalGirdItems(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            countItemsInRow = 3,
+            countItemsInRow = countItemsInRow,
             listItems = workSpacecZone,
             horizontalPaddingContent = 12.dp,
             verticalPaddingContent = 12.dp
         ) { workSpaceZone, columnIndex, rowIndex ->
-            val currentIndex = 3 * columnIndex + rowIndex
+            val currentIndex = countItemsInRow * columnIndex + rowIndex
             //TODO(Artem Gruzdev) refactor this code
             WorkingZones(
                 workspaceZoneUI = workSpaceZone,
@@ -176,6 +177,7 @@ fun WorkingZones(
             text = workspaceZoneUI.name,
             fontSize = 16.sp,
             fontWeight = FontWeight(500),
+            maxLines = 1,
             color = if (isSelected) ExtendedThemeColors.colors.purple_heart_800
             else textInBorderGray
         )

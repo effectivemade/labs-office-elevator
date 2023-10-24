@@ -56,7 +56,6 @@ fun OptionMenu(
     isExpandedCard: Boolean,
     isExpandedOptions: Boolean,
     onClickOpenBookPeriod: () -> Unit,
-    onClickChangeZone: (WorkSpaceType) -> Unit,
     startDate: LocalDate,
     finishDate: LocalDate,
     frequency: Frequency,
@@ -182,7 +181,6 @@ fun OptionMenu(
                                 onClick = {
                                     selectedType.value = type
                                     onClickChangeSelectedType(selectedType.value)
-                                    onClickChangeZone(type.type)
                                 }
                             )
                         ) {
