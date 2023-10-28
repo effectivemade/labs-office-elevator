@@ -24,7 +24,7 @@ val VerificationPlugin = createApplicationPlugin(name = "VerificationPlugin") {
 
     onCall {
         run {
-            if (pluginOn) {
+            if (pluginOn && it.request.path() != "/notifications") {
                 val token = it.request.parseAuthorizationHeader()?.render()?.split("Bearer ")?.last() ?: it.respond(
                     HttpStatusCode.Unauthorized
                 )
