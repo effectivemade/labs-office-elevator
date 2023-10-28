@@ -7,6 +7,7 @@ import office.effective.dto.WorkspaceZoneDTO
 import office.effective.model.Utility
 import office.effective.model.Workspace
 import office.effective.model.WorkspaceZone
+import org.slf4j.LoggerFactory
 import java.util.*
 
 /**
@@ -16,6 +17,7 @@ import java.util.*
  * This converter helps in the transformation of data between the DTO and model representations of a workspace.
  */
 class WorkspaceFacadeConverter(private val uuidValidator: UuidValidator) {
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
     /**
      * Converts [Workspace] with [WorkspaceZone] and [Utilities][Utility]
@@ -25,6 +27,7 @@ class WorkspaceFacadeConverter(private val uuidValidator: UuidValidator) {
      * @author Daniil Zavyalov
      */
     fun modelToDto(model: Workspace): WorkspaceDTO {
+        logger.trace("Converting workspace model to dto")
         val utilities = model.utilities.map { utilityModelToDto(it) }
         return WorkspaceDTO(
             model.id.toString(), model.name, utilities, model.zone?.let { zoneModelToDto(it) }, model.tag
@@ -39,6 +42,7 @@ class WorkspaceFacadeConverter(private val uuidValidator: UuidValidator) {
      * @author Daniil Zavyalov
      */
     private fun utilityModelToDto(model: Utility): UtilityDTO {
+        logger.trace("Converting utility model to dto")
         return UtilityDTO(model.id.toString(), model.name, model.iconUrl, model.count)
     }
 
@@ -50,6 +54,7 @@ class WorkspaceFacadeConverter(private val uuidValidator: UuidValidator) {
      * @author Daniil Zavyalov
      */
     fun zoneModelToDto(model: WorkspaceZone): WorkspaceZoneDTO {
+        logger.trace("Converting zone model to dto")
         return WorkspaceZoneDTO(model.id.toString(), model.name)
     }
 
@@ -62,6 +67,7 @@ class WorkspaceFacadeConverter(private val uuidValidator: UuidValidator) {
      * @author Daniil Zavyalov, Danil Kiselev
      */
     fun dtoToModel(dto: WorkspaceDTO): Workspace {
+        logger.trace("Converting workspace dto to model")
         var workspaceId: UUID? = null
         if (dto.id != "null") {
             workspaceId = uuidValidator.uuidFromString(dto.id)
@@ -85,6 +91,7 @@ class WorkspaceFacadeConverter(private val uuidValidator: UuidValidator) {
      * @author Daniil Zavyalov
      */
     private fun utilityDtoToModel(dto: UtilityDTO): Utility {
+        logger.trace("Converting utility dto to model")
         return Utility(uuidValidator.uuidFromString(dto.id), dto.name, dto.iconUrl, dto.count)
     }
 
@@ -96,6 +103,7 @@ class WorkspaceFacadeConverter(private val uuidValidator: UuidValidator) {
      * @author Daniil Zavyalov
      */
     private fun zoneDtoToModel(dto: WorkspaceZoneDTO): WorkspaceZone {
+        logger.trace("Converting zone dto to model")
         return WorkspaceZone(uuidValidator.uuidFromString(dto.id), dto.name)
     }
 }

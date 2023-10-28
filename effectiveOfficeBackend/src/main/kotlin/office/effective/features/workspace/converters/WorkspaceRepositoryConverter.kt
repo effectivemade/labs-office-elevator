@@ -11,6 +11,7 @@ import office.effective.model.WorkspaceZone
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.entity.find
+import org.slf4j.LoggerFactory
 import java.lang.IllegalArgumentException
 import java.util.UUID
 
@@ -20,6 +21,7 @@ import java.util.UUID
  * This converter helps in the transformation of data between the entity and model representations of a workspace.
  */
 class WorkspaceRepositoryConverter(private val database: Database) {
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
     /**
      * Converts [WorkspaceEntity] with its [WorkspaceZoneEntity] to [Workspace] with [WorkspaceZone]
@@ -30,6 +32,7 @@ class WorkspaceRepositoryConverter(private val database: Database) {
      * @author Daniil Zavyalov
      */
     fun entityToModel(entity: WorkspaceEntity, utilities: List<Utility>): Workspace {
+        logger.trace("Converting workspace entity to model")
         return Workspace(
             entity.id,
             entity.name,
@@ -48,6 +51,7 @@ class WorkspaceRepositoryConverter(private val database: Database) {
      * @author Daniil Zavyalov
      */
     fun utilityEntityToModel(entity: UtilityEntity, count: Int): Utility {
+        logger.trace("Converting utility entity to model")
         return Utility(entity.id, entity.name, entity.iconUrl, count)
     }
 
@@ -59,6 +63,7 @@ class WorkspaceRepositoryConverter(private val database: Database) {
      * @author Daniil Zavyalov
      */
     fun zoneEntityToModel(zoneEntity: WorkspaceZoneEntity): WorkspaceZone {
+        logger.trace("Converting zone entity to model")
         return WorkspaceZone(zoneEntity.id, zoneEntity.name)
     }
 
@@ -71,6 +76,7 @@ class WorkspaceRepositoryConverter(private val database: Database) {
      * @author Daniil Zavyalov
      */
     fun modelToEntity(model: Workspace): WorkspaceEntity {
+        logger.trace("Converting workspace model to entity")
         val tagEntity: WorkspaceTagEntity = database.workspaceTags.find { it.name eq model.tag }
             ?: throw InstanceNotFoundException(WorkspaceTagEntity::class, "Workspace tag ${model.tag} not found")
 
@@ -93,6 +99,7 @@ class WorkspaceRepositoryConverter(private val database: Database) {
      * @author Daniil Zavyalov
      */
     fun zoneModelToEntity(zoneModel: WorkspaceZone): WorkspaceZoneEntity {
+        logger.trace("Converting zone model to entity")
         return WorkspaceZoneEntity {
             id = zoneModel.id
             name = zoneModel.name

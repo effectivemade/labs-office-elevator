@@ -14,6 +14,7 @@ import org.ktorm.database.Database
 import org.ktorm.dsl.*
 import org.ktorm.entity.*
 import org.ktorm.support.postgresql.insertOrUpdate
+import org.slf4j.LoggerFactory
 import java.time.Instant
 import java.util.UUID
 
@@ -23,6 +24,7 @@ import java.util.UUID
  * All WorkspaceRepository methods return workspaces with workspace zone and all utilities
  */
 class WorkspaceRepository(private val database: Database, private val converter: WorkspaceRepositoryConverter) {
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
     /**
      * Returns whether a workspace with the given id exists.
@@ -33,6 +35,7 @@ class WorkspaceRepository(private val database: Database, private val converter:
      * @author Daniil Zavyalov
      */
     fun workspaceExistsById(workspaceId: UUID): Boolean {
+        logger.debug("[workspaceExistsById] checking whether a workspace with id={} exists", workspaceId.toString())
         return true// database.workspaces.count { it.id eq workspaceId } > 0 TODO: FIX ME< ONII CHAN
     }
 
@@ -44,6 +47,7 @@ class WorkspaceRepository(private val database: Database, private val converter:
      * @author Daniil Zavyalov
      */
     fun utilityExistsById(utilityId: UUID): Boolean {
+        logger.debug("[utilityExistsById] checking whether a utility with id={} exists", utilityId.toString())
         return database.utilities.count { it.id eq utilityId } > 0
     }
 
@@ -56,6 +60,10 @@ class WorkspaceRepository(private val database: Database, private val converter:
      * @author Daniil Zavyalov
      */
     fun findUtilitiesByWorkspaceId(workspaceId: UUID): List<Utility> {
+        logger.debug(
+            "[findUtilitiesByWorkspaceId] retrieving utilities for workspace with id={}",
+            workspaceId.toString()
+        )
         if (!workspaceExistsById(workspaceId)) {
             throw InstanceNotFoundException(
                 WorkspaceEntity::class, "Workspace with id $workspaceId not found", workspaceId
@@ -72,6 +80,10 @@ class WorkspaceRepository(private val database: Database, private val converter:
      * @author Daniil Zavyalov
      */
     private fun findUtilityModels(workspaceId: UUID): List<Utility> {
+        logger.trace(
+            "[findUtilityModels] retrieving utilities for workspace with id={} from database",
+            workspaceId.toString()
+        )
         return database.from(WorkspaceUtilities)
             .innerJoin(right = Utilities, on = WorkspaceUtilities.utilityId eq Utilities.id).select()
             .where { WorkspaceUtilities.workspaceId eq workspaceId }.map { row ->
@@ -92,7 +104,14 @@ class WorkspaceRepository(private val database: Database, private val converter:
      * @author Daniil Zavyalov
      * */
     fun findAllUtilitiesByWorkspaceIds(ids: Collection<UUID>): HashMap<UUID, MutableList<Utility>> {
+        logger.debug(
+            "[findAllUtilitiesByWorkspaceIds] retrieving utilities for workspaces with id={}",
+            ids.joinToString()
+        )
         if (ids.isEmpty()) {
+            logger.debug(
+                "[findAllUtilitiesByWorkspaceIds] nothing to find, ids list is empty",
+            )
             return HashMap<UUID, MutableList<Utility>>()
         }
         for (id in ids) {
@@ -122,6 +141,7 @@ class WorkspaceRepository(private val database: Database, private val converter:
      * @author Daniil Zavyalov
      */
     fun findById(workspaceId: UUID): Workspace? {
+        logger.debug("[findById] retrieving workspace with id={}", workspaceId.toString())
         val entity: WorkspaceEntity = database.workspaces.find { it.id eq workspaceId } ?: return null
         val utilities: List<Utility> = findUtilityModels(workspaceId)
         return converter.entityToModel(entity, utilities)
@@ -136,6 +156,7 @@ class WorkspaceRepository(private val database: Database, private val converter:
      * @author Daniil Zavyalov
      */
     fun findAllByTag(tag: String): List<Workspace> {
+        logger.debug("[findAllByTag] retrieving workspaces with tag {}", tag)
         val tagEntity: WorkspaceTagEntity =
             database.workspaceTags.find { it.name eq tag } ?: throw InstanceNotFoundException(
                 WorkspaceTagEntity::class, "Workspace tag $tag not found"
@@ -159,6 +180,12 @@ class WorkspaceRepository(private val database: Database, private val converter:
      * @author Daniil Zavyalov
      */
     fun findAllFreeByPeriod(tag: String, beginTimestamp: Instant, endTimestamp: Instant): List<Workspace> {
+        logger.debug(
+            "[findAllFreeByPeriod] retrieving workspaces with tag {} free from {} until {} timestamp",
+            tag,
+            beginTimestamp,
+            endTimestamp
+        )
         if (database.workspaceTags.count { it.name eq tag } == 0) throw InstanceNotFoundException(
             WorkspaceTagEntity::class, "Workspace tag $tag not found"
         )
@@ -174,6 +201,10 @@ class WorkspaceRepository(private val database: Database, private val converter:
         return freeWorkspaces
     }
 
+    /**
+     * @author Danil Kiselev
+     * @return workspace id of the given bookings
+     * */
     private fun findAllWorkspacesIdFromBookings(bookings: List<Booking>): List<String> {
         val workspacesIdList: MutableList<String> = mutableListOf()
         bookings.forEach {
@@ -191,6 +222,7 @@ class WorkspaceRepository(private val database: Database, private val converter:
      * @author Daniil Zavyalov
      */
     fun findAllZones(): List<WorkspaceZone> {
+        logger.debug("[findAllZones] retrieving all workspace zones")
         return database.workspaceZones.map { converter.zoneEntityToModel(it) }
     }
 
