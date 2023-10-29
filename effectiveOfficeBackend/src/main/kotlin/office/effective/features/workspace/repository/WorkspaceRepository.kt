@@ -141,7 +141,7 @@ class WorkspaceRepository(private val database: Database, private val converter:
      * @author Daniil Zavyalov
      */
     fun findById(workspaceId: UUID): Workspace? {
-        logger.debug("[findById] retrieving workspace with id={}", workspaceId.toString())
+        logger.debug("[findById] retrieving a workspace with id={}", workspaceId.toString())
         val entity: WorkspaceEntity = database.workspaces.find { it.id eq workspaceId } ?: return null
         val utilities: List<Utility> = findUtilityModels(workspaceId)
         return converter.entityToModel(entity, utilities)

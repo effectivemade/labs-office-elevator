@@ -4,11 +4,13 @@ import office.effective.common.exception.MissingIdException
 import office.effective.features.user.repository.UserEntity
 import office.effective.model.IntegrationModel
 import office.effective.model.UserModel
+import org.slf4j.LoggerFactory
 
 /**
  * Converters between [UserModel] and [UserEntity]
  * */
 class UserModelEntityConverter {
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
     /**
      * Converts [UserModel] to [UserEntity]
@@ -20,6 +22,7 @@ class UserModelEntityConverter {
      * @author Danil Kiselev, Daniil Zavyalov
      */
     fun modelToEntity(userModel: UserModel): UserEntity {
+        logger.trace("Converting user model to entity")
         return UserEntity {
             id = userModel.id ?: throw MissingIdException("User with name ${userModel.fullName} doesn't have an id")
             fullName = userModel.fullName
@@ -41,7 +44,7 @@ class UserModelEntityConverter {
      * @author Danil Kiselev, Daniil Zavyalov
      */
     fun entityToModel(userEntity: UserEntity, integrations: Set<IntegrationModel>?): UserModel {
-
+        logger.trace("Converting user entity to model")
         return UserModel(
             fullName = userEntity.fullName,
             id = userEntity.id,
