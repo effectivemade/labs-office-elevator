@@ -36,6 +36,7 @@ val VerificationPlugin = createApplicationPlugin(name = "VerificationPlugin") {
                     val email = verifierOAuth.isCorrectToken(token as String)
                     exOAuth = null
                 } catch (ex: Exception) {
+                    logger.debug("OAuth verification failed")
                     exOAuth = ex
                 }
 
@@ -44,6 +45,7 @@ val VerificationPlugin = createApplicationPlugin(name = "VerificationPlugin") {
                     val line = verifierLine.isCorrectToken(token as String)
                     exLine = null
                 } catch (ex: Exception) {
+                    logger.debug("Token verification failed")
                     exLine = ex
                 }
 
