@@ -13,6 +13,8 @@ import office.effective.features.user.repository.UserRepository
 import office.effective.features.workspace.repository.WorkspaceEntity
 import office.effective.features.workspace.repository.WorkspaceRepository
 import office.effective.model.Booking
+import org.slf4j.LoggerFactory
+import java.time.Instant
 import java.util.*
 
 /**
@@ -29,6 +31,7 @@ class BookingWorkspaceRepository(
     private val calendarEvents = calendar.Events()
     private val workspaceCalendar = config.propertyOrNull("calendar.workspaceCalendar")?.getString()
         ?: throw Exception("Config file does not contain workspace Google calendar id")
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
     /**
      * Returns whether a booking with the given id exists
@@ -38,6 +41,7 @@ class BookingWorkspaceRepository(
      * @author Daniil Zavyalov
      */
     override fun existsById(id: String): Boolean {
+        logger.debug("[existsById] checking whether a booking with id={} exists", id)
         val event: Any?
         event = findByCalendarIdAndBookingId(id)
         return event != null
@@ -50,6 +54,7 @@ class BookingWorkspaceRepository(
      * @author Daniil Zavyalov
      */
     override fun deleteById(id: String) {
+        logger.debug("[deleteById] deleting the booking with id={}", id)
         try {
             calendarEvents.delete(workspaceCalendar, id).execute()
         } catch (e: GoogleJsonResponseException) {
@@ -68,6 +73,7 @@ class BookingWorkspaceRepository(
      * @author Daniil Zavyalov
      */
     override fun findById(bookingId: String): Booking? {
+        logger.debug("[findById] retrieving a booking with id={}", bookingId)
         val event: Event? = findByCalendarIdAndBookingId(bookingId)
         return event?.let { googleCalendarConverter.toWorkspaceBooking(it) }
     }
@@ -124,6 +130,12 @@ class BookingWorkspaceRepository(
      * @author Daniil Zavyalov
      */
     override fun findAllByWorkspaceId(workspaceId: UUID, eventRangeFrom: Long, eventRangeTo: Long?): List<Booking> {
+        logger.debug(
+            "[findAllByWorkspaceId] retrieving all bookings for workspace with id={} in range from {} to {}",
+            workspaceId,
+            Instant.ofEpochMilli(eventRangeFrom),
+            eventRangeTo?.let { Instant.ofEpochMilli(it) } ?: "infinity"
+        )
         val eventsWithWorkspace = basicQuery(eventRangeFrom, eventRangeTo)
             .setQ(workspaceId.toString())
             .execute().items
@@ -146,6 +158,12 @@ class BookingWorkspaceRepository(
      * @author Daniil Zavyalov
      */
     override fun findAllByOwnerId(ownerId: UUID, eventRangeFrom: Long, eventRangeTo: Long?): List<Booking> {
+        logger.debug(
+            "[findAllByOwnerId] retrieving all bookings for user with id={} in range from {} to {}",
+            ownerId,
+            Instant.ofEpochMilli(eventRangeFrom),
+            eventRangeTo?.let { Instant.ofEpochMilli(it) } ?: "infinity"
+        )
         val eventsWithUser = basicQuery(eventRangeFrom, eventRangeTo)
             .setQ(ownerId.toString())
             .execute().items
@@ -172,6 +190,13 @@ class BookingWorkspaceRepository(
         eventRangeFrom: Long,
         eventRangeTo: Long?
     ): List<Booking> {
+        logger.debug(
+            "[findAllByOwnerAndWorkspaceId] retrieving all bookings for a workspace with id={} created by user with id={} in range from {} to {}",
+            workspaceId,
+            ownerId,
+            Instant.ofEpochMilli(eventRangeFrom),
+            eventRangeTo?.let { Instant.ofEpochMilli(it) } ?: "infinity"
+        )
         val eventsWithUserAndWorkspace = basicQuery(eventRangeFrom, eventRangeTo)
             .setQ("$workspaceId $ownerId")
             .execute().items
@@ -191,6 +216,11 @@ class BookingWorkspaceRepository(
      * @author Daniil Zavyalov
      */
     override fun findAll(eventRangeFrom: Long, eventRangeTo: Long?): List<Booking> {
+        logger.debug(
+            "[findAll] retrieving all bookings in range from {} to {}",
+            Instant.ofEpochMilli(eventRangeFrom),
+            eventRangeTo?.let { Instant.ofEpochMilli(it) } ?: "infinity"
+        )
         return basicQuery(eventRangeFrom, eventRangeTo).execute().items.map { event ->
             googleCalendarConverter.toWorkspaceBooking(event)
         }
@@ -205,6 +235,8 @@ class BookingWorkspaceRepository(
      * @author Daniil Zavyalov, Danil Kiselev
      */
     override fun save(booking: Booking): Booking {
+        logger.debug("[save] saving booking of workspace with id {}", booking.workspace.id)
+        logger.trace("[save] booking to save: {}", booking)
         val workspaceId = booking.workspace.id ?: throw MissingIdException("Missing booking workspace id")
         val userId = booking.owner.id ?: throw MissingIdException("Missing booking owner id")
         if (!userRepository.existsById(userId)) {
@@ -217,11 +249,15 @@ class BookingWorkspaceRepository(
         val savedEvent = calendar.Events().insert(workspaceCalendar, event).execute()
 
         if (checkBookingAvailable(savedEvent, workspaceId)) {
-            return googleCalendarConverter.toWorkspaceBooking(savedEvent)
+            val savedBooking = googleCalendarConverter.toWorkspaceBooking(savedEvent)
+            logger.trace("[save] saved booking: {}", savedBooking)
+            return savedBooking
         } else {
             deleteById(savedEvent.id)
-            throw WorkspaceUnavailableException("Workspace ${booking.workspace.name} " +
-                    "unavailable at time between ${booking.beginBooking} and ${booking.endBooking}")
+            throw WorkspaceUnavailableException(
+                "Workspace ${booking.workspace.name} " +
+                        "unavailable at time between ${booking.beginBooking} and ${booking.endBooking}"
+            )
         }
     }
 
@@ -235,23 +271,30 @@ class BookingWorkspaceRepository(
      * @author Daniil Zavyalov, Danil Kiselev
      */
     override fun update(booking: Booking): Booking {
+        logger.debug("[update] updating booking of workspace with id {}", booking.id)
+        logger.trace("[update] new booking: {}", booking)
         val workspaceId = booking.workspace.id ?: throw MissingIdException("Missing booking workspace id")
         val bookingId = booking.id ?: throw MissingIdException("Update model must have id")
         val previousVersionOfEvent = findByCalendarIdAndBookingId(bookingId) ?: throw InstanceNotFoundException(
             WorkspaceBookingEntity::class, "Booking with id $bookingId not wound"
         )
+        logger.trace("[update] previous version of event: {}", previousVersionOfEvent)
         val eventOnUpdate = googleCalendarConverter.toGoogleWorkspaceEvent(booking)
 
         val updatedEvent: Event = calendarEvents.update(workspaceCalendar, bookingId, eventOnUpdate).execute()
 
         val sequence = updatedEvent.sequence
         if (checkBookingAvailable(updatedEvent, workspaceId)) {
-            return googleCalendarConverter.toWorkspaceBooking(updatedEvent)
+            val updatedBooking = googleCalendarConverter.toWorkspaceBooking(updatedEvent)
+            logger.trace("[update] updated booking: {}", updatedBooking)
+            return updatedBooking
         } else {
             previousVersionOfEvent.sequence = sequence
             calendarEvents.update(workspaceCalendar, bookingId, previousVersionOfEvent).execute()
-            throw WorkspaceUnavailableException("Workspace ${booking.workspace.name} " +
-                    "unavailable at time between ${booking.beginBooking} and ${booking.endBooking}")
+            throw WorkspaceUnavailableException(
+                "Workspace ${booking.workspace.name} " +
+                        "unavailable at time between ${booking.beginBooking} and ${booking.endBooking}"
+            )
         }
     }
 
@@ -264,6 +307,11 @@ class BookingWorkspaceRepository(
      * @author Kiselev Danil, Daniil Zavyalov
      * */
     private fun checkBookingAvailable(incomingEvent: Event, workspaceId: UUID): Boolean {
+        logger.debug(
+            "[checkBookingAvailable] checking if workspace with id={} available for event {}",
+            workspaceId,
+            incomingEvent
+        )
         var isAvailable = false;
 
         if (incomingEvent.recurrence != null) {
@@ -279,6 +327,7 @@ class BookingWorkspaceRepository(
         } else {
             isAvailable = checkSingleEventCollision(incomingEvent, workspaceId)
         }
+        logger.debug("[checkBookingAvailable] result {}", true)
         return isAvailable
     }
 

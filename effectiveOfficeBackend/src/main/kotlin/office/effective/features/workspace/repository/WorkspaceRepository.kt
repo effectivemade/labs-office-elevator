@@ -35,7 +35,7 @@ class WorkspaceRepository(private val database: Database, private val converter:
      * @author Daniil Zavyalov
      */
     fun workspaceExistsById(workspaceId: UUID): Boolean {
-        logger.debug("[workspaceExistsById] checking whether a workspace with id={} exists", workspaceId.toString())
+        logger.debug("[workspaceExistsById] checking whether a workspace with id={} exists", workspaceId)
         return true// database.workspaces.count { it.id eq workspaceId } > 0 TODO: FIX ME< ONII CHAN
     }
 
@@ -47,7 +47,7 @@ class WorkspaceRepository(private val database: Database, private val converter:
      * @author Daniil Zavyalov
      */
     fun utilityExistsById(utilityId: UUID): Boolean {
-        logger.debug("[utilityExistsById] checking whether a utility with id={} exists", utilityId.toString())
+        logger.debug("[utilityExistsById] checking whether a utility with id={} exists", utilityId)
         return database.utilities.count { it.id eq utilityId } > 0
     }
 
@@ -62,7 +62,7 @@ class WorkspaceRepository(private val database: Database, private val converter:
     fun findUtilitiesByWorkspaceId(workspaceId: UUID): List<Utility> {
         logger.debug(
             "[findUtilitiesByWorkspaceId] retrieving utilities for workspace with id={}",
-            workspaceId.toString()
+            workspaceId
         )
         if (!workspaceExistsById(workspaceId)) {
             throw InstanceNotFoundException(
@@ -82,7 +82,7 @@ class WorkspaceRepository(private val database: Database, private val converter:
     private fun findUtilityModels(workspaceId: UUID): List<Utility> {
         logger.trace(
             "[findUtilityModels] retrieving utilities for workspace with id={} from database",
-            workspaceId.toString()
+            workspaceId
         )
         return database.from(WorkspaceUtilities)
             .innerJoin(right = Utilities, on = WorkspaceUtilities.utilityId eq Utilities.id).select()
@@ -141,7 +141,7 @@ class WorkspaceRepository(private val database: Database, private val converter:
      * @author Daniil Zavyalov
      */
     fun findById(workspaceId: UUID): Workspace? {
-        logger.debug("[findById] retrieving a workspace with id={}", workspaceId.toString())
+        logger.debug("[findById] retrieving a workspace with id={}", workspaceId)
         val entity: WorkspaceEntity = database.workspaces.find { it.id eq workspaceId } ?: return null
         val utilities: List<Utility> = findUtilityModels(workspaceId)
         return converter.entityToModel(entity, utilities)
@@ -181,7 +181,7 @@ class WorkspaceRepository(private val database: Database, private val converter:
      */
     fun findAllFreeByPeriod(tag: String, beginTimestamp: Instant, endTimestamp: Instant): List<Workspace> {
         logger.debug(
-            "[findAllFreeByPeriod] retrieving workspaces with tag {} free from {} until {} timestamp",
+            "[findAllFreeByPeriod] retrieving workspaces with tag {} free from {} until {}",
             tag,
             beginTimestamp,
             endTimestamp

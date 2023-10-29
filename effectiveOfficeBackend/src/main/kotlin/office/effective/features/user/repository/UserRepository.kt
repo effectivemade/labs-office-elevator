@@ -135,7 +135,7 @@ class UserRepository(
      * @author Danil Kiselev, Daniil Zavyalov
      * */
     fun findSetOfIntegrationsByUser(userId: UUID): MutableSet<IntegrationModel> {
-        logger.trace("[findSetOfIntegrationsByUser] retrieving integrations for user with id={}", userId.toString())
+        logger.trace("[findSetOfIntegrationsByUser] retrieving integrations for user with id={}", userId)
         if (!existsById(userId)) {
             throw InstanceNotFoundException(UserEntity::class, "User $userId")
         }
@@ -214,7 +214,7 @@ class UserRepository(
      * @author Danil Kiselev, Daniil Zavyalov
      */
     fun updateUser(model: UserModel): UserModel {
-        logger.debug("[updateUser] updating user with id {}", model.id?.toString())
+        logger.debug("[updateUser] updating user with id {}", model.id)
         val userId = model.id?.let {
             if (!existsById(it)) throw InstanceNotFoundException(UserEntity::class, "User with id $it not wound", it)
             it
@@ -247,7 +247,7 @@ class UserRepository(
      * @author Daniil Zavyalov, Danil Kiselev
      */
     private fun saveIntegrations(integrationModels: Set<IntegrationModel>, userId: UUID) {
-        logger.trace("[saveIntegrations] saving set of integrations for user with id={}", userId.toString())
+        logger.trace("[saveIntegrations] saving set of integrations for user with id={}", userId)
         db.usersinegrations.removeIf { it.userId eq userId }
         for (integration in integrationModels) {
             val integrationId: UUID = integration.id
@@ -271,7 +271,7 @@ class UserRepository(
      * @author Danil Kiselev
      * */
     fun findTagByUserOrNull(userId: UUID): UsersTagEntity? {
-        logger.debug("[findTagByUserOrNull] retrieving tag for user with id={}", userId.toString())
+        logger.debug("[findTagByUserOrNull] retrieving tag for user with id={}", userId)
         if (!existsById(userId)) return null
         val ent = findById(userId)
         return ent?.tag

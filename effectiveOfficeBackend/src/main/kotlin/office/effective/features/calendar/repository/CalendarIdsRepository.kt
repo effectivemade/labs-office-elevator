@@ -10,6 +10,7 @@ import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.entity.find
 import org.ktorm.entity.toList
+import org.slf4j.LoggerFactory
 import java.util.UUID
 
 /**
@@ -20,6 +21,7 @@ class CalendarIdsRepository(
     private val converter: WorkspaceRepositoryConverter,
     private val workspaceRepository: WorkspaceRepository,
 ) {
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
     /**
      * @return String - id of calendar for specified workspace
@@ -27,13 +29,10 @@ class CalendarIdsRepository(
      * @author Danil Kiselev
      * */
     fun findByWorkspace(workspaceId: UUID): String {
+        logger.debug("[findByWorkspace] retrieving a calendar id for workspace with id={}", workspaceId.toString())
         return db.calendarIds.find { it.workspaceId eq workspaceId }?.calendarId ?: throw InstanceNotFoundException(
             CalendarIdEntity::class, "Cannot found calendar id to workspace id $workspaceId", null
         )
-    }
-
-    fun findByWorkspaceOrDefault(workspaceId: UUID): String {
-        return db.calendarIds.find { it.workspaceId eq workspaceId }?.calendarId ?: ""
     }
 
     /**
@@ -42,6 +41,7 @@ class CalendarIdsRepository(
      * @author Danil Kiselev
      * */
     fun findWorkspaceById(calendarId: String): Workspace {
+        logger.debug("[findWorkspaceById] retrieving a workspace with calendar id={}", calendarId)
         try {
             val workspaceEntity =
                 db.calendarIds.find { it.calendarId eq calendarId }?.workspace ?: throw InstanceNotFoundException(
@@ -51,6 +51,7 @@ class CalendarIdsRepository(
                 workspaceEntity, workspaceRepository.findUtilitiesByWorkspaceId(workspaceEntity.id)
             )
         } catch (ex: InstanceNotFoundException) {
+            logger.warn("[findWorkspaceById] can't find a workspace with calendar id ${calendarId}. Creating placeholder.")
             return Workspace(null, "placeholder", "placeholder", listOf(), null)
         }
     }
