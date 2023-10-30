@@ -4,12 +4,10 @@ import office.effective.common.exception.InstanceNotFoundException
 import office.effective.common.utils.UuidValidator
 import office.effective.dto.IntegrationDTO
 import office.effective.dto.UserDTO
-import office.effective.features.user.repository.IntegrationEntity
 import office.effective.features.user.repository.UserRepository
 import office.effective.features.user.repository.UsersTagEntity
 import office.effective.model.IntegrationModel
 import office.effective.model.UserModel
-import org.slf4j.LoggerFactory
 import java.util.*
 /**
  * Converters between [UserDTO] and [UserModel]
@@ -19,7 +17,6 @@ class UserDTOModelConverter(
     private val converter: IntegrationDTOModelConverter,
     private val uuidConverter: UuidValidator
 ) {
-    private val logger = LoggerFactory.getLogger(this::class.java)
 
     /**
      * Converts [UserDTO] to [UserModel]. Search user tags in [UserRepository] by id. Takes user's integrations from DTO.
@@ -29,7 +26,6 @@ class UserDTOModelConverter(
      * @author Danil Kiselev, Daniil Zavyalov
      */
     fun dTOToModel(userDTO: UserDTO): UserModel {
-        logger.trace("Converting user dto to model")
         var userId: UUID? = null;
         if (userDTO.id != "null") {
             userId = uuidConverter.uuidFromString(userDTO.id)
@@ -63,7 +59,6 @@ class UserDTOModelConverter(
      * @author Danil Kiselev, Daniil Zavyalov
      */
     fun modelToDTO(userModel: UserModel): UserDTO {
-        logger.trace("Converting user model to dto")
         val integrations: MutableList<IntegrationDTO> = mutableListOf()
         userModel.integrations?.forEach { integrations.add(converter.modelToDTO(it)) }
         return UserDTO(
