@@ -14,7 +14,7 @@ class TokenVerifier : ITokenVerifier {
     private val webClient = System.getenv("GOOGLE_CLIENT_ID")
 
     private val verifier: GoogleIdTokenVerifier =
-        GoogleIdTokenVerifier.Builder(NetHttpTransport(), GsonFactory()).setAudience(listOf(webClient)).build()
+        GoogleIdTokenVerifier.Builder(NetHttpTransport(), GsonFactory()).build()
 
     private val acceptableMailDomain: String =
         config.propertyOrNull("auth.user.emailDomain ")?.getString() ?: "effective.band"
