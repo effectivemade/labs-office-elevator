@@ -119,6 +119,9 @@
     <string name="every_year">Каждый год</string>
 
 
+    <string name="employee_soon_in_office">Не был в офисе</string>
+    <string name="employee_not_soon_in_office">Нет забронированных мест</string>
+
     <!--Tab titles-->
     <string name="profile">Профиль</string>
     <string name="elevator">Лифт</string>

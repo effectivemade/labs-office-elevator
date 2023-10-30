@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "band.effective.office.elevator"
+    namespace = "com.commandiron.wheel_picker_composer"
     compileSdk = 33
     defaultConfig {
         minSdk = ConfigData.Android.minSdkVersion
