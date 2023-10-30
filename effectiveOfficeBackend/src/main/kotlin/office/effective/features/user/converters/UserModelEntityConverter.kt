@@ -41,7 +41,6 @@ class UserModelEntityConverter {
      * @author Danil Kiselev, Daniil Zavyalov
      */
     fun entityToModel(userEntity: UserEntity, integrations: Set<IntegrationModel>?): UserModel {
-
         return UserModel(
             fullName = userEntity.fullName,
             id = userEntity.id,

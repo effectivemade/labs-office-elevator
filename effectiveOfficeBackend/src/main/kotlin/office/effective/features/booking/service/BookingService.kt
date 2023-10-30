@@ -4,13 +4,13 @@ import office.effective.common.exception.InstanceNotFoundException
 import office.effective.common.exception.MissingIdException
 import office.effective.features.booking.repository.BookingCalendarRepository
 import office.effective.features.booking.repository.BookingWorkspaceRepository
-import office.effective.features.booking.repository.IBookingRepository
 import office.effective.features.booking.repository.WorkspaceBookingEntity
 import office.effective.features.user.repository.UserEntity
 import office.effective.features.user.repository.UserRepository
 import office.effective.features.workspace.repository.WorkspaceRepository
 import office.effective.model.*
 import office.effective.serviceapi.IBookingService
+import org.slf4j.LoggerFactory
 import java.util.UUID
 
 /**
@@ -25,6 +25,7 @@ class BookingService(
     private val userRepository: UserRepository,
     private val workspaceRepository: WorkspaceRepository,
 ) : IBookingService {
+    private val logger = LoggerFactory.getLogger(BookingService::class.java)
 
     /**
      * Returns whether a booking with the given id exists
@@ -262,8 +263,10 @@ class BookingService(
         val workspace = workspaceRepository.findById(workspaceId)
             ?: throw InstanceNotFoundException(WorkspaceBookingEntity::class, "Workspace with id $workspaceId not wound")
         return if (workspace.tag == "meeting") {
+            logger.error("Saving meeting room booking")
             bookingRepository.save(booking)
         } else {
+            logger.error("Saving workspace booking")
             bookingWorkspaceRepository.save(booking)
         }
     }
@@ -281,8 +284,10 @@ class BookingService(
         val workspace = workspaceRepository.findById(workspaceId)
             ?: throw InstanceNotFoundException(WorkspaceBookingEntity::class, "Workspace with id $workspaceId not wound")
         return if (workspace.tag == "meeting") {
+            logger.error("Updating meeting room booking")
             bookingRepository.update(booking)
         } else {
+            logger.error("Updating workspace booking")
             bookingWorkspaceRepository.update(booking)
         }
     }

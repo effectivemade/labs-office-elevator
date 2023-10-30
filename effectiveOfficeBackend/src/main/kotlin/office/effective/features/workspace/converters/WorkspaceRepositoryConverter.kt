@@ -11,6 +11,7 @@ import office.effective.model.WorkspaceZone
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.entity.find
+import org.slf4j.LoggerFactory
 import java.lang.IllegalArgumentException
 import java.util.UUID
 
