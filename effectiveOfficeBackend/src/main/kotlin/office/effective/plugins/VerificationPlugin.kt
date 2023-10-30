@@ -51,8 +51,10 @@ val VerificationPlugin = createApplicationPlugin(name = "VerificationPlugin") {
 
                 //If both authentications ways cannot verify header containment, this condition must throw 401 Unauthorised
                 if (exOAuth != null && exLine != null) {
+                    logger.info("Verification error. \nOAuth exception: ", exOAuth)
+                    logger.info("Verification error. \nLine exception: ", exLine)
                     it.response.status(HttpStatusCode.Unauthorized)
-                    it.respond("verification error. \nCause by:\nOAuth exception: $exOAuth\nLine exception: $exLine")
+                    it.respond("Verification error. \nCause by:\nOAuth exception: $exOAuth\nLine exception: $exLine")
                 }
             }
         }
