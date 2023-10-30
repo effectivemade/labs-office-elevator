@@ -75,6 +75,7 @@ class BookingWorkspaceRepository(
     override fun findById(bookingId: String): Booking? {
         logger.debug("[findById] retrieving a booking with id={}", bookingId)
         val event: Event? = findByCalendarIdAndBookingId(bookingId)
+        logger.trace("[findById] request to Google Calendar completed")
         return event?.let { googleCalendarConverter.toWorkspaceBooking(it) }
     }
 
@@ -139,6 +140,7 @@ class BookingWorkspaceRepository(
         val eventsWithWorkspace = basicQuery(eventRangeFrom, eventRangeTo)
             .setQ(workspaceId.toString())
             .execute().items
+        logger.trace("[findAllByWorkspaceId] request to Google Calendar completed")
 
         return eventsWithWorkspace.map { event ->
             googleCalendarConverter.toWorkspaceBooking(event)
@@ -167,6 +169,7 @@ class BookingWorkspaceRepository(
         val eventsWithUser = basicQuery(eventRangeFrom, eventRangeTo)
             .setQ(ownerId.toString())
             .execute().items
+        logger.trace("[findAllByOwnerId] request to Google Calendar completed")
 
         return eventsWithUser.map { event ->
             googleCalendarConverter.toWorkspaceBooking(event)
@@ -200,6 +203,7 @@ class BookingWorkspaceRepository(
         val eventsWithUserAndWorkspace = basicQuery(eventRangeFrom, eventRangeTo)
             .setQ("$workspaceId $ownerId")
             .execute().items
+        logger.trace("[findAllByOwnerAndWorkspaceId] request to Google Calendar completed")
 
         return eventsWithUserAndWorkspace.map { event ->
             googleCalendarConverter.toWorkspaceBooking(event)
@@ -221,7 +225,10 @@ class BookingWorkspaceRepository(
             Instant.ofEpochMilli(eventRangeFrom),
             eventRangeTo?.let { Instant.ofEpochMilli(it) } ?: "infinity"
         )
-        return basicQuery(eventRangeFrom, eventRangeTo).execute().items.map { event ->
+        val events = basicQuery(eventRangeFrom, eventRangeTo).execute().items
+        logger.trace("[findAll] request to Google Calendar completed")
+
+        return events.map { event ->
             googleCalendarConverter.toWorkspaceBooking(event)
         }
     }
@@ -236,7 +243,6 @@ class BookingWorkspaceRepository(
      */
     override fun save(booking: Booking): Booking {
         logger.debug("[save] saving booking of workspace with id {}", booking.workspace.id)
-        logger.trace("[save] booking to save: {}", booking)
         val workspaceId = booking.workspace.id ?: throw MissingIdException("Missing booking workspace id")
         val userId = booking.owner.id ?: throw MissingIdException("Missing booking owner id")
         if (!userRepository.existsById(userId)) {
@@ -246,7 +252,9 @@ class BookingWorkspaceRepository(
         }
         val event = googleCalendarConverter.toGoogleWorkspaceEvent(booking)
 
+        logger.trace("[save] booking to save: {}", event)
         val savedEvent = calendar.Events().insert(workspaceCalendar, event).execute()
+        logger.trace("[save] event inserted")
 
         if (checkBookingAvailable(savedEvent, workspaceId)) {
             val savedBooking = googleCalendarConverter.toWorkspaceBooking(savedEvent)
@@ -272,7 +280,6 @@ class BookingWorkspaceRepository(
      */
     override fun update(booking: Booking): Booking {
         logger.debug("[update] updating booking of workspace with id {}", booking.id)
-        logger.trace("[update] new booking: {}", booking)
         val workspaceId = booking.workspace.id ?: throw MissingIdException("Missing booking workspace id")
         val bookingId = booking.id ?: throw MissingIdException("Update model must have id")
         val previousVersionOfEvent = findByCalendarIdAndBookingId(bookingId) ?: throw InstanceNotFoundException(
@@ -281,7 +288,9 @@ class BookingWorkspaceRepository(
         logger.trace("[update] previous version of event: {}", previousVersionOfEvent)
         val eventOnUpdate = googleCalendarConverter.toGoogleWorkspaceEvent(booking)
 
+        logger.trace("[update] new version of event: {}", eventOnUpdate)
         val updatedEvent: Event = calendarEvents.update(workspaceCalendar, bookingId, eventOnUpdate).execute()
+        logger.trace("[update] event updated")
 
         val sequence = updatedEvent.sequence
         if (checkBookingAvailable(updatedEvent, workspaceId)) {
