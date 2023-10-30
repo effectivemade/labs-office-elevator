@@ -16,6 +16,7 @@ import office.effective.model.Workspace
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.entity.find
+import org.slf4j.LoggerFactory
 import java.util.*
 
 /**
@@ -28,6 +29,7 @@ class BookingRepositoryConverter(private val database: Database,
                                  private val workspaceConverter: WorkspaceRepositoryConverter,
                                  private val userConverter: UserModelEntityConverter,
                                  private val uuidValidator: UuidValidator) {
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
     /**
      * Converts booking entity to model which contains user and workspace models.
@@ -44,6 +46,7 @@ class BookingRepositoryConverter(private val database: Database,
      */
     fun entityToModel(bookingEntity: WorkspaceBookingEntity,
                       participants: List<UserEntity>): Booking {
+        logger.trace("Converting booking entity to model")
         val ownerModel = userConverter.entityToModel(bookingEntity.owner, emptySet())
         val participantModels = participants.map { userConverter.entityToModel(it, emptySet()) }
         val workspaceModel = workspaceConverter.entityToModel(bookingEntity.workspace, emptyList())
@@ -69,6 +72,7 @@ class BookingRepositoryConverter(private val database: Database,
      * @author Daniil Zavyalov
      */
     fun modelToEntity(bookingModel: Booking): WorkspaceBookingEntity {
+        logger.trace("Converting booking model to entity")
         return WorkspaceBookingEntity {
             owner = findOwnerEntity(bookingModel.owner)
             workspace = findWorkspaceEntity(bookingModel.workspace)
