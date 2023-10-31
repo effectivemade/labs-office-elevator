@@ -6,4 +6,4 @@ scrape_configs:
     metrics_path: '/metrics'
     scrape_interval: 5s
     static_configs:
-      - targets: ['effectiveOfficeBackend:8080']
+      - targets: ['0.0.0.0:8080']
