@@ -9,6 +9,7 @@ import office.effective.features.user.TokenVerifier
 import io.ktor.server.response.*
 import office.effective.features.user.ApiKeyVerifier
 import office.effective.features.user.ITokenVerifier
+import org.slf4j.LoggerFactory
 
 /**
  * Allows to check Authentication plugins automatically. Run every time when receiving input call. Checks Authentication (bearer) header containment
@@ -17,8 +18,9 @@ val VerificationPlugin = createApplicationPlugin(name = "VerificationPlugin") {
     val verifierOAuth: ITokenVerifier = TokenVerifier()
     val verifierLine = ApiKeyVerifier()
     val pluginOn: Boolean = System.getenv("VERIFICATION_PLUGIN_ENABLE").equals("true")
-    println("Verification plugin mode enabled?: $pluginOn")
-    println("==========================[ verification plugin installed ]==========================")
+    val logger = LoggerFactory.getLogger(this::class.java)
+    logger.info("Verification plugin mode enabled?: $pluginOn")
+    logger.info("Verification plugin installed")
 
     onCall {
         run {
@@ -34,6 +36,7 @@ val VerificationPlugin = createApplicationPlugin(name = "VerificationPlugin") {
                     val email = verifierOAuth.isCorrectToken(token as String)
                     exOAuth = null
                 } catch (ex: Exception) {
+                    logger.debug("OAuth verification failed")
                     exOAuth = ex
                 }
 
@@ -42,13 +45,16 @@ val VerificationPlugin = createApplicationPlugin(name = "VerificationPlugin") {
                     val line = verifierLine.isCorrectToken(token as String)
                     exLine = null
                 } catch (ex: Exception) {
+                    logger.debug("Token verification failed")
                     exLine = ex
                 }
 
                 //If both authentications ways cannot verify header containment, this condition must throw 401 Unauthorised
                 if (exOAuth != null && exLine != null) {
+                    logger.info("Verification error. \nOAuth exception: ", exOAuth)
+                    logger.info("Verification error. \nLine exception: ", exLine)
                     it.response.status(HttpStatusCode.Unauthorized)
-                    it.respond("verification error. \nCause by:\nOAuth exception: $exOAuth\nLine exception: $exLine")
+                    it.respond("Verification error. \nCause by:\nOAuth exception: $exOAuth\nLine exception: $exLine")
                 }
             }
         }

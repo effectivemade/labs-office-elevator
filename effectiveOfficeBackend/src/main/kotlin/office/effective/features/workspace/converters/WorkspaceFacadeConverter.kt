@@ -7,6 +7,7 @@ import office.effective.dto.WorkspaceZoneDTO
 import office.effective.model.Utility
 import office.effective.model.Workspace
 import office.effective.model.WorkspaceZone
+import org.slf4j.LoggerFactory
 import java.util.*
 
 /**
