@@ -212,7 +212,9 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                             dispatch(
                                 Msg.ChangeBookingRepeatAndTypeOfEnd(
                                     bookingPeriod = BookingPeriod.Day,
-                                    typeEndPeriodBooking = TypeEndPeriodBooking.CountRepeat(datePeriod.days)
+                                    typeEndPeriodBooking = TypeEndPeriodBooking.CountRepeat(
+                                        datePeriod.days
+                                    )
                                 )
                             )
                         else
@@ -423,7 +425,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                 is BookingStore.Intent.ChangeSelectedType -> {
 
-                    val zones = when(intent.selectedType.type) {
+                    val zones = when (intent.selectedType.type) {
                         WorkSpaceType.WORK_PLACE -> getState().allZonesList
                         WorkSpaceType.MEETING_ROOM -> MockDataSpaces.allMeetingRooms
                     }
@@ -449,6 +451,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 BookingStore.Intent.OpenCalendarForEndDate -> {
                     publish(BookingStore.Label.OpenCalendarForDateOfEnd)
                 }
+
                 is BookingStore.Intent.SelectNewDateOfEnd -> {
                     scope.launch {
                         publish(BookingStore.Label.CloseCalendarForDateOfEnd)
@@ -489,6 +492,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                                 val zones: List<WorkspaceZoneUI> = zonesResponse.data
                                 dispatch(Msg.UpdateAllZones(zones = zones))
                             }
+
                             is Either.Error -> {
                                 //TODO(Artem Gruzdev) schedule error
                             }
@@ -515,41 +519,26 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     ),
                     freeUntil = LocalDateTime(
                         date = state.selectedFinishDate,
-                        time = state.selectedFinishTime
-                    )
+                        time = state.selectedFinishTime,
+                    ),
+                    selectedWorkspacesZone = workspaceZoneUI
                 ).collect { response ->
                     withContext(Dispatchers.Main) {
                         when (response) {
                             is Either.Success -> {
-                                val list = workspaceZoneUI.filter { it.isSelected }
-                                val listWorkSpaces = response.data
-
-                                Napier.d { response.data.toString() }
-                                val newList = mutableListOf<WorkSpaceUI>()
-
-                                list.forEach {
-                                    val nameSpace = it.name
-                                    val foundedSpace =
-                                        listWorkSpaces.firstOrNull { it.zoneName == nameSpace }
-                                    foundedSpace?.let {
-                                        newList.add(it)
-                                    }
-                                }
-                                dispatch(newList.toList())
+                                dispatch(response.data)
                             }
 
                             is Either.Error -> {
-                                println("ERROORRR!!!! ${response.error.error}")
                                 dispatch(listOf())
                                 // TODO SHOW ERROR ON UI
                             }
                         }
                     }
                 }
+
             }
-
         }
-
     }
 
     private object ReducerImpl : Reducer<BookingStore.State, Msg> {
