@@ -35,6 +35,7 @@ object KtorEtherClient {
                     }
                     refreshTokens {
                         println("calling refresh")
+                        println("refreshed token = ${token.last()}")
                         BearerTokens(token.last(), "")
                     }
                 }
