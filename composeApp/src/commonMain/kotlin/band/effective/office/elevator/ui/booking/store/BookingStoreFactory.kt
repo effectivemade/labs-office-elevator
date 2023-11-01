@@ -342,8 +342,11 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                                 BookingPeriod.Day -> MainRes.strings.another
                             }
                             dispatch(Msg.ChangeBookingRepeat(bookingRepeat = name))
-                            dispatch(Msg.ChangeTypeOfEnd(TypeEndPeriodBooking.CountRepeat(4)))
+                            dispatch(Msg.ChangeTypeOfEnd(TypeEndPeriodBooking.CountRepeat(10))) // TODO(Artem Gruzdev) backend should fix this
                             dispatch(Msg.ChangeBookingPeriod(bookingPeriod = intent.pair.second))
+                            dispatch(Msg.ChangeFrequency(
+                                Frequency(days = listOf(), researchEnd = Triple(Pair("ThisDay",""),"",""))
+                            ))
                         }
                     }
 
@@ -413,7 +416,10 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                         publish(BookingStore.Label.CloseBookRepeat)
                     }
                     scope.launch {
-                        dispatch(Msg.ChangeFrequency(frequency = intent.frequency))
+                        dispatch(Msg.ChangeBookingRepeatAndTypeOfEnd(
+                            bookingPeriod = intent.bookingPeriod,
+                            typeEndPeriodBooking = intent.typeOfEnd
+                        ))
                     }
                 }
 
@@ -565,7 +571,6 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is Msg.ChangeFrequency -> {
                     val frequency = msg.frequency
                     copy(
-                        frequency = frequency,
                         bookingPeriod = frequency.getBookPeriod(),
                         typeOfEnd = frequency.getTypeOfEndBooking()
                     )

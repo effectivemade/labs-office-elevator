@@ -55,7 +55,10 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
 
         data class ChangeWholeDay(val wholeDay: Boolean) : Intent
 
-        data class ChangeFrequency(val frequency: Frequency) : Intent
+        data class ChangeFrequency(
+            val bookingPeriod: BookingPeriod,
+            val typeOfEnd: TypeEndPeriodBooking
+        ) : Intent
 
         data class ChangeBookingRepeat(val bookingRepeat: StringResource) : Intent
 
@@ -83,7 +86,6 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         val wholeDay: Boolean,
         val isStart: Boolean,
         val isStartDate: Boolean,
-        val frequency: Frequency,
         val repeatBooking: StringResource,
         val bookingPeriod: BookingPeriod,
         val selectedType: TypesList,
@@ -113,7 +115,6 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
                 selectedFinishTime = getCurrentTime(),
                 wholeDay = false,
                 isStart = true,
-                frequency = Frequency(days = listOf(), researchEnd = Triple(Pair("ThisDay",""),"","")),
                 repeatBooking = MainRes.strings.booking_not_repeat,
                 bookingPeriod = BookingPeriod.NoPeriod,
                 selectedType = TypesList(

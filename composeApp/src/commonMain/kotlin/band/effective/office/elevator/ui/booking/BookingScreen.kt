@@ -32,6 +32,7 @@ import band.effective.office.elevator.components.bottomSheet.MultiBottomSheetCon
 import band.effective.office.elevator.components.bottomSheet.rememberMultiBottomSheetController
 import band.effective.office.elevator.domain.models.BookingInfo
 import band.effective.office.elevator.domain.models.BookingPeriod
+import band.effective.office.elevator.domain.models.TypeEndPeriodBooking
 import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.ui.booking.components.BookingMainContentScreen
 import band.effective.office.elevator.ui.booking.components.modals.BookAccept
@@ -66,7 +67,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
     val showChooseZone = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
         confirmValueChange = { sheetState ->
-            when(sheetState) {
+            when (sheetState) {
                 ModalBottomSheetValue.Expanded -> true
                 ModalBottomSheetValue.Hidden -> {
                     bookingComponent.onEvent(BookingStore.Intent.CloseChooseZone)
@@ -86,7 +87,8 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                     bookingComponent.onEvent(BookingStore.Intent.CloseBookPeriod)
                     true
                 }
-                ModalBottomSheetValue.HalfExpanded ->  true
+
+                ModalBottomSheetValue.HalfExpanded -> true
             }
         }
     )
@@ -97,10 +99,12 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                 ModalBottomSheetValue.Expanded -> {
                     true
                 }
+
                 ModalBottomSheetValue.Hidden -> {
                     bookingComponent.onEvent(BookingStore.Intent.CloseBookAccept)
                     true
                 }
+
                 ModalBottomSheetValue.HalfExpanded -> {
                     true
                 }
@@ -117,6 +121,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                     bookingComponent.onEvent(BookingStore.Intent.CloseBookRepeat)
                     true
                 }
+
                 ModalBottomSheetValue.HalfExpanded -> true
             }
         }
@@ -158,8 +163,9 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                         dateOfStart = state.selectedStartDate.atTime(state.selectedStartTime),
                         dateOfEnd = state.selectedFinishDate.atTime(state.selectedFinishTime)
                     ),
-                    frequency = state.frequency,
-                    period = state.bookingPeriod
+                    bookingPeriod = state.bookingPeriod,
+                    typeEndPeriodBooking = state.typeOfEnd,
+                    repeatBooking = state.repeatBooking
                 )
             },
             BottomSheetNames.BOOK_PERIOD.name to BottomSheetItem(
@@ -204,7 +210,6 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                         bookingComponent.onEvent(BookingStore.Intent.OpenRepeatDialog)
                     },
                     onClickSearchSuitableOptions = { bookingComponent.onEvent(BookingStore.Intent.SearchSuitableOptions) },
-                    frequency = state.frequency,
                     finishDate = state.selectedFinishDate,
                 )
             },
@@ -213,11 +218,16 @@ fun BookingScreen(bookingComponent: BookingComponent) {
             ) {
                 BookingRepeat(
                     backButtonClicked = { bookingComponent.onEvent(BookingStore.Intent.CloseBookRepeat) },
-                    confirmBooking = { frequency ->
-                        bookingComponent.onEvent(BookingStore.Intent.ChangeFrequency(frequency = frequency))
+                    confirmBooking = { bookingPeriod, typeOfEnd ->
+                        bookingComponent.onEvent(
+                            BookingStore.Intent.ChangeFrequency(
+                                bookingPeriod,
+                                typeOfEnd
+                            )
+                        )
                     },
                     onSelected = {},
-                    onClickOpenCalendar = {bookingComponent.onEvent(BookingStore.Intent.OpenCalendarForEndDate)},
+                    onClickOpenCalendar = { bookingComponent.onEvent(BookingStore.Intent.OpenCalendarForEndDate) },
                     selectedDayOfEnd = state.dateOfEndPeriod
                 )
             },
@@ -266,6 +276,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                     Napier.d { "Close book repeat label" }
                     multiBottomSheetController.closeCurrentSheet()
                 }
+
                 BookingStore.Label.OpenFinishTimeModal -> showTimePicker = true
                 BookingStore.Label.CloseFinishTimeModal -> showTimePicker = false
                 is BookingStore.Label.ShowToast -> showToast(label.message)
@@ -313,7 +324,6 @@ fun BookingScreen(bookingComponent: BookingComponent) {
         isStart = state.isStart,
         startDate = state.selectedStartDate,
         finishDate = state.selectedFinishDate,
-        frequency = state.frequency,
         repeatBookings = state.repeatBooking,
         onClickChangeSelectedType = {
             bookingComponent.onEvent(
@@ -321,13 +331,21 @@ fun BookingScreen(bookingComponent: BookingComponent) {
             )
         },
         selectedTypesList = state.selectedType,
-        onClickCloseRepeatDialog = {bookingComponent.onEvent(BookingStore.Intent.CloseRepeatDialog)},
+        onClickCloseRepeatDialog = { bookingComponent.onEvent(BookingStore.Intent.CloseRepeatDialog) },
         isLoadingWorkspacesList = state.isLoadingListWorkspaces,
         isLoadingBookingCreation = state.isLoadingBookingCreation,
         dateOfEndPeriod = state.dateOfEndPeriod,
         showCalendarForEndDate = showCalendarForEndDate,
-        onClickApplyDateOfEndPeriod = {bookingComponent.onEvent(BookingStore.Intent.SelectNewDateOfEnd(it))},
-        onClickCloseCalendarForDateOfEnd = {bookingComponent.onEvent(BookingStore.Intent.CloseCalendarForEndDate)}
+        onClickApplyDateOfEndPeriod = {
+            bookingComponent.onEvent(
+                BookingStore.Intent.SelectNewDateOfEnd(
+                    it
+                )
+            )
+        },
+        onClickCloseCalendarForDateOfEnd = { bookingComponent.onEvent(BookingStore.Intent.CloseCalendarForEndDate) },
+        typeOfTypeEndPeriodBooking = state.typeOfEnd,
+        bookingPeriod = state.bookingPeriod
     )
 }
 
@@ -358,13 +376,14 @@ private fun BookingScreenContent(
     isStart: Boolean,
     startDate: LocalDate,
     finishDate: LocalDate,
-    frequency: Frequency,
     repeatBookings: StringResource,
     onClickChangeSelectedType: (TypesList) -> Unit,
     selectedTypesList: TypesList,
     onClickCloseRepeatDialog: () -> Unit,
     isLoadingBookingCreation: Boolean,
-    dateOfEndPeriod: LocalDate
+    dateOfEndPeriod: LocalDate,
+    bookingPeriod: BookingPeriod,
+    typeOfTypeEndPeriodBooking: TypeEndPeriodBooking
 ) {
     val scrollState = rememberLazyListState()
     val scrollIsDown = scrollState.isScrollingDown()
@@ -384,9 +403,9 @@ private fun BookingScreenContent(
         }
     }
 
-    timeTitle = if (isStart){
+    timeTitle = if (isStart) {
         MainRes.strings.take_from
-    }else{
+    } else {
         MainRes.strings.take_before
     }
     Box {
@@ -407,8 +426,9 @@ private fun BookingScreenContent(
                 onClickExpandedOption = { isExpandedOptions = !isExpandedOptions },
                 startDate = startDate,
                 finishDate = finishDate,
-                frequency = frequency,
-                repeatBooking=repeatBookings,
+                bookingPeriod = bookingPeriod,
+                typeEndPeriodBooking = typeOfTypeEndPeriodBooking,
+                repeatBooking = repeatBookings,
                 onClickChangeSelectedType = onClickChangeSelectedType,
                 selectedTypesList = selectedTypesList,
                 isLoadingWorkspacesList = isLoadingWorkspacesList
@@ -420,7 +440,9 @@ private fun BookingScreenContent(
                 BookingRepeatCard(
                     onSelected = onClickOpenBookRepeat,
                     modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center),
-                    frequency = frequency
+                    weekDays = if (bookingPeriod is BookingPeriod.Week)
+                        bookingPeriod.selectedDayOfWeek
+                    else emptyList()
                 )
             },
             onDismissRequest = onClickCloseRepeatDialog,

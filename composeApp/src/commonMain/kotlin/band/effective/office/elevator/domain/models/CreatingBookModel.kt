@@ -42,6 +42,8 @@ sealed interface TypeEndPeriodBooking{
 
     data class CountRepeat(val count: Int) : TypeEndPeriodBooking
 }
+
+//TDOD (Artem Gruzdev) Use WeekDay kotlinx.datetime.DayOfWeek
 enum class DayOfWeek(val dayOfWeekNumber: Int) {
     Sunday(1),
     Monday(2),
@@ -51,6 +53,27 @@ enum class DayOfWeek(val dayOfWeekNumber: Int) {
     Friday(6),
     Saturday(7),
 }
+
+fun DayOfWeek.dayOfWeekToString() =
+    when(this) {
+        DayOfWeek.Sunday -> "ВС"
+        DayOfWeek.Monday -> "ПН"
+        DayOfWeek.Tuesday -> "ВТ"
+        DayOfWeek.Wednesday -> "СР"
+        DayOfWeek.Thursday -> "ЧТ"
+        DayOfWeek.Friday -> "ПТ"
+        DayOfWeek.Saturday -> "СБ"
+    }
+
+fun List<DayOfWeek>.listToString() : String {
+    var str = ""
+    forEachIndexed { index, it ->
+        str += "${it.dayOfWeekToString()}"
+        if (index != size - 1) str += ", "
+    }
+    return str
+}
+
 
 fun CreatingBookModel.toDTO(
     user: UserDTO,
