@@ -416,9 +416,26 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                         publish(BookingStore.Label.CloseBookRepeat)
                     }
                     scope.launch {
+                        val typeOfEnd = when(intent.typeOfEnd) {
+                            is TypeEndPeriodBooking.DatePeriodEnd -> {
+                                // TODO: hen backend fix until date, it`s can be removed
+                                val dateRange = intent.typeOfEnd.date - getState().selectedStartDate
+                                val timeUnit = when(intent.bookingPeriod) {
+                                    is BookingPeriod.Week -> 7
+                                    is BookingPeriod.EveryWorkDay -> 7
+                                    is BookingPeriod.Year -> 365
+                                    is BookingPeriod.Month -> 30
+                                    BookingPeriod.Another -> 1
+                                    BookingPeriod.Day -> 1
+                                    BookingPeriod.NoPeriod -> 1
+                                }
+                                TypeEndPeriodBooking.CountRepeat(dateRange.days / timeUnit + 1)
+                            }
+                            else  -> intent.typeOfEnd
+                        }
                         dispatch(Msg.ChangeBookingRepeatAndTypeOfEnd(
                             bookingPeriod = intent.bookingPeriod,
-                            typeEndPeriodBooking = intent.typeOfEnd
+                            typeEndPeriodBooking = typeOfEnd
                         ))
                     }
                 }
