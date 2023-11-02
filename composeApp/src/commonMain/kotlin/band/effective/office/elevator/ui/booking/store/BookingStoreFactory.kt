@@ -213,7 +213,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                                 Msg.ChangeBookingRepeatAndTypeOfEnd(
                                     bookingPeriod = BookingPeriod.Day,
                                     typeEndPeriodBooking = TypeEndPeriodBooking.CountRepeat(
-                                        datePeriod.days
+                                        datePeriod.days + 1
                                     )
                                 )
                             )

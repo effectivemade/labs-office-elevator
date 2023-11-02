@@ -8,6 +8,7 @@ import band.effective.office.elevator.domain.models.TypeEndPeriodBooking
 import band.effective.office.elevator.domain.models.listToString
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
+import io.github.aakira.napier.Napier
 import kotlinx.datetime.LocalDate
 
 @Composable
@@ -34,25 +35,28 @@ fun stringFromBookPeriod(
 
     val startYear = startDate.year
     val finishYear = finishDate.year
-
+    val str = stringResource(repeatBooking)
+    Napier.d {
+        "seleted day of week ${if (bookingPeriod is BookingPeriod.Week) bookingPeriod.selectedDayOfWeek else ""}"
+    }
     val repeatBookingsOnShow = when (repeatBooking) {
-        MainRes.strings.every_work_day_repeat -> stringResource(repeatBooking) + " "
+        MainRes.strings.every_work_day -> stringResource(repeatBooking) + " "
         MainRes.strings.every_week -> stringResource(repeatBooking) + " "
-        MainRes.strings.every_month -> stringResource(repeatBooking) + " "
+        MainRes.strings.every_month -> stringResource(repeatBooking) + " ${startDate.dayOfMonth} числа "
         else -> ""
     }
     val period =
         when (bookingPeriod) {
-            is BookingPeriod.Week -> "недел(и) "
+            is BookingPeriod.Week -> "неделю(и) "
             is BookingPeriod.Month -> "месяц(ев) "
             is BookingPeriod.Year -> "лет "
             else -> ""
         }
 
     val periodicity = when (bookingPeriod) {
-        is BookingPeriod.Week -> "раз в ${bookingPeriod.durationPeriod}  $period (${bookingPeriod.selectedDayOfWeek.listToString()}) c "
-        is BookingPeriod.Month -> "раз в ${bookingPeriod.monthPeriod}  $period"
-        is BookingPeriod.Year -> "раз в ${bookingPeriod.yearPeriod}  $period"
+        is BookingPeriod.Week -> "раз в ${bookingPeriod.durationPeriod} $period ${bookingPeriod.selectedDayOfWeek.listToString()} c "
+        is BookingPeriod.Month -> "раз в ${bookingPeriod.monthPeriod} $period"
+        is BookingPeriod.Year -> "раз в ${bookingPeriod.yearPeriod} $period"
         else -> ""
     }
 

@@ -71,10 +71,12 @@ import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.domain.models.DayOfWeek
 import band.effective.office.elevator.domain.models.TypeEndPeriodBooking
+import band.effective.office.elevator.domain.models.listToString
 import band.effective.office.elevator.textInBorderGray
 import band.effective.office.elevator.ui.booking.models.Frequency
 import band.effective.office.elevator.utils.MonthLocalizations
 import dev.icerock.moko.resources.compose.stringResource
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
@@ -106,7 +108,9 @@ fun BookingRepeat(
         mutableStateOf(TypeEndPeriodBooking.Never)
     }
 
-    val selectedDayOfWeekNumber = mutableListOf<Int>()
+    val selectedDayOfWeekNumber by remember {
+        mutableStateOf(mutableListOf<Int>())
+    }
 
     val endPeriod = remember { mutableStateOf("1") }
 
@@ -511,7 +515,7 @@ fun BookingRepeat(
                         RadioButton(
                             selected = typeOfEnd is TypeEndPeriodBooking.CountRepeat,
                             onClick = {
-                                typeOfEnd = TypeEndPeriodBooking.CountRepeat(endPeriod.value.toInt())
+                                typeOfEnd = TypeEndPeriodBooking.CountRepeat(endPeriod.value.ifEmpty { "1" }.toInt())
                         }.also { onSelected() },
                             colors = RadioButtonDefaults.colors(
                                 disabledSelectedColor = MaterialTheme.colors.primary,
@@ -531,7 +535,7 @@ fun BookingRepeat(
                         OutlinedTextField(
                             value = endPeriod.value,
                             onValueChange = {
-                                typeOfEnd = TypeEndPeriodBooking.CountRepeat(it.toInt())
+                                typeOfEnd = TypeEndPeriodBooking.CountRepeat(it.ifEmpty { "1" }.toInt())
                                 endPeriod.value = it
                             },
                             shape = RoundedCornerShape(8.dp),
@@ -607,6 +611,9 @@ private fun confirmBookPeriodChanges(
         when(bookingPeriod) {
             is BookingPeriod.Week -> {
                 val dayOfWeek = getDays(selectedDayOfWeekNumber)
+                Napier.d {
+                    "selected day of week ${dayOfWeek.listToString()}"
+                }
                 BookingPeriod.Week(
                     weekPeriod = periodLength,
                     selectedDayOfWeek = dayOfWeek
