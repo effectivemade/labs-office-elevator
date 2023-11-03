@@ -27,13 +27,14 @@ import kotlinx.datetime.LocalTime
 
 @Composable
 fun TimePickerModal(
+    startTime: LocalTime = getCurrentTime(),
     titleText: String,
     modifier: Modifier = Modifier,
     onClickCansel: () -> Unit,
     onClickOk: (LocalTime) -> Unit
 ) {
     val selectorSettings = WheelPickerDefaults.selectorProperties(enabled = false)
-    var currentTime = getCurrentTime()
+    var time = startTime
 
     Column(
         modifier = modifier
@@ -50,10 +51,11 @@ fun TimePickerModal(
         )
         WheelTimePicker(
             modifier = Modifier.fillMaxWidth(),
+            startTime = startTime,
             rowCount = 5,
             textColor = Color.Black,
             selectorProperties = selectorSettings,
-            onSnappedTime = { newDate -> currentTime = newDate }
+            onSnappedTime = { newDate -> time = newDate }
         )
         Spacer(modifier = Modifier.height(24.dp))
         Row(
@@ -69,7 +71,7 @@ fun TimePickerModal(
             Spacer(modifier = Modifier.width(16.dp))
             EffectiveButton(
                 modifier = Modifier.weight(.1f),
-                onClick = { onClickOk(currentTime) },
+                onClick = { onClickOk(time) },
                 buttonText = stringResource(MainRes.strings.ok),
                 contentPadding = 12.dp
             )
