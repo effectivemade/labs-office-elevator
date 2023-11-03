@@ -4,7 +4,7 @@ import band.effective.office.elevator.MainRes
 import dev.icerock.moko.resources.ImageResource
 import dev.icerock.moko.resources.StringResource
 
-enum class UserDataEditProfile
+enum class UserDataTextFieldType
     (val title: StringResource,
      val icon: ImageResource) {
     Person(
@@ -24,6 +24,6 @@ enum class UserDataEditProfile
         title = MainRes.strings.telegram,
     )
 }
-inline fun <reified : Enum<UserDataEditProfile>> getAllUserDataEditProfile(): Array<UserDataEditProfile> {
+inline fun <reified : Enum<UserDataTextFieldType>> getAllUserDataEditProfile(): Array<UserDataTextFieldType> {
     return (enumValues())
 }
