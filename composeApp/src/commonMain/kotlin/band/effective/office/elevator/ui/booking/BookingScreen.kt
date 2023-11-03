@@ -386,7 +386,6 @@ private fun BookingScreenContent(
     dateOfEndPeriod: LocalDate,
     startTime: LocalTime,
     endTime: LocalTime,
-    dateOfEndPeriod: LocalDate,
     bookingPeriod: BookingPeriod,
     typeOfTypeEndPeriodBooking: TypeEndPeriodBooking
 ) {
