@@ -161,7 +161,7 @@ private fun AuthorizationPhoneComponent(
                         AuthorizationPhoneStore.Intent.PhoneNumberChanged(phoneNumber = it)
                     )
                 },
-                visualTransformation = PhoneMaskTransformation(),
+                visualTransformation = PhoneMaskTransformation,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 textStyle = MaterialTheme.typography.body1.copy(
                     color = Color.Black

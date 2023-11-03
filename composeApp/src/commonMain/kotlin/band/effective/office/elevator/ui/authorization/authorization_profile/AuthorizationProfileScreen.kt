@@ -95,7 +95,9 @@ fun AuthorizationProfileComponent(
     val closeIcon2 = remember { mutableStateOf(false) }
     val borderColor2 = remember { mutableStateOf(textGrayColor) }
     val leadingColor2 = remember { mutableStateOf(textGrayColor) }
+
     var personName by remember { mutableStateOf(state.name) }
+    var personPost by remember { mutableStateOf(state.post) }
 
     Column(
         horizontalAlignment = Alignment.Start,
@@ -221,7 +223,7 @@ fun AuthorizationProfileComponent(
 
 //            POST
             OutlinedTextField(
-                value = state.post,
+                value = personPost,
                 onValueChange = {
                     if (it.isNotEmpty()) {
                         closeIcon2.value = true
@@ -231,6 +233,7 @@ fun AuthorizationProfileComponent(
                         borderColor2.value = textGrayColor
                         closeIcon2.value = false
                         leadingColor2.value = textGrayColor
+                        personPost = it
                     }
 
                     onEvent(AuthorizationProfileStore.Intent.PostChanged(post = it))
