@@ -14,7 +14,7 @@ class TokenVerifier : ITokenVerifier {
     private val webClient = System.getenv("GOOGLE_CLIENT_ID")
 
     private val verifier: GoogleIdTokenVerifier =
-        GoogleIdTokenVerifier.Builder(NetHttpTransport(), GsonFactory()).setAudience(listOf(webClient)).build()
+        GoogleIdTokenVerifier.Builder(NetHttpTransport(), GsonFactory()).build()
 
     private val acceptableMailDomain: String =
         config.propertyOrNull("auth.user.emailDomain ")?.getString() ?: "effective.band"
@@ -34,7 +34,7 @@ class TokenVerifier : ITokenVerifier {
         var userMail: String? = null
         val token: GoogleIdToken? = verifier.verify(tokenString)
 
-        val payload = token?.payload ?: throw Exception("Token cannot be verified")
+        val payload = token?.payload ?: throw Exception("Token wasn't verified by Google")
         val emailVerified: Boolean = payload.emailVerified
         val hostedDomain = payload.hostedDomain ?: extractDomain(payload.email)
 

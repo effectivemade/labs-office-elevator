@@ -32,6 +32,7 @@ import band.effective.office.elevator.components.bottomSheet.MultiBottomSheetCon
 import band.effective.office.elevator.components.bottomSheet.rememberMultiBottomSheetController
 import band.effective.office.elevator.domain.models.BookingInfo
 import band.effective.office.elevator.domain.models.BookingPeriod
+import band.effective.office.elevator.domain.models.TypeEndPeriodBooking
 import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.ui.booking.components.BookingMainContentScreen
 import band.effective.office.elevator.ui.booking.components.modals.BookAccept
@@ -42,7 +43,6 @@ import band.effective.office.elevator.ui.booking.components.modals.BookingSucces
 import band.effective.office.elevator.ui.booking.components.modals.ChooseZone
 import band.effective.office.elevator.ui.booking.models.BottomSheetNames
 import band.effective.office.elevator.ui.booking.models.Frequency
-import band.effective.office.elevator.ui.booking.models.MockDataSpaces
 import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import band.effective.office.elevator.ui.booking.store.BookingStore
@@ -140,13 +140,11 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                         if (state.workSpacesType == WorkSpaceType.WORK_PLACE) MainRes.strings.selection_zones
                         else MainRes.strings.selection_rooms
                     ),
-                    workSpacecZone = state.workSpacesZone,
+                    workSpacecZone = state.currentWorkspaceZones,
                     onClickCloseChoseZone = { bookingComponent.onEvent(BookingStore.Intent.CloseChooseZone) },
                     onClickConfirmSelectedZone = {
                         bookingComponent.onEvent(
-                            BookingStore.Intent.ChangeSelectedWorkSpacesZone(
-                                it
-                            )
+                            BookingStore.Intent.ChangeSelectedWorkSpacesZone(it)
                         )
                     }
                 )
@@ -165,8 +163,9 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                         dateOfStart = state.selectedStartDate.atTime(state.selectedStartTime),
                         dateOfEnd = state.selectedFinishDate.atTime(state.selectedFinishTime)
                     ),
-                    frequency = state.frequency,
-                    period = state.bookingPeriod
+                    bookingPeriod = state.bookingPeriod,
+                    typeEndPeriodBooking = state.typeOfEnd,
+                    repeatBooking = state.repeatBooking
                 )
             },
             BottomSheetNames.BOOK_PERIOD.name to BottomSheetItem(
@@ -211,7 +210,6 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                         bookingComponent.onEvent(BookingStore.Intent.OpenRepeatDialog)
                     },
                     onClickSearchSuitableOptions = { bookingComponent.onEvent(BookingStore.Intent.SearchSuitableOptions) },
-                    frequency = state.frequency,
                     finishDate = state.selectedFinishDate,
                 )
             },
@@ -220,8 +218,13 @@ fun BookingScreen(bookingComponent: BookingComponent) {
             ) {
                 BookingRepeat(
                     backButtonClicked = { bookingComponent.onEvent(BookingStore.Intent.CloseBookRepeat) },
-                    confirmBooking = { frequency ->
-                        bookingComponent.onEvent(BookingStore.Intent.ChangeFrequency(frequency = frequency))
+                    confirmBooking = { bookingPeriod, typeOfEnd ->
+                        bookingComponent.onEvent(
+                            BookingStore.Intent.ChangeFrequency(
+                                bookingPeriod,
+                                typeOfEnd
+                            )
+                        )
                     },
                     onSelected = {},
                     onClickOpenCalendar = { bookingComponent.onEvent(BookingStore.Intent.OpenCalendarForEndDate) },
@@ -318,28 +321,13 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                 )
             )
         },
-        onClickChangeZone = { type ->
-            with(
-                if (type == WorkSpaceType.MEETING_ROOM) MockDataSpaces.allMeetingRooms
-                else MockDataSpaces.allBookingZone
-            ) {
-                bookingComponent.onEvent(
-                    BookingStore.Intent.ChangeSelectedWorkSpacesZone(
-                        workSpaceZone = this@with
-                    )
-                )
-            }
-        },
         isStart = state.isStart,
         startDate = state.selectedStartDate,
         finishDate = state.selectedFinishDate,
-        frequency = state.frequency,
         repeatBookings = state.repeatBooking,
         onClickChangeSelectedType = {
             bookingComponent.onEvent(
-                BookingStore.Intent.ChangeSelectedType(
-                    selectedType = it
-                )
+                BookingStore.Intent.ChangeSelectedType(selectedType = it)
             )
         },
         selectedTypesList = state.selectedType,
@@ -356,6 +344,8 @@ fun BookingScreen(bookingComponent: BookingComponent) {
             )
         },
         onClickCloseCalendarForDateOfEnd = { bookingComponent.onEvent(BookingStore.Intent.CloseCalendarForEndDate) },
+        typeOfTypeEndPeriodBooking = state.typeOfEnd,
+        bookingPeriod = state.bookingPeriod,
         startTime = state.selectedStartTime,
         endTime = state.selectedFinishTime
     )
@@ -385,11 +375,9 @@ private fun BookingScreenContent(
     onClickCloseTimeModal: () -> Unit,
     onClickSelectTime: (LocalTime) -> Unit,
     onClickOpenBookRepeat: (Pair<String, BookingPeriod>) -> Unit,
-    onClickChangeZone: (WorkSpaceType) -> Unit,
     isStart: Boolean,
     startDate: LocalDate,
     finishDate: LocalDate,
-    frequency: Frequency,
     repeatBookings: StringResource,
     onClickChangeSelectedType: (TypesList) -> Unit,
     selectedTypesList: TypesList,
@@ -397,7 +385,10 @@ private fun BookingScreenContent(
     isLoadingBookingCreation: Boolean,
     dateOfEndPeriod: LocalDate,
     startTime: LocalTime,
-    endTime: LocalTime
+    endTime: LocalTime,
+    dateOfEndPeriod: LocalDate,
+    bookingPeriod: BookingPeriod,
+    typeOfTypeEndPeriodBooking: TypeEndPeriodBooking
 ) {
     val scrollState = rememberLazyListState()
     val scrollIsDown = scrollState.isScrollingDown()
@@ -438,10 +429,10 @@ private fun BookingScreenContent(
                 onClickOpenChoseZone = onClickOpenChoseZone,
                 onClickExpandedMap = { isExpandedCard = !isExpandedCard },
                 onClickExpandedOption = { isExpandedOptions = !isExpandedOptions },
-                onClickChangeZone = onClickChangeZone,
                 startDate = startDate,
                 finishDate = finishDate,
-                frequency = frequency,
+                bookingPeriod = bookingPeriod,
+                typeEndPeriodBooking = typeOfTypeEndPeriodBooking,
                 repeatBooking = repeatBookings,
                 onClickChangeSelectedType = onClickChangeSelectedType,
                 selectedTypesList = selectedTypesList,
@@ -454,7 +445,9 @@ private fun BookingScreenContent(
                 BookingRepeatCard(
                     onSelected = onClickOpenBookRepeat,
                     modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center),
-                    frequency = frequency
+                    weekDays = if (bookingPeriod is BookingPeriod.Week)
+                        bookingPeriod.selectedDayOfWeek
+                    else emptyList()
                 )
             },
             onDismissRequest = onClickCloseRepeatDialog,

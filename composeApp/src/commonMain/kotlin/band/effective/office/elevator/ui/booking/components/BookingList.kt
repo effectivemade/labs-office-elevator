@@ -1,6 +1,7 @@
 package band.effective.office.elevator.ui.booking.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -18,7 +19,9 @@ fun WorkSpaceList(
     onClickOpenBookAccept: (WorkSpaceUI) -> Unit
 ) {
     LazyColumn(
-        modifier = Modifier.background(MaterialTheme.colors.onBackground)
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.onBackground)
             .padding(horizontal = 16.dp),
         state = scrollState
     ) {

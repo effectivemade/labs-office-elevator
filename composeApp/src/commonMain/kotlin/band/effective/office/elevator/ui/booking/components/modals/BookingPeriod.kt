@@ -57,7 +57,6 @@ fun BookingPeriod(
     bookFinishTime: () -> Unit,
     bookingRepeat: () -> Unit,
     onClickSearchSuitableOptions: () -> Unit,
-    frequency: Frequency
 ) {
     val bookPeriodTextColor =
         if (finishDate == startDate)
@@ -211,7 +210,7 @@ fun BookingPeriod(
                             contentDescription = "repeat booking date"
                         )
                         Text(
-                            text = frequency.toString().ifEmpty { repeatBooking },
+                            text = repeatBooking,
                             style = MaterialTheme.typography.button.copy(
                                 fontWeight = FontWeight(weight = 400),
                                 color = bookPeriodTextColor

@@ -2,25 +2,13 @@ package band.effective.office.elevator.ui.booking.components.modals
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -47,17 +35,18 @@ import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.textInBorderGray
 import band.effective.office.elevator.ui.booking.components.HorizontalGirdItems
-import band.effective.office.elevator.ui.booking.models.WorkSpaceZone
+import band.effective.office.elevator.ui.booking.models.WorkspaceZoneUI
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun ChooseZone(
     sheetTile: String,
-    workSpacecZone: List<WorkSpaceZone>,
+    workSpacecZone: List<WorkspaceZoneUI>,
     onClickCloseChoseZone: () -> Unit,
-    onClickConfirmSelectedZone: (List<WorkSpaceZone>) -> Unit
+    onClickConfirmSelectedZone: (List<WorkspaceZoneUI>) -> Unit
 ) {
-    val selectedZones: MutableList<WorkSpaceZone> = mutableListOf()
+    val countItemsInRow = 2
+    val selectedZones: MutableList<WorkspaceZoneUI> = mutableListOf()
     selectedZones.addAll(workSpacecZone)
 
     Column(
@@ -113,15 +102,15 @@ fun ChooseZone(
 
         HorizontalGirdItems(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            countItemsInRow = 3,
+            countItemsInRow = countItemsInRow,
             listItems = workSpacecZone,
             horizontalPaddingContent = 12.dp,
             verticalPaddingContent = 12.dp
         ) { workSpaceZone, columnIndex, rowIndex ->
-            val currentIndex = 3 * columnIndex + rowIndex
+            val currentIndex = countItemsInRow * columnIndex + rowIndex
             //TODO(Artem Gruzdev) refactor this code
             WorkingZones(
-                workSpaceZone = workSpaceZone,
+                workspaceZoneUI = workSpaceZone,
                 onClickZone = { workSpaceZone1 ->
                     val isSelected = !workSpaceZone1.isSelected
                     selectedZones[currentIndex] = workSpaceZone1.copy(isSelected = isSelected)
@@ -154,15 +143,15 @@ fun ChooseZone(
 @Composable
 fun WorkingZones(
     modifier: Modifier = Modifier,
-    workSpaceZone: WorkSpaceZone,
-    onClickZone: (WorkSpaceZone) -> Unit,
+    workspaceZoneUI: WorkspaceZoneUI,
+    onClickZone: (WorkspaceZoneUI) -> Unit,
 ) {
-    var isSelected by remember { mutableStateOf(workSpaceZone.isSelected) }
+    var isSelected by remember { mutableStateOf(workspaceZoneUI.isSelected) }
 
     Button(
         onClick = {
             isSelected = !isSelected
-            onClickZone(workSpaceZone)
+            onClickZone(workspaceZoneUI)
           },
         colors = ButtonDefaults.buttonColors(ExtendedThemeColors.colors.whiteColor),
         modifier = modifier
@@ -185,9 +174,10 @@ fun WorkingZones(
             )
         }
         Text(
-            text = workSpaceZone.name,
+            text = workspaceZoneUI.name,
             fontSize = 16.sp,
             fontWeight = FontWeight(500),
+            maxLines = 1,
             color = if (isSelected) ExtendedThemeColors.colors.purple_heart_800
             else textInBorderGray
         )

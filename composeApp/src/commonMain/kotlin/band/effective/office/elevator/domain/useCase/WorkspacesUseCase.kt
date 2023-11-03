@@ -2,7 +2,9 @@ package band.effective.office.elevator.domain.useCase
 
 import band.effective.office.elevator.domain.models.ErrorWithData
 import band.effective.office.elevator.domain.models.WorkSpace
+import band.effective.office.elevator.domain.models.WorkspaceZone
 import band.effective.office.elevator.domain.models.toUIModel
+import band.effective.office.elevator.domain.models.toUIModelZones
 import band.effective.office.elevator.domain.repository.WorkspaceRepository
 import band.effective.office.network.model.Either
 import kotlinx.coroutines.flow.Flow
@@ -12,7 +14,7 @@ import kotlinx.datetime.LocalDateTime
 class WorkspacesUseCase (
     private val repository: WorkspaceRepository
 ) {
-    suspend fun getZones() = repository.getZones()
+    suspend fun getZones() = repository.getZones().mapZones()
 
     suspend fun getWorkSpaces(
         tag: String,
@@ -34,6 +36,19 @@ class WorkspacesUseCase (
                 )
                 )
                 is Either.Success -> Either.Success(response.data.toUIModel())
+            }
+        }
+
+    private fun Flow<Either<ErrorWithData<List<WorkspaceZone>>, List<WorkspaceZone>>>.mapZones() =
+        map { response ->
+            when(response) {
+                is Either.Error -> Either.Error(
+                    ErrorWithData(
+                        error = response.error.error,
+                        saveData = response.error.saveData?.toUIModelZones()
+                    )
+                )
+                is Either.Success -> Either.Success(response.data.toUIModelZones())
             }
         }
 }
