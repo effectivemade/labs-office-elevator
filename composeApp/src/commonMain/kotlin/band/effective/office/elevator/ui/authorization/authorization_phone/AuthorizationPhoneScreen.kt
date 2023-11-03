@@ -29,6 +29,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -90,12 +91,13 @@ private fun AuthorizationPhoneComponent(
     val closeIcon = remember { mutableStateOf(false) }
     val borderColor = remember { mutableStateOf(textGrayColor) }
     val leadingColor = remember { mutableStateOf(textGrayColor) }
-    val phoneNumber = if (state.phoneNumber.length > UserInfoValidator.phoneNumberSize)
+    val phoneState =
+        if (state.phoneNumber.length > UserInfoValidator.phoneNumberSize)
         state.phoneNumber.substring(
             startIndex = state.phoneNumber.length % UserInfoValidator.phoneNumberSize,
         )
-    else
-        state.phoneNumber
+    else state.phoneNumber
+    var phoneNumber by remember { mutableStateOf(phoneState) }
 
     Column(
         horizontalAlignment = Alignment.Start,
@@ -154,6 +156,7 @@ private fun AuthorizationPhoneComponent(
                         closeIcon.value = false
                         leadingColor.value = textGrayColor
                     }
+                    phoneNumber = it
                     onEvent(
                         AuthorizationPhoneStore.Intent.PhoneNumberChanged(phoneNumber = it)
                     )

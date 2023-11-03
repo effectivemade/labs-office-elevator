@@ -30,6 +30,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -94,6 +95,7 @@ fun AuthorizationProfileComponent(
     val closeIcon2 = remember { mutableStateOf(false) }
     val borderColor2 = remember { mutableStateOf(textGrayColor) }
     val leadingColor2 = remember { mutableStateOf(textGrayColor) }
+    var personName by remember { mutableStateOf(state.name) }
 
     Column(
         horizontalAlignment = Alignment.Start,
@@ -136,7 +138,7 @@ fun AuthorizationProfileComponent(
 
 //            NAME
             OutlinedTextField(
-                value = state.name,
+                value = personName,
                 onValueChange = {
                     if (it.isNotEmpty()) {
                         closeIcon1.value = true
@@ -147,7 +149,7 @@ fun AuthorizationProfileComponent(
                         closeIcon1.value = false
                         leadingColor1.value = textGrayColor
                     }
-
+                    personName = it
                     onEvent(AuthorizationProfileStore.Intent.NameChanged(name = it))
                 },
                 textStyle = MaterialTheme.typography.body1.copy(

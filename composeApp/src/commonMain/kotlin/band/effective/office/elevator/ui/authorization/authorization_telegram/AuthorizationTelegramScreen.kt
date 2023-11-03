@@ -29,6 +29,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -87,6 +88,7 @@ private fun AuthorizationTelegramComponent(
     val closeIcon = remember { mutableStateOf(false) }
     val borderColor = remember { mutableStateOf(textGrayColor) }
     val leadingColor = remember { mutableStateOf(textGrayColor) }
+    var telegram by remember { mutableStateOf(state.nick) }
 
     Column(
         horizontalAlignment = Alignment.Start,
@@ -128,7 +130,7 @@ private fun AuthorizationTelegramComponent(
             )
 
             OutlinedTextField(
-                value = state.nick,
+                value = telegram,
                 onValueChange = {
                     if (it.isNotEmpty()) {
                         closeIcon.value = true
@@ -139,6 +141,7 @@ private fun AuthorizationTelegramComponent(
                         closeIcon.value = false
                         leadingColor.value = textGrayColor
                     }
+                    telegram = it
                     onEvent(AuthorizationTelegramStore.Intent.NickChanged(name = it))
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
