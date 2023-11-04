@@ -90,6 +90,12 @@ fun UserInfoTextField(
         colors = OutlinedTextColorsSetup(),
         isError = error,
         visualTransformation = visualTransformation,
+        placeholder = {
+              Text(
+                  text = stringResource(item.placeholder),
+                  style = MaterialTheme.typography.button
+              )
+        },
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = ImeAction.Done)
     )
 }
