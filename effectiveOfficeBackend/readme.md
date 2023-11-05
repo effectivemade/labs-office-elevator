@@ -3,8 +3,8 @@
 </p>
 
 # Effective-Office-EffectiveBackend
- 
-Documentation
+
+[See documentation](documentation/gfm/index.md) :point_left:
 
 # Goal :dart:
 
