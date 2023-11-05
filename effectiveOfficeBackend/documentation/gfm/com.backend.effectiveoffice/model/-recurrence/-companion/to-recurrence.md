@@ -1,6 +1,6 @@
-//[com.backend.effectiveoffice](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/index.md)/[model](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/model/index.md)/[Recurrence](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/model/-recurrence/index.md)/[Companion](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/model/-recurrence/-companion/index.md)/[toRecurrence](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/model/-recurrence/-companion/to-recurrence.md)
+//[com.backend.effectiveoffice](../../../../index.md)/[model](../../index.md)/[Recurrence](../index.md)/[Companion](index.md)/[toRecurrence](to-recurrence.md)
 
 # toRecurrence
 
 [jvm]\
-fun [RecurrenceDTO](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/model/-recurrence-d-t-o/index.md).[toRecurrence](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/model/-recurrence/-companion/to-recurrence.md)(): [Recurrence](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/model/-recurrence/index.md)
+fun [RecurrenceDTO](../../-recurrence-d-t-o/index.md).[toRecurrence](to-recurrence.md)(): [Recurrence](../index.md)

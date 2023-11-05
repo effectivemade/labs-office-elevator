@@ -1,6 +1,6 @@
-//[com.backend.effectiveoffice](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/index.md)/[office.effective.dto](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.dto/index.md)/[BookingDTO](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.dto/-booking-d-t-o/index.md)/[workspace](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.dto/-booking-d-t-o/workspace.md)
+//[com.backend.effectiveoffice](../../../index.md)/[office.effective.dto](../index.md)/[BookingDTO](index.md)/[workspace](workspace.md)
 
 # workspace
 
 [jvm]\
-val [workspace](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.dto/-booking-d-t-o/workspace.md): [WorkspaceDTO](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.dto/-workspace-d-t-o/index.md)
+val [workspace](workspace.md): [WorkspaceDTO](../-workspace-d-t-o/index.md)

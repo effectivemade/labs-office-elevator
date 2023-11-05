@@ -1,6 +1,6 @@
-//[com.backend.effectiveoffice](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/index.md)/[office.effective.common.swagger](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.common.swagger/index.md)/[SwaggerDocument](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.common.swagger/-swagger-document/index.md)
+//[com.backend.effectiveoffice](../../../index.md)/[office.effective.common.swagger](../index.md)/[SwaggerDocument](index.md)
 
 # SwaggerDocument
 
 [jvm]\
-object [SwaggerDocument](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.common.swagger/-swagger-document/index.md)
+object [SwaggerDocument](index.md)

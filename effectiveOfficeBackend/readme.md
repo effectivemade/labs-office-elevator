@@ -3,6 +3,8 @@
 </p>
 
 # Effective-Office-EffectiveBackend
+ 
+Documentation
 
 # Goal :dart:
 
@@ -106,7 +108,7 @@ postgres container from docker. In that case you may run named container by comm
 ## Environment variables
 
 **POSTGRES_PASSWORD** - defines password for postgres db<br>
-**POSTGRES_DB** - defines name of the database in postgres to connect<br>
+**POSTGRES_DB** - defines name of the postgres database to connect<br>
 **POSTGRES_USER** - defines username for postgres container(postgresForKtor)<br>
 **DATABASE_PASSWORD** - specify password to send to database container to connect<br>
 **GOOGLE_CLIENT_ID** - Deprecated <br>
@@ -117,9 +119,10 @@ postgres container from docker. In that case you may run named container by comm
 **DATABASE_NAME** - specify the name of database to connect<br>
 **DATABASE_USERNAME** - specify the username of **database** user to connect<br>
 **MIGRATIONS_ENABLE** - allows to turn on/off database migrations process. Any value instead of "true" will be reconnised as "false"<br>
-**JSON_GOOGLE_CREDENTIALS** - json file with google credentials, needet to access calendar api<br>
+**JSON_GOOGLE_CREDENTIALS** - json file with Google credentials, needed to access calendar api<br>
 **FIREBASE_SA_JSON** - credentials json file from Firebase service account<br>
-**APPLICATION_URL** - actual url address of application itself. Must not be "localhost""<br>
+**APPLICATION_URL** - actual url address of application itself. Must be https url. Can't be localhost.<br>
+**LOG_LEVEL** - logging level in application. Used in logback.xml. Default value: info<br>
 
 You may use file .env.example as an example.
 

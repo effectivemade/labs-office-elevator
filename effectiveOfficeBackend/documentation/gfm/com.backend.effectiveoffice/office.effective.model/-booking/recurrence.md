@@ -1,6 +1,6 @@
-//[com.backend.effectiveoffice](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/index.md)/[office.effective.model](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.model/index.md)/[Booking](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.model/-booking/index.md)/[recurrence](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.model/-booking/recurrence.md)
+//[com.backend.effectiveoffice](../../../index.md)/[office.effective.model](../index.md)/[Booking](index.md)/[recurrence](recurrence.md)
 
 # recurrence
 
 [jvm]\
-var [recurrence](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.model/-booking/recurrence.md): [RecurrenceModel](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.model/-recurrence-model/index.md)?
+var [recurrence](recurrence.md): [RecurrenceModel](../-recurrence-model/index.md)?

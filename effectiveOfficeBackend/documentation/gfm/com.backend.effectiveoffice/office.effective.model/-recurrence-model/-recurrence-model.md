@@ -1,4 +1,4 @@
-//[com.backend.effectiveoffice](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/index.md)/[office.effective.model](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.model/index.md)/[RecurrenceModel](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.model/-recurrence-model/index.md)/[RecurrenceModel](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.model/-recurrence-model/-recurrence-model.md)
+//[com.backend.effectiveoffice](../../../index.md)/[office.effective.model](../index.md)/[RecurrenceModel](index.md)/[RecurrenceModel](-recurrence-model.md)
 
 # RecurrenceModel
 

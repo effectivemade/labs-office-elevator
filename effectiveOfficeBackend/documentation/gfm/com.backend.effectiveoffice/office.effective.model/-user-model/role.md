@@ -1,6 +1,6 @@
-//[com.backend.effectiveoffice](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/index.md)/[office.effective.model](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.model/index.md)/[UserModel](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.model/-user-model/index.md)/[role](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.model/-user-model/role.md)
+//[com.backend.effectiveoffice](../../../index.md)/[office.effective.model](../index.md)/[UserModel](index.md)/[role](role.md)
 
 # role
 
 [jvm]\
-var [role](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.model/-user-model/role.md): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)?
+var [role](role.md): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)?

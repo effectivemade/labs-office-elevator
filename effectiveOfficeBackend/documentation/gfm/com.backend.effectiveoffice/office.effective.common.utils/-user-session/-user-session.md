@@ -1,4 +1,4 @@
-//[com.backend.effectiveoffice](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/index.md)/[office.effective.common.utils](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.common.utils/index.md)/[UserSession](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.common.utils/-user-session/index.md)/[UserSession](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.common.utils/-user-session/-user-session.md)
+//[com.backend.effectiveoffice](../../../index.md)/[office.effective.common.utils](../index.md)/[UserSession](index.md)/[UserSession](-user-session.md)
 
 # UserSession
 

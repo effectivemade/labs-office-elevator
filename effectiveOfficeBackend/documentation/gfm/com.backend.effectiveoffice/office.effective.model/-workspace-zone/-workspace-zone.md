@@ -1,4 +1,4 @@
-//[com.backend.effectiveoffice](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/index.md)/[office.effective.model](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.model/index.md)/[WorkspaceZone](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.model/-workspace-zone/index.md)/[WorkspaceZone](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.model/-workspace-zone/-workspace-zone.md)
+//[com.backend.effectiveoffice](../../../index.md)/[office.effective.model](../index.md)/[WorkspaceZone](index.md)/[WorkspaceZone](-workspace-zone.md)
 
 # WorkspaceZone
 
