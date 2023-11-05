@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "band.effective.office.tablet"
+    namespace = "band.effective.office.tablet.features.roomInfo"
     compileSdk = 33
     sourceSets["main"].apply {
         manifest.srcFile("src/androidMain/AndroidManifest.xml")
