@@ -7,7 +7,8 @@ plugins {
 }
 
 android {
-   compileSdk = 33
+    namespace = "band.effective.office.tablet"
+    compileSdk = 33
     sourceSets["main"].apply {
         res.srcDirs("src/androidMain/resources")
         res.srcDir("build/generated/libres/android/resources")
