@@ -1,0 +1,11 @@
+//[com.backend.effectiveoffice](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/index.md)/[office.effective.features.user](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.features.user/index.md)
+
+# Package-level declarations
+
+## Types
+
+| Name | Summary |
+|---|---|
+| [ApiKeyVerifier](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.features.user/-api-key-verifier/index.md) | [jvm]<br>class [ApiKeyVerifier](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.features.user/-api-key-verifier/index.md) : [ITokenVerifier](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.features.user/-i-token-verifier/index.md)<br>[ITokenVerifier](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.features.user/-i-token-verifier/index.md) implementation. Needs to check api keys |
+| [ITokenVerifier](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.features.user/-i-token-verifier/index.md) | [jvm]<br>interface [ITokenVerifier](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.features.user/-i-token-verifier/index.md)<br>Interface presents methods to verify tokens |
+| [TokenVerifier](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.features.user/-token-verifier/index.md) | [jvm]<br>class [TokenVerifier](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.features.user/-token-verifier/index.md) : [ITokenVerifier](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.features.user/-i-token-verifier/index.md)<br>Implementation of [ITokenVerifier](IdeaProjects/labs-office-elevator/effectiveOfficeBackend/documentation/gfm/com.backend.effectiveoffice/office.effective.features.user/-i-token-verifier/index.md). Checks GoogleIdTokens |
