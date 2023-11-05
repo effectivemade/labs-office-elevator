@@ -7,6 +7,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import band.effective.office.elevator.AppActivity
+import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.OfficeElevatorConfig
 import band.effective.office.elevator.domain.models.GoogleAccount
 import band.effective.office.elevator.utils.getStringResource
@@ -19,7 +20,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes.SIGN_IN_CA
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import io.github.aakira.napier.Napier
-import band.effective.office.elevator.MainRes
 
 
 class AppActivityLifecycleObserver(
