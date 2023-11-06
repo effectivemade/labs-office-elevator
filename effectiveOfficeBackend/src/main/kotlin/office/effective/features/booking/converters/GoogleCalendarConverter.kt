@@ -21,6 +21,7 @@ import office.effective.model.Workspace
 import office.effective.features.booking.converters.RecurrenceRuleFactory.getRecurrence
 import office.effective.features.booking.converters.RecurrenceRuleFactory.rule
 import office.effective.features.workspace.repository.WorkspaceRepository
+import org.slf4j.LoggerFactory
 import java.time.Instant
 import java.util.*
 
@@ -36,7 +37,7 @@ class GoogleCalendarConverter(
     private val verifier: UuidValidator,
     private val workspaceRepository: WorkspaceRepository
 ) {
-
+    private val logger = LoggerFactory.getLogger(this::class.java)
     private val defaultAccount: String =
         config.propertyOrNull("auth.app.defaultAppEmail")?.getString() ?: throw Exception(
             "Config file does not contain default gmail value"
@@ -52,21 +53,33 @@ class GoogleCalendarConverter(
      * @author Danil Kiselev, Max Mishenko, Daniil Zavyalov
      */
     fun toBookingDTO(event: Event): BookingDTO {
+        logger.debug("[toBookingDTO] converting an event to meeting room booking dto")
         val organizer: String = event.organizer?.email ?: ""
-        val email = if (organizer != defaultAccount) organizer else event.description.substringBefore(" ")
+        val email = if (organizer != defaultAccount) {
+            logger.trace("[toBookingDTO] organizer email derived from event.organizer field")
+            organizer
+        } else {
+            logger.trace("[toBookingDTO] organizer email derived from event description")
+            event.description?.substringBefore(" ") ?: ""
+        }
         val recurrence = event.recurrence?.toString()?.getRecurrence()?.toDto()
-        return BookingDTO(
+        val dto = BookingDTO(
             owner = getUser(email),
             participants = event.attendees?.filter { !(it?.resource ?: true) }?.map { getUser(it.email) } ?: listOf(),
             workspace = getWorkspace(
                 event.attendees?.firstOrNull { it?.resource ?: false }?.email
-                    ?: "c_1882249i0l5ieh0cih42dli6fodbi@resource.calendar.google.com" //TODO: Think about a different behavior in case of null
+                    ?: run {
+                        logger.warn("[toBookingDTO] can't get workspace calendar from event.attendees")
+                        "c_1882249i0l5ieh0cih42dli6fodbi@resource.calendar.google.com"
+                    }  //TODO: Think about a different behavior in case of null
             ),
             id = event.id ?: null,
             beginBooking = event.start?.dateTime?.value ?: 0,//TODO FIX date placeholder
             endBooking = event.end?.dateTime?.value ?: ((event.start?.dateTime?.value ?: 0) + 86400000),
             recurrence = recurrence
         )
+        logger.trace("[toBookingDTO] {}", dto.toString())
+        return dto
     }
 
     /**
@@ -80,6 +93,7 @@ class GoogleCalendarConverter(
      * @author Danil Kiselev, Max Mishenko, Daniil Zavyalov
      */
     fun toWorkspaceBooking(event: Event): Booking {
+        logger.debug("[toWorkspaceBooking] converting an event to workspace booking dto")
         val userId: UUID = try {
             UUID.fromString(event.description.substringBefore(" "))
         } catch (e: Exception) {
@@ -91,27 +105,38 @@ class GoogleCalendarConverter(
             throw Exception("Can't get user UUID from Google Calendar event summary. Reason: ${e.printStackTrace()}")
         }
         val recurrence = event.recurrence?.toString()?.getRecurrence()
-        return Booking(
-            owner = userRepository.findById(userId) ?: UserModel(
-                id = null,
-                fullName = "Nonexistent user",
-                tag = null,
-                active = false,
-                role = null,
-                avatarURL = null,
-                integrations = emptySet(),
-                email = ""
-            ),
+        val model = Booking(
+            owner = userRepository.findById(userId)
+                ?: run {
+                    logger.warn("[toWorkspaceBooking] can't find user with id ${userId}. Creating placeholder.")
+                    UserModel(
+                        id = null,
+                        fullName = "Nonexistent user",
+                        tag = null,
+                        active = false,
+                        role = null,
+                        avatarURL = null,
+                        integrations = emptySet(),
+                        email = ""
+                    )
+                },
             participants = emptyList(),
             workspace = workspaceRepository.findById(workspaceID)
-                ?: Workspace(null, "Nonexistent workspace", "placeholder", listOf(), null),
+                ?:  run {
+                    logger.warn("[toWorkspaceBooking] can't find a user with id ${userId}. Creating placeholder.")
+                    Workspace(null, "Nonexistent workspace", "placeholder", listOf(), null)
+                },
             id = event.id ?: null,
             beginBooking = Instant.ofEpochMilli(event.start?.dateTime?.value ?: 0),//TODO FIX date placeholder
-            endBooking = Instant.ofEpochMilli(event.end?.dateTime?.value ?: ((event.start?.dateTime?.value ?: 0) + 86400000)),
+            endBooking = Instant.ofEpochMilli(
+                event.end?.dateTime?.value ?: ((event.start?.dateTime?.value ?: 0) + 86400000)
+            ),
             recurrence = recurrence?.toDto()?.let {
                 RecurrenceConverter.dtoToModel(it)
             } //TODO: add converter Recurrence to RecurrenceModel, or unite Recurrence and RecurrenceModel to a single class
         )
+        logger.trace("[toBookingDTO] {}", model.toString())
+        return model
     }
 
     /**
@@ -135,16 +160,19 @@ class GoogleCalendarConverter(
      */
     private fun getUser(email: String): UserDTO {
         val userModel: UserModel = userRepository.findByEmail(email)
-            ?: UserModel(
-                id = null,
-                fullName = "Unregistered user",
-                tag = null,
-                active = false,
-                role = null,
-                avatarURL = null,
-                integrations = emptySet(),
-                email = email
-            )
+            ?: run {
+                logger.warn("[getUser] can't find a user with email ${email}. Creating placeholder.")
+                UserModel(
+                    id = null,
+                    fullName = "Unregistered user",
+                    tag = null,
+                    active = false,
+                    role = null,
+                    avatarURL = null,
+                    integrations = emptySet(),
+                    email = email
+                )
+            }
         return userConverter.modelToDTO(userModel)
     }
 
@@ -157,7 +185,8 @@ class GoogleCalendarConverter(
      * @author Danil Kiselev, Max Mishenko
      */
     fun toGoogleEvent(dto: BookingDTO): Event {
-        return Event().apply {
+        logger.debug("[toGoogleEvent] converting meeting room booking dto to calendar event")
+        val event = Event().apply {
             summary = "${dto.owner.fullName}: create from office application"
             description =
                 "${dto.owner.email} - почта организатора"//"${dto.owner.integrations?.first { it.name == "email" }} - почта организатора"
@@ -168,6 +197,8 @@ class GoogleCalendarConverter(
             start = dto.beginBooking.toGoogleDateTime()
             end = dto.endBooking.toGoogleDateTime()
         }
+        logger.trace("[toGoogleEvent] {}", event.toString())
+        return event
     }
 
     /**
@@ -180,7 +211,8 @@ class GoogleCalendarConverter(
      * @author Daniil Zavyalov
      */
     fun toGoogleWorkspaceEvent(dto: BookingDTO): Event {
-        return Event().apply {
+        logger.debug("[toGoogleWorkspaceEvent] converting workspace booking dto to calendar event")
+        val event = Event().apply {
             summary = "${dto.workspace.id} - workspace id"
             description =
                 "${dto.owner.id} - organizer id"
@@ -188,6 +220,8 @@ class GoogleCalendarConverter(
             start = dto.beginBooking.toGoogleDateTime()
             end = dto.endBooking.toGoogleDateTime()
         }
+        logger.trace("[toGoogleWorkspaceEvent] {}", event.toString())
+        return event
     }
 
     /**
@@ -200,6 +234,7 @@ class GoogleCalendarConverter(
      * @author Daniil Zavyalov
      */
     fun toGoogleWorkspaceEvent(model: Booking): Event {
+        logger.debug("[toGoogleWorkspaceEvent] converting workspace booking model to calendar event")
         return toGoogleWorkspaceEvent(bookingConverter.modelToDto(model))
     }
 
@@ -212,6 +247,7 @@ class GoogleCalendarConverter(
      * @author Danil Kiselev
      */
     fun toGoogleEvent(model: Booking): Event {
+        logger.debug("[toGoogleEvent] converting meeting room booking model to calendar event")
         return toGoogleEvent(bookingConverter.modelToDto(model))
     }
 
@@ -227,6 +263,7 @@ class GoogleCalendarConverter(
      * @author Danil Kiselev, Max Mishenko
      */
     fun toBookingModel(event: Event): Booking {
+        logger.debug("[toGoogleEvent] converting calendar event to meeting room booking model")
         return bookingConverter.dtoToModel(toBookingDTO(event));
     }
 

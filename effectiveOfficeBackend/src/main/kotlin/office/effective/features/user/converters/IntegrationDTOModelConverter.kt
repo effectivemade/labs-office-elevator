@@ -10,6 +10,7 @@ import office.effective.model.IntegrationModel
 class IntegrationDTOModelConverter(
     private val uuidConverter : UuidValidator
 ) {
+
     /**
      * Converts [IntegrationDTO] to [IntegrationModel]
      * @param integrationDTO [IntegrationDTO] input to convert to [IntegrationModel]
