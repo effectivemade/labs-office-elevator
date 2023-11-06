@@ -1,8 +1,6 @@
 package office.effective.model
 
-import model.RecurrenceDTO
 import java.time.Instant
-import java.util.UUID
 
 data class Booking (
     var owner: UserModel,

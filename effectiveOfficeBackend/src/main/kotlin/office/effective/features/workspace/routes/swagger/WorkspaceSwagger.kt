@@ -1,3 +1,6 @@
+/**
+ * @suppress
+ */
 package office.effective.features.workspace.routes.swagger
 
 import io.github.smiley4.ktorswaggerui.dsl.OpenApiRoute
@@ -7,6 +10,9 @@ import office.effective.dto.UtilityDTO
 import office.effective.dto.WorkspaceDTO
 import office.effective.dto.WorkspaceZoneDTO
 
+/**
+ * @suppress
+ */
 fun SwaggerDocument.returnWorkspaceById(): OpenApiRoute.() -> Unit = {
     description = "Return workspace by id"
     tags = listOf("workspaces")
@@ -51,6 +57,9 @@ fun SwaggerDocument.returnWorkspaceById(): OpenApiRoute.() -> Unit = {
     }
 }
 
+/**
+ * @suppress
+ */
 fun SwaggerDocument.returnWorkspaceByTag(): OpenApiRoute.() -> Unit = {
     description = "Return all workspaces by tag"
     tags = listOf("workspaces")
@@ -120,6 +129,9 @@ fun SwaggerDocument.returnWorkspaceByTag(): OpenApiRoute.() -> Unit = {
     }
 }
 
+/**
+ * @suppress
+ */
 fun SwaggerDocument.returnAllZones(): OpenApiRoute.() -> Unit = {
     description = "Returns all workspace zones"
     tags = listOf("workspaces")
@@ -137,9 +149,18 @@ fun SwaggerDocument.returnAllZones(): OpenApiRoute.() -> Unit = {
     }
 }
 
+/**
+ * @suppress
+ */
 private val zoneExample1 = WorkspaceZoneDTO("3ca26fe0-f837-4939-b586-dd4195d2a504","Cassiopeia")
+/**
+ * @suppress
+ */
 private val zoneExample2 = WorkspaceZoneDTO("6cb3c60d-3c29-4a45-80e6-fac14fb0569b","Sirius")
 
+/**
+ * @suppress
+ */
 enum class WorkspaceTag(val tagName: String) {
     meeting("meeting"), regular("regular")
 }
