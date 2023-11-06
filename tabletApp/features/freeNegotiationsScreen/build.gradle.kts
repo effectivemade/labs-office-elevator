@@ -7,6 +7,7 @@ plugins {
 }
 
 android {
+    namespace = "band.effective.office.tablet.features.freeNegotiationsScreen"
     compileSdk = 33
     sourceSets["main"].apply {
         res.srcDirs("src/androidMain/resources")

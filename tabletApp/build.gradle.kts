@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "band.effective.office.tablet"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "band.effective.office.tablet"
@@ -17,7 +17,7 @@ android {
         versionName = "1.0.0"
 
         minSdk = 26
-        targetSdk = 33
+        targetSdk = 34
     }
     sourceSets["main"].apply {
         manifest.srcFile("src/androidMain/AndroidManifest.xml")
