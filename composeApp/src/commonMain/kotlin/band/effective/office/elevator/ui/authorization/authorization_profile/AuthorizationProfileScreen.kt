@@ -30,22 +30,26 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.components.OutlinedTextColorsSetup
+import band.effective.office.elevator.components.UserInfoTextField
 import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.ui.authorization.authorization_profile.store.AuthorizationProfileStore
 import band.effective.office.elevator.ui.authorization.components.AuthTabRow
 import band.effective.office.elevator.ui.authorization.components.AuthTitle
+import band.effective.office.elevator.ui.models.UserDataTextFieldType
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
@@ -95,6 +99,9 @@ fun AuthorizationProfileComponent(
     val borderColor2 = remember { mutableStateOf(textGrayColor) }
     val leadingColor2 = remember { mutableStateOf(textGrayColor) }
 
+    var personName by remember { mutableStateOf(state.name) }
+    var personPost by remember { mutableStateOf(state.post) }
+
     Column(
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top,
@@ -128,15 +135,19 @@ fun AuthorizationProfileComponent(
                 .fillMaxWidth()
                 .fillMaxHeight()
         ) {
+
             AuthTitle(
                 text = stringResource(MainRes.strings.input_profile),
                 modifier = Modifier.padding(bottom = 7.dp),
                 textAlign = TextAlign.Start
             )
 
-//            NAME
-            OutlinedTextField(
-                value = state.name,
+//            Person name
+            UserInfoTextField(
+                text = personName,
+                item = UserDataTextFieldType.Person,
+                error = state.isErrorName,
+                keyboardType = KeyboardType.Text,
                 onValueChange = {
                     if (it.isNotEmpty()) {
                         closeIcon1.value = true
@@ -147,60 +158,8 @@ fun AuthorizationProfileComponent(
                         closeIcon1.value = false
                         leadingColor1.value = textGrayColor
                     }
-
+                    personName = it
                     onEvent(AuthorizationProfileStore.Intent.NameChanged(name = it))
-                },
-                textStyle = MaterialTheme.typography.body1.copy(
-                    color = Color.Black
-                ),
-                colors = OutlinedTextColorsSetup(),
-                placeholder = {
-                    Text(
-                        text = stringResource(MainRes.strings.profile_hint),
-                        style = MaterialTheme.typography.button,
-                        color = Color(0x80000000) // TODO(Maksim Mishenko) fix theme
-                    )
-                },
-                isError = state.isErrorName,
-                singleLine = true,
-                trailingIcon = {
-                    if (closeIcon1.value) {
-                        IconButton(onClick = {
-                            closeIcon1.value = false
-                            leadingColor1.value = textGrayColor
-                            onEvent(AuthorizationProfileStore.Intent.NameChanged(name = ""))
-                        }) {
-                            Icon(
-                                imageVector = Icons.Outlined.Close,
-                                contentDescription = "clear text field",
-                            )
-                        }
-                    }
-                },
-                shape = RoundedCornerShape(12.dp),
-                leadingIcon = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Start,
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.Person,
-                            contentDescription = "name icon",
-                            tint = leadingColor1.value
-                        )
-
-                        Spacer(modifier = Modifier.width(16.dp))
-
-                        Divider(
-                            modifier = Modifier
-                                .height(20.dp)
-                                .width(2.dp)
-                                .clip(RoundedCornerShape(4.dp))
-                                .background(if (state.isErrorName) ExtendedThemeColors.colors.error else borderColor1.value)
-                                .padding(vertical = 14.dp)
-                        )
-                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -218,8 +177,11 @@ fun AuthorizationProfileComponent(
             Spacer(modifier = Modifier.height(16.dp))
 
 //            POST
-            OutlinedTextField(
-                value = state.post,
+            UserInfoTextField(
+                text = personPost,
+                item = UserDataTextFieldType.Post,
+                error = state.isErrorPost,
+                keyboardType = KeyboardType.Text,
                 onValueChange = {
                     if (it.isNotEmpty()) {
                         closeIcon2.value = true
@@ -229,61 +191,10 @@ fun AuthorizationProfileComponent(
                         borderColor2.value = textGrayColor
                         closeIcon2.value = false
                         leadingColor2.value = textGrayColor
+                        personPost = it
                     }
 
                     onEvent(AuthorizationProfileStore.Intent.PostChanged(post = it))
-                },
-                textStyle = MaterialTheme.typography.body1.copy(
-                    color = Color.Black
-                ),
-                colors = OutlinedTextColorsSetup(),
-                placeholder = {
-                    Text(
-                        text = stringResource(MainRes.strings.profile_hint_),
-                        style = MaterialTheme.typography.button,
-                        color = Color(0x80000000) // TODO(Maksim Mishenko) fix theme
-                    )
-                },
-                isError = state.isErrorPost,
-                singleLine = true,
-                trailingIcon = {
-                    if (closeIcon2.value) {
-                        IconButton(onClick = {
-                            closeIcon2.value = false
-                            leadingColor2.value = textGrayColor
-                            onEvent(AuthorizationProfileStore.Intent.PostChanged(post = ""))
-                        }) {
-                            Icon(
-                                imageVector = Icons.Outlined.Close,
-                                contentDescription = "clear text field with post text",
-                            )
-                        }
-                    }
-                },
-                shape = RoundedCornerShape(12.dp),
-                leadingIcon = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Start,
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.Work,
-                            contentDescription = "post icon",
-                            tint = leadingColor2.value
-                        )
-
-                        Spacer(modifier = Modifier.width(16.dp))
-
-                        Divider(
-                            modifier = Modifier
-                                .height(20.dp)
-                                .width(2.dp)
-                                .clip(RoundedCornerShape(4.dp))
-                                .background(if (state.isErrorPost) ExtendedThemeColors.colors.error else borderColor2.value)
-                                .padding(vertical = 14.dp)
-                        )
-                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
