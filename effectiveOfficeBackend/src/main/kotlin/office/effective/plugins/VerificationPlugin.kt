@@ -1,19 +1,13 @@
 package office.effective.plugins
 
-import io.ktor.client.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
+
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
-import office.effective.features.simpleAuth.TokenVerifier
 import io.ktor.server.response.*
-import office.effective.features.simpleAuth.ApiKeyVerifier
-import office.effective.features.simpleAuth.ITokenVerifier
 import office.effective.features.simpleAuth.service.AuthenticationPipeline
-import office.effective.features.simpleAuth.service.RequestVerifier
+import org.koin.core.context.GlobalContext
 import org.slf4j.LoggerFactory
 
 /**
@@ -25,6 +19,7 @@ val VerificationPlugin = createApplicationPlugin(name = "VerificationPlugin") {
     val logger = LoggerFactory.getLogger(this::class.java)
     logger.info("Verification plugin mode enabled?: $pluginOn")
     logger.info("Verification plugin installed")
+    val authenticationPipeline : AuthenticationPipeline = GlobalContext.get().get()
 
     onCall {
         run {
@@ -32,7 +27,7 @@ val VerificationPlugin = createApplicationPlugin(name = "VerificationPlugin") {
                 val token = it.request.parseAuthorizationHeader()?.render()?.split("Bearer ")?.last() ?: it.respond(
                     HttpStatusCode.Unauthorized
                 )
-                if (!AuthenticationPipeline().authenticateToken(token as String)) {
+                if (!authenticationPipeline.authenticateToken(token as String)) {
                     logger.info("Verification failed.")
                     logger.trace("Verification failed with token: {}", token)
                     it.response.status(HttpStatusCode.Unauthorized)
