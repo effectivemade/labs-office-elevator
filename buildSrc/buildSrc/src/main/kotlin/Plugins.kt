@@ -7,7 +7,7 @@
 object Plugins {
 
     object Android {
-        const val implementation = "com.android.tools.build:gradle:7.4.2"
+        const val implementation = "com.android.tools.build:gradle:8.0.2"
         const val plugin = "com.android.application"
     }
 
@@ -22,7 +22,7 @@ object Plugins {
     }
 
     object Kotlin {
-        const val implementation = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.20"
+        const val implementation = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0"
         const val plugin = "org.jetbrains.kotlin.multiplatform"
     }
 
@@ -36,7 +36,7 @@ object Plugins {
     }
 
     object MultiplatformCompose {
-        const val implementation = "org.jetbrains.compose:compose-gradle-plugin:1.4.0"
+        const val implementation = "org.jetbrains.compose:compose-gradle-plugin:1.5.2"
         const val plugin = "org.jetbrains.compose"
     }
 

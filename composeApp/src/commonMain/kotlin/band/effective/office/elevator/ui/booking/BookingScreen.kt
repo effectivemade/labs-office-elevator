@@ -345,7 +345,9 @@ fun BookingScreen(bookingComponent: BookingComponent) {
         },
         onClickCloseCalendarForDateOfEnd = { bookingComponent.onEvent(BookingStore.Intent.CloseCalendarForEndDate) },
         typeOfTypeEndPeriodBooking = state.typeOfEnd,
-        bookingPeriod = state.bookingPeriod
+        bookingPeriod = state.bookingPeriod,
+        startTime = state.selectedStartTime,
+        endTime = state.selectedFinishTime
     )
 }
 
@@ -382,6 +384,8 @@ private fun BookingScreenContent(
     onClickCloseRepeatDialog: () -> Unit,
     isLoadingBookingCreation: Boolean,
     dateOfEndPeriod: LocalDate,
+    startTime: LocalTime,
+    endTime: LocalTime,
     bookingPeriod: BookingPeriod,
     typeOfTypeEndPeriodBooking: TypeEndPeriodBooking
 ) {
@@ -479,6 +483,7 @@ private fun BookingScreenContent(
         Dialog(
             content = {
                 TimePickerModal(
+                    startTime = if (isStart) startTime else endTime,
                     titleText = stringResource(timeTitle),
                     modifier = Modifier.padding(horizontal = 16.dp)
                         .clip(shape = RoundedCornerShape(16.dp)).background(Color.White)

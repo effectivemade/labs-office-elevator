@@ -7,7 +7,8 @@ plugins {
 }
 
 android {
-    compileSdk = 33
+    compileSdk = 34
+    namespace = "band.effective.office.tablet.features.core"
     sourceSets["main"].apply {
         manifest.srcFile("src/androidMain/AndroidManifest.xml")
         res.srcDirs("src/androidMain/resources")

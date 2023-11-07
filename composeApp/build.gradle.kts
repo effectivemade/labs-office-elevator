@@ -100,6 +100,7 @@ kotlin {
         }
 
         val androidMain by getting {
+            dependsOn(commonMain)
             dependencies {
                 implementation(Dependencies.AndroidX.appCompat)
                 implementation(Dependencies.AndroidX.activityCompose)
@@ -116,9 +117,15 @@ kotlin {
             }
         }
 
-        val iosX64Main by getting
-        val iosArm64Main by getting
-        val iosSimulatorArm64Main by getting
+        val iosX64Main by getting {
+            resources.srcDirs("build/generated/moko/iosX64Main/src")
+        }
+        val iosArm64Main by getting {
+            resources.srcDirs("build/generated/moko/iosArm64Main/src")
+        }
+        val iosSimulatorArm64Main by getting {
+            resources.srcDirs("build/generated/moko/iosSimulatorArm64Main/src")
+        }
         val iosMain by creating {
             dependsOn(commonMain)
             iosX64Main.dependsOn(this)
@@ -144,12 +151,13 @@ kotlin {
 }
 
 android {
+
     namespace = "band.effective.office.elevator"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         minSdk = 26
-        targetSdk = 33
+        targetSdk = 34
 
         applicationId = "band.effective.office.elevator"
         versionCode = 1
@@ -157,7 +165,7 @@ android {
     }
     sourceSets["main"].apply {
         manifest.srcFile("src/androidMain/AndroidManifest.xml")
-        res.srcDirs("src/androidMain/resources")
+        res.srcDirs("build/generated/moko/androidMain/src")
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -165,6 +173,10 @@ android {
     }
     packagingOptions {
         resources.excludes.add("META-INF/**")
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.0"
     }
 
     signingConfigs {

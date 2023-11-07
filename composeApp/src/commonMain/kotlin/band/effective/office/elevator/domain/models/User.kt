@@ -8,11 +8,11 @@ data class User(
     val id: String,
     val imageUrl: String,
     val userName: String,
-    val post:String,
-    val phoneNumber:String,
+    val post: String,
+    val phoneNumber: String,
     val telegram: String,
-    val email:String
-){
+    val email: String
+) {
     companion object {
         val defaultUser =
             User(
@@ -49,8 +49,10 @@ fun UserDTO.toUser() =
         userName = fullName,
         post = role,
         email = email,
-        phoneNumber = integrations?.find { it.name == "phoneNumber" }?.value?:"None",
-        telegram = integrations?.find { it.name == "telegram" }?.value?:"None"
+        phoneNumber = integrations?.find { it.name == "phoneNumber" }?.value
+            ?: "".apply { println("Get empty phone number") },
+        telegram = integrations?.find { it.name == "telegram" }?.value
+            ?: "".apply { println("Get empty telegram") }
     )
 
 fun ProfileData.toUser() =
