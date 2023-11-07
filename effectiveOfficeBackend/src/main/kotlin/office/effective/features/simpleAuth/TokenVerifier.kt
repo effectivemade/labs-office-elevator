@@ -31,7 +31,12 @@ class TokenVerifier : ITokenVerifier {
      * */
     override suspend fun isCorrectToken(tokenString: String): Boolean {
         var userMail: String? = null
-        val token: GoogleIdToken? = verifier.verify(tokenString)
+        val token: GoogleIdToken?
+        try {
+            token = verifier.verify(tokenString)
+        } catch (ex: Exception) {
+            return next(tokenString)
+        }
 
         val payload = token?.payload ?: throw Exception("Token wasn't verified by Google")
         val emailVerified: Boolean = payload.emailVerified
@@ -40,10 +45,9 @@ class TokenVerifier : ITokenVerifier {
             userMail = payload.email
         }
 
-        if(userMail.isNullOrBlank()){
+        if (userMail.isNullOrBlank()) {
             return next(tokenString)
-        }
-        else {
+        } else {
             return true
         }
 
