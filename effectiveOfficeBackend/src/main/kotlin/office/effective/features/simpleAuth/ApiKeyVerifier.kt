@@ -12,6 +12,7 @@ import javax.xml.bind.DatatypeConverter
  * */
 class ApiKeyVerifier : ITokenVerifier {
     val logger = LoggerFactory.getLogger(this::class.java)
+    private val repository : AuthRepository = GlobalContext.get().get()
     /**
      * Check api key from input line. String encrypting by SHA-256 and comparing with encrypted keys from database. If it cannot find one, throw [InstanceNotFoundException]
      * @param tokenString [String] which contains token to verify
@@ -19,7 +20,6 @@ class ApiKeyVerifier : ITokenVerifier {
      * @author Kiselev Danil
      */
     override suspend fun isCorrectToken(tokenString: String): Boolean {
-        val repository : AuthRepository = GlobalContext.get().get()
         try {
             val key = repository.findApiKey(encryptKey("SHA-256", tokenString))
         }
