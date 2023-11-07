@@ -58,7 +58,7 @@ val VerificationPlugin = createApplicationPlugin(name = "VerificationPlugin") {
 
                 try {
                     RequestVerifier().isCorrectToken(token as String)
-                    exLine = null
+                    exRequest = null
                 } catch (ex: Exception) {
                     logger.debug("Token verification failed")
                     exRequest = ex
