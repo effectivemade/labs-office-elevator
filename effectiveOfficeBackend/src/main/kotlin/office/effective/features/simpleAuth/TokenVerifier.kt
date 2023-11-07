@@ -76,6 +76,7 @@ class TokenVerifier : ITokenVerifier {
 
     override suspend fun next(tokenString: String): Boolean {
         logger.info("Token verifier failed")
+        logger.trace("Token verifier with token: {}", tokenString)
         return nextHandler?.isCorrectToken(tokenString) ?: return false;
     }
 }

@@ -27,6 +27,7 @@ class ApiKeyVerifier : ITokenVerifier {
             return next(tokenString)
         }
         logger.info("Api key verifier succeed")
+        logger.trace("Api key verifier succeed with token: {}", tokenString)
         return true
     }
 
@@ -37,6 +38,7 @@ class ApiKeyVerifier : ITokenVerifier {
 
     override suspend fun next(tokenString: String): Boolean {
         logger.info("Api key verifier failed")
+        logger.trace("Api key verifier failed with token: {}", tokenString)
         return nextHandler?.isCorrectToken(tokenString) ?: return false;
     }
 
