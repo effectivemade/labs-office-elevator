@@ -5,6 +5,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
 import office.effective.config
+import org.slf4j.LoggerFactory
 
 /**
  * Implementation of [ITokenVerifier]. Checks GoogleIdTokens
@@ -18,7 +19,7 @@ class TokenVerifier : ITokenVerifier {
 
     private val acceptableMailDomain: String =
         config.propertyOrNull("auth.user.emailDomain ")?.getString() ?: "effective.band"
-
+    val logger = LoggerFactory.getLogger(this::class.java)
     /**
      * Check Google ID Token using google library
      *
@@ -31,6 +32,7 @@ class TokenVerifier : ITokenVerifier {
      * */
     override suspend fun isCorrectToken(tokenString: String): Boolean {
         var userMail: String? = null
+
         val token: GoogleIdToken?
         try {
             token = verifier.verify(tokenString)
@@ -48,6 +50,7 @@ class TokenVerifier : ITokenVerifier {
         if (userMail.isNullOrBlank()) {
             return next(tokenString)
         } else {
+            logger.info("Token verifier succeed")
             return true
         }
 
@@ -72,6 +75,7 @@ class TokenVerifier : ITokenVerifier {
 
 
     override suspend fun next(tokenString: String): Boolean {
+        logger.info("Token verifier failed")
         return nextHandler?.isCorrectToken(tokenString) ?: return false;
     }
 }
