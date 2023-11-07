@@ -3,6 +3,7 @@ package office.effective.features.simpleAuth
 import office.effective.common.exception.InstanceNotFoundException
 import office.effective.features.simpleAuth.repository.AuthRepository
 import org.koin.core.context.GlobalContext
+import org.slf4j.LoggerFactory
 import java.security.MessageDigest
 import javax.xml.bind.DatatypeConverter
 
@@ -10,6 +11,7 @@ import javax.xml.bind.DatatypeConverter
  * [ITokenVerifier] implementation. Check api keys
  * */
 class ApiKeyVerifier : ITokenVerifier {
+    val logger = LoggerFactory.getLogger(this::class.java)
     /**
      * Check api key from input line. String encrypting by SHA-256 and comparing with encrypted keys from database. If it cannot find one, throw [InstanceNotFoundException]
      * @param tokenString [String] which contains token to verify
@@ -24,6 +26,7 @@ class ApiKeyVerifier : ITokenVerifier {
         catch(ex: InstanceNotFoundException){
             return next(tokenString)
         }
+        logger.info("Api key verifier succeed")
         return true
     }
 
@@ -33,6 +36,7 @@ class ApiKeyVerifier : ITokenVerifier {
     }
 
     override suspend fun next(tokenString: String): Boolean {
+        logger.info("Api key verifier failed")
         return nextHandler?.isCorrectToken(tokenString) ?: return false;
     }
 
