@@ -1,13 +1,18 @@
 package office.effective.plugins
 
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
-import office.effective.features.user.TokenVerifier
+import office.effective.features.simpleAuth.TokenVerifier
 import io.ktor.server.response.*
-import office.effective.features.user.ApiKeyVerifier
-import office.effective.features.user.ITokenVerifier
+import office.effective.features.simpleAuth.ApiKeyVerifier
+import office.effective.features.simpleAuth.ITokenVerifier
+import office.effective.features.simpleAuth.service.RequestVerifier
 import org.slf4j.LoggerFactory
 
 /**
@@ -28,12 +33,13 @@ val VerificationPlugin = createApplicationPlugin(name = "VerificationPlugin") {
                 val token = it.request.parseAuthorizationHeader()?.render()?.split("Bearer ")?.last() ?: it.respond(
                     HttpStatusCode.Unauthorized
                 )
-                var exOAuth: Exception? = null
-                var exLine: Exception? = null
+                var exOAuth: Exception? = null;
+                var exLine: Exception? = null;
+                var exRequest: Exception? = null;
 
-                //Checks verification through OAuth
+//                Checks verification through OAuth
                 try {
-                    val email = verifierOAuth.isCorrectToken(token as String)
+                    verifierOAuth.isCorrectToken(token as String)
                     exOAuth = null
                 } catch (ex: Exception) {
                     logger.debug("OAuth verification failed")
@@ -42,15 +48,25 @@ val VerificationPlugin = createApplicationPlugin(name = "VerificationPlugin") {
 
                 //Checks verification through Line (for tablets usage). Should be replaced by jwt
                 try {
-                    val line = verifierLine.isCorrectToken(token as String)
+                    verifierLine.isCorrectToken(token as String)
                     exLine = null
                 } catch (ex: Exception) {
                     logger.debug("Token verification failed")
                     exLine = ex
                 }
 
+
+                try {
+                    RequestVerifier().isCorrectToken(token as String)
+                    exLine = null
+                } catch (ex: Exception) {
+                    logger.debug("Token verification failed")
+                    exRequest = ex
+                }
+
+
                 //If both authentications ways cannot verify header containment, this condition must throw 401 Unauthorised
-                if (exOAuth != null && exLine != null) {
+                if (exOAuth != null && exLine != null && exRequest != null) {
                     logger.info("Verification error. \nOAuth exception: ", exOAuth)
                     logger.info("Verification error. \nLine exception: ", exLine)
                     it.response.status(HttpStatusCode.Unauthorized)

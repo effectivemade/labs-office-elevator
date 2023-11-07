@@ -1,4 +1,4 @@
-package office.effective.features.user
+package office.effective.features.simpleAuth
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
@@ -30,7 +30,7 @@ class TokenVerifier : ITokenVerifier {
      *
      * @author Kiselev Danil
      * */
-    override fun isCorrectToken(tokenString: String): String {
+    override suspend fun isCorrectToken(tokenString: String): String {
         var userMail: String? = null
         val token: GoogleIdToken? = verifier.verify(tokenString)
 

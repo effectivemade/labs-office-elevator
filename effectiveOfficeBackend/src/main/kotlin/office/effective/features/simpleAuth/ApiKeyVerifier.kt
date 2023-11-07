@@ -1,4 +1,4 @@
-package office.effective.features.user
+package office.effective.features.simpleAuth
 
 import office.effective.features.simpleAuth.repository.AuthRepository
 import org.koin.core.context.GlobalContext
@@ -15,7 +15,7 @@ class ApiKeyVerifier : ITokenVerifier {
      * @return random String
      * @author Kiselev Danil
      */
-    override fun isCorrectToken(tokenString: String): String {
+    override suspend fun isCorrectToken(tokenString: String): String {
         val repository : AuthRepository = GlobalContext.get().get()
 
         val key = repository.findApiKey(encryptKey("SHA-256",tokenString))

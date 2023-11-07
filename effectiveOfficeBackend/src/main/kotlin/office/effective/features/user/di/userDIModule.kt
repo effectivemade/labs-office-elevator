@@ -1,7 +1,7 @@
 package office.effective.features.user.di
 
-import office.effective.features.user.ITokenVerifier
-import office.effective.features.user.TokenVerifier
+import office.effective.features.simpleAuth.ITokenVerifier
+import office.effective.features.simpleAuth.TokenVerifier
 import office.effective.features.user.converters.IntegrationDTOModelConverter
 import office.effective.features.user.converters.IntegrationModelEntityConverter
 import office.effective.features.user.converters.UserDTOModelConverter
