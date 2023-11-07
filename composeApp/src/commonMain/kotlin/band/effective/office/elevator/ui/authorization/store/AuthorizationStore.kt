@@ -8,7 +8,6 @@ interface AuthorizationStore :
     Store<AuthorizationStore.Intent, AuthorizationStore.State, AuthorizationStore.Label> {
 
     sealed interface Intent {
-        object ContinueButtonClicked : Intent
         data class ChangeEmail(val email: String) : Intent
         data class ChangePhoneNumber(val phoneNumber: String) : Intent
         data class ChangeName(val name: String) : Intent

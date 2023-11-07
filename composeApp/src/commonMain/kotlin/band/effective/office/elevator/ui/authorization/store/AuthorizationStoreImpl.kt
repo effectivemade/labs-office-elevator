@@ -42,9 +42,6 @@ class AuthorizationStoreFactory(
             getState: () -> AuthorizationStore.State
         ) {
             when (intent) {
-                AuthorizationStore.Intent.ContinueButtonClicked -> {
-                    TODO()
-                }
                 is AuthorizationStore.Intent.ChangeEmail -> dispatch(Msg.ChangeEmail(intent.email))
                 is AuthorizationStore.Intent.ChangeName -> dispatch(Msg.ChangeName(intent.name))
                 is AuthorizationStore.Intent.ChangePhoneNumber -> dispatch(Msg.ChangePhoneNumber(intent.phoneNumber))
