@@ -1,6 +1,7 @@
 package band.effective.office.elevator.data.repository
 
 
+import band.effective.office.elevator.OfficeElevatorConfig
 import band.effective.office.elevator.data.database.DBSource
 import band.effective.office.elevator.domain.models.ErrorWithData
 import band.effective.office.elevator.domain.models.User
@@ -24,8 +25,8 @@ class ProfileRepositoryImpl(
     private val bdSource: DBSource
 ) : ProfileRepository, KoinComponent {
 
-    private var idPhoneNumber = ""
-    private var idTelegram = ""
+    private val idPhoneNumber = OfficeElevatorConfig.integrationPhoneId
+    private val idTelegram = OfficeElevatorConfig.integrationTelegramId
 
     private val lastResponse: MutableStateFlow<Either<ErrorWithData<User>, User>> =
         MutableStateFlow(
@@ -103,8 +104,6 @@ class ProfileRepositoryImpl(
             )
         },
             successMapper = { userDTO ->
-                idPhoneNumber = userDTO.integrations?.find { it.name == "phoneNumber" }?.id ?: ""
-                idTelegram = userDTO.integrations?.find { it.name == "telegram" }?.id ?: ""
                 userDTO.toUser()
             })
 }

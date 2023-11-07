@@ -219,7 +219,14 @@ buildConfig {
     packageName("band.effective.office.elevator")
     useKotlinOutput()
     useKotlinOutput { internalVisibility = true }
-
+    buildConfigField(
+        "String",
+        "integrationPhoneId","\"13c80c3d-4278-45cf-8d2a-e281004d3ff9\""
+    )
+    buildConfigField(
+        "String",
+        "integrationTelegramId","\"15f1fa52-7656-4457-a1ce-42063b0f2b39\""
+    )
     buildConfigField(
         "String",
         "webClient", "\"503255112190-4flfuu86ihrpismfl70nuae6u6n5gk4p.apps.googleusercontent.com\""
