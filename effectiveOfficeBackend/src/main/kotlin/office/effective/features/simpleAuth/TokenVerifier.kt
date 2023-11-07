@@ -20,28 +20,33 @@ class TokenVerifier : ITokenVerifier {
         config.propertyOrNull("auth.user.emailDomain ")?.getString() ?: "effective.band"
 
     /**
-     * Check Google Id Token from input line. Returns email
+     * Check Google ID Token using google library
      *
      * @param tokenString [String] which contains token to verify
      * @author Kiselev Danil
-     * @throws Exception("Token cannot be verified") if token does not contains payload
-     * @throws Exception("Token wasn't verified") if method can't extract email
-     * @return user email
+     * @throws Exception("Token wasn't verified by Google") if token does not contain payload
+     * @return is token correct
      *
      * @author Kiselev Danil
      * */
-    override suspend fun isCorrectToken(tokenString: String): String {
+    override suspend fun isCorrectToken(tokenString: String): Boolean {
         var userMail: String? = null
         val token: GoogleIdToken? = verifier.verify(tokenString)
 
         val payload = token?.payload ?: throw Exception("Token wasn't verified by Google")
         val emailVerified: Boolean = payload.emailVerified
         val hostedDomain = payload.hostedDomain ?: extractDomain(payload.email)
-
         if ((acceptableMailDomain == hostedDomain) && emailVerified) {
             userMail = payload.email
         }
-        return userMail ?: throw Exception("Token wasn't verified")
+
+        if(userMail.isNullOrBlank()){
+            return next(tokenString)
+        }
+        else {
+            return true
+        }
+
     }
 
     /**
@@ -56,4 +61,13 @@ class TokenVerifier : ITokenVerifier {
         return email.split('@').last()
     }
 
+    private var nextHandler: ITokenVerifier? = null;
+    override fun setNext(handler: ITokenVerifier?) {
+        this.nextHandler = handler
+    }
+
+
+    override suspend fun next(tokenString: String): Boolean {
+        return nextHandler?.isCorrectToken(tokenString) ?: return false;
+    }
 }

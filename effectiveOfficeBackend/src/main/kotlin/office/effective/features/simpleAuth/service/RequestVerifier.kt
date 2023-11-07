@@ -6,9 +6,20 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import office.effective.features.simpleAuth.ITokenVerifier
-
+/**
+ * [ITokenVerifier] implementation. Calls oauth2.googleapis.com to verify token
+ * */
 class RequestVerifier : ITokenVerifier {
-    override suspend fun isCorrectToken(tokenString: String): String {
+
+    /**
+     * Check Google ID Token. Calls oauth2.googleapis.com
+     *
+     * @param tokenString [String] which contains token to verify
+     * @return is token correct
+     *
+     * @author Kiselev Danil
+     * */
+    override suspend fun isCorrectToken(tokenString: String): Boolean {
         val client = HttpClient(CIO) {}
         val response: HttpResponse = client.request("https://oauth2.googleapis.com/tokeninfo") {
             url {
@@ -16,8 +27,16 @@ class RequestVerifier : ITokenVerifier {
             }
         }
         if (response.status != HttpStatusCode.OK) {
-            throw Exception("Token wasn't verified")
+            return next(tokenString);
         }
-        return "Everything fine;"
+        return true
+    }
+    private var nextHandler: ITokenVerifier? = null;
+    override fun setNext(handler: ITokenVerifier?) {
+        this.nextHandler = handler
+    }
+
+    override suspend fun next(tokenString: String): Boolean {
+        return nextHandler?.isCorrectToken(tokenString) ?: return false;
     }
 }

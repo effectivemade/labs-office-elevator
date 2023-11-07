@@ -1,12 +1,13 @@
 package office.effective.features.simpleAuth
 
+import office.effective.common.exception.InstanceNotFoundException
 import office.effective.features.simpleAuth.repository.AuthRepository
 import org.koin.core.context.GlobalContext
 import java.security.MessageDigest
 import javax.xml.bind.DatatypeConverter
 
 /**
- * [ITokenVerifier] implementation. Needs to check api keys
+ * [ITokenVerifier] implementation. Check api keys
  * */
 class ApiKeyVerifier : ITokenVerifier {
     /**
@@ -15,13 +16,26 @@ class ApiKeyVerifier : ITokenVerifier {
      * @return random String
      * @author Kiselev Danil
      */
-    override suspend fun isCorrectToken(tokenString: String): String {
+    override suspend fun isCorrectToken(tokenString: String): Boolean {
         val repository : AuthRepository = GlobalContext.get().get()
-
-        val key = repository.findApiKey(encryptKey("SHA-256",tokenString))
-
-        return "!@#$%^&*()"
+        try {
+            val key = repository.findApiKey(encryptKey("SHA-256", tokenString))
+        }
+        catch(ex: InstanceNotFoundException){
+            return next(tokenString)
+        }
+        return true
     }
+
+    private var nextHandler: ITokenVerifier? = null;
+    override fun setNext(handler: ITokenVerifier?) {
+        this.nextHandler = handler
+    }
+
+    override suspend fun next(tokenString: String): Boolean {
+        return nextHandler?.isCorrectToken(tokenString) ?: return false;
+    }
+
     /**
      * Use to encrypt api key before check it in database
      *
