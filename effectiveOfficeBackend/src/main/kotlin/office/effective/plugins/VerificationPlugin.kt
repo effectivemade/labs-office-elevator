@@ -32,11 +32,14 @@ val VerificationPlugin = createApplicationPlugin(name = "VerificationPlugin") {
                 val token = it.request.parseAuthorizationHeader()?.render()?.split("Bearer ")?.last() ?: it.respond(
                     HttpStatusCode.Unauthorized
                 )
-                if (AuthenticationPipeline().authenticateToken(token as String)) {
+                if (!AuthenticationPipeline().authenticateToken(token as String)) {
                     logger.info("Verification failed.")
                     logger.trace("Verification failed with token: {}", token)
                     it.response.status(HttpStatusCode.Unauthorized)
                     it.respond("Verification failed.")
+                } else {
+                    logger.info("Verification succeed.")
+                    logger.trace("Verification succeed with token: {}", token)
                 }
 
             }
