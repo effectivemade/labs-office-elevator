@@ -23,6 +23,7 @@ import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -178,6 +179,9 @@ class AuthorizationComponent(
             // TODO (Artem Gruzdev) @Slivka you should replace this logic to storeFactory
             is AuthorizationTelegramComponent.Output.OpenContentFlow -> {
                 CoroutineScope(Dispatchers.IO).launch {
+                    Napier.d{
+                        "telegram: ${authorizationStore.state.userData.telegram}"
+                    }
                     val response = updateUserInfoUseCase.execute(authorizationStore.state.userData)
                     response.collect { result ->
                         withContext(Dispatchers.Main) {

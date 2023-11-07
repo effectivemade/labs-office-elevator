@@ -2,6 +2,7 @@ package band.effective.office.elevator.ui.authorization.authorization_profile.st
 
 import band.effective.office.elevator.ui.models.validator.UserInfoValidator
 import com.arkivanov.mvikotlin.core.store.Reducer
+import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
@@ -22,11 +23,7 @@ class AuthorizationProfileStoreFactory(
             Store<AuthorizationProfileStore.Intent, AuthorizationProfileStore.State, AuthorizationProfileStore.Label> by storeFactory.create(
                 name = "Authorization profile",
                 initialState = AuthorizationProfileStore.State(),
-                bootstrapper = coroutineBootstrapper {
-                    launch {
-                        dispatch(AuthorizationProfileStoreFactory.Action.InitUser)
-                    }
-                },
+                bootstrapper = SimpleBootstrapper(Action.InitUser),
                 executorFactory = ::ExecutorImpl,
                 reducer = ReducerImpl
             ) {

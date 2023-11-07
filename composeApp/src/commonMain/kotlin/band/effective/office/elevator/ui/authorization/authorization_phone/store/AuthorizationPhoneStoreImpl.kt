@@ -2,19 +2,20 @@ package band.effective.office.elevator.ui.authorization.authorization_phone.stor
 
 import band.effective.office.elevator.ui.authorization.authorization_phone.store.AuthorizationPhoneStore.*
 import band.effective.office.elevator.ui.models.validator.UserInfoValidator
+import com.arkivanov.mvikotlin.core.store.Bootstrapper
 import com.arkivanov.mvikotlin.core.store.Reducer
+import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
-import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
 internal class AuthorizationPhoneStoreFactory(
     private val storeFactory: StoreFactory,
     private val validator: UserInfoValidator,
-    private var userPhoneNumber: String
+    private val userPhoneNumber: String
 ) : KoinComponent {
 
     @OptIn(ExperimentalMviKotlinApi::class)
@@ -23,9 +24,7 @@ internal class AuthorizationPhoneStoreFactory(
             Store<Intent, State, Label> by storeFactory.create(
                 name = "Authorization phone",
                 initialState = State(),
-                bootstrapper = coroutineBootstrapper {
-                    dispatch(AuthorizationPhoneStoreFactory.Action.PushToken)
-                },
+                bootstrapper = SimpleBootstrapper(Action.PushToken),
                 executorFactory = ::ExecutorImpl,
                 reducer = ReducerImpl
             ) {
@@ -83,7 +82,6 @@ internal class AuthorizationPhoneStoreFactory(
 
         private fun checkPhoneNumber(phoneNumber: String) {
             if (validator.checkPhone(phoneNumber)) {
-                userPhoneNumber = phoneNumber
                 publish(Label.AuthorizationPhoneSuccess)
                 dispatch(
                     Msg.Error(
@@ -111,9 +109,9 @@ internal class AuthorizationPhoneStoreFactory(
                 )
             else
                 userPhoneNumber
-            scope.launch {
-                dispatch(AuthorizationPhoneStoreFactory.Msg.Data(phoneNumber = phoneNumber))
-            }
+
+            dispatch(AuthorizationPhoneStoreFactory.Msg.Data(phoneNumber = phoneNumber))
+
         }
     }
 }

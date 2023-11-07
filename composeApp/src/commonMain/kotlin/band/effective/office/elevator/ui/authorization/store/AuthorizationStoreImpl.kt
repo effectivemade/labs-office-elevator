@@ -41,18 +41,16 @@ class AuthorizationStoreFactory(
             intent: AuthorizationStore.Intent,
             getState: () -> AuthorizationStore.State
         ) {
-            scope.launch {
-                when (intent) {
-                    AuthorizationStore.Intent.ContinueButtonClicked -> {
-                        TODO()
-                    }
-                    is AuthorizationStore.Intent.ChangeEmail -> dispatch(Msg.ChangeEmail(intent.email))
-                    is AuthorizationStore.Intent.ChangeName -> dispatch(Msg.ChangeName(intent.name))
-                    is AuthorizationStore.Intent.ChangePhoneNumber -> dispatch(Msg.ChangePhoneNumber(intent.phoneNumber))
-                    is AuthorizationStore.Intent.ChangePost -> dispatch(Msg.ChangePost(intent.post))
-                    is AuthorizationStore.Intent.ChangeTelegram -> dispatch(Msg.ChangeTelegram(intent.telegram))
-                    is AuthorizationStore.Intent.UpdateUserInfo -> dispatch(Msg.ChangeUser(intent.user))
+            when (intent) {
+                AuthorizationStore.Intent.ContinueButtonClicked -> {
+                    TODO()
                 }
+                is AuthorizationStore.Intent.ChangeEmail -> dispatch(Msg.ChangeEmail(intent.email))
+                is AuthorizationStore.Intent.ChangeName -> dispatch(Msg.ChangeName(intent.name))
+                is AuthorizationStore.Intent.ChangePhoneNumber -> dispatch(Msg.ChangePhoneNumber(intent.phoneNumber))
+                is AuthorizationStore.Intent.ChangePost -> dispatch(Msg.ChangePost(intent.post))
+                is AuthorizationStore.Intent.ChangeTelegram -> dispatch(Msg.ChangeTelegram(intent.telegram))
+                is AuthorizationStore.Intent.UpdateUserInfo -> dispatch(Msg.ChangeUser(intent.user))
             }
         }
 
@@ -105,6 +103,6 @@ class AuthorizationStoreFactory(
     }
 
     private sealed interface Action{
-        object LoadUserData : Action
+        data object LoadUserData : Action
     }
 }

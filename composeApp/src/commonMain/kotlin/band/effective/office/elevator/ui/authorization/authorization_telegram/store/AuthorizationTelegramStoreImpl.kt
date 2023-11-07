@@ -2,6 +2,7 @@ package band.effective.office.elevator.ui.authorization.authorization_telegram.s
 
 import band.effective.office.elevator.ui.models.validator.UserInfoValidator
 import com.arkivanov.mvikotlin.core.store.Reducer
+import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
@@ -13,7 +14,7 @@ import org.koin.core.component.KoinComponent
 class AuthorizationTelegramStoreFactory(
     private val storeFactory: StoreFactory,
     private val validator: UserInfoValidator,
-    private var nick: String
+    private val nick: String
 ) :
     KoinComponent {
 
@@ -23,11 +24,7 @@ class AuthorizationTelegramStoreFactory(
             Store<AuthorizationTelegramStore.Intent, AuthorizationTelegramStore.State, AuthorizationTelegramStore.Label> by storeFactory.create(
                 name = "Authorization telegram",
                 initialState = AuthorizationTelegramStore.State(),
-                bootstrapper = coroutineBootstrapper {
-                    launch {
-                        dispatch(AuthorizationTelegramStoreFactory.Action.InitTG)
-                    }
-                },
+                bootstrapper = SimpleBootstrapper(Action.InitTG),
                 executorFactory = ::ExecutorImpl,
                 reducer = ReducerImpl
             ) {
@@ -79,12 +76,9 @@ class AuthorizationTelegramStoreFactory(
 
         private fun checkTelegramNick(telegramNick: String) {
             if (validator.checkTelegramNick(telegramNick)) {
-                nick = telegramNick
-                scope.launch {
-                    publish(
-                        AuthorizationTelegramStore.Label.AuthorizationTelegramSuccess
-                    )
-                }
+                publish(
+                    AuthorizationTelegramStore.Label.AuthorizationTelegramSuccess
+                )
             } else
                 publish(AuthorizationTelegramStore.Label.AuthorizationTelegramFailure)
 
