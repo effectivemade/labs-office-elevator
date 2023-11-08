@@ -1,5 +1,9 @@
 package band.effective.office.elevator.ui.booking.store
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.domain.models.BookingInfo
 import band.effective.office.elevator.domain.models.BookingPeriod
@@ -69,6 +73,9 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         data class SelectNewDateOfEnd(val date: LocalDate?) : Intent
 
         object CloseCalendarForEndDate : Intent
+
+        object OpenTimePicker : Intent
+        object CloseTimePicker : Intent
     }
 
     data class State(
@@ -95,7 +102,12 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         val isLoadingBookingCreation: Boolean,
         val isErrorBookingCreation: Boolean,
         val typeOfEnd: TypeEndPeriodBooking,
-        val dateOfEndPeriod: LocalDate
+        val dateOfEndPeriod: LocalDate,
+        val showRepeatDialog: Boolean,
+        val showCalendar: Boolean,
+        val showConfirm: Boolean,
+        val showTimePicker: Boolean,
+        val showCalendarForEndDate: Boolean
     ) {
         companion object {
             val initState = State(
@@ -139,25 +151,26 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
                 isErrorBookingCreation = false,
                 typeOfEnd = TypeEndPeriodBooking.CountRepeat(1),
                 dateOfEndPeriod = getCurrentDate(),
-                allZonesList = listOf()
+                allZonesList = listOf(),
+                showCalendar = false,
+                showConfirm = false,
+                showRepeatDialog = false,
+                showTimePicker = false,
+                showCalendarForEndDate = false
             )
         }
     }
 
     sealed interface Label {
         object OpenChooseZone : Label
-        object OpenConfirmBooking : Label
+
         object CloseChooseZone : Label
         object OpenBookPeriod : Label
         object CloseBookPeriod : Label
-        object CloseRepeatDialog : Label
-        object OpenRepeatDialog : Label
+
         data class OpenBookAccept(val value: WorkSpaceUI) : Label
         object CloseBookAccept : Label
-        object CloseCalendar : Label
 
-        object OpenCalendar : Label
-        object CloseConfirmBooking : Label
         object OpenStartTimeModal : Label
         object OpenFinishTimeModal : Label
         object CloseFinishTimeModal : Label

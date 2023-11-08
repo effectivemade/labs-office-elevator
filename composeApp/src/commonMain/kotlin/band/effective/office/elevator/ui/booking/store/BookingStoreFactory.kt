@@ -56,6 +56,17 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             ) {}
 
     private sealed interface Msg {
+        object CloseRepeatDialog : Msg
+        object OpenRepeatDialog : Msg
+        object OpenCalendar : Msg
+        object CloseCalendar : Msg
+        object OpenConfirmBooking : Msg
+        object CloseConfirmBooking : Msg
+        object OpenCalendarForDateOfEnd : Msg
+        object CloseCalendarForDateOfEnd : Msg
+        object CloseTimePicker : Msg
+        object OpenTimePicker : Msg
+
         data class UpdateAllZones(val zones: List<WorkspaceZoneUI>) : Msg
         data class ChangeTypeOfEnd(val type: TypeEndPeriodBooking) : Msg
         data class BeginningBookingTime(val time: LocalTime) : Msg
@@ -143,7 +154,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                 is BookingStore.Intent.OpenRepeatDialog -> {
                     scope.launch {
-                        publish(BookingStore.Label.OpenRepeatDialog)
+                        dispatch(Msg.OpenRepeatDialog)
                     }
                 }
 
@@ -182,13 +193,13 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                 is BookingStore.Intent.OpenCalendar -> {
                     scope.launch {
-                        publish(BookingStore.Label.OpenCalendar)
+                        dispatch(Msg.OpenCalendar)
                     }
                 }
 
                 is BookingStore.Intent.CloseCalendar -> {
                     scope.launch {
-                        publish(BookingStore.Label.CloseCalendar)
+                        dispatch(Msg.CloseCalendar)
                     }
                 }
 
@@ -201,7 +212,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                     scope.launch {
                         val currentDate = getCurrentDate()
-                        publish(BookingStore.Label.CloseCalendar)
+                        dispatch(Msg.CloseCalendar)
                         if (startDate >= currentDate) {
                             dispatch(Msg.BeginningBookingDate(date = startDate))
                         } else {
@@ -232,7 +243,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is BookingStore.Intent.OpenConfirmBooking -> {
                     scope.launch {
                         dispatch(Msg.IsLoadingBookingCreation(isLoadingBookingCreation = true))
-                        publish(BookingStore.Label.OpenConfirmBooking)
+                        dispatch(Msg.OpenConfirmBooking)
 
                         val startDate = getState().selectedStartDate
                         val endDate = getState().selectedFinishDate
@@ -251,7 +262,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                             )
                         ).collect { response ->
                             dispatch(Msg.IsLoadingBookingCreation(isLoadingBookingCreation = false))
-                            when(response) {
+                            when (response) {
                                 is Either.Success -> dispatch(Msg.UpdateErrorCreatingBooking(false))
 
                                 is Either.Error -> dispatch(Msg.UpdateErrorCreatingBooking(true))
@@ -270,7 +281,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                 is BookingStore.Intent.CloseConfirmBooking -> {
                     scope.launch {
-                        publish(BookingStore.Label.CloseConfirmBooking)
+                        dispatch(Msg.CloseConfirmBooking)
                     }
 
                 }
@@ -336,7 +347,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                 is BookingStore.Intent.OnSelectBookingPeriod -> {
                     scope.launch {
-                        publish(BookingStore.Label.CloseRepeatDialog)
+                        dispatch(Msg.CloseRepeatDialog)
                         with(intent.pair) {
                             if (second == BookingPeriod.Another)
                                 publish(BookingStore.Label.OpenBookRepeat)
@@ -352,9 +363,14 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                             dispatch(Msg.ChangeBookingRepeat(bookingRepeat = name))
                             dispatch(Msg.ChangeTypeOfEnd(TypeEndPeriodBooking.CountRepeat(10))) // TODO(Artem Gruzdev) backend should fix this
                             dispatch(Msg.ChangeBookingPeriod(bookingPeriod = intent.pair.second))
-                            dispatch(Msg.ChangeFrequency(
-                                Frequency(days = listOf(), researchEnd = Triple(Pair("ThisDay",""),"",""))
-                            ))
+                            dispatch(
+                                Msg.ChangeFrequency(
+                                    Frequency(
+                                        days = listOf(),
+                                        researchEnd = Triple(Pair("ThisDay", ""), "", "")
+                                    )
+                                )
+                            )
                         }
                     }
 
@@ -424,11 +440,11 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                         publish(BookingStore.Label.CloseBookRepeat)
                     }
                     scope.launch {
-                        val typeOfEnd = when(intent.typeOfEnd) {
+                        val typeOfEnd = when (intent.typeOfEnd) {
                             is TypeEndPeriodBooking.DatePeriodEnd -> {
                                 // TODO: hen backend fix until date, it`s can be removed
                                 val dateRange = intent.typeOfEnd.date - getState().selectedStartDate
-                                val timeUnit = when(intent.bookingPeriod) {
+                                val timeUnit = when (intent.bookingPeriod) {
                                     is BookingPeriod.Week -> 7
                                     is BookingPeriod.EveryWorkDay -> 7
                                     is BookingPeriod.Year -> 365
@@ -439,12 +455,15 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                                 }
                                 TypeEndPeriodBooking.CountRepeat(dateRange.days / timeUnit + 1)
                             }
-                            else  -> intent.typeOfEnd
+
+                            else -> intent.typeOfEnd
                         }
-                        dispatch(Msg.ChangeBookingRepeatAndTypeOfEnd(
-                            bookingPeriod = intent.bookingPeriod,
-                            typeEndPeriodBooking = typeOfEnd
-                        ))
+                        dispatch(
+                            Msg.ChangeBookingRepeatAndTypeOfEnd(
+                                bookingPeriod = intent.bookingPeriod,
+                                typeEndPeriodBooking = typeOfEnd
+                            )
+                        )
                     }
                 }
 
@@ -475,12 +494,12 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                 BookingStore.Intent.CloseRepeatDialog -> {
                     scope.launch {
-                        publish(BookingStore.Label.CloseRepeatDialog)
+                        dispatch(Msg.CloseRepeatDialog)
                     }
                 }
 
                 BookingStore.Intent.OpenCalendarForEndDate -> {
-                    publish(BookingStore.Label.OpenCalendarForDateOfEnd)
+                    dispatch(Msg.OpenCalendarForDateOfEnd)
                 }
 
                 is BookingStore.Intent.SelectNewDateOfEnd -> {
@@ -493,7 +512,10 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 }
 
                 BookingStore.Intent.CloseCalendarForEndDate ->
-                    publish(BookingStore.Label.CloseCalendarForDateOfEnd)
+                    dispatch(Msg.CloseCalendarForDateOfEnd)
+
+                BookingStore.Intent.CloseTimePicker -> dispatch(Msg.CloseTimePicker)
+                BookingStore.Intent.OpenTimePicker -> dispatch(Msg.OpenTimePicker)
             }
         }
 
@@ -614,8 +636,22 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                 is Msg.ChangeDateOfEndPeriod -> copy(dateOfEndPeriod = msg.date)
                 is Msg.ChangeTypeOfEnd -> copy(typeOfEnd = msg.type)
-                is Msg.UpdateAllZones -> copy(currentWorkspaceZones = msg.zones, allZonesList = msg.zones)
+                is Msg.UpdateAllZones -> copy(
+                    currentWorkspaceZones = msg.zones,
+                    allZonesList = msg.zones
+                )
+
                 is Msg.UpdateErrorCreatingBooking -> copy(isErrorBookingCreation = msg.isError)
+                Msg.CloseCalendar -> copy(showCalendar = false)
+                Msg.CloseConfirmBooking -> copy(showConfirm = false)
+                Msg.CloseRepeatDialog -> copy(showRepeatDialog = false)
+                Msg.OpenCalendar -> copy(showCalendar = true)
+                Msg.OpenConfirmBooking -> copy(showConfirm = true)
+                Msg.OpenRepeatDialog -> copy(showRepeatDialog = true)
+                Msg.CloseCalendarForDateOfEnd -> copy(showCalendarForEndDate = false)
+                Msg.OpenCalendarForDateOfEnd -> copy(showCalendarForEndDate = true)
+                Msg.CloseTimePicker -> copy(showTimePicker = false)
+                Msg.OpenTimePicker -> copy(showTimePicker = false)
             }
         }
     }
