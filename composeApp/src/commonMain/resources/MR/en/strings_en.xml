@@ -62,6 +62,8 @@
     <string name="close_booking">Close</string>
     <string name="booking_period">Booking period</string>
     <string name="whole_day_booking">Whole day</string>
+    <string name="creating_error">Seat reservation error</string>
+    <string name="try_another_place">Something went wrong. Try to book another place</string>
     <string name="confirm_booking">Confirm</string>
     <string name="do_not_repeat">Do not repeat</string>
     <string name="every_work_day">Every work day</string>

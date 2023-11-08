@@ -92,6 +92,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         data class IsLoadingBookingCreation(val isLoadingBookingCreation: Boolean) : Msg
 
         data class ChangeDateOfEndPeriod(val date: LocalDate) : Msg
+
+        data class UpdateErrorCreatingBooking(val isError: Boolean) : Msg
     }
 
     private sealed interface Action {
@@ -237,7 +239,6 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                         Napier.d { "book period: ${getState().bookingPeriod is BookingPeriod.EveryWorkDay}" }
                         bookingInteractor.create(
-                            coroutineScope = this@launch,
                             creatingBookModel = CreatingBookModel(
                                 workSpaceId = getState().selectedWorkspaceId, //TODO(Replace with value from DB)
                                 dateOfStart = startDate.atTime(getState().selectedStartTime),
@@ -248,8 +249,15 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                                 bookingPeriod = getState().bookingPeriod,
                                 typeOfEndPeriod = getState().typeOfEnd
                             )
-                        )
-                        dispatch(Msg.IsLoadingBookingCreation(isLoadingBookingCreation = false))
+                        ).collect { response ->
+                            dispatch(Msg.IsLoadingBookingCreation(isLoadingBookingCreation = false))
+                            when(response) {
+                                is Either.Success -> dispatch(Msg.UpdateErrorCreatingBooking(false))
+
+                                is Either.Error -> dispatch(Msg.UpdateErrorCreatingBooking(true))
+                            }
+                        }
+
                     }
                     scope.launch {
                         publish(BookingStore.Label.CloseBookAccept)
@@ -607,6 +615,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is Msg.ChangeDateOfEndPeriod -> copy(dateOfEndPeriod = msg.date)
                 is Msg.ChangeTypeOfEnd -> copy(typeOfEnd = msg.type)
                 is Msg.UpdateAllZones -> copy(currentWorkspaceZones = msg.zones, allZonesList = msg.zones)
+                is Msg.UpdateErrorCreatingBooking -> copy(isErrorBookingCreation = msg.isError)
             }
         }
     }

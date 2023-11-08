@@ -45,12 +45,9 @@ class BookingInteractor(
         )
     }
 
-    suspend fun create(coroutineScope: CoroutineScope, creatingBookModel: CreatingBookModel) {
-        createBookingUseCase.execute(
-            coroutineScope = coroutineScope,
-            creatingBookModel = creatingBookModel
-        )
-    }
+    suspend fun create(creatingBookModel: CreatingBookModel) =
+        createBookingUseCase.execute(creatingBookModel = creatingBookModel)
+
 
     suspend fun getZones() = workspaceUseCase.getZones()
 

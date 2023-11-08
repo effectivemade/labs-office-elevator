@@ -42,10 +42,9 @@ import band.effective.office.elevator.ui.booking.components.modals.BookAccept
 import band.effective.office.elevator.ui.booking.components.modals.BookingPeriod
 import band.effective.office.elevator.ui.booking.components.modals.BookingRepeat
 import band.effective.office.elevator.ui.booking.components.modals.BookingRepeatCard
-import band.effective.office.elevator.ui.booking.components.modals.BookingSuccess
+import band.effective.office.elevator.ui.booking.components.modals.BookingResult
 import band.effective.office.elevator.ui.booking.components.modals.ChooseZone
 import band.effective.office.elevator.ui.booking.models.BottomSheetNames
-import band.effective.office.elevator.ui.booking.models.Frequency
 import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import band.effective.office.elevator.ui.booking.store.BookingStore
@@ -349,7 +348,8 @@ fun BookingScreen(bookingComponent: BookingComponent) {
         typeOfTypeEndPeriodBooking = state.typeOfEnd,
         bookingPeriod = state.bookingPeriod,
         startTime = state.selectedStartTime,
-        endTime = state.selectedFinishTime
+        endTime = state.selectedFinishTime,
+        isErrorCreatingBooking = state.isErrorBookingCreation
     )
 }
 
@@ -389,7 +389,8 @@ private fun BookingScreenContent(
     startTime: LocalTime,
     endTime: LocalTime,
     bookingPeriod: BookingPeriod,
-    typeOfTypeEndPeriodBooking: TypeEndPeriodBooking
+    typeOfTypeEndPeriodBooking: TypeEndPeriodBooking,
+    isErrorCreatingBooking: Boolean
 ) {
     val scrollState = rememberLazyListState()
     val scrollIsDown = scrollState.isScrollingDown()
@@ -511,11 +512,12 @@ private fun BookingScreenContent(
         if (showConfirm){
             Dialog(
                 content = {
-                    BookingSuccess(
+                    BookingResult(
                         onMain = onClickMainScreen,
                         close = onClickCloseBookingConfirm,
                         modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center),
-                        isLoading = isLoadingBookingCreation
+                        isLoading = isLoadingBookingCreation,
+                        isError = isErrorCreatingBooking
                     )
                 },
                 properties = DialogProperties(usePlatformDefaultWidth = false),
