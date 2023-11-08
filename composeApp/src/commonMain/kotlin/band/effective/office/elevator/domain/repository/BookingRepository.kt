@@ -20,7 +20,7 @@ interface BookingRepository {
     suspend fun deleteBooking(bookingInfo: BookingInfo)
 
     suspend fun deleteBooking(book: String)
-    suspend fun createBook(creatingBookModel: CreatingBookModel) : Flow<Either<ErrorResponse, Unit>>
+    suspend fun createBook(creatingBookModel: CreatingBookModel) : Flow<Either<ErrorResponse, BookingInfo>>
 
     suspend fun getBookingsForUser(
         ownerId: String? = null,

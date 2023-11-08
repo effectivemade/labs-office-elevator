@@ -10,6 +10,7 @@ import band.effective.office.elevator.domain.models.emptyUserDTO
 import band.effective.office.elevator.domain.models.emptyWorkSpaceDTO
 import band.effective.office.elevator.domain.models.toDTO
 import band.effective.office.elevator.domain.models.toDTOModel
+import band.effective.office.elevator.domain.models.toDomainModel
 import band.effective.office.elevator.domain.models.toDomainZone
 import band.effective.office.elevator.domain.repository.BookingRepository
 import band.effective.office.elevator.domain.repository.ProfileRepository
@@ -95,7 +96,7 @@ class BookingRepositoryImpl(
         api.deleteBooking(book)
     }
 
-    override suspend fun createBook(creatingBookModel: CreatingBookModel): Flow<Either<ErrorResponse, Unit>>  = flow {
+    override suspend fun createBook(creatingBookModel: CreatingBookModel): Flow<Either<ErrorResponse, BookingInfo>> = flow {
         if (user != null) {
             emit(
                 book(user = user!!, creatingBookModel = creatingBookModel)
@@ -118,7 +119,7 @@ class BookingRepositoryImpl(
         }
     }
 
-    private suspend fun book(user: User, creatingBookModel: CreatingBookModel) : Either<ErrorResponse, Unit> {
+    private suspend fun book(user: User, creatingBookModel: CreatingBookModel) : Either<ErrorResponse, BookingInfo> {
         val recurrence = getRecurrenceModal(
             bookingPeriod = creatingBookModel.bookingPeriod,
             typeEndPeriod = creatingBookModel.typeOfEndPeriod
@@ -139,7 +140,7 @@ class BookingRepositoryImpl(
         return when (val creating = api.createBooking(bookingDTO)) {
             is Either.Error -> creating
 
-            is Either.Success -> Either.Success(Unit)
+            is Either.Success -> Either.Success(creating.data.toDomainModel())
         }
     }
 
