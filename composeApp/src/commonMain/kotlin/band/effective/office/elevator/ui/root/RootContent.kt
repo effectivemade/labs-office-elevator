@@ -1,6 +1,8 @@
 package band.effective.office.elevator.ui.root
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -74,7 +76,7 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
 fun AnimatedChild(visible: () -> Boolean, content: @Composable () -> Unit) {
     AnimatedVisibility(
         visible = visible(),
-        enter = fadeIn() + scaleIn(),
+        enter = fadeIn(spring(stiffness = Spring.StiffnessHigh)) + scaleIn(spring(stiffness = Spring.StiffnessHigh)),
         exit = fadeOut() + scaleOut()
     ) {
         content()
