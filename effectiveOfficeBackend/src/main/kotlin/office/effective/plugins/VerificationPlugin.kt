@@ -1,13 +1,13 @@
 package office.effective.plugins
 
+
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
-import office.effective.features.user.TokenVerifier
 import io.ktor.server.response.*
-import office.effective.features.user.ApiKeyVerifier
-import office.effective.features.user.ITokenVerifier
+import office.effective.features.simpleAuth.service.AuthenticationPipeline
+import org.koin.core.context.GlobalContext
 import org.slf4j.LoggerFactory
 
 /**
@@ -15,12 +15,11 @@ import org.slf4j.LoggerFactory
  * Run every time when receiving input call. Checks Authentication (bearer) header containment
  * */
 val VerificationPlugin = createApplicationPlugin(name = "VerificationPlugin") {
-    val verifierOAuth: ITokenVerifier = TokenVerifier()
-    val verifierLine = ApiKeyVerifier()
     val pluginOn: Boolean = System.getenv("VERIFICATION_PLUGIN_ENABLE").equals("true")
     val logger = LoggerFactory.getLogger(this::class.java)
     logger.info("Verification plugin mode enabled?: $pluginOn")
     logger.info("Verification plugin installed")
+    val authenticationPipeline : AuthenticationPipeline = GlobalContext.get().get()
 
     onCall {
         run {
@@ -28,36 +27,19 @@ val VerificationPlugin = createApplicationPlugin(name = "VerificationPlugin") {
                 val token = it.request.parseAuthorizationHeader()?.render()?.split("Bearer ")?.last() ?: it.respond(
                     HttpStatusCode.Unauthorized
                 )
-                var exOAuth: Exception? = null
-                var exLine: Exception? = null
-
-                //Checks verification through OAuth
-                try {
-                    val email = verifierOAuth.isCorrectToken(token as String)
-                    exOAuth = null
-                } catch (ex: Exception) {
-                    logger.debug("OAuth verification failed")
-                    exOAuth = ex
-                }
-
-                //Checks verification through Line (for tablets usage). Should be replaced by jwt
-                try {
-                    val line = verifierLine.isCorrectToken(token as String)
-                    exLine = null
-                } catch (ex: Exception) {
-                    logger.debug("Token verification failed")
-                    exLine = ex
-                }
-
-                //If both authentications ways cannot verify header containment, this condition must throw 401 Unauthorised
-                if (exOAuth != null && exLine != null) {
-                    logger.info("Verification error. \nOAuth exception: ", exOAuth)
-                    logger.info("Verification error. \nLine exception: ", exLine)
+                if (!authenticationPipeline.authenticateToken(token as String)) {
+                    logger.info("Verification failed.")
+                    logger.trace("Verification failed with token: {}", token)
                     it.response.status(HttpStatusCode.Unauthorized)
-                    it.respond("Verification error. \nCause by:\nOAuth exception: $exOAuth\nLine exception: $exLine")
+                    it.respond("Verification failed.")
+                } else {
+                    logger.info("Verification succeed.")
+                    logger.trace("Verification succeed with token: {}", token)
                 }
+
             }
         }
+
 
     }
 }
