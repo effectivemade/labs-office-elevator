@@ -1,10 +1,11 @@
-package office.effective.features.user
+package office.effective.features.simpleAuth
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
 import office.effective.config
+import org.slf4j.LoggerFactory
 
 /**
  * Implementation of [ITokenVerifier]. Checks GoogleIdTokens
@@ -18,30 +19,41 @@ class TokenVerifier : ITokenVerifier {
 
     private val acceptableMailDomain: String =
         config.propertyOrNull("auth.user.emailDomain ")?.getString() ?: "effective.band"
-
+    val logger = LoggerFactory.getLogger(this::class.java)
     /**
-     * Check Google Id Token from input line. Returns email
+     * Check Google ID Token using google library
      *
      * @param tokenString [String] which contains token to verify
      * @author Kiselev Danil
-     * @throws Exception("Token cannot be verified") if token does not contains payload
-     * @throws Exception("Token wasn't verified") if method can't extract email
-     * @return user email
+     * @throws Exception("Token wasn't verified by Google") if token does not contain payload
+     * @return is token correct
      *
      * @author Kiselev Danil
      * */
-    override fun isCorrectToken(tokenString: String): String {
+    override suspend fun isCorrectToken(tokenString: String): Boolean {
         var userMail: String? = null
-        val token: GoogleIdToken? = verifier.verify(tokenString)
+
+        val token: GoogleIdToken?
+        try {
+            token = verifier.verify(tokenString)
+        } catch (ex: Exception) {
+            return next(tokenString)
+        }
 
         val payload = token?.payload ?: throw Exception("Token wasn't verified by Google")
         val emailVerified: Boolean = payload.emailVerified
         val hostedDomain = payload.hostedDomain ?: extractDomain(payload.email)
-
         if ((acceptableMailDomain == hostedDomain) && emailVerified) {
             userMail = payload.email
         }
-        return userMail ?: throw Exception("Token wasn't verified")
+
+        if (userMail.isNullOrBlank()) {
+            return next(tokenString)
+        } else {
+            logger.info("Token verifier succeed")
+            return true
+        }
+
     }
 
     /**
@@ -56,4 +68,15 @@ class TokenVerifier : ITokenVerifier {
         return email.split('@').last()
     }
 
+    private var nextHandler: ITokenVerifier? = null;
+    override fun setNext(handler: ITokenVerifier?) {
+        this.nextHandler = handler
+    }
+
+
+    override suspend fun next(tokenString: String): Boolean {
+        logger.info("Token verifier failed")
+        logger.trace("Token verifier with token: {}", tokenString)
+        return nextHandler?.isCorrectToken(tokenString) ?: return false;
+    }
 }
