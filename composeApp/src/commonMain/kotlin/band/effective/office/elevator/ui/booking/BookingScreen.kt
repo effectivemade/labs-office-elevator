@@ -3,6 +3,7 @@ package band.effective.office.elevator.ui.booking
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,6 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.ModalCalendar
 import band.effective.office.elevator.components.ModalCalendarDateRange
@@ -52,7 +55,6 @@ import band.effective.office.elevator.utils.isScrollingDown
 import band.effective.office.elevator.utils.stackOf
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
-import effective.office.modalcustomdialog.Dialog
 import io.github.aakira.napier.Napier
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
@@ -439,79 +441,87 @@ private fun BookingScreenContent(
             )
         }
 
-        Dialog(
-            content = {
-                BookingRepeatCard(
-                    onSelected = onClickOpenBookRepeat,
-                    modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center),
-                    weekDays = if (bookingPeriod is BookingPeriod.Week)
-                        bookingPeriod.selectedDayOfWeek
-                    else emptyList()
-                )
-            },
-            onDismissRequest = onClickCloseRepeatDialog,
-            showDialog = showRepeatDialog,
-            modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
-        )
+        if (showRepeatDialog) {
+            Dialog(
+                content = {
+                    BookingRepeatCard(
+                        onSelected = onClickOpenBookRepeat,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .align(Alignment.Center),
+                        weekDays = if (bookingPeriod is BookingPeriod.Week)
+                            bookingPeriod.selectedDayOfWeek
+                        else emptyList()
+                    )
+                },
+                onDismissRequest = onClickCloseRepeatDialog,
+                properties = DialogProperties(usePlatformDefaultWidth = false)
+            )
+        }
+        if (showCalendar) {
+            Dialog(
+                content = {
+                    ModalCalendarDateRange(
+                        currentDate = currentDate,
+                        onClickOk = onClickApplyDate,
+                        onClickCansel = onClickCloseCalendar,
+                        modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
+                    )
+                },
+                properties = DialogProperties(usePlatformDefaultWidth = false),
+                onDismissRequest = onClickCloseCalendar,
+            )
+        }
+        if (showCalendarForEndDate) {
+            Dialog(
+                content = {
+                    ModalCalendar(
+                        currentDate = dateOfEndPeriod,
+                        onClickOk = onClickApplyDateOfEndPeriod,
+                        onClickCansel = onClickCloseCalendarForDateOfEnd,
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .align(Alignment.Center)
+                    )
+                },
+                properties = DialogProperties(usePlatformDefaultWidth = false),
+                onDismissRequest = onClickCloseCalendarForDateOfEnd,
+            )
+        }
 
-        Dialog(
-            content = {
-                ModalCalendarDateRange(
-                    currentDate = currentDate,
-                    onClickOk = onClickApplyDate,
-                    onClickCansel = onClickCloseCalendar,
-                    modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
-                )
-            },
-            onDismissRequest = onClickCloseCalendar,
-            showDialog = showCalendar,
-            modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
-        )
-        Dialog(
-            content = {
-                ModalCalendar(
-                    currentDate = dateOfEndPeriod,
-                    onClickOk = onClickApplyDateOfEndPeriod,
-                    onClickCansel = onClickCloseCalendarForDateOfEnd,
-                    modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
-                )
-            },
-            onDismissRequest = onClickCloseCalendarForDateOfEnd,
-            showDialog = showCalendarForEndDate,
-            modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
-        )
-        Dialog(
-            content = {
-                TimePickerModal(
-                    startTime = if (isStart) startTime else endTime,
-                    titleText = stringResource(timeTitle),
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                        .clip(shape = RoundedCornerShape(16.dp)).background(Color.White)
-                        .align(Alignment.Center),
-                    onClickCansel = onClickCloseTimeModal,
-                    onClickOk = onClickSelectTime
-                )
-            },
-            onDismissRequest = onClickCloseTimeModal,
-            showDialog = showTimePicker,
-            modifier = Modifier.padding(horizontal = 16.dp)
-                .clip(shape = RoundedCornerShape(16.dp)).background(Color.White)
-                .align(Alignment.Center)
-        )
+        if (showTimePicker) {
+            Dialog(
+                content = {
+                    TimePickerModal(
+                        startTime = if (isStart) startTime else endTime,
+                        titleText = stringResource(timeTitle),
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                            .clip(shape = RoundedCornerShape(16.dp)).background(Color.White)
+                            .align(Alignment.Center),
+                        onClickCansel = onClickCloseTimeModal,
+                        onClickOk = onClickSelectTime
+                    )
+                },
+                properties = DialogProperties(usePlatformDefaultWidth = false),
+                onDismissRequest = onClickCloseTimeModal,
+            )
+        }
 
-        Dialog(
-            content = {
-                BookingSuccess(
-                    onMain = onClickMainScreen,
-                    close = onClickCloseBookingConfirm,
-                    modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center),
-                    isLoading = isLoadingBookingCreation
-                )
-            },
-            onDismissRequest = onClickCloseBookingConfirm,
-            showDialog = showConfirm,
-            modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
-        )
+        if (showConfirm){
+            Dialog(
+                content = {
+                    BookingSuccess(
+                        onMain = onClickMainScreen,
+                        close = onClickCloseBookingConfirm,
+                        modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center),
+                        isLoading = isLoadingBookingCreation
+                    )
+                },
+                properties = DialogProperties(usePlatformDefaultWidth = false),
+                onDismissRequest = onClickCloseBookingConfirm,
+            )
+        }
     }
 }
 
