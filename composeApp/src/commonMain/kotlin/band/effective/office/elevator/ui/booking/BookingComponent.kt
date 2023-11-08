@@ -1,8 +1,6 @@
 package band.effective.office.elevator.ui.booking
 
 import band.effective.office.elevator.MainRes
-import band.effective.office.elevator.domain.models.BookingPeriod
-import band.effective.office.elevator.domain.models.TypeEndPeriodBooking
 import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.store.BookingStore
 import band.effective.office.elevator.ui.booking.store.BookingStoreFactory
@@ -10,7 +8,7 @@ import band.effective.office.elevator.ui.bottomSheets.BottomSheet
 import band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.BookAcceptSheetComponent
 import band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.BookPeriodSheetComponent
 import band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.BookRepeatSheetComponent
-import band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.ChooseZoneSheetComponent
+import band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.ChooseZoneSheet.ChooseZoneSheetComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.router.slot.SlotNavigation
@@ -24,12 +22,9 @@ import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
-import dev.icerock.moko.resources.StringResource
-import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.atTime
 
 class BookingComponent(
@@ -67,7 +62,9 @@ class BookingComponent(
                 Config.ChooseZone -> ChooseZoneSheetComponent(
                     sheetTile = if (state.value.workSpacesType == WorkSpaceType.WORK_PLACE) MainRes.strings.selection_zones
                     else MainRes.strings.selection_rooms,
-                    workSpacecZone = state.value.currentWorkspaceZones
+                    workSpacesZone = state.value.currentWorkspaceZones,
+                    closeSheet = { closeSheet() },
+                    confirm = { onEvent(BookingStore.Intent.ChangeSelectedWorkSpacesZone(it)) }
                 )
 
                 Config.BookRepeat -> BookRepeatSheetComponent(state.value.dateOfEndPeriod)
