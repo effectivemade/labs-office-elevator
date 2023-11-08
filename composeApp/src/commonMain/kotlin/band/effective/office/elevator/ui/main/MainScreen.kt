@@ -28,6 +28,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.LoadingIndicator
@@ -42,7 +44,6 @@ import band.effective.office.elevator.ui.main.store.MainStore
 import band.effective.office.elevator.ui.models.ReservedSeat
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
-import effective.office.modalcustomdialog.Dialog
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.delay
 import kotlinx.datetime.LocalDate
@@ -140,36 +141,36 @@ fun MainScreen(component: MainComponent) {
             enableCallElevator = state.enableCallElevator
         )
 
-        Dialog(
-            content = {
-                ModalCalendarDateRange(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp),
-                    onClickCansel = { component.onEvent(MainStore.Intent.OnClickCloseCalendar) },
-                    onClickOk = { component.onEvent(MainStore.Intent.OnClickApplyDate(it)) },
-                    currentDate = state.beginDate
-                )
-            },
-            onDismissRequest = { component.onEvent(MainStore.Intent.OnClickCloseCalendar) },
-            showDialog = showModalCalendar,
-            modifier = Modifier.align(Alignment.BottomCenter)
-        )
+        if (showModalCalendar) {
+            Dialog(
+                content = {
+                    ModalCalendarDateRange(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp),
+                        onClickCansel = { component.onEvent(MainStore.Intent.OnClickCloseCalendar) },
+                        onClickOk = { component.onEvent(MainStore.Intent.OnClickApplyDate(it)) },
+                        currentDate = state.beginDate
+                    )
+                },
+                onDismissRequest = { component.onEvent(MainStore.Intent.OnClickCloseCalendar) },
+                properties = DialogProperties(usePlatformDefaultWidth = false)
+            )
+        }
 
-        Dialog(
-            content = {
-                BookingContextMenu(
-                    onClick = {},
-                    modifier = Modifier.padding(16.dp),
-                    onClickOpenDeleteBooking = { component.onEvent(MainStore.Intent.OnClickDeleteBooking) },
-                    onClickBook = { component.onOutput(MainComponent.Output.OpenMap) }
-                )
-            },
-            onDismissRequest = { component.onEvent(MainStore.Intent.OnClickHideOption) },
-            showDialog = showOptionsMenu,
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.Center)
-        )
+        if (showOptionsMenu) {
+            Dialog(
+                content = {
+                    BookingContextMenu(
+                        onClick = {},
+                        modifier = Modifier.padding(16.dp),
+                        onClickOpenDeleteBooking = { component.onEvent(MainStore.Intent.OnClickDeleteBooking) },
+                        onClickBook = { component.onOutput(MainComponent.Output.OpenMap) }
+                    )
+                },
+                onDismissRequest = { component.onEvent(MainStore.Intent.OnClickHideOption) },
+                properties = DialogProperties(usePlatformDefaultWidth = false)
+            )
+        }
 
         SnackBarErrorMessage(
             modifier = Modifier.align(Alignment.BottomCenter),

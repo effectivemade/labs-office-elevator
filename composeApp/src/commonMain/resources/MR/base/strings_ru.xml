@@ -41,6 +41,9 @@
     <string name="nearest_bookings">Брони</string>
     <string name="none_booking_seat">У вас пока нет бронирований</string>
     <string name="place_booked">Место забронировано</string>
+    <string name="creating_error">Ошибка бронирования</string>
+    <string name="try_another_place">Что-то пошло не так.
+        Попробуйте забронировать другое место</string>
     <string name="good_working_day">Хорошего рабочего дня!</string>
     <string name="move_to_main_from_booking">На главную</string>
     <string name="close_booking">Закрыть</string>
