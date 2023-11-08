@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -20,14 +19,7 @@ import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ui.authorization.AuthorizationScreen
 import band.effective.office.elevator.ui.content.Content
 import band.effective.office.elevator.ui.root.store.RootStore
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.plus
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.scale
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
-import com.arkivanov.decompose.router.slot.child
-import com.arkivanov.decompose.router.slot.childSlot
 
 @Composable
 fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
@@ -45,42 +37,46 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
         }
     }
     val slot by component.slot.subscribeAsState()
-    AnimatedVisibility(
-        visible = true,
-        enter = fadeIn() + scaleIn(),
-        exit = fadeOut() + scaleOut()
+    Box(
+        modifier = modifier,
+        //animation = stackAnimation(fade() + scale()),
     ) {
-        Box(
-            modifier = modifier,
-            //animation = stackAnimation(fade() + scale()),
-        ) {
-            slot.child?.instance?.also { child ->
-                when (child) {
-                    is RootComponent.Child.AuthorizationChild -> AuthorizationScreen(child.component)
-                    is RootComponent.Child.ContentChild ->
-                        AnimatedVisibility(
-                            visible = true,
-                            enter = fadeIn() + scaleIn(),
-                            exit = fadeOut() + scaleOut()
-                        ) {
-                            Content(child.component)
-                        }
-
-                    RootComponent.Child.Undefined -> {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator(
-                                modifier = Modifier
-                                    .size(80.dp)
-                                    .padding(16.dp)
-                            )
-                        }
+        slot.child?.instance?.also { child ->
+            AnimatedChild({ child is RootComponent.Child.AuthorizationChild }) {
+                (child as? RootComponent.Child.AuthorizationChild)?.run {
+                    AuthorizationScreen(child.component)
+                }
+            }
+            AnimatedChild({ child is RootComponent.Child.ContentChild }) {
+                (child as? RootComponent.Child.ContentChild)?.run {
+                    Content(child.component)
+                }
+            }
+            AnimatedChild({ child is RootComponent.Child.Undefined }) {
+                (child as? RootComponent.Child.AuthorizationChild)?.run {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .size(80.dp)
+                                .padding(16.dp)
+                        )
                     }
                 }
             }
         }
     }
+}
 
+@Composable
+fun AnimatedChild(visible: () -> Boolean, content: @Composable () -> Unit) {
+    AnimatedVisibility(
+        visible = visible(),
+        enter = fadeIn() + scaleIn(),
+        exit = fadeOut() + scaleOut()
+    ) {
+        content()
+    }
 }
