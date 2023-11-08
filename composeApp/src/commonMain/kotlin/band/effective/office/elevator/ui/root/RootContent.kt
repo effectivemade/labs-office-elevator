@@ -1,5 +1,10 @@
 package band.effective.office.elevator.ui.root
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -8,6 +13,7 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -19,6 +25,9 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.plus
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.scale
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
+import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.arkivanov.decompose.router.slot.child
+import com.arkivanov.decompose.router.slot.childSlot
 
 @Composable
 fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
@@ -35,24 +44,43 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
             }
         }
     }
-
-    Children(
-        stack = component.childStack,
-        modifier = modifier,
-        animation = stackAnimation(fade() + scale()),
+    val slot by component.slot.subscribeAsState()
+    AnimatedVisibility(
+        visible = true,
+        enter = fadeIn() + scaleIn(),
+        exit = fadeOut() + scaleOut()
     ) {
-        when (val child = it.instance) {
-            is RootComponent.Child.AuthorizationChild -> AuthorizationScreen(child.component)
-            is RootComponent.Child.ContentChild -> Content(child.component)
-            RootComponent.Child.Undefined -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .size(80.dp)
-                            .padding(16.dp)
-                    )
+        Box(
+            modifier = modifier,
+            //animation = stackAnimation(fade() + scale()),
+        ) {
+            slot.child?.instance?.also { child ->
+                when (child) {
+                    is RootComponent.Child.AuthorizationChild -> AuthorizationScreen(child.component)
+                    is RootComponent.Child.ContentChild ->
+                        AnimatedVisibility(
+                            visible = true,
+                            enter = fadeIn() + scaleIn(),
+                            exit = fadeOut() + scaleOut()
+                        ) {
+                            Content(child.component)
+                        }
+
+                    RootComponent.Child.Undefined -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .size(80.dp)
+                                    .padding(16.dp)
+                            )
+                        }
+                    }
                 }
             }
         }
     }
+
 }
