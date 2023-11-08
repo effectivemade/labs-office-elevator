@@ -10,6 +10,7 @@ import band.effective.office.elevator.domain.models.emptyUserDTO
 import band.effective.office.elevator.domain.models.emptyWorkSpaceDTO
 import band.effective.office.elevator.domain.models.toDTO
 import band.effective.office.elevator.domain.models.toDTOModel
+import band.effective.office.elevator.domain.models.toDomainModel
 import band.effective.office.elevator.domain.models.toDomainZone
 import band.effective.office.elevator.domain.repository.BookingRepository
 import band.effective.office.elevator.domain.repository.ProfileRepository
@@ -95,48 +96,51 @@ class BookingRepositoryImpl(
         api.deleteBooking(book)
     }
 
-    override suspend fun createBook(creatingBookModel: CreatingBookModel) {
-
-        val currentUserResponse = profileRepository.getUser()
-
-        currentUserResponse.collect { response ->
-            when (response) {
-                is Either.Success -> {
-
-                    user = response.data
-
-                    val recurrence = getRecurrenceModal(
-                        bookingPeriod = creatingBookModel.bookingPeriod,
-                        typeEndPeriod = creatingBookModel.typeOfEndPeriod
-                    )
-                    Napier.d {
-                        "Creaing booking is: $recurrence"
+    override suspend fun createBook(creatingBookModel: CreatingBookModel): Flow<Either<ErrorResponse, BookingInfo>> = flow {
+        if (user != null) {
+            emit(
+                book(user = user!!, creatingBookModel = creatingBookModel)
+            )
+        } else {
+            profileRepository.getUser().collect { userResponse ->
+                when (userResponse) {
+                    is Either.Success -> {
+                        user = userResponse.data
+                        emit(
+                            book(user = user!!, creatingBookModel = creatingBookModel)
+                        )
                     }
-                    val bookingDTO = creatingBookModel.toDTO(
-                        user = emptyUserDTO(
-                            id = response.data.id,
-                            email = response.data.email,
-                            name = response.data.userName
-                        ),
-                        workspaceDTO = emptyWorkSpaceDTO(creatingBookModel.workSpaceId),
-                        recurrence = recurrence
-                    )
-                    when (val creating = api.createBooking(bookingDTO)) {
-                        is Either.Error -> {
-                            println(
-                                "Error create booking: ${creating.error}" +
-                                        "BooKingDTO: $bookingDTO"
-                            )
-                        }
 
-                        is Either.Success -> println("Creating ok")
+                    is Either.Error -> {
+                        emit(Either.Error(userResponse.error.error))
                     }
-                }
-
-                is Either.Error -> {
-                    // TODO add implemetation for error
                 }
             }
+        }
+    }
+
+    private suspend fun book(user: User, creatingBookModel: CreatingBookModel) : Either<ErrorResponse, BookingInfo> {
+        val recurrence = getRecurrenceModal(
+            bookingPeriod = creatingBookModel.bookingPeriod,
+            typeEndPeriod = creatingBookModel.typeOfEndPeriod
+        )
+        Napier.d {
+            "Creaing booking is: $recurrence"
+        }
+
+        val bookingDTO = creatingBookModel.toDTO(
+            user = emptyUserDTO(
+                id = user.id,
+                email = user.email,
+                name = user.userName
+            ),
+            workspaceDTO = emptyWorkSpaceDTO(creatingBookModel.workSpaceId),
+            recurrence = recurrence
+        )
+        return when (val creating = api.createBooking(bookingDTO)) {
+            is Either.Error -> creating
+
+            is Either.Success -> Either.Success(creating.data.toDomainModel())
         }
     }
 

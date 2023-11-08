@@ -93,6 +93,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         val selectedWorkspaceId: String,
         val isLoadingListWorkspaces: Boolean,
         val isLoadingBookingCreation: Boolean,
+        val isErrorBookingCreation: Boolean,
         val typeOfEnd: TypeEndPeriodBooking,
         val dateOfEndPeriod: LocalDate
     ) {
@@ -135,6 +136,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
                 selectedWorkspaceId = "",
                 isLoadingListWorkspaces = true,
                 isLoadingBookingCreation = true,
+                isErrorBookingCreation = false,
                 typeOfEnd = TypeEndPeriodBooking.CountRepeat(1),
                 dateOfEndPeriod = getCurrentDate(),
                 allZonesList = listOf()
