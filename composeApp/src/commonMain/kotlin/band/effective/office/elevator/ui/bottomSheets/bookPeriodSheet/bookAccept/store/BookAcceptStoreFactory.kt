@@ -1,15 +1,12 @@
 package band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.bookAccept.store
 
-import band.effective.office.elevator.data.ApiResponse
 import band.effective.office.elevator.domain.entity.BookingInteractor
 import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.domain.models.CreatingBookModel
 import band.effective.office.network.model.Either
-import com.arkivanov.mvikotlin.core.store.Executor
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.core.store.create
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.launch
@@ -28,7 +25,8 @@ class BookAcceptStoreFactory(
         Store<BookAcceptStore.Intent, BookAcceptStore.State, Nothing> by storeFactory.create(
             name = "BookAcceptStore",
             initialState = initState,
-            executorFactory = ::ExecutorImpl
+            executorFactory = ::ExecutorImpl,
+            reducer = ReducerImpl
         ) {}
 
     private sealed interface Message {

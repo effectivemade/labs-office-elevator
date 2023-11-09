@@ -2,13 +2,13 @@ package band.effective.office.elevator.ui.booking
 
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.ui.booking.StateConverter.toBookAcceptState
+import band.effective.office.elevator.ui.booking.StateConverter.toBookPeriodState
 import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.store.BookingStore
 import band.effective.office.elevator.ui.booking.store.BookingStoreFactory
 import band.effective.office.elevator.ui.bottomSheets.BottomSheet
 import band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.bookAccept.BookAcceptSheetComponent
-import band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.BookPeriodSheetComponent
-import band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.BookRepeatSheetComponent
+import band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.bookPeriod.BookPeriodSheetComponent
 import band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.chooseZoneSheet.ChooseZoneSheetComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.slot.ChildSlot
@@ -46,13 +46,12 @@ class BookingComponent(
                 )
 
                 SheetConfig.BookPeriod -> BookPeriodSheetComponent(
-                    startDate = state.value.selectedStartDate,
-                    startTime = state.value.selectedStartTime,
-                    finishDate = state.value.selectedFinishDate,
-                    finishTime = state.value.selectedFinishTime,
-                    repeatBooking = "",
-                    switchChecked = state.value.wholeDay,
-                    closeClick = { closeSheet() }
+                    componentContext = componentContext,
+                    initState = state.value.toBookPeriodState(),
+                    closeClick = { closeSheet() },
+                    accept = {
+                        //TODO(Maksim Mishenko): call search logic here
+                    }
                 )
 
                 SheetConfig.ChooseZone -> ChooseZoneSheetComponent(
@@ -62,8 +61,6 @@ class BookingComponent(
                     closeSheet = { closeSheet() },
                     confirm = { onEvent(BookingStore.Intent.ChangeSelectedWorkSpacesZone(it)) }
                 )
-
-                SheetConfig.BookRepeat -> BookRepeatSheetComponent(state.value.dateOfEndPeriod)
             }
         }
     )
@@ -107,14 +104,5 @@ class BookingComponent(
 
         @Parcelize
         object BookPeriod : SheetConfig
-
-        @Parcelize
-        object BookRepeat : SheetConfig
-
-
-//        object RepeatDialog : Dialog//
-//        object Calendar : Dialog//
-//        object TimePicker : Dialog
-//        object CalendarForEndDate : Dialog
     }
 }
