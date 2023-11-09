@@ -38,4 +38,9 @@ class BookPeriodSheetComponent(
         )
     }
 
+    @Composable
+    override fun content() {
+        TODO("Not yet implemented")
+    }
+
 }

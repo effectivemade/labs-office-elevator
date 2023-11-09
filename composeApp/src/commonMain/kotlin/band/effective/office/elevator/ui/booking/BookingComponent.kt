@@ -1,14 +1,15 @@
 package band.effective.office.elevator.ui.booking
 
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.ui.booking.StateConverter.toBookAcceptState
 import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.store.BookingStore
 import band.effective.office.elevator.ui.booking.store.BookingStoreFactory
 import band.effective.office.elevator.ui.bottomSheets.BottomSheet
-import band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.BookAcceptSheetComponent
+import band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.bookAccept.BookAcceptSheetComponent
 import band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.BookPeriodSheetComponent
 import band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.BookRepeatSheetComponent
-import band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.ChooseZoneSheet.ChooseZoneSheetComponent
+import band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.chooseZoneSheet.ChooseZoneSheetComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.router.slot.SlotNavigation
@@ -25,31 +26,26 @@ import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.datetime.atTime
 
 class BookingComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
-    private val output: (BookingComponent.Output) -> Unit
+    private val output: (Output) -> Unit
 ) :
     ComponentContext by componentContext {
 
-    private val navigation = SlotNavigation<Config>()
-    val slot: Value<ChildSlot<Config, BottomSheet>> = childSlot(
+    private val navigation = SlotNavigation<SheetConfig>()
+    val slot: Value<ChildSlot<SheetConfig, BottomSheet>> = childSlot(
         source = navigation,
         childFactory = { bottomSheet, componentContext ->
             when (bottomSheet) {
-                Config.BookAccept -> BookAcceptSheetComponent(
-                    bookingId = state.value.bookingInfo.id,
-                    seatName = "",
-                    dateOfStart = state.value.selectedStartDate.atTime(state.value.selectedStartTime),
-                    dateOfEnd = state.value.selectedFinishDate.atTime(state.value.selectedFinishTime),
-                    bookingPeriod = state.value.bookingPeriod,
-                    typeEndPeriodBooking = state.value.typeOfEnd,
-                    repeatBooking = state.value.repeatBooking
+                SheetConfig.BookAccept -> BookAcceptSheetComponent(
+                    initState = state.value.toBookAcceptState(),
+                    close = { closeSheet() },
+                    onMainScreen = { onOutput(Output.OpenMainTab) }
                 )
 
-                Config.BookPeriod -> BookPeriodSheetComponent(
+                SheetConfig.BookPeriod -> BookPeriodSheetComponent(
                     startDate = state.value.selectedStartDate,
                     startTime = state.value.selectedStartTime,
                     finishDate = state.value.selectedFinishDate,
@@ -59,7 +55,7 @@ class BookingComponent(
                     closeClick = { closeSheet() }
                 )
 
-                Config.ChooseZone -> ChooseZoneSheetComponent(
+                SheetConfig.ChooseZone -> ChooseZoneSheetComponent(
                     sheetTile = if (state.value.workSpacesType == WorkSpaceType.WORK_PLACE) MainRes.strings.selection_zones
                     else MainRes.strings.selection_rooms,
                     workSpacesZone = state.value.currentWorkspaceZones,
@@ -67,7 +63,7 @@ class BookingComponent(
                     confirm = { onEvent(BookingStore.Intent.ChangeSelectedWorkSpacesZone(it)) }
                 )
 
-                Config.BookRepeat -> BookRepeatSheetComponent(state.value.dateOfEndPeriod)
+                SheetConfig.BookRepeat -> BookRepeatSheetComponent(state.value.dateOfEndPeriod)
             }
         }
     )
@@ -86,7 +82,7 @@ class BookingComponent(
         bookingStore.accept(event)
     }
 
-    fun onOutput(output: BookingComponent.Output) {
+    fun onOutput(output: Output) {
         output(output)
     }
 
@@ -94,7 +90,7 @@ class BookingComponent(
         object OpenMainTab : Output()
     }
 
-    fun openSheet(config: Config) {
+    fun openSheet(config: SheetConfig) {
         navigation.activate(config)
     }
 
@@ -102,23 +98,23 @@ class BookingComponent(
         navigation.dismiss()
     }
 
-    sealed interface Config : Parcelable {
+    sealed interface SheetConfig : Parcelable {
         @Parcelize
-        object BookAccept : Config
+        object BookAccept : SheetConfig
 
         @Parcelize
-        object ChooseZone : Config
+        object ChooseZone : SheetConfig
 
         @Parcelize
-        object BookPeriod : Config
+        object BookPeriod : SheetConfig
 
         @Parcelize
-        object BookRepeat : Config
+        object BookRepeat : SheetConfig
+
+
 //        object RepeatDialog : Dialog//
 //        object Calendar : Dialog//
-//        object Confirm : Dialog//
 //        object TimePicker : Dialog
 //        object CalendarForEndDate : Dialog
-
     }
 }

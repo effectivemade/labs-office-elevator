@@ -1,4 +1,4 @@
-package band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.ChooseZoneSheet.store
+package band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.chooseZoneSheet.store
 
 import band.effective.office.elevator.ui.booking.models.WorkspaceZoneUI
 import com.arkivanov.mvikotlin.core.store.Store

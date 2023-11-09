@@ -31,21 +31,15 @@ import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.ModalCalendar
 import band.effective.office.elevator.components.ModalCalendarDateRange
 import band.effective.office.elevator.components.TimePickerModal
-import band.effective.office.elevator.components.bottomSheet.BottomSheetItem
-import band.effective.office.elevator.components.bottomSheet.rememberMultiBottomSheetController
 import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.domain.models.TypeEndPeriodBooking
 import band.effective.office.elevator.ui.booking.components.BookingMainContentScreen
-import band.effective.office.elevator.ui.booking.components.modals.BookingRepeat
 import band.effective.office.elevator.ui.booking.components.modals.BookingRepeatCard
 import band.effective.office.elevator.ui.booking.components.modals.BookingResult
-import band.effective.office.elevator.ui.booking.models.BottomSheetNames
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import band.effective.office.elevator.ui.booking.store.BookingStore
 import band.effective.office.elevator.ui.models.TypesList
-import band.effective.office.elevator.utils.Stack
 import band.effective.office.elevator.utils.isScrollingDown
-import band.effective.office.elevator.utils.stackOf
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
@@ -69,11 +63,11 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                 BookingStore.Label.CloseChooseZone -> TODO()
                 BookingStore.Label.CloseFinishTimeModal -> TODO()
                 BookingStore.Label.CloseStartTimeModal -> TODO()
-                is BookingStore.Label.OpenBookAccept -> bookingComponent.openSheet(BookingComponent.Config.BookAccept)
-                BookingStore.Label.OpenBookPeriod -> bookingComponent.openSheet(BookingComponent.Config.BookPeriod)
-                BookingStore.Label.OpenBookRepeat -> bookingComponent.openSheet(BookingComponent.Config.BookPeriod)
+                is BookingStore.Label.OpenBookAccept -> bookingComponent.openSheet(BookingComponent.SheetConfig.BookAccept)
+                BookingStore.Label.OpenBookPeriod -> bookingComponent.openSheet(BookingComponent.SheetConfig.BookPeriod)
+                BookingStore.Label.OpenBookRepeat -> bookingComponent.openSheet(BookingComponent.SheetConfig.BookPeriod)
                 BookingStore.Label.OpenCalendarForDateOfEnd -> TODO()
-                BookingStore.Label.OpenChooseZone -> bookingComponent.openSheet(BookingComponent.Config.ChooseZone)
+                BookingStore.Label.OpenChooseZone -> bookingComponent.openSheet(BookingComponent.SheetConfig.ChooseZone)
                 BookingStore.Label.OpenFinishTimeModal -> TODO()
                 BookingStore.Label.OpenStartTimeModal -> TODO()
                 is BookingStore.Label.ShowToast -> TODO()
@@ -97,6 +91,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
         sheetState = sheetState
     ) {
         Box() {
+            slot.child?.instance?.content()
             Modals(
                 showRepeatDialog = state.showRepeatDialog,
                 showCalendar = state.showCalendar,
@@ -166,7 +161,6 @@ fun BookingScreen(bookingComponent: BookingComponent) {
 
                 )
         }
-
     }
 }
 

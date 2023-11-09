@@ -16,4 +16,9 @@ class BookRepeatSheetComponent(private val selectedDayOfEnd: LocalDate) : Bottom
             selectedDayOfEnd = selectedDayOfEnd
         )
     }
+
+    @Composable
+    override fun content() {
+        TODO("Not yet implemented")
+    }
 }

@@ -7,4 +7,7 @@ interface BottomSheet {
 
     @Composable
     fun SheetContent()
+    @Composable
+    fun content()
+
 }
