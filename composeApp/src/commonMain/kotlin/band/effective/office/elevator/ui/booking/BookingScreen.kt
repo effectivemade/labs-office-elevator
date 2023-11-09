@@ -40,7 +40,6 @@ fun BookingScreen(bookingComponent: BookingComponent) {
             when (label) {
                 is BookingStore.Label.OpenBookAccept -> bookingComponent.openSheet(BookingComponent.SheetConfig.BookAccept)
                 BookingStore.Label.OpenBookPeriod -> bookingComponent.openSheet(BookingComponent.SheetConfig.BookPeriod)
-                BookingStore.Label.OpenBookRepeat -> bookingComponent.openSheet(BookingComponent.SheetConfig.BookPeriod)
                 BookingStore.Label.OpenChooseZone -> bookingComponent.openSheet(BookingComponent.SheetConfig.ChooseZone)
                 is BookingStore.Label.ShowToast -> showToast(label.message)
                 else -> {}
