@@ -123,6 +123,8 @@ postgres container from docker. In that case you may run named container by comm
 **FIREBASE_SA_JSON** - credentials json file from Firebase service account<br>
 **APPLICATION_URL** - actual url address of application itself. Must be https url. Can't be localhost.<br>
 **LOG_LEVEL** - logging level in application. Used in logback.xml. Default value: debug<br>
+**DEFAULT_CALENDAR** - default Google calendar, used for booking meeting rooms. If not defined value from the config file will be used instead.
+**WORKSPACE_CALENDAR** - Google calendar for booking working places. If not defined value from the config file will be used instead.
 
 You may use file .env.example as an example.
 
