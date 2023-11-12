@@ -5,7 +5,8 @@ import java.util.Properties
 plugins {
     id(libs.plugins.android.get().pluginId)
     kotlin("android")
-    kotlin("kapt")
+    id("kotlin-kapt")
+    id("com.google.devtools.ksp").version("1.9.20-1.0.14")
     alias(libs.plugins.hilt)
 }
 
@@ -68,7 +69,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.composeAndroid.get()
     }
-    packagingOptions {
+    packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
@@ -87,7 +88,7 @@ dependencies {
 
     // moshi
     implementation(libs.bundles.moshi.core)
-    kapt(libs.moshi.gen)
+    ksp(libs.moshi.gen)
 
     //hilt di
     implementation(libs.hilt)
