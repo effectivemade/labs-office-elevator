@@ -24,14 +24,13 @@ import dev.icerock.moko.resources.compose.stringResource
 fun BookingRepeatCard(
     onSelected: (Pair<String, BookingPeriod>) -> Unit,
     modifier: Modifier,
-    frequency: Frequency
+    weekDays: List<DayOfWeek>
 ) {
 
-    val days: List<DayOfWeek> = frequency.getDays()
     val strings = listOf(
         Pair(first = MainRes.strings.do_not_repeat, second = BookingPeriod.NoPeriod),
         Pair(first = MainRes.strings.every_work_day, second = BookingPeriod.EveryWorkDay(5)),
-        Pair(first = MainRes.strings.every_week, second = BookingPeriod.Week(1, days)),
+        Pair(first = MainRes.strings.every_week, second = BookingPeriod.Week(1, weekDays)),
         Pair(
             first = MainRes.strings.every_month, second = BookingPeriod.Month(1),
         ),
@@ -58,7 +57,7 @@ fun BookingRepeatCard(
             BookingRepeatElement(
                 selected = pair == selectedOption,
                 bookingText = name,
-                onSelect = { it ->
+                onSelect = {
                     onOptionSelected(pair)
                 },
                 onSelected = onSelected,

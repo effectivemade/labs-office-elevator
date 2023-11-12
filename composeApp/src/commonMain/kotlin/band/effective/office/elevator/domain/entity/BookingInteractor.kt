@@ -8,12 +8,15 @@ import band.effective.office.elevator.domain.useCase.ChangeBookingUseCase
 import band.effective.office.elevator.domain.useCase.CreateBookingUseCase
 import band.effective.office.elevator.domain.useCase.GetBookingsUseCase
 import band.effective.office.elevator.domain.useCase.WorkspacesUseCase
+import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
+import band.effective.office.elevator.ui.booking.models.WorkspaceZoneUI
 import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsFilter
 import band.effective.office.elevator.ui.models.ReservedSeat
 import band.effective.office.network.model.Either
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.datetime.LocalDate
+import kotlinx.coroutines.flow.map
 import kotlinx.datetime.LocalDateTime
 
 class BookingInteractor(
@@ -42,23 +45,48 @@ class BookingInteractor(
         )
     }
 
-    suspend fun create(coroutineScope: CoroutineScope, creatingBookModel: CreatingBookModel) {
-        createBookingUseCase.execute(
-            coroutineScope = coroutineScope,
-            creatingBookModel = creatingBookModel
-        )
-    }
+    suspend fun create(creatingBookModel: CreatingBookModel) =
+        createBookingUseCase.execute(creatingBookModel = creatingBookModel)
+
 
     suspend fun getZones() = workspaceUseCase.getZones()
+
+
     suspend fun getWorkspaces(
         tag: String,
         freeFrom: LocalDateTime? = null,
-        freeUntil: LocalDateTime? = null
-    ) = workspaceUseCase.getWorkSpaces(
-        tag = tag,
-        freeFrom = freeFrom,
-        freeUntil = freeUntil
-    )
+        freeUntil: LocalDateTime? = null,
+        selectedWorkspacesZone: List<WorkspaceZoneUI>
+    ) = workspaceUseCase
+            .getWorkSpaces(
+                tag = tag,
+                freeFrom = freeFrom,
+                freeUntil = freeUntil
+        ).map { response ->
+            when (response) {
+                is Either.Success -> {
+                    val list = selectedWorkspacesZone.filter { it.isSelected }
+                    val listWorkSpaces = response.data
+
+                    Napier.d { response.data.toString() }
+                    val filteredWorkspacesList = mutableListOf<WorkSpaceUI>()
+
+                    list.forEach { zone ->
+                        val zoneName = zone.name
+                        val foundedSpace =
+                            listWorkSpaces.filter { it.zoneName == zoneName }
+
+                        filteredWorkspacesList.addAll(foundedSpace)
+                    }
+                    Either.Success(filteredWorkspacesList.toList())
+                }
+
+                is Either.Error -> {
+                    Napier.e {"ERROORRR!!!! ${response.error.error}"}
+                    Either.Error(response.error)
+                }
+            }
+        }
 
     suspend fun deleteBooking(bookingId: String) = repository.deleteBooking(bookingId)
 }

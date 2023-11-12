@@ -8,11 +8,11 @@ data class User(
     val id: String,
     val imageUrl: String,
     val userName: String,
-    val post:String,
-    val phoneNumber:String,
+    val post: String,
+    val phoneNumber: String,
     val telegram: String,
-    val email:String
-){
+    val email: String
+) {
     companion object {
         val defaultUser =
             User(
@@ -27,7 +27,7 @@ data class User(
     }
 }
 
-fun User.toUserDTO(idEmail: String, idPhoneNumber: String, idTelegram: String): UserDTO =
+fun User.toUserDTO(idPhoneNumber: String, idTelegram: String): UserDTO =
     UserDTO(
         id = id,
         fullName = userName,
@@ -35,22 +35,24 @@ fun User.toUserDTO(idEmail: String, idPhoneNumber: String, idTelegram: String): 
         role = post,
         avatarUrl = imageUrl,
         integrations = listOf(
-            IntegrationDTO(id = idEmail , name = "email", value = email ),
             IntegrationDTO(id = idPhoneNumber, name = "phoneNumber", value = phoneNumber ),
             IntegrationDTO(id = idTelegram, name = "telegram", value = telegram ),
             ),
         email = email,
         tag = "employee"
     )
+
 fun UserDTO.toUser() =
     User(
         id = id,
         imageUrl = avatarUrl,
         userName = fullName,
         post = role,
-        phoneNumber = integrations?.find { it.name == "phoneNumber" }?.value?:"None",
-        email = integrations?.find { it.name == "email" }?.value?:"None",
-        telegram = integrations?.find { it.name == "telegram" }?.value?:"None"
+        email = email,
+        phoneNumber = integrations?.find { it.name == "phoneNumber" }?.value
+            ?: "".apply { println("Get empty phone number") },
+        telegram = integrations?.find { it.name == "telegram" }?.value
+            ?: "".apply { println("Get empty telegram") }
     )
 
 fun ProfileData.toUser() =

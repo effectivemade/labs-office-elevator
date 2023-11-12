@@ -39,12 +39,15 @@ fun BookingCard(
             .clip(RoundedCornerShape(16.dp))
             .background(Color.White)
             .padding(horizontal = 16.dp, vertical = 24.dp)
-            .fillMaxWidth()
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        SeatIcon()
-        Spacer(modifier = Modifier.width(12.dp))
-        SeatTitle(seat)
-        Spacer(modifier = Modifier.height(24.dp))
+        Row {
+            SeatIcon()
+            Spacer(modifier = Modifier.width(12.dp))
+            SeatTitle(seat)
+            Spacer(modifier = Modifier.height(24.dp))
+        }
         IconButton(
             onClick = {
                 onClickOptionMenu(seat.bookingId)

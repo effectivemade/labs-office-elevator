@@ -38,6 +38,7 @@ import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.components.Elevation
+import band.effective.office.elevator.domain.models.DayOfWeek
 import band.effective.office.elevator.ui.booking.models.Frequency
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
@@ -60,7 +61,8 @@ fun EditBooking(
     confirmBooking: () -> Unit,
     bookingRepeat: () -> Unit,
     showRepeatDialog: Boolean,
-    onClickCloseRepeatDialog: () -> Unit
+    onClickCloseRepeatDialog: () -> Unit,
+    weekDays: List<DayOfWeek>
 ) {
     Box {
 
@@ -235,7 +237,7 @@ fun EditBooking(
             BookingRepeatCard(
                 onSelected = { onClickCloseRepeatDialog() },
                 modifier = Modifier,
-                frequency = Frequency(days = listOf(), researchEnd = Triple(Pair("ThisDay",""),"",""))
+                weekDays = weekDays
             )
         }
     }

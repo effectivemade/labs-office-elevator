@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 import javax.inject.Singleton
-
+@Deprecated("Let's use WorkTogether")
 @Singleton
 class EmployeeInfoRepositoryImpl @Inject constructor(private val employeeInfoRemoteDataSourceImpl: EmployeeInfoRemoteDataSourceImpl) :
     EmployeeInfoRepository {

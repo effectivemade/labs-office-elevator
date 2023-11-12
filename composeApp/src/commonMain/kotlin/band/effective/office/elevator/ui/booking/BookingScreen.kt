@@ -3,6 +3,7 @@ package band.effective.office.elevator.ui.booking
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,6 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.ModalCalendar
 import band.effective.office.elevator.components.ModalCalendarDateRange
@@ -32,17 +35,16 @@ import band.effective.office.elevator.components.bottomSheet.MultiBottomSheetCon
 import band.effective.office.elevator.components.bottomSheet.rememberMultiBottomSheetController
 import band.effective.office.elevator.domain.models.BookingInfo
 import band.effective.office.elevator.domain.models.BookingPeriod
+import band.effective.office.elevator.domain.models.TypeEndPeriodBooking
 import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.ui.booking.components.BookingMainContentScreen
 import band.effective.office.elevator.ui.booking.components.modals.BookAccept
 import band.effective.office.elevator.ui.booking.components.modals.BookingPeriod
 import band.effective.office.elevator.ui.booking.components.modals.BookingRepeat
 import band.effective.office.elevator.ui.booking.components.modals.BookingRepeatCard
-import band.effective.office.elevator.ui.booking.components.modals.BookingSuccess
+import band.effective.office.elevator.ui.booking.components.modals.BookingResult
 import band.effective.office.elevator.ui.booking.components.modals.ChooseZone
 import band.effective.office.elevator.ui.booking.models.BottomSheetNames
-import band.effective.office.elevator.ui.booking.models.Frequency
-import band.effective.office.elevator.ui.booking.models.MockDataSpaces
 import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import band.effective.office.elevator.ui.booking.store.BookingStore
@@ -52,7 +54,6 @@ import band.effective.office.elevator.utils.isScrollingDown
 import band.effective.office.elevator.utils.stackOf
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
-import effective.office.modalcustomdialog.Dialog
 import io.github.aakira.napier.Napier
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
@@ -67,7 +68,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
     val showChooseZone = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
         confirmValueChange = { sheetState ->
-            when(sheetState) {
+            when (sheetState) {
                 ModalBottomSheetValue.Expanded -> true
                 ModalBottomSheetValue.Hidden -> {
                     bookingComponent.onEvent(BookingStore.Intent.CloseChooseZone)
@@ -87,7 +88,8 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                     bookingComponent.onEvent(BookingStore.Intent.CloseBookPeriod)
                     true
                 }
-                ModalBottomSheetValue.HalfExpanded ->  true
+
+                ModalBottomSheetValue.HalfExpanded -> true
             }
         }
     )
@@ -98,10 +100,12 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                 ModalBottomSheetValue.Expanded -> {
                     true
                 }
+
                 ModalBottomSheetValue.Hidden -> {
                     bookingComponent.onEvent(BookingStore.Intent.CloseBookAccept)
                     true
                 }
+
                 ModalBottomSheetValue.HalfExpanded -> {
                     true
                 }
@@ -118,6 +122,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                     bookingComponent.onEvent(BookingStore.Intent.CloseBookRepeat)
                     true
                 }
+
                 ModalBottomSheetValue.HalfExpanded -> true
             }
         }
@@ -136,13 +141,11 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                         if (state.workSpacesType == WorkSpaceType.WORK_PLACE) MainRes.strings.selection_zones
                         else MainRes.strings.selection_rooms
                     ),
-                    workSpacecZone = state.workSpacesZone,
+                    workSpacecZone = state.currentWorkspaceZones,
                     onClickCloseChoseZone = { bookingComponent.onEvent(BookingStore.Intent.CloseChooseZone) },
                     onClickConfirmSelectedZone = {
                         bookingComponent.onEvent(
-                            BookingStore.Intent.ChangeSelectedWorkSpacesZone(
-                                it
-                            )
+                            BookingStore.Intent.ChangeSelectedWorkSpacesZone(it)
                         )
                     }
                 )
@@ -161,8 +164,9 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                         dateOfStart = state.selectedStartDate.atTime(state.selectedStartTime),
                         dateOfEnd = state.selectedFinishDate.atTime(state.selectedFinishTime)
                     ),
-                    frequency = state.frequency,
-                    period = state.bookingPeriod
+                    bookingPeriod = state.bookingPeriod,
+                    typeEndPeriodBooking = state.typeOfEnd,
+                    repeatBooking = state.repeatBooking
                 )
             },
             BottomSheetNames.BOOK_PERIOD.name to BottomSheetItem(
@@ -207,7 +211,6 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                         bookingComponent.onEvent(BookingStore.Intent.OpenRepeatDialog)
                     },
                     onClickSearchSuitableOptions = { bookingComponent.onEvent(BookingStore.Intent.SearchSuitableOptions) },
-                    frequency = state.frequency,
                     finishDate = state.selectedFinishDate,
                 )
             },
@@ -216,11 +219,16 @@ fun BookingScreen(bookingComponent: BookingComponent) {
             ) {
                 BookingRepeat(
                     backButtonClicked = { bookingComponent.onEvent(BookingStore.Intent.CloseBookRepeat) },
-                    confirmBooking = { frequency ->
-                        bookingComponent.onEvent(BookingStore.Intent.ChangeFrequency(frequency = frequency))
+                    confirmBooking = { bookingPeriod, typeOfEnd ->
+                        bookingComponent.onEvent(
+                            BookingStore.Intent.ChangeFrequency(
+                                bookingPeriod,
+                                typeOfEnd
+                            )
+                        )
                     },
                     onSelected = {},
-                    onClickOpenCalendar = {bookingComponent.onEvent(BookingStore.Intent.OpenCalendarForEndDate)},
+                    onClickOpenCalendar = { bookingComponent.onEvent(BookingStore.Intent.OpenCalendarForEndDate) },
                     selectedDayOfEnd = state.dateOfEndPeriod
                 )
             },
@@ -269,6 +277,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                     Napier.d { "Close book repeat label" }
                     multiBottomSheetController.closeCurrentSheet()
                 }
+
                 BookingStore.Label.OpenFinishTimeModal -> showTimePicker = true
                 BookingStore.Label.CloseFinishTimeModal -> showTimePicker = false
                 is BookingStore.Label.ShowToast -> showToast(label.message)
@@ -313,38 +322,34 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                 )
             )
         },
-        onClickChangeZone = { type ->
-            with(
-                if (type == WorkSpaceType.MEETING_ROOM) MockDataSpaces.allMeetingRooms
-                else MockDataSpaces.allBookingZone
-            ) {
-                bookingComponent.onEvent(
-                    BookingStore.Intent.ChangeSelectedWorkSpacesZone(
-                        workSpaceZone = this@with
-                    )
-                )
-            }
-        },
         isStart = state.isStart,
         startDate = state.selectedStartDate,
         finishDate = state.selectedFinishDate,
-        frequency = state.frequency,
         repeatBookings = state.repeatBooking,
         onClickChangeSelectedType = {
             bookingComponent.onEvent(
-                BookingStore.Intent.ChangeSelectedType(
-                    selectedType = it
-                )
+                BookingStore.Intent.ChangeSelectedType(selectedType = it)
             )
         },
         selectedTypesList = state.selectedType,
-        onClickCloseRepeatDialog = {bookingComponent.onEvent(BookingStore.Intent.CloseRepeatDialog)},
+        onClickCloseRepeatDialog = { bookingComponent.onEvent(BookingStore.Intent.CloseRepeatDialog) },
         isLoadingWorkspacesList = state.isLoadingListWorkspaces,
         isLoadingBookingCreation = state.isLoadingBookingCreation,
         dateOfEndPeriod = state.dateOfEndPeriod,
         showCalendarForEndDate = showCalendarForEndDate,
-        onClickApplyDateOfEndPeriod = {bookingComponent.onEvent(BookingStore.Intent.SelectNewDateOfEnd(it))},
-        onClickCloseCalendarForDateOfEnd = {bookingComponent.onEvent(BookingStore.Intent.CloseCalendarForEndDate)}
+        onClickApplyDateOfEndPeriod = {
+            bookingComponent.onEvent(
+                BookingStore.Intent.SelectNewDateOfEnd(
+                    it
+                )
+            )
+        },
+        onClickCloseCalendarForDateOfEnd = { bookingComponent.onEvent(BookingStore.Intent.CloseCalendarForEndDate) },
+        typeOfTypeEndPeriodBooking = state.typeOfEnd,
+        bookingPeriod = state.bookingPeriod,
+        startTime = state.selectedStartTime,
+        endTime = state.selectedFinishTime,
+        isErrorCreatingBooking = state.isErrorBookingCreation
     )
 }
 
@@ -372,17 +377,20 @@ private fun BookingScreenContent(
     onClickCloseTimeModal: () -> Unit,
     onClickSelectTime: (LocalTime) -> Unit,
     onClickOpenBookRepeat: (Pair<String, BookingPeriod>) -> Unit,
-    onClickChangeZone: (WorkSpaceType) -> Unit,
     isStart: Boolean,
     startDate: LocalDate,
     finishDate: LocalDate,
-    frequency: Frequency,
     repeatBookings: StringResource,
     onClickChangeSelectedType: (TypesList) -> Unit,
     selectedTypesList: TypesList,
     onClickCloseRepeatDialog: () -> Unit,
     isLoadingBookingCreation: Boolean,
-    dateOfEndPeriod: LocalDate
+    dateOfEndPeriod: LocalDate,
+    startTime: LocalTime,
+    endTime: LocalTime,
+    bookingPeriod: BookingPeriod,
+    typeOfTypeEndPeriodBooking: TypeEndPeriodBooking,
+    isErrorCreatingBooking: Boolean
 ) {
     val scrollState = rememberLazyListState()
     val scrollIsDown = scrollState.isScrollingDown()
@@ -402,9 +410,9 @@ private fun BookingScreenContent(
         }
     }
 
-    timeTitle = if (isStart){
+    timeTitle = if (isStart) {
         MainRes.strings.take_from
-    }else{
+    } else {
         MainRes.strings.take_before
     }
     Box {
@@ -423,87 +431,99 @@ private fun BookingScreenContent(
                 onClickOpenChoseZone = onClickOpenChoseZone,
                 onClickExpandedMap = { isExpandedCard = !isExpandedCard },
                 onClickExpandedOption = { isExpandedOptions = !isExpandedOptions },
-                onClickChangeZone = onClickChangeZone,
                 startDate = startDate,
                 finishDate = finishDate,
-                frequency = frequency,
-                repeatBooking=repeatBookings,
+                bookingPeriod = bookingPeriod,
+                typeEndPeriodBooking = typeOfTypeEndPeriodBooking,
+                repeatBooking = repeatBookings,
                 onClickChangeSelectedType = onClickChangeSelectedType,
                 selectedTypesList = selectedTypesList,
                 isLoadingWorkspacesList = isLoadingWorkspacesList
             )
         }
 
-        Dialog(
-            content = {
-                BookingRepeatCard(
-                    onSelected = onClickOpenBookRepeat,
-                    modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center),
-                    frequency = frequency
-                )
-            },
-            onDismissRequest = onClickCloseRepeatDialog,
-            showDialog = showRepeatDialog,
-            modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
-        )
+        if (showRepeatDialog) {
+            Dialog(
+                content = {
+                    BookingRepeatCard(
+                        onSelected = onClickOpenBookRepeat,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .align(Alignment.Center),
+                        weekDays = if (bookingPeriod is BookingPeriod.Week)
+                            bookingPeriod.selectedDayOfWeek
+                        else emptyList()
+                    )
+                },
+                onDismissRequest = onClickCloseRepeatDialog,
+                properties = DialogProperties(usePlatformDefaultWidth = false)
+            )
+        }
+        if (showCalendar) {
+            Dialog(
+                content = {
+                    ModalCalendarDateRange(
+                        currentDate = currentDate,
+                        onClickOk = onClickApplyDate,
+                        onClickCansel = onClickCloseCalendar,
+                        modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
+                    )
+                },
+                properties = DialogProperties(usePlatformDefaultWidth = false),
+                onDismissRequest = onClickCloseCalendar,
+            )
+        }
+        if (showCalendarForEndDate) {
+            Dialog(
+                content = {
+                    ModalCalendar(
+                        currentDate = dateOfEndPeriod,
+                        onClickOk = onClickApplyDateOfEndPeriod,
+                        onClickCansel = onClickCloseCalendarForDateOfEnd,
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .align(Alignment.Center)
+                    )
+                },
+                properties = DialogProperties(usePlatformDefaultWidth = false),
+                onDismissRequest = onClickCloseCalendarForDateOfEnd,
+            )
+        }
 
-        Dialog(
-            content = {
-                ModalCalendarDateRange(
-                    currentDate = currentDate,
-                    onClickOk = onClickApplyDate,
-                    onClickCansel = onClickCloseCalendar,
-                    modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
-                )
-            },
-            onDismissRequest = onClickCloseCalendar,
-            showDialog = showCalendar,
-            modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
-        )
-        Dialog(
-            content = {
-                ModalCalendar(
-                    currentDate = dateOfEndPeriod,
-                    onClickOk = onClickApplyDateOfEndPeriod,
-                    onClickCansel = onClickCloseCalendarForDateOfEnd,
-                    modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
-                )
-            },
-            onDismissRequest = onClickCloseCalendarForDateOfEnd,
-            showDialog = showCalendarForEndDate,
-            modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
-        )
-        Dialog(
-            content = {
-                TimePickerModal(
-                    titleText = stringResource(timeTitle),
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                        .clip(shape = RoundedCornerShape(16.dp)).background(Color.White)
-                        .align(Alignment.Center),
-                    onClickCansel = onClickCloseTimeModal,
-                    onClickOk = onClickSelectTime
-                )
-            },
-            onDismissRequest = onClickCloseTimeModal,
-            showDialog = showTimePicker,
-            modifier = Modifier.padding(horizontal = 16.dp)
-                .clip(shape = RoundedCornerShape(16.dp)).background(Color.White)
-                .align(Alignment.Center)
-        )
+        if (showTimePicker) {
+            Dialog(
+                content = {
+                    TimePickerModal(
+                        startTime = if (isStart) startTime else endTime,
+                        titleText = stringResource(timeTitle),
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                            .clip(shape = RoundedCornerShape(16.dp)).background(Color.White)
+                            .align(Alignment.Center),
+                        onClickCansel = onClickCloseTimeModal,
+                        onClickOk = onClickSelectTime
+                    )
+                },
+                properties = DialogProperties(usePlatformDefaultWidth = false),
+                onDismissRequest = onClickCloseTimeModal,
+            )
+        }
 
-        Dialog(
-            content = {
-                BookingSuccess(
-                    onMain = onClickMainScreen,
-                    close = onClickCloseBookingConfirm,
-                    modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center),
-                    isLoading = isLoadingBookingCreation
-                )
-            },
-            onDismissRequest = onClickCloseBookingConfirm,
-            showDialog = showConfirm,
-            modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)
-        )
+        if (showConfirm){
+            Dialog(
+                content = {
+                    BookingResult(
+                        onMain = onClickMainScreen,
+                        close = onClickCloseBookingConfirm,
+                        modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center),
+                        isLoading = isLoadingBookingCreation,
+                        isError = isErrorCreatingBooking
+                    )
+                },
+                properties = DialogProperties(usePlatformDefaultWidth = false),
+                onDismissRequest = onClickCloseBookingConfirm,
+            )
+        }
     }
 }
 

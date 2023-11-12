@@ -21,7 +21,6 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -45,10 +44,10 @@ import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.components.LoadingIndicator
 import band.effective.office.elevator.components.OutlinedTextColorsSetup
 import band.effective.office.elevator.components.TitlePage
-import band.effective.office.elevator.textGrayColor
+import band.effective.office.elevator.components.UserInfoTextField
 import band.effective.office.elevator.ui.main.SnackBarErrorMessage
 import band.effective.office.elevator.ui.models.PhoneMaskTransformation
-import band.effective.office.elevator.ui.models.UserDataEditProfile
+import band.effective.office.elevator.ui.models.UserDataTextFieldType
 import band.effective.office.elevator.ui.models.getAllUserDataEditProfile
 import band.effective.office.elevator.ui.models.validator.UserInfoValidator
 import band.effective.office.elevator.ui.profile.editProfile.store.ProfileEditStore
@@ -164,37 +163,69 @@ private fun ProfileEditScreenContent(
             LazyColumn(modifier = Modifier.padding(top = 28.dp)) {
                 items(getAllUserDataEditProfile()) { item ->
                     when (item) {
-                        UserDataEditProfile.Phone -> {
-                            FieldsItemStyle(
+                        UserDataTextFieldType.Phone -> {
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                stringResource(item.title),
+                                modifier = Modifier.padding(bottom = 8.dp),
+                                style = MaterialTheme.typography.body1,
+                                color = ExtendedThemeColors.colors.blackColor
+                            )
+                            UserInfoTextField(
                                 item = item,
-                                text = phoneNumberText,
+                                text = phoneNumberText.value,
                                 error = isErrorPhone,
-                                visualTransformation = PhoneMaskTransformation(),
-                                keyboardType = KeyboardType.Phone
+                                visualTransformation = PhoneMaskTransformation,
+                                keyboardType = KeyboardType.Phone,
+                                onValueChange = { phoneNumberText.value = it }
                             )
                         }
 
-                        UserDataEditProfile.Person -> {
-                            FieldsItemStyle(
+                        UserDataTextFieldType.Person -> {
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                stringResource(item.title),
+                                modifier = Modifier.padding(bottom = 8.dp),
+                                style = MaterialTheme.typography.body1,
+                                color = ExtendedThemeColors.colors.blackColor
+                            )
+                            UserInfoTextField(
                                 item = item,
-                                text = userNameText,
-                                error = isErrorName
+                                text = userNameText.value,
+                                error = isErrorName,
+                                onValueChange = { userNameText.value = it }
                             )
                         }
 
-                        UserDataEditProfile.Post -> {
-                            FieldsItemStyle(
+                        UserDataTextFieldType.Post -> {
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                stringResource(item.title),
+                                modifier = Modifier.padding(bottom = 8.dp),
+                                style = MaterialTheme.typography.body1,
+                                color = ExtendedThemeColors.colors.blackColor
+                            )
+                            UserInfoTextField(
                                 item = item,
-                                text = postText,
-                                error = isErrorPost
+                                text = postText.value,
+                                error = isErrorPost,
+                                onValueChange = { postText.value = it }
                             )
                         }
 
-                        UserDataEditProfile.Telegram -> {
-                            FieldsItemStyle(
+                        UserDataTextFieldType.Telegram -> {
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                stringResource(item.title),
+                                modifier = Modifier.padding(bottom = 8.dp),
+                                style = MaterialTheme.typography.body1,
+                                color = ExtendedThemeColors.colors.blackColor
+                            )
+                            UserInfoTextField(
                                 item = item,
-                                text = telegramText,
-                                error = isErrorTelegram
+                                text = telegramText.value,
+                                error = isErrorTelegram,
+                                onValueChange = { telegramText.value = it }
                             )
                         }
                     }
@@ -222,64 +253,6 @@ private fun ProfileEditScreenContent(
         )
     }
 }
-
-
-@Composable
-private fun FieldsItemStyle(
-    item: UserDataEditProfile,
-    error: Boolean,
-    visualTransformation: VisualTransformation = VisualTransformation.None,
-    text: MutableState<String>,
-    keyboardType: KeyboardType = KeyboardType.Text
-) {
-    Column(
-        modifier = Modifier.padding(top = 16.dp).fillMaxWidth()
-    ) {
-        Text(
-            stringResource(item.title),
-            modifier = Modifier.padding(bottom = 8.dp),
-            style = MaterialTheme.typography.body1,
-            color = ExtendedThemeColors.colors.blackColor
-        )
-        OutlinedTextField(
-            value = text.value,
-            modifier = Modifier.fillMaxWidth(),
-            onValueChange = { text.value = it },
-            shape = RoundedCornerShape(12.dp),
-            singleLine = true,
-            textStyle = TextStyle(fontSize = 16.sp),
-            leadingIcon = {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(item.icon),
-                        contentDescription = null,
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Divider(
-                        modifier = Modifier.height(28.dp).width(2.dp).clip(RoundedCornerShape(4.dp))
-                    )
-                }
-            },
-            trailingIcon = {
-                IconButton(onClick = { text.value = "" }) {
-                    Icon(
-                        painter = painterResource(MainRes.images.clear_icon),
-                        contentDescription = null,
-                    )
-                }
-            },
-            colors = OutlinedTextColorsSetup(),
-            isError = error,
-            visualTransformation = visualTransformation,
-            keyboardOptions = KeyboardOptions(keyboardType = keyboardType)
-        )
-    }
-}
-
 
 @Composable
 fun ProfileEditHeader(onReturnToProfile: () -> Unit) {

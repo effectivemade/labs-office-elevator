@@ -47,8 +47,6 @@ fun EventStoryScreenContent(
                     val storyData = eventsInfo[currentStoryIndex]
                     StoryContent(
                         employeeInfo = storyData as EmployeeInfoUI,
-                        onImageLoading = onImageLoading,
-                        onImageLoaded = onImageLoaded,
                         Modifier
                             .fillMaxSize()
                             .padding(horizontal = 64.dp)

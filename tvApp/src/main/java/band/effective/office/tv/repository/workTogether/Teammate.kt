@@ -11,5 +11,7 @@ data class Teammate(
     val nextBDay: Calendar,
     val workEmail: String?,
     val personalEmail: String,
-    val duolingo: String?
+    val duolingo: String?,
+    val photo: String,
+    val status: String,
 )

@@ -29,6 +29,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,11 +42,14 @@ import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.components.OutlinedTextColorsSetup
+import band.effective.office.elevator.components.UserInfoTextField
 import band.effective.office.elevator.expects.showToast
 import band.effective.office.elevator.textGrayColor
+import band.effective.office.elevator.ui.authorization.authorization_profile.store.AuthorizationProfileStore
 import band.effective.office.elevator.ui.authorization.authorization_telegram.store.AuthorizationTelegramStore
 import band.effective.office.elevator.ui.authorization.components.AuthTabRow
 import band.effective.office.elevator.ui.authorization.components.AuthTitle
+import band.effective.office.elevator.ui.models.UserDataTextFieldType
 import dev.icerock.moko.resources.compose.stringResource
 
 
@@ -87,6 +91,7 @@ private fun AuthorizationTelegramComponent(
     val closeIcon = remember { mutableStateOf(false) }
     val borderColor = remember { mutableStateOf(textGrayColor) }
     val leadingColor = remember { mutableStateOf(textGrayColor) }
+    var telegram by remember { mutableStateOf(state.nick) }
 
     Column(
         horizontalAlignment = Alignment.Start,
@@ -127,8 +132,11 @@ private fun AuthorizationTelegramComponent(
                 textAlign = TextAlign.Start
             )
 
-            OutlinedTextField(
-                value = state.nick,
+            UserInfoTextField(
+                text = telegram,
+                item = UserDataTextFieldType.Telegram,
+                error = state.isErrorNick,
+                keyboardType = KeyboardType.Text,
                 onValueChange = {
                     if (it.isNotEmpty()) {
                         closeIcon.value = true
@@ -139,62 +147,8 @@ private fun AuthorizationTelegramComponent(
                         closeIcon.value = false
                         leadingColor.value = textGrayColor
                     }
+                    telegram = it
                     onEvent(AuthorizationTelegramStore.Intent.NickChanged(name = it))
-                },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                textStyle = MaterialTheme.typography.body1.copy(
-                    color = Color.Black
-                ),
-                colors = OutlinedTextColorsSetup(),
-                placeholder = {
-                    Text(
-                        text = stringResource(MainRes.strings.employee_hint),
-                        color = Color(0x80000000), //TODO(Maksim Mishenko) fix theme
-                        style = MaterialTheme.typography.button
-                    )
-                },
-                isError = state.isErrorNick,
-                singleLine = true,
-                trailingIcon = {
-                    if (closeIcon.value) {
-                        IconButton(onClick = {
-                            onEvent(
-                                AuthorizationTelegramStore.Intent.NickChanged(name = "")
-                            )
-                            closeIcon.value = false
-                            leadingColor.value = textGrayColor
-                        }) {
-                            Icon(
-                                imageVector = Icons.Outlined.Close,
-                                contentDescription = "clear text field",
-                            )
-                        }
-                    }
-                },
-                shape = RoundedCornerShape(12.dp),
-                leadingIcon = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Start,
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    ) {
-                        Text(
-                            text = stringResource(MainRes.strings.telegram_symbol),
-                            style = MaterialTheme.typography.button,
-                            color = leadingColor.value
-                        )
-
-                        Spacer(modifier = Modifier.width(16.dp))
-
-                        Divider(
-                            modifier = Modifier
-                                .height(20.dp)
-                                .width(2.dp)
-                                .clip(RoundedCornerShape(4.dp))
-                                .background(if (state.isErrorNick) ExtendedThemeColors.colors.error else borderColor.value)
-                                .padding(vertical = 14.dp)
-                        )
-                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()

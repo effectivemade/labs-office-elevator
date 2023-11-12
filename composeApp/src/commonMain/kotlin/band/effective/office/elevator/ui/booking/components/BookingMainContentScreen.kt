@@ -40,6 +40,8 @@ import dev.icerock.moko.resources.compose.stringResource
 import band.effective.office.elevator.ExtendedColors._66x
 import band.effective.office.elevator.ExtendedColors.purple_heart_500
 import band.effective.office.elevator.components.LoadingIndicator
+import band.effective.office.elevator.domain.models.BookingPeriod
+import band.effective.office.elevator.domain.models.TypeEndPeriodBooking
 import band.effective.office.elevator.ui.booking.models.Frequency
 import band.effective.office.elevator.ui.models.TypesList
 import dev.icerock.moko.resources.StringResource
@@ -59,10 +61,10 @@ fun BookingMainContentScreen(
     onClickOpenChoseZone: () -> Unit,
     onClickExpandedMap: () -> Unit,
     onClickExpandedOption: () -> Unit,
-    onClickChangeZone: (WorkSpaceType) -> Unit,
     startDate: LocalDate,
     finishDate: LocalDate,
-    frequency: Frequency,
+    bookingPeriod: BookingPeriod,
+    typeEndPeriodBooking: TypeEndPeriodBooking,
     repeatBooking: StringResource,
     onClickChangeSelectedType: (TypesList) -> Unit,
     selectedTypesList: TypesList
@@ -99,13 +101,13 @@ fun BookingMainContentScreen(
                         isExpandedCard = isExpandedCard,
                         isExpandedOptions = isExpandedOptions,
                         onClickOpenBookPeriod = onClickOpenBookPeriod,
-                        onClickChangeZone = onClickChangeZone,
                         startDate = startDate,
                         finishDate = finishDate,
-                        frequency = frequency,
                         repeatBooking = repeatBooking,
                         onClickChangeSelectedType = onClickChangeSelectedType,
-                        selectedTypesList = selectedTypesList
+                        selectedTypesList = selectedTypesList,
+                        bookingPeriod = bookingPeriod,
+                        typeEndPeriodBooking = typeEndPeriodBooking
                     )
                 }
                 Box(

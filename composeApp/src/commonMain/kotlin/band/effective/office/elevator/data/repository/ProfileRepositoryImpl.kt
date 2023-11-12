@@ -1,6 +1,7 @@
 package band.effective.office.elevator.data.repository
 
 
+import band.effective.office.elevator.OfficeElevatorConfig
 import band.effective.office.elevator.data.database.DBSource
 import band.effective.office.elevator.domain.models.ErrorWithData
 import band.effective.office.elevator.domain.models.User
@@ -24,9 +25,8 @@ class ProfileRepositoryImpl(
     private val bdSource: DBSource
 ) : ProfileRepository, KoinComponent {
 
-    private var idEmail = ""
-    private var idPhoneNumber = ""
-    private var idTelegram = ""
+    private val idPhoneNumber = OfficeElevatorConfig.integrationPhoneId
+    private val idTelegram = OfficeElevatorConfig.integrationTelegramId
 
     private val lastResponse: MutableStateFlow<Either<ErrorWithData<User>, User>> =
         MutableStateFlow(
@@ -40,7 +40,7 @@ class ProfileRepositoryImpl(
     override suspend fun updateUser(user: User): Flow<Either<ErrorWithData<User>, User>> = flow {
         println("User for auth: ${user}")
         val requestResult =
-            api.updateUser(user.toUserDTO(idEmail = idEmail, idPhoneNumber = idPhoneNumber,
+            api.updateUser(user.toUserDTO(idPhoneNumber = idPhoneNumber,
                 idTelegram = idTelegram )).convert(this@ProfileRepositoryImpl.lastResponse.value)
         val newUser = requestResult.getData()
         val cashedUser = bdSource.getCurrentUserInfo()
@@ -104,9 +104,6 @@ class ProfileRepositoryImpl(
             )
         },
             successMapper = { userDTO ->
-                idEmail = userDTO.integrations?.find { it.name == "email" }?.id ?: ""
-                idPhoneNumber = userDTO.integrations?.find { it.name == "phoneNumber" }?.id ?: ""
-                idTelegram = userDTO.integrations?.find { it.name == "telegram" }?.id ?: ""
                 userDTO.toUser()
             })
 }

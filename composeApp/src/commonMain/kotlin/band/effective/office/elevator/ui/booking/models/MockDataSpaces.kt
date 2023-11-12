@@ -2,19 +2,19 @@ package band.effective.office.elevator.ui.booking.models
 
 object MockDataSpaces {
     val allBookingZone = listOf(
-        WorkSpaceZone(name = "Sirius", isSelected = true),
-        WorkSpaceZone(name = "Antares", isSelected = true),
-        WorkSpaceZone(name = "Mars", isSelected = true),
-        WorkSpaceZone(name = "Cassiopeia", isSelected = true),
-        WorkSpaceZone(name = "Arrakis", isSelected = true),
+        WorkspaceZoneUI(name = "Sirius", isSelected = true),
+        WorkspaceZoneUI(name = "Antares", isSelected = true),
+        WorkspaceZoneUI(name = "Mars", isSelected = true),
+        WorkspaceZoneUI(name = "Cassiopeia", isSelected = true),
+        WorkspaceZoneUI(name = "Arrakis", isSelected = true),
     )
 
     val allMeetingRooms = listOf(
-        WorkSpaceZone(name = "Moon", isSelected = true),
-        WorkSpaceZone(name = "Sun", isSelected = true),
-        WorkSpaceZone(name = "Mercury", isSelected = true),
-        WorkSpaceZone(name = "Pluto", isSelected = true),
-        WorkSpaceZone(name = "Call box", isSelected = true)
+        WorkspaceZoneUI(name = "Moon", isSelected = true),
+        WorkspaceZoneUI(name = "Sun", isSelected = true),
+        WorkspaceZoneUI(name = "Mercury", isSelected = true),
+        WorkspaceZoneUI(name = "Pluto", isSelected = true),
+        WorkspaceZoneUI(name = "Call box", isSelected = true)
     )
 
     val workSpacesUI = listOf(

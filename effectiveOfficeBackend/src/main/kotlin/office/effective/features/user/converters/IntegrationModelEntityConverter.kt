@@ -1,6 +1,5 @@
 package office.effective.features.user.converters
 
-import office.effective.dto.IntegrationDTO
 import office.effective.features.user.repository.IntegrationEntity
 import office.effective.model.IntegrationModel
 

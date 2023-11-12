@@ -14,7 +14,7 @@ import java.net.UnknownHostException
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
-
+@Deprecated("Let's use WorkTogether")
 @Singleton
 class EmployeeInfoRemoteDataSourceImpl @Inject constructor(
     private val notionClient: NotionClient
@@ -29,7 +29,6 @@ class EmployeeInfoRemoteDataSourceImpl @Inject constructor(
                     queryDatabasePages(client)) {
                     is Either.Success -> {
                         emit(Either.Success(res.data))
-                        Log.d("test", employeeInfoList.size.toString())
                     }
 
                     is Either.Failure -> {

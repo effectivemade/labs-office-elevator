@@ -5,6 +5,7 @@ import office.effective.dto.BookingDTO
 import office.effective.features.user.converters.UserDTOModelConverter
 import office.effective.features.workspace.converters.WorkspaceFacadeConverter
 import office.effective.model.*
+import org.slf4j.LoggerFactory
 import java.time.Instant
 
 /**
@@ -14,6 +15,8 @@ import java.time.Instant
  */
 class BookingFacadeConverter(private val userConverter: UserDTOModelConverter,
                              private val workspaceConverter: WorkspaceFacadeConverter) {
+    private val logger = LoggerFactory.getLogger(this::class.java)
+
     /**
      * Converts [Booking] to [BookingDTO]
      *
@@ -22,6 +25,7 @@ class BookingFacadeConverter(private val userConverter: UserDTOModelConverter,
      * @author Daniil Zavyalov, Danil Kiselev
      */
     fun modelToDto(booking: Booking): BookingDTO {
+        logger.trace("Converting booking model to dto")
         var recurrenceDTO : RecurrenceDTO? = null
         if(booking.recurrence != null) {
             recurrenceDTO = RecurrenceConverter.modelToDto(booking.recurrence!!)
@@ -45,6 +49,7 @@ class BookingFacadeConverter(private val userConverter: UserDTOModelConverter,
      * @author Daniil Zavyalov, Danil Kiselev
      */
     fun dtoToModel(bookingDTO: BookingDTO): Booking {
+        logger.trace("Converting booking dto to model")
         var recurrenceModel : RecurrenceModel? = null
         if(bookingDTO.recurrence != null) {
             recurrenceModel = RecurrenceConverter.dtoToModel(bookingDTO.recurrence)

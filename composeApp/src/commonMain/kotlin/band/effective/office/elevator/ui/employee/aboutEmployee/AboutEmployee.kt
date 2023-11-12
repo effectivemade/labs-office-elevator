@@ -40,6 +40,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.components.EffectiveOutlinedButton
@@ -119,14 +121,18 @@ fun AboutEmployee(component: AboutEmployeeComponent) {
         )
 
         if (showModalCalendar) {
-            ModalCalendarDateRange(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .align(Alignment.Center),
-                onClickCansel = { component.onEvent(AboutEmployeeStore.Intent.CloseCalendarClicked) },
-                onClickOk = { component.onEvent(AboutEmployeeStore.Intent.OnClickApplyDate(it)) },
-                currentDate = state.beginDate
-            )
+            Dialog(
+                onDismissRequest = { component.onEvent(AboutEmployeeStore.Intent.CloseCalendarClicked)},
+                properties = DialogProperties(usePlatformDefaultWidth = false)
+            ) { ModalCalendarDateRange(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .align(Alignment.Center),
+                    onClickCansel = { component.onEvent(AboutEmployeeStore.Intent.CloseCalendarClicked) },
+                    onClickOk = { component.onEvent(AboutEmployeeStore.Intent.OnClickApplyDate(it)) },
+                    currentDate = state.beginDate
+                )
+            }
         }
     }
 }

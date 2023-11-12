@@ -32,7 +32,6 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.LocalContentColor
-import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
@@ -70,11 +69,14 @@ import band.effective.office.elevator.borderGray
 import band.effective.office.elevator.components.DropDownMenu
 import band.effective.office.elevator.components.EffectiveButton
 import band.effective.office.elevator.domain.models.BookingPeriod
-import band.effective.office.elevator.textGrayColor
+import band.effective.office.elevator.domain.models.DayOfWeek
+import band.effective.office.elevator.domain.models.TypeEndPeriodBooking
+import band.effective.office.elevator.domain.models.listToString
 import band.effective.office.elevator.textInBorderGray
 import band.effective.office.elevator.ui.booking.models.Frequency
 import band.effective.office.elevator.utils.MonthLocalizations
 import dev.icerock.moko.resources.compose.stringResource
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
@@ -84,11 +86,14 @@ import kotlinx.datetime.LocalDate
 fun BookingRepeat(
     selectedDayOfEnd: LocalDate,
     backButtonClicked: () -> Unit,
-    confirmBooking: (Frequency) -> Unit,
+    confirmBooking: (BookingPeriod, TypeEndPeriodBooking) -> Unit,
     onClickOpenCalendar: () -> Unit,
     onSelected: () -> Unit,
 ) {
-    var periodMeasureState = remember {mutableStateOf("Week")}
+    var bookingPeriod: BookingPeriod by remember {
+        mutableStateOf(BookingPeriod.Week(weekPeriod = 1, selectedDayOfWeek = emptyList()))
+    }
+
     val periodicity = remember { mutableStateOf("1") }
 
     val listDaysOfWeek = listOf(
@@ -99,19 +104,15 @@ fun BookingRepeat(
         MainRes.strings.Friday
     )
 
-    val selected1 = remember {
-        mutableStateOf(true)
+    var typeOfEnd: TypeEndPeriodBooking by remember {
+        mutableStateOf(TypeEndPeriodBooking.Never)
     }
-    val selected2 = remember {
-        mutableStateOf(false)
-    }
-    val selected3 = remember {
-        mutableStateOf(false)
-    }
-    val list = mutableListOf<Pair<String, Int>>()
-    val endPeriod = remember { mutableStateOf("1") }
 
-    var researchClose = mutableStateOf(Triple(Pair("",""), "",""))
+    val selectedDayOfWeekNumber by remember {
+        mutableStateOf(mutableListOf<Int>())
+    }
+
+    val endPeriod = remember { mutableStateOf("1") }
 
     val isExpandedContextMenu = remember { mutableStateOf(false) }
     val localDensity = LocalDensity.current
@@ -258,11 +259,12 @@ fun BookingRepeat(
                             enabled = true,
                             readOnly = true,
                             value =
-                            when(periodMeasureState.value) {
-                                "Week" -> stringResource(MainRes.strings.week)
-                                "Month" -> stringResource(MainRes.strings.month)
-                                else -> stringResource(MainRes.strings.year)
-                                                           },
+                            when(bookingPeriod) {
+                                is BookingPeriod.Week -> stringResource(MainRes.strings.week)
+                                is BookingPeriod.Month -> stringResource(MainRes.strings.month)
+                                is BookingPeriod.Year -> stringResource(MainRes.strings.year)
+                                else -> stringResource(MainRes.strings.week)
+                            },
                             onValueChange = {
 
                             },
@@ -311,15 +313,15 @@ fun BookingRepeat(
                         DropDownMenu(
                             expanded = isExpandedContextMenu.value,
                             content = {
-                                BookingRepeatContextMenu(onClick = {
+                                BookingRepeatContextMenu( onClick = {
+                                    bookingPeriod =
                                     when(it){
-                                        "Неделя" -> periodMeasureState.value = "Week"
-                                        "Месяц" -> periodMeasureState.value = "Month"
-                                        "Год" -> periodMeasureState.value = "Year"
-                                        else -> periodMeasureState.value = it
+                                        "Неделя" -> BookingPeriod.Week(weekPeriod = 1, emptyList())
+                                        "Месяц" -> BookingPeriod.Month(1)
+                                        "Год" -> BookingPeriod.Year(1)
+                                        else -> BookingPeriod.NoPeriod
                                     }
                                     isExpandedContextMenu.value=!isExpandedContextMenu.value
-
                                 })
                             },
                             modifier = Modifier.padding(end = 14.dp)
@@ -330,7 +332,7 @@ fun BookingRepeat(
                     }
                 }
                 Column {
-                    if(periodMeasureState.value == "Week") {
+                    if(bookingPeriod is BookingPeriod.Week) {
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.Start),
                             verticalAlignment = Alignment.CenterVertically,
@@ -357,11 +359,10 @@ fun BookingRepeat(
                         ) {
                             itemsIndexed(listDaysOfWeek) { index, days ->
                                 var isExpanded = remember { mutableStateOf(false) }
-                                val name: String = stringResource(days)
                                 Button(
                                     onClick = {
                                         isExpanded.value = !isExpanded.value
-                                        list.add(Pair(first = name, second = index))
+                                        selectedDayOfWeekNumber.add(index)
                                     },
                                     contentPadding = PaddingValues(
                                         horizontal = 12.dp,
@@ -438,18 +439,14 @@ fun BookingRepeat(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-                                selected1.value = true
-                                selected2.value = false
-                                selected3.value = false
+                                typeOfEnd = TypeEndPeriodBooking.Never
                             }
                             .padding(end = 16.dp, top = 8.dp)
                     ) {
                          RadioButton(
-                             selected = selected1.value,
+                             selected = typeOfEnd is TypeEndPeriodBooking.Never,
                              onClick = {
-                                 selected1.value = true//!selected1.value
-                                 selected2.value = false
-                                 selected3.value = false
+                                 typeOfEnd = TypeEndPeriodBooking.Never
                              }.also { onSelected() },
                              colors = RadioButtonDefaults.colors(
                                  disabledSelectedColor = MaterialTheme.colors.primary,
@@ -479,11 +476,9 @@ fun BookingRepeat(
                             .padding(end = 16.dp, top = 6.dp)
                     ) {
                         RadioButton(
-                            selected = selected2.value,
+                            selected = typeOfEnd is TypeEndPeriodBooking.DatePeriodEnd,
                             onClick = {
-                                selected2.value = true
-                                selected1.value = false
-                                selected3.value = false
+                                typeOfEnd = TypeEndPeriodBooking.DatePeriodEnd(selectedDayOfEnd)
                         }.also { onSelected() },
                             colors = RadioButtonDefaults.colors(
                                 disabledSelectedColor = MaterialTheme.colors.primary,
@@ -501,9 +496,7 @@ fun BookingRepeat(
                             ),
                             modifier = Modifier
                                 .clickable {
-                                    selected2.value = true
-                                    selected1.value = false
-                                    selected3.value = false
+                                    typeOfEnd = TypeEndPeriodBooking.DatePeriodEnd(selectedDayOfEnd)
                                     onClickOpenCalendar()
                                 }
                                 .border(width = 1.dp, color = borderGray, shape = RoundedCornerShape(8.dp))
@@ -520,11 +513,9 @@ fun BookingRepeat(
                             .padding(end = 16.dp, top = 8.dp, bottom = 8.dp)
                     ) {
                         RadioButton(
-                            selected = selected3.value,
+                            selected = typeOfEnd is TypeEndPeriodBooking.CountRepeat,
                             onClick = {
-                                selected3.value = true
-                                selected1.value = false
-                                selected2.value = false
+                                typeOfEnd = TypeEndPeriodBooking.CountRepeat(endPeriod.value.ifEmpty { "1" }.toInt())
                         }.also { onSelected() },
                             colors = RadioButtonDefaults.colors(
                                 disabledSelectedColor = MaterialTheme.colors.primary,
@@ -544,10 +535,8 @@ fun BookingRepeat(
                         OutlinedTextField(
                             value = endPeriod.value,
                             onValueChange = {
-                                selected3.value = true
-                                selected1.value = false
-                                selected2.value = false
-                                endPeriod.value=it
+                                typeOfEnd = TypeEndPeriodBooking.CountRepeat(it.ifEmpty { "1" }.toInt())
+                                endPeriod.value = it
                             },
                             shape = RoundedCornerShape(8.dp),
                             modifier = Modifier
@@ -582,16 +571,15 @@ fun BookingRepeat(
         EffectiveButton(
             buttonText = stringResource(MainRes.strings.confirm_booking),
             onClick = {
-                if(selected2.value)
-                    researchClose.value=Triple(Pair("Date", selectedDayOfEnd.toString()), periodicity.value, periodMeasureState.value)
-                else{
-                    if(selected3.value)
-                        researchClose.value=Triple(Pair("CoupleTimes", endPeriod.value), periodicity.value, periodMeasureState.value)
-                    else
-                        researchClose.value=Triple(Pair("Never",""), periodicity.value, periodMeasureState.value)
-                }
-                val frequency = Frequency(days = list.toList(), researchEnd =researchClose.value)
-                confirmBooking(frequency)
+                confirmBookPeriodChanges(
+                    bookingPeriod = bookingPeriod,
+                    typeEndPeriodBooking = typeOfEnd,
+                    selectedDayOfEnd = selectedDayOfEnd,
+                    selectedDayOfWeekNumber = selectedDayOfWeekNumber,
+                    periodLength = periodicity.value.toInt(),
+                    countRepeat = endPeriod.value.toInt(),
+                    confirmBooking = confirmBooking
+                )
             },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
@@ -601,8 +589,60 @@ fun BookingRepeat(
     }
 }
 
+private fun confirmBookPeriodChanges(
+    selectedDayOfEnd: LocalDate,
+    countRepeat: Int,
+    bookingPeriod: BookingPeriod,
+    periodLength: Int,
+    typeEndPeriodBooking: TypeEndPeriodBooking,
+    selectedDayOfWeekNumber: List<Int>,
+    confirmBooking: (BookingPeriod, TypeEndPeriodBooking) -> Unit
+) {
+    val typeOfEnd =
+        when(typeEndPeriodBooking) {
+            is TypeEndPeriodBooking.DatePeriodEnd ->
+                TypeEndPeriodBooking.DatePeriodEnd(selectedDayOfEnd)
+            is TypeEndPeriodBooking.CountRepeat ->
+                 TypeEndPeriodBooking.CountRepeat(countRepeat)
+            else -> typeEndPeriodBooking
+        }
+
+    val resultBookingPeriod =
+        when(bookingPeriod) {
+            is BookingPeriod.Week -> {
+                val dayOfWeek = getDays(selectedDayOfWeekNumber)
+                Napier.d {
+                    "selected day of week ${dayOfWeek.listToString()}"
+                }
+                BookingPeriod.Week(
+                    weekPeriod = periodLength,
+                    selectedDayOfWeek = dayOfWeek
+                )
+            }
+            is BookingPeriod.Month -> BookingPeriod.Month(periodLength)
+            is BookingPeriod.Year -> BookingPeriod.Year(periodLength)
+            else -> bookingPeriod
+        }
+
+    confirmBooking(resultBookingPeriod, typeOfEnd)
+}
 private fun dateConvert(date: LocalDate) =
     "${date.dayOfMonth} " +
             "${ MonthLocalizations.getMonthName(date.month, Locale("ru"))
                 .substring(0, 3)}." +
             "${date.year}г."
+
+
+// TODO: replace this in feature. It`s shit code
+private fun getDays(dayOfWeek: List<Int>): List<DayOfWeek> {
+    val list = listOf(
+        DayOfWeek.Monday,
+        DayOfWeek.Tuesday,
+        DayOfWeek.Wednesday,
+        DayOfWeek.Thursday,
+        DayOfWeek.Friday,
+        DayOfWeek.Saturday
+    )
+
+    return dayOfWeek.map { list[it] }
+}
