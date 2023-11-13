@@ -1,7 +1,6 @@
 
 plugins {
     `kotlin-dsl`
-
 }
 
 allprojects {
