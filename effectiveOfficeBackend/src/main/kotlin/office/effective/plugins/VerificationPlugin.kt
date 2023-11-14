@@ -19,19 +19,23 @@ val VerificationPlugin = createApplicationPlugin(name = "VerificationPlugin") {
     val logger = LoggerFactory.getLogger(this::class.java)
     logger.info("Verification plugin mode enabled?: $pluginOn")
     logger.info("Verification plugin installed")
-    val authenticationPipeline : AuthenticationPipeline = GlobalContext.get().get()
+    val authenticationPipeline: AuthenticationPipeline = GlobalContext.get().get()
 
     onCall {
+        val call: ApplicationCall = it
         run {
-            if (pluginOn && it.request.path() != "/notifications") {
-                val token = it.request.parseAuthorizationHeader()?.render()?.split("Bearer ")?.last() ?: it.respond(
-                    HttpStatusCode.Unauthorized
-                )
+            if (pluginOn && call.request.path() != "/notifications") {
+                val token = call.request.parseAuthorizationHeader()?.render()?.split("Bearer ")?.last() ?: run {
+                    logger.info("Verification failed. Cannot find auth token")
+                    call.respond(
+                        HttpStatusCode.Unauthorized
+                    )
+                }
                 if (!authenticationPipeline.authenticateToken(token as String)) {
                     logger.info("Verification failed.")
                     logger.trace("Verification failed with token: {}", token)
-                    it.response.status(HttpStatusCode.Unauthorized)
-                    it.respond("Verification failed.")
+                    call.response.status(HttpStatusCode.Unauthorized)
+                    call.respond("Verification failed.")
                 } else {
                     logger.info("Verification succeed.")
                     logger.trace("Verification succeed with token: {}", token)
