@@ -12,7 +12,8 @@ import javax.xml.bind.DatatypeConverter
  * */
 class ApiKeyVerifier : ITokenVerifier {
     val logger = LoggerFactory.getLogger(this::class.java)
-    private val repository : AuthRepository = GlobalContext.get().get()
+    private val repository: AuthRepository = GlobalContext.get().get()
+
     /**
      * Check api key from input line. String encrypting by SHA-256 and comparing with encrypted keys from database. If it cannot find one, throw [InstanceNotFoundException]
      * @param tokenString [String] which contains token to verify
@@ -20,15 +21,17 @@ class ApiKeyVerifier : ITokenVerifier {
      * @author Kiselev Danil
      */
     override suspend fun isCorrectToken(tokenString: String): Boolean {
-        try {
-            val key = repository.findApiKey(encryptKey("SHA-256", tokenString))
-        }
-        catch(ex: InstanceNotFoundException){
+
+        val key = repository.findApiKey(encryptKey("SHA-256", tokenString))
+
+        if(key.isNullOrBlank()) {
             return next(tokenString)
         }
-        logger.info("Api key verifier succeed")
-        logger.trace("Api key verifier succeed with token: {}", tokenString)
-        return true
+        else {
+            logger.info("Api key verifier succeed")
+            logger.trace("Api key verifier succeed with token: {}", tokenString)
+            return true
+        }
     }
 
     private var nextHandler: ITokenVerifier? = null;
@@ -49,10 +52,10 @@ class ApiKeyVerifier : ITokenVerifier {
      * @param input [String] input line
      * @return encrypted [String]
      * */
-    private fun encryptKey(type: String, input: String): String{
-            val bytes = MessageDigest
-                .getInstance(type)
-                .digest(input.toByteArray())
-            return DatatypeConverter.printHexBinary(bytes).uppercase()
+    private fun encryptKey(type: String, input: String): String {
+        val bytes = MessageDigest
+            .getInstance(type)
+            .digest(input.toByteArray())
+        return DatatypeConverter.printHexBinary(bytes).uppercase()
     }
 }
