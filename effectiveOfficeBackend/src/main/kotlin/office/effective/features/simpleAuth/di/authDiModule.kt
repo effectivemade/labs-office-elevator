@@ -1,8 +1,8 @@
 package office.effective.features.simpleAuth.di
 
-import office.effective.features.simpleAuth.ApiKeyVerifier
-import office.effective.features.simpleAuth.ITokenVerifier
-import office.effective.features.simpleAuth.TokenVerifier
+import office.effective.features.simpleAuth.service.ApiKeyVerifier
+import office.effective.features.simpleAuth.service.ITokenVerifier
+import office.effective.features.simpleAuth.service.TokenVerifier
 import office.effective.features.simpleAuth.repository.AuthRepository
 import office.effective.features.simpleAuth.service.AuthenticationPipeline
 import office.effective.features.simpleAuth.service.RequestVerifier

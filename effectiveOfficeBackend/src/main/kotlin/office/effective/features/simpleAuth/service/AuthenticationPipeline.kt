@@ -1,8 +1,6 @@
 package office.effective.features.simpleAuth.service
 
 
-import office.effective.features.simpleAuth.ITokenVerifier
-
 class AuthenticationPipeline(list: List<ITokenVerifier>) {
     var firstNode: ITokenVerifier? = null
 

@@ -1,4 +1,4 @@
-package office.effective.features.simpleAuth
+package office.effective.features.simpleAuth.service
 
 /**
  * Interface presents methods to verify tokens

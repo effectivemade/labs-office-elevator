@@ -1,4 +1,4 @@
-package office.effective.features.simpleAuth
+package office.effective.features.simpleAuth.service
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier

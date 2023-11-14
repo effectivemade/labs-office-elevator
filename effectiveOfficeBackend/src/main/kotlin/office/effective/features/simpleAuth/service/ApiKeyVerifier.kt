@@ -1,4 +1,4 @@
-package office.effective.features.simpleAuth
+package office.effective.features.simpleAuth.service
 
 import office.effective.common.exception.InstanceNotFoundException
 import office.effective.features.simpleAuth.repository.AuthRepository
