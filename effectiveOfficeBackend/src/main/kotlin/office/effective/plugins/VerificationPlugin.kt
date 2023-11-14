@@ -21,8 +21,7 @@ val VerificationPlugin = createApplicationPlugin(name = "VerificationPlugin") {
     logger.info("Verification plugin installed")
     val authenticationPipeline: AuthenticationPipeline = GlobalContext.get().get()
 
-    onCall {
-        val call: ApplicationCall = it
+    onCall { call ->
         run {
             if (pluginOn && call.request.path() != "/notifications") {
                 val token = call.request.parseAuthorizationHeader()?.render()?.split("Bearer ")?.last() ?: run {
