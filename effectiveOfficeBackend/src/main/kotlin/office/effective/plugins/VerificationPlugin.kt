@@ -30,6 +30,7 @@ val VerificationPlugin = createApplicationPlugin(name = "VerificationPlugin") {
                     call.respond(
                         HttpStatusCode.Unauthorized
                     )
+                    return@onCall
                 }
                 if (!authenticationPipeline.authenticateToken(token as String)) {
                     logger.info("Verification failed.")
