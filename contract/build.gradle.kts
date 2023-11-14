@@ -8,25 +8,49 @@ plugins {
     id(Plugins.Serialization.plugin)
 }
 
-val apiKey: String = gradleLocalProperties(rootDir).getProperty("apiKey")
-buildConfig {
-    buildConfigField("String", "apiKey", apiKey)
-}
+var buildType = ""
 
 android {
+    buildTypes {
+        release {
+            buildType = "release"
+        }
+        debug {
+            buildType = "debug"
+        }
+    }
     namespace = "band.effective.office.contract"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         minSdk = 26
-        targetSdk = 33
+        targetSdk = 34
     }
     sourceSets["main"].apply {
         manifest.srcFile("src/androidMain/AndroidManifest.xml")
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+    }
+}
+
+val apiKey: String = gradleLocalProperties(rootDir).getProperty("apiKey")
+buildConfig {
+    buildConfigField("String", "apiKey", apiKey)
+    if (buildType == "release") {
+        buildConfigField(
+            "String",
+            "serverUrl",
+            "\"https://d5do2upft1rficrbubot.apigw.yandexcloud.net\""
+        )
+    } else {
+        buildConfigField(
+            "String",
+            "serverUrl",
+            "\"https://d5do2upft1rficrbubot.apigw.yandexcloud.net\"" //TODO(Maksim Mishenko): past debug server url here
+        )
     }
 
 }
@@ -60,7 +84,7 @@ kotlin {
         }
 
         val androidMain by getting {
-            dependencies{
+            dependencies {
                 api(Dependencies.Ktor.Client.Android)
             }
         }
