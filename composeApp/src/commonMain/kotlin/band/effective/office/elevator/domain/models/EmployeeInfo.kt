@@ -38,6 +38,6 @@ fun UserDTO.toEmployeeInfo() =
         state = "",
         logoUrl = avatarUrl,
         phoneNum = integrations?.find { it.name == "phoneNumber" }?.value?:"None",
-        eMail = integrations?.find { it.name == "email" }?.value?:"None",
+        eMail = email,
         telegramProfile = integrations?.find { it.name == "telegram" }?.value?:"None",
     )
