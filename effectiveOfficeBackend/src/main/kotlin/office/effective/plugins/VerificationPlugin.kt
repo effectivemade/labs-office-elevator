@@ -1,7 +1,6 @@
 package office.effective.plugins
 
 import io.ktor.http.*
-import io.ktor.http.auth.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
@@ -12,7 +11,8 @@ import office.effective.features.user.ITokenVerifier
 import org.slf4j.LoggerFactory
 
 /**
- * Allows to check Authentication plugins automatically. Run every time when receiving input call. Checks Authentication (bearer) header containment
+ * Allows to check Authentication plugins automatically.
+ * Run every time when receiving input call. Checks Authentication (bearer) header containment
  * */
 val VerificationPlugin = createApplicationPlugin(name = "VerificationPlugin") {
     val verifierOAuth: ITokenVerifier = TokenVerifier()

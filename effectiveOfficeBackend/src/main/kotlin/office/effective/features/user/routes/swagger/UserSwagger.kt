@@ -1,3 +1,6 @@
+/**
+ * @suppress
+ */
 package office.effective.features.user.routes.swagger
 
 import io.github.smiley4.ktorswaggerui.dsl.OpenApiRoute
@@ -6,6 +9,9 @@ import office.effective.common.swagger.SwaggerDocument
 import office.effective.dto.IntegrationDTO
 import office.effective.dto.UserDTO
 
+/**
+ * @suppress
+ */
 fun SwaggerDocument.returnUsers(): OpenApiRoute.() -> Unit = {
     description = "Return all users, all users by tag or one user by email"
     tags = listOf("users")
@@ -108,6 +114,9 @@ fun SwaggerDocument.returnUsers(): OpenApiRoute.() -> Unit = {
     }
 }
 
+/**
+ * @suppress
+ */
 fun SwaggerDocument.returnUserById(): OpenApiRoute.() -> Unit = {
     description = "Return user by id"
     tags = listOf("users")
@@ -158,6 +167,9 @@ fun SwaggerDocument.returnUserById(): OpenApiRoute.() -> Unit = {
     }
 }
 
+/**
+ * @suppress
+ */
 fun SwaggerDocument.updateUser(): OpenApiRoute.() -> Unit = {
     description = "Changes user by id"
     tags = listOf("users")

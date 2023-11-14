@@ -1,3 +1,6 @@
+/**
+ * @suppress
+ */
 package office.effective.features.booking.routes.swagger
 
 import io.github.smiley4.ktorswaggerui.dsl.OpenApiRoute
@@ -11,6 +14,9 @@ import office.effective.dto.UtilityDTO
 import office.effective.dto.WorkspaceDTO
 import java.time.Instant
 
+/**
+ * @suppress
+ */
 fun SwaggerDocument.returnBookingById(): OpenApiRoute.() -> Unit = {
     description = "Returns booking found by id"
     tags = listOf("bookings")
@@ -40,6 +46,9 @@ fun SwaggerDocument.returnBookingById(): OpenApiRoute.() -> Unit = {
     }
 }
 
+/**
+ * @suppress
+ */
 fun SwaggerDocument.returnBookings(): OpenApiRoute.() -> Unit = {
     description = "Return all bookings. Bookings can be filtered by booking owner id, workspace id and time range. " +
             "Returns only non-recurring bookings (recurring bookings are expanded into non-recurring ones). " +
@@ -96,6 +105,9 @@ fun SwaggerDocument.returnBookings(): OpenApiRoute.() -> Unit = {
     }
 }
 
+/**
+ * @suppress
+ */
 fun SwaggerDocument.postBooking(): OpenApiRoute.() -> Unit = {
     description = "Saves a given booking"
     tags = listOf("bookings")
@@ -179,6 +191,9 @@ fun SwaggerDocument.postBooking(): OpenApiRoute.() -> Unit = {
     }
 }
 
+/**
+ * @suppress
+ */
 fun SwaggerDocument.putBooking(): OpenApiRoute.() -> Unit = {
     description = "Updates a given booking"
     tags = listOf("bookings")
@@ -207,6 +222,9 @@ fun SwaggerDocument.putBooking(): OpenApiRoute.() -> Unit = {
     }
 }
 
+/**
+ * @suppress
+ */
 fun SwaggerDocument.deleteBookingById(): OpenApiRoute.() -> Unit = {
     description =
         "Deletes a booking with the given id. If the booking is not found in the database it is silently ignored"
@@ -229,6 +247,9 @@ fun SwaggerDocument.deleteBookingById(): OpenApiRoute.() -> Unit = {
     }
 }
 
+/**
+ * @suppress
+ */
 private val bookingExample1 = BookingDTO(
     owner = UserDTO(
         id = "2c77feee-2bc1-11ee-be56-0242ac120002",
@@ -302,6 +323,9 @@ private val bookingExample1 = BookingDTO(
     recurrence = null
 )
 
+/**
+ * @suppress
+ */
 private val bookingExample2 = BookingDTO(
     owner = UserDTO(
         id = "2c77feee-2bc1-11ee-be56-0242ac120002",
