@@ -88,6 +88,7 @@ fun SeatTitle(seat: ReservedSeat) {
                 style = MaterialTheme.typography.subtitle1.copy(color = textGrayColor),
                 modifier = Modifier.wrapContentSize()
             )
+            Spacer(modifier = Modifier.width(2.dp))
             Text(
                 text = seat.bookingTime,
                 style = MaterialTheme.typography.subtitle1.copy(color = textGrayColor),
