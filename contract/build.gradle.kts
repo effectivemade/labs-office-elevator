@@ -6,17 +6,15 @@ plugins {
     id(Plugins.Parcelize.plugin)
     id(Plugins.BuildConfig.plugin)
     id(Plugins.Serialization.plugin)
+    id(Plugins.CocoaPods.plugin)
 }
 
-var buildType = ""
+var isDebug = false
 
 android {
     buildTypes {
-        release {
-            buildType = "release"
-        }
         debug {
-            buildType = "debug"
+            isDebug = true
         }
     }
     namespace = "band.effective.office.contract"
@@ -34,25 +32,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-}
-
-val apiKey: String = gradleLocalProperties(rootDir).getProperty("apiKey")
-buildConfig {
-    buildConfigField("String", "apiKey", apiKey)
-    if (buildType == "release") {
-        buildConfigField(
-            "String",
-            "serverUrl",
-            "\"https://d5do2upft1rficrbubot.apigw.yandexcloud.net\""
-        )
-    } else {
-        buildConfigField(
-            "String",
-            "serverUrl",
-            "\"https://d5do2upft1rficrbubot.apigw.yandexcloud.net\"" //TODO(Maksim Mishenko): past debug server url here
-        )
-    }
-
 }
 
 kotlin {
@@ -102,4 +81,30 @@ kotlin {
             }
         }
     }
+
+    cocoapods {
+        version = "2.0.0"
+        extraSpecAttributes
+    }
+
+}
+
+val apiKey: String = gradleLocalProperties(rootDir).getProperty("apiKey")
+buildConfig {
+    buildConfigField("String", "apiKey", apiKey)
+    buildConfigField(
+        "String",
+        "releaseServerUrl",
+        "\"https://d5do2upft1rficrbubot.apigw.yandexcloud.net\""
+    )
+    buildConfigField(
+        "String",
+        "debugServerUrl",
+        "\"https://d5do2upft1rficrbubot.apigw.yandexcloud.net\"" //TODO(Maksim Mishenko): put debug server url here
+    )
+    buildConfigField(
+        "kotlin.Boolean",
+        "isDebug",
+        "$isDebug"
+    )
 }
