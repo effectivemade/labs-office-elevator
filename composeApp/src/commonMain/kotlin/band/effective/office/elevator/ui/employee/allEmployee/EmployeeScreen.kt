@@ -146,9 +146,9 @@ fun EmployeeScreenContent(
             )
 
         }
-        Column(
+        Column (
             modifier = Modifier
-                .background(MaterialTheme.colors.background)
+                .background(MaterialTheme.colors.onBackground)
                 .fillMaxSize()
                 .padding(start = 20.dp, top = 25.dp, end = 20.dp)
         ) {

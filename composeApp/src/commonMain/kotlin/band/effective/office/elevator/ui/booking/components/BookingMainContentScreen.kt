@@ -141,7 +141,9 @@ fun BookingMainContentScreen(
             }
         }
     ) {
-        Column {
+        Column(
+            modifier = Modifier.background(MaterialTheme.colors.onBackground)
+        ) {
             Row(
                 modifier = Modifier.fillMaxWidth()
                     .background(MaterialTheme.colors.onBackground)

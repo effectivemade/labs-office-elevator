@@ -7,6 +7,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.ExtendedThemeColors
@@ -15,7 +16,10 @@ import dev.icerock.moko.resources.compose.painterResource
 
 @Composable
 fun ContactUserUIComponent(image:ImageResource, value: String?, modifier: Modifier){
-    Row(modifier = modifier){
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ){
        Icon(
            painter = painterResource(image),
            contentDescription = null,
