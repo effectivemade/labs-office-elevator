@@ -11,6 +11,7 @@ import band.effective.office.elevator.ui.booking.models.MockDataSpaces
 import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import band.effective.office.elevator.ui.booking.models.WorkspaceZoneUI
+import band.effective.office.elevator.ui.booking.models.sheetData.SelectedBookingPeriodState
 import band.effective.office.elevator.ui.models.TypesList
 import band.effective.office.elevator.utils.getCurrentDate
 import band.effective.office.elevator.utils.stackOf
@@ -35,6 +36,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.minus
+import org.koin.core.component.get
 
 class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
 
@@ -105,6 +107,9 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         data class ChangeDateOfEndPeriod(val date: LocalDate) : Msg
 
         data class UpdateErrorCreatingBooking(val isError: Boolean) : Msg
+
+        data class UpdateSelectedBookingPeriodState(val selectedSate: SelectedBookingPeriodState) :
+            Msg
     }
 
     private sealed interface Action {
@@ -336,10 +341,15 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is BookingStore.Intent.SearchSuitableOptions -> {
 
                     scope.launch {
+                        val state = getState()
                         publish(BookingStore.Label.CloseBookPeriod)
                         getSpacesUI(
-                            workspaceZoneUI = getState().currentWorkspaceZones,
-                            state = getState(),
+                            workspaceZoneUI = state.currentWorkspaceZones,
+                            selectedStartTime = state.selectedStartTime,
+                            selectedFinishDate = state.selectedFinishDate,
+                            selectedStartDate = state.selectedStartDate,
+                            selectedFinishTime = state.selectedFinishTime,
+                            workSpacesType = state.workSpacesType,
                             dispatch = { dispatch(Msg.ChangeWorkSpacesUI(it)) }
                         )
                     }
@@ -385,9 +395,14 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                 is BookingStore.Intent.ChangeSelectedWorkSpacesZone -> {
                     scope.launch {
+                        val state = getState()
                         getSpacesUI(
                             workspaceZoneUI = intent.workspaceZoneUI,
-                            state = getState(),
+                            selectedStartTime = state.selectedStartTime,
+                            selectedFinishDate = state.selectedFinishDate,
+                            selectedStartDate = state.selectedStartDate,
+                            selectedFinishTime = state.selectedFinishTime,
+                            workSpacesType = state.workSpacesType,
                             dispatch = {
                                 dispatch(Msg.ChangeWorkSpacesUI(it))
                                 dispatch(Msg.ChangeSelectedWorkSpacesZone(intent.workspaceZoneUI))
@@ -480,9 +495,14 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                         WorkSpaceType.MEETING_ROOM -> MockDataSpaces.allMeetingRooms
                     }
                     scope.launch {
+                        val state = getState()
                         getSpacesUI(
                             workspaceZoneUI = zones,
-                            state = getState(),
+                            selectedStartTime = state.selectedStartTime,
+                            selectedFinishDate = state.selectedFinishDate,
+                            selectedStartDate = state.selectedStartDate,
+                            selectedFinishTime = state.selectedFinishTime,
+                            workSpacesType = state.workSpacesType,
                             dispatch = {
                                 dispatch(Msg.ChangeSelectedWorkSpacesZone(zones))
                                 dispatch(Msg.ChangeWorkSpacesUI(it))
@@ -516,6 +536,26 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                 BookingStore.Intent.CloseTimePicker -> dispatch(Msg.CloseTimePicker)
                 BookingStore.Intent.OpenTimePicker -> dispatch(Msg.OpenTimePicker)
+                is BookingStore.Intent.ApplyBookingPeriodFromSheet -> {
+                    val curState = getState()
+                    val bookingState = intent.selectedState
+                    scope.launch {
+                        with(bookingState) {
+                            getSpacesUI(
+                                workspaceZoneUI = curState.currentWorkspaceZones,
+                                selectedStartTime = startTime,
+                                selectedFinishDate = finishDate,
+                                selectedStartDate = startDate,
+                                selectedFinishTime = finishTime,
+                                workSpacesType = curState.workSpacesType,
+                                dispatch = {
+                                    dispatch(Msg.ChangeWorkSpacesUI(it))
+                                }
+                            )
+                        }
+                    }
+                    dispatch(Msg.UpdateSelectedBookingPeriodState(bookingState))
+                }
             }
         }
 
@@ -523,9 +563,14 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             when (action) {
                 Action.InitWorkSpaces -> {
                     scope.launch {
+                        val state = getState()
                         getSpacesUI(
-                            workspaceZoneUI = getState().currentWorkspaceZones,
-                            state = getState(),
+                            workspaceZoneUI = state.currentWorkspaceZones,
+                            selectedStartTime = state.selectedStartTime,
+                            selectedFinishDate = state.selectedFinishDate,
+                            selectedStartDate = state.selectedStartDate,
+                            selectedFinishTime = state.selectedFinishTime,
+                            workSpacesType = state.workSpacesType,
                             dispatch = { dispatch(Msg.ChangeWorkSpacesUI(it)) }
                         )
                     }
@@ -556,8 +601,12 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         }
 
         private suspend fun getSpacesUI(
+            selectedStartTime: LocalTime,
+            selectedStartDate: LocalDate,
+            workSpacesType: WorkSpaceType,
+            selectedFinishDate: LocalDate,
+            selectedFinishTime: LocalTime,
             workspaceZoneUI: List<WorkspaceZoneUI>,
-            state: BookingStore.State,
             dispatch: (List<WorkSpaceUI>) -> Unit,
         ) {
 
@@ -565,14 +614,14 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
             withContext(Dispatchers.IO) {
                 bookingInteractor.getWorkspaces(
-                    tag = state.workSpacesType.type,
+                    tag = workSpacesType.type,
                     freeFrom = LocalDateTime(
-                        date = state.selectedStartDate,
-                        time = state.selectedStartTime
+                        date = selectedStartDate,
+                        time = selectedStartTime
                     ),
                     freeUntil = LocalDateTime(
-                        date = state.selectedFinishDate,
-                        time = state.selectedFinishTime,
+                        date = selectedFinishDate,
+                        time = selectedFinishTime,
                     ),
                     selectedWorkspacesZone = workspaceZoneUI
                 ).collect { response ->
@@ -580,6 +629,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                         when (response) {
                             is Either.Success -> {
                                 dispatch(response.data)
+                                dispatch(Msg.ChangeLoadingWorkspace(false))
                             }
 
                             is Either.Error -> {
@@ -652,6 +702,15 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 Msg.OpenCalendarForDateOfEnd -> copy(showCalendarForEndDate = true)
                 Msg.CloseTimePicker -> copy(showTimePicker = false)
                 Msg.OpenTimePicker -> copy(showTimePicker = false)
+                is Msg.UpdateSelectedBookingPeriodState -> copy(
+                    selectedStartTime = msg.selectedSate.startTime,
+                    selectedStartDate = msg.selectedSate.startDate,
+                    selectedFinishTime = msg.selectedSate.finishTime,
+                    selectedFinishDate = msg.selectedSate.finishDate,
+                    dateOfEndPeriod = msg.selectedSate.dateOfEndPeriod,
+                    bookingPeriod = msg.selectedSate.bookingPeriod,
+                    typeOfEnd = msg.selectedSate.endPeriodBookingType
+                )
             }
         }
     }

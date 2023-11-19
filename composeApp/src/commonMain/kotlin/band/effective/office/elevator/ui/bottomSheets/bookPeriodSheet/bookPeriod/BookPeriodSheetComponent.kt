@@ -87,7 +87,7 @@ class BookPeriodSheetComponent(
                         bookStartTime = { navigation.push(Child.SelectTime(true)) },
                         bookFinishTime = { navigation.push(Child.SelectTime(false)) },
                         bookingRepeat = { navigation.push(Child.SelectRepeatType) },
-                        onClickSearchSuitableOptions = { },
+                        onClickSearchSuitableOptions = { accept(state) },
                         finishDate = state.finishDate,
                     )
                 }

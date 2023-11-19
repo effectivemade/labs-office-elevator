@@ -4,6 +4,7 @@ import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.ui.booking.StateConverter.toBookAcceptState
 import band.effective.office.elevator.ui.booking.StateConverter.toBookPeriodState
 import band.effective.office.elevator.ui.booking.models.WorkSpaceType
+import band.effective.office.elevator.ui.booking.models.sheetData.toSelectedBookingPeriod
 import band.effective.office.elevator.ui.booking.store.BookingStore
 import band.effective.office.elevator.ui.booking.store.BookingStoreFactory
 import band.effective.office.elevator.ui.bottomSheets.BottomSheet
@@ -50,7 +51,12 @@ class BookingComponent(
                     initState = state.value.toBookPeriodState(),
                     closeClick = { closeSheet() },
                     accept = {
-                        //TODO(Maksim Mishenko): call search logic here
+                        bookingStore.accept(
+                            BookingStore.Intent.ApplyBookingPeriodFromSheet(
+                                it.toSelectedBookingPeriod()
+                            )
+                        )
+                        closeSheet()
                     }
                 )
 

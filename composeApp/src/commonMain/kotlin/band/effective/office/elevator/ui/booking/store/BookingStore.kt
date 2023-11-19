@@ -14,6 +14,7 @@ import band.effective.office.elevator.ui.booking.models.MockDataSpaces
 import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import band.effective.office.elevator.ui.booking.models.WorkspaceZoneUI
+import band.effective.office.elevator.ui.booking.models.sheetData.SelectedBookingPeriodState
 import band.effective.office.elevator.ui.models.TypesList
 import band.effective.office.elevator.utils.getCurrentDate
 import com.arkivanov.mvikotlin.core.store.Store
@@ -76,6 +77,8 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
 
         object OpenTimePicker : Intent
         object CloseTimePicker : Intent
+
+        data class ApplyBookingPeriodFromSheet (val selectedState: SelectedBookingPeriodState) : Intent
     }
 
     data class State(

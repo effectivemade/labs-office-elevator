@@ -62,7 +62,7 @@ fun BookingScreen(bookingComponent: BookingComponent) {
         sheetContent = { slot.child?.instance?.SheetContent() },
         sheetState = sheetState
     ) {
-        Box() {
+        Box {
             slot.child?.instance?.content()
             BookingScreenContent(
                 workSpaces = state.workSpaces,
