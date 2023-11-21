@@ -2,8 +2,7 @@ package band.effective.office.elevator.ui.booking.models.sheetData
 
 import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.domain.models.TypeEndPeriodBooking
-import band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.bookPeriod.store.BookPeriodStore
-import dev.icerock.moko.resources.StringResource
+import band.effective.office.elevator.ui.bottomSheets.bookingSheet.bookPeriod.store.BookPeriodStore
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 

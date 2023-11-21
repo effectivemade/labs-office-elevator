@@ -1,4 +1,4 @@
-package band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.chooseZoneSheet
+package band.effective.office.elevator.ui.bottomSheets.bookingSheet.chooseZoneSheet
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -6,8 +6,8 @@ import androidx.compose.runtime.getValue
 import band.effective.office.elevator.ui.booking.components.modals.ChooseZone
 import band.effective.office.elevator.ui.booking.models.WorkspaceZoneUI
 import band.effective.office.elevator.ui.bottomSheets.BottomSheet
-import band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.chooseZoneSheet.store.ChooseZoneStore
-import band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.chooseZoneSheet.store.ChooseZoneStoreFactory
+import band.effective.office.elevator.ui.bottomSheets.bookingSheet.chooseZoneSheet.store.ChooseZoneStore
+import band.effective.office.elevator.ui.bottomSheets.bookingSheet.chooseZoneSheet.store.ChooseZoneStoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import dev.icerock.moko.resources.StringResource

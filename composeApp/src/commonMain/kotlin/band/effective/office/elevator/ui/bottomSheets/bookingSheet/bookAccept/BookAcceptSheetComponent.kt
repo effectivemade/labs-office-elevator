@@ -1,9 +1,8 @@
-package band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.bookAccept
+package band.effective.office.elevator.ui.bottomSheets.bookingSheet.bookAccept
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -12,20 +11,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import band.effective.office.elevator.domain.models.BookingInfo
-import band.effective.office.elevator.domain.models.BookingPeriod
-import band.effective.office.elevator.domain.models.TypeEndPeriodBooking
 import band.effective.office.elevator.ui.booking.components.modals.BookAccept
 import band.effective.office.elevator.ui.booking.components.modals.BookingResult
-import band.effective.office.elevator.ui.booking.store.BookingStore
 import band.effective.office.elevator.ui.bottomSheets.BottomSheet
-import band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.bookAccept.store.BookAcceptStore
-import band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.bookAccept.store.BookAcceptStoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.labels
+import band.effective.office.elevator.ui.bottomSheets.bookingSheet.bookAccept.store.BookAcceptStore
+import band.effective.office.elevator.ui.bottomSheets.bookingSheet.bookAccept.store.BookAcceptStoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
-import dev.icerock.moko.resources.StringResource
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.atTime
 
 class BookAcceptSheetComponent(
     initState: BookAcceptStore.State,
@@ -45,14 +37,9 @@ class BookAcceptSheetComponent(
         BookAccept(
             onClickCloseBookAccept = { store.accept(BookAcceptStore.Intent.OnClose) },
             confirmBooking = { store.accept(BookAcceptStore.Intent.OnAccept) },
-            bookingInfo = BookingInfo(
-                id = state.bookingId,
-                ownerId = "",
-                workSpaceId = "",
-                seatName = state.seatName,
-                dateOfStart = state.dateOfStart,
-                dateOfEnd = state.dateOfEnd
-            ),
+            seatName = state.seatName,
+            startDate = state.dateOfStart,
+            finishDate = state.dateOfEnd,
             bookingPeriod = state.bookingPeriod,
             typeEndPeriodBooking = state.typeEndPeriodBooking,
             repeatBooking = state.repeatBooking

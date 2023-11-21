@@ -99,7 +99,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         val repeatBooking: StringResource,
         val bookingPeriod: BookingPeriod,
         val selectedType: TypesList,
-        val bookingInfo: BookingInfo,
+        val selectedSeatName: String,
         val selectedWorkspaceId: String,
         val isLoadingListWorkspaces: Boolean,
         val isLoadingBookingCreation: Boolean,
@@ -138,14 +138,7 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
                     icon = MainRes.images.table_icon,
                     type = WorkSpaceType.WORK_PLACE
                 ),
-                bookingInfo = BookingInfo(
-                    id = "",
-                    workSpaceId = "",
-                    ownerId = "",
-                    seatName = "",
-                    dateOfStart = LocalDateTime(date = getCurrentDate(), time = getCurrentTime()),
-                    dateOfEnd = LocalDateTime(date = getCurrentDate(), time = getCurrentTime())
-                ),
+                selectedSeatName = "",
                 selectedFinishDate = getCurrentDate(),
                 isStartDate = true,
                 selectedWorkspaceId = "",
@@ -165,21 +158,21 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
     }
 
     sealed interface Label {
-        object OpenChooseZone : Label
+        data object OpenChooseZone : Label
 
-        object CloseChooseZone : Label
-        object OpenBookPeriod : Label
-        object CloseBookPeriod : Label
+        data object CloseChooseZone : Label
+        data object OpenBookPeriod : Label
+        data object CloseBookPeriod : Label
 
-        data class OpenBookAccept(val value: WorkSpaceUI) : Label
-        object CloseBookAccept : Label
+        data object OpenBookAccept : Label
+        data object CloseBookAccept : Label
 
-        object OpenStartTimeModal : Label
-        object OpenFinishTimeModal : Label
-        object CloseFinishTimeModal : Label
-        object CloseStartTimeModal : Label
-        object CloseBookRepeat : Label
-        object OpenBookRepeat : Label
+        data object OpenStartTimeModal : Label
+        data object OpenFinishTimeModal : Label
+        data object CloseFinishTimeModal : Label
+        data object CloseStartTimeModal : Label
+        data object CloseBookRepeat : Label
+        data object OpenBookRepeat : Label
 
         data class ShowToast(val message: String) : Label
 

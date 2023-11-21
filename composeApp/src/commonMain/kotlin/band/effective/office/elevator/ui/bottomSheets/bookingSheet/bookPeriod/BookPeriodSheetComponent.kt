@@ -1,4 +1,4 @@
-package band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.bookPeriod
+package band.effective.office.elevator.ui.bottomSheets.bookingSheet.bookPeriod
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -24,8 +24,8 @@ import band.effective.office.elevator.ui.booking.components.modals.BookingPeriod
 import band.effective.office.elevator.ui.booking.components.modals.BookingRepeat
 import band.effective.office.elevator.ui.booking.components.modals.BookingRepeatCard
 import band.effective.office.elevator.ui.bottomSheets.BottomSheet
-import band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.bookPeriod.store.BookPeriodStore
-import band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.bookPeriod.store.BookPeriodStoreFactory
+import band.effective.office.elevator.ui.bottomSheets.bookingSheet.bookPeriod.store.BookPeriodStore
+import band.effective.office.elevator.ui.bottomSheets.bookingSheet.bookPeriod.store.BookPeriodStoreFactory
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
@@ -36,15 +36,18 @@ import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.router.stack.replaceAll
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
+import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import dev.icerock.moko.resources.compose.stringResource
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 
 class BookPeriodSheetComponent(
     componentContext: ComponentContext,
-    private val initState: BookPeriodStore.State,
+    initState: BookPeriodStore.State,
     private val closeClick: () -> Unit,
-    private val accept: (BookPeriodStore.State) -> Unit
+    private val accept: (BookPeriodStore.State) -> Unit,
 ) : BottomSheet, ComponentContext by componentContext {
     private val navigation = StackNavigation<Child>()
     private val stack = childStack(
@@ -54,8 +57,14 @@ class BookPeriodSheetComponent(
         childFactory = { child, context -> child }
     )
 
-    val store = BookPeriodStoreFactory(DefaultStoreFactory(), initState).create()
+    val store = BookPeriodStoreFactory(
+        storeFactory = DefaultStoreFactory(),
+        initState = initState,
+    ).create()
 
+    val label: Flow<BookPeriodStore.Label> = store.labels
+
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Composable
     override fun SheetContent() {
         val state by store.stateFlow.collectAsState()
@@ -91,7 +100,6 @@ class BookPeriodSheetComponent(
                         finishDate = state.finishDate,
                     )
                 }
-
                 else -> {}
             }
         }

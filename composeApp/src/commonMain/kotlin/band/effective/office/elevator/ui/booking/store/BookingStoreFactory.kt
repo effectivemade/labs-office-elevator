@@ -94,11 +94,10 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         ) : Msg
 
         data class ChangeBookingPeriod(val bookingPeriod: BookingPeriod) : Msg
-        data class ChangeWorkingUI(val bookingInfo: BookingInfo) : Msg
 
         data class IsStartDatePicker(val isStart: Boolean) : Msg
 
-        data class UpdateSelectedWorkspace(val workspaceId: String) : Msg
+        data class UpdateSelectedWorkspace(val workspaceId: String, val seatName: String) : Msg
 
         data class ChangeLoadingWorkspace(val isLoading: Boolean) : Msg
 
@@ -164,29 +163,14 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 }
 
                 is BookingStore.Intent.OpenBookAccept -> {
-                    scope.launch {
-                        publish(BookingStore.Label.OpenBookAccept(value = intent.value))
-                        with(intent.value) {
-                            dispatch(Msg.UpdateSelectedWorkspace(workspaceId = workSpaceId))
-                            dispatch(
-                                Msg.ChangeWorkingUI(
-                                    bookingInfo = BookingInfo(
-                                        id = "",
-                                        workSpaceId = workSpaceId,
-                                        ownerId = "",
-                                        seatName = workSpaceName,
-                                        dateOfEnd = LocalDateTime(
-                                            date = getState().selectedStartDate,
-                                            time = getState().selectedFinishTime
-                                        ),
-                                        dateOfStart = LocalDateTime(
-                                            date = getState().selectedStartDate,
-                                            time = getState().selectedStartTime
-                                        )
-                                    )
-                                )
+                    publish(BookingStore.Label.OpenBookAccept)
+                    with(intent.value) {
+                        dispatch(
+                            Msg.UpdateSelectedWorkspace(
+                                workspaceId = workSpaceId,
+                                seatName = workSpaceName
                             )
-                        }
+                        )
                     }
                 }
 
@@ -675,7 +659,6 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                 is Msg.ChangeBookingRepeat -> copy(repeatBooking = msg.bookingRepeat)
                 is Msg.ChangeBookingPeriod -> copy(bookingPeriod = msg.bookingPeriod)
-                is Msg.ChangeWorkingUI -> copy(bookingInfo = msg.bookingInfo)
                 is Msg.EndBookingDate -> copy(selectedFinishDate = msg.date)
                 is Msg.IsStartDatePicker -> copy(isStartDate = msg.isStart)
                 is Msg.UpdateSelectedWorkspace -> copy(selectedWorkspaceId = msg.workspaceId)

@@ -1,4 +1,4 @@
-package band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.bookAccept.store
+package band.effective.office.elevator.ui.bottomSheets.bookingSheet.bookAccept.store
 
 import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.domain.models.TypeEndPeriodBooking

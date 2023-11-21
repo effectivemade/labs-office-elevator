@@ -8,9 +8,9 @@ import band.effective.office.elevator.ui.booking.models.sheetData.toSelectedBook
 import band.effective.office.elevator.ui.booking.store.BookingStore
 import band.effective.office.elevator.ui.booking.store.BookingStoreFactory
 import band.effective.office.elevator.ui.bottomSheets.BottomSheet
-import band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.bookAccept.BookAcceptSheetComponent
-import band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.bookPeriod.BookPeriodSheetComponent
-import band.effective.office.elevator.ui.bottomSheets.bookPeriodSheet.chooseZoneSheet.ChooseZoneSheetComponent
+import band.effective.office.elevator.ui.bottomSheets.bookingSheet.bookAccept.BookAcceptSheetComponent
+import band.effective.office.elevator.ui.bottomSheets.bookingSheet.bookPeriod.BookPeriodSheetComponent
+import band.effective.office.elevator.ui.bottomSheets.bookingSheet.chooseZoneSheet.ChooseZoneSheetComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.router.slot.SlotNavigation
