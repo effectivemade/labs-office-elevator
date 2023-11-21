@@ -30,11 +30,12 @@ data class Recurrence(
                 freq = Freq.valueOf(freq),
                 ending = when {
                     count != null && until != null -> throw IllegalArgumentException()
+                    count != null && freq == "WEEKLY" -> Ending.Count(count * maxOf(byDay.size, 1)) //temporary fix
                     count != null -> Ending.Count(count)
                     until != null -> Ending.Until(toDateRfc5545(until))
 
                     else -> Ending.Empty
-                },
+                }, //Google Calendar creates count+1 events if the first event doesn't fall within recurrence rule
                 byDay = byDay.onEach { day -> if (day !in 1..7) throw IllegalArgumentException() },
                 byMonth = byMonth.onEach { month -> if (month !in 1..12) throw IllegalArgumentException() },
                 byYearDay = byYearDay.onEach { yearDay -> if (yearDay !in 1..365) throw IllegalArgumentException() },
@@ -59,7 +60,11 @@ data class Recurrence(
     fun toDto(): RecurrenceDTO = RecurrenceDTO(
         interval = if (interval != 0) interval else null,
         freq = freq.name,
-        count = if (ending is Ending.Count) ending.value else null,
+        count = when {
+            ending !is Ending.Count -> null
+            freq.name == "WEEKLY" -> ending.value / maxOf(byDay.size, 1) //temporary fix
+            else -> ending.value
+        },
         until = if (ending is Ending.Until) parceUntil(ending.value) else null,
         byDay = byDay,
         byMonth = byMonth,
