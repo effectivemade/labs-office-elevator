@@ -219,7 +219,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                                     )
                                 )
                             )
-                        else
+                        else if (getState().bookingPeriod is BookingPeriod.Day)
                             dispatch(
                                 Msg.ChangeBookingRepeatAndTypeOfEnd(
                                     bookingPeriod = BookingPeriod.NoPeriod,
@@ -335,36 +335,29 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 }
 
                 is BookingStore.Intent.OnSelectBookingPeriod -> {
-                    scope.launch {
-                        publish(BookingStore.Label.CloseRepeatDialog)
-                        with(intent.pair) {
-                            if (second == BookingPeriod.Another)
-                                publish(BookingStore.Label.OpenBookRepeat)
-                            val name = when (second) {
-                                is BookingPeriod.EveryWorkDay -> MainRes.strings.every_work_day
-                                is BookingPeriod.Month -> MainRes.strings.every_month
-                                is BookingPeriod.NoPeriod -> MainRes.strings.booking_not_repeat
-                                is BookingPeriod.Week -> MainRes.strings.every_week
-                                is BookingPeriod.Year -> MainRes.strings.every_month
-                                is BookingPeriod.Another -> MainRes.strings.another
-                                BookingPeriod.Day -> MainRes.strings.another
-                            }
-                            dispatch(Msg.ChangeBookingRepeat(bookingRepeat = name))
-                            dispatch(Msg.ChangeTypeOfEnd(TypeEndPeriodBooking.CountRepeat(10))) // TODO(Artem Gruzdev) backend should fix this
-                            dispatch(Msg.ChangeBookingPeriod(bookingPeriod = intent.pair.second))
-                            dispatch(Msg.ChangeFrequency(
-                                Frequency(days = listOf(), researchEnd = Triple(Pair("ThisDay",""),"",""))
-                            ))
+                    publish(BookingStore.Label.CloseRepeatDialog)
+                    with(intent.pair) {
+                        if (second == BookingPeriod.Another)
+                            publish(BookingStore.Label.OpenBookRepeat)
+                        val name = when (second) {
+                            is BookingPeriod.EveryWorkDay -> MainRes.strings.every_work_day
+                            is BookingPeriod.Month -> MainRes.strings.every_month
+                            is BookingPeriod.NoPeriod -> MainRes.strings.booking_not_repeat
+                            is BookingPeriod.Week -> MainRes.strings.every_week
+                            is BookingPeriod.Year -> MainRes.strings.every_month
+                            is BookingPeriod.Another -> MainRes.strings.another
+                            BookingPeriod.Day -> MainRes.strings.another
                         }
+                        dispatch(Msg.ChangeBookingRepeat(bookingRepeat = name))
+                        dispatch(Msg.ChangeTypeOfEnd(TypeEndPeriodBooking.CountRepeat(10))) // TODO(Artem Gruzdev) backend should fix this
+                        Napier.d { "book period check: ${intent.pair.second}" }
+                        dispatch(Msg.ChangeBookingPeriod(bookingPeriod = intent.pair.second))
                     }
-
                 }
 
                 is BookingStore.Intent.CloseBookRepeat -> {
-                    scope.launch {
-                        publish(BookingStore.Label.CloseBookRepeat)
-                        publish(BookingStore.Label.OpenBookPeriod)
-                    }
+                    publish(BookingStore.Label.CloseBookRepeat)
+                    publish(BookingStore.Label.OpenBookPeriod)
                 }
 
                 is BookingStore.Intent.ChangeSelectedWorkSpacesZone -> {
@@ -406,52 +399,51 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 }
 
                 BookingStore.Intent.OpenFinishTimeModal -> {
-                    scope.launch {
-                        publish(BookingStore.Label.OpenFinishTimeModal)
-                    }
+                    publish(BookingStore.Label.OpenFinishTimeModal)
                 }
 
                 BookingStore.Intent.CloseFinishTimeModal -> {
-                    scope.launch {
-                        publish(BookingStore.Label.CloseFinishTimeModal)
-                    }
-
+                    publish(BookingStore.Label.CloseFinishTimeModal)
                 }
 
                 is BookingStore.Intent.ChangeFrequency -> {
-                    scope.launch {
-                        Napier.d { "Close book repeat" }
-                        publish(BookingStore.Label.CloseBookRepeat)
-                    }
-                    scope.launch {
+                    Napier.d { "Close book repeat" }
+                    publish(BookingStore.Label.CloseBookRepeat)
+
                         val typeOfEnd = when(intent.typeOfEnd) {
                             is TypeEndPeriodBooking.DatePeriodEnd -> {
                                 // TODO: hen backend fix until date, it`s can be removed
                                 val dateRange = intent.typeOfEnd.date - getState().selectedStartDate
-                                val timeUnit = when(intent.bookingPeriod) {
-                                    is BookingPeriod.Week -> 7
-                                    is BookingPeriod.EveryWorkDay -> 7
+                                var countRepeatEvent = 1
+                                val timeUnit = when(val period = intent.bookingPeriod) {
+                                    is BookingPeriod.Week -> {
+                                        countRepeatEvent = period.selectedDayOfWeek.size
+                                        7
+                                    }
+                                    is BookingPeriod.EveryWorkDay ->{
+                                        countRepeatEvent = 5
+                                        7
+                                    }
                                     is BookingPeriod.Year -> 365
                                     is BookingPeriod.Month -> 30
                                     BookingPeriod.Another -> 1
                                     BookingPeriod.Day -> 1
                                     BookingPeriod.NoPeriod -> 1
                                 }
-                                TypeEndPeriodBooking.CountRepeat(dateRange.days / timeUnit + 1)
+                                val resultCount = (dateRange.days / timeUnit + 1) * countRepeatEvent
+                                TypeEndPeriodBooking.CountRepeat(resultCount)
                             }
+                            TypeEndPeriodBooking.Never -> TypeEndPeriodBooking.CountRepeat(10)
                             else  -> intent.typeOfEnd
                         }
                         dispatch(Msg.ChangeBookingRepeatAndTypeOfEnd(
                             bookingPeriod = intent.bookingPeriod,
                             typeEndPeriodBooking = typeOfEnd
                         ))
-                    }
                 }
 
                 is BookingStore.Intent.ChangeBookingRepeat -> {
-                    scope.launch {
-                        dispatch(Msg.ChangeBookingRepeat(bookingRepeat = intent.bookingRepeat))
-                    }
+                    dispatch(Msg.ChangeBookingRepeat(bookingRepeat = intent.bookingRepeat))
                 }
 
                 is BookingStore.Intent.ChangeSelectedType -> {
@@ -474,9 +466,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 }
 
                 BookingStore.Intent.CloseRepeatDialog -> {
-                    scope.launch {
-                        publish(BookingStore.Label.CloseRepeatDialog)
-                    }
+                    publish(BookingStore.Label.CloseRepeatDialog)
                 }
 
                 BookingStore.Intent.OpenCalendarForEndDate -> {
@@ -484,9 +474,9 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 }
 
                 is BookingStore.Intent.SelectNewDateOfEnd -> {
-                    scope.launch {
-                        publish(BookingStore.Label.CloseCalendarForDateOfEnd)
-                    }
+
+                    publish(BookingStore.Label.CloseCalendarForDateOfEnd)
+
                     intent.date?.let {
                         dispatch(Msg.ChangeDateOfEndPeriod(it))
                     }

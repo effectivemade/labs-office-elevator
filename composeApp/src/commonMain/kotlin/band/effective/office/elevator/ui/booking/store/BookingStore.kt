@@ -75,7 +75,6 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         val workSpaces: List<WorkSpaceUI>,
         val workSpacesAll: List<WorkSpaceUI>,
         val creatingBookModel: CreatingBookModel,
-        val currentDate: LocalDate,
         val workSpacesType: WorkSpaceType,
         val currentWorkspaceZones: List<WorkspaceZoneUI>,
         val allZonesList: List<WorkspaceZoneUI>,
@@ -101,7 +100,6 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
             val initState = State(
                 workSpaces = MockDataSpaces.workSpacesUI,
                 workSpacesAll = MockDataSpaces.workSpacesUI,
-                currentDate = getCurrentDate(),
                 creatingBookModel = CreatingBookModel(
                     workSpaceId = "",
                     dateOfStart = LocalDateTime(getCurrentDate(), getCurrentTime()),

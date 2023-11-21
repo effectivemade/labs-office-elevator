@@ -40,7 +40,7 @@ import kotlinx.datetime.LocalDate
 
 @Composable
 fun ModalCalendarDateRange(
-    currentDate: LocalDate,
+    currentDates: LocalDate,
     onClickOk: (List<LocalDate>) -> Unit,
     onClickCansel: () -> Unit,
     modifier: Modifier = Modifier
@@ -63,15 +63,18 @@ fun ModalCalendarDateRange(
             EpicDatePickerState.SelectionMode.Range
         else
             EpicDatePickerState.SelectionMode.Single(),
-        initialMonth = EpicMonth(year = currentDate.year, month = currentDate.month),
-        selectedDates = listOf(currentDate)
+        initialMonth = EpicMonth(
+            year = currentDates.year,
+            month = currentDates.month
+        ),
+        selectedDates = listOf(currentDates)
     )
 
     Column(
         modifier = modifier
             .background(Color.White, shape = RoundedCornerShape(16.dp))
             .padding(horizontal = 16.dp, vertical = 24.dp)
-    ){
+    ) {
         Calendar(state = state)
         Spacer(modifier = Modifier.height(16.dp))
         SwitchedDateRange(
@@ -92,15 +95,16 @@ fun ModalCalendarDateRange(
             )
             Spacer(modifier = Modifier.width(16.dp))
             EffectiveButton(
-                buttonText =  stringResource(MainRes.strings.ok),
-                modifier =  Modifier.weight(.1f),
-                onClick = { onClickOk(state.selectedDates)},
+                buttonText = stringResource(MainRes.strings.ok),
+                modifier = Modifier.weight(.1f),
+                onClick = { onClickOk(state.selectedDates) },
                 roundedCorner = 8.dp,
                 contentPadding = 12.dp
             )
         }
     }
 }
+
 @Composable
 private fun SwitchedDateRange(
     isSelectRange: Boolean,

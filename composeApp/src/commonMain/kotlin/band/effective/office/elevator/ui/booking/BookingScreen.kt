@@ -62,7 +62,11 @@ import kotlinx.datetime.atTime
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BookingScreen(bookingComponent: BookingComponent) {
-
+    LaunchedEffect(Unit) {
+        bookingComponent.state.collect {
+            Napier.d { "get book period is ${it.bookingPeriod}" }
+        }
+    }
     val state by bookingComponent.state.collectAsState()
 
     val showChooseZone = rememberModalBottomSheetState(
@@ -294,7 +298,6 @@ fun BookingScreen(bookingComponent: BookingComponent) {
         showCalendar = showCalendar,
         showConfirm = showConfirm,
         showTimePicker = showTimePicker,
-        currentDate = state.currentDate,
         onClickOpenBookRepeat = { pair ->
             bookingComponent.onEvent(BookingStore.Intent.OnSelectBookingPeriod(pair = pair))
         },
@@ -369,7 +372,6 @@ private fun BookingScreenContent(
     onClickApplyDateOfEndPeriod: (LocalDate?) -> Unit,
     onClickCloseCalendarForDateOfEnd: () -> Unit,
     onClickApplyDate: (List<LocalDate>) -> Unit,
-    currentDate: LocalDate,
     onClickCloseBookingConfirm: () -> Unit,
     showConfirm: Boolean,
     onClickMainScreen: () -> Unit,
@@ -464,7 +466,7 @@ private fun BookingScreenContent(
             Dialog(
                 content = {
                     ModalCalendarDateRange(
-                        currentDate = currentDate,
+                        currentDates = startDate,
                         onClickOk = onClickApplyDate,
                         onClickCansel = onClickCloseCalendar,
                         modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.Center)

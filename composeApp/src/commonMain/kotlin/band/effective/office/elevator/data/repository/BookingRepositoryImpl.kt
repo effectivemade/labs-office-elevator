@@ -253,6 +253,9 @@ class BookingRepositoryImpl(
         bookingPeriod: BookingPeriod?,
         typeEndPeriod: TypeEndPeriodBooking?
     ): RecurrenceDTO? {
+        Napier.d { "model: $bookingPeriod" +
+                "$typeEndPeriod" }
+
         return if (bookingPeriod is BookingPeriod.NoPeriod || bookingPeriod == null || typeEndPeriod == null) null
         else RecurrenceDTO(
             interval = bookingPeriod.durationPeriod,
