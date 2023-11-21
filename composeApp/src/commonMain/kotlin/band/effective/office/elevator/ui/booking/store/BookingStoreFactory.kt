@@ -412,12 +412,13 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                         val typeOfEnd = when(intent.typeOfEnd) {
                             is TypeEndPeriodBooking.DatePeriodEnd -> {
-                                // TODO: hen backend fix until date, it`s can be removed
+                                // TODO: then backend fix until date, it`s should be removed!!
                                 val dateRange = intent.typeOfEnd.date - getState().selectedStartDate
+                                val countDays = dateRange.years * 365 + dateRange.months * 30 + dateRange.days
                                 var countRepeatEvent = 1
                                 val timeUnit = when(val period = intent.bookingPeriod) {
                                     is BookingPeriod.Week -> {
-                                        countRepeatEvent = period.selectedDayOfWeek.size
+                                        countRepeatEvent = maxOf(period.selectedDayOfWeek.size, 1)
                                         7
                                     }
                                     is BookingPeriod.EveryWorkDay ->{
@@ -430,7 +431,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                                     BookingPeriod.Day -> 1
                                     BookingPeriod.NoPeriod -> 1
                                 }
-                                val resultCount = (dateRange.days / timeUnit + 1) * countRepeatEvent
+                                val resultCount = (countDays / timeUnit + 1) * countRepeatEvent
                                 TypeEndPeriodBooking.CountRepeat(resultCount)
                             }
                             TypeEndPeriodBooking.Never -> TypeEndPeriodBooking.CountRepeat(10)
