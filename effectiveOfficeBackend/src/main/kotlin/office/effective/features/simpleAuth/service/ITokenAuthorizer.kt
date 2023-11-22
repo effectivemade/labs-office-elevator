@@ -10,13 +10,5 @@ interface ITokenAuthorizer {
      * @param call [ApplicationCall] which contains token to verify
      * @author Kiselev Danil
      * */
-    suspend fun isCorrectToken(call: ApplicationCall): Boolean;
-    /**
-     * Set up next handler in chain of responsibility
-     *
-     * @param handler [ITokenAuthorizer] verifier to be next in chain of responsibility
-     * @author Kiselev Danil
-     * */
-    fun setNext(handler : ITokenAuthorizer?);
-
+    suspend fun isCorrectToken(call: ApplicationCall): Boolean
 }
