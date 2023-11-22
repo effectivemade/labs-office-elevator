@@ -5,46 +5,38 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import io.ktor.server.application.*
 import org.slf4j.LoggerFactory
 
 /**
- * [ITokenVerifier] implementation. Calls oauth2.googleapis.com to verify token
+ * [ITokenAuthorizer] implementation. Calls oauth2.googleapis.com to verify token
  * */
-class RequestVerifier : ITokenVerifier {
+class RequestVerifier : ITokenAuthorizer {
     val logger = LoggerFactory.getLogger(this::class.java)
 
     /**
      * Check Google ID Token. Calls oauth2.googleapis.com
      *
-     * @param tokenString [String] which contains token to verify
+     * @param call [String] which contains token to verify
      * @return is token correct
      *
      * @author Kiselev Danil
      * */
-    override suspend fun isCorrectToken(tokenString: String): Boolean {
+    override suspend fun isCorrectToken(call: ApplicationCall): Boolean {
         val client = HttpClient(CIO) {}
         val response: HttpResponse = client.request("https://oauth2.googleapis.com/tokeninfo") {
             url {
-                parameters.append("id_token", tokenString)
+                parameters.append("id_token", call)
             }
         }
         if (response.status != HttpStatusCode.OK) {
-            return next(tokenString);
+            return next(call);
         } else {
             logger.info("Request verifier succeed")
-            logger.trace("Request verifier succeed with token: {}", tokenString)
+            logger.trace("Request verifier succeed with token: {}", call)
             return true
         }
     }
 
-    private var nextHandler: ITokenVerifier? = null;
-    override fun setNext(handler: ITokenVerifier?) {
-        this.nextHandler = handler
-    }
-
-    override suspend fun next(tokenString: String): Boolean {
-        logger.info("Token verifier failed")
-        logger.trace("Token verifier with token: {}", tokenString)
-        return nextHandler?.isCorrectToken(tokenString) ?: return false;
-    }
+    private var nextHandler: ITokenAuthorizer? = null
 }
