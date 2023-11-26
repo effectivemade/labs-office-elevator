@@ -43,12 +43,12 @@ class BookAcceptStoreFactory(
         ) {
             when (intent) {
                 BookAcceptStore.Intent.OnAccept -> {
-                    close()
                     dispatch(Message.StartBooking)
                     accept(getState())
                 }
 
                 BookAcceptStore.Intent.OnClose -> close()
+
                 is BookAcceptStore.Intent.CloseModal -> {
                     dispatch(Message.CloseModal)
                     if (intent.withSheet) close()

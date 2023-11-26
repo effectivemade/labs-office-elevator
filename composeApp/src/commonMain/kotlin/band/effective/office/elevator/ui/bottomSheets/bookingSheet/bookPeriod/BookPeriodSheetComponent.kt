@@ -49,6 +49,7 @@ class BookPeriodSheetComponent(
     private val closeClick: () -> Unit,
     private val accept: (BookPeriodStore.State) -> Unit,
 ) : BottomSheet, ComponentContext by componentContext {
+
     private val navigation = StackNavigation<Child>()
     private val stack = childStack(
         source = navigation,
@@ -229,21 +230,21 @@ class BookPeriodSheetComponent(
 
     sealed class Child(val type: ChildType) : Parcelable {
         @Parcelize
-        object CalendarWithSelect : Child(ChildType.Window)
+        data object CalendarWithSelect : Child(ChildType.Window)
 
         @Parcelize
-        object SelectRepeatType : Child(ChildType.Window)
+        data object SelectRepeatType : Child(ChildType.Window)
 
         @Parcelize
         data class SelectTime(val isStart: Boolean) : Child(ChildType.Window)
 
         @Parcelize
-        object Calendar : Child(ChildType.Window)
+        data object Calendar : Child(ChildType.Window)
 
         @Parcelize
-        object CustomPeriod : Child(ChildType.Sheet)
+        data object CustomPeriod : Child(ChildType.Sheet)
 
         @Parcelize
-        object Setting : Child(ChildType.Sheet)
+        data object Setting : Child(ChildType.Sheet)
     }
 }

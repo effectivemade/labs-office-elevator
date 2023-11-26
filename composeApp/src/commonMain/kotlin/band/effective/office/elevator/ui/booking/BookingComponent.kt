@@ -41,6 +41,7 @@ class BookingComponent(
         childFactory = { bottomSheet, componentContext ->
             when (bottomSheet) {
                 SheetConfig.BookAccept -> BookAcceptSheetComponent(
+                    componentContext = componentContext,
                     initState = state.value.toBookAcceptState(),
                     close = { closeSheet() },
                     onMainScreen = { onOutput(Output.OpenMainTab) }

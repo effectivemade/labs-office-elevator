@@ -57,8 +57,6 @@ class BookPeriodStoreFactory(
 
                 BookPeriodStore.Intent.OnSwitchAllDay ->
                     setTimeOnAllDay(
-                        startDate = getState().startDate,
-                        finishDate = getState().finishDate,
                         switchChecked = getState().switchChecked
                     )
 
@@ -204,17 +202,11 @@ class BookPeriodStoreFactory(
         }
 
         private fun setTimeOnAllDay(
-            startDate: LocalDate,
-            finishDate: LocalDate,
             switchChecked: Boolean
         ) {
-            if (startDate == finishDate) {
-                dispatch(Message.UpdateSwitchAllDay(!switchChecked))
-                dispatch(Message.UpdateStartTime(newValue = LocalTime(hour = 8, minute = 0)))
-                dispatch(Message.UpdateFinishTime(newValue = LocalTime(hour = 20, minute = 0)))
-            } else {
-                publish(BookPeriodStore.Label.ShowToast("У вас выбраны разные даты"))
-            }
+            dispatch(Message.UpdateSwitchAllDay(!switchChecked))
+            dispatch(Message.UpdateStartTime(newValue = LocalTime(hour = 8, minute = 0)))
+            dispatch(Message.UpdateFinishTime(newValue = LocalTime(hour = 20, minute = 0)))
         }
     }
 

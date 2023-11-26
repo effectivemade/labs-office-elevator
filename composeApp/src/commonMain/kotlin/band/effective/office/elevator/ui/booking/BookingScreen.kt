@@ -3,6 +3,7 @@ package band.effective.office.elevator.ui.booking
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
@@ -15,7 +16,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.components.bottomSheet.ChildSlotModalBottomSheetLayout
 import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.domain.models.TypeEndPeriodBooking
 import band.effective.office.elevator.expects.showToast
@@ -53,14 +57,13 @@ fun BookingScreen(bookingComponent: BookingComponent) {
     } else {
         MainRes.strings.take_before
     }
-    val sheetState =
-        rememberModalBottomSheetState(if (slot.child == null) ModalBottomSheetValue.Hidden else ModalBottomSheetValue.Expanded)
-    if (sheetState.targetValue == ModalBottomSheetValue.Hidden) {
-        bookingComponent.closeSheet()
-    }
-    ModalBottomSheetLayout(
+
+    ChildSlotModalBottomSheetLayout(
         sheetContent = { slot.child?.instance?.SheetContent() },
-        sheetState = sheetState
+        sheetContentSlotState = bookingComponent.slot,
+        onDismiss = {bookingComponent.closeSheet()},
+        sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+        sheetBackgroundColor = Color.White
     ) {
         Box {
             slot.child?.instance?.content()

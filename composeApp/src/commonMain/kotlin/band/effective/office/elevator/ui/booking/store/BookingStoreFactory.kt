@@ -661,7 +661,11 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is Msg.ChangeBookingPeriod -> copy(bookingPeriod = msg.bookingPeriod)
                 is Msg.EndBookingDate -> copy(selectedFinishDate = msg.date)
                 is Msg.IsStartDatePicker -> copy(isStartDate = msg.isStart)
-                is Msg.UpdateSelectedWorkspace -> copy(selectedWorkspaceId = msg.workspaceId)
+                is Msg.UpdateSelectedWorkspace ->
+                    copy(
+                        selectedWorkspaceId = msg.workspaceId,
+                        selectedSeatName = msg.seatName
+                    )
                 is Msg.ChangeLoadingWorkspace -> copy(isLoadingListWorkspaces = msg.isLoading)
                 is Msg.IsLoadingBookingCreation -> copy(isLoadingBookingCreation = msg.isLoadingBookingCreation)
                 is Msg.ChangeBookingRepeatAndTypeOfEnd ->
