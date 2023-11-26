@@ -12,7 +12,7 @@ import javax.xml.bind.DatatypeConverter
 /**
  * [ITokenAuthorizer] implementation. Check api keys
  * */
-class ApiKeyVerifier(private val extractor: TokenExtractor = TokenExtractor()) : ITokenAuthorizer {
+class ApiKeyAuthorizer(private val extractor: TokenExtractor = TokenExtractor()) : ITokenAuthorizer {
     val logger: Logger = LoggerFactory.getLogger(this::class.java)
     private val repository: AuthRepository = GlobalContext.get().get()
 

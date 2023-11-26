@@ -6,13 +6,14 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.server.application.*
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 /**
  * [ITokenAuthorizer] implementation. Calls oauth2.googleapis.com to verify token
  * */
-class RequestVerifier : ITokenAuthorizer {
-    val logger = LoggerFactory.getLogger(this::class.java)
+class RequestAuthorizer(private val extractor: TokenExtractor = TokenExtractor()) : ITokenAuthorizer {
+    val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     /**
      * Check Google ID Token. Calls oauth2.googleapis.com
@@ -23,20 +24,25 @@ class RequestVerifier : ITokenAuthorizer {
      * @author Kiselev Danil
      * */
     override suspend fun isCorrectToken(call: ApplicationCall): Boolean {
+        val tokenString = extractor.extractToken(call) ?: run {
+            logger.info("Request auth failed")
+            return false
+        }
         val client = HttpClient(CIO) {}
         val response: HttpResponse = client.request("https://oauth2.googleapis.com/tokeninfo") {
             url {
-                parameters.append("id_token", call)
+                parameters.append("id_token", tokenString)
             }
         }
+
         if (response.status != HttpStatusCode.OK) {
-            return next(call);
+            logger.info("Request verifier failed")
+            logger.trace("Request verifier failed with token: {}", tokenString)
+            return false
         } else {
             logger.info("Request verifier succeed")
-            logger.trace("Request verifier succeed with token: {}", call)
+            logger.trace("Request verifier succeed with token: {}", tokenString)
             return true
         }
     }
-
-    private var nextHandler: ITokenAuthorizer? = null
 }
