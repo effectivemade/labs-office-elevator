@@ -4,43 +4,48 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
+import io.ktor.server.application.*
 import office.effective.config
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 /**
- * Implementation of [ITokenVerifier]. Checks GoogleIdTokens
+ * Implementation of [ITokenAuthorizer]. Checks GoogleIdTokens
  * */
-class TokenVerifier : ITokenVerifier {
-
-    private val webClient = System.getenv("GOOGLE_CLIENT_ID")
+class TokenVerifier(private val extractor: TokenExtractor = TokenExtractor()) : ITokenAuthorizer {
 
     private val verifier: GoogleIdTokenVerifier =
         GoogleIdTokenVerifier.Builder(NetHttpTransport(), GsonFactory()).build()
 
     private val acceptableMailDomain: String =
         config.propertyOrNull("auth.user.emailDomain ")?.getString() ?: "effective.band"
-    val logger = LoggerFactory.getLogger(this::class.java)
+    val logger: Logger = LoggerFactory.getLogger(this::class.java)
+
     /**
      * Check Google ID Token using google library
      *
-     * @param tokenString [String] which contains token to verify
+     * @param call [String] which contains token to verify
      * @author Kiselev Danil
      * @throws Exception("Token wasn't verified by Google") if token does not contain payload
      * @return is token correct
      *
      * @author Kiselev Danil
      * */
-    override suspend fun isCorrectToken(tokenString: String): Boolean {
+    override suspend fun isCorrectToken(call: ApplicationCall): Boolean {
         var userMail: String? = null
-
+        val tokenString = extractor.extractToken(call) ?: run {
+            logger.info("Token auth failed")
+            return false
+        }
         val token: GoogleIdToken?
         try {
             token = verifier.verify(tokenString)
         } catch (ex: Exception) {
-            return next(tokenString)
+            return failResponse(tokenString)
         }
 
-        val payload = token?.payload ?: throw Exception("Token wasn't verified by Google")
+        val payload = token?.payload ?: run { return@isCorrectToken failResponse(tokenString) }
+
         val emailVerified: Boolean = payload.emailVerified
         val hostedDomain = payload.hostedDomain ?: extractDomain(payload.email)
         if ((acceptableMailDomain == hostedDomain) && emailVerified) {
@@ -48,9 +53,11 @@ class TokenVerifier : ITokenVerifier {
         }
 
         if (userMail.isNullOrBlank()) {
-            return next(tokenString)
+            logger.info("Token auth failed")
+            logger.trace("Token auth with token: {}", tokenString)
+            return false
         } else {
-            logger.info("Token verifier succeed")
+            logger.info("Token auth succeed")
             return true
         }
 
@@ -68,15 +75,9 @@ class TokenVerifier : ITokenVerifier {
         return email.split('@').last()
     }
 
-    private var nextHandler: ITokenVerifier? = null;
-    override fun setNext(handler: ITokenVerifier?) {
-        this.nextHandler = handler
-    }
-
-
-    override suspend fun next(tokenString: String): Boolean {
-        logger.info("Token verifier failed")
-        logger.trace("Token verifier with token: {}", tokenString)
-        return nextHandler?.isCorrectToken(tokenString) ?: return false;
+    private fun failResponse(tokenString: String): Boolean {
+        logger.info("Token auth failed")
+        logger.trace("Token auth failed with token: {}", tokenString)
+        return false
     }
 }

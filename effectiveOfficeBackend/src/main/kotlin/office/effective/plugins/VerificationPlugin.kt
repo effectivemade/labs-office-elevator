@@ -6,7 +6,7 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
-import office.effective.features.simpleAuth.service.AuthenticationPipeline
+import office.effective.features.simpleAuth.service.AuthorizationPipeline
 import org.koin.core.context.GlobalContext
 import org.slf4j.LoggerFactory
 
@@ -15,11 +15,11 @@ import org.slf4j.LoggerFactory
  * Run every time when receiving input call. Checks Authentication (bearer) header containment
  * */
 val VerificationPlugin = createApplicationPlugin(name = "VerificationPlugin") {
-    val pluginOn: Boolean = System.getenv("VERIFICATION_PLUGIN_ENABLE").equals("true")
+    val pluginOn: Boolean = System.getenv("VERIFICATION_PLUGIN_ENABLE").equals("true") //
     val logger = LoggerFactory.getLogger(this::class.java)
     logger.info("Verification plugin mode enabled?: $pluginOn")
     logger.info("Verification plugin installed")
-    val authenticationPipeline: AuthenticationPipeline = GlobalContext.get().get()
+    val authenticationPipeline: AuthorizationPipeline = GlobalContext.get().get()
 
     onCall { call ->
         run {
@@ -31,7 +31,7 @@ val VerificationPlugin = createApplicationPlugin(name = "VerificationPlugin") {
                     )
                     return@onCall
                 }
-                if (!authenticationPipeline.authenticateToken(token as String)) {
+                if (!authenticationPipeline.isCorrectToken(call)) {
                     logger.info("Verification failed.")
                     logger.trace("Verification failed with token: {}", token)
                     call.response.status(HttpStatusCode.Unauthorized)
