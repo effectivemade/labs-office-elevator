@@ -5,32 +5,30 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 
-class AuthorizationPipeline(private val iterable: Iterable<ITokenAuthorizer>) : ITokenAuthorizer {
+class AuthorizationPipeline(private val iterable: Iterable<ITokenAuthorizer>?) : ITokenAuthorizer {
     val logger: Logger = LoggerFactory.getLogger(this::class.java)
-    private val authorizers: MutableCollection<ITokenAuthorizer>
+    private val authorizers: MutableCollection<ITokenAuthorizer>?
 
 
     init {
-        if (iterable.lastOrNull() == null) {
-            logger.error("Empty verifier list")
-            throw RuntimeException("Empty verifier list");
-        }
-        authorizers = iterable.toMutableList()
+        //TODO Make correct Builder
+        authorizers = iterable?.toMutableList()
     }
 
     override suspend fun isCorrectToken(call: ApplicationCall): Boolean {
-        iterable.forEach {
+        iterable?.forEach {
             if (it.isCorrectToken(call)) {
                 return@isCorrectToken true
             }
-        }
+        }?: logger.warn("Authorizers collection is empty")
         return false
     }
 
-    override fun setNext(handler: ITokenAuthorizer?) {
-        if(handler != null) {
-            authorizers.add(handler)
+    fun addAuthorizer(authorizer: ITokenAuthorizer?) : AuthorizationPipeline {
+        if(authorizer != null) {
+            authorizers?.add(authorizer)?: mutableListOf(authorizer)
         }
+        return this
     }
 
 }

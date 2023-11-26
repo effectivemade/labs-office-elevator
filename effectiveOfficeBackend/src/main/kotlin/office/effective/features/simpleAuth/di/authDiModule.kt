@@ -1,16 +1,18 @@
 package office.effective.features.simpleAuth.di
 
-import office.effective.features.simpleAuth.service.ApiKeyVerifier
-import office.effective.features.simpleAuth.service.ITokenAuthorizer
-import office.effective.features.simpleAuth.service.TokenVerifier
 import office.effective.features.simpleAuth.repository.AuthRepository
-import office.effective.features.simpleAuth.service.AuthorizationPipeline
-import office.effective.features.simpleAuth.service.RequestVerifier
+import office.effective.features.simpleAuth.service.*
 import org.koin.dsl.module
 
 val authDiModule = module(createdAtStart = true) {
     single { AuthRepository(get()) }
-    single { AuthorizationPipeline(makeList()) }
+    single { AuthorizationPipeline(null)
+        .addAuthorizer(TokenAuthorizer(get()))
+        .addAuthorizer(RequestAuthorizer(get()))
+        .addAuthorizer(ApiKeyAuthorizer())
+    }
+    single { TokenExtractor() }
+
 }
 
 /**
@@ -18,8 +20,8 @@ val authDiModule = module(createdAtStart = true) {
  * */
 fun makeList(): List<ITokenAuthorizer> {
     val list: MutableList<ITokenAuthorizer> = mutableListOf()
-    list.add(TokenVerifier())
-    list.add(RequestVerifier())
-    list.add(ApiKeyVerifier())
+    list.add(TokenAuthorizer())
+    list.add(RequestAuthorizer())
+    list.add(ApiKeyAuthorizer())
     return list
 }
