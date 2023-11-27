@@ -50,10 +50,12 @@ fun MenuScreen(
     val coroutineScope = rememberCoroutineScope()
     var isFocusOnMenu by remember { mutableStateOf(false) }
     val focusRequester = FocusRequester()
+    val options = listOf(MenuOption.Autoplay, MenuOption.Photo, MenuOption.Video)
 
     ScreenList(
         modifier = Modifier.fillMaxSize(),
-        isFocusOnMenu = isFocusOnMenu
+        isFocusOnMenu = isFocusOnMenu,
+        options = options
     ) { index ->
         CircleWithBlur(xOffset = 150.dp, color = EffectiveColor.purple)
         CircleWithBlur(
@@ -67,7 +69,7 @@ fun MenuScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             when (index) {
-                0 -> {
+                MenuOption.Autoplay -> {
                     Text(
                         modifier = Modifier.width(635.dp),
                         text = stringResource(R.string.welcome_string),
@@ -114,16 +116,12 @@ fun MenuScreen(
                     }
                 }
 
-                1 -> {
+                MenuOption.Photo -> {
                     MainMenuPlaceHolder("Раздел фото")
                 }
 
-                2 -> {
+                MenuOption.Video -> {
                     MainMenuPlaceHolder("Раздел видео")
-                }
-
-                else -> {
-                    Error("Ууууууууупс")
                 }
             }
         }

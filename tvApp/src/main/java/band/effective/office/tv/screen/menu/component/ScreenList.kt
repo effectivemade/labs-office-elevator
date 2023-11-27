@@ -37,23 +37,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.tv.material3.Text
-import band.effective.office.tv.R
+import band.effective.office.tv.screen.menu.MenuOption
 
 @Composable
 fun ScreenList(
     modifier: Modifier = Modifier,
     isFocusOnMenu: Boolean,
-    content: @Composable BoxScope.(Int) -> Unit
+    options: List<MenuOption>,
+    content: @Composable BoxScope.(MenuOption) -> Unit
 ) {
     var index by remember { mutableStateOf(0) }
     var currentIndex by remember { mutableStateOf(0) }
-    val iconList = listOf(
-        Pair(R.drawable.autoplay, stringResource(id = R.string.autoplay)),
-        Pair(R.drawable.photo, stringResource(id = R.string.photo)),
-        Pair(R.drawable.video, stringResource(id = R.string.video))
-    )
     Box(modifier = modifier) {
-        content(index)
+        content(options[index])
         AnimatedVisibility(
             visible = isFocusOnMenu,
             enter = slideInHorizontally() + fadeIn(),
@@ -78,7 +74,7 @@ fun ScreenList(
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Center
         ) {
-            iconList.forEachIndexed { iconIndex, icon ->
+            options.forEachIndexed { iconIndex, option ->
                 if (iconIndex != 0) Spacer(modifier = Modifier.height(5.dp))
                 val elementColor = when {
                     isFocusOnMenu && currentIndex == iconIndex -> MaterialTheme.colors.primaryVariant
@@ -98,14 +94,14 @@ fun ScreenList(
                     Spacer(modifier = Modifier.width(5.dp))
                     Image(
                         modifier = Modifier.size(40.dp),
-                        painter = painterResource(id = icon.first),
+                        painter = painterResource(id = option.icon),
                         contentDescription = null,
                     )
                     if (isFocusOnMenu) {
                         Spacer(modifier = Modifier.width(20.dp))
                         Text(
                             modifier = Modifier.width(150.dp),
-                            text = icon.second,
+                            text = stringResource(id = option.title),
                             color = Color.White,
                             style = MaterialTheme.typography.body1
                         )
