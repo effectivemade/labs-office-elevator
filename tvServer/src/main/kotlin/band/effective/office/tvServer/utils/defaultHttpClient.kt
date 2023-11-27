@@ -3,6 +3,7 @@ package band.effective.office.tvServer.utils
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.logging.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -14,5 +15,9 @@ fun defaultHttpClient() = HttpClient(CIO) {
             ignoreUnknownKeys = true
             explicitNulls = false
         })
+    }
+    install(Logging){
+        level = LogLevel.BODY
+        logger = Logger.SIMPLE
     }
 }

@@ -2,6 +2,7 @@ package band.effective.office.tvServer.repository.leaderId
 
 import band.effective.office.tvServer.api.leader.LeaderApi
 import band.effective.office.tvServer.api.leader.models.eventInfo.EventInfoResponse
+import band.effective.office.tvServer.model.LeaderIdEventInfo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.time.LocalDate
