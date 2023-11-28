@@ -53,9 +53,9 @@ fun subscribeOnNotifications() {
             }
             try {
                 calendarService.events().watch(calendar.id, channel).execute()
-                logger.info("Subscribed on notifications from ${calendar.id} calendar")
+                logger.info("Server with url $appAddress was subscribed on notifications from ${calendar.id} calendar")
             } catch (e: Exception) {
-                logger.error("Can't subscribe on notifications from ${calendar.id} calendar", e)
+                logger.error("Can't subscribe server with url $appAddress on notifications from ${calendar.id} calendar", e)
             }
         }
     }
