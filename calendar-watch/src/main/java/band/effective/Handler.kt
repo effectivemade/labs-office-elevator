@@ -12,6 +12,7 @@ import com.google.auth.oauth2.GoogleCredentials
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.ByteArrayInputStream
+import java.util.StringJoiner
 import java.util.UUID
 import java.util.function.Function
 
@@ -37,9 +38,14 @@ fun subscribeOnNotifications() {
 
     val calendars = calendarService.calendarList().list().execute().items
 
-    val appAddress: String = AppConstants.APPLICATION_URL
     for (calendar in calendars) {
         if (calendar.accessRole == "owner") {
+            val appAddress = if (!AppConstants.TEST_CALENDARS.contains(calendar.id)) {
+                AppConstants.APPLICATION_URL
+            } else {
+                AppConstants.TEST_APPLICATION_URL
+            }
+
             val channel = Channel().apply {
                 id = UUID.randomUUID().toString()
                 type = "web_hook"
