@@ -6,10 +6,15 @@ import org.slf4j.LoggerFactory
 
 class TokenExtractor {
 
+    /**
+     * @param call [ApplicationCall] incoming call
+     * @return token from Bearer Auth header or null, if
+     * @author Danil Kiselev
+     * */
     fun extractToken(call: ApplicationCall): String? {
         val logger = LoggerFactory.getLogger(this::class.java)
         return call.request.parseAuthorizationHeader()?.render()?.split("Bearer ")?.last() ?: run {
-            logger.info("Verification failed. Cannot find auth token")
+            logger.info("Cannot find auth token")
             return null
         }
     }
