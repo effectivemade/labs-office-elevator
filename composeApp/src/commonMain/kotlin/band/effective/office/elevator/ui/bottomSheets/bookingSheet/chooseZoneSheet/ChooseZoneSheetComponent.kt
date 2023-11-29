@@ -19,7 +19,8 @@ class ChooseZoneSheetComponent(
     closeSheet: () -> Unit,
     confirm: (List<WorkspaceZoneUI>) -> Unit
 ) : BottomSheet {
-    val store = ChooseZoneStoreFactory(
+
+    private val store = ChooseZoneStoreFactory(
         storeFactory = DefaultStoreFactory(),
         close = closeSheet,
         confirm = confirm

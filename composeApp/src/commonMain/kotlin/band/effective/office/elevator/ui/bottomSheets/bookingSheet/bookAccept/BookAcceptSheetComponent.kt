@@ -36,7 +36,7 @@ class BookAcceptSheetComponent(
     onMainScreen: () -> Unit
 ) : BottomSheet, ComponentContext by componentContext {
 
-    val store = BookAcceptStoreFactory(
+    private val store = BookAcceptStoreFactory(
         storeFactory = DefaultStoreFactory(),
         initState = initState,
         close = close,

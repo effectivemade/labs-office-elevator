@@ -17,6 +17,7 @@ import kotlinx.datetime.minus
 class BookPeriodStoreFactory(
     private val storeFactory: StoreFactory,
     private val initState: BookPeriodStore.State,
+    private val publishLabel: (BookPeriodStore.Label) -> Unit
 ) {
 
     fun create(): BookPeriodStore =
@@ -151,7 +152,7 @@ class BookPeriodStoreFactory(
                         if (newTime >= currentTime)
                             dispatch(Message.UpdateStartTime(newTime))
                         else
-                            publish(BookPeriodStore.Label.ShowToast("Некорретное время"))
+                            publishLabel(BookPeriodStore.Label.ShowToast("Некорретное время"))
                     } else
                         dispatch(Message.UpdateStartTime(newTime))
                 }
@@ -159,7 +160,7 @@ class BookPeriodStoreFactory(
                     if (newTime > prevStartTime)
                         dispatch(Message.UpdateFinishTime(newTime))
                     else
-                        publish(BookPeriodStore.Label.ShowToast("Некорретное время"))
+                        publishLabel(BookPeriodStore.Label.ShowToast("Некорретное время"))
                 }
             }
         }
@@ -180,7 +181,7 @@ class BookPeriodStoreFactory(
             if (startDate >= currentDate) {
                 dispatch(Message.UpdateStartDate(newValue = startDate))
             } else {
-                publish(BookPeriodStore.Label.ShowToast("Некорректная дата"))
+                publishLabel(BookPeriodStore.Label.ShowToast("Некорректная дата"))
             }
             dispatch(
                 Message.UpdateFinishDate(newValue = endDate)

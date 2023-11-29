@@ -7,6 +7,7 @@ import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import band.effective.office.elevator.ui.booking.models.WorkspaceZoneUI
 import band.effective.office.elevator.ui.booking.models.sheetData.SelectedBookingPeriodState
+import band.effective.office.elevator.ui.bottomSheets.bookingSheet.bookPeriod.store.BookPeriodStore
 import band.effective.office.elevator.ui.models.TypesList
 import band.effective.office.network.model.Either
 import com.arkivanov.mvikotlin.core.store.Reducer
@@ -171,6 +172,9 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     }
                     dispatch(Msg.UpdateSelectedBookingPeriodState(bookingState))
                 }
+
+                is BookingStore.Intent.HandleLabelFromBookingPeriodSheet ->
+                    handleLabelFromBookingPeriodSheet(intent.label)
             }
         }
 
@@ -199,6 +203,12 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
             }
         }
 
+        private fun handleLabelFromBookingPeriodSheet(label: BookPeriodStore.Label) {
+            when(label) {
+                is BookPeriodStore.Label.ShowToast ->
+                    publish(BookingStore.Label.ShowToast(label.message))
+            }
+        }
         private suspend fun initZones() {
             withContext(Dispatchers.IO) {
                 bookingInteract.getZones().collect { zonesResponse ->

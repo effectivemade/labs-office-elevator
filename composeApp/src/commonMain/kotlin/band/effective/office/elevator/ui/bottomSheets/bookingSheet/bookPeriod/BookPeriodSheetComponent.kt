@@ -48,6 +48,7 @@ class BookPeriodSheetComponent(
     initState: BookPeriodStore.State,
     private val closeClick: () -> Unit,
     private val accept: (BookPeriodStore.State) -> Unit,
+    publishLabel: (BookPeriodStore.Label) -> Unit
 ) : BottomSheet, ComponentContext by componentContext {
 
     private val navigation = StackNavigation<Child>()
@@ -58,12 +59,12 @@ class BookPeriodSheetComponent(
         childFactory = { child, context -> child }
     )
 
-    val store = BookPeriodStoreFactory(
+    private val store = BookPeriodStoreFactory(
         storeFactory = DefaultStoreFactory(),
         initState = initState,
+        publishLabel = publishLabel
     ).create()
 
-    val label: Flow<BookPeriodStore.Label> = store.labels
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Composable

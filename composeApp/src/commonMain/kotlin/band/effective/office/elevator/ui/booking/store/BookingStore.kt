@@ -9,6 +9,8 @@ import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import band.effective.office.elevator.ui.booking.models.WorkspaceZoneUI
 import band.effective.office.elevator.ui.booking.models.sheetData.SelectedBookingPeriodState
+import band.effective.office.elevator.ui.bottomSheets.bookingSheet.bookPeriod.BookPeriodSheetComponent
+import band.effective.office.elevator.ui.bottomSheets.bookingSheet.bookPeriod.store.BookPeriodStore
 import band.effective.office.elevator.ui.models.TypesList
 import band.effective.office.elevator.utils.getCurrentDate
 import com.arkivanov.mvikotlin.core.store.Store
@@ -35,6 +37,8 @@ interface BookingStore : Store<BookingStore.Intent, BookingStore.State, BookingS
         data class ChangeSelectedType(val selectedType: TypesList) : Intent
 
         data class ApplyBookingPeriodFromSheet (val selectedState: SelectedBookingPeriodState) : Intent
+
+        data class HandleLabelFromBookingPeriodSheet(val label: BookPeriodStore.Label) : Intent
     }
 
     data class State(

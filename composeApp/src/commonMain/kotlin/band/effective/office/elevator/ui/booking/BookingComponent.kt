@@ -58,6 +58,10 @@ class BookingComponent(
                             )
                         )
                         closeSheet()
+                    },
+                    publishLabel = {
+                        bookingStore.accept(
+                            BookingStore.Intent.HandleLabelFromBookingPeriodSheet(it))
                     }
                 )
 
