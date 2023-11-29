@@ -303,7 +303,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     selectedFinishDate = msg.selectedSate.finishDate,
                     dateOfEndPeriod = msg.selectedSate.dateOfEndPeriod,
                     bookingPeriod = msg.selectedSate.bookingPeriod,
-                    typeOfEnd = msg.selectedSate.endPeriodBookingType
+                    typeOfEnd = msg.selectedSate.endPeriodBookingType,
+                    repeatBooking = msg.selectedSate.repeatBooking
                 )
 
                 is Msg.UpdateAllWorkspaceList -> copy(workSpacesAll = msg.workspaces)

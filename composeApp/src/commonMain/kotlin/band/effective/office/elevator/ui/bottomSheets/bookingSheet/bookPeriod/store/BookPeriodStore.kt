@@ -15,7 +15,7 @@ interface BookPeriodStore : Store<BookPeriodStore.Intent, BookPeriodStore.State,
         data class InputPeriod(val bookingPeriod: BookingPeriod,/* val repeatBooking: StringResource*/) : Intent
         data class InputDayOfEndPeriod(val dateOfEndPeriod: LocalDate) : Intent
         data class InputEndType(val endPeriodBookingType: TypeEndPeriodBooking) : Intent
-        data class OnChangeTemplateFrequency (val bookingPeriod: BookingPeriod) : Intent
+        data class OnChangeTemplateFrequency(val bookingPeriod: BookingPeriod) : Intent
         data class OnChangeCustomFrequency (
             val bookingPeriod: BookingPeriod,
             val typeEndPeriodBooking: TypeEndPeriodBooking

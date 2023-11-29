@@ -45,6 +45,7 @@ fun stringFromBookPeriod(
         MainRes.strings.every_month -> stringResource(repeatBooking) + " ${startDate.dayOfMonth} числа "
         else -> ""
     }
+
     val period =
         when (bookingPeriod) {
             is BookingPeriod.Week -> "неделю(и) "

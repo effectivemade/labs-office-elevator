@@ -167,7 +167,9 @@ class BookPeriodSheetComponent(
                                         } else {
                                             navigation.pop()
                                         }
-                                        store.accept(BookPeriodStore.Intent.InputPeriod(it.second))
+                                        store.accept(
+                                            BookPeriodStore.Intent.OnChangeTemplateFrequency(it.second)
+                                        )
                                     },
                                     modifier = Modifier
                                         .fillMaxWidth()

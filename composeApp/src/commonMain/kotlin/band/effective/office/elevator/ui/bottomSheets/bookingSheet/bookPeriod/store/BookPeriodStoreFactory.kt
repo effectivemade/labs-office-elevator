@@ -85,8 +85,9 @@ class BookPeriodStoreFactory(
                         startDate = getState().startDate
                     )
 
-                is BookPeriodStore.Intent.OnChangeTemplateFrequency ->
+                is BookPeriodStore.Intent.OnChangeTemplateFrequency -> {
                     setTemplateFrequency(bookingPeriod = intent.bookingPeriod)
+                }
             }
         }
 
