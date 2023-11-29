@@ -91,7 +91,7 @@ class BookingComponent(
     }
 
     sealed class Output {
-        object OpenMainTab : Output()
+        data object OpenMainTab : Output()
     }
 
     fun openSheet(config: SheetConfig) {
@@ -104,12 +104,12 @@ class BookingComponent(
 
     sealed interface SheetConfig : Parcelable {
         @Parcelize
-        object BookAccept : SheetConfig
+        data object BookAccept : SheetConfig
 
         @Parcelize
-        object ChooseZone : SheetConfig
+        data object ChooseZone : SheetConfig
 
         @Parcelize
-        object BookPeriod : SheetConfig
+        data object BookPeriod : SheetConfig
     }
 }

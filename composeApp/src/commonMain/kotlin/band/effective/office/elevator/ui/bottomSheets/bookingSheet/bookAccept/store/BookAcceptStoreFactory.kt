@@ -1,6 +1,6 @@
 package band.effective.office.elevator.ui.bottomSheets.bookingSheet.bookAccept.store
 
-import band.effective.office.elevator.domain.entity.BookingInteractor
+import band.effective.office.elevator.domain.entity.BookingInteract
 import band.effective.office.elevator.domain.models.BookingPeriod
 import band.effective.office.elevator.domain.models.CreatingBookModel
 import band.effective.office.network.model.Either
@@ -20,7 +20,7 @@ class BookAcceptStoreFactory(
     private val onMainScreen: () -> Unit
 ) : KoinComponent {
 
-    private val bookingInteractor: BookingInteractor by inject()
+    private val bookingInteract: BookingInteract by inject()
     fun create(): BookAcceptStore = object : BookAcceptStore,
         Store<BookAcceptStore.Intent, BookAcceptStore.State, Nothing> by storeFactory.create(
             name = "BookAcceptStore",
@@ -66,7 +66,7 @@ class BookAcceptStoreFactory(
             val endDate = state.dateOfEnd
 
             Napier.d { "book period: ${state.bookingPeriod is BookingPeriod.EveryWorkDay}" }
-            bookingInteractor.create(
+            bookingInteract.create(
                 creatingBookModel = CreatingBookModel(
                     workSpaceId = state.bookingId, //TODO(Replace with value from DB)
                     dateOfStart = startDate,

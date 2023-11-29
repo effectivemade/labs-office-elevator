@@ -231,7 +231,6 @@ class BookingRepositoryImpl(
         dateFilter: LocalDate
     ) =
         map(errorMapper = { error ->
-            println("errors sow booking $error")
             ErrorWithData(
                 error = error, saveData = when (oldValue) {
                     is Either.Error -> oldValue.error.saveData

@@ -14,12 +14,13 @@ import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsF
 import band.effective.office.elevator.ui.models.ReservedSeat
 import band.effective.office.network.model.Either
 import io.github.aakira.napier.Napier
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.LocalDateTime
 
-class BookingInteractor(
+/*TODO: Does ui models be in domain module? */
+
+class BookingInteract(
     private val getBookingsUseCase: GetBookingsUseCase,
     private val changeBookingUseCase: ChangeBookingUseCase,
     private val createBookingUseCase: CreateBookingUseCase,
@@ -65,20 +66,11 @@ class BookingInteractor(
         ).map { response ->
             when (response) {
                 is Either.Success -> {
-                    val list = selectedWorkspacesZone.filter { it.isSelected }
                     val listWorkSpaces = response.data
-
-                    Napier.d { response.data.toString() }
-                    val filteredWorkspacesList = mutableListOf<WorkSpaceUI>()
-
-                    list.forEach { zone ->
-                        val zoneName = zone.name
-                        val foundedSpace =
-                            listWorkSpaces.filter { it.zoneName == zoneName }
-
-                        filteredWorkspacesList.addAll(foundedSpace)
-                    }
-                    Either.Success(filteredWorkspacesList.toList())
+                    val filteredWorkspacesList = filterWorkspacesList(
+                        workspaces = listWorkSpaces, zones = selectedWorkspacesZone
+                    )
+                    Either.Success(filteredWorkspacesList)
                 }
 
                 is Either.Error -> {
@@ -87,6 +79,16 @@ class BookingInteractor(
                 }
             }
         }
+
+    fun filterWorkspacesList(
+        workspaces: List<WorkSpaceUI>,
+        zones: List<WorkspaceZoneUI>
+    ) : List<WorkSpaceUI> {
+        val selectedZones = zones.filter { it.isSelected }
+        return workspaces.filter { workspaces ->
+            selectedZones.count { zone -> zone.name == workspaces.zoneName } > 0
+        }
+    }
 
     suspend fun deleteBooking(bookingId: String) = repository.deleteBooking(bookingId)
 }

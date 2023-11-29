@@ -46,16 +46,8 @@ fun BookingScreen(bookingComponent: BookingComponent) {
                 BookingStore.Label.OpenBookPeriod -> bookingComponent.openSheet(BookingComponent.SheetConfig.BookPeriod)
                 BookingStore.Label.OpenChooseZone -> bookingComponent.openSheet(BookingComponent.SheetConfig.ChooseZone)
                 is BookingStore.Label.ShowToast -> showToast(label.message)
-                else -> {}
             }
         }
-    }
-
-    var timeTitle by remember { mutableStateOf(MainRes.strings.take_from) }
-    timeTitle = if (state.isStart) {
-        MainRes.strings.take_from
-    } else {
-        MainRes.strings.take_before
     }
 
     ChildSlotModalBottomSheetLayout(

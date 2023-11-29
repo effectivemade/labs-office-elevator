@@ -2,7 +2,7 @@ package band.effective.office.elevator.ui.main.store
 
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.data.ApiResponse
-import band.effective.office.elevator.domain.entity.BookingInteractor
+import band.effective.office.elevator.domain.entity.BookingInteract
 import band.effective.office.elevator.domain.useCase.DeleteBookingUseCase
 import band.effective.office.elevator.domain.useCase.ElevatorCallUseCase
 import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsFilter
@@ -38,7 +38,7 @@ internal class MainStoreFactory(
 
     private val elevatorUseCase: ElevatorCallUseCase by inject()
     private val deleteBookingUseCase: DeleteBookingUseCase by inject()
-    private val bookingInteractor: BookingInteractor by inject()
+    private val bookingInteract: BookingInteract by inject()
 
     private var filtration = BookingsFilter(meetRoom = true, workPlace = true)
     private var updatedList = false
@@ -138,7 +138,7 @@ internal class MainStoreFactory(
                         publish(MainStore.Label.HideOptions)
                     }
                     scope.launch(Dispatchers.IO) {
-                        bookingInteractor.deleteBooking(getState().idSelectedBooking)
+                        bookingInteract.deleteBooking(getState().idSelectedBooking)
                         getBookingsForUserByDate(
                             dates = listOf(
                                 getState().beginDate,
@@ -265,7 +265,7 @@ internal class MainStoreFactory(
             }
 
             scope.launch(Dispatchers.IO) {
-                bookingInteractor
+                bookingInteract
                     .getForUser(
                         beginDateTime = beginDateTime,
                         endDateTime = endDateTime,
@@ -305,7 +305,7 @@ internal class MainStoreFactory(
 
             scope.launch {
                 withContext(Dispatchers.IO) {
-                    bookingInteractor
+                    bookingInteract
                         .getForUser(
                             beginDateTime = beginDateTime,
                             endDateTime = endDateTime,

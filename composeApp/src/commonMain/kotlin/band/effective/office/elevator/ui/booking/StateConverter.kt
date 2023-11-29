@@ -25,7 +25,7 @@ object StateConverter {
             finishDate = selectedFinishDate,
             finishTime = selectedFinishTime,
             repeatBooking = repeatBooking,
-            switchChecked = wholeDay,
+            switchChecked = false,
             dateOfEndPeriod = dateOfEndPeriod,
             bookingPeriod = bookingPeriod,
             endPeriodBookingType = typeOfEnd
