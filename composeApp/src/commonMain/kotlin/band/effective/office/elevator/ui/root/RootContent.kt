@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -17,7 +18,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import band.effective.office.elevator.components.LoadingIndicator
 import band.effective.office.elevator.ui.authorization.AuthorizationScreen
 import band.effective.office.elevator.ui.content.Content
 import band.effective.office.elevator.ui.root.store.RootStore
@@ -28,7 +31,6 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
 
     LaunchedEffect(component) {
         component.label.collect { label ->
-            println("was label")
             when (label) {
                 RootStore.Label.UserAlreadySigned -> component.onOutput(
                     RootComponent.Output.OpenContent
@@ -55,17 +57,8 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
                 }
             }
             AnimatedChild({ child is RootComponent.Child.Undefined }) {
-                (child as? RootComponent.Child.AuthorizationChild)?.run {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .size(80.dp)
-                                .padding(16.dp)
-                        )
-                    }
+                (child as? RootComponent.Child.Undefined)?.run {
+                    LoadingIndicator()
                 }
             }
         }

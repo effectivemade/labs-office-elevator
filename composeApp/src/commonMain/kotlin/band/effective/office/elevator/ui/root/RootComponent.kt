@@ -40,8 +40,9 @@ class RootComponent internal constructor(
     val slot = childSlot(
         source = navigation,
         handleBackButton = true,
-        childFactory = ::child
-    ).apply { navigation.activate(Config.Undefined) }
+        childFactory = ::child,
+        initialConfiguration = { Config.Undefined }
+    )
 
     private val rootStore =
         instanceKeeper.getStore {
