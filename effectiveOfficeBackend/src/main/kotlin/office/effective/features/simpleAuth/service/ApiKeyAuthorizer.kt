@@ -36,7 +36,7 @@ class ApiKeyAuthorizer(private val extractor: TokenExtractor = TokenExtractor())
             return false
         } else {
             logger.info("Api key verifier succeed")
-            logger.trace("Api key verifier succeed with token: {}", call)
+            logger.trace("Api key verifier succeed with token: {}", token)
             return true
         }
     }
