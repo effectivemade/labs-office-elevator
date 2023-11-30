@@ -24,26 +24,15 @@ val VerificationPlugin = createApplicationPlugin(name = "VerificationPlugin") {
     onCall { call ->
         run {
             if (pluginOn && call.request.path() != "/notifications") {
-                val token = call.request.parseAuthorizationHeader()?.render()?.split("Bearer ")?.last() ?: run {
-                    logger.info("Verification failed. Cannot find auth token")
-                    call.respond(
-                        HttpStatusCode.Unauthorized
-                    )
-                    return@onCall
-                }
                 if (!authenticationPipeline.isCorrectToken(call)) {
                     logger.info("Verification failed.")
-                    logger.trace("Verification failed with token: {}", token)
                     call.response.status(HttpStatusCode.Unauthorized)
                     call.respond("Verification failed.")
                 } else {
                     logger.info("Verification succeed.")
-                    logger.trace("Verification succeed with token: {}", token)
                 }
 
             }
         }
-
-
     }
 }
