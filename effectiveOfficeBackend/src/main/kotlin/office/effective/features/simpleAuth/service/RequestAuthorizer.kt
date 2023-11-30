@@ -18,7 +18,7 @@ class RequestAuthorizer(private val extractor: TokenExtractor = TokenExtractor()
     /**
      * Check Google ID Token. Calls oauth2.googleapis.com
      *
-     * @param call [String] which contains token to verify
+     * @param call [ApplicationCall] which contains token to verify
      * @return is token correct
      *
      * @author Kiselev Danil
