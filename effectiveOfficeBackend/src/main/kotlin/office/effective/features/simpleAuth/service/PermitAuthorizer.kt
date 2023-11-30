@@ -14,7 +14,7 @@ class PermitAuthorizer(private val permittedPaths: Iterable<String>) : Authorize
 
     val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
-    override suspend fun isCorrectToken(call: ApplicationCall): Boolean {
+    override suspend fun authorize(call: ApplicationCall): Boolean {
         val fixedPathAsArray = call.request.path().split('/').filter { it.isNotBlank() }
         for (permitted in permittedPaths) {
             val permittedPathAsArray = permitted.split('/').filter { it.isNotBlank() }

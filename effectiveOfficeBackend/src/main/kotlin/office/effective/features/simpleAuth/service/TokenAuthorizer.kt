@@ -31,7 +31,7 @@ class TokenAuthorizer(private val extractor: TokenExtractor = TokenExtractor()) 
      *
      * @author Kiselev Danil
      * */
-    override suspend fun isCorrectToken(call: ApplicationCall): Boolean {
+    override suspend fun authorize(call: ApplicationCall): Boolean {
         var userMail: String? = null
         val tokenString = extractor.extractToken(call) ?: run {
             logger.info("Token auth failed")
@@ -44,7 +44,7 @@ class TokenAuthorizer(private val extractor: TokenExtractor = TokenExtractor()) 
             return failResponse(tokenString)
         }
 
-        val payload = token?.payload ?: run { return@isCorrectToken failResponse(tokenString) }
+        val payload = token?.payload ?: run { return@authorize failResponse(tokenString) }
 
         val emailVerified: Boolean = payload.emailVerified
         val hostedDomain = payload.hostedDomain ?: extractDomain(payload.email)

@@ -3,7 +3,6 @@ package office.effective.plugins
 
 import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import office.effective.features.simpleAuth.service.AuthorizationPipeline
@@ -24,7 +23,7 @@ val VerificationPlugin = createApplicationPlugin(name = "VerificationPlugin") {
     onCall { call ->
         run {
             if (pluginOn && call.request.path() != "/notifications") {
-                if (!authenticationPipeline.isCorrectToken(call)) {
+                if (!authenticationPipeline.authorize(call)) {
                     logger.info("Verification failed.")
                     call.response.status(HttpStatusCode.Unauthorized)
                     call.respond("Verification failed.")

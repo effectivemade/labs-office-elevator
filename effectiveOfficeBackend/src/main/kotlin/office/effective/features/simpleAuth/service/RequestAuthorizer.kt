@@ -23,7 +23,7 @@ class RequestAuthorizer(private val extractor: TokenExtractor = TokenExtractor()
      *
      * @author Kiselev Danil
      * */
-    override suspend fun isCorrectToken(call: ApplicationCall): Boolean {
+    override suspend fun authorize(call: ApplicationCall): Boolean {
         val tokenString = extractor.extractToken(call) ?: run {
             logger.info("Request auth failed")
             return false

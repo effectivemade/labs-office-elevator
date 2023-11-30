@@ -22,7 +22,7 @@ class ApiKeyAuthorizer(private val extractor: TokenExtractor = TokenExtractor())
      * @return random String
      * @author Kiselev Danil
      */
-    override suspend fun isCorrectToken(call: ApplicationCall): Boolean {
+    override suspend fun authorize(call: ApplicationCall): Boolean {
 
         val token = extractor.extractToken(call) ?: run {
             logger.info("Api key verifier failed")

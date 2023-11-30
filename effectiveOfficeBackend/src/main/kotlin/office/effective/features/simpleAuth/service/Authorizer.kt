@@ -10,5 +10,5 @@ interface Authorizer {
      * @param call [ApplicationCall] incoming call to authorize
      * @author Kiselev Danil
      * */
-    suspend fun isCorrectToken(call: ApplicationCall): Boolean
+    suspend fun authorize(call: ApplicationCall): Boolean
 }

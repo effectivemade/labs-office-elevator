@@ -12,7 +12,7 @@ class AuthorizationPipeline : Authorizer {
     val logger: Logger = LoggerFactory.getLogger(this::class.java)
     private val authorizers: MutableCollection<Authorizer> = mutableListOf()
 
-    override suspend fun isCorrectToken(call: ApplicationCall): Boolean {
+    override suspend fun authorize(call: ApplicationCall): Boolean {
 
         if (authorizers.isEmpty()) {
             logger.warn("Authorizers collection is empty")
@@ -20,8 +20,8 @@ class AuthorizationPipeline : Authorizer {
         }
 
         authorizers.forEach {
-            if (it.isCorrectToken(call)) {
-                return@isCorrectToken true
+            if (it.authorize(call)) {
+                return@authorize true
             }
         }
         return false
