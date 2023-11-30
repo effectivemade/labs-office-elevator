@@ -18,7 +18,7 @@ class ApiKeyAuthorizer(private val extractor: TokenExtractor = TokenExtractor())
 
     /**
      * Check api key from input line. String encrypting by SHA-256 and comparing with encrypted keys from database. If it cannot find one, throw [InstanceNotFoundException]
-     * @param call [String] which contains token to verify
+     * @param call [ApplicationCall] which contains token to verify
      * @return random String
      * @author Kiselev Danil
      */
