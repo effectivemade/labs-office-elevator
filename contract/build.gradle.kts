@@ -84,7 +84,6 @@ kotlin {
 
     cocoapods {
         version = "2.0.0"
-        extraSpecAttributes
     }
 
 }
