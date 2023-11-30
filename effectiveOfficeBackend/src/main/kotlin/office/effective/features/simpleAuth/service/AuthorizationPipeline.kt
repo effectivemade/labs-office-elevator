@@ -7,10 +7,10 @@ import org.slf4j.LoggerFactory
 /**
  * Encapsulate pipeline of authorizers
  * */
-class AuthorizationPipeline : ITokenAuthorizer {
+class AuthorizationPipeline : Authorizer {
 
     val logger: Logger = LoggerFactory.getLogger(this::class.java)
-    private val authorizers: MutableCollection<ITokenAuthorizer> = mutableListOf()
+    private val authorizers: MutableCollection<Authorizer> = mutableListOf()
 
     override suspend fun isCorrectToken(call: ApplicationCall): Boolean {
 
@@ -29,11 +29,11 @@ class AuthorizationPipeline : ITokenAuthorizer {
 
     /**
      * Allow you to add authorizer to pipeline
-     * @param authorizer [ITokenAuthorizer]
+     * @param authorizer [Authorizer]
      * @return [AuthorizationPipeline] - instance of pipeline
      * @author Danil Kiselev
      * */
-    fun addAuthorizer(authorizer: ITokenAuthorizer): AuthorizationPipeline {
+    fun addAuthorizer(authorizer: Authorizer): AuthorizationPipeline {
         authorizers.add(authorizer)
         return this
     }

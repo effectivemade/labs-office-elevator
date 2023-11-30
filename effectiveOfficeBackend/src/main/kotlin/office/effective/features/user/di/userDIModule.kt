@@ -1,6 +1,6 @@
 package office.effective.features.user.di
 
-import office.effective.features.simpleAuth.service.ITokenAuthorizer
+import office.effective.features.simpleAuth.service.Authorizer
 import office.effective.features.simpleAuth.service.TokenAuthorizer
 import office.effective.features.user.converters.IntegrationDTOModelConverter
 import office.effective.features.user.converters.IntegrationModelEntityConverter
@@ -13,7 +13,7 @@ import office.effective.features.user.service.UserService
 import org.koin.dsl.module
 
 val userDIModule = module(createdAtStart = true) {
-    single<ITokenAuthorizer> { TokenAuthorizer() }
+    single<Authorizer> { TokenAuthorizer() }
     single<IUserService> { UserService(get()) }
     single<IntegrationModelEntityConverter> { IntegrationModelEntityConverter() }
     single<UserModelEntityConverter> { UserModelEntityConverter() }

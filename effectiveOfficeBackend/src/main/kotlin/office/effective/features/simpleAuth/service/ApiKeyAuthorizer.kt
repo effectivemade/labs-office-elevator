@@ -10,9 +10,9 @@ import java.security.MessageDigest
 import javax.xml.bind.DatatypeConverter
 
 /**
- * [ITokenAuthorizer] implementation. Check api keys
+ * [Authorizer] implementation. Check api keys
  * */
-class ApiKeyAuthorizer(private val extractor: TokenExtractor = TokenExtractor()) : ITokenAuthorizer {
+class ApiKeyAuthorizer(private val extractor: TokenExtractor = TokenExtractor()) : Authorizer {
     val logger: Logger = LoggerFactory.getLogger(this::class.java)
     private val repository: AuthRepository = GlobalContext.get().get()
 

@@ -10,9 +10,9 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 /**
- * Implementation of [ITokenAuthorizer]. Checks GoogleIdTokens
+ * Implementation of [Authorizer]. Checks GoogleIdTokens
  * */
-class TokenAuthorizer(private val extractor: TokenExtractor = TokenExtractor()) : ITokenAuthorizer {
+class TokenAuthorizer(private val extractor: TokenExtractor = TokenExtractor()) : Authorizer {
 
     private val verifier: GoogleIdTokenVerifier =
         GoogleIdTokenVerifier.Builder(NetHttpTransport(), GsonFactory()).build()

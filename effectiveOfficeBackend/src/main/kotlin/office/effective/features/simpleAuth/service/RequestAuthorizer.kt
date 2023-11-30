@@ -10,9 +10,9 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 /**
- * [ITokenAuthorizer] implementation. Calls oauth2.googleapis.com to verify token
+ * [Authorizer] implementation. Calls oauth2.googleapis.com to verify token
  * */
-class RequestAuthorizer(private val extractor: TokenExtractor = TokenExtractor()) : ITokenAuthorizer {
+class RequestAuthorizer(private val extractor: TokenExtractor = TokenExtractor()) : Authorizer {
     val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     /**

@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory
  * Example: "/workspaces" permission allow access to "/workspaces/zones" routes.
  * @author Danil Kiselev
  * */
-class PermitAuthorizer(private val permittedPaths: Iterable<String>) : ITokenAuthorizer {
+class PermitAuthorizer(private val permittedPaths: Iterable<String>) : Authorizer {
 
     val logger: Logger = LoggerFactory.getLogger(this::class.java)
 

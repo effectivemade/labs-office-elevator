@@ -5,7 +5,7 @@ import io.ktor.server.application.*
 /**
  * Interface presents methods to verify tokens
  * */
-interface ITokenAuthorizer {
+interface Authorizer {
     /**
      * @param call [ApplicationCall] which contains token to verify
      * @author Kiselev Danil
