@@ -15,12 +15,12 @@ class PermitAuthorizer(private val permittedPaths: Iterable<String>) : Authorize
     val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     override suspend fun authorize(call: ApplicationCall): Boolean {
-        val fixedPathAsArray = call.request.path().split('/').filter { it.isNotBlank() }
+        val currentPathAsArray = call.request.path().split('/').filter { it.isNotBlank() }
         for (permitted in permittedPaths) {
             val permittedPathAsArray = permitted.split('/').filter { it.isNotBlank() }
-            if (permittedPathAsArray.size <= fixedPathAsArray.size) {
+            if (permittedPathAsArray.size <= currentPathAsArray.size) {
                 for (i in permittedPathAsArray.indices) {
-                    if (permittedPathAsArray[i] == fixedPathAsArray[i]) {
+                    if (permittedPathAsArray[i] == currentPathAsArray[i]) {
                         return true
                     }
                 }
