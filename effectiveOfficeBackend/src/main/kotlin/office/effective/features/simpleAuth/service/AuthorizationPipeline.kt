@@ -4,30 +4,37 @@ import io.ktor.server.application.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+/**
+ * Encapsulate pipeline of authorizers
+ * */
+class AuthorizationPipeline : ITokenAuthorizer {
 
-class AuthorizationPipeline(private val iterable: Iterable<ITokenAuthorizer>?) : ITokenAuthorizer {
     val logger: Logger = LoggerFactory.getLogger(this::class.java)
-    private val authorizers: MutableCollection<ITokenAuthorizer>?
-
-
-    init {
-        //TODO Make correct Builder
-        authorizers = iterable?.toMutableList()
-    }
+    private val authorizers: MutableCollection<ITokenAuthorizer> = mutableListOf()
 
     override suspend fun isCorrectToken(call: ApplicationCall): Boolean {
-        iterable?.forEach {
+
+        if (authorizers.isEmpty()) {
+            logger.warn("Authorizers collection is empty")
+            return false
+        }
+
+        authorizers.forEach {
             if (it.isCorrectToken(call)) {
                 return@isCorrectToken true
             }
-        }?: logger.warn("Authorizers collection is empty")
+        }
         return false
     }
 
-    fun addAuthorizer(authorizer: ITokenAuthorizer?) : AuthorizationPipeline {
-        if(authorizer != null) {
-            authorizers?.add(authorizer)?: mutableListOf(authorizer)
-        }
+    /**
+     * Allow you to add authorizer to pipeline
+     * @param authorizer [ITokenAuthorizer]
+     * @return [AuthorizationPipeline] - instance of pipeline
+     * @author Danil Kiselev
+     * */
+    fun addAuthorizer(authorizer: ITokenAuthorizer): AuthorizationPipeline {
+        authorizers.add(authorizer)
         return this
     }
 
