@@ -36,12 +36,12 @@ class RequestAuthorizer(private val extractor: TokenExtractor = TokenExtractor()
         }
 
         if (response.status != HttpStatusCode.OK) {
-            logger.info("Request verifier failed")
-            logger.trace("Request verifier failed with token: {}", tokenString)
+            logger.info("Request authorizer failed")
+            logger.trace("Request authorizer failed with token: {}", tokenString)
             return false
         } else {
-            logger.info("Request verifier succeed")
-            logger.trace("Request verifier succeed with token: {}", tokenString)
+            logger.info("Request authorizer succeed")
+            logger.trace("Request authorizer succeed with token: {}", tokenString)
             return true
         }
     }

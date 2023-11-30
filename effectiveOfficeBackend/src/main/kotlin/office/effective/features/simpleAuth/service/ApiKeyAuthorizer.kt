@@ -25,18 +25,18 @@ class ApiKeyAuthorizer(private val extractor: TokenExtractor = TokenExtractor())
     override suspend fun authorize(call: ApplicationCall): Boolean {
 
         val token = extractor.extractToken(call) ?: run {
-            logger.info("Api key verifier failed")
+            logger.info("Api key authorizer failed")
             return false
         }
         val key = repository.findApiKey(encryptKey("SHA-256", token))
 
         if (key.isNullOrBlank()) {
-            logger.info("Api key verifier failed")
-            logger.trace("Api key verifier failed with token: {}", token)
+            logger.info("Api key authorizer failed")
+            logger.trace("Api key authorizer failed with token: {}", token)
             return false
         } else {
-            logger.info("Api key verifier succeed")
-            logger.trace("Api key verifier succeed with token: {}", token)
+            logger.info("Api key authorizer succeed")
+            logger.trace("Api key authorizer succeed with token: {}", token)
             return true
         }
     }
