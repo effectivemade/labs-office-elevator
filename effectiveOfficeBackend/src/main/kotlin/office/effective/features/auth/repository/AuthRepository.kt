@@ -1,4 +1,4 @@
-package office.effective.features.simpleAuth.repository
+package office.effective.features.auth.repository
 
 import office.effective.common.exception.InstanceNotFoundException
 import org.ktorm.database.Database
