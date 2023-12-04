@@ -93,6 +93,8 @@
     <string name="cansel">Отмена</string>
     <string name="delete">Удалить</string>
     <string name="ok">ОK</string>
+    <string name="from_date">с %s</string>
+    <string name="to_date">до %s</string>
 
     <!--Booking-->
     <string name="type_booking">Тип брони</string>

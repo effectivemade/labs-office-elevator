@@ -132,6 +132,10 @@
     <string name="phone_plus_seven">+7</string>
     <string name="telegram_symbol">@</string>
 
+
+    <string name="from_date">from %s</string>
+    <string name="to_date">to %s</string>
+
     <!-- Success messages -->
     <string name="elevator_called_successfully">Successfully!</string>
 
