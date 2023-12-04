@@ -3,6 +3,9 @@ package office.effective.features.booking.converters
 import model.Ending
 import model.Freq
 import model.Recurrence
+import java.text.SimpleDateFormat
+import java.util.Formatter
+import java.util.GregorianCalendar
 
 /**
  * Object for creating Google calendar recurrence rule
@@ -51,7 +54,10 @@ object RecurrenceRuleFactory {
         "RRULE:".let { it + "FREQ=${freq.name};" }.let { if (interval != 0) it + "INTERVAL=${interval};" else it }.let {
             it + when (ending) {
                 is Ending.Count -> "COUNT=${ending.value};"
-                is Ending.Until -> "UNTIL=${ending.value};"
+                is Ending.Until -> {
+                    val date = GregorianCalendar().apply { timeInMillis = ending.value.toLong() }
+                    "UNTIL=${SimpleDateFormat("yyyyMMdd").format(date)};"
+                }
                 else -> ""
             }
         }.let {
