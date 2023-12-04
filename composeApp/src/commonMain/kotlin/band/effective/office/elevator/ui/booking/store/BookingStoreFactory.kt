@@ -16,6 +16,7 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
@@ -306,16 +307,20 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     allZonesList = msg.zones
                 )
 
-                is Msg.UpdateSelectedBookingPeriodState -> copy(
-                    selectedStartTime = msg.selectedSate.startTime,
-                    selectedStartDate = msg.selectedSate.startDate,
-                    selectedFinishTime = msg.selectedSate.finishTime,
-                    selectedFinishDate = msg.selectedSate.finishDate,
-                    dateOfEndPeriod = msg.selectedSate.dateOfEndPeriod,
-                    bookingPeriod = msg.selectedSate.bookingPeriod,
-                    typeOfEnd = msg.selectedSate.endPeriodBookingType,
-                    repeatBooking = msg.selectedSate.repeatBooking
-                )
+                is Msg.UpdateSelectedBookingPeriodState -> {
+                    Napier.d { "set type of end ${msg.selectedSate.endPeriodBookingType}" }
+
+                    copy(
+                        selectedStartTime = msg.selectedSate.startTime,
+                        selectedStartDate = msg.selectedSate.startDate,
+                        selectedFinishTime = msg.selectedSate.finishTime,
+                        selectedFinishDate = msg.selectedSate.finishDate,
+                        dateOfEndPeriod = msg.selectedSate.dateOfEndPeriod,
+                        bookingPeriod = msg.selectedSate.bookingPeriod,
+                        typeOfEnd = msg.selectedSate.endPeriodBookingType,
+                        repeatBooking = msg.selectedSate.repeatBooking
+                    )
+                }
 
                 is Msg.UpdateAllWorkspaceList -> copy(workSpacesAll = msg.workspaces)
             }

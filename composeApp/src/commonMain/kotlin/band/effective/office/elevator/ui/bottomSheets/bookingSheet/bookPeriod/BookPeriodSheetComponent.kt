@@ -76,8 +76,7 @@ class BookPeriodSheetComponent(
                 Child.CustomPeriod -> BookingRepeat(
                     backButtonClicked = { navigation.pop() },
                     confirmBooking = { period, endType ->
-                        store.accept(BookPeriodStore.Intent.InputPeriod(period))
-                        store.accept(BookPeriodStore.Intent.InputEndType(endType))
+                        store.accept(BookPeriodStore.Intent.OnChangeCustomFrequency(period, endType))
                         navigation.replaceAll(Child.Setting)
                     },
                     onSelected = {},

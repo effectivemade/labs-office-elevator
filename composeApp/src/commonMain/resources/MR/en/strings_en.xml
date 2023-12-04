@@ -140,6 +140,16 @@
     <string name="phone">Phone number</string>
     <string name="telegram">Telegram</string>
 
+    <!-- Booking title -->
+    <string name="number_with_parametr"> %th\u0020</string>
+    <string name="weekly">week(s)\u0020</string>
+    <string name="monthly">month(s)\u0020</string>
+    <string name="yearly">years\u0020</string>
+    <string name="once_per">once per %s\u0020</string>
+    <string name="once_per_from">once in %s from\u0020</string>
+    <string name="to_end_reccurense">by %s\u0020</string>
+    <string name="repeate_times">\u0020repeated %s times</string>
+
     <!-- Edit Profile-->
     <string name="profile_data">Profile Data</string>
     <string name="last_name_and_first_name">Last name and First name</string>

@@ -10,6 +10,7 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.commandiron.wheel_picker_compose.utils.getCurrentTime
 import dev.icerock.moko.resources.StringResource
+import io.github.aakira.napier.Napier
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.minus
@@ -110,6 +111,7 @@ class BookPeriodStoreFactory(
             typeEndPeriodBooking: TypeEndPeriodBooking,
             startDate: LocalDate,
         ) {
+            Napier.d { "get type of end $typeEndPeriodBooking" }
             val typeOfEnd = when (typeEndPeriodBooking) {
                 is TypeEndPeriodBooking.DatePeriodEnd -> {
                     // TODO: hen backend fix until date, it`s can be removed
@@ -129,7 +131,7 @@ class BookPeriodStoreFactory(
             }
             dispatch(Message.UpdatePeriod(bookingPeriod))
             dispatch(Message.UpdateEndType(typeOfEnd))
-            setFrequencyTitle(bookingPeriod)
+            setFrequencyTitle(BookingPeriod.Another)
         }
 
         private fun setTemplateFrequency(bookingPeriod: BookingPeriod) {
