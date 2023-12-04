@@ -15,7 +15,6 @@ import office.effective.model.UserModel
 class UserFacade(
     private val service: IUserService,
     private val converterDTO: UserDTOModelConverter,
-    private val verifier: Authorizer,
     private val transactionManager: DatabaseTransactionManager
 ) {
     /**
