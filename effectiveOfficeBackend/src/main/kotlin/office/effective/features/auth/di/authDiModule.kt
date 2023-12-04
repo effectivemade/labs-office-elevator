@@ -1,7 +1,7 @@
-package office.effective.features.simpleAuth.di
+package office.effective.features.auth.di
 
-import office.effective.features.simpleAuth.repository.AuthRepository
-import office.effective.features.simpleAuth.service.*
+import office.effective.features.auth.repository.AuthRepository
+import office.effective.features.auth.service.*
 import org.koin.dsl.module
 
 val authDiModule = module(createdAtStart = true) {

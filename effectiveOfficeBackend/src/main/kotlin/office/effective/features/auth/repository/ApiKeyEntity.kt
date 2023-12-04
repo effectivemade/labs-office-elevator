@@ -1,4 +1,4 @@
-package office.effective.features.simpleAuth.repository
+package office.effective.features.auth.repository
 
 import org.ktorm.database.Database
 import org.ktorm.entity.Entity

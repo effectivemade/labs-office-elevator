@@ -1,8 +1,8 @@
-package office.effective.features.simpleAuth.service
+package office.effective.features.auth.service
 
 import io.ktor.server.application.*
 import office.effective.common.exception.InstanceNotFoundException
-import office.effective.features.simpleAuth.repository.AuthRepository
+import office.effective.features.auth.repository.AuthRepository
 import org.koin.core.context.GlobalContext
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

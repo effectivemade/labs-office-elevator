@@ -1,4 +1,4 @@
-package office.effective.features.simpleAuth.service
+package office.effective.features.auth.service
 
 import io.ktor.server.application.*
 import io.ktor.server.request.*

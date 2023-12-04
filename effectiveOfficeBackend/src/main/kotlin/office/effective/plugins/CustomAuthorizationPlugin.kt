@@ -4,7 +4,7 @@ package office.effective.plugins
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
-import office.effective.features.simpleAuth.service.AuthorizationPipeline
+import office.effective.features.auth.service.AuthorizationPipeline
 import org.koin.core.context.GlobalContext
 import org.slf4j.LoggerFactory
 
