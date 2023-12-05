@@ -11,5 +11,5 @@ internal fun getDefaultFont(): FontFamily {
 
 @Composable
 internal fun getPromoFont(): FontFamily {
-    return fontFamilyResource(MainRes.fonts.Museocyrl.regular)
+    return fontFamilyResource(MainRes.fonts.Museocyrl.bold)
 }

@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
     spec.name                     = 'composeApp'
-    spec.version                  = '1.0.0'
+    spec.version                  = '2.0.0'
     spec.homepage                 = 'https://github.com/Radch-enko'
     spec.source                   = { :http=> ''}
     spec.authors                  = ''
@@ -27,6 +27,7 @@ Pod::Spec.new do |spec|
                   exit 0
                 fi
                 set -ev
+                export LANG=en_US.UTF-8
                 REPO_ROOT="$PODS_TARGET_SRCROOT"
                 "$REPO_ROOT/../gradlew" -p "$REPO_ROOT" $KOTLIN_PROJECT_PATH:syncFramework \
                     -Pkotlin.native.cocoapods.platform=$PLATFORM_NAME \
@@ -35,7 +36,5 @@ Pod::Spec.new do |spec|
             SCRIPT
         }
     ]
-    spec.resource_bundles = {
-        'LibresComposeApp' => ['build/generated/libres/apple/resources/images/LibresComposeApp.xcassets']
-    }
+                
 end
