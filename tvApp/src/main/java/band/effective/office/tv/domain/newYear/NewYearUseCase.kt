@@ -11,7 +11,7 @@ class NewYearUseCase {
     suspend fun getCounter(): Flow<NewYearCounter> = flow {
         while (true) {
             emit(counter())
-            delay(1000) // TODO
+            delay(1000)
         }
     }
 

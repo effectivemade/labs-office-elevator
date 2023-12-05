@@ -34,7 +34,8 @@ class EventStoryViewModel @Inject constructor(
     private val eventStoryData: EventStoryDataCombinerUseCase,
     private val timer: TimerSlideShow,
     @MattermostClient val imageLoader: ImageLoader,
-    private val autoplayController: AutoplayController
+    private val autoplayController: AutoplayController,
+    private val newYearUseCase: NewYearUseCase
 ) : ViewModel() {
     private val mutableState = MutableStateFlow(LatestEventInfoUiState.empty)
     val state = mutableState.asStateFlow()
@@ -109,23 +110,24 @@ class EventStoryViewModel @Inject constructor(
                 }
             }
         }
-        viewModelScope.launch {
-            val useCase = NewYearUseCase()
-            if (useCase.counter().day < 32) {
-                useCase.getCounter().collect { newCounter ->
-                    val newEventList = mutableState.value.eventsInfo.toMutableList()
-                    val oldCounterIndex =
-                        mutableState.value.eventsInfo.indexOfFirst { it is NewYearCounter }
-                    if (oldCounterIndex != -1) {
-                        newEventList[oldCounterIndex] = newCounter
-                    } else {
-                        newEventList.add(newCounter)
-                    }
-                    mutableState.update { state.value.copy(eventsInfo = newEventList) }
+        newYearTimerInit()
+        startTimer()
+    }
+
+    private fun newYearTimerInit() = viewModelScope.launch {
+        if (newYearUseCase.counter().day < 32) {
+            newYearUseCase.getCounter().collect { newCounter ->
+                val newEventList = mutableState.value.eventsInfo.toMutableList()
+                val oldCounterIndex =
+                    mutableState.value.eventsInfo.indexOfFirst { it is NewYearCounter }
+                if (oldCounterIndex != -1) {
+                    newEventList[oldCounterIndex] = newCounter
+                } else {
+                    newEventList.add(newCounter)
                 }
+                mutableState.update { state.value.copy(eventsInfo = newEventList) }
             }
         }
-        startTimer()
     }
 
     private fun updateStateAsException(error: String) {

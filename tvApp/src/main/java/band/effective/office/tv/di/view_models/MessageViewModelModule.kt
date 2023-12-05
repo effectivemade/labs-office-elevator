@@ -3,6 +3,7 @@ package band.effective.office.tv.di.view_models
 import android.content.Context
 import band.effective.office.tv.domain.botLogic.MessengerBot
 import band.effective.office.tv.domain.botLogic.impl.MattermostBot
+import band.effective.office.tv.domain.newYear.NewYearUseCase
 import band.effective.office.tv.network.MattermostClient
 import band.effective.office.tv.repository.uselessFactRepository.UselessFactRepository
 import band.effective.office.tv.repository.uselessFactRepository.impl.UselessFactRepositoryImpl
@@ -39,4 +40,8 @@ class MessageViewModelModule {
         @MattermostClient okHttpClient: OkHttpClient
     ): ImageLoader =
         ImageLoader.Builder(context).okHttpClient(okHttpClient).build()
+
+    @ViewModelScoped
+    @Provides
+    fun provideNewYearUseCase(): NewYearUseCase = NewYearUseCase()
 }
