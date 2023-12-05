@@ -54,10 +54,7 @@ object RecurrenceRuleFactory {
         "RRULE:".let { it + "FREQ=${freq.name};" }.let { if (interval != 0) it + "INTERVAL=${interval};" else it }.let {
             it + when (ending) {
                 is Ending.Count -> "COUNT=${ending.value};"
-                is Ending.Until -> {
-                    val date = GregorianCalendar().apply { timeInMillis = ending.value.toLong() }
-                    "UNTIL=${SimpleDateFormat("yyyyMMdd").format(date)};"
-                }
+                is Ending.Until -> "UNTIL=${ending.value};"
                 else -> ""
             }
         }.let {

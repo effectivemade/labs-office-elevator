@@ -3,7 +3,8 @@ package model
 import com.google.api.client.util.DateTime
 import java.lang.IllegalArgumentException
 import java.lang.StringBuilder
-import java.util.Date
+import java.text.SimpleDateFormat
+import java.util.*
 
 enum class Freq {
     DAILY, WEEKLY, MONTHLY, YEARLY
@@ -48,11 +49,8 @@ data class Recurrence(
          * @author Kiselev Danil
          * */
         private fun toDateRfc5545(millisDate: Long): String {
-            val dt = DateTime(millisDate)
-            val sb = StringBuilder();
-            dt.toStringRfc3339().split('-', ':', ',', ' ', '+', '.').dropLast(3).forEach { sb.append(it) }
-            sb.append('Z')
-            return sb.toString().trim('[', ']')
+            val time = GregorianCalendar().apply { timeInMillis = millisDate }
+            return SimpleDateFormat("yyyyMMdd").format(time.time)
         }
     }
 
