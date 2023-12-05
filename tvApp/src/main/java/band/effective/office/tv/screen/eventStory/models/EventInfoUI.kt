@@ -9,7 +9,7 @@ sealed class EmployeeInfoUI(
     val name: String,
     val photoUrl: String,
     val eventType: EventType
-    ) : StoryModel(StoryType.Employee)
+) : StoryModel(StoryType.Employee)
 
 data class BirthdayUI(
     val employeeName: String,
@@ -38,14 +38,16 @@ data class NewEmployeeUI(
 data class DuolingoUserInfo(
     val keySort: KeySortDuolingoUser,
     val users: List<DuolingoUserUI>
-): StoryModel(StoryType.Duolingo)
+) : StoryModel(StoryType.Duolingo)
 
 data class MessageInfo(
     val message: BotMessage
-): StoryModel(StoryType.Message)
+) : StoryModel(StoryType.Message)
+
+data class NewYearCounter(val day: Int, val hour: Int, val min: Int, val sec: Int, val mil: Int): StoryModel(StoryType.NewYear)
 
 enum class StoryType {
-    Duolingo, Employee, Message
+    Duolingo, Employee, Message, NewYear
 }
 
 abstract class StoryModel(val storyType: StoryType)

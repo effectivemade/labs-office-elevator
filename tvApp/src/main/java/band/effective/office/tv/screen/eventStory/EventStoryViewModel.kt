@@ -6,6 +6,7 @@ import band.effective.office.tv.core.network.entity.Either
 import band.effective.office.tv.core.ui.screen_with_controls.TimerSlideShow
 import band.effective.office.tv.domain.model.message.BotMessage
 import band.effective.office.tv.domain.model.message.MessageQueue
+import band.effective.office.tv.domain.newYear.NewYearUseCase
 import band.effective.office.tv.domain.use_cases.EventStoryDataCombinerUseCase
 import band.effective.office.tv.network.MattermostClient
 import band.effective.office.tv.screen.autoplayController.AutoplayController
@@ -13,6 +14,7 @@ import band.effective.office.tv.screen.autoplayController.model.AutoplayState
 import band.effective.office.tv.screen.autoplayController.model.OnSwitchCallbacks
 import band.effective.office.tv.screen.autoplayController.model.ScreenState
 import band.effective.office.tv.screen.eventStory.models.MessageInfo
+import band.effective.office.tv.screen.eventStory.models.NewYearCounter
 import band.effective.office.tv.screen.eventStory.models.StoryModel
 import band.effective.office.tv.screen.navigation.Screen
 import coil.ImageLoader
@@ -104,6 +106,22 @@ class EventStoryViewModel @Inject constructor(
                     is Either.Success -> updateStateAsSuccessfulFetch(events.data)
 
                     is Either.Failure -> updateStateAsException(events.error)
+                }
+            }
+        }
+        viewModelScope.launch {
+            val useCase = NewYearUseCase()
+            if (useCase.counter().day < 32) {
+                useCase.getCounter().collect { newCounter ->
+                    val newEventList = mutableState.value.eventsInfo.toMutableList()
+                    val oldCounterIndex =
+                        mutableState.value.eventsInfo.indexOfFirst { it is NewYearCounter }
+                    if (oldCounterIndex != -1) {
+                        newEventList[oldCounterIndex] = newCounter
+                    } else {
+                        newEventList.add(newCounter)
+                    }
+                    mutableState.update { state.value.copy(eventsInfo = newEventList) }
                 }
             }
         }
