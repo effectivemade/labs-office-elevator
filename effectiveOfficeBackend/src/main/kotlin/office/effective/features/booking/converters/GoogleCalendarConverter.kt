@@ -60,7 +60,7 @@ class GoogleCalendarConverter(
             organizer
         } else {
             logger.trace("[toBookingDTO] organizer email derived from event description")
-            event.description.substringBefore(" ")
+            event.description?.substringBefore(" ") ?: ""
         }
         val recurrence = event.recurrence?.toString()?.getRecurrence()?.toDto()
         val dto = BookingDTO(
