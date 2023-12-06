@@ -9,14 +9,7 @@ plugins {
     id(Plugins.CocoaPods.plugin)
 }
 
-var isDebug = false
-
 android {
-    buildTypes {
-        debug {
-            isDebug = true
-        }
-    }
     namespace = "band.effective.office.contract"
     compileSdk = 34
 
@@ -99,11 +92,6 @@ buildConfig {
     buildConfigField(
         "String",
         "debugServerUrl",
-        "\"https://d5do2upft1rficrbubot.apigw.yandexcloud.net\"" //TODO(Maksim Mishenko): put debug server url here
-    )
-    buildConfigField(
-        "kotlin.Boolean",
-        "isDebug",
-        "$isDebug"
+        "\"https://d5dfk1qp766h8rfsjrdl.apigw.yandexcloud.net\""
     )
 }
