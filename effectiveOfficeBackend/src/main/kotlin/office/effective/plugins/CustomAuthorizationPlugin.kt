@@ -22,12 +22,12 @@ val CustomAuthorizationPlugin = createApplicationPlugin(name = "CustomAuthorizat
     onCall { call ->
         run {
             if (pluginOn) {
-                if (!authenticationPipeline.authorize(call)) {
+                if (authenticationPipeline.authorize(call)) {
+                    logger.debug("Authorization succeed")
+                } else {
                     logger.info("Authorization failed")
                     call.response.status(HttpStatusCode.Unauthorized)
                     call.respond("401: authorization failed")
-                } else {
-                    logger.debug("Authorization succeed")
                 }
 
             }
