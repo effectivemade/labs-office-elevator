@@ -13,9 +13,10 @@ class TokenExtractor {
      * */
     fun extractToken(call: ApplicationCall): String? {
         val logger = LoggerFactory.getLogger(this::class.java)
-        return call.request.parseAuthorizationHeader()?.render()?.split("Bearer ")?.last() ?: run {
+        val rendered = call.request.parseAuthorizationHeader()?.render() ?: run {
             logger.info("Cannot find auth token")
             return null
         }
+        return rendered.split("Bearer ").last()
     }
 }
