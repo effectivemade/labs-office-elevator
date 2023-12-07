@@ -19,52 +19,59 @@ fun Application.configureRouting() {
             call.respond("Server API")
         }
 
-        get("/elevate") {
-            val key = call.request.queryParameters["key"]
-            if (TokenVerifier.isCorrectToken(key)) {
-                val request = ktorClient.post {
-                    url {
-                        path("office-elevator")
-                        parameters.append(
-                            "command", "go"
-                        )
+        elevatePlaceholder()
+        //elevate() //NOTE(Maksim Mishenko) uncomment this line and remove placeholder for enable lift
+    }
+}
 
-                        val currentTime = GMTDate()
-                        parameters.append(
-                            "time", currentTime.toHttpDate()
-                        )
-                        parameters.append(
-                            "token",
-                            HashUtil.sha256(
-                                value = currentTime.toVerifiableDate(),
-                                password = PropertiesUtil.read("OFFICE_ELEVATOR_EXCHANGE_PASSWORD")
-                            )
-                        )
-                    }
-                }
-                when (request.status.value) {
-                    in 200..299 -> {
-                        call.respond(HttpStatusCode.OK, "Success")
-                    }
+fun Route.elevatePlaceholder() = get("/elevate") {
+    call.respond(HttpStatusCode.Locked,"Elevator is locked")
+}
 
-                    404 -> {
-                        call.respond(HttpStatusCode.NotFound, "Not found")
-                    }
+fun Route.elevate() = get("/elevate") {
+    val key = call.request.queryParameters["key"]
+    if (TokenVerifier.isCorrectToken(key)) {
+        val request = ktorClient.post {
+            url {
+                path("office-elevator")
+                parameters.append(
+                    "command", "go"
+                )
 
-                    403 -> {
-                        call.respond(HttpStatusCode.Forbidden, request.status.description)
-                    }
-
-                    500 -> {
-                        call.respond(HttpStatusCode.InternalServerError, "Internal server error")
-                    }
-                }
-                call.respond(HttpStatusCode.OK, "Success")
-            } else {
-                call.respond(
-                    HttpStatusCode.Forbidden, "Google token verification is failed",
+                val currentTime = GMTDate()
+                parameters.append(
+                    "time", currentTime.toHttpDate()
+                )
+                parameters.append(
+                    "token",
+                    HashUtil.sha256(
+                        value = currentTime.toVerifiableDate(),
+                        password = PropertiesUtil.read("OFFICE_ELEVATOR_EXCHANGE_PASSWORD")
+                    )
                 )
             }
         }
+        when (request.status.value) {
+            in 200..299 -> {
+                call.respond(HttpStatusCode.OK, "Success")
+            }
+
+            404 -> {
+                call.respond(HttpStatusCode.NotFound, "Not found")
+            }
+
+            403 -> {
+                call.respond(HttpStatusCode.Forbidden, request.status.description)
+            }
+
+            500 -> {
+                call.respond(HttpStatusCode.InternalServerError, "Internal server error")
+            }
+        }
+        call.respond(HttpStatusCode.OK, "Success")
+    } else {
+        call.respond(
+            HttpStatusCode.Forbidden, "Google token verification is failed",
+        )
     }
 }
