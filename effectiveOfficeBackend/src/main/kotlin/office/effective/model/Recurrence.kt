@@ -66,17 +66,19 @@ data class Recurrence(
     )
 
     private fun parceUntil(untilStr: String): Long {
+        //old
         //2023 10 15 T 20 00 00 Z
         //0123 45 67 8 90 12 34 5
 
-        val year: Int = untilStr.substring(0,4).toInt()//sb.toString().toInt()
+        //new
+        // 2023 12 24
+
+
+        val year: Int = untilStr.substring(0,4).toInt()
         val month: Int = untilStr.substring(4,6).toInt()
         val day: Int = untilStr.substring(6,8).toInt()
-        val hour: Int = untilStr.substring(9,11).toInt()
-        val min: Int = untilStr.substring(11,13).toInt()
-        val sec: Int = untilStr.substring(13,15).toInt()
 
-        val dt = Date(year - 1900, month, day, hour, min, sec)
+        val dt = Date(year - 1900, month, day)
         return dt.time
     }
 }
