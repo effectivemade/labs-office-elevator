@@ -145,7 +145,7 @@
     <string name="telegram">Telegram</string>
 
     <!-- Booking title -->
-    <string name="number_with_parametr">number_with_parametr%sth\u0020</string>
+    <string name="number_with_parametr">%sth\u0020</string>
     <string name="weekly">week(s)\u0020</string>
     <string name="monthly">month(s)\u0020</string>
     <string name="yearly">years\u0020</string>
