@@ -9,4 +9,5 @@
     </root>
     <logger name="org.eclipse.jetty" level="INFO"/>
     <logger name="io.netty" level="INFO"/>
+    <logger name="com.github.victools.jsonschema.generator.impl.SchemaGenerationContextImpl" level="INFO"/>
 </configuration>
