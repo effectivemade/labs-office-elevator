@@ -6,8 +6,8 @@ import com.google.api.services.calendar.model.Event.Organizer
 import com.google.api.services.calendar.model.EventAttendee
 import com.google.api.services.calendar.model.EventDateTime
 import model.Recurrence.Companion.toRecurrence
+import office.effective.common.constants.BookingConstants
 import office.effective.common.utils.UuidValidator
-import office.effective.config
 import office.effective.dto.BookingDTO
 import office.effective.dto.UserDTO
 import office.effective.dto.WorkspaceDTO
@@ -38,10 +38,7 @@ class GoogleCalendarConverter(
     private val workspaceRepository: WorkspaceRepository
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
-    private val defaultAccount: String =
-        config.propertyOrNull("auth.app.defaultAppEmail")?.getString() ?: throw Exception(
-            "Config file does not contain default gmail value"
-        )
+    private val defaultAccount: String = BookingConstants.DEFAULT_CALENDAR
 
     /**
      * Converts [Event] to [BookingDTO]
@@ -303,6 +300,7 @@ class GoogleCalendarConverter(
         return Organizer().also {
             it.email =
                 this.email//this.integrations?.first { integ -> integ.name == "email" }?.value //TODO надо допилить получение почты
+            //It doesn't work. Google ignores event organizer. Event organizer will be the calendar itself.
         }
     }
 

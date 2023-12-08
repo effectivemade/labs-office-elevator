@@ -1,4 +1,4 @@
-package office.effective.features.simpleAuth.repository
+package office.effective.features.auth.repository
 
 import office.effective.common.exception.InstanceNotFoundException
 import org.ktorm.database.Database
@@ -16,8 +16,7 @@ class AuthRepository(private val db: Database) {
      *
      * @author Kiselev Danil
      * */
-    fun findApiKey(keyEncrypted: String): String {
+    fun findApiKey(keyEncrypted: String): String? {
         return db.apikeys.find { it.value.eq(keyEncrypted) }?.keyValue
-            ?: throw InstanceNotFoundException(ApiKeyEntity::class, "No such key found")
     }
 }
