@@ -167,13 +167,13 @@
     <string name="save">Сохранить</string>
 
     <!-- Booking title -->
-    <string name="number_with_parametr"> %s числа\u0020</string>
+    <string name="number_with_parametr">\u0020%s числа\u0020</string>
     <string name="weekly">неделю(и)\u0020</string>
     <string name="monthly">месяц(ев)\u0020</string>
     <string name="yearly">лет\u0020</string>
     <string name="once_per">раз в %s </string>
-    <string name="once_per_from">раз в %s с\u0020</string>
-    <string name="to_end_reccurense">по %s\u0020</string>
+    <string name="once_per_from">раз в %sс\u0020</string>
+    <string name="to_end_reccurense">\u0020по %s\u0020</string>
     <string name="repeate_times">\u0020повторяется %s раз(а)</string>
 
     <!-- Employee -->

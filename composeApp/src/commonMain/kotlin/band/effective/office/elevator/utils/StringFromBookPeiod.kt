@@ -57,7 +57,7 @@ fun stringFromBookPeriod(
         }
 
     val periodicity = when (bookingPeriod) {
-        is BookingPeriod.Week -> stringResource(MainRes.strings.once_per_from, "${bookingPeriod.durationPeriod} $period ${bookingPeriod.selectedDayOfWeek.listToString()}")
+        is BookingPeriod.Week -> stringResource(MainRes.strings.once_per_from, "${bookingPeriod.durationPeriod} $period ${bookingPeriod.selectedDayOfWeek.listToString()} ")
         is BookingPeriod.Month -> stringResource(MainRes.strings.once_per, "${bookingPeriod.monthPeriod} $period")
         is BookingPeriod.Year -> stringResource(MainRes.strings.once_per, "${bookingPeriod.yearPeriod} $period")
         else -> ""

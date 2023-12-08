@@ -111,32 +111,15 @@ class BookPeriodStoreFactory(
             typeEndPeriodBooking: TypeEndPeriodBooking,
             startDate: LocalDate,
         ) {
-            Napier.d { "get type of end $typeEndPeriodBooking" }
-            val typeOfEnd = when (typeEndPeriodBooking) {
-                is TypeEndPeriodBooking.DatePeriodEnd -> {
-                    // TODO: hen backend fix until date, it`s can be removed
-                    val dateRange = typeEndPeriodBooking.date - startDate
-                    val timeUnit = when (bookingPeriod) {
-                        is BookingPeriod.Week -> 7
-                        is BookingPeriod.EveryWorkDay -> 7
-                        is BookingPeriod.Year -> 365
-                        is BookingPeriod.Month -> 30
-                        BookingPeriod.Another -> 1
-                        BookingPeriod.Day -> 1
-                        BookingPeriod.NoPeriod -> 1
-                    }
-                    TypeEndPeriodBooking.CountRepeat(dateRange.days / timeUnit + 1)
-                }
-                else -> typeEndPeriodBooking
-            }
+            Napier.d { "get type of end: $typeEndPeriodBooking" }
             dispatch(Message.UpdatePeriod(bookingPeriod))
-            dispatch(Message.UpdateEndType(typeOfEnd))
+            dispatch(Message.UpdateEndType(typeEndPeriodBooking))
             setFrequencyTitle(BookingPeriod.Another)
         }
 
         private fun setTemplateFrequency(bookingPeriod: BookingPeriod) {
             dispatch(Message.UpdatePeriod(newValue = bookingPeriod))
-            dispatch(Message.UpdateEndType(TypeEndPeriodBooking.CountRepeat(10))) // TODO(Artem Gruzdev) backend should fix this
+            dispatch(Message.UpdateEndType(TypeEndPeriodBooking.Never))
             setFrequencyTitle(bookingPeriod)
         }
 
@@ -190,6 +173,7 @@ class BookPeriodStoreFactory(
             )
             // user select date range
             if (startDate != endDate) {
+                setFrequencyTitle(BookingPeriod.Day)
                 dispatch(Message.UpdatePeriod(BookingPeriod.Day))
                 dispatch(
                     Message.UpdateEndType(
@@ -200,6 +184,7 @@ class BookPeriodStoreFactory(
                 )
             }
             else if (prevBookingPeriod is BookingPeriod.Day) {
+                setFrequencyTitle(BookingPeriod.NoPeriod)
                 dispatch(Message.UpdatePeriod(BookingPeriod.NoPeriod))
                 dispatch(Message.UpdateEndType(TypeEndPeriodBooking.CountRepeat(1)))
             }
