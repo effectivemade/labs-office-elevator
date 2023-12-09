@@ -35,16 +35,11 @@ fun stringFromBookPeriod(
 
     val startYear = startDate.year
     val finishYear = finishDate.year
-    val str = stringResource(repeatBooking)
 
-
-    Napier.d {
-        "parse type of end  $typeEndPeriodBooking"
-    }
     val repeatBookingsOnShow = when (repeatBooking) {
         MainRes.strings.every_work_day -> stringResource(repeatBooking) + " "
         MainRes.strings.every_week -> stringResource(repeatBooking) + " "
-        MainRes.strings.every_month -> stringResource(repeatBooking) + stringResource(MainRes.strings.number_with_parametr, "${startDate.dayOfMonth}")
+        MainRes.strings.every_month -> stringResource(repeatBooking) + stringResource(MainRes.strings.number_with_parametr, "${startDate.dayOfMonth}") + " "
         else -> ""
     }
 
@@ -54,12 +49,12 @@ fun stringFromBookPeriod(
             is BookingPeriod.Month -> stringResource(MainRes.strings.monthly)
             is BookingPeriod.Year -> stringResource(MainRes.strings.yearly)
             else -> ""
-        }
+        } + " "
 
     val periodicity = when (bookingPeriod) {
-        is BookingPeriod.Week -> stringResource(MainRes.strings.once_per_from, "${bookingPeriod.durationPeriod} $period ${bookingPeriod.selectedDayOfWeek.listToString()}")
-        is BookingPeriod.Month -> stringResource(MainRes.strings.once_per, "${bookingPeriod.monthPeriod} $period")
-        is BookingPeriod.Year -> stringResource(MainRes.strings.once_per, "${bookingPeriod.yearPeriod} $period")
+        is BookingPeriod.Week -> stringResource(MainRes.strings.once_per_from, "${bookingPeriod.durationPeriod} $period ${bookingPeriod.selectedDayOfWeek.listToString()}") + " "
+        is BookingPeriod.Month -> stringResource(MainRes.strings.once_per, "${bookingPeriod.monthPeriod} $period") + " "
+        is BookingPeriod.Year -> stringResource(MainRes.strings.once_per, "${bookingPeriod.yearPeriod} $period") + " "
         else -> ""
     }
 
@@ -70,7 +65,7 @@ fun stringFromBookPeriod(
         is TypeEndPeriodBooking.CountRepeat ->
             stringResource(MainRes.strings.repeate_times, " ${typeEndPeriodBooking.count}")
         else -> ""
-    }
+    } + " "
 
     Napier.d {
         "ext period  $extendedPeriodInfo"
@@ -88,6 +83,6 @@ fun stringFromBookPeriod(
         }
         else {
             "$startDay $startMonth $startYear - $finishDay $finishMonth $finishYear"
-        } + extendedPeriodInfo
+        } + " $extendedPeriodInfo"
     else repeatBookingsOnShow
 }
