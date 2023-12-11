@@ -1,5 +1,6 @@
 package band.effective.office.tvServer.utils
 
+import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.util.pipeline.*
@@ -10,6 +11,6 @@ suspend fun PipelineContext<Unit, ApplicationCall>.savePipeline(
     try {
         pipeline()
     } catch (e: Exception) {
-        call.respondText(e.message ?: "error")
+        call.respondText(text = e.message ?: "error", status = HttpStatusCode.InternalServerError)
     }
 }

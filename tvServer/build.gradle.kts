@@ -25,6 +25,7 @@ dependencies{
     implementation(Dependencies.Ktor.Client.CIO)
     implementation(Dependencies.Ktor.Client.jsonSerialization)
     implementation(Dependencies.Ktor.Client.negotiation)
+    implementation(Dependencies.Ktor.Client.Auth)
     implementation(Dependencies.Koin.core)
     implementation(Dependencies.Ktor.Client.logging)
 
