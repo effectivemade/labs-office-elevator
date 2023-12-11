@@ -29,7 +29,7 @@ kotlin {
         version = "2.0.1"
         summary = "Compose application framework"
         homepage = "https://github.com/Radch-enko"
-        ios.deploymentTarget = "11.0"
+        ios.deploymentTarget = "12.3"
         podfile = project.file("../iosApp/Podfile")
         framework {
             baseName = "ComposeApp"
@@ -39,6 +39,7 @@ kotlin {
             export(Dependencies.Essenty.essenty)
         }
         pod("GoogleSignIn") {}
+        pod ("TinkoffASDKUI") {}
     }
     targets.getByName<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>("iosX64").compilations.forEach {
         it.kotlinOptions.freeCompilerArgs += arrayOf("-linker-options", "-lsqlite3")

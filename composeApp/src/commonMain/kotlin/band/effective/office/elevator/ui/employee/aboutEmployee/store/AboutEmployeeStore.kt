@@ -37,6 +37,12 @@ interface AboutEmployeeStore : Store<AboutEmployeeStore.Intent,AboutEmployeeStor
         object CloseCalendar: Label
         object OpenBottomDialog: Label
         object CloseBottomDialog: Label
+
+        data class OpenSBP(val phoneNumber: String) : Label
+
+        data class OpenTelegram(val telegram: String) : Label
+
+        data class OpenPhone(val phoneNumber: String) : Label
     }
 
 }

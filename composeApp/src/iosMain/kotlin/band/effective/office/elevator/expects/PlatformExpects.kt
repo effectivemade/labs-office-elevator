@@ -1,5 +1,6 @@
 package band.effective.office.elevator.expects
 
+import androidx.compose.runtime.Composable
 import band.effective.office.elevator.ui.uiViewController
 import com.seiko.imageloader.component.ComponentRegistryBuilder
 import com.seiko.imageloader.component.setupDefaultComponents
@@ -37,8 +38,7 @@ actual fun pickTelegram(telegramNick: String) {
 }
 
 actual fun pickSBP(phoneNumber: String) {
-    val url = NSURL(string = "tel:$phoneNumber")
-    UIApplication.sharedApplication.openURL(url)
+
 }
 
 actual fun ComponentRegistryBuilder.setupDefaultComponents() = this.setupDefaultComponents()

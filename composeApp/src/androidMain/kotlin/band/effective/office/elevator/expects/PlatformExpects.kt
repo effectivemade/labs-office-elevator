@@ -8,6 +8,7 @@ import android.os.Vibrator
 import android.widget.Toast
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.runtime.Composable
 import band.effective.office.elevator.AndroidApp
 import com.seiko.imageloader.ImageLoader
 import com.seiko.imageloader.cache.memory.maxSizePercent

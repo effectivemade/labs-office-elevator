@@ -8,8 +8,9 @@ Pod::Spec.new do |spec|
     spec.summary                  = 'Compose application framework'
     spec.vendored_frameworks      = 'build/cocoapods/framework/ComposeApp.framework'
     spec.libraries                = 'c++'
-    spec.ios.deployment_target = '11.0'
+    spec.ios.deployment_target = '12.3'
     spec.dependency 'GoogleSignIn'
+    spec.dependency 'TinkoffASDKUI'
                 
     spec.pod_target_xcconfig = {
         'KOTLIN_PROJECT_PATH' => ':composeApp',

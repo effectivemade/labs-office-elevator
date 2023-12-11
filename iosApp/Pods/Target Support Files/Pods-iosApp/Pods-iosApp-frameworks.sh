@@ -180,14 +180,22 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/GTMAppAuth/GTMAppAuth.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/GoogleSignIn/GoogleSignIn.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/TinkoffASDKCore/TinkoffASDKCore.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/TinkoffASDKUI/TinkoffASDKUI.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/sqlite3/sqlite3.framework"
+  install_framework "${PODS_XCFRAMEWORKS_BUILD_DIR}/TinkoffASDKUI/ThreeDSWrapper.framework"
+  install_framework "${PODS_XCFRAMEWORKS_BUILD_DIR}/TinkoffASDKUI/TdsSdkIos.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/AppAuth/AppAuth.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/GTMAppAuth/GTMAppAuth.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/GoogleSignIn/GoogleSignIn.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/TinkoffASDKCore/TinkoffASDKCore.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/TinkoffASDKUI/TinkoffASDKUI.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/sqlite3/sqlite3.framework"
+  install_framework "${PODS_XCFRAMEWORKS_BUILD_DIR}/TinkoffASDKUI/ThreeDSWrapper.framework"
+  install_framework "${PODS_XCFRAMEWORKS_BUILD_DIR}/TinkoffASDKUI/TdsSdkIos.framework"
 fi
 if [ "${COCOAPODS_PARALLEL_CODE_SIGN}" == "true" ]; then
   wait

@@ -50,7 +50,11 @@ import band.effective.office.elevator.components.LoadingIndicator
 import band.effective.office.elevator.components.ModalCalendar
 import band.effective.office.elevator.components.ModalCalendarDateRange
 import band.effective.office.elevator.components.TitlePage
+import band.effective.office.elevator.components.bottomSheet.ChildSlotModalBottomSheetLayout
 import band.effective.office.elevator.components.generateImageLoader
+import band.effective.office.elevator.expects.makeCall
+import band.effective.office.elevator.expects.pickSBP
+import band.effective.office.elevator.expects.pickTelegram
 import band.effective.office.elevator.textGrayColor
 import band.effective.office.elevator.ui.employee.aboutEmployee.components.BookingCardUser
 import band.effective.office.elevator.ui.employee.aboutEmployee.components.ContactUserUIComponent
@@ -60,6 +64,7 @@ import band.effective.office.elevator.ui.main.components.BottomDialog
 import band.effective.office.elevator.ui.main.components.CalendarTitle
 import band.effective.office.elevator.ui.main.components.FilterButton
 import band.effective.office.elevator.ui.models.ReservedSeat
+import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.seiko.imageloader.model.ImageRequest
 import com.seiko.imageloader.rememberAsyncImagePainter
 import com.seiko.imageloader.rememberImagePainter
@@ -71,6 +76,8 @@ import kotlinx.datetime.LocalDate
 @Composable
 fun AboutEmployee(component: AboutEmployeeComponent) {
     val state by component.state.collectAsState()
+    val slot by component.slot.subscribeAsState()
+
     var showModalCalendar by remember { mutableStateOf(false) }
     var bottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
@@ -82,56 +89,78 @@ fun AboutEmployee(component: AboutEmployeeComponent) {
                 AboutEmployeeStore.Label.CloseCalendar -> showModalCalendar = false
                 AboutEmployeeStore.Label.OpenBottomDialog -> bottomSheetState.show()
                 AboutEmployeeStore.Label.CloseBottomDialog -> bottomSheetState.hide()
-            }
+                is AboutEmployeeStore.Label.OpenPhone -> makeCall(label.phoneNumber)
 
-        }
-    }
-    Box(
-        modifier = Modifier
-            .background(Color.White)
-            .fillMaxSize()
-    ) {
-        AboutEmployeeContent(
-            isLoading = state.isLoading,
-            imageUrl = state.user.imageUrl,
-            userName = state.user.userName,
-            post = state.user.post,
-            telegram = state.user.telegram,
-            email = state.user.email,
-            reservedSeatsList = state.reservedSeatsList,
-            dateFiltrationOnReserves = state.dateFiltrationOnReserves,
-            filtrationOnReserves = state.filtrationOnReserves,
-            beginDate = state.beginDate,
-            endDate = state.endDate,
-            isLoadingBooking = state.isLoadingBookings,
-            bottomSheetState = bottomSheetState,
-            onClickOpenPhone = { component.onEvent(AboutEmployeeStore.Intent.TelephoneClicked) },
-            onClickOpenTelegram = { component.onEvent(AboutEmployeeStore.Intent.TelegramClicked) },
-            onClickOpenSpb = { component.onEvent(AboutEmployeeStore.Intent.TransferMoneyClicked) },
-            onClickBack = { component.onOutput(AboutEmployeeComponent.Output.OpenAllEmployee) },
-            onClickOpenCalendar = { component.onEvent(AboutEmployeeStore.Intent.OpenCalendarClicked) },
-            onClickOpenBottomDialog = { component.onEvent(AboutEmployeeStore.Intent.OpenBottomDialog) },
-            onClickCloseBottomDialog = {
-                component.onEvent(
-                    AboutEmployeeStore.Intent.CloseBottomDialog(
-                        it
+                is AboutEmployeeStore.Label.OpenSBP -> component.openSheet(
+                    AboutEmployeeComponent.SheetConfig.BanksList(
+                        label.phoneNumber
                     )
                 )
-            }
-        )
 
-        if (showModalCalendar) {
-            Dialog(
-                onDismissRequest = { component.onEvent(AboutEmployeeStore.Intent.CloseCalendarClicked)},
-                properties = DialogProperties(usePlatformDefaultWidth = false)
-            ) { ModalCalendarDateRange(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .align(Alignment.Center),
-                    onClickCansel = { component.onEvent(AboutEmployeeStore.Intent.CloseCalendarClicked) },
-                    onClickOk = { component.onEvent(AboutEmployeeStore.Intent.OnClickApplyDate(it)) },
-                    currentDate = state.beginDate
-                )
+                is AboutEmployeeStore.Label.OpenTelegram -> pickTelegram(label.telegram)
+            }
+        }
+    }
+    ChildSlotModalBottomSheetLayout(
+        sheetContentSlotState = component.slot,
+        sheetContent = { slot.child?.instance?.SheetContent() },
+        sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+        onDismiss = { component.closeSheet() }
+    ) {
+        Box(
+            modifier = Modifier
+                .background(Color.White)
+                .fillMaxSize()
+        ) {
+            AboutEmployeeContent(
+                isLoading = state.isLoading,
+                imageUrl = state.user.imageUrl,
+                userName = state.user.userName,
+                post = state.user.post,
+                telegram = state.user.telegram,
+                email = state.user.email,
+                reservedSeatsList = state.reservedSeatsList,
+                dateFiltrationOnReserves = state.dateFiltrationOnReserves,
+                filtrationOnReserves = state.filtrationOnReserves,
+                beginDate = state.beginDate,
+                endDate = state.endDate,
+                isLoadingBooking = state.isLoadingBookings,
+                bottomSheetState = bottomSheetState,
+                onClickOpenPhone = { component.onEvent(AboutEmployeeStore.Intent.TelephoneClicked) },
+                onClickOpenTelegram = { component.onEvent(AboutEmployeeStore.Intent.TelegramClicked) },
+                onClickOpenSpb = { component.onEvent(AboutEmployeeStore.Intent.TransferMoneyClicked) },
+                onClickBack = { component.onOutput(AboutEmployeeComponent.Output.OpenAllEmployee) },
+                onClickOpenCalendar = { component.onEvent(AboutEmployeeStore.Intent.OpenCalendarClicked) },
+                onClickOpenBottomDialog = { component.onEvent(AboutEmployeeStore.Intent.OpenBottomDialog) },
+                onClickCloseBottomDialog = {
+                    component.onEvent(
+                        AboutEmployeeStore.Intent.CloseBottomDialog(
+                            it
+                        )
+                    )
+                }
+            )
+
+            if (showModalCalendar) {
+                Dialog(
+                    onDismissRequest = { component.onEvent(AboutEmployeeStore.Intent.CloseCalendarClicked) },
+                    properties = DialogProperties(usePlatformDefaultWidth = false)
+                ) {
+                    ModalCalendarDateRange(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .align(Alignment.Center),
+                        onClickCansel = { component.onEvent(AboutEmployeeStore.Intent.CloseCalendarClicked) },
+                        onClickOk = {
+                            component.onEvent(
+                                AboutEmployeeStore.Intent.OnClickApplyDate(
+                                    it
+                                )
+                            )
+                        },
+                        currentDate = state.beginDate
+                    )
+                }
             }
         }
     }

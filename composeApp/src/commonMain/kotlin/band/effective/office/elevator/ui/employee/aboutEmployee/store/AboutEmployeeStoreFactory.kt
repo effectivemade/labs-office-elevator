@@ -119,9 +119,9 @@ class AboutEmployeeStoreFactory(
         override fun executeIntent(intent: Intent, getState: () -> State) {
             when (intent) {
                 Intent.BackClicked -> TODO()
-                Intent.TelegramClicked -> pickTelegram(telegramNickParse(getState().user.telegram))
-                Intent.TelephoneClicked -> makeCall(getState().user.phoneNumber)
-                Intent.TransferMoneyClicked -> pickSBP(getState().user.phoneNumber)
+                Intent.TelegramClicked -> publish(Label.OpenTelegram(getState().user.telegram))
+                Intent.TelephoneClicked -> publish(Label.OpenPhone(getState().user.phoneNumber))
+                Intent.TransferMoneyClicked -> publish(Label.OpenSBP(getState().user.phoneNumber))
                 Intent.OpenCalendarClicked -> {
                     scope.launch {
                         publish(Label.OpenCalendar)

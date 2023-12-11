@@ -3,4 +3,8 @@ ${BUILT_PRODUCTS_DIR}/AppAuth/AppAuth.framework
 ${BUILT_PRODUCTS_DIR}/GTMAppAuth/GTMAppAuth.framework
 ${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework
 ${BUILT_PRODUCTS_DIR}/GoogleSignIn/GoogleSignIn.framework
+${BUILT_PRODUCTS_DIR}/TinkoffASDKCore/TinkoffASDKCore.framework
+${BUILT_PRODUCTS_DIR}/TinkoffASDKUI/TinkoffASDKUI.framework
 ${BUILT_PRODUCTS_DIR}/sqlite3/sqlite3.framework
+${PODS_XCFRAMEWORKS_BUILD_DIR}/TinkoffASDKUI/ThreeDSWrapper.framework/ThreeDSWrapper
+${PODS_XCFRAMEWORKS_BUILD_DIR}/TinkoffASDKUI/TdsSdkIos.framework/TdsSdkIos

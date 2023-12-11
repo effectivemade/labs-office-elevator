@@ -11,10 +11,13 @@
   "vendored_frameworks": "build/cocoapods/framework/ComposeApp.framework",
   "libraries": "c++",
   "platforms": {
-    "ios": "11.0"
+    "ios": "12.3"
   },
   "dependencies": {
     "GoogleSignIn": [
+
+    ],
+    "TinkoffASDKUI": [
 
     ]
   },

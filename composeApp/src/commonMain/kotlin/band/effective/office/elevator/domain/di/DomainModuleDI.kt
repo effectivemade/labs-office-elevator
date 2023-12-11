@@ -18,6 +18,7 @@ import band.effective.office.elevator.domain.repository.WorkspaceRepository
 import band.effective.office.elevator.domain.useCase.AboutEmployeeInteractor
 import band.effective.office.elevator.domain.useCase.ChangeBookingUseCase
 import band.effective.office.elevator.domain.useCase.CreateBookingUseCase
+import band.effective.office.elevator.domain.useCase.SBPBanksInfoUseCase
 import band.effective.office.elevator.domain.useCase.SignInUseCase
 import band.effective.office.elevator.domain.useCase.UpdateUserInfoUseCase
 import band.effective.office.elevator.domain.useCase.WorkspacesUseCase
@@ -60,4 +61,6 @@ internal val domainModuleDI = module {
     single<WorkspaceRepository> { WorkspaceRepositoryImpl(api = get()) }
 
     single { SignInUseCase(get(), get()) }
+
+    single { SBPBanksInfoUseCase(get()) }
 }

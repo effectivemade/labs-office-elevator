@@ -4,6 +4,8 @@ import band.effective.office.elevator.Database
 import band.effective.office.elevator.data.NetworkClient
 import band.effective.office.elevator.data.database.DBSource
 import band.effective.office.elevator.data.database.DBSourceImpl
+import band.effective.office.elevator.data.repository.SBPRepositoryImpl
+import band.effective.office.elevator.domain.repository.SBPRepository
 import band.effective.office.network.api.Api
 import band.effective.office.network.api.impl.ApiImpl
 import band.effective.office.network.api.impl.ApiMock
@@ -23,4 +25,6 @@ internal val dataModuleDI = module {
 //    ) }
 
     single<Api> { ApiImpl() }
+
+    single<SBPRepository> { SBPRepositoryImpl() }
 }
