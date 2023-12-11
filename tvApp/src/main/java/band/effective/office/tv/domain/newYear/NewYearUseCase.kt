@@ -21,9 +21,11 @@ class NewYearUseCase {
             set(Calendar.MILLISECOND, 0)
             set(Calendar.SECOND, 0)
             set(Calendar.MINUTE, 0)
+            set(Calendar.HOUR_OF_DAY,0)
             set(Calendar.DAY_OF_YEAR, 0)
             set(Calendar.MONTH, 0)
             add(Calendar.YEAR, 1)
+            add(Calendar.DAY_OF_YEAR, 1)
         }
         var duration = newYear.time.time - today.time.time
         val mils = (duration % 1000).apply { duration /= 1000 }

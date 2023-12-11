@@ -53,7 +53,7 @@ fun NewYearTimer(counter: NewYearCounter) {
                     "секунды",
                     "секунд"
                 )
-            }",
+            },",
             color = Color.Black,
             fontSize = 40.sp
         )
