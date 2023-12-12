@@ -14,7 +14,7 @@ fun Route.mattermost() {
     post("/outgoing") {
         savePipeline {
             val dto = call.receive<WebHookDto>()
-            mattermostService.handelMessage(dto.post_id,dto.channel_id)
+            mattermostService.handelMessage(dto.post_id, dto.channel_id)
             call.respond(HttpStatusCode.OK)
         }
     }

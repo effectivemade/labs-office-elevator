@@ -35,5 +35,6 @@ dependencies{
     implementation("io.ktor:ktor-server-netty-jvm")
     implementation("io.insert-koin:koin-logger-slf4j:3.5.1")
     implementation("io.insert-koin:koin-ktor:3.5.1")
+    implementation("com.google.firebase:firebase-admin:8.2.0")
 
 }

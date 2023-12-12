@@ -6,5 +6,5 @@ import org.koin.dsl.module
 
 val presentationModule = module {
     single<LeaderIdService> { LeaderIdService(get()) }
-    single<MattermostService> { MattermostService(get()) }
+    single<MattermostService> { MattermostService(get(), get()) }
 }

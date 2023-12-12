@@ -15,6 +15,10 @@ class ChatRepository(private val api: MattermostApi) : MattermostRepository {
         return api.getPost(postId = messageId).toMessage()
     }
 
+    override suspend fun answerOnMessage(chanelId: String, rootId: String, message: String) {
+        api.createPost(request = CreatePostRequest(channel_id = chanelId, message = message, root_id = rootId))
+    }
+
     private suspend fun GetPostRespond.toMessage(): MattermostMessage = api.getUser(user_id).let { user ->
         MattermostMessage(
             channelId = channel_id,
