@@ -16,9 +16,6 @@
   "dependencies": {
     "GoogleSignIn": [
 
-    ],
-    "TinkoffASDKUI": [
-
     ]
   },
   "pod_target_xcconfig": {

@@ -16,5 +16,7 @@ data class SBPBank(
     val logoURL: String,
     val schema: String,
     @SerialName("package_name")
-    val packageName: String
+    val packageName: String? = null,
+    val webClientUrl: String? = null,
+    val isWebClientActive: String? = null
 )

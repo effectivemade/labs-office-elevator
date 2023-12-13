@@ -39,7 +39,6 @@ kotlin {
             export(Dependencies.Essenty.essenty)
         }
         pod("GoogleSignIn") {}
-        pod ("TinkoffASDKUI") {}
     }
     targets.getByName<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>("iosX64").compilations.forEach {
         it.kotlinOptions.freeCompilerArgs += arrayOf("-linker-options", "-lsqlite3")

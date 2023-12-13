@@ -7,9 +7,11 @@ import band.effective.office.network.model.ErrorResponse
 import band.effective.office.utils.KtorEtherClient
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.serializer
 
 
-//TODO (Artem Gruzdev) write custom httpClient
+// TODO (Artem Gruzdev) write custom httpClient
 class SBPRepositoryImpl: SBPRepository {
     override suspend fun getBanksInfo(): Flow<Either<ErrorResponse, SBPResponse>> = flow {
         val banksInfo: Either<ErrorResponse, SBPResponse> = KtorEtherClient.securityResponse(

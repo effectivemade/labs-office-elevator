@@ -11,7 +11,7 @@ data class SBPBankInfo(
 
 fun SBPBank.toDomain() =
     SBPBankInfo(
-       packageName = packageName,
+       packageName = packageName.orEmpty(),
         bankName = bankName,
         schema = schema,
         logo = logoURL

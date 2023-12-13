@@ -54,7 +54,7 @@ object Plugins {
     }
 
     object Serialization {
-        const val implementation = "org.jetbrains.kotlin:kotlin-serialization:1.8.20"
+        const val implementation = "org.jetbrains.kotlin:kotlin-serialization:1.9.0"
         const val plugin = "org.jetbrains.kotlin.plugin.serialization"
     }
     object Parcelize {
