@@ -6,7 +6,6 @@ import band.effective.office.tvServer.repository.mattermost.MattermostRepository
 import band.effective.office.tvServer.repository.message.MessageRepository
 import band.effective.office.tvServer.repository.post.PostRepository
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import kotlinx.serialization.json.Json
 import java.time.LocalDateTime
@@ -27,16 +26,22 @@ class MattermostService(
             .filter { message ->
                 val now = LocalDateTime.now()
                 now > message.start && now < message.finish//TODO(Maksim Mishenko) fix after migrate
-                now < message.finish
+                (now < message.finish).apply {
+                    if (!this) postRepository.deletePost(message.message.id)
+                }
             }.toList()
     }
 
     suspend fun savePost(message: SavedMessage) {
-        postRepository.addPost(message)
+        val now = LocalDateTime.now()
+        if (now < message.finish)
+            postRepository.addPost(message)
     }
 
     suspend fun updatePost(message: SavedMessage) {
-        postRepository.updatePost(message)
+        val now = LocalDateTime.now()
+        if (now < message.finish)
+            postRepository.updatePost(message)
     }
 
     suspend fun deletePost(id: String) {
