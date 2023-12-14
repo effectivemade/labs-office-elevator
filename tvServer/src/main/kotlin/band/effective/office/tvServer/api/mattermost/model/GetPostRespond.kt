@@ -1,6 +1,7 @@
 package band.effective.office.tvServer.api.mattermost.model
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonNames
 
 @Serializable
 data class GetPostRespond(
@@ -15,5 +16,7 @@ data class GetPostRespond(
     val root_id: String,
     val type: String,
     val update_at: Long,
-    val user_id: String
+    val user_id: String,
+    @JsonNames("props")
+    val saveMessage: SaveMessageDto?
 )

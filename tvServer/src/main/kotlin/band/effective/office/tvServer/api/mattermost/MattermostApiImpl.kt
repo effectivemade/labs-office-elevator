@@ -25,8 +25,8 @@ class MattermostApiImpl(private val client: HttpClient) : MattermostApi {
         }
     }.body()
 
-    override suspend fun updatePost(postId: String, request: UpdadeRequest): CreatePostResponse =
-        client.get("$baseUrl/posts") {
+    override suspend fun updatePost(postId: String, request: UpdateRequest): CreatePostResponse =
+        client.put("$baseUrl/posts") {
             url {
                 appendPathSegments(postId)
             }
@@ -39,4 +39,7 @@ class MattermostApiImpl(private val client: HttpClient) : MattermostApi {
             appendPathSegments(userId)
         }
     }.body()
+
+    override suspend fun getPostsFromChannel(channelId: String): GetPostsFromChannelResponse =
+        client.get("$baseUrl/channels/$channelId/posts").body()
 }

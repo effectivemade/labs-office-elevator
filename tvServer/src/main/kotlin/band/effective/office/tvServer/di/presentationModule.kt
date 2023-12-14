@@ -5,6 +5,12 @@ import band.effective.office.tvServer.service.mattermost.MattermostService
 import org.koin.dsl.module
 
 val presentationModule = module {
-    single<LeaderIdService> { LeaderIdService(get()) }
-    single<MattermostService> { MattermostService(get(), get()) }
+    single<LeaderIdService> { LeaderIdService(leaderRepository = get()) }
+    single<MattermostService> {
+        MattermostService(
+            mattermostRepository = get(),
+            messageRepository = get(),
+            postRepository = get()
+        )
+    }
 }
