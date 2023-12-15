@@ -2,6 +2,7 @@ package band.effective.office.tvServer.route.mattermost
 
 import band.effective.office.tvServer.model.SavedMessage
 import band.effective.office.tvServer.service.mattermost.MattermostService
+import band.effective.office.tvServer.service.mattermost.MessageType
 import band.effective.office.tvServer.utils.savePipeline
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -17,7 +18,12 @@ fun Route.mattermost() {
     post("/outgoing") {
         savePipeline {
             val dto = call.receive<WebHookDto>()
-            mattermostService.handelMessage(dto.post_id, dto.channel_id)
+            val type = when (dto.trigger_word) {
+                "#story" -> MessageType.SIMPLE
+                "#important " -> MessageType.IMPORTANT
+                else -> MessageType.UNKNOWN
+            }
+            mattermostService.handelMessage(dto.post_id, dto.channel_id, type)
             call.respond(HttpStatusCode.OK)
         }
     }

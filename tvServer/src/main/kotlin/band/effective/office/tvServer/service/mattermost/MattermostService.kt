@@ -12,13 +12,16 @@ import java.time.LocalDateTime
 
 class MattermostService(
     private val mattermostRepository: MattermostRepository,
-    private val messageRepository: MessageRepository,
+    private val simpleMessageRepository: MessageRepository,
+    private val importantMessageRepository: MessageRepository,
     private val postRepository: PostRepository
 ) {
-    suspend fun handelMessage(messageId: String, chanelId: String) {
+    suspend fun handelMessage(messageId: String, chanelId: String, type: MessageType) {
         val message = mattermostRepository.readMessage(messageId)
-        mattermostRepository.answerOnMessage(chanelId = chanelId, rootId = messageId, message = "Принято")
-        messageRepository.sendMessage(Json.encodeToString(MattermostMessage.serializer(), message))
+        type.repository()?.also { messageRepository ->
+            mattermostRepository.answerOnMessage(chanelId = chanelId, rootId = messageId, message = "Принято")
+            messageRepository.sendMessage(Json.encodeToString(MattermostMessage.serializer(), message))
+        }
     }
 
     suspend fun getPosts(): List<SavedMessage> {
@@ -47,4 +50,11 @@ class MattermostService(
     suspend fun deletePost(id: String) {
         postRepository.deletePost(id)
     }
+
+    private fun MessageType.repository(): MessageRepository? =
+        when (this) {
+            MessageType.SIMPLE -> simpleMessageRepository
+            MessageType.IMPORTANT -> importantMessageRepository
+            MessageType.UNKNOWN -> null
+        }
 }
