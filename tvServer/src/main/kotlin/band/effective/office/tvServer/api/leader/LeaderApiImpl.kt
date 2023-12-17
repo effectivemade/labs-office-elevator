@@ -7,7 +7,7 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 
 class LeaderApiImpl(private val client: HttpClient) : LeaderApi {
-    private val baseUrl = "https://leader-id.ru/api/v4/events" // TODO(Maksim Mishenko) inject url
+    private val baseUrl = "https://leader-id.ru/api/v4/events"
     override suspend fun searchEvents(
         count: Int,
         dateFrom: String,

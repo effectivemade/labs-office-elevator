@@ -34,9 +34,8 @@ class MattermostService(
         return postRepository.getPosts()
             .filter { message ->
                 val now = LocalDateTime.now()
-                now > message.start && now < message.finish//TODO(Maksim Mishenko) fix after migrate
-                (now < message.finish).apply {
-                    if (!this) postRepository.deletePost(message.message.id)
+                (now > message.start && now < message.finish).apply {
+                    if (now > message.finish) postRepository.deletePost(message.message.id)
                 }
             }.toList()
     }
