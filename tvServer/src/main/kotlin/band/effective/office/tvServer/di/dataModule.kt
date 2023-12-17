@@ -1,5 +1,7 @@
 package band.effective.office.tvServer.di
 
+import band.effective.office.tvServer.api.duolingo.DuolingoApi
+import band.effective.office.tvServer.api.duolingo.DuolingoApiImpl
 import band.effective.office.tvServer.api.leader.LeaderApi
 import band.effective.office.tvServer.api.leader.LeaderApiImpl
 import band.effective.office.tvServer.api.mattermost.MattermostApi
@@ -22,4 +24,5 @@ val dataModule = module {
             notionDatabaseId = System.getenv("NOTION_DATABASE_ID")
         )
     }
+    single<DuolingoApi> { DuolingoApiImpl(defaultHttpClient()) }
 }

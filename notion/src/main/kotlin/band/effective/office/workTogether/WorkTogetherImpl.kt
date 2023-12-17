@@ -3,6 +3,8 @@ package band.effective.office.workTogether
 import notion.api.v1.NotionClient
 import notion.api.v1.model.common.File
 import notion.api.v1.model.common.PropertyType
+import notion.api.v1.model.databases.query.filter.PropertyFilter
+import notion.api.v1.model.databases.query.filter.condition.SelectFilter
 import notion.api.v1.model.pages.Page
 import notion.api.v1.request.databases.QueryDatabaseRequest
 import java.time.LocalDate
@@ -13,7 +15,15 @@ class WorkTogetherImpl(private val notionClient: NotionClient, private val notio
         return notionClient.queryDatabase(
             request = QueryDatabaseRequest(notionDatabaseId)
         ).results.map { it.toTeammate() }
+    }
 
+    override fun getActive(): List<Teammate> {
+        return notionClient.queryDatabase(
+            request = QueryDatabaseRequest(
+                databaseId = notionDatabaseId,
+                filter = PropertyFilter(property = "Status", select = SelectFilter(equals = "Active"))
+            )
+        ).results.map { it.toTeammate() }.filter { it.isActive() }
     }
 
     override fun getProperty(name: String): Map<String, String?> {
@@ -59,5 +69,6 @@ class WorkTogetherImpl(private val notionClient: NotionClient, private val notio
             LocalDate.MIN
         }
     }
+
     private fun Page.getIconUrl() = (icon as? File)?.file?.url
 }

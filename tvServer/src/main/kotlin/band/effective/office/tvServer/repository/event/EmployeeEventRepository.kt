@@ -9,10 +9,9 @@ abstract class EmployeeEventRepository(private val workTogether: WorkTogether) :
     abstract fun check(teammate: Teammate): Boolean
     abstract fun Teammate.toEvent(): Event
     override fun getEvents(): List<Event> =
-        workTogether.getAll()
-            .filter { check(it) && it.isActive() && it.haveCorrectTime() }
+        workTogether.getActive()
+            .filter { check(it) && it.haveCorrectTime() }
             .map { it.toEvent() }
 
-    private fun Teammate.isActive() = employment in setOf("Band", "Intern") && status == "Active"
     private fun Teammate.haveCorrectTime() = startDate != LocalDate.MIN && nextBDay != LocalDate.MIN
 }

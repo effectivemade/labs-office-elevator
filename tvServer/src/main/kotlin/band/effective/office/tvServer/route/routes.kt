@@ -1,5 +1,6 @@
 package band.effective.office.tvServer.route
 
+import band.effective.office.tvServer.route.duolingo.duolingo
 import band.effective.office.tvServer.route.event.notion
 import band.effective.office.tvServer.route.leader.leaderId
 import band.effective.office.tvServer.route.mattermost.mattermost
@@ -11,6 +12,6 @@ fun Application.routes() {
         leaderId()
         mattermost()
         notion()
+        duolingo()
     }
-
 }

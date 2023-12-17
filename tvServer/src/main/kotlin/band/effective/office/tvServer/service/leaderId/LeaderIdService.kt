@@ -1,4 +1,4 @@
-package band.effective.office.tvServer.service
+package band.effective.office.tvServer.service.leaderId
 
 import band.effective.office.tvServer.model.LeaderIdEventInfo
 import band.effective.office.tvServer.repository.leaderId.LeaderRepository

@@ -1,5 +1,7 @@
 package band.effective.office.tvServer.di
 
+import band.effective.office.tvServer.repository.duolingo.DuolingoRepository
+import band.effective.office.tvServer.repository.duolingo.DuolingoRepositoryImpl
 import band.effective.office.tvServer.repository.event.*
 import band.effective.office.tvServer.repository.leaderId.LeaderRepository
 import band.effective.office.tvServer.repository.leaderId.LeaderRepositoryImpl
@@ -38,4 +40,5 @@ val domainModule = module {
             )
         )
     }
+    single<DuolingoRepository> { DuolingoRepositoryImpl(api = get(), workTogether = get()) }
 }

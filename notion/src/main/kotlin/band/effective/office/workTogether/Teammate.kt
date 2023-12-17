@@ -14,4 +14,6 @@ data class Teammate(
     val duolingo: String?,
     val photo: String,
     val status: String,
-)
+) {
+    fun isActive() = employment in setOf("Band", "Intern") && status == "Active"
+}
