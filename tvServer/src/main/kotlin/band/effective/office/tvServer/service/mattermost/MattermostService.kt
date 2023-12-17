@@ -24,6 +24,12 @@ class MattermostService(
         }
     }
 
+    fun sendMessage(message: MattermostMessage, type: MessageType) {
+        type.repository()?.also { messageRepository ->
+            messageRepository.sendMessage(Json.encodeToString(MattermostMessage.serializer(), message))
+        }
+    }
+
     suspend fun getPosts(): List<SavedMessage> {
         return postRepository.getPosts()
             .filter { message ->

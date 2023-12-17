@@ -8,17 +8,17 @@ plugins {
 group = "band.effective.office.tvServer"
 version = "0.0.1"
 
-application{
+application {
     mainClass.set("band.effective.office.tvServer.ApplicationKt")
 }
 
-ktor{
-    docker{
+ktor {
+    docker {
         localImageName.set("tv-server-image")
     }
 }
 
-dependencies{
+dependencies {
     implementation(Plugins.Serialization.implementation)
     implementation(Dependencies.KotlinxSerialization.json)
     implementation(Dependencies.Ktor.Client.Core)
@@ -36,5 +36,6 @@ dependencies{
     implementation("io.insert-koin:koin-logger-slf4j:3.5.1")
     implementation("io.insert-koin:koin-ktor:3.5.1")
     implementation("com.google.firebase:firebase-admin:8.2.0")
+    implementation(project(":notion"))
 
 }

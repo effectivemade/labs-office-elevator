@@ -34,13 +34,13 @@ fun Route.mattermost() {
     }
     post("/message") {
         savePipeline {
-            mattermostService.savePost(call.receive<MessageDto>().toMessage())
+            mattermostService.savePost(call.receive<MattermostMessageDto>().toMessage())
             call.respond(HttpStatusCode.Created)
         }
     }
     put("/message") {
         savePipeline {
-            mattermostService.updatePost(call.receive<MessageDto>().toMessage())
+            mattermostService.updatePost(call.receive<MattermostMessageDto>().toMessage())
             call.respond(HttpStatusCode.OK)
         }
     }
@@ -50,20 +50,34 @@ fun Route.mattermost() {
             call.respond(HttpStatusCode.OK)
         }
     }
+    post("/message/send") {
+        savePipeline {
+            mattermostService.sendMessage(call.receive<MessageDto>().toMessage(), MessageType.SIMPLE)
+            call.respond(HttpStatusCode.OK)
+        }
+    }
+    post("/message/important") {
+        savePipeline {
+            mattermostService.sendMessage(call.receive<MessageDto>().toMessage(), MessageType.IMPORTANT)
+            call.respond(HttpStatusCode.OK)
+        }
+    }
 }
 
-private fun SavedMessage.toDto(): MessageDto = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm").let { formatter ->
-    MessageDto(
-        message = message,
-        start = start.format(formatter),
-        finish = finish.format(formatter)
-    )
-}
+private fun SavedMessage.toDto(): MattermostMessageDto =
+    DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm").let { formatter ->
+        MattermostMessageDto(
+            message = message,
+            start = start.format(formatter),
+            finish = finish.format(formatter)
+        )
+    }
 
-private fun MessageDto.toMessage(): SavedMessage = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm").let { formatter ->
-    SavedMessage(
-        message = message,
-        start = LocalDateTime.parse(start, formatter),
-        finish = LocalDateTime.parse(finish, formatter)
-    )
-}
+private fun MattermostMessageDto.toMessage(): SavedMessage =
+    DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm").let { formatter ->
+        SavedMessage(
+            message = message,
+            start = LocalDateTime.parse(start, formatter),
+            finish = LocalDateTime.parse(finish, formatter)
+        )
+    }
