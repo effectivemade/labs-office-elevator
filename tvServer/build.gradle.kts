@@ -33,6 +33,7 @@ dependencies {
     implementation("io.ktor:ktor-server-content-negotiation-jvm")
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm")
     implementation("io.ktor:ktor-server-netty-jvm")
+    implementation("io.ktor:ktor-server-auth:2.3.1")
     implementation("io.insert-koin:koin-logger-slf4j:3.5.1")
     implementation("io.insert-koin:koin-ktor:3.5.1")
     implementation("com.google.firebase:firebase-admin:8.2.0")

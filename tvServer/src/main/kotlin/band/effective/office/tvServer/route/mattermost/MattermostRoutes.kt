@@ -6,6 +6,7 @@ import band.effective.office.tvServer.service.mattermost.MessageType
 import band.effective.office.tvServer.utils.savePipeline
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -27,39 +28,42 @@ fun Route.mattermost() {
             call.respond(HttpStatusCode.OK)
         }
     }
-    get("/message") {
-        savePipeline {
-            call.respond(mattermostService.getPosts().map { it.toDto() })
+
+    authenticate("auth-bearer") {
+        get("/message") {
+            savePipeline {
+                call.respond(mattermostService.getPosts().map { it.toDto() })
+            }
         }
-    }
-    post("/message") {
-        savePipeline {
-            mattermostService.savePost(call.receive<MattermostMessageDto>().toMessage())
-            call.respond(HttpStatusCode.Created)
+        post("/message") {
+            savePipeline {
+                mattermostService.savePost(call.receive<MattermostMessageDto>().toMessage())
+                call.respond(HttpStatusCode.Created)
+            }
         }
-    }
-    put("/message") {
-        savePipeline {
-            mattermostService.updatePost(call.receive<MattermostMessageDto>().toMessage())
-            call.respond(HttpStatusCode.OK)
+        put("/message") {
+            savePipeline {
+                mattermostService.updatePost(call.receive<MattermostMessageDto>().toMessage())
+                call.respond(HttpStatusCode.OK)
+            }
         }
-    }
-    delete("/message/{id}") {
-        savePipeline {
-            mattermostService.deletePost(call.parameters["id"]!!)
-            call.respond(HttpStatusCode.OK)
+        delete("/message/{id}") {
+            savePipeline {
+                mattermostService.deletePost(call.parameters["id"]!!)
+                call.respond(HttpStatusCode.OK)
+            }
         }
-    }
-    post("/message/send") {
-        savePipeline {
-            mattermostService.sendMessage(call.receive<MessageDto>().toMessage(), MessageType.SIMPLE)
-            call.respond(HttpStatusCode.OK)
+        post("/message/send") {
+            savePipeline {
+                mattermostService.sendMessage(call.receive<MessageDto>().toMessage(), MessageType.SIMPLE)
+                call.respond(HttpStatusCode.OK)
+            }
         }
-    }
-    post("/message/important") {
-        savePipeline {
-            mattermostService.sendMessage(call.receive<MessageDto>().toMessage(), MessageType.IMPORTANT)
-            call.respond(HttpStatusCode.OK)
+        post("/message/important") {
+            savePipeline {
+                mattermostService.sendMessage(call.receive<MessageDto>().toMessage(), MessageType.IMPORTANT)
+                call.respond(HttpStatusCode.OK)
+            }
         }
     }
 }
