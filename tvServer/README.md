@@ -21,7 +21,14 @@ It is server for effective tv application
 ## Authentication
 For get full access you need get api key and put it in header like this:
 
-```Authorization: Bearer apikey ```
+```X-EO-ApiKey: <your apikey> ```
+## Secrets (.env)
+- OURKEY - apikey for authentication on server
+- APIKEY - apikey from mattermost
+- MATTERMOST_DIRECT_ID - chat for save messages (bot direct)
+- NOTION_TOKEN - token for get access for notion
+- NOTION_DATABASE_ID - work together data base id
+- FCM_CRED - firebase service account json
 ## Library
 - Serialization: [Kotlin Serialization](https://kotlinlang.org/docs/serialization.html)
 - HTTP requests: [Ktor client](https://ktor.io/docs/getting-started-ktor-client.html)
@@ -32,4 +39,5 @@ For get full access you need get api key and put it in header like this:
 - [Mattermost](https://api.mattermost.com/)
 - [Leader Id](https://apps.leader-id.ru/swagger/)
 ## Issues
-[I](https://github.com/UserNameMax) haven't accessed to sinology photo, because server not work with sinology
+- [I](https://github.com/UserNameMax) haven't accessed to sinology photo, because server not work with sinology
+- Bearer authentication not work on yandex cloud

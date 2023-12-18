@@ -3,10 +3,10 @@ package band.effective.office.tvServer.route.mattermost
 import band.effective.office.tvServer.model.SavedMessage
 import band.effective.office.tvServer.service.mattermost.MattermostService
 import band.effective.office.tvServer.service.mattermost.MessageType
+import band.effective.office.tvServer.utils.authenticateWithApiKey
 import band.effective.office.tvServer.utils.savePipeline
 import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -29,7 +29,7 @@ fun Route.mattermost() {
         }
     }
 
-    authenticate("auth-bearer") {
+    authenticateWithApiKey {
         get("/message") {
             savePipeline {
                 call.respond(mattermostService.getPosts().map { it.toDto() })
