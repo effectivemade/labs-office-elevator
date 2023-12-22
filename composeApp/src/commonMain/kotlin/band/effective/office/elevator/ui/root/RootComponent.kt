@@ -1,10 +1,14 @@
 package band.effective.office.elevator.ui.root
 
+import band.effective.office.elevator.data.database.DBSource
 import band.effective.office.elevator.ui.authorization.AuthorizationComponent
 import band.effective.office.elevator.ui.content.ContentComponent
 import band.effective.office.elevator.ui.root.store.RootStore
 import band.effective.office.elevator.ui.root.store.RootStoreImplFactory
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router.slot.SlotNavigation
+import com.arkivanov.decompose.router.slot.activate
+import com.arkivanov.decompose.router.slot.childSlot
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
@@ -18,11 +22,12 @@ import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.Flow
+import org.koin.core.component.inject
 
 class RootComponent internal constructor(
     componentContext: ComponentContext,
     private val storeFactory: DefaultStoreFactory,
-    private val authorization: (ComponentContext, (AuthorizationComponent.Output) -> Unit) -> AuthorizationComponent,
+    private val authorization: (ComponentContext, () -> Unit) -> AuthorizationComponent,
     private val content: (ComponentContext, () -> Unit) -> ContentComponent,
 ) : ComponentContext by componentContext {
 
@@ -30,16 +35,14 @@ class RootComponent internal constructor(
         Napier.base(DebugAntilog())
     }
 
-    private val navigation = StackNavigation<Config>()
+    private val navigation = SlotNavigation<Config>()
 
-    private val stack = childStack(
+    val slot = childSlot(
         source = navigation,
-        initialStack = { listOf(Config.Undefined) },
         handleBackButton = true,
-        childFactory = ::child
+        childFactory = ::child,
+        initialConfiguration = { Config.Undefined }
     )
-
-    val childStack: Value<ChildStack<*, Child>> = stack
 
     private val rootStore =
         instanceKeeper.getStore {
@@ -54,7 +57,11 @@ class RootComponent internal constructor(
         componentContext,
         storeFactory,
         authorization = { childContext, output ->
-            AuthorizationComponent(childContext, storeFactory, output)
+            AuthorizationComponent(
+                childContext,
+                storeFactory,
+                openContentFlow = output
+            )
         },
         content = { childContext, onSignOut ->
             ContentComponent(
@@ -62,35 +69,27 @@ class RootComponent internal constructor(
                 storeFactory,
                 openAuthorizationFlow = onSignOut
             )
-        })
+        },
+    )
 
     private fun child(config: Config, componentContext: ComponentContext): Child =
         when (config) {
-            is Config.Authorization -> Child.AuthorizationChild(
-                authorization(
-                    componentContext,
-                    ::onAuthorizationOutput
-                )
-            )
+            is Config.Authorization -> Child.AuthorizationChild(authorization(componentContext){
+                navigation.activate(Config.Content)
+            })
 
             is Config.Content -> Child.ContentChild(content(componentContext) {
-                navigation.replaceAll(Config.Authorization)
+                navigation.activate(Config.Authorization)
             })
 
             Config.Undefined -> Child.Undefined
         }
 
-
-    private fun onAuthorizationOutput(output: AuthorizationComponent.Output) {
-        when (output) {
-            AuthorizationComponent.Output.OpenMainScreen -> navigation.replaceAll(Config.Content)
-        }
-    }
-
     fun onOutput(output: Output) {
+        println("Output")
         when (output) {
-            Output.OpenContent -> navigation.replaceAll(Config.Content)
-            Output.OpenAuthorizationFlow -> navigation.replaceAll(Config.Authorization)
+            Output.OpenContent -> navigation.activate(Config.Content, onComplete = { println("navigation compli") })
+            Output.OpenAuthorizationFlow -> navigation.activate(Config.Authorization)
         }
     }
 

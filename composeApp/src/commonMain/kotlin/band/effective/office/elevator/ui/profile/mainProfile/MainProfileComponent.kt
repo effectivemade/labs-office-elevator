@@ -17,14 +17,15 @@ class MainProfileComponent(
     private val output: (Output) -> Unit) :
     ComponentContext by componentContext {
 
+
     private val profileStore = instanceKeeper.getStore {
         ProfileStoreFactory(
-            storeFactory = storeFactory
+            storeFactory = storeFactory,
         ).create()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val user: StateFlow<ProfileStore.User> = profileStore.stateFlow
+    val user: StateFlow<ProfileStore.State> = profileStore.stateFlow
 
     val label: Flow<ProfileStore.Label> = profileStore.labels
     fun onEvent(event: ProfileStore.Intent) {
@@ -35,7 +36,7 @@ class MainProfileComponent(
     }
     sealed interface Output {
         object OpenAuthorizationFlow : Output
-        object OpenEditProfile: Output
+        data class NavigateToEdit(val userEdit: String): Output
     }
 
 }

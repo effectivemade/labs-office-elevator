@@ -2,6 +2,7 @@ package band.effective.office.elevator.ui.profile.mainProfile
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,15 +10,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -29,27 +27,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import band.effective.office.elevator.ExtendedThemeColors
 import band.effective.office.elevator.MainRes
+import band.effective.office.elevator.components.LoadingIndicator
+import band.effective.office.elevator.components.TitlePage
+import band.effective.office.elevator.components.generateImageLoader
+import band.effective.office.elevator.textGrayColor
+import band.effective.office.elevator.ui.models.UserData
+import band.effective.office.elevator.ui.models.getAllUserDataProfile
 import band.effective.office.elevator.ui.profile.mainProfile.store.ProfileStore
 import com.seiko.imageloader.model.ImageRequest
 import com.seiko.imageloader.rememberAsyncImagePainter
-import dev.icerock.moko.resources.ImageResource
-import dev.icerock.moko.resources.StringResource
+import com.seiko.imageloader.rememberImagePainter
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 
 @Composable
@@ -60,56 +57,77 @@ fun ProfileScreen(component: MainProfileComponent) {
         component.label.collect { label ->
             when(label){
                 ProfileStore.Label.OnSignedOut -> component.onOutput(MainProfileComponent.Output.OpenAuthorizationFlow)
-                ProfileStore.Label.OnClickedEdit -> component.onOutput(MainProfileComponent.Output.OpenEditProfile)
             }
         }
     }
 
     ProfileScreenContent(
-        imageUrl = user.imageUrl,
-        username = user.username,
-        post = user.post,
-        telegram = user.telegram,
-        phoneNumber = user.phoneNumber,
+        imageUrl = user.user.imageUrl,
+        userName = user.user.userName,
+        post = user.user.post,
+        telegram = user.user.telegram,
+        isLoading = user.isLoading,
+        phoneNumber = user.user.phoneNumber,
+        id = user.user.id,
         onSignOut = { component.onEvent(ProfileStore.Intent.SignOutClicked) },
-        onEditProfile = {component.onEvent(ProfileStore.Intent.EditProfileClicked)}
+        onEditProfile = {id -> component.onOutput(MainProfileComponent.Output.NavigateToEdit(userEdit = id))}
     )
 }
 
+
 @Composable
 internal fun ProfileScreenContent(
-    imageUrl: String?,
-    username: String?,
-    post: String?,
-    telegram: String?,
-    phoneNumber: String?,
+    imageUrl: String,
+    userName: String,
+    post: String,
+    telegram: String,
+    phoneNumber: String,
     onSignOut: () -> Unit,
-    onEditProfile: ()-> Unit
+    onEditProfile: (id: String) -> Unit,
+    id: String,
+    isLoading: Boolean
 ) {
     Column(
-        modifier = Modifier.fillMaxSize().padding(top = 48.dp),
+        modifier = Modifier.fillMaxSize().background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
-    ) {
-        ProfileHeader(onSignOut)
-        ProfileInfoAboutUser(imageUrl, username, post, onEditProfile)
-        var listPrepared by remember {
-            mutableStateOf(false)
-        }
-        LaunchedEffect(Unit) {
-            withContext(Dispatchers.Default) {
-                optionsList.clear()
-                prepareOptionsData(telegram, phoneNumber)
-                listPrepared = true
+        verticalArrangement = Arrangement.Top) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically, modifier = Modifier
+                .padding(horizontal = 16.dp).fillMaxWidth().padding(top = 40.dp)
+        ) {
+            TitlePage(
+                stringResource(MainRes.strings.profile)
+            )
+            Spacer(modifier = Modifier.weight(.1f))
+            OutlinedButton(
+                onClick = onSignOut,
+                shape = RoundedCornerShape(size = 8.dp),
+                border = BorderStroke(1.dp, MaterialTheme.colors.secondary),
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        painter = painterResource(MainRes.images.exit),
+                        contentDescription = null,
+                        tint = MaterialTheme.colors.secondary
+                    )
+                    Text(
+                        stringResource(MainRes.strings.exit),
+                        style = MaterialTheme.typography.body2,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
             }
         }
-        if (listPrepared) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize().padding(top = 24.dp)
-            ) {
-                items(optionsList) { item ->
-                    OptionsItemStyle(item = item, onEditProfile)
+        when(isLoading){
+            true -> LoadingIndicator()
+            false-> {
+                ProfileInfoAboutUser(imageUrl, userName, post, {onEditProfile(id)},id)
+                LazyColumn(modifier = Modifier.fillMaxSize().padding(top = 24.dp))
+                {
+                    items(getAllUserDataProfile()){ item ->
+                        FieldsItemStyle(item = item, { onEditProfile(id) },id = id, telegram = telegram, phoneNumber = phoneNumber)
+                    }
                 }
             }
         }
@@ -117,29 +135,35 @@ internal fun ProfileScreenContent(
 }
 
 @Composable
-fun ProfileInfoAboutUser(imageUrl: String?, username: String?, post: String?, onEditProfile: ()-> Unit) {
-    imageUrl?.let { url ->
+fun ProfileInfoAboutUser(imageUrl: String, userName: String, post: String, onEditProfile: (id: String)-> Unit, id: String) {
+    val imageLoader = generateImageLoader()
+
+    imageUrl.let { url ->
         val request = remember(url) {
             ImageRequest {
                 data(url)
             }
         }
-        val painter = rememberAsyncImagePainter(request)
+        val painter = rememberImagePainter(
+            request = request,
+            imageLoader = imageLoader,
+            placeholderPainter = { painterResource(MainRes.images.logo_default) },
+            errorPainter = { painterResource(MainRes.images.logo_default) }
+        )
         Box {
             Surface(
                 modifier = Modifier.size(88.dp).align(Alignment.Center),
                 shape = CircleShape,
-                color = Color(0xFFEBE4FF)
+                color = ExtendedThemeColors.colors.purple_heart_100
             ) {
                 Image(
                     modifier = Modifier.fillMaxSize().align(Alignment.Center),
-                    painter = painterResource(MainRes.images.job_icon),
-                    contentScale = ContentScale.Inside,
+                    painter = painter,
+                    contentScale = ContentScale.Crop,
                     contentDescription = null,
                 )
             }
-            Button(onClick = onEditProfile,
-                shape = CircleShape,
+            IconButton(onClick = {onEditProfile(id)},
                 modifier = Modifier.size(24.dp).align(Alignment.TopEnd)){
                 Image(
                     painter = painterResource(MainRes.images.edit_profile_image),
@@ -149,67 +173,30 @@ fun ProfileInfoAboutUser(imageUrl: String?, username: String?, post: String?, on
             }
         }
     }
-    username?.let {
-        Text(
-            it, style = TextStyle(
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Medium, color = Color.Black
-            ),
-            modifier = Modifier.padding(top = 12.dp)
-        )
-    }
-    post?.let {
-        Text(
-            it, style = TextStyle(
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Normal, color = Color(0x80000000)
-            ),
-            modifier = Modifier.padding(top = 8.dp)
-        )
-    }
+    Text(
+        userName,
+        style = MaterialTheme.typography.subtitle1,
+        color = Color.Black,
+        modifier = Modifier.padding(top = 12.dp)
+    )
+    Text(
+        post,
+        style = MaterialTheme.typography.subtitle1,
+        color = textGrayColor,
+        modifier = Modifier.padding(top = 8.dp)
+    )
 }
 
-@Composable
-private fun ProfileHeader(onSignOut: () -> Unit) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically, modifier = Modifier
-            .padding(horizontal = 16.dp).fillMaxWidth()
-    ) {
-        Text(
-            stringResource(MainRes.strings.profile),
-            style = TextStyle(
-                fontSize = 20.sp,
-                color = Color.Black,
-                fontWeight = FontWeight.SemiBold
-            )
-        )
-        Spacer(modifier = Modifier.weight(.1f))
-        OutlinedButton(
-            onClick = onSignOut,
-            shape = RoundedCornerShape(size = 8.dp),
-            border = BorderStroke(1.dp, MaterialTheme.colors.secondary),
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    painter = painterResource(MainRes.images.exit),
-                    contentDescription = null,
-                    tint = MaterialTheme.colors.secondary
-                )
-                Text(
-                    stringResource(MainRes.strings.exit),
-                    style = TextStyle(
-                        fontSize = 14.sp, color = Color(0xFFC2410C),
-                        fontWeight = FontWeight.Normal
-                    ), modifier = Modifier.padding(start = 8.dp)
-                )
-            }
-        }
-    }
-}
+
 
 @Composable
-private fun OptionsItemStyle(item: OptionsData, onEditProfile: () -> Unit) {
+private fun FieldsItemStyle(
+    item: UserData,
+    onEditProfile: (id: String) -> Unit,
+    id: String,
+    phoneNumber: String,
+    telegram: String
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier
             .padding(horizontal = 16.dp).fillMaxWidth()
@@ -217,58 +204,31 @@ private fun OptionsItemStyle(item: OptionsData, onEditProfile: () -> Unit) {
         Icon(
             painter = painterResource(item.icon),
             contentDescription = null,
-            tint = Color(0x80000000)
+            tint = textGrayColor
         )
         Text(
-            stringResource(item.title), style = TextStyle(
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Normal, color = Color(0x80000000)
-            ),
+            stringResource(item.title),
+            style = MaterialTheme.typography.subtitle1,
+            color = textGrayColor,
             modifier = Modifier.padding(start = 12.dp)
         )
         Spacer(modifier = Modifier.weight(.1f))
-        item.value?.let {
-            Text(
-                it,
-                style = TextStyle(
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Normal,
-                    color = Color.Black
-                )
-            )
+        var text = when(item){
+            UserData.Phone -> phoneNumber
+            UserData.Telegram -> telegram
         }
-        IconButton(onClick = onEditProfile) {
-            Icon(
-                painter = painterResource(MainRes.images.next),
-                contentDescription = null,
-                tint = Color(0xFF6F01FF)
-            )
-        }
+        Text(
+            text = text,
+            style = MaterialTheme.typography.subtitle1,
+            color = ExtendedThemeColors.colors.blackColor
+        )
+    IconButton(onClick = { onEditProfile(id) }) {
+        Icon(
+            painter = painterResource(MainRes.images.next),
+            contentDescription = null,
+            tint = ExtendedThemeColors.colors.purple_heart_700
+        )
     }
-    Divider(color = Color(0x80000000), thickness = 1.dp)
+    }
+    Divider(color = textGrayColor, thickness = 1.dp)
 }
-
-
-private val optionsList: ArrayList<OptionsData> = ArrayList()
-
-
-private fun prepareOptionsData(telegram: String?, phoneNumber: String?) {
-
-    optionsList.add(
-        OptionsData(
-            icon = MainRes.images.icon_call,
-            title = MainRes.strings.phone_number,
-            value = telegram,
-        )
-    )
-
-    optionsList.add(
-        OptionsData(
-            icon = MainRes.images.icon_telegram,
-            title = MainRes.strings.telegram,
-            value = phoneNumber,
-        )
-    )
-}
-
-data class OptionsData(val icon: ImageResource, val title: StringResource, val value: String?)

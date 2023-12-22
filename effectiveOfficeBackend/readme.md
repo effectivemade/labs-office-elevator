@@ -4,6 +4,8 @@
 
 # Effective-Office-EffectiveBackend
 
+[See documentation](documentation/gfm/index.md) :point_left:
+
 # Goal :dart:
 
 The main goal of subproject is to create a proxy backend, which will provide abilities to book workspaces and meeting rooms, edit workspaces information, authentication and more! It was important to us that the application synchronizes with Google Calendar, in order to keep the ability to perform the same tasks with the same tools, if suddenly, the employee will not be able to use the application.
@@ -106,20 +108,23 @@ postgres container from docker. In that case you may run named container by comm
 ## Environment variables
 
 **POSTGRES_PASSWORD** - defines password for postgres db<br>
-**POSTGRES_DB** - defines name of the database in postgres to connect<br>
+**POSTGRES_DB** - defines name of the postgres database to connect<br>
 **POSTGRES_USER** - defines username for postgres container(postgresForKtor)<br>
 **DATABASE_PASSWORD** - specify password to send to database container to connect<br>
 **GOOGLE_CLIENT_ID** - Deprecated <br>
 **GOOGLE_CLIENT_SECRET** - Deprecated<br>
-**VERIFICATION_PLUGIN_ENABLE** - allows to turn on/off need in authetnication to access api. Any value instead of "true" will be reconnised as "false"<br>
+**VERIFICATION_PLUGIN_ENABLE** - allows to turn on/off need in authetnication to access api. Any value instead of "true" will be recognised as "false"<br>
 **DATABASE_HOST** - the name of the postgres docker container in the same network<br>
 **DATABASE_PORT** - specify the port of database container where application will make a call to establish connection with postgres<br>
 **DATABASE_NAME** - specify the name of database to connect<br>
 **DATABASE_USERNAME** - specify the username of **database** user to connect<br>
-**MIGRATIONS_ENABLE** - allows to turn on/off database migrations process. Any value instead of "true" will be reconnised as "false"<br>
-**JSON_GOOGLE_CREDENTIALS** - json file with google credentials, needet to access calendar api<br>
+**MIGRATIONS_ENABLE** - allows to turn on/off database migrations process. Any value instead of "true" will be recognised as "false"<br>
+**JSON_GOOGLE_CREDENTIALS** - json file with Google credentials, needed to access calendar api<br>
 **FIREBASE_SA_JSON** - credentials json file from Firebase service account<br>
-**APPLICATION_URL** - actual url address of application itself. Must not be "localhost""<br>
+**APPLICATION_URL** - actual url address of application itself. Must be https url. Can't be localhost.<br>
+**LOG_LEVEL** - logging level in application. Used in logback.xml. Default value: debug<br>
+**DEFAULT_CALENDAR** - default Google calendar, used for booking meeting rooms. If not defined value from the config file will be used instead.
+**WORKSPACE_CALENDAR** - Google calendar for booking working places. If not defined value from the config file will be used instead.
 
 You may use file .env.example as an example.
 

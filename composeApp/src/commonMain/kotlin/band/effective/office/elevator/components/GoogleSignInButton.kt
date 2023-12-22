@@ -1,6 +1,7 @@
 package band.effective.office.elevator.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -22,12 +23,14 @@ import dev.icerock.moko.resources.compose.stringResource
 internal fun GoogleSignInButton(modifier: Modifier, onClick: () -> Unit) {
     Button(
         onClick = onClick,
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(6.dp),
+        modifier = modifier.fillMaxWidth()
+            .border(2.dp, MaterialTheme.colors.secondary, RoundedCornerShape(40.dp)),
+        shape = RoundedCornerShape(40.dp),
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = MaterialTheme.colors.surface,
-            contentColor = MaterialTheme.colors.onSurface
-        )
+            backgroundColor = MaterialTheme.colors.background,
+            contentColor = MaterialTheme.colors.secondary
+        ),
+        elevation = Elevation()
     ) {
         Image(
             painterResource(MainRes.images.google_icon),
@@ -35,6 +38,10 @@ internal fun GoogleSignInButton(modifier: Modifier, onClick: () -> Unit) {
             modifier = Modifier.size(32.dp)
         )
         Spacer(modifier = Modifier.width(8.dp))
-        Text(text = stringResource(MainRes.strings.sign_in_google), modifier = Modifier.padding(6.dp))
+        Text(
+            text = stringResource(MainRes.strings.sign_in_google),
+            modifier = Modifier.padding(6.dp),
+            style = MaterialTheme.typography.button
+        )
     }
 }

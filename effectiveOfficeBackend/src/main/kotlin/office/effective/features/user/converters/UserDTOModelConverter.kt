@@ -4,7 +4,6 @@ import office.effective.common.exception.InstanceNotFoundException
 import office.effective.common.utils.UuidValidator
 import office.effective.dto.IntegrationDTO
 import office.effective.dto.UserDTO
-import office.effective.features.user.repository.IntegrationEntity
 import office.effective.features.user.repository.UserRepository
 import office.effective.features.user.repository.UsersTagEntity
 import office.effective.model.IntegrationModel

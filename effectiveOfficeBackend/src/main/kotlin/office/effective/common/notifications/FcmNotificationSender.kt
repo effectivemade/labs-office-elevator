@@ -8,11 +8,13 @@ import kotlinx.serialization.json.Json
 import office.effective.dto.BookingDTO
 import office.effective.dto.UserDTO
 import office.effective.dto.WorkspaceDTO
+import org.slf4j.LoggerFactory
 
 /**
  * Class for sending Firebase cloud messages
  */
 class FcmNotificationSender(private val fcm: FirebaseMessaging): INotificationSender {
+    private val logger = LoggerFactory.getLogger(FcmNotificationSender::class.java)
 
     /**
      * Sends empty FCM message on topic
@@ -20,6 +22,7 @@ class FcmNotificationSender(private val fcm: FirebaseMessaging): INotificationSe
      * @author Daniil Zavyalov
      */
     override fun sendEmptyMessage(topic: String) {
+        logger.info("Sending an FCM message on $topic topic")
         val msg: Message = Message.builder()
             .setTopic(topic)
             .putData("message", "$topic was changed")
@@ -36,6 +39,7 @@ class FcmNotificationSender(private val fcm: FirebaseMessaging): INotificationSe
      * @author Daniil Zavyalov
      */
     override fun sendContentMessage(action: HttpMethod, modifiedWorkspace: WorkspaceDTO) {
+        logger.info("Sending an FCM message on workspace topic")
         val json = Json.encodeToString(modifiedWorkspace)
         val msg: Message = Message.builder()
             .setTopic("workspace")
@@ -54,6 +58,7 @@ class FcmNotificationSender(private val fcm: FirebaseMessaging): INotificationSe
      * @author Daniil Zavyalov
      */
     override fun sendContentMessage(action: HttpMethod, modifiedUser: UserDTO) {
+        logger.info("Sending an FCM message on user topic")
         val json = Json.encodeToString(modifiedUser)
         val msg: Message = Message.builder()
             .setTopic("user")
@@ -72,6 +77,7 @@ class FcmNotificationSender(private val fcm: FirebaseMessaging): INotificationSe
      * @author Daniil Zavyalov
      */
     override fun sendContentMessage(action: HttpMethod, modifiedBooking: BookingDTO) {
+        logger.info("Sending an FCM message on booking topic")
         val json = Json.encodeToString(modifiedBooking)
         val msg: Message = Message.builder()
             .setTopic("booking")

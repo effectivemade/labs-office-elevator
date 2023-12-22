@@ -31,5 +31,5 @@ fun Application.module() {
     configureExceptionHandling()
     configureSwagger()
     configureMicrometer()
-    install(VerificationPlugin)
+    install(CustomAuthorizationPlugin)
 }
