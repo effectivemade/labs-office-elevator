@@ -56,7 +56,8 @@ internal class MainStoreFactory(
                     idSelectedBooking = "",
                     isLoading = true,
                     endDate = null,
-                    enableCallElevator = true
+                    enableCallElevator = true,
+                    isRefreshing = false
                 ),
                 executorFactory = ::ExecutorImpl,
                 reducer = ReducerImpl,
@@ -85,6 +86,8 @@ internal class MainStoreFactory(
 
         data class UpdateBookingLoadingState(val isLoading: Boolean) : Msg
         data class UpdateCallElevator(val newValue: Boolean) : Msg
+
+        data class UpdateRefreshing(val newValue: Boolean) : Msg
     }
 
     private sealed interface Action {
@@ -158,6 +161,7 @@ internal class MainStoreFactory(
                 is MainStore.Intent.CloseFiltersBottomDialog -> {
                     scope.launch {
                         publish(MainStore.Label.CloseFiltersBottomDialog)
+
                         intent.bookingsFilter.let { bookingsFilter ->
                             if (updatedList) {
                                 changeBookingsByDate(
@@ -186,6 +190,17 @@ internal class MainStoreFactory(
                         publish(MainStore.Label.HideOptions)
                     }
                 }
+
+                MainStore.Intent.OnRefreshContent -> {
+                    refreshBookings(
+                        dates = listOf(
+                            getState().beginDate,
+                            getState().endDate
+                        ).mapNotNull { it },
+                        bookingsFilter = filtration
+                    )
+                }
+
             }
         }
 
@@ -248,6 +263,40 @@ internal class MainStoreFactory(
             }
         }
 
+        private fun refreshBookings(dates: List<LocalDate>, bookingsFilter: BookingsFilter) {
+            if (dates.isEmpty()) return
+
+            val beginDate = dates.first()
+            val endDate = dates.last()
+
+            val beginDateTime = LocalDateTime(date = beginDate, time = LocalTime.Min)
+            val endDateTime = LocalDateTime(date = endDate, time = LocalTime.Max)
+
+            dispatch(Msg.UpdateRefreshing(true))
+
+            scope.launch(Dispatchers.IO) {
+                bookingInteract
+                    .getForUser(
+                        beginDateTime = beginDateTime,
+                        endDateTime = endDateTime,
+                        bookingsFilter = bookingsFilter
+                    )
+                    .collect { bookings ->
+                        withContext(Dispatchers.Main) {
+                            when (bookings) {
+                                is Either.Error -> {
+                                    // TODO show error on UI
+                                }
+
+                                is Either.Success -> {
+                                    dispatch(Msg.UpdateSeatsReservation(reservedSeats = bookings.data))
+                                    dispatch(Msg.UpdateRefreshing(false))
+                                }
+                            }
+                        }
+                    }
+            }
+        }
         fun getBookingsForUserByDate(dates: List<LocalDate>, bookingsFilter: BookingsFilter) {
 
             if (dates.isEmpty()) return
@@ -280,6 +329,7 @@ internal class MainStoreFactory(
 
                                 is Either.Success -> {
                                     dispatch(Msg.UpdateSeatsReservation(reservedSeats = bookings.data))
+                                    dispatch(Msg.UpdateRefreshing(false))
                                 }
                             }
                         }
@@ -362,6 +412,7 @@ internal class MainStoreFactory(
                 is Msg.UpdateBookingSelectedId -> copy(idSelectedBooking = message.bookingId)
                 is Msg.UpdateBookingLoadingState -> copy(isLoading = message.isLoading)
                 is Msg.UpdateCallElevator -> copy(enableCallElevator = message.newValue)
+                is Msg.UpdateRefreshing -> copy(isRefreshing = message.newValue)
             }
     }
 }

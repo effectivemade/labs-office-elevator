@@ -17,6 +17,9 @@ import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Snackbar
 import androidx.compose.material.Text
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -62,6 +65,16 @@ fun MainScreen(component: MainComponent) {
     var showOptionsMenu by remember { mutableStateOf(false) }
     var showDeleteBooking by remember { mutableStateOf(false) }
     var showModalOptionCard by remember { mutableStateOf(false) }
+
+    val isRefreshing = state.isRefreshing
+
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = isRefreshing,
+        onRefresh = {
+            Napier.d { "refresh content" }
+            component.onEvent(MainStore.Intent.OnRefreshContent)
+        }
+    )
 
     var bottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
@@ -114,6 +127,7 @@ fun MainScreen(component: MainComponent) {
 
     Box(
         modifier = Modifier
+            .pullRefresh(pullRefreshState)
             .background(ExtendedThemeColors.colors.whiteColor)
             .fillMaxSize()
     ) {
@@ -140,6 +154,8 @@ fun MainScreen(component: MainComponent) {
             onCallElevator = { component.onEvent(MainStore.Intent.OnClickCallElevator) },
             enableCallElevator = state.enableCallElevator
         )
+
+        PullRefreshIndicator(isRefreshing, pullRefreshState, Modifier.align(Alignment.TopCenter))
 
         if (showModalCalendar) {
             Dialog(
