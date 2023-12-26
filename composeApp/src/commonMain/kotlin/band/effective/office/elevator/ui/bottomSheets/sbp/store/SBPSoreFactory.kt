@@ -1,5 +1,6 @@
 package band.effective.office.elevator.ui.bottomSheets.sbp.store
 
+import band.effective.office.elevator.domain.useCase.BankFilterUseCase
 import band.effective.office.elevator.domain.useCase.SBPBanksInfoUseCase
 import band.effective.office.elevator.expects.pickSBP
 import band.effective.office.elevator.ui.bottomSheets.sbp.model.SBPBankInfo
@@ -19,6 +20,7 @@ class SBPSoreFactory (
 ) : KoinComponent {
 
     val spbBanksInfo: SBPBanksInfoUseCase by inject()
+    val bankFilterUseCase: BankFilterUseCase by inject()
 
     fun create(): SBPStore =
         object : SBPStore,
@@ -36,9 +38,11 @@ class SBPSoreFactory (
 
         override fun executeIntent(intent: SBPStore.Intent, getState: () -> SBPStore.State) {
            when(intent) {
-               is SBPStore.Intent.OnChangeQuery -> dispatch(Msg.UpdateQuery(intent.query))
+               is SBPStore.Intent.OnChangeQuery ->
+                   updateQuery(query = intent.query, banks = getState().allBanks)
+
                is SBPStore.Intent.OnClickBank -> {
-                  pickSBP(userPhoneNumber)
+                  pickSBP(phoneNumber = userPhoneNumber, bankInfo = intent.bank)
                }
            }
         }
@@ -47,6 +51,14 @@ class SBPSoreFactory (
             when (action) {
                 Action.InitBankInfo -> loadBankIfo()
             }
+        }
+
+        private fun updateQuery(query: String, banks: List<SBPBankInfo>) {
+            val updatedBanks = bankFilterUseCase.execute(
+                banksList = banks, query = query
+            )
+            dispatch(Msg.UpdateQuery(query))
+            dispatch(Msg.UpdateShowedBanks(updatedBanks))
         }
 
         private fun loadBankIfo() {
@@ -67,8 +79,9 @@ class SBPSoreFactory (
     private object ReducerImpl : Reducer<SBPStore.State, Msg> {
         override fun SBPStore.State.reduce(msg: Msg): SBPStore.State =
             when(msg) {
-                is Msg.UpdateBankList -> copy(banks = msg.newValue)
+                is Msg.UpdateBankList -> copy(showingBanks = msg.newValue, allBanks = msg.newValue)
                 is Msg.UpdateQuery -> copy(query = msg.newValue)
+                is Msg.UpdateShowedBanks -> copy(showingBanks = msg.newValue)
             }
     }
 
@@ -79,5 +92,7 @@ class SBPSoreFactory (
         data class UpdateBankList(val newValue: List<SBPBankInfo>) : Msg
 
         data class UpdateQuery(val newValue: String) : Msg
+
+        data class UpdateShowedBanks(val newValue: List<SBPBankInfo>) : Msg
     }
 }

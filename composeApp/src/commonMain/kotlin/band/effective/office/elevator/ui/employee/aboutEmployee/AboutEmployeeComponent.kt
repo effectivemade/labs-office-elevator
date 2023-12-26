@@ -52,7 +52,8 @@ class AboutEmployeeComponent(
             is SheetConfig.BanksList -> SBPBottomSheetComponent(
                 componentContext = componentContext,
                 storeFactory = storeFactory,
-                userPhoneNumber = sheetConfig.userPhoneNumber
+                userPhoneNumber = sheetConfig.userPhoneNumber,
+                onClickClose = { closeSheet() }
             )
         }
 

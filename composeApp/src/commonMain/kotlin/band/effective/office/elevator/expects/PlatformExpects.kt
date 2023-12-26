@@ -1,6 +1,6 @@
 package band.effective.office.elevator.expects
 
-import androidx.compose.runtime.Composable
+import band.effective.office.elevator.ui.bottomSheets.sbp.model.SBPBankInfo
 import com.seiko.imageloader.component.ComponentRegistryBuilder
 import okio.Path
 
@@ -13,7 +13,11 @@ expect fun makeCall(phoneNumber: String)
 
 expect fun pickTelegram(telegramNick: String)
 
-expect fun pickSBP(phoneNumber: String)
+expect fun pickSBP(phoneNumber: String, bankInfo: SBPBankInfo)
+
+expect fun isApplicationInstalled(applicationId: String?) : Boolean
+
+expect fun getApplicationBankId(bankInfo: SBPBankInfo) : String?
 
 internal expect fun ComponentRegistryBuilder.setupDefaultComponents()
 

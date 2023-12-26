@@ -1,7 +1,5 @@
 package band.effective.office.elevator.components
 
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -13,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.TextStyle
@@ -29,16 +28,16 @@ import dev.icerock.moko.resources.compose.stringResource
 fun SearchTextField(
     query: String,
     onQueryUpdate: (String) -> Unit,
-    placeholderText: String
+    placeholderText: String,
+    modifier: Modifier = Modifier
 ) {
     var qurStr by remember { mutableStateOf(query) }
     TextField(
         value = query, onValueChange = {
             qurStr = it
             onQueryUpdate(it)
-        }, modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 20.dp, top = 10.dp, end = 20.dp, bottom = 5.dp),
+        },
+        modifier = modifier,
         textStyle = TextStyle(
             color = ExtendedThemeColors.colors.trinidad_400,
             fontSize = 16.sp,

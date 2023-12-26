@@ -1,6 +1,6 @@
 package band.effective.office.elevator.expects
 
-import androidx.compose.runtime.Composable
+import band.effective.office.elevator.ui.bottomSheets.sbp.model.SBPBankInfo
 import band.effective.office.elevator.ui.uiViewController
 import com.seiko.imageloader.component.ComponentRegistryBuilder
 import com.seiko.imageloader.component.setupDefaultComponents
@@ -37,9 +37,22 @@ actual fun pickTelegram(telegramNick: String) {
     }
 }
 
-actual fun pickSBP(phoneNumber: String) {
-
+actual fun pickSBP(phoneNumber: String, bankInfo: SBPBankInfo) {
+    val url = NSURL.URLWithString("${bankInfo.schema}://")
+    url?.let{
+        UIApplication.sharedApplication.openURL(it)
+    }
 }
+
+actual fun isApplicationInstalled(applicationId: String?): Boolean {
+    val url = NSURL.URLWithString("${applicationId}://")
+    url?.let{
+        return UIApplication.sharedApplication.canOpenURL(url)
+    }
+    return false
+}
+
+actual fun getApplicationBankId(bankInfo: SBPBankInfo): String? = bankInfo.schema
 
 actual fun ComponentRegistryBuilder.setupDefaultComponents() = this.setupDefaultComponents()
 

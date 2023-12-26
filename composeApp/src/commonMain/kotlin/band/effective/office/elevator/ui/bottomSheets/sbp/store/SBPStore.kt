@@ -5,13 +5,15 @@ import com.arkivanov.mvikotlin.core.store.Store
 
 interface SBPStore : Store<SBPStore.Intent, SBPStore.State, Unit> {
     data class State(
-        val banks: List<SBPBankInfo>,
+        val showingBanks: List<SBPBankInfo>,
+        val allBanks: List<SBPBankInfo>,
         val query: String
     ) {
         companion object {
             val initialState = State(
-                banks = listOf(),
-                query = ""
+                showingBanks = listOf(),
+                query = "",
+                allBanks = listOf()
             )
         }
     }

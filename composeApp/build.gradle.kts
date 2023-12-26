@@ -29,7 +29,7 @@ kotlin {
         version = "2.0.1"
         summary = "Compose application framework"
         homepage = "https://github.com/Radch-enko"
-        ios.deploymentTarget = "12.3"
+        ios.deploymentTarget = "11.0"
         podfile = project.file("../iosApp/Podfile")
         framework {
             baseName = "ComposeApp"

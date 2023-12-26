@@ -31,6 +31,30 @@
 	</dict>
 	<key>UILaunchScreen</key>
 	<dict/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>bank100000000111</string>
+		<string>bank100000000004</string>
+		<string>bank110000000005</string>
+		<string>bank100000000008</string>
+		<string>bank100000000007</string>
+		<string>bank100000000015</string>
+		<string>bank100000000001</string>
+		<string>bank100000000010</string>
+		<string>bank100000000013</string>
+		<string>bank100000000012</string>
+		<string>bank100000000020</string>
+		<string>bank100000000025</string>
+		<string>bank100000000030</string>
+		<string>bank100000000003</string>
+		<string>bank100000000043</string>
+		<string>bank100000000028</string>
+		<string>bank100000000086</string>
+		<string>bank100000000011</string>
+		<string>bank100000000044</string>
+		<string>bank100000000049</string>
+		<string>bank100000000095</string>
+	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 </dict>

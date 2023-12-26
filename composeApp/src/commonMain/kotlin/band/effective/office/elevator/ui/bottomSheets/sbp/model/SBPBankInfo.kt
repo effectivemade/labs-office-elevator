@@ -5,13 +5,13 @@ import band.effective.office.elevator.data.models.sbp.SBPBank
 data class SBPBankInfo(
     val bankName: String,
     val schema: String,
-    val packageName: String,
+    val packageName: String?,
     val logo: String
 )
 
 fun SBPBank.toDomain() =
     SBPBankInfo(
-       packageName = packageName.orEmpty(),
+       packageName = packageName,
         bankName = bankName,
         schema = schema,
         logo = logoURL

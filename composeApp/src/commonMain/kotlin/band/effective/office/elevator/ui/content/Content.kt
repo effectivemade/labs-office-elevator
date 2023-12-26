@@ -10,11 +10,14 @@ import androidx.compose.material.BottomNavigation
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.elevator.components.TabNavigationItem
+import band.effective.office.elevator.components.generateImageLoader
 import band.effective.office.elevator.navigation.BookingTab
 import band.effective.office.elevator.navigation.EmployeesTab
 import band.effective.office.elevator.navigation.MainTab
@@ -31,64 +34,69 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.isEn
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.seiko.imageloader.LocalImageLoader
 
 @Composable
 fun Content(component: ContentComponent) {
     val childStack by component.childStack.subscribeAsState()
     val activeComponent = childStack.active.instance
-    Scaffold(
-        modifier = Modifier,
-        content = { innerPadding ->
-            Box(modifier = Modifier.padding(innerPadding)) {
-                Children(
-                    stack = component.childStack,
-                    modifier = Modifier,
-                    animation = tabAnimation()
+    CompositionLocalProvider(
+        LocalImageLoader provides remember { generateImageLoader() },
+    ) {
+        Scaffold(
+            modifier = Modifier,
+            content = { innerPadding ->
+                Box(modifier = Modifier.padding(innerPadding)) {
+                    Children(
+                        stack = component.childStack,
+                        modifier = Modifier,
+                        animation = tabAnimation()
+                    ) {
+                        when (val child = it.instance) {
+                            is ContentComponent.Child.Main -> MainScreen(child.component)
+                            is ContentComponent.Child.Profile -> Profile(child.component)
+                            is ContentComponent.Child.Booking -> BookingScreen(child.component)
+                            is ContentComponent.Child.Employee -> Employee(child.component)
+                        }
+                    }
+                }
+            },
+            bottomBar = {
+                BottomNavigation(
+                    modifier = Modifier
+                        .background(Color.White)
+                        .fillMaxWidth()
+                        .fillMaxHeight(fraction = 0.107f),
+                    backgroundColor = Color.White
                 ) {
-                    when (val child = it.instance) {
-                        is ContentComponent.Child.Main -> MainScreen(child.component)
-                        is ContentComponent.Child.Profile -> Profile(child.component)
-                        is ContentComponent.Child.Booking -> BookingScreen(child.component)
-                        is ContentComponent.Child.Employee -> Employee(child.component)
+                    TabNavigationItem(
+                        tab = MainTab,
+                        selected = activeComponent is ContentComponent.Child.Main
+                    ) {
+                        component.onOutput(ContentComponent.Output.OpenMainTab)
+                    }
+                    TabNavigationItem(
+                        tab = BookingTab,
+                        selected = activeComponent is ContentComponent.Child.Booking
+                    ) {
+                        component.onOutput(ContentComponent.Output.OpenBookingTab)
+                    }
+                    TabNavigationItem(
+                        tab = EmployeesTab,
+                        selected = activeComponent is ContentComponent.Child.Employee
+                    ) {
+                        component.onOutput(ContentComponent.Output.OpenEmployeeTab)
+                    }
+                    TabNavigationItem(
+                        tab = ProfileTab,
+                        selected = activeComponent is ContentComponent.Child.Profile
+                    ) {
+                        component.onOutput(ContentComponent.Output.OpenProfileTab)
                     }
                 }
             }
-        },
-        bottomBar = {
-            BottomNavigation(
-                modifier = Modifier
-                    .background(Color.White)
-                    .fillMaxWidth()
-                    .fillMaxHeight(fraction = 0.107f),
-                backgroundColor = Color.White
-            ) {
-                TabNavigationItem(
-                    tab = MainTab,
-                    selected = activeComponent is ContentComponent.Child.Main
-                ) {
-                    component.onOutput(ContentComponent.Output.OpenMainTab)
-                }
-                TabNavigationItem(
-                    tab = BookingTab,
-                    selected = activeComponent is ContentComponent.Child.Booking
-                ) {
-                    component.onOutput(ContentComponent.Output.OpenBookingTab)
-                }
-                TabNavigationItem(
-                    tab = EmployeesTab,
-                    selected = activeComponent is ContentComponent.Child.Employee
-                ) {
-                    component.onOutput(ContentComponent.Output.OpenEmployeeTab)
-                }
-                TabNavigationItem(
-                    tab = ProfileTab,
-                    selected = activeComponent is ContentComponent.Child.Profile
-                ) {
-                    component.onOutput(ContentComponent.Output.OpenProfileTab)
-                }
-            }
-        }
-    )
+        )
+    }
 }
 
 private val ContentComponent.Child.index: Int

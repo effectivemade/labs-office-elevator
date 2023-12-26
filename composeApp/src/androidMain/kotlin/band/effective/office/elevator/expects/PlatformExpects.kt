@@ -8,15 +8,12 @@ import android.os.Vibrator
 import android.widget.Toast
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.runtime.Composable
 import band.effective.office.elevator.AndroidApp
-import com.seiko.imageloader.ImageLoader
-import com.seiko.imageloader.cache.memory.maxSizePercent
+import band.effective.office.elevator.ui.bottomSheets.sbp.model.SBPBankInfo
 import com.seiko.imageloader.component.ComponentRegistryBuilder
 import com.seiko.imageloader.component.setupDefaultComponents
-import com.seiko.imageloader.option.androidContext
+import io.github.aakira.napier.Napier
 import okio.Path
-import okio.Path.Companion.toOkioPath
 import okio.Path.Companion.toPath
 
 actual fun showToast(message: String) {
@@ -60,13 +57,20 @@ actual fun pickTelegram(telegramNick: String) {
 }
 
 @SuppressLint("WrongConstant")
-actual fun pickSBP(phoneNumber: String) {
-    with(AndroidApp.INSTANCE.applicationContext) {
-        val intent = Intent(Intent.ACTION_VIEW).apply {
-            data = Uri.parse("tel:$phoneNumber")
-            flags = 0x24000000 or Intent.FLAG_ACTIVITY_NEW_TASK
+actual fun pickSBP(phoneNumber: String, bankInfo: SBPBankInfo) {
+    try {
+        with(AndroidApp.INSTANCE.applicationContext) {
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                data = Uri.parse("tel:$phoneNumber")
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                bankInfo.packageName?.let {
+                    `package` = it
+                }
+            }
+            this@with.startActivity(intent)
         }
-        this@with.startActivity(intent)
+    } catch (e: Exception) {
+        showToast(e.message.toString())
     }
 }
 
@@ -75,3 +79,18 @@ actual fun ComponentRegistryBuilder.setupDefaultComponents() =
 
 actual fun getImageCacheDirectoryPath(): Path =
     AndroidApp.INSTANCE.applicationContext.cacheDir.absolutePath.toPath()
+
+actual fun isApplicationInstalled(applicationId: String?): Boolean {
+    // TODO (Artem Gruzdev): нужно разобраться с пермишинами
+    // https://developer.android.com/training/package-visibility
+
+    return applicationId != null
+
+//    with(AndroidApp.INSTANCE.applicationContext) {
+//        Napier.d { "list applications: ${packageManager.getInstalledApplications(0)} "}
+//        return packageManager.getInstalledApplications(0).find { info -> info.packageName == applicationId } != null
+//    }
+
+}
+
+actual fun getApplicationBankId(bankInfo: SBPBankInfo): String? = bankInfo.packageName

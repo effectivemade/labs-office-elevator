@@ -192,8 +192,6 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: (String) -> Unit) {
         onCardClick(emp.id)
     }
 
-    val imageLoader = generateImageLoader()
-
     Surface(
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier
@@ -212,7 +210,6 @@ fun EveryEmployeeCard(emp: EmployeeCard, onCardClick: (String) -> Unit) {
                 }
                 val painter = rememberImagePainter(
                     request = request,
-                    imageLoader = imageLoader,
                     placeholderPainter = { painterResource(MainRes.images.logo_default) },
                     errorPainter = { painterResource(MainRes.images.logo_default) }
                 )

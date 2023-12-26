@@ -190,8 +190,6 @@ private fun AboutEmployeeContent(
     isLoading: Boolean,
     isLoadingBooking: Boolean
 ) {
-    val imageLoader = generateImageLoader()
-
     ModalBottomSheetLayout(
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
         sheetState = bottomSheetState,
@@ -240,7 +238,6 @@ private fun AboutEmployeeContent(
                         }
                         val painter = rememberImagePainter(
                             request = request,
-                            imageLoader = imageLoader,
                             placeholderPainter = { painterResource(MainRes.images.logo_default) },
                             errorPainter = { painterResource(MainRes.images.logo_default) }
                         )
