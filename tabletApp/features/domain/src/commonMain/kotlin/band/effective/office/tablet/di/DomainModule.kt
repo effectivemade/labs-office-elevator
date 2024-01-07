@@ -26,6 +26,7 @@ val domainModule = module {
     single<BookingUseCase> { BookingUseCase(repository = get(), roomRepository = get()) }
     single<CurrentEventController> { CurrentEventControllerImpl(
         roomUseCase = get(),
-        cancelRepository = get()
+        cancelRepository = get(),
+        checkSettingsUseCase = get()
     ) }
 }

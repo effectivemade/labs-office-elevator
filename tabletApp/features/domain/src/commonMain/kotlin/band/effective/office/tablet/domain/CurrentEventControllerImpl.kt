@@ -1,7 +1,7 @@
 package band.effective.office.tablet.domain
 
 import band.effective.office.network.model.Either
-import band.effective.office.tablet.domain.model.Settings
+import band.effective.office.tablet.domain.useCase.CheckSettingsUseCase
 import band.effective.office.tablet.domain.useCase.RoomInfoUseCase
 import band.effective.office.tablet.network.repository.CancelRepository
 import band.effective.office.tablet.utils.SingletonCountDownTimer
@@ -11,15 +11,15 @@ import java.util.GregorianCalendar
 
 /**Controller implementation following for current event*/
 class CurrentEventControllerImpl(
-    private val roomUseCase: RoomInfoUseCase, cancelRepository: CancelRepository
+    private val roomUseCase: RoomInfoUseCase, cancelRepository: CancelRepository, private val checkSettingsUseCase: CheckSettingsUseCase
 ) : CurrentEventController(roomUseCase, cancelRepository) {
     private val timer = SingletonCountDownTimer()
     override fun update() = scope.launch {
-        val roomInfo = when (val response = roomUseCase(Settings.current.checkCurrentRoom())) {
+        val roomInfo = when (val response = roomUseCase(checkSettingsUseCase())) {
             is Either.Error -> null
             is Either.Success -> response.data
         } //get actual room info
-        val nextEventTime = roomInfo?.currentEvent?.finishTime
+        val nextEventTime = roomInfo?.currentEvent?.also { currentEvent = it }?.finishTime
             ?: roomInfo?.eventList?.firstOrNull()?.startTime // get next update time
         if (nextEventTime != null) { // if we have next event
             //roomUseCase.updateCashe()

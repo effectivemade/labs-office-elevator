@@ -18,8 +18,8 @@ abstract class CurrentEventController(
     private val cancelRepository: CancelRepository
 ) {
     private var job: Job? = null
-    protected lateinit var scope: CoroutineScope
-    private var currentEvent: EventInfo? = null
+    public lateinit var scope: CoroutineScope
+    protected var currentEvent: EventInfo? = null
     protected val handlersList: MutableList<() -> Unit> = mutableListOf()
     protected var mutableTimeToUpdate = MutableStateFlow(-1L)
     val timeToUpdate = mutableTimeToUpdate.asStateFlow()
@@ -63,5 +63,9 @@ abstract class CurrentEventController(
 
     /**Update current event*/
     protected abstract fun update(): Job
+
+    suspend fun currentEvent() = roomUseCase(Settings.current.checkCurrentRoom()).apply {
+        update()
+    }
 
 }

@@ -16,3 +16,5 @@ build-cache/
 .gradle/
 /google-services.json
 /tabletApp/google-services.json
+/tvApp/google-services.json
+/contract/contract.podspec

@@ -64,9 +64,10 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
                         }
                     }
                     launch() {
+                        currentEventController.scope = this
                         dispatch(
                             Action.UpdateRoomInfo(
-                                updateUseCase.getRoomInfo(checkSettingsUseCase())
+                                currentEventController.currentEvent()
                                     .unbox(
                                         errorHandler = {
                                             dispatch(Action.OnResponse(false))

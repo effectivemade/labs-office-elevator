@@ -34,4 +34,5 @@
     <string name="exit">Выход</string>
     <string name="rooms">Переговорки</string>
     <string name="choose_room">Выбрать ${nameRoom}</string>
+    <string name="free_now">Сейчас свободна</string>
 </resources>

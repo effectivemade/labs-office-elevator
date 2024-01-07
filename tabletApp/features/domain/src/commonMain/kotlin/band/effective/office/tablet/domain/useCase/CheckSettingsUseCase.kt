@@ -1,8 +1,6 @@
 package band.effective.office.tablet.domain.useCase
 
-import band.effective.office.tablet.domain.model.Settings
-
-class CheckSettingsUseCase {
+class CheckSettingsUseCase { //TODO(fix)
     operator fun invoke() =
-        Settings.current.checkCurrentRoom()
+        "Cadia"//Settings.current.checkCurrentRoom()
 }

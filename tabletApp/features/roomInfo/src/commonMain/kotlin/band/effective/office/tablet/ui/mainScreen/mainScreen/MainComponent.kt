@@ -9,6 +9,7 @@ import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainFactory
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.RoomInfoComponent
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.store.RoomInfoStore
+import band.effective.office.tablet.ui.mainScreen.slotComponent.SlotComponent
 import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponentImpl
 import band.effective.office.tablet.ui.updateEvent.UpdateEventComponent
 import band.effective.office.tablet.utils.componentCoroutineScope
@@ -85,6 +86,12 @@ class MainComponent(
     val updateEventComponent = UpdateEventComponent(
         componentContext = componentContext,
         storeFactory = storeFactory
+    )
+
+    val slotComponent = SlotComponent(
+        componentContext = componentContext,
+        storeFactory = storeFactory,
+        roomName = "Cadia"
     )
 
     private val mainStore = instanceKeeper.getStore {
