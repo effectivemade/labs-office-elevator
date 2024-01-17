@@ -141,9 +141,17 @@ class UpdateEventStoreFactory(
 
         fun createEvent(state: UpdateEventStore.State) {
             scope.launch {
-                if ((checkBookingUseCase.busyEvents(state.event) as? Either.Success)?.data?.isEmpty() == true) {
+                val event = EventInfo(
+                    startTime = state.date,
+                    organizer = state.selectOrganizer,
+                    finishTime = (state.date.clone() as Calendar).apply { add(Calendar.MINUTE, state.duration) },
+                    id = "")
+                if ((checkBookingUseCase.busyEvents(event) as? Either.Success)?.data?.isEmpty() == true) {
                     dispatch(Message.LoadUpdate)
-                    when (bookingUseCase.invoke(state.event, "Cadia") /*TODO*/) {
+                    when (bookingUseCase.invoke(
+                        eventInfo = event,
+                        room = "Cadia" /*TODO*/
+                    )) {
                         is Either.Error -> dispatch(Message.FailUpdate)
                         is Either.Success -> onCloseRequest()
                     }

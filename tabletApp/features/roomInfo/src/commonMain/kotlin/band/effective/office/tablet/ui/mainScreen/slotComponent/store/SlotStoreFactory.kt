@@ -3,8 +3,10 @@ package band.effective.office.tablet.ui.mainScreen.slotComponent.store
 import android.os.Build
 import androidx.annotation.RequiresApi
 import band.effective.office.network.model.Either
+import band.effective.office.tablet.domain.model.ErrorWithData
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.Organizer
+import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.domain.model.Slot
 import band.effective.office.tablet.domain.useCase.SlotUseCase
 import band.effective.office.tablet.domain.useCase.UpdateUseCase
@@ -43,23 +45,32 @@ class SlotStoreFactory(
     @OptIn(ExperimentalMviKotlinApi::class)
     private fun bootstrapper() = coroutineBootstrapper<Action> {
         launch {
-            when (val roomInfoEither = updateUseCase.getRoomInfo(roomName)) {
-                is Either.Error -> TODO()
-                is Either.Success -> {
-                    val roomInfo = roomInfoEither.data
-                    val now = GregorianCalendar()
-                    val endDay = GregorianCalendar().apply {
-                        add(Calendar.DAY_OF_YEAR, 1)
-                        set(Calendar.HOUR_OF_DAY, 0)
-                    }
-                    val slots = slotUseCase.getSlots(
-                        start = now,
-                        finish = endDay,
-                        minSlotDur = 15,
-                        events = roomInfo.eventList
-                    )
-                    dispatch(Action.UpdateSlots(slots))
+            dispatch(Action.UpdateSlots(getSlots(updateUseCase.getRoomInfo(roomName))))
+        }
+        updateUseCase(
+            room = roomName,
+            scope = this,
+            roomUpdateHandler = { dispatch(Action.UpdateSlots(getSlots(it))) },
+            organizerUpdateHandler = {})
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun getSlots(either: Either<ErrorWithData<RoomInfo>, RoomInfo>): List<Slot> {
+        return when (either) {
+            is Either.Error -> listOf()
+            is Either.Success -> {
+                val roomInfo = either.data
+                val now = GregorianCalendar()
+                val endDay = GregorianCalendar().apply {
+                    add(Calendar.DAY_OF_YEAR, 1)
+                    set(Calendar.HOUR_OF_DAY, 0)
                 }
+                slotUseCase.getSlots(
+                    start = now,
+                    finish = endDay,
+                    minSlotDur = 15,
+                    events = roomInfo.eventList
+                )
             }
         }
     }

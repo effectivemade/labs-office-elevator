@@ -11,6 +11,13 @@ import java.util.GregorianCalendar
 
 /**Use case for get info about room*/
 class RoomInfoUseCase(private val repository: RoomRepository) {
+    suspend fun getRoomsNames(): List<String>? {
+        return when (val rooms = repository.getRoomsInfo()) {
+            is Either.Error -> null
+            is Either.Success -> rooms.data.map { it.name }
+        }
+    }
+
     suspend fun updateCashe() = repository.updateCashe()
     suspend operator fun invoke(room: String) = repository.getRoomInfo(room).filter()
 

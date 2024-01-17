@@ -43,7 +43,7 @@ class SlotUseCase {
             slot.start > eventInfo.startTime && slot.start < eventInfo.finishTime ||
                     eventInfo.startTime > slot.start && eventInfo.startTime < slot.finish
         }
-        val predSlot = list.first { it.finish > eventInfo.startTime }
+        val predSlot = list.firstOrNull() { it.finish > eventInfo.startTime } ?: list.first()
         val predSlotIndex = list.indexOf(predSlot)
         list.add(predSlotIndex, eventInfo.toSlot())
         return list
