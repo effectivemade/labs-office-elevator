@@ -43,7 +43,9 @@ fun MainScreen(component: MainComponent) {
                 },
                 updatedEvent = state.updatedEvent,
                 showUpdateModal = state.showUpdateModal,
-                updateEventComponent = component.updateEventComponent,
+                updateEventComponent = { event, onClose, room ->
+                    component.updateEventComponent(event = event, room = room, onClose = onClose)
+                },
                 closeModal = { component.sendIntent(MainStore.Intent.CloseModal) },
                 onSettings = { component.onSettings() },
                 slotComponent = component.slotComponent

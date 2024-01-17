@@ -3,6 +3,8 @@ package band.effective.office.tablet.ui.mainScreen.slotComponent.store
 import android.os.Build
 import androidx.annotation.RequiresApi
 import band.effective.office.network.model.Either
+import band.effective.office.tablet.domain.model.EventInfo
+import band.effective.office.tablet.domain.model.Organizer
 import band.effective.office.tablet.domain.model.Slot
 import band.effective.office.tablet.domain.useCase.SlotUseCase
 import band.effective.office.tablet.domain.useCase.UpdateUseCase
@@ -18,7 +20,11 @@ import org.koin.core.component.inject
 import java.util.Calendar
 import java.util.GregorianCalendar
 
-class SlotStoreFactory(private val storeFactory: StoreFactory, private val roomName: String) :
+class SlotStoreFactory(
+    private val storeFactory: StoreFactory,
+    private val roomName: String,
+    private val openBookingDialog: (event: EventInfo, room: String) -> Unit
+) :
     KoinComponent {
     val slotUseCase: SlotUseCase by inject()
     val updateUseCase: UpdateUseCase by inject()
@@ -65,6 +71,34 @@ class SlotStoreFactory(private val storeFactory: StoreFactory, private val roomN
                 is Action.UpdateSlots -> dispatch(Message.UpdateSlots(action.slots))
             }
         }
+
+        override fun executeIntent(intent: SlotStore.Intent, getState: () -> SlotStore.State) {
+            when (intent) {
+                is SlotStore.Intent.ClickOnSlot -> intent.slot.execute()
+            }
+        }
+
+        private fun Slot.execute() = when (this) {
+            is Slot.EmptySlot -> executeFreeSlot(this)
+            is Slot.EventSlot -> executeEventSlot(this)
+        }
+
+        private fun executeFreeSlot(slot: Slot.EmptySlot) {
+            openBookingDialog(slot.Event(), roomName)
+        }
+
+        private fun executeEventSlot(slot: Slot.EventSlot) {
+            openBookingDialog(slot.eventInfo, roomName)
+        }
+
+        private fun Slot.EmptySlot.Event(): EventInfo =
+            EventInfo(
+                startTime = start,
+                finishTime = finish,
+                organizer = Organizer.default,
+                id = ""
+            )//TODO id
+
     }
 
     private object ReducerImpl : Reducer<SlotStore.State, Message> {
@@ -82,3 +116,4 @@ class SlotStoreFactory(private val storeFactory: StoreFactory, private val roomN
         data class UpdateSlots(val slots: List<Slot>) : Message
     }
 }
+

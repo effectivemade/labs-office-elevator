@@ -40,7 +40,7 @@ fun MainScreenView(
     freeSelectRoomComponent: FreeSelectRoomComponent,
     dateTimePickerComponent: DateTimePickerComponent,
     roomInfoComponent: RoomInfoComponent,
-    updateEventComponent: UpdateEventComponent,
+    updateEventComponent: (EventInfo, () -> Unit, String) -> UpdateEventComponent,
     slotComponent: SlotComponent,
     showModal: Boolean,
     isDisconnect: Boolean,
@@ -91,10 +91,11 @@ fun MainScreenView(
                 )
 
                 showUpdateModal -> UpdateEventView(
-                    component = updateEventComponent,
-                    event = updatedEvent,
-                    onCloseRequest = closeModal,
-                    room = bookingRoomComponent.state.value.roomName
+                    component = updateEventComponent(
+                        updatedEvent,
+                        closeModal,
+                        bookingRoomComponent.state.value.roomName
+                    )
                 )
             }
         }

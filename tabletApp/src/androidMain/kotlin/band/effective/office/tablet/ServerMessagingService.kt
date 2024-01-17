@@ -13,7 +13,7 @@ class ServerMessagingService() :
 
     init {
         listOf("workspace", "user", "booking").forEach { topic ->
-            FirebaseMessaging.getInstance().subscribeToTopic(topic)
+            FirebaseMessaging.getInstance().subscribeToTopic("$topic-test") //TODO fix test postfix
         }
     }
 

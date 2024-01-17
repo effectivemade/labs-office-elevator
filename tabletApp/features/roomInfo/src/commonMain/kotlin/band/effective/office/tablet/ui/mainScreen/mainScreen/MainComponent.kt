@@ -1,6 +1,7 @@
 package band.effective.office.tablet.ui.mainScreen.mainScreen
 
 import band.effective.office.tablet.domain.model.Booking
+import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.ui.bookingComponents.pickerDateTime.DateTimePickerComponent
 import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomComponent
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingRoomComponent
@@ -22,8 +23,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
 class MainComponent(
-    componentContext: ComponentContext,
-    storeFactory: StoreFactory,
+    private val componentContext: ComponentContext,
+    private val storeFactory: StoreFactory,
     private val OnSelectOtherRoomRequest: (() -> Booking) -> Unit,
     val onSettings: () -> Unit
 ) : ComponentContext by componentContext {
@@ -83,15 +84,30 @@ class MainComponent(
             },
         )
 
-    val updateEventComponent = UpdateEventComponent(
-        componentContext = componentContext,
-        storeFactory = storeFactory
-    )
+    fun updateEventComponent(
+        event: EventInfo,
+        room: String,
+        onClose: () -> Unit = { mainStore.accept(MainStore.Intent.CloseModal) }
+    ) =
+        UpdateEventComponent(
+            componentContext = componentContext,
+            storeFactory = storeFactory,
+            event = event,
+            room = room,
+            onCloseRequest = onClose
+        )
 
     val slotComponent = SlotComponent(
         componentContext = componentContext,
         storeFactory = storeFactory,
-        roomName = "Cadia"
+        roomName = "Cadia",
+        openBookingDialog = { event, room ->
+            mainStore.accept(
+                intent = MainStore.Intent.OnChangeEventRequest(
+                    eventInfo = event
+                )
+            )
+        }
     )
 
     private val mainStore = instanceKeeper.getStore {

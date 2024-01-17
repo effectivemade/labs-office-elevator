@@ -20,7 +20,10 @@ import org.koin.core.component.inject
 import java.util.Calendar
 import java.util.GregorianCalendar
 
-class UpdateEventStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
+class UpdateEventStoreFactory(
+    private val storeFactory: StoreFactory,
+    private val onCloseRequest: () -> Unit
+) : KoinComponent {
 
     val bookingUseCase: BookingUseCase by inject()
     val organizersInfoUseCase: OrganizersInfoUseCase by inject()
@@ -28,11 +31,11 @@ class UpdateEventStoreFactory(private val storeFactory: StoreFactory) : KoinComp
     val checkBookingUseCase: CheckBookingUseCase by inject()
 
     @OptIn(ExperimentalMviKotlinApi::class)
-    fun create(): UpdateEventStore =
+    fun create(defaultValue: UpdateEventStore.State = UpdateEventStore.State.defaultValue): UpdateEventStore =
         object : UpdateEventStore,
             Store<UpdateEventStore.Intent, UpdateEventStore.State, UpdateEventStore.Label> by storeFactory.create(
                 name = "UpdateEventStore",
-                initialState = UpdateEventStore.State.defaultValue,
+                initialState = defaultValue,
                 bootstrapper = coroutineBootstrapper {
                     launch {
                         dispatch(
@@ -130,6 +133,22 @@ class UpdateEventStoreFactory(private val storeFactory: StoreFactory) : KoinComp
                     hour = intent.hour,
                     minute = intent.minute
                 )
+
+                UpdateEventStore.Intent.OnClose -> onCloseRequest()
+                UpdateEventStore.Intent.OnBooking -> createEvent(state)
+            }
+        }
+
+        fun createEvent(state: UpdateEventStore.State) {
+            scope.launch {
+                if ((checkBookingUseCase.busyEvents(state.event) as? Either.Success)?.data?.isEmpty() == true) {
+                    dispatch(Message.LoadUpdate)
+                    when (bookingUseCase.invoke(state.event, "Cadia") /*TODO*/) {
+                        is Either.Error -> dispatch(Message.FailUpdate)
+                        is Either.Success -> onCloseRequest()
+                    }
+                }
+
             }
         }
 
@@ -166,7 +185,7 @@ class UpdateEventStoreFactory(private val storeFactory: StoreFactory) : KoinComp
         fun cancel(state: UpdateEventStore.State) = scope.launch {
             dispatch(Message.LoadDelete)
             if (cancelUseCase(state.event) is Either.Success) {
-                publish(UpdateEventStore.Label.Close)
+                onCloseRequest()
             } else {
                 dispatch(Message.FailDelete)
             }
@@ -190,7 +209,7 @@ class UpdateEventStoreFactory(private val storeFactory: StoreFactory) : KoinComp
         fun updateEvent(state: UpdateEventStore.State, room: String) = scope.launch {
             dispatch(Message.LoadUpdate)
             if (bookingUseCase.update(state.toEventInfo(), room) is Either.Success) {
-                publish(UpdateEventStore.Label.Close)
+                onCloseRequest()
             } else {
                 dispatch(Message.FailUpdate)
             }

@@ -28,6 +28,8 @@ interface UpdateEventStore :
         object OnDoneInput : Intent
         object OnOpenSelectDateDialog : Intent
         object OnCloseSelectDateDialog : Intent
+        object OnClose: Intent
+        object OnBooking: Intent
     }
 
     data class State(
@@ -64,6 +66,8 @@ interface UpdateEventStore :
                 enableUpdateButton = true
             )
         }
+
+        fun isCreatedEvent() = event.id != "" //TODO
     }
 
     sealed interface Label {
