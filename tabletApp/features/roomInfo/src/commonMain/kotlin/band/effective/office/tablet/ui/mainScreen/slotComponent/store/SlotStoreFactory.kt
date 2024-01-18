@@ -83,9 +83,21 @@ class SlotStoreFactory(
             }
         }
 
+        @RequiresApi(Build.VERSION_CODES.N)
         override fun executeIntent(intent: SlotStore.Intent, getState: () -> SlotStore.State) {
             when (intent) {
                 is SlotStore.Intent.ClickOnSlot -> intent.slot.execute()
+                SlotStore.Intent.UpdateRequest -> updateSlot()
+            }
+        }
+
+        @RequiresApi(Build.VERSION_CODES.N)
+        private fun updateSlot() {
+            scope.launch {
+                dispatch(Message.UpdateSlots(getSlots(updateUseCase.getRoomInfo(
+                    nameRoom = roomName,
+                    refresh = true
+                ))))
             }
         }
 
@@ -105,7 +117,13 @@ class SlotStoreFactory(
         private fun Slot.EmptySlot.Event(): EventInfo =
             EventInfo(
                 startTime = start,
-                finishTime = finish,
+                finishTime = finish.run {
+                    if (minuteDuration() <= 30)
+                        this
+                    else (start.clone() as Calendar).apply {
+                        add(Calendar.MINUTE, 30)
+                    }
+                },
                 organizer = Organizer.default,
                 id = ""
             )//TODO id

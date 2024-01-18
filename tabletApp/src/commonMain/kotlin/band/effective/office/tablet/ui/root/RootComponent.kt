@@ -3,7 +3,6 @@ package band.effective.office.tablet.ui.root
 import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.FreeNegotiationsComponent
 import band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.FreeNegotiationsComponentImpl
-import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store.BookingStore
 import band.effective.office.tablet.ui.mainScreen.mainScreen.MainComponent
 import band.effective.office.tablet.ui.mainScreen.settingsComponents.SettingsComponent
 import band.effective.office.tablet.ui.mainScreen.settingsComponents.SettingsComponentImpl
@@ -55,10 +54,10 @@ class RootComponent(componentContext: ComponentContext, private val storeFactory
                     componentContext = componentContext,
                     storeFactory = storeFactory,
                     onMainScreen = { reset: Boolean ->
-                        navigation.pop()
-                        (childStack.value.active.instance as Child.MainChild).component.bookingRoomComponent.sendIntent(
-                            BookingStore.Intent.OnChangeIsActive(reset)
-                        )
+                        navigation.pop() //TODO
+//                        (childStack.value.active.instance as Child.MainChild).component.bookingRoomComponent.sendIntent(
+//                            BookingStore.Intent.OnChangeIsActive(reset)
+//                        )
                     },
                     onBookingInfo = { config.booking }
                 )

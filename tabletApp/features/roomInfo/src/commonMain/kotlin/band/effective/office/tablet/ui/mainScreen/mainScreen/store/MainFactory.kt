@@ -1,10 +1,9 @@
 package band.effective.office.tablet.ui.mainScreen.mainScreen.store
 
 import band.effective.office.network.model.Either
-import band.effective.office.tablet.domain.model.EventInfo
-import band.effective.office.tablet.domain.model.Settings
 import band.effective.office.tablet.domain.useCase.CheckSettingsUseCase
 import band.effective.office.tablet.domain.useCase.RoomInfoUseCase
+import band.effective.office.tablet.ui.mainScreen.mainScreen.MainComponent
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -15,7 +14,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class MainFactory(private val storeFactory: StoreFactory) : KoinComponent {
+class MainFactory(private val storeFactory: StoreFactory,private val navigate: (MainComponent.ModalWindowsConfig) -> Unit) : KoinComponent {
 
     private val roomInfoUseCase: RoomInfoUseCase by inject()
     private val checkSettingsUseCase: CheckSettingsUseCase by inject()
@@ -28,7 +27,7 @@ class MainFactory(private val storeFactory: StoreFactory) : KoinComponent {
                 initialState = MainStore.State.defaultState,
                 bootstrapper = coroutineBootstrapper {
                     launch {
-                        if(checkSettingsUseCase().isEmpty()){
+                        if (checkSettingsUseCase().isEmpty()) {
                             dispatch(Action.OnSettings)
                         } else {
                             dispatch(
@@ -44,16 +43,10 @@ class MainFactory(private val storeFactory: StoreFactory) : KoinComponent {
             ) {}
 
     private sealed interface Message {
-        object BookingCurrentRoom : Message
         object BookingOtherRoom : Message
-        object CloseModal : Message
-        object OpenFreeModal : Message
-        object OpenDateTimePickerModal : Message
         data class Load(val isSuccess: Boolean) : Message
         data class UpdateDisconnect(val newValue: Boolean) : Message
         object Reboot : Message
-
-        data class OpenUpdateModal(val eventInfo: EventInfo) : Message
         object OnSettings : Message
     }
 
@@ -66,14 +59,11 @@ class MainFactory(private val storeFactory: StoreFactory) : KoinComponent {
         CoroutineExecutor<MainStore.Intent, Action, MainStore.State, Message, Nothing>() {
         override fun executeIntent(intent: MainStore.Intent, getState: () -> MainStore.State) {
             when (intent) {
-                is MainStore.Intent.OnBookingCurrentRoomRequest -> dispatch(Message.BookingCurrentRoom)
                 is MainStore.Intent.OnBookingOtherRoomRequest -> dispatch(Message.BookingOtherRoom)
-                is MainStore.Intent.CloseModal -> dispatch(Message.CloseModal)
-                is MainStore.Intent.OnOpenFreeRoomModal -> dispatch(Message.OpenFreeModal)
-                is MainStore.Intent.OnOpenDateTimePickerModal -> dispatch(Message.OpenDateTimePickerModal)
+                is MainStore.Intent.OnOpenFreeRoomModal -> navigate(MainComponent.ModalWindowsConfig.FreeRoom)
                 is MainStore.Intent.OnDisconnectChange -> dispatch(Message.UpdateDisconnect(intent.newValue))
                 is MainStore.Intent.RebootRequest -> reboot()
-                is MainStore.Intent.OnChangeEventRequest -> dispatch(Message.OpenUpdateModal(intent.eventInfo))
+                is MainStore.Intent.OnChangeEventRequest -> navigate(MainComponent.ModalWindowsConfig.UpdateEvent(intent.eventInfo,checkSettingsUseCase.invoke()))
             }
         }
 
@@ -93,29 +83,19 @@ class MainFactory(private val storeFactory: StoreFactory) : KoinComponent {
     private object ReducerImpl : Reducer<MainStore.State, Message> {
         override fun MainStore.State.reduce(message: Message): MainStore.State =
             when (message) {
-                is Message.BookingCurrentRoom -> copy(showBookingModal = true)
                 is Message.BookingOtherRoom -> copy()
-                is Message.CloseModal -> copy(
-                    showBookingModal = false,
-                    showFreeModal = false,
-                    showDateTimePickerModal = false,
-                    showUpdateModal = false
-                )
 
                 is Message.Load -> copy(
                     isLoad = false,
                     isData = message.isSuccess,
                     isError = !message.isSuccess
                 )
-
-                is Message.OpenFreeModal -> copy(showFreeModal = true)
                 is Message.UpdateDisconnect -> copy(isDisconnect = message.newValue)
                 is Message.Reboot -> copy(
                     isError = false,
                     isLoad = true
                 )
-                is Message.OpenDateTimePickerModal -> copy(showDateTimePickerModal = true)
-                is Message.OpenUpdateModal -> copy(showUpdateModal = true, updatedEvent = message.eventInfo)
+
                 is Message.OnSettings -> copy(
                     isError = false,
                     isLoad = false,

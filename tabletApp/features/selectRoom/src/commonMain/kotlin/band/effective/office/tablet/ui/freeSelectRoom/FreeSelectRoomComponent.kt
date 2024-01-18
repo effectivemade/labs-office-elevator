@@ -2,6 +2,7 @@ package band.effective.office.tablet.ui.freeSelectRoom
 
 import band.effective.office.tablet.ui.freeSelectRoom.store.FreeSelectStore
 import band.effective.office.tablet.ui.freeSelectRoom.store.FreeSelectStoreFactory
+import band.effective.office.tablet.ui.modal.ModalWindow
 import band.effective.office.tablet.utils.componentCoroutineScope
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
@@ -16,7 +17,7 @@ class FreeSelectRoomComponent(
     private val componentContext: ComponentContext,
     storeFactory: StoreFactory,
     private val onCloseRequest: () -> Unit
-) : ComponentContext by componentContext, KoinComponent {
+) : ComponentContext by componentContext, KoinComponent, ModalWindow {
 
     private val store: FreeSelectStore = instanceKeeper.getStore {
         FreeSelectStoreFactory(storeFactory = storeFactory).create()

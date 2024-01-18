@@ -2,14 +2,24 @@ package band.effective.office.tablet.ui.mainScreen.mainScreen
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import band.effective.office.tablet.ui.common.ErrorMainScreen
+import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomComponent
+import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomView
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
 import band.effective.office.tablet.ui.mainScreen.mainScreen.uiComponents.LoadMainScreen
+import band.effective.office.tablet.ui.updateEvent.UpdateEventComponent
+import band.effective.office.tablet.ui.updateEvent.UpdateEventView
+import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainScreen(component: MainComponent) {
     val state by component.state.collectAsState()
@@ -24,15 +34,7 @@ fun MainScreen(component: MainComponent) {
 
         state.isData -> {
             MainScreenView(
-                showBookingModal = state.showBookingModal,
-                showFreeRoomModal = state.showFreeModal,
-                showDateTimePickerModal = state.showDateTimePickerModal,
-                bookingRoomComponent = component.bookingRoomComponent,
-                selectRoomComponent = component.selectRoomComponent,
                 roomInfoComponent = component.roomInfoComponent,
-                freeSelectRoomComponent = component.freeSelectRoomComponent,
-                dateTimePickerComponent = component.dateTimePickerComponent,
-                showModal = state.showModal(),
                 isDisconnect = state.isDisconnect,
                 onEventUpdateRequest = {
                     component.sendIntent(
@@ -41,12 +43,6 @@ fun MainScreen(component: MainComponent) {
                         )
                     )
                 },
-                updatedEvent = state.updatedEvent,
-                showUpdateModal = state.showUpdateModal,
-                updateEventComponent = { event, onClose, room ->
-                    component.updateEventComponent(event = event, room = room, onClose = onClose)
-                },
-                closeModal = { component.sendIntent(MainStore.Intent.CloseModal) },
                 onSettings = { component.onSettings() },
                 slotComponent = component.slotComponent
             )
@@ -54,6 +50,16 @@ fun MainScreen(component: MainComponent) {
 
         state.isSettings -> {
             component.onSettings()
+        }
+    }
+    val activeWindowSlot by component.modalWindowSlot.subscribeAsState()
+    Box(
+        modifier = Modifier.fillMaxSize()
+            .background(color = if (activeWindowSlot.child != null) Color.Black.copy(alpha = 0.9f) else Color.Transparent)
+    ) {
+        when(val activeComponent = activeWindowSlot.child?.instance){
+            is FreeSelectRoomComponent -> FreeSelectRoomView(freeSelectRoomComponent = activeComponent)
+            is UpdateEventComponent -> UpdateEventView(component = activeComponent)
         }
     }
 }

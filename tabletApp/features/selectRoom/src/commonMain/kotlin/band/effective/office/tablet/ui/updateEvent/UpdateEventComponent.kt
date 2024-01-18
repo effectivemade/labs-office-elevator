@@ -2,6 +2,7 @@ package band.effective.office.tablet.ui.updateEvent
 
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.ui.bookingComponents.pickerDateTime.DateTimePickerComponent
+import band.effective.office.tablet.ui.modal.ModalWindow
 import band.effective.office.tablet.ui.updateEvent.store.UpdateEventStore
 import band.effective.office.tablet.ui.updateEvent.store.UpdateEventStoreFactory
 import com.arkivanov.decompose.ComponentContext
@@ -17,7 +18,7 @@ class UpdateEventComponent(
     event: EventInfo,
     val room: String,
     onCloseRequest: () -> Unit
-) : ComponentContext by componentContext {
+) : ComponentContext by componentContext, ModalWindow {
     private val store = instanceKeeper.getStore {
         UpdateEventStoreFactory(
             storeFactory = storeFactory,

@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -32,17 +33,22 @@ import java.util.Calendar
 @Composable
 fun SlotList(component: SlotComponent) {
     val state by component.state.collectAsState()
-    SlotList(state.slots) {
+    SlotList(
+        slots = state.slots,
+        onUpdate = { component.sendIntent(SlotStore.Intent.UpdateRequest) }) {
         component.sendIntent(SlotStore.Intent.ClickOnSlot(this))
     }
 }
 
 @Composable
-private fun SlotList(slots: List<Slot>, onClick: Slot.() -> Unit) {
+private fun SlotList(slots: List<Slot>, onUpdate: () -> Unit, onClick: Slot.() -> Unit) {
     LazyColumn() {
         items(items = slots) {
             SlotView(slot = it, onClick = onClick)
             Spacer(Modifier.height(20.dp))
+        }
+        item {
+            Button(onClick = onUpdate) {}
         }
     }
 }

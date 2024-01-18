@@ -6,6 +6,8 @@ sealed class Slot {
     abstract val start: Calendar
     abstract val finish: Calendar
 
+    fun minuteDuration() = ((finish.time.time - start.time.time) / 60000).toInt()
+
     data class EmptySlot(
         override val start: Calendar,
         override val finish: Calendar,

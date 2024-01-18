@@ -12,42 +12,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import band.effective.office.tablet.domain.model.EventInfo
-import band.effective.office.tablet.ui.bookingComponents.pickerDateTime.DateTimePickerComponent
-import band.effective.office.tablet.ui.bookingComponents.pickerDateTime.DateTimePickerModalView
-import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomComponent
-import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomView
-import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.BookingRoomComponent
 import band.effective.office.tablet.ui.mainScreen.mainScreen.uiComponents.Disconnect
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.RoomInfoComponent
 import band.effective.office.tablet.ui.mainScreen.slotComponent.SlotComponent
 import band.effective.office.tablet.ui.mainScreen.slotComponent.SlotList
-import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomComponent
-import band.effective.office.tablet.ui.selectRoomScreen.SelectRoomScreen
-import band.effective.office.tablet.ui.updateEvent.UpdateEventComponent
-import band.effective.office.tablet.ui.updateEvent.UpdateEventView
 
 @SuppressLint("NewApi", "StateFlowValueCalledInComposition")
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable
 fun MainScreenView(
-    showBookingModal: Boolean,
-    showFreeRoomModal: Boolean,
-    showDateTimePickerModal: Boolean,
-    bookingRoomComponent: BookingRoomComponent,
-    selectRoomComponent: SelectRoomComponent,
-    freeSelectRoomComponent: FreeSelectRoomComponent,
-    dateTimePickerComponent: DateTimePickerComponent,
     roomInfoComponent: RoomInfoComponent,
-    updateEventComponent: (EventInfo, () -> Unit, String) -> UpdateEventComponent,
     slotComponent: SlotComponent,
-    showModal: Boolean,
     isDisconnect: Boolean,
     onEventUpdateRequest: (EventInfo) -> Unit,
-    showUpdateModal: Boolean,
-    updatedEvent: EventInfo,
-    closeModal: () -> Unit,
     onSettings: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colors.background)) {
@@ -65,38 +43,9 @@ fun MainScreenView(
             )
             Box(modifier = Modifier.fillMaxSize()) {
                 SlotList(slotComponent)
-//                BookingRoomView(
-//                    modifier = Modifier
-//                        .background(color = MaterialTheme.colors.surface)
-//                        .fillMaxSize()
-//                        .padding(25.dp),
-//                    bookingRoomComponent = bookingRoomComponent,
-//                    dateTimePickerComponent = dateTimePickerComponent,
-//                )
                 Box() {
                     Disconnect(visible = isDisconnect)
                 }
-            }
-        }
-        Box(
-            modifier = Modifier.fillMaxSize()
-                .background(color = if (showModal) Color.Black.copy(alpha = 0.9f) else Color.Transparent)
-        ) {
-            when {
-                showBookingModal -> SelectRoomScreen(component = selectRoomComponent)
-                showFreeRoomModal -> FreeSelectRoomView(freeSelectRoomComponent = freeSelectRoomComponent)
-                showDateTimePickerModal -> DateTimePickerModalView(
-                    dateTimePickerComponent = dateTimePickerComponent,
-                    currentDate = bookingRoomComponent.state.value.selectDate
-                )
-
-                showUpdateModal -> UpdateEventView(
-                    component = updateEventComponent(
-                        updatedEvent,
-                        closeModal,
-                        bookingRoomComponent.state.value.roomName
-                    )
-                )
             }
         }
     }

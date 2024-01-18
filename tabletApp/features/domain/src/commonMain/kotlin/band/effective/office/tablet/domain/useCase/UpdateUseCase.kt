@@ -17,7 +17,14 @@ class UpdateUseCase(
     private val currentEventController: CurrentEventController
 ) {
     /**Get fresh room info*/
-    suspend fun getRoomInfo(nameRoom: String) = roomInfoUseCase(nameRoom)
+    suspend fun getRoomInfo(
+        nameRoom: String,
+        refresh: Boolean = false
+    ): Either<ErrorWithData<RoomInfo>, RoomInfo> {
+        if (refresh)
+            roomInfoUseCase.updateCashe()
+        return roomInfoUseCase(nameRoom)
+    }
 
     /**Get fresh org list*/
     suspend fun getOrganizersList() = organizersInfoUseCase()
@@ -32,8 +39,13 @@ class UpdateUseCase(
         roomUpdateHandler: (Either<ErrorWithData<RoomInfo>, RoomInfo>) -> Unit,
         organizerUpdateHandler: (Either<ErrorWithData<List<Organizer>>, List<Organizer>>) -> Unit
     ) {
-        scope.launch { roomInfoUseCase.subscribe(checkSettingsUseCase(),scope).collect { roomUpdateHandler(it) } }
-        scope.launch { organizersInfoUseCase.subscribe(scope).collect() { organizerUpdateHandler(it) } }
+        scope.launch {
+            roomInfoUseCase.subscribe(checkSettingsUseCase(), scope)
+                .collect { roomUpdateHandler(it) }
+        }
+        scope.launch {
+            organizersInfoUseCase.subscribe(scope).collect() { organizerUpdateHandler(it) }
+        }
         currentEventController.start(scope)
         currentEventController.subscribe {
             scope.launch(Dispatchers.IO) {
