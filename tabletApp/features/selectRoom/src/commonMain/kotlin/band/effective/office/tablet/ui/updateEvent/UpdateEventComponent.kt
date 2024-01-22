@@ -22,7 +22,8 @@ class UpdateEventComponent(
     private val store = instanceKeeper.getStore {
         UpdateEventStoreFactory(
             storeFactory = storeFactory,
-            onCloseRequest = onCloseRequest
+            onCloseRequest = onCloseRequest,
+            room = room
         ).create(defaultValue = event.toState())
     }
 

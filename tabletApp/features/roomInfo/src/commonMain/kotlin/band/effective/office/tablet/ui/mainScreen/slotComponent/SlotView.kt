@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -25,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.domain.model.Slot
 import band.effective.office.tablet.ui.mainScreen.slotComponent.store.SlotStore
+import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.h7
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -34,21 +34,16 @@ import java.util.Calendar
 fun SlotList(component: SlotComponent) {
     val state by component.state.collectAsState()
     SlotList(
-        slots = state.slots,
-        onUpdate = { component.sendIntent(SlotStore.Intent.UpdateRequest) }) {
-        component.sendIntent(SlotStore.Intent.ClickOnSlot(this))
-    }
+        slots = state.slots
+    ) { component.sendIntent(SlotStore.Intent.ClickOnSlot(this)) }
 }
 
 @Composable
-private fun SlotList(slots: List<Slot>, onUpdate: () -> Unit, onClick: Slot.() -> Unit) {
-    LazyColumn() {
+private fun SlotList(slots: List<Slot>, onClick: Slot.() -> Unit) {
+    LazyColumn(Modifier.padding(30.dp)) {
         items(items = slots) {
             SlotView(slot = it, onClick = onClick)
             Spacer(Modifier.height(20.dp))
-        }
-        item {
-            Button(onClick = onUpdate) {}
         }
     }
 }
@@ -68,7 +63,7 @@ private fun SlotView(slot: Slot, onClick: Slot.() -> Unit) {
         Text(
             text = "${slot.start.toFormattedString("HH:mm")} - ${slot.finish.toFormattedString("HH:mm")}",
             style = MaterialTheme.typography.h5,
-            color = Color.White //TODO: get color from figma
+            color = MaterialTheme.colors.onPrimary
         )
         Text(
             text = slot.subtitle(),
@@ -78,9 +73,10 @@ private fun SlotView(slot: Slot, onClick: Slot.() -> Unit) {
     }
 }
 
+@Composable
 private fun Slot.borderColor() = when (this) {
-    is Slot.EmptySlot -> Color.Green
-    is Slot.EventSlot -> Color.Red //TODO: get color from figma
+    is Slot.EmptySlot -> LocalCustomColorsPalette.current.freeStatus
+    is Slot.EventSlot -> LocalCustomColorsPalette.current.busyStatus
 }
 
 private fun Slot.subtitle() = when (this) {

@@ -20,7 +20,18 @@ class RoomInfoUseCase(private val repository: RoomRepository) {
 
     suspend fun updateCashe() = repository.updateCashe()
     suspend operator fun invoke(room: String) = repository.getRoomInfo(room).filter()
-
+    suspend operator fun invoke() = repository.getRoomsInfo().map(
+        errorMapper = { error ->
+            val save = error.saveData
+            if (save != null)
+                error.copy(saveData = save.map { event ->
+                    event.copy(eventList = event.eventList.filter { it.startTime > GregorianCalendar() })
+                }
+                ) else error
+        },
+        successMapper = { data ->
+            data.map { it.copy(eventList = it.eventList.filter { it.startTime > GregorianCalendar() }) }
+        })
 
     /**Subscribe on changes information
      * @param scope scope for collect new information

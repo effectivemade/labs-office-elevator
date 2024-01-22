@@ -47,17 +47,14 @@ class RootComponent(componentContext: ComponentContext, private val storeFactory
                 )
             )
         }
-
+        // NOTE(Maksim Mishenko): select room screen delete in new design
         is Config.SelectRoom -> {
             Child.SelectRoomChild(
                 FreeNegotiationsComponentImpl(
                     componentContext = componentContext,
                     storeFactory = storeFactory,
                     onMainScreen = { reset: Boolean ->
-                        navigation.pop() //TODO
-//                        (childStack.value.active.instance as Child.MainChild).component.bookingRoomComponent.sendIntent(
-//                            BookingStore.Intent.OnChangeIsActive(reset)
-//                        )
+                        navigation.pop()
                     },
                     onBookingInfo = { config.booking }
                 )
@@ -93,6 +90,7 @@ class RootComponent(componentContext: ComponentContext, private val storeFactory
         object Settings : Config()
 
         @Parcelize
+        @Deprecated("select room screen delete in new design")
         data class SelectRoom( val booking: Booking) : Config()
 
         @Parcelize

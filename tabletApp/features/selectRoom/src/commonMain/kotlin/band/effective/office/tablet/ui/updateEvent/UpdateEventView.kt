@@ -30,6 +30,7 @@ import band.effective.office.tablet.ui.buttons.success.SuccessButton
 import band.effective.office.tablet.ui.common.CrossButtonView
 import band.effective.office.tablet.ui.loader.Loader
 import band.effective.office.tablet.ui.updateEvent.store.UpdateEventStore
+import java.text.SimpleDateFormat
 import java.util.Calendar
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -70,12 +71,16 @@ fun UpdateEventView(
             isDeleteLoad = state.isLoadDelete,
             enableUpdateButton = state.enableUpdateButton,
             isNewEvent = !state.isCreatedEvent(),
-            onCreateEvent = {component.sendIntent(UpdateEventStore.Intent.OnBooking)}
+            onCreateEvent = { component.sendIntent(UpdateEventStore.Intent.OnBooking) },
+            start = state.event.startTime.format("HH:mm"),
+            finish = state.event.finishTime.format("HH:mm")
         )
     }
-
-
 }
+
+private fun Calendar.format(template: String): String =
+    SimpleDateFormat(template).format(time)
+
 
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable
@@ -104,7 +109,9 @@ fun UpdateEventView(
     isDeleteError: Boolean,
     isDeleteLoad: Boolean,
     enableUpdateButton: Boolean,
-    isNewEvent: Boolean
+    isNewEvent: Boolean,
+    start: String,
+    finish: String
 ) {
     Dialog(
         onDismissRequest = onDismissRequest
@@ -168,7 +175,10 @@ fun UpdateEventView(
 
                         else -> {
                             Text(
-                                text = "MainRes.string.update_button", //TODO
+                                text = MainRes.string.booking_time_button.format(
+                                    startTime = start,
+                                    finishTime = finish
+                                ),
                                 style = MaterialTheme.typography.h6
                             )
                         }

@@ -4,7 +4,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.features.roomInfo.MainRes
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.roomInfoColor
@@ -16,8 +15,6 @@ fun FreeRoomInfoComponent(
     capacity: Int,
     isHaveTv: Boolean,
     electricSocketCount: Int,
-    nextEvent: EventInfo,
-    timeToNextEvent: Int,
     isError: Boolean,
 ) {
     CommonRoomInfoComponent(

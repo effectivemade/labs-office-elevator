@@ -14,7 +14,7 @@ import org.koin.core.component.KoinComponent
 class SlotComponent(
     private val componentContext: ComponentContext,
     storeFactory: StoreFactory,
-    roomName: String,
+    val roomName: () -> String,
     openBookingDialog: (event: EventInfo, room: String) -> Unit
 ) : ComponentContext by componentContext, KoinComponent {
     @RequiresApi(Build.VERSION_CODES.N)

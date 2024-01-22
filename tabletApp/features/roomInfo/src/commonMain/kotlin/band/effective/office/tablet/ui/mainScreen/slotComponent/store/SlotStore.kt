@@ -6,7 +6,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 interface SlotStore : Store<SlotStore.Intent, SlotStore.State, Nothing> {
     sealed interface Intent {
         data class ClickOnSlot(val slot: Slot) : Intent
-        object UpdateRequest : Intent
+        data class UpdateRequest(val room: String, val refresh: Boolean = true) : Intent
     }
 
     data class State(

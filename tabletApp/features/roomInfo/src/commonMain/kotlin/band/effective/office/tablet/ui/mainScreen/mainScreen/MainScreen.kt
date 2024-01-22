@@ -18,6 +18,7 @@ import band.effective.office.tablet.ui.mainScreen.mainScreen.uiComponents.LoadMa
 import band.effective.office.tablet.ui.updateEvent.UpdateEventComponent
 import band.effective.office.tablet.ui.updateEvent.UpdateEventView
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import java.util.GregorianCalendar
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -44,7 +45,15 @@ fun MainScreen(component: MainComponent) {
                     )
                 },
                 onSettings = { component.onSettings() },
-                slotComponent = component.slotComponent
+                slotComponent = component.slotComponent,
+                roomList = state.roomList,
+                indexSelectRoom = state.indexSelectRoom,
+                onRoomButtonClick = { component.sendIntent(MainStore.Intent.OnSelectRoom(it)) },
+                onCancelEventRequest = { component.sendIntent(MainStore.Intent.OnOpenFreeRoomModal) },
+                timeToNextEvent = state.roomList[state.indexSelectRoom].currentEvent
+                    ?.run { ((finishTime.time.time - GregorianCalendar().time.time) / 60000).toInt() }
+                    ?: 0,
+                onUpdate = { component.sendIntent(MainStore.Intent.OnUpdate) }
             )
         }
 
@@ -57,7 +66,7 @@ fun MainScreen(component: MainComponent) {
         modifier = Modifier.fillMaxSize()
             .background(color = if (activeWindowSlot.child != null) Color.Black.copy(alpha = 0.9f) else Color.Transparent)
     ) {
-        when(val activeComponent = activeWindowSlot.child?.instance){
+        when (val activeComponent = activeWindowSlot.child?.instance) {
             is FreeSelectRoomComponent -> FreeSelectRoomView(freeSelectRoomComponent = activeComponent)
             is UpdateEventComponent -> UpdateEventView(component = activeComponent)
         }

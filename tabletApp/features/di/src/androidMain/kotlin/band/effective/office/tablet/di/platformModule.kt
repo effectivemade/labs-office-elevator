@@ -5,6 +5,6 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 actual fun platformModule(): Module = module {
-    val postfix = if (true) "-test" else ""
+    val postfix = if (false) "-test" else "" //TODO
     single(named("FireBaseTopics")) { listOf("workspace", "user", "booking").map { it + postfix } }
 }

@@ -41,7 +41,6 @@ class SettingsStoreFactory(private val storeFactory: StoreFactory) : KoinCompone
 
     private sealed interface Action {
         data class UpdateCurrentNameRoom(val nameRoom: String) : Action
-        object Load : Action
         data class Loaded(val rooms: List<String>) : Action
     }
 
@@ -74,7 +73,6 @@ class SettingsStoreFactory(private val storeFactory: StoreFactory) : KoinCompone
                 is Action.UpdateCurrentNameRoom ->
                     dispatch(Message.ChangeCurrentNameRoom(action.nameRoom))
 
-                Action.Load -> TODO()
                 is Action.Loaded -> dispatch(Message.UpdateRooms(action.rooms))
             }
         }

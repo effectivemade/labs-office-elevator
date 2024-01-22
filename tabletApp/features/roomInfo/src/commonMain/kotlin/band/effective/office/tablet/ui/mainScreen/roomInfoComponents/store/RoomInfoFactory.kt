@@ -3,7 +3,6 @@ package band.effective.office.tablet.ui.mainScreen.roomInfoComponents.store
 import band.effective.office.tablet.domain.CurrentEventController
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
-import band.effective.office.tablet.domain.useCase.CheckSettingsUseCase
 import band.effective.office.tablet.domain.useCase.UpdateUseCase
 import band.effective.office.tablet.utils.oneDay
 import band.effective.office.tablet.utils.unbox
@@ -20,11 +19,11 @@ import org.koin.core.component.inject
 import java.util.Calendar
 import java.util.GregorianCalendar
 
-class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
+class RoomInfoFactory(private val storeFactory: StoreFactory, private val room: () -> RoomInfo) :
+    KoinComponent {
 
     private val updateUseCase: UpdateUseCase by inject()
     private val currentEventController: CurrentEventController by inject()
-    private val checkSettingsUseCase: CheckSettingsUseCase by inject()
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): RoomInfoStore =
@@ -35,13 +34,11 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
                 bootstrapper = coroutineBootstrapper {
                     launch {
                         dispatch(
-                            Action.UpdateNameRoom(
-                                checkSettingsUseCase()
-                            )
+                            Action.UpdateNameRoom(room().name)
                         )
                         dispatch(
                             Action.UpdateRoomInfo(
-                                updateUseCase.getRoomInfo(checkSettingsUseCase()).unbox(
+                                updateUseCase.getRoomInfo(room().name).unbox(
                                     errorHandler = {
                                         dispatch(Action.OnResponse(false))
                                         it.saveData ?: RoomInfo.defaultValue
@@ -81,7 +78,7 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
                             )
                         )
                         updateUseCase(
-                            room = checkSettingsUseCase(),
+                            room = room().name,
                             scope = this,
                             roomUpdateHandler = { roomInfo ->
                                 launch(Dispatchers.Main.immediate) {
@@ -132,7 +129,27 @@ class RoomInfoFactory(private val storeFactory: StoreFactory) : KoinComponent {
                     nameRoom = getState().roomInfo.name
                 )
 
+                is RoomInfoStore.Intent.OnUpdate -> {
+                    updateRoomInfo(room(), getState())
+                }
+
+                is RoomInfoStore.Intent.OnUpdateRoomInfo -> {
+                    updateRoomInfo(intent.room, getState())
+                }
+
                 else -> {}
+            }
+        }
+
+        private fun updateRoomInfo(roomInfo: RoomInfo, state: RoomInfoStore.State) {
+            with(roomInfo.filter(state.selectDate)) {
+                dispatch(
+                    Message.UpdateRoomInfo(
+                        roomInfo = this,
+                        nextEvent = eventList.firstOrNull { it.startTime > GregorianCalendar() }
+                            ?: EventInfo.emptyEvent
+                    )
+                )
             }
         }
 

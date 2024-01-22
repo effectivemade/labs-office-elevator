@@ -67,7 +67,7 @@ interface UpdateEventStore :
             )
         }
 
-        fun isCreatedEvent() = event.id != "" //TODO
+        fun isCreatedEvent() = !event.isNotCreated()
     }
 
     sealed interface Label {

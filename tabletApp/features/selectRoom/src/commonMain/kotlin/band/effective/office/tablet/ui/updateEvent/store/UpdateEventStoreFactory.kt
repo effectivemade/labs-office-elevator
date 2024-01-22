@@ -22,7 +22,8 @@ import java.util.GregorianCalendar
 
 class UpdateEventStoreFactory(
     private val storeFactory: StoreFactory,
-    private val onCloseRequest: () -> Unit
+    private val onCloseRequest: () -> Unit,
+    private val room: String
 ) : KoinComponent {
 
     val bookingUseCase: BookingUseCase by inject()
@@ -146,11 +147,11 @@ class UpdateEventStoreFactory(
                     organizer = state.selectOrganizer,
                     finishTime = (state.date.clone() as Calendar).apply { add(Calendar.MINUTE, state.duration) },
                     id = "")
-                if ((checkBookingUseCase.busyEvents(event) as? Either.Success)?.data?.isEmpty() == true) {
+                if ((checkBookingUseCase.busyEvents(event, room = room) as? Either.Success)?.data?.isEmpty() == true) {
                     dispatch(Message.LoadUpdate)
                     when (bookingUseCase.invoke(
                         eventInfo = event,
-                        room = "Cadia" /*TODO*/
+                        room = room
                     )) {
                         is Either.Error -> dispatch(Message.FailUpdate)
                         is Either.Success -> onCloseRequest()

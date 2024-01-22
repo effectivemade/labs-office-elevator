@@ -141,6 +141,17 @@ class RoomRepositoryImpl(
             awaitClose()
         }
 
+    override fun subscribeOnUpdates(scope: CoroutineScope): Flow<Either<ErrorWithData<List<RoomInfo>>, List<RoomInfo>>> =
+        channelFlow {
+            send(getRoomsInfo())
+            launch {
+                roomInfo.collect {
+                    send(getRoomsInfo())
+                }
+            }
+            awaitClose()
+        }
+
     /**Map either with DTO to Either with domain model
      * @param oldValue past save value*/
     private fun Either<ErrorResponse, WorkspaceDTO>.convert(oldValue: Either<ErrorWithData<RoomInfo>, RoomInfo>): Either<ErrorWithData<RoomInfo>, RoomInfo> =

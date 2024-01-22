@@ -2,6 +2,7 @@ package band.effective.office.tablet.domain.useCase
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import band.effective.office.tablet.domain.OfficeTime
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.Slot
 import java.util.Calendar
@@ -9,9 +10,9 @@ import java.util.Calendar
 class SlotUseCase {
     @RequiresApi(Build.VERSION_CODES.N)
     fun getSlots(
-        start: Calendar,
-        finish: Calendar,
-        minSlotDur: Int,
+        start: Calendar = OfficeTime.startWorkTime(),
+        finish: Calendar = OfficeTime.finishWorkTime(),
+        minSlotDur: Int = 15,
         events: List<EventInfo>
     ): List<Slot> {
         return events.fold(

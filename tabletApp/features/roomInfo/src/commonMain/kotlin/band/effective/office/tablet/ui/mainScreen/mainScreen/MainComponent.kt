@@ -1,12 +1,17 @@
 package band.effective.office.tablet.ui.mainScreen.mainScreen
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.domain.model.EventInfo
+import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomComponent
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainFactory
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.RoomInfoComponent
+import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.store.RoomInfoStore
 import band.effective.office.tablet.ui.mainScreen.slotComponent.SlotComponent
+import band.effective.office.tablet.ui.mainScreen.slotComponent.store.SlotStore
 import band.effective.office.tablet.ui.modal.ModalWindow
 import band.effective.office.tablet.ui.updateEvent.UpdateEventComponent
 import band.effective.office.tablet.utils.componentCoroutineScope
@@ -24,6 +29,7 @@ import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.N)
 class MainComponent(
     private val componentContext: ComponentContext,
     private val storeFactory: StoreFactory,
@@ -34,14 +40,18 @@ class MainComponent(
     val roomInfoComponent: RoomInfoComponent = RoomInfoComponent(
         componentContext = childContext(key = "roomInfoComponent"),
         storeFactory = storeFactory,
-        onFreeRoomIntent = { mainStore.accept(MainStore.Intent.OnOpenFreeRoomModal) }
-
+        onFreeRoomIntent = { mainStore.accept(MainStore.Intent.OnOpenFreeRoomModal) },
+        room = { state.value.run { if (roomList.isNotEmpty()) roomList[indexSelectRoom] else RoomInfo.defaultValue } }
     )
 
     val slotComponent = SlotComponent(
         componentContext = componentContext,
         storeFactory = storeFactory,
-        roomName = "Cadia",
+        roomName = {
+            state.value.run {
+                with(if (roomList.isNotEmpty()) roomList[indexSelectRoom] else RoomInfo.defaultValue) { name }
+            }
+        },
         openBookingDialog = { event, room ->
             mainStore.accept(
                 intent = MainStore.Intent.OnChangeEventRequest(
@@ -73,6 +83,7 @@ class MainComponent(
             is ModalWindowsConfig.FreeRoom -> FreeSelectRoomComponent(
                 componentContext = componentContext,
                 storeFactory = storeFactory,
+                eventInfo = modalWindows.event,
                 onCloseRequest = { closeModalWindow() })
 
             is ModalWindowsConfig.UpdateEvent -> UpdateEventComponent(
@@ -85,11 +96,23 @@ class MainComponent(
         }
     }
 
+
     private val mainStore = instanceKeeper.getStore {
         MainFactory(
             storeFactory = storeFactory,
-            navigate = ::openModalWindow
+            navigate = ::openModalWindow,
+            updateRoomInfo = { updateComponents(it) }
         ).create()
+    }
+
+    private fun updateComponents(roomInfo: RoomInfo) {
+        roomInfoComponent.sendIntent(RoomInfoStore.Intent.OnUpdateRoomInfo(roomInfo))
+        slotComponent.sendIntent(
+            SlotStore.Intent.UpdateRequest(
+                room = roomInfo.name,
+                refresh = false
+            )
+        )
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -119,6 +142,6 @@ class MainComponent(
         ) : ModalWindowsConfig
 
         @Parcelize
-        object FreeRoom : ModalWindowsConfig
+        data class FreeRoom(val event: EventInfo) : ModalWindowsConfig
     }
 }

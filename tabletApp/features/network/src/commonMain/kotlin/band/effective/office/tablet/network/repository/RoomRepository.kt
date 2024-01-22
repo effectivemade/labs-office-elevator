@@ -17,5 +17,9 @@ interface RoomRepository {
         scope: CoroutineScope
     ): Flow<Either<ErrorWithData<RoomInfo>, RoomInfo>>
 
+    fun subscribeOnUpdates(
+        scope: CoroutineScope
+    ): Flow<Either<ErrorWithData<List<RoomInfo>>, List<RoomInfo>>>
+
     suspend fun updateCashe()
 }

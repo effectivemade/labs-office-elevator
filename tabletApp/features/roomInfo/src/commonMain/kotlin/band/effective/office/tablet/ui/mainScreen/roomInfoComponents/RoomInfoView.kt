@@ -5,7 +5,6 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -20,7 +19,6 @@ import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.uiComponent
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.uiComponent.DateTimeComponent
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.uiComponent.FreeRoomInfoComponent
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.uiComponent.IconSettingsView
-import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.uiComponent.RoomEventListComponent
 import band.effective.office.tablet.utils.oneDay
 import java.util.Calendar
 import java.util.GregorianCalendar
@@ -39,10 +37,7 @@ fun RoomInfoComponent(
         room = state.roomInfo,
         onOpenModalRequest = { roomInfoComponent.sendIntent(RoomInfoStore.Intent.OnFreeRoomRequest) },
         timeToNextEvent = state.changeEventTime,
-        isToday = state.selectDate.isToday(),
         isError = state.isError,
-        nextEvent = state.nextEvent,
-        onEventUpdateRequest = onEventUpdateRequest,
         onSettings = onSettings
     )
 }
@@ -54,10 +49,7 @@ fun RoomInfoComponent(
     room: RoomInfo,
     onOpenModalRequest: () -> Unit,
     timeToNextEvent: Int,
-    isToday: Boolean,
     isError: Boolean,
-    nextEvent: EventInfo,
-    onEventUpdateRequest: (EventInfo) -> Unit,
     onSettings: () -> Unit
 ) {
     val paddings = 30.dp
@@ -82,8 +74,6 @@ fun RoomInfoComponent(
                     capacity = room.capacity,
                     isHaveTv = room.isHaveTv,
                     electricSocketCount = room.socketCount,
-                    nextEvent = nextEvent,
-                    timeToNextEvent = timeToNextEvent,
                     isError = isError
                 )
             }
@@ -102,13 +92,6 @@ fun RoomInfoComponent(
                 )
             }
         }
-        Spacer(modifier = Modifier.height(10.dp))
-        RoomEventListComponent(
-            modifier = Modifier.padding(paddings),
-            eventsList = room.eventList,
-            isToday = isToday,
-            onItemClick = onEventUpdateRequest
-        )
     }
 }
 

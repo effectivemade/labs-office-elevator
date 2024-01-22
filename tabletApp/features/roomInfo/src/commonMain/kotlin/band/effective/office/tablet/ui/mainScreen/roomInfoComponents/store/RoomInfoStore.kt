@@ -8,8 +8,10 @@ import java.util.GregorianCalendar
 
 interface RoomInfoStore : Store<RoomInfoStore.Intent, RoomInfoStore.State, Nothing> {
     sealed interface Intent {
-        object OnFreeRoomRequest: Intent
-        data class OnChangeSelectDate(val newValue: Calendar): Intent
+        object OnFreeRoomRequest : Intent
+        data class OnChangeSelectDate(val newValue: Calendar) : Intent
+        object OnUpdate : Intent
+        data class OnUpdateRoomInfo(val room: RoomInfo) : Intent
     }
 
     data class State(
