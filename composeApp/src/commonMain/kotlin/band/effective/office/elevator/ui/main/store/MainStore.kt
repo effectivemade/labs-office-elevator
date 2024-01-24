@@ -61,7 +61,6 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, MainStore.Label> 
         val elevatorState: ElevatorState,
         val beginDate: LocalDate,
         val endDate: LocalDate?,
-        val dateFiltrationOnReserves: Boolean,
         val idSelectedBooking: String,
         val isLoading: Boolean,
         val enableCallElevator: Boolean,

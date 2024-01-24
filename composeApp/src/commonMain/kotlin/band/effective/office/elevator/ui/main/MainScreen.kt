@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -136,7 +135,6 @@ fun MainScreen(component: MainComponent) {
             bottomSheetState = bottomSheetState,
             beginDate = state.beginDate,
             endDate = state.endDate,
-            dateFiltrationOnReserves = state.dateFiltrationOnReserves,
             onClickBook = { component.onOutput(MainComponent.Output.OpenBookingScreen) },
             onClickOptionMenu = { id ->
                 component.onEvent(MainStore.Intent.OnClickShowOption(bookingId = id))
@@ -155,7 +153,12 @@ fun MainScreen(component: MainComponent) {
             enableCallElevator = state.enableCallElevator
         )
 
-        PullRefreshIndicator(isRefreshing, pullRefreshState, Modifier.align(Alignment.TopCenter))
+        PullRefreshIndicator(
+            refreshing = isRefreshing,
+            state = pullRefreshState,
+            backgroundColor = ExtendedThemeColors.colors.whiteColor,
+            modifier = Modifier.align(Alignment.TopCenter)
+        )
 
         if (showModalCalendar) {
             Dialog(
@@ -235,7 +238,6 @@ fun MainScreenContent(
     isLoadingBooking: Boolean,
     beginDate: LocalDate,
     endDate: LocalDate?,
-    dateFiltrationOnReserves: Boolean,
     enableCallElevator: Boolean,
     onClickBook: () -> Unit,
     onClickOptionMenu: (String) -> Unit,
@@ -289,7 +291,6 @@ fun MainScreenContent(
                             reservedSeats = reservedSeats,
                             beginDate = beginDate,
                             endDate = endDate,
-                            dateFiltrationOnReserves = dateFiltrationOnReserves,
                             onClickBook = onClickBook,
                             onClickOptionMenu = onClickOptionMenu,
                             onClickOpenCalendar = onClickOpenCalendar,

@@ -41,7 +41,6 @@ internal class MainStoreFactory(
     private val bookingInteract: BookingInteract by inject()
 
     private var filtration = BookingsFilter(meetRoom = true, workPlace = true)
-    private var updatedList = false
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): MainStore =
@@ -52,7 +51,6 @@ internal class MainStoreFactory(
                     reservedSeats = listOf(),
                     elevatorState = ElevatorState.Below,
                     beginDate = getCurrentDate(),
-                    dateFiltrationOnReserves = updatedList,
                     idSelectedBooking = "",
                     isLoading = true,
                     endDate = null,
@@ -81,7 +79,6 @@ internal class MainStoreFactory(
             val beginDate: LocalDate,
             val endDate: LocalDate?,
             val reservedSeats: List<ReservedSeat>,
-            val dateFiltrationOnReserves: Boolean,
         ) : Msg
 
         data class UpdateBookingLoadingState(val isLoading: Boolean) : Msg
@@ -132,7 +129,6 @@ internal class MainStoreFactory(
                         "Selected dates  ${intent.dates}"
                     }
                     publish(MainStore.Label.CloseCalendar)
-                    updatedList = true
                     changeBookingsByDate(dates = intent.dates, bookingsFilter = filtration)
                 }
 
@@ -142,7 +138,7 @@ internal class MainStoreFactory(
                     }
                     scope.launch(Dispatchers.IO) {
                         bookingInteract.deleteBooking(getState().idSelectedBooking)
-                        getBookingsForUserByDate(
+                        changeBookingsByDate(
                             dates = listOf(
                                 getState().beginDate,
                                 getState().endDate
@@ -159,30 +155,7 @@ internal class MainStoreFactory(
                 }
 
                 is MainStore.Intent.CloseFiltersBottomDialog -> {
-                    scope.launch {
-                        publish(MainStore.Label.CloseFiltersBottomDialog)
-
-                        intent.bookingsFilter.let { bookingsFilter ->
-                            if (updatedList) {
-                                changeBookingsByDate(
-                                    dates = listOf(
-                                        getState().beginDate,
-                                        getState().endDate
-                                    )
-                                        .mapNotNull { it },
-                                    bookingsFilter = bookingsFilter
-                                )
-                            } else {
-                                getBookingsForUserByDate(
-                                    dates = listOf(
-                                        getState().beginDate,
-                                        getState().endDate
-                                    ).mapNotNull { it },
-                                    bookingsFilter = bookingsFilter
-                                )
-                            }
-                        }
-                    }
+                    publish(MainStore.Label.CloseFiltersBottomDialog)
                 }
 
                 MainStore.Intent.OnClickHideOption -> {
@@ -375,7 +348,6 @@ internal class MainStoreFactory(
                                                 beginDate = beginDate,
                                                 endDate = if (beginDate == endDate) null else endDate,
                                                 reservedSeats = bookings.data,
-                                                dateFiltrationOnReserves = updatedList
                                             )
                                         )
                                     }
@@ -404,7 +376,6 @@ internal class MainStoreFactory(
                         beginDate = message.beginDate,
                         endDate = message.endDate,
                         reservedSeats = message.reservedSeats,
-                        dateFiltrationOnReserves = message.dateFiltrationOnReserves,
                         isLoading = false
                     )
                 }
