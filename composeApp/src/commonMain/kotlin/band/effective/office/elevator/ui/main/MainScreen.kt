@@ -29,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -157,7 +158,8 @@ fun MainScreen(component: MainComponent) {
             refreshing = isRefreshing,
             state = pullRefreshState,
             backgroundColor = ExtendedThemeColors.colors.whiteColor,
-            modifier = Modifier.align(Alignment.TopCenter)
+            modifier = Modifier.align(Alignment.TopCenter),
+            contentColor = Color.Black
         )
 
         if (showModalCalendar) {
