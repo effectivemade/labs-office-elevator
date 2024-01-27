@@ -13,8 +13,8 @@ android {
 
     defaultConfig {
         applicationId = "band.effective.office.tablet"
-        versionCode = 3
-        versionName = "1.0.0"
+        versionCode = 4
+        versionName = "1.1.0-demo01"
 
         minSdk = 26
         targetSdk = 34
