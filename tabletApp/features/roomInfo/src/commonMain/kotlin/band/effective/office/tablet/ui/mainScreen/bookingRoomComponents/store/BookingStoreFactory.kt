@@ -1,12 +1,12 @@
 package band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store
 
-import band.effective.office.tablet.domain.CurrentEventController
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.Organizer
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.domain.useCase.CheckBookingUseCase
 import band.effective.office.tablet.domain.useCase.CheckSettingsUseCase
-import band.effective.office.tablet.domain.useCase.UpdateUseCase
+import band.effective.office.tablet.domain.useCase.OrganizersInfoUseCase
+import band.effective.office.tablet.domain.useCase.RoomInfoUseCase
 import band.effective.office.tablet.utils.unbox
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
@@ -28,9 +28,9 @@ import kotlin.math.absoluteValue
 class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponent {
 
     val checkBookingUseCase: CheckBookingUseCase by inject()
-    val updateUseCase: UpdateUseCase by inject()
-    val currentEventController: CurrentEventController by inject()
     private val checkSettingsUseCase: CheckSettingsUseCase by inject()
+    private val organizersInfoUseCase: OrganizersInfoUseCase by inject()
+    private val roomInfoUseCase: RoomInfoUseCase by inject()
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): BookingStore =
@@ -41,11 +41,11 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 bootstrapper = coroutineBootstrapper {
                     launch(Dispatchers.IO) {
                         val busyEvent =
-                            checkBookingUseCase(EventInfo.emptyEvent).unbox({ it.saveData })
+                            checkBookingUseCase(EventInfo.emptyEvent,"").unbox({ it.saveData })
                         launch(Dispatchers.Main) {
                             dispatch(
                                 Action.Init(
-                                    organizers = updateUseCase.getOrganizersList()
+                                    organizers = organizersInfoUseCase()
                                         .unbox({ it.saveData ?: listOf() }),
                                     isBusy = busyEvent != null,
                                     busyEvent = busyEvent ?: EventInfo.emptyEvent,
@@ -54,30 +54,37 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                             )
                             dispatch(
                                 Action.UpdateOrganizers(
-                                    updateUseCase.getOrganizersList()
+                                    organizersInfoUseCase()
                                         .unbox({ it.saveData ?: listOf() })
                                 )
                             )
-                            updateUseCase(room = checkSettingsUseCase(), scope = this,
-                                roomUpdateHandler = {
-                                    launch(Dispatchers.Main) {
-                                        dispatch(Action.UpdateEvents(it.unbox({
-                                            it.saveData ?: RoomInfo.defaultValue
-                                        })))
-                                    }
 
-                                },
-                                organizerUpdateHandler = {
-                                    launch(Dispatchers.Main) {
-                                        dispatch(Action.UpdateOrganizers(it.unbox({
-                                            it.saveData ?: listOf()
-                                        })))
-                                    }
-                                })
+//                            updateUseCase(room = checkSettingsUseCase(), scope = this,
+//                                roomUpdateHandler = {
+//                                    launch(Dispatchers.Main) {
+//                                        dispatch(Action.UpdateEvents(it.unbox({
+//                                            it.saveData ?: RoomInfo.defaultValue
+//                                        })))
+//                                    }
+//
+//                                },
+//                                organizerUpdateHandler = {
+//                                    launch(Dispatchers.Main) {
+//                                        dispatch(Action.UpdateOrganizers(it.unbox({
+//                                            it.saveData ?: listOf()
+//                                        })))
+//                                    }
+//                                })
                         }
-                        launch(Dispatchers.Main) {
-                            currentEventController.timeToUpdate.collect { dispatch(Action.UpdateSelectTime) }
-                        }
+//                        launch(Dispatchers.IO) {
+//                            roomInfoUseCase.subscribe(this).collect{
+//                                launch(Dispatchers.Main) {
+//                                    dispatch(Action.UpdateEvents(it.unbox({
+//                                        it.saveData ?: RoomInfo.defaultValue
+//                                    })))
+//                                }
+//                            }
+//                        }
                         launch(Dispatchers.Main) {
                             flow {
                                 while (true) {
@@ -228,7 +235,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
         fun booking(isCurrentRoom: Boolean, state: BookingStore.State, booking: () -> Unit) =
             scope.launch {
                 val busyEvent: EventInfo? =
-                    checkBookingUseCase(state.toEvent()).unbox({ it.saveData })
+                    checkBookingUseCase(state.toEvent(),"").unbox({ it.saveData })
                 when {
                     !state.isCorrectOrganizer() -> dispatch(Message.OrganizerError)
                     isCurrentRoom && busyEvent != null -> dispatch(Message.NotCorrectEvent(busyEvent))

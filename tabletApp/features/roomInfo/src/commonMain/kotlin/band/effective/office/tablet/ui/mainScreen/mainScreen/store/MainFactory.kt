@@ -3,11 +3,14 @@ package band.effective.office.tablet.ui.mainScreen.mainScreen.store
 import android.os.Build
 import androidx.annotation.RequiresApi
 import band.effective.office.network.model.Either
-import band.effective.office.tablet.domain.CurrentEventController
 import band.effective.office.tablet.domain.model.ErrorWithData
+import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.domain.useCase.CheckSettingsUseCase
 import band.effective.office.tablet.domain.useCase.RoomInfoUseCase
+import band.effective.office.tablet.domain.useCase.SelectRoomUseCase
+import band.effective.office.tablet.domain.useCase.TimerUseCase
+import band.effective.office.tablet.domain.useCase.UpdateUseCase
 import band.effective.office.tablet.ui.mainScreen.mainScreen.MainComponent
 import band.effective.office.tablet.utils.unbox
 import com.arkivanov.mvikotlin.core.store.Reducer
@@ -16,9 +19,15 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import java.util.Calendar
+import java.util.GregorianCalendar
+import kotlin.time.Duration.Companion.seconds
 
 class MainFactory(
     private val storeFactory: StoreFactory,
@@ -28,12 +37,14 @@ class MainFactory(
 
     private val roomInfoUseCase: RoomInfoUseCase by inject()
     private val checkSettingsUseCase: CheckSettingsUseCase by inject()
-    private val currentEventController: CurrentEventController by inject()
+    private val updateUseCase: UpdateUseCase by inject()
+    private val timerUseCase: TimerUseCase by inject()
+    private val selectRoomUseCase: SelectRoomUseCase by inject()
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): MainStore =
         object : MainStore,
-            Store<MainStore.Intent, MainStore.State, Nothing> by storeFactory.create(
+            Store<MainStore.Intent, MainStore.State, MainStore.Label> by storeFactory.create(
                 name = "MainStore",
                 initialState = MainStore.State.defaultState,
                 bootstrapper = coroutineBootstrapper {
@@ -43,6 +54,25 @@ class MainFactory(
                         } else {
                             dispatch(Action.OnLoad(isSuccess = roomInfoUseCase()))
                         }
+                    }
+                    launch(Dispatchers.IO) {
+                        updateUseCase.updateFlow().collect {
+                            delay(1.seconds)
+                            withContext(Dispatchers.Main) {
+                                dispatch(Action.OnLoad(isSuccess = roomInfoUseCase()))
+                            }
+                        }
+                    }
+                    timerUseCase.timer(this, 1.seconds) { _ ->
+                        withContext(Dispatchers.Main) {
+                            dispatch(Action.OnUpdateTimer)
+                        }
+                    }
+                    launch(Dispatchers.Main) {
+                        roomInfoUseCase.subscribe(this).collect {
+                            dispatch(Action.OnUpdateRoomInfo)
+                        }
+
                     }
                 },
                 executorFactory = ::ExecutorImpl,
@@ -61,6 +91,7 @@ class MainFactory(
         object Reboot : Message
         object OnSettings : Message
         data class SelectRoom(val index: Int) : Message
+        object UpdateTimer : Message
     }
 
     private sealed interface Action {
@@ -68,10 +99,12 @@ class MainFactory(
             Action
 
         object OnSettings : Action
+        object OnUpdateTimer : Action
+        object OnUpdateRoomInfo : Action
     }
 
     private inner class ExecutorImpl() :
-        CoroutineExecutor<MainStore.Intent, Action, MainStore.State, Message, Nothing>() {
+        CoroutineExecutor<MainStore.Intent, Action, MainStore.State, Message, MainStore.Label>() {
         @RequiresApi(Build.VERSION_CODES.N)
         override fun executeIntent(intent: MainStore.Intent, getState: () -> MainStore.State) {
             when (intent) {
@@ -91,28 +124,63 @@ class MainFactory(
                 is MainStore.Intent.OnSelectRoom -> dispatch(Message.SelectRoom(intent.index.apply {
                     updateRoomInfo(getState().roomList[this])
                 }))
+
                 MainStore.Intent.OnUpdate -> reboot(getState(), true)
+                is MainStore.Intent.OnFastBooking -> {
+                    val state = getState()
+                    val currentRoom = state.run { roomList[indexSelectRoom] }
+                    val selectRoom =
+                        selectRoomUseCase.getRoom(
+                            currentRoom = currentRoom,
+                            rooms = state.roomList,
+                            minEventDuration = intent.minDuration
+                        )
+                    val event = EventInfo.emptyEvent.copy(
+                        startTime = GregorianCalendar(),
+                        finishTime = GregorianCalendar().apply {
+                            add(
+                                Calendar.MINUTE,
+                                intent.minDuration
+                            )
+                        })
+                    if (selectRoom != null) {
+                        navigate(
+                            MainComponent.ModalWindowsConfig.UpdateEvent(
+                                event = event,
+                                room = selectRoom.name
+                            )
+                        )
+                    }
+                    publish(MainStore.Label.ShowToast(selectRoom?.name ?: "Нет свободной комнаты"))
+                }
             }
         }
 
         fun reboot(state: MainStore.State, refresh: Boolean = false) = scope.launch {
             if (!refresh) dispatch(Message.Reboot)
-            if (refresh) roomInfoUseCase.updateCashe()
-            roomInfoUseCase().unbox({ it.saveData ?: listOf() })
+            if (refresh) {
+                withContext(Dispatchers.IO) {
+                    roomInfoUseCase.updateCaсhe()
+                }
+                publish(MainStore.Label.ShowToast("Update cache"))
+            }
+            roomInfoUseCase().unbox({ it.saveData ?: listOf(RoomInfo.defaultValue) }) //TODO
                 .apply {
                     dispatch(
                         Message.Load(
-                            isSuccess = isNotEmpty(), roomList = this,
+                            isSuccess = isNotEmpty(),
+                            roomList = this,
                             indexSelectRoom = state.indexRoom()
                         )
                     )
                     updateRoomInfo(this[state.indexRoom()])
                 }
+            publish(MainStore.Label.ShowToast("Update"))
         }
 
         override fun executeAction(action: Action, getState: () -> MainStore.State) {
             when (action) {
-                is Action.OnLoad -> action.isSuccess.unbox({ it.saveData ?: listOf() })
+                is Action.OnLoad -> action.isSuccess.unbox({ it.saveData ?: listOf(RoomInfo.defaultValue) })
                     .apply {
                         dispatch(
                             Message.Load(
@@ -125,6 +193,8 @@ class MainFactory(
                     }
 
                 is Action.OnSettings -> dispatch(Message.OnSettings)
+                Action.OnUpdateTimer -> dispatch(Message.UpdateTimer)
+                Action.OnUpdateRoomInfo -> reboot(getState())
             }
         }
 
@@ -144,13 +214,19 @@ class MainFactory(
                     isData = message.isSuccess,
                     isError = !message.isSuccess,
                     roomList = if (message.isSuccess) message.roomList else roomList,
-                    indexSelectRoom = message.indexSelectRoom
+                    indexSelectRoom = message.indexSelectRoom,
+                    timeToNextEvent = calcTimeToNextEvent()
                 )
 
-                is Message.UpdateDisconnect -> copy(isDisconnect = message.newValue)
+                is Message.UpdateDisconnect -> copy(
+                    isDisconnect = message.newValue,
+                    timeToNextEvent = calcTimeToNextEvent()
+                )
+
                 is Message.Reboot -> copy(
                     isError = false,
-                    isLoad = true
+                    isLoad = true,
+                    timeToNextEvent = calcTimeToNextEvent()
                 )
 
                 is Message.OnSettings -> copy(
@@ -160,7 +236,17 @@ class MainFactory(
                     isSettings = true
                 )
 
-                is Message.SelectRoom -> copy(indexSelectRoom = message.index)
+                is Message.SelectRoom -> copy(
+                    indexSelectRoom = message.index,
+                    timeToNextEvent = calcTimeToNextEvent()
+                )
+
+                Message.UpdateTimer -> copy(timeToNextEvent = calcTimeToNextEvent())
             }
+
+        private fun MainStore.State.calcTimeToNextEvent() =
+            roomList.getOrNull(indexSelectRoom)?.currentEvent
+                ?.run { ((finishTime.time.time - GregorianCalendar().time.time) / 60000).toInt() }
+                ?: 0
     }
 }

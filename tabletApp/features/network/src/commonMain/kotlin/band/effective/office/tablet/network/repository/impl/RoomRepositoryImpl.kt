@@ -43,7 +43,7 @@ class RoomRepositoryImpl(
                 errorMapper = { it },
                 successMapper = { eventList -> eventList.filter { it.workspace.id == roomId } })
 
-    override suspend fun getRoomInfo(room: String): Either<ErrorWithData<RoomInfo>, RoomInfo> =
+    suspend fun getRoomInfo(room: String): Either<ErrorWithData<RoomInfo>, RoomInfo> =
         getRoomsInfo().run {
             when (this) {
                 is Either.Error -> {
@@ -117,7 +117,7 @@ class RoomRepositoryImpl(
             }
         }
 
-    override fun subscribeOnUpdates(
+    fun subscribeOnUpdates(
         roomId: String,
         scope: CoroutineScope
     ): Flow<Either<ErrorWithData<RoomInfo>, RoomInfo>> =

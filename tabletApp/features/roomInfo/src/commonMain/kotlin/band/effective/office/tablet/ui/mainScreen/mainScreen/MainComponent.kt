@@ -8,15 +8,11 @@ import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomComponent
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainFactory
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
-import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.RoomInfoComponent
-import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.store.RoomInfoStore
 import band.effective.office.tablet.ui.mainScreen.slotComponent.SlotComponent
 import band.effective.office.tablet.ui.mainScreen.slotComponent.store.SlotStore
 import band.effective.office.tablet.ui.modal.ModalWindow
 import band.effective.office.tablet.ui.updateEvent.UpdateEventComponent
-import band.effective.office.tablet.utils.componentCoroutineScope
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.childContext
 import com.arkivanov.decompose.router.slot.SlotNavigation
 import com.arkivanov.decompose.router.slot.activate
 import com.arkivanov.decompose.router.slot.childSlot
@@ -25,9 +21,9 @@ import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
+import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.N)
 class MainComponent(
@@ -37,12 +33,6 @@ class MainComponent(
     val onSettings: () -> Unit
 ) : ComponentContext by componentContext {
 
-    val roomInfoComponent: RoomInfoComponent = RoomInfoComponent(
-        componentContext = childContext(key = "roomInfoComponent"),
-        storeFactory = storeFactory,
-        onFreeRoomIntent = { mainStore.accept(MainStore.Intent.OnOpenFreeRoomModal) },
-        room = { state.value.run { if (roomList.isNotEmpty()) roomList[indexSelectRoom] else RoomInfo.defaultValue } }
-    )
 
     val slotComponent = SlotComponent(
         componentContext = componentContext,
@@ -106,7 +96,6 @@ class MainComponent(
     }
 
     private fun updateComponents(roomInfo: RoomInfo) {
-        roomInfoComponent.sendIntent(RoomInfoStore.Intent.OnUpdateRoomInfo(roomInfo))
         slotComponent.sendIntent(
             SlotStore.Intent.UpdateRequest(
                 room = roomInfo.name,
@@ -117,21 +106,10 @@ class MainComponent(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val state = mainStore.stateFlow
+    val label = mainStore.labels
 
     fun sendIntent(intent: MainStore.Intent) {
         mainStore.accept(intent)
-    }
-
-    init {
-        componentContext.componentCoroutineScope().launch {
-            roomInfoComponent.state.collect {
-                mainStore.accept(
-                    MainStore.Intent.OnDisconnectChange(
-                        it.isError
-                    )
-                )
-            }
-        }
     }
 
     sealed interface ModalWindowsConfig : Parcelable {

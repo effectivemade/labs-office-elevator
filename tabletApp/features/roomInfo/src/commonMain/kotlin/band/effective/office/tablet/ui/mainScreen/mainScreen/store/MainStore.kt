@@ -4,7 +4,7 @@ import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
 import com.arkivanov.mvikotlin.core.store.Store
 
-interface MainStore : Store<MainStore.Intent, MainStore.State, Nothing> {
+interface MainStore : Store<MainStore.Intent, MainStore.State, MainStore.Label> {
     sealed interface Intent {
         object OnOpenFreeRoomModal : Intent
         object OnBookingOtherRoomRequest : Intent
@@ -13,6 +13,11 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, Nothing> {
         data class OnChangeEventRequest(val eventInfo: EventInfo) : Intent
         data class OnSelectRoom(val index: Int) : Intent
         object OnUpdate : Intent
+        data class OnFastBooking(val minDuration: Int) : Intent
+    }
+
+    sealed interface Label {
+        data class ShowToast(val text: String): Label
     }
 
     data class State(
@@ -24,6 +29,7 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, Nothing> {
         val isSettings: Boolean,
         val roomList: List<RoomInfo>,
         val indexSelectRoom: Int,
+        val timeToNextEvent: Int
     ) {
         companion object {
             val defaultState =
@@ -35,7 +41,8 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, Nothing> {
                     isSettings = false,
                     updatedEvent = EventInfo.emptyEvent,
                     roomList = listOf(),
-                    indexSelectRoom = 0
+                    indexSelectRoom = 0,
+                    timeToNextEvent = 0
                 )
         }
     }

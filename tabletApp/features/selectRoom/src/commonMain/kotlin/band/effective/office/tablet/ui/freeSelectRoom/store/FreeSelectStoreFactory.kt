@@ -1,7 +1,6 @@
 package band.effective.office.tablet.ui.freeSelectRoom.store
 
 import band.effective.office.network.model.Either
-import band.effective.office.tablet.domain.CurrentEventController
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.useCase.CancelUseCase
 import com.arkivanov.mvikotlin.core.store.Reducer
@@ -18,7 +17,6 @@ class FreeSelectStoreFactory(
     private val storeFactory: StoreFactory,
     private val eventInfo: EventInfo
 ) : KoinComponent {
-    val currentEventController: CurrentEventController by inject()
     val cancelUseCase: CancelUseCase by inject()
 
     @OptIn(ExperimentalMviKotlinApi::class)

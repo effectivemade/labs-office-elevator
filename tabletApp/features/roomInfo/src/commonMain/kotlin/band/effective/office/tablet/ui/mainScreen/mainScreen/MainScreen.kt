@@ -1,15 +1,18 @@
 package band.effective.office.tablet.ui.mainScreen.mainScreen
 
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import band.effective.office.tablet.ui.common.ErrorMainScreen
 import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomComponent
 import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomView
@@ -18,12 +21,26 @@ import band.effective.office.tablet.ui.mainScreen.mainScreen.uiComponents.LoadMa
 import band.effective.office.tablet.ui.updateEvent.UpdateEventComponent
 import band.effective.office.tablet.ui.updateEvent.UpdateEventView
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
-import java.util.GregorianCalendar
+import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainScreen(component: MainComponent) {
     val state by component.state.collectAsState()
+    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        launch {
+            component.label.collect {
+                when (it) {
+                    is MainStore.Label.ShowToast -> Toast.makeText(
+                        /* context = */ context,
+                        /* text = */ it.text,
+                        /* duration = */ Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+    }
     when {
         state.isError -> {
             ErrorMainScreen { component.sendIntent(MainStore.Intent.RebootRequest) }
@@ -35,8 +52,12 @@ fun MainScreen(component: MainComponent) {
 
         state.isData -> {
             MainScreenView(
-                roomInfoComponent = component.roomInfoComponent,
+                slotComponent = component.slotComponent,
                 isDisconnect = state.isDisconnect,
+                roomList = state.roomList,
+                indexSelectRoom = state.indexSelectRoom,
+                timeToNextEvent = state.timeToNextEvent,
+                onRoomButtonClick = { component.sendIntent(MainStore.Intent.OnSelectRoom(it)) },
                 onEventUpdateRequest = {
                     component.sendIntent(
                         MainStore.Intent.OnChangeEventRequest(
@@ -45,16 +66,9 @@ fun MainScreen(component: MainComponent) {
                     )
                 },
                 onSettings = { component.onSettings() },
-                slotComponent = component.slotComponent,
-                roomList = state.roomList,
-                indexSelectRoom = state.indexSelectRoom,
-                onRoomButtonClick = { component.sendIntent(MainStore.Intent.OnSelectRoom(it)) },
                 onCancelEventRequest = { component.sendIntent(MainStore.Intent.OnOpenFreeRoomModal) },
-                timeToNextEvent = state.roomList[state.indexSelectRoom].currentEvent
-                    ?.run { ((finishTime.time.time - GregorianCalendar().time.time) / 60000).toInt() }
-                    ?: 0,
-                onUpdate = { component.sendIntent(MainStore.Intent.OnUpdate) }
-            )
+                onFastBooking = { component.sendIntent(MainStore.Intent.OnFastBooking(it)) }
+            ) { component.sendIntent(MainStore.Intent.OnUpdate) }
         }
 
         state.isSettings -> {

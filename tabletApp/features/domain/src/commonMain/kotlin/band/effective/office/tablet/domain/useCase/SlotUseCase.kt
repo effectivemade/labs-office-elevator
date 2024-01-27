@@ -13,7 +13,8 @@ class SlotUseCase {
         start: Calendar = OfficeTime.startWorkTime(),
         finish: Calendar = OfficeTime.finishWorkTime(),
         minSlotDur: Int = 15,
-        events: List<EventInfo>
+        events: List<EventInfo>,
+        currentEvent: EventInfo?
     ): List<Slot> {
         return events.fold(
             getEmptyMinSlots(
@@ -21,7 +22,7 @@ class SlotUseCase {
                 finish = finish,
                 minSlotDur = minSlotDur
             )
-        ) { acc, eventInfo -> acc.addEvent(eventInfo) }.mergeEmptySlots()
+        ) { acc, eventInfo -> acc.addEvent(eventInfo) }.addCurrentEvent(currentEvent).mergeEmptySlots()
     }
 
     private fun getEmptyMinSlots(
@@ -38,16 +39,27 @@ class SlotUseCase {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
+    private fun List<Slot>.addCurrentEvent(eventInfo: EventInfo?): List<Slot> =
+        toMutableList().apply { removeEmptySlot(eventInfo) }
+
+    @RequiresApi(Build.VERSION_CODES.N)
     private fun List<Slot>.addEvent(eventInfo: EventInfo): List<Slot> {
         val list = this.toMutableList()
-        list.removeIf { slot ->
-            slot.start > eventInfo.startTime && slot.start < eventInfo.finishTime ||
-                    eventInfo.startTime > slot.start && eventInfo.startTime < slot.finish
-        }
+        list.removeEmptySlot(eventInfo)
         val predSlot = list.firstOrNull() { it.finish > eventInfo.startTime } ?: list.first()
         val predSlotIndex = list.indexOf(predSlot)
         list.add(predSlotIndex, eventInfo.toSlot())
         return list
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun MutableList<Slot>.removeEmptySlot(eventInfo: EventInfo?) {
+        if (eventInfo != null) {
+            removeIf { slot ->
+                slot.start > eventInfo.startTime && slot.start < eventInfo.finishTime ||
+                        eventInfo.startTime > slot.start && eventInfo.startTime < slot.finish
+            }
+        }
     }
 
     private fun List<Slot>.mergeEmptySlots(): List<Slot> {

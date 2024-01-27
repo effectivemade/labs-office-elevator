@@ -1,6 +1,5 @@
 package band.effective.office.tablet.ui.freeNegotiationsScreen.ui.freeNegotiationsScreen.store
 
-import band.effective.office.network.model.Either
 import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.domain.useCase.CheckBookingUseCase
@@ -21,9 +20,7 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.Calendar
@@ -44,21 +41,7 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
                 initialState = FreeNegotiationsStore.State.defaultState,
                 bootstrapper = coroutineBootstrapper {
                     dispatch(Action.SetBooking(getBooking()))
-                    launch() {
-                        val response = roomInfoUseCase.getOtherRoom(checkSettingsUseCase())
-                        when (response) {
-                            is Either.Error -> dispatch(Action.FailLoad)
-                            is Either.Success -> {
-                                dispatch(Action.GetFreeRoomsInfo(response.data))
-                                timer.subscribe {
-                                    dispatch(
-                                        Action.UpdateChangeEventTime
-                                    )
-                                }
-                                timer.startTimer()
-                            }
-                        }
-                    }
+
                 },
                 executorFactory = ::ExecutorImpl,
                 reducer = ReducerImpl
@@ -263,30 +246,7 @@ class FreeNegotiationsStoreFactory(private val storeFactory: StoreFactory) : Koi
             ) {
                 return roomInfo.copy(state = RoomState.SOON_BUSY())
             }
-            if (roomInfo.changeEventTime == 0) {
-                return withContext(Dispatchers.IO) {
-                    val room = roomInfoUseCase(roomInfo.room.name).unbox(
-                        errorHandler = {
-                            it.saveData ?: RoomInfo.defaultValue
-                        },
-                        successHandler = {
-                            it
-                        }
-                    )
-                    val roomState = getStateBusyRoomCurrent(room, state)
-                    return@withContext RoomInfoUiState(
-                        room = room,
-                        state = roomState,
-                        changeEventTime = getChangeEventTime(
-                            roomState = roomState,
-                            startTime = state.booking.eventInfo.startTime,
-                            room = room
-                        )
-                    )
-                }
-            } else {
-                return roomInfo
-            }
+            return roomInfo
         }
     }
 

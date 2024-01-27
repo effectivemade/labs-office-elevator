@@ -145,9 +145,19 @@ class UpdateEventStoreFactory(
                 val event = EventInfo(
                     startTime = state.date,
                     organizer = state.selectOrganizer,
-                    finishTime = (state.date.clone() as Calendar).apply { add(Calendar.MINUTE, state.duration) },
-                    id = "")
-                if ((checkBookingUseCase.busyEvents(event, room = room) as? Either.Success)?.data?.isEmpty() == true) {
+                    finishTime = (state.date.clone() as Calendar).apply {
+                        add(
+                            Calendar.MINUTE,
+                            state.duration
+                        )
+                    },
+                    id = ""
+                )
+                if ((checkBookingUseCase.busyEvents(
+                        event,
+                        room = room
+                    ) as? Either.Success)?.data?.isEmpty() == true
+                ) {
                     dispatch(Message.LoadUpdate)
                     when (bookingUseCase.invoke(
                         eventInfo = event,
@@ -177,9 +187,10 @@ class UpdateEventStoreFactory(
                 set(Calendar.MINUTE, minute)
             }
             val busyEvent: List<EventInfo> = checkBookingUseCase.busyEvents(
-                state.copy(
+                event = state.copy(
                     date = newDate
-                ).toEvent()
+                ).toEvent(),
+                room = room
             ).unbox({ it.saveData })?.filter { it.startTime != state.date } ?: listOf()
             dispatch(
                 Message.UpdateInformation(
@@ -251,11 +262,12 @@ class UpdateEventStoreFactory(
             val newOrganizer = state.organizers.firstOrNull { it.fullName == newOrg.fullName }
                 ?: state.event.organizer
             val busyEvent: List<EventInfo> = checkBookingUseCase.busyEvents(
-                state.copy(
+                event = state.copy(
                     date = newDate,
                     duration = newDuration,
                     selectOrganizer = newOrganizer
-                ).toEvent()
+                ).toEvent(),
+                room = room
             ).unbox({ it.saveData })?.filter { it.startTime != state.date } ?: listOf()
             if (newDuration > 0 && newDate > today()) {
                 dispatch(

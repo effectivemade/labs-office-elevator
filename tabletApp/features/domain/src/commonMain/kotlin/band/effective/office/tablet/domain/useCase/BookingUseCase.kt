@@ -12,9 +12,14 @@ class BookingUseCase(
     private val repository: BookingRepository,
     private val roomRepository: RoomRepository
 ) {
-    suspend fun getRoom(room: String) = roomRepository.getRoomInfo(room).map(
-        errorMapper = { it.error },
-        successMapper = { it })
+    suspend fun getRoom(room: String) = try {
+        roomRepository.getRoomsInfo().map(
+            errorMapper = { it.error },
+            successMapper = { it.first { roomInfo -> roomInfo.name == room } }
+        )
+    } catch (e: NoSuchElementException) {
+        Either.Error(ErrorResponse.getResponse(404))
+    }
 
     suspend operator fun invoke(
         eventInfo: EventInfo,

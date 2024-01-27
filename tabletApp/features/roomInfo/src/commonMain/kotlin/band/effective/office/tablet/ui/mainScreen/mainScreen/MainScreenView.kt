@@ -42,7 +42,6 @@ import band.effective.office.tablet.ui.theme.roomInfoColor
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @Composable
 fun MainScreenView(
-    roomInfoComponent: RoomInfoComponent,
     slotComponent: SlotComponent,
     isDisconnect: Boolean,
     roomList: List<RoomInfo>,
@@ -52,7 +51,9 @@ fun MainScreenView(
     onEventUpdateRequest: (EventInfo) -> Unit,
     onSettings: () -> Unit,
     onCancelEventRequest: () -> Unit,
-    onUpdate: () -> Unit
+    onFastBooking: (Int) -> Unit,
+    onUpdate: () -> Unit,
+
 ) {
     Box(modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colors.background)) {
         /*NOTE(Maksim Mishenko):
@@ -78,7 +79,7 @@ fun MainScreenView(
                     modifier = Modifier.fillMaxHeight(),
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
-                    FastBookingButtons() {}
+                    FastBookingButtons(onBooking = onFastBooking)
                     Column {
                         RoomList(
                             list = roomList,
@@ -100,7 +101,7 @@ fun MainScreenView(
 fun FastBookingButtons(onBooking: (Int) -> Unit) {
     Column {
         Text(
-            text = "Занять любую переговорку на:",
+            text = "Занять любую переговорку на:", //TODO
             color = MaterialTheme.colors.onPrimary,
             style = MaterialTheme.typography.h3
         )

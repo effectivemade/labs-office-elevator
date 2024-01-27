@@ -8,9 +8,8 @@ import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.Organizer
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.domain.model.Slot
+import band.effective.office.tablet.domain.useCase.RoomInfoUseCase
 import band.effective.office.tablet.domain.useCase.SlotUseCase
-import band.effective.office.tablet.domain.useCase.UpdateUseCase
-import band.effective.office.tablet.network.repository.RoomRepository
 import band.effective.office.tablet.utils.map
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
@@ -18,7 +17,9 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.Calendar
@@ -31,8 +32,7 @@ class SlotStoreFactory(
 ) :
     KoinComponent {
     val slotUseCase: SlotUseCase by inject()
-    val updateUseCase: UpdateUseCase by inject()
-    val roomRepository: RoomRepository by inject() //TODO
+    val roomInfoUseCase: RoomInfoUseCase by inject()
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun create(): SlotStore = object : SlotStore,
@@ -44,14 +44,15 @@ class SlotStoreFactory(
             initialState = SlotStore.State.initValue
         ) {}
 
+
     @RequiresApi(Build.VERSION_CODES.N)
     @OptIn(ExperimentalMviKotlinApi::class)
     private fun bootstrapper() = coroutineBootstrapper<Action> {
         launch {
-            dispatch(Action.UpdateSlots(getSlots(updateUseCase.getRoomInfo(roomName()))))
+            dispatch(Action.UpdateSlots(getSlots(roomInfoUseCase.getRoom(roomName()))))
         }
-        launch {
-            roomRepository.subscribeOnUpdates(this).collect {
+        launch(Dispatchers.IO) {
+            roomInfoUseCase.subscribe(this).collect {
                 it.map(
                     errorMapper = {
                         val save = it.saveData
@@ -62,7 +63,8 @@ class SlotStoreFactory(
                     successMapper = {
                         it.firstOrNull() { it.name == roomName() } ?: RoomInfo.defaultValue
                     }
-                ).run { dispatch(Action.UpdateSlots(getSlots(this))) }
+                )
+                    .let { withContext(Dispatchers.Main) { dispatch(Action.UpdateSlots(getSlots(it))) } }
             }
         }
 
@@ -80,6 +82,7 @@ class SlotStoreFactory(
             is Either.Success -> {
                 val roomInfo = either.data
                 slotUseCase.getSlots(
+                    currentEvent = roomInfo.currentEvent,
                     events = roomInfo.eventList,
                     start = GregorianCalendar().apply {
                         val round = get(Calendar.MINUTE) % 15
@@ -110,13 +113,15 @@ class SlotStoreFactory(
         @RequiresApi(Build.VERSION_CODES.N)
         private fun updateSlot(roomName: String, refresh: Boolean) {
             scope.launch {
+                if (refresh) {
+                    withContext(Dispatchers.IO) {
+                        roomInfoUseCase.updateCaсhe()
+                    }
+                }
                 dispatch(
                     Message.UpdateSlots(
                         getSlots(
-                            updateUseCase.getRoomInfo(
-                                nameRoom = roomName,
-                                refresh = refresh
-                            )
+                            roomInfoUseCase.getRoom(roomName)
                         )
                     )
                 )
