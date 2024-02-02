@@ -1,8 +1,7 @@
 package model
 
-import com.google.api.client.util.DateTime
+import office.effective.common.constants.BookingConstants
 import java.lang.IllegalArgumentException
-import java.lang.StringBuilder
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -45,12 +44,14 @@ data class Recurrence(
          * Converts milliseconds date into exdate format from RFC5545
          *
          * @param millisDate - date in milliseconds ([Long])
-         * @return [String] - date in DATE-TIME (RFC5545). Example: 20231015T200000Z
+         * @return [String] - date in DATE-TIME (RFC5545). Example: [BookingConstants.UNTIL_FORMAT]
          * @author Kiselev Danil
          * */
         private fun toDateRfc5545(millisDate: Long): String {
-            val time = GregorianCalendar().apply { timeInMillis = millisDate }
-            return SimpleDateFormat("yyyyMMdd").format(time.time)
+            val time = GregorianCalendar().apply { timeInMillis = millisDate }//+ 86400000 }
+            val a = SimpleDateFormat(BookingConstants.UNTIL_FORMAT).format(time.time) + "T235959;TZID=" + TimeZone.getDefault().id//a = "TZID=" + TimeZone.getDefault().id + ":" + SimpleDateFormat(BookingConstants.UNTIL_FORMAT).format(time.time);
+            return SimpleDateFormat(BookingConstants.UNTIL_FORMAT).format(time.time) //+ "T060000Z"
+            //+ "T235959;TZID=" + TimeZone.getDefault().id
         }
     }
 
@@ -58,27 +59,16 @@ data class Recurrence(
         interval = if (interval != 0) interval else null,
         freq = freq.name,
         count = if (ending is Ending.Count) ending.value else null,
-        until = if (ending is Ending.Until) parceUntil(ending.value) else null,
+        until = if (ending is Ending.Until) parseUntil(ending.value) else null,
         byDay = byDay,
         byMonth = byMonth,
         byYearDay = byYearDay,
         byHour = byHour
     )
 
-    private fun parceUntil(untilStr: String): Long {
-        //old
-        //2023 10 15 T 20 00 00 Z
-        //0123 45 67 8 90 12 34 5
-
-        //new
-        // 2023 12 24
-
-
-        val year: Int = untilStr.substring(0,4).toInt()
-        val month: Int = untilStr.substring(4,6).toInt()
-        val day: Int = untilStr.substring(6,8).toInt()
-
-        val dt = Date(year - 1900, month, day)
-        return dt.time
+    private fun parseUntil(untilStr: String): Long {
+        val date: Date = SimpleDateFormat(BookingConstants.UNTIL_FORMAT).parse(untilStr)
+        println("UNTIL: $untilStr")
+        return date.time
     }
 }
