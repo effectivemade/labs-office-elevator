@@ -1,5 +1,6 @@
-package model
+package office.effective.model
 
+import model.RecurrenceDTO
 import office.effective.common.constants.BookingConstants
 import java.lang.IllegalArgumentException
 import java.text.SimpleDateFormat
@@ -48,14 +49,12 @@ data class Recurrence(
          * @author Kiselev Danil
          * */
         private fun toDateRfc5545(millisDate: Long): String {
-            val time = GregorianCalendar().apply { timeInMillis = millisDate }//+ 86400000 }
-            val a = SimpleDateFormat(BookingConstants.UNTIL_FORMAT).format(time.time) + "T235959;TZID=" + TimeZone.getDefault().id//a = "TZID=" + TimeZone.getDefault().id + ":" + SimpleDateFormat(BookingConstants.UNTIL_FORMAT).format(time.time);
-            return SimpleDateFormat(BookingConstants.UNTIL_FORMAT).format(time.time) //+ "T060000Z"
-            //+ "T235959;TZID=" + TimeZone.getDefault().id
+            val time = GregorianCalendar().apply { timeInMillis = millisDate + 86400000 }
+            return SimpleDateFormat(BookingConstants.UNTIL_FORMAT).format(time.time)
         }
     }
 
-    fun toDto(): RecurrenceDTO = RecurrenceDTO(
+    public fun toDto(): RecurrenceDTO = RecurrenceDTO(
         interval = if (interval != 0) interval else null,
         freq = freq.name,
         count = if (ending is Ending.Count) ending.value else null,

@@ -5,7 +5,7 @@ import com.google.api.services.calendar.model.Event
 import com.google.api.services.calendar.model.Event.Organizer
 import com.google.api.services.calendar.model.EventAttendee
 import com.google.api.services.calendar.model.EventDateTime
-import model.Recurrence.Companion.toRecurrence
+import office.effective.model.Recurrence.Companion.toRecurrence
 import office.effective.common.constants.BookingConstants
 import office.effective.common.utils.UuidValidator
 import office.effective.dto.BookingDTO
