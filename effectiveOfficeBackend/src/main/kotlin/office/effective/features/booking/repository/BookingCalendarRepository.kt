@@ -4,6 +4,7 @@ import com.google.api.client.googleapis.json.GoogleJsonResponseException
 import com.google.api.client.util.DateTime
 import com.google.api.services.calendar.Calendar
 import com.google.api.services.calendar.model.Event
+import office.effective.common.constants.BookingConstants
 import office.effective.common.exception.InstanceNotFoundException
 import office.effective.common.exception.MissingIdException
 import office.effective.common.exception.WorkspaceUnavailableException
@@ -29,8 +30,7 @@ class BookingCalendarRepository(
     private val googleCalendarConverter: GoogleCalendarConverter
 ) : IBookingRepository {
     private val calendarEvents = calendar.Events()
-    private val defaultCalendar = config.propertyOrNull("calendar.defaultCalendar")?.getString()
-        ?: throw Exception("Config file does not contain Google default calendar id")
+    private val defaultCalendar = BookingConstants.DEFAULT_CALENDAR
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     /**
