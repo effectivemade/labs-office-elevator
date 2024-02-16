@@ -6,6 +6,7 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.server.application.*
+import office.effective.common.ApplicationCallDetails
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -23,7 +24,7 @@ class RequestAuthorizer(private val extractor: TokenExtractor = TokenExtractor()
      *
      * @author Kiselev Danil
      * */
-    override suspend fun authorize(call: ApplicationCall): Boolean {
+    override suspend fun authorize(call: ApplicationCallDetails): Boolean {
         val tokenString = extractor.extractToken(call) ?: run {
             logger.info("Request auth failed")
             return false

@@ -4,8 +4,8 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
-import io.ktor.server.application.*
 import office.effective.config
+import office.effective.common.ApplicationCallDetails
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -31,7 +31,7 @@ class TokenAuthorizer(private val extractor: TokenExtractor = TokenExtractor()) 
      *
      * @author Kiselev Danil
      * */
-    override suspend fun authorize(call: ApplicationCall): Boolean {
+    override suspend fun authorize(call: ApplicationCallDetails): Boolean {
         var userMail: String? = null
         val tokenString = extractor.extractToken(call) ?: run {
             logger.info("Token auth failed")

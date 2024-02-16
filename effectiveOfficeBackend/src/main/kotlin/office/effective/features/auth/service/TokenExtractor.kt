@@ -2,6 +2,7 @@ package office.effective.features.auth.service
 
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import office.effective.common.ApplicationCallDetails
 import org.slf4j.LoggerFactory
 
 class TokenExtractor {
@@ -11,7 +12,7 @@ class TokenExtractor {
      * @return token from Bearer Auth header or null, if
      * @author Danil Kiselev
      * */
-    fun extractToken(call: ApplicationCall): String? {
+    fun extractToken(call: ApplicationCallDetails): String? {
         val logger = LoggerFactory.getLogger(this::class.java)
         val rendered = call.request.parseAuthorizationHeader()?.render() ?: run {
             logger.info("Cannot find auth token")

@@ -1,7 +1,7 @@
 package office.effective.features.auth.service
 
-import io.ktor.server.application.*
 import io.ktor.server.request.*
+import office.effective.common.ApplicationCallDetails
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -14,7 +14,7 @@ class PermitAuthorizer(private val permittedPaths: Iterable<String>) : Authorize
 
     val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
-    override suspend fun authorize(call: ApplicationCall): Boolean {
+    override suspend fun authorize(call: ApplicationCallDetails): Boolean {
         val currentPathAsArray = call.request.path().split('/').filter { it.isNotBlank() }
         for (permitted in permittedPaths) {
             val permittedPathAsArray = permitted.split('/').filter { it.isNotBlank() }

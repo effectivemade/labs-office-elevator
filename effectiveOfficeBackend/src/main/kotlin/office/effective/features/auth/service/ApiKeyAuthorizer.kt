@@ -2,6 +2,7 @@ package office.effective.features.auth.service
 
 import io.ktor.server.application.*
 import office.effective.common.exception.InstanceNotFoundException
+import office.effective.common.ApplicationCallDetails
 import office.effective.features.auth.repository.AuthRepository
 import org.koin.core.context.GlobalContext
 import org.slf4j.Logger
@@ -22,7 +23,7 @@ class ApiKeyAuthorizer(private val extractor: TokenExtractor = TokenExtractor())
      * @return random String
      * @author Kiselev Danil
      */
-    override suspend fun authorize(call: ApplicationCall): Boolean {
+    override suspend fun authorize(call: ApplicationCallDetails): Boolean {
 
         val token = extractor.extractToken(call) ?: run {
             logger.info("Api key authorizer failed")

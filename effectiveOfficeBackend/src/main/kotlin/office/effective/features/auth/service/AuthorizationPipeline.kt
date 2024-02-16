@@ -1,6 +1,6 @@
 package office.effective.features.auth.service
 
-import io.ktor.server.application.*
+import office.effective.common.ApplicationCallDetails
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -12,7 +12,7 @@ class AuthorizationPipeline : Authorizer {
     val logger: Logger = LoggerFactory.getLogger(this::class.java)
     private val authorizers: MutableCollection<Authorizer> = mutableListOf()
 
-    override suspend fun authorize(call: ApplicationCall): Boolean {
+    override suspend fun authorize(call: ApplicationCallDetails): Boolean {
 
         if (authorizers.isEmpty()) {
             logger.warn("Authorizers collection is empty")

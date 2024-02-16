@@ -4,6 +4,8 @@ package office.effective.plugins
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
+import office.effective.common.enums.Roles
+import office.effective.common.ApplicationCallDetails
 import office.effective.features.auth.service.AuthorizationPipeline
 import org.koin.core.context.GlobalContext
 import org.slf4j.LoggerFactory
@@ -22,7 +24,7 @@ val CustomAuthorizationPlugin = createApplicationPlugin(name = "CustomAuthorizat
     onCall { call ->
         run {
             if (pluginOn) {
-                if (authenticationPipeline.authorize(call)) {
+                if (authenticationPipeline.authorize(ApplicationCallDetails(call, Roles.UNDEFINED))) {
                     logger.debug("Authorization succeed")
                 } else {
                     logger.info("Authorization failed")
