@@ -3,6 +3,8 @@ package band.effective.office.tablet.ui.mainScreen.mainScreen.store
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
 import com.arkivanov.mvikotlin.core.store.Store
+import java.util.Calendar
+import java.util.GregorianCalendar
 
 interface MainStore : Store<MainStore.Intent, MainStore.State, MainStore.Label> {
     sealed interface Intent {
@@ -14,10 +16,11 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, MainStore.Label> 
         data class OnSelectRoom(val index: Int) : Intent
         object OnUpdate : Intent
         data class OnFastBooking(val minDuration: Int) : Intent
+        data class OnUpdateSelectDate(val updateInDays: Int): Intent
     }
 
     sealed interface Label {
-        data class ShowToast(val text: String): Label
+        data class ShowToast(val text: String) : Label
     }
 
     data class State(
@@ -29,7 +32,8 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, MainStore.Label> 
         val isSettings: Boolean,
         val roomList: List<RoomInfo>,
         val indexSelectRoom: Int,
-        val timeToNextEvent: Int
+        val timeToNextEvent: Int,
+        val selectDate: Calendar,
     ) {
         companion object {
             val defaultState =
@@ -42,7 +46,8 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, MainStore.Label> 
                     updatedEvent = EventInfo.emptyEvent,
                     roomList = listOf(),
                     indexSelectRoom = 0,
-                    timeToNextEvent = 0
+                    timeToNextEvent = 0,
+                    selectDate = GregorianCalendar()
                 )
         }
     }

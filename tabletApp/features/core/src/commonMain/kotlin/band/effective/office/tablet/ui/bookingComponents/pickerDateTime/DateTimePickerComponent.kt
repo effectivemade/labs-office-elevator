@@ -1,5 +1,6 @@
 package band.effective.office.tablet.ui.bookingComponents.pickerDateTime
 
+import band.effective.office.tablet.ui.modal.ModalWindow
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -12,7 +13,7 @@ class DateTimePickerComponent(
     private val onOpenDateTimePickerModal: () -> Unit,
     private val onCloseRequest: () -> Unit,
     private val setNewDate: (Int, Int, Int, Int, Int) -> Unit,
-) : ComponentContext by componentContext {
+) : ComponentContext by componentContext, ModalWindow {
 
     private val dateTimePickerStore = instanceKeeper.getStore {
         DateTimePickerStoreFactory(storeFactory).create()

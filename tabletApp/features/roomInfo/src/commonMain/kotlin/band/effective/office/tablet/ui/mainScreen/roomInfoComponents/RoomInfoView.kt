@@ -3,19 +3,16 @@ package band.effective.office.tablet.ui.mainScreen.roomInfoComponents
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
+import band.effective.office.tablet.ui.bookingComponents.DateTimeView
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.uiComponent.BusyRoomInfoComponent
-import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.uiComponent.DateTimeComponent
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.uiComponent.FreeRoomInfoComponent
-import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.uiComponent.IconSettingsView
 import band.effective.office.tablet.utils.oneDay
 import java.util.Calendar
 import java.util.GregorianCalendar
@@ -26,25 +23,29 @@ import java.util.GregorianCalendar
 fun RoomInfoComponent(
     modifier: Modifier = Modifier,
     room: RoomInfo,
-    onOpenModalRequest: () -> Unit,
+    onOpenFreeRoomModalRequest: () -> Unit,
+    onOpenDateTimePickerModalRequest: () -> Unit,
+    onIncrementData: () -> Unit,
+    onDecrementData: () -> Unit,
+    selectDate: Calendar,
     timeToNextEvent: Int,
     isError: Boolean,
     onSettings: () -> Unit
 ) {
     val paddings = 30.dp
     Column(modifier = modifier) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            DateTimeComponent(
-                modifier = Modifier.padding(paddings)
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            IconSettingsView(
-                modifier = Modifier.padding(end = paddings),
-                onSettings = onSettings
-            )
-        }
+        DateTimeView(
+            modifier = Modifier.padding(
+                start = paddings,
+                top = paddings,
+                end = paddings,
+                bottom = 0.dp
+            ).height(70.dp),
+            selectDate = selectDate,
+            increment = onIncrementData,
+            decrement = onDecrementData,
+            onOpenDateTimePickerModal = onOpenDateTimePickerModalRequest
+        )
         when {
             room.isFree() -> {
                 FreeRoomInfoComponent(
@@ -65,7 +66,7 @@ fun RoomInfoComponent(
                     isHaveTv = room.isHaveTv,
                     electricSocketCount = room.socketCount,
                     event = room.currentEvent ?: EventInfo.emptyEvent,
-                    onButtonClick = { onOpenModalRequest() },
+                    onButtonClick = { onOpenFreeRoomModalRequest() },
                     timeToFinish = timeToNextEvent,
                     isError = isError
                 )

@@ -67,8 +67,17 @@ fun MainScreen(component: MainComponent) {
                 },
                 onSettings = { component.onSettings() },
                 onCancelEventRequest = { component.sendIntent(MainStore.Intent.OnOpenFreeRoomModal) },
-                onFastBooking = { component.sendIntent(MainStore.Intent.OnFastBooking(it)) }
-            ) { component.sendIntent(MainStore.Intent.OnUpdate) }
+                onFastBooking = { component.sendIntent(MainStore.Intent.OnFastBooking(it)) },
+                onOpenDateTimePickerModalRequest = {},
+                onIncrementData = {
+                    component.sendIntent(MainStore.Intent.OnUpdateSelectDate(updateInDays = 1))
+                },
+                onDecrementData = {
+                    component.sendIntent(MainStore.Intent.OnUpdateSelectDate(updateInDays = -1))
+                },
+                selectDate = state.selectDate,
+                onUpdate = { component.sendIntent(MainStore.Intent.OnUpdate) }
+            )
         }
 
         state.isSettings -> {

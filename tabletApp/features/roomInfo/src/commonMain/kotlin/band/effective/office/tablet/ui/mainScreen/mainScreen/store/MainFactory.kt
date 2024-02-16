@@ -32,7 +32,8 @@ import kotlin.time.Duration.Companion.seconds
 class MainFactory(
     private val storeFactory: StoreFactory,
     private val navigate: (MainComponent.ModalWindowsConfig) -> Unit,
-    private val updateRoomInfo: (RoomInfo) -> Unit
+    private val updateRoomInfo: (RoomInfo) -> Unit,
+    private val updateDate: (Calendar) -> Unit
 ) : KoinComponent {
 
     private val roomInfoUseCase: RoomInfoUseCase by inject()
@@ -92,6 +93,7 @@ class MainFactory(
         object OnSettings : Message
         data class SelectRoom(val index: Int) : Message
         object UpdateTimer : Message
+        data class UpdateDate(val newDate: Calendar) : Message
     }
 
     private sealed interface Action {
@@ -101,6 +103,7 @@ class MainFactory(
         object OnSettings : Action
         object OnUpdateTimer : Action
         object OnUpdateRoomInfo : Action
+        object RefreshDate : Action
     }
 
     private inner class ExecutorImpl() :
@@ -153,6 +156,17 @@ class MainFactory(
                     }
                     publish(MainStore.Label.ShowToast(selectRoom?.name ?: "Нет свободной комнаты"))
                 }
+
+                is MainStore.Intent.OnUpdateSelectDate -> {
+                    val newDate = (getState().selectDate.clone() as Calendar).apply {
+                        add(
+                            Calendar.DAY_OF_YEAR,
+                            intent.updateInDays
+                        )
+                    }
+                    dispatch(Message.UpdateDate(newDate))
+                    updateDate(newDate)
+                }
             }
         }
 
@@ -180,7 +194,9 @@ class MainFactory(
 
         override fun executeAction(action: Action, getState: () -> MainStore.State) {
             when (action) {
-                is Action.OnLoad -> action.isSuccess.unbox({ it.saveData ?: listOf(RoomInfo.defaultValue) })
+                is Action.OnLoad -> action.isSuccess.unbox({
+                    it.saveData ?: listOf(RoomInfo.defaultValue)
+                })
                     .apply {
                         dispatch(
                             Message.Load(
@@ -195,6 +211,7 @@ class MainFactory(
                 is Action.OnSettings -> dispatch(Message.OnSettings)
                 Action.OnUpdateTimer -> dispatch(Message.UpdateTimer)
                 Action.OnUpdateRoomInfo -> reboot(getState())
+                Action.RefreshDate -> dispatch(Message.UpdateDate(GregorianCalendar())).apply { updateDate(GregorianCalendar()) }
             }
         }
 
@@ -242,6 +259,7 @@ class MainFactory(
                 )
 
                 Message.UpdateTimer -> copy(timeToNextEvent = calcTimeToNextEvent())
+                is Message.UpdateDate -> copy(selectDate = message.newDate)
             }
 
         private fun MainStore.State.calcTimeToNextEvent() =

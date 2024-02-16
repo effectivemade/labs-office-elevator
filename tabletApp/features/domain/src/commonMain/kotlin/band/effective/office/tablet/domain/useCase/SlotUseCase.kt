@@ -16,13 +16,17 @@ class SlotUseCase {
         events: List<EventInfo>,
         currentEvent: EventInfo?
     ): List<Slot> {
-        return events.fold(
-            getEmptyMinSlots(
-                start = start,
-                finish = finish,
-                minSlotDur = minSlotDur
-            )
-        ) { acc, eventInfo -> acc.addEvent(eventInfo) }.addCurrentEvent(currentEvent).mergeEmptySlots()
+        return events
+            .fold(
+                getEmptyMinSlots(
+                    start = start,
+                    finish = finish,
+                    minSlotDur = minSlotDur
+                )
+            ) { acc, eventInfo -> acc.addEvent(eventInfo) }
+            .addCurrentEvent(currentEvent)
+            .mergeEmptySlots()
+            .mergeEventSlot()
     }
 
     private fun getEmptyMinSlots(
@@ -44,6 +48,7 @@ class SlotUseCase {
 
     @RequiresApi(Build.VERSION_CODES.N)
     private fun List<Slot>.addEvent(eventInfo: EventInfo): List<Slot> {
+        if (isEmpty()) return listOf(eventInfo.toSlot())
         val list = this.toMutableList()
         list.removeEmptySlot(eventInfo)
         val predSlot = list.firstOrNull() { it.finish > eventInfo.startTime } ?: list.first()
@@ -73,6 +78,29 @@ class SlotUseCase {
                 } else {
                     (acc + slot).toMutableList()
                 }
+            }
+        }
+    }
+
+    private fun List<Slot>.mergeEventSlot(): List<Slot> {
+        return fold(mutableListOf()) { acc, slot ->
+            val lastSlot = acc.lastOrNull()
+            when {
+                lastSlot == null -> (acc + slot).toMutableList()
+                lastSlot is Slot.EventSlot && slot is Slot.EventSlot ->
+                    (acc.dropLast(1) + Slot.MultiEventSlot(
+                        start = lastSlot.start,
+                        finish = slot.finish,
+                        events = listOf(lastSlot, slot)
+                    )).toMutableList()
+
+                lastSlot is Slot.MultiEventSlot && slot is Slot.EventSlot -> (acc.dropLast(1) + Slot.MultiEventSlot(
+                    start = lastSlot.start,
+                    finish = slot.finish,
+                    events = lastSlot.events + slot
+                )).toMutableList()
+
+                else -> (acc + slot).toMutableList()
             }
         }
     }

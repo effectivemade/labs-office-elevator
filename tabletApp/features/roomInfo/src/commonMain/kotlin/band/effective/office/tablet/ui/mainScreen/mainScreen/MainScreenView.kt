@@ -37,6 +37,7 @@ import band.effective.office.tablet.ui.mainScreen.slotComponent.SlotComponent
 import band.effective.office.tablet.ui.mainScreen.slotComponent.SlotList
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.roomInfoColor
+import java.util.Calendar
 
 @SuppressLint("NewApi", "StateFlowValueCalledInComposition")
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -53,7 +54,10 @@ fun MainScreenView(
     onCancelEventRequest: () -> Unit,
     onFastBooking: (Int) -> Unit,
     onUpdate: () -> Unit,
-
+    onOpenDateTimePickerModalRequest: () -> Unit,
+    onIncrementData: () -> Unit,
+    onDecrementData: () -> Unit,
+    selectDate: Calendar,
 ) {
     Box(modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colors.background)) {
         /*NOTE(Maksim Mishenko):
@@ -66,27 +70,31 @@ fun MainScreenView(
                 RoomInfoComponent(
                     modifier = Modifier,
                     room = roomList[indexSelectRoom],
-                    onOpenModalRequest = { onCancelEventRequest() },
+                    onOpenFreeRoomModalRequest = { onCancelEventRequest() },
                     timeToNextEvent = timeToNextEvent,
                     isError = false, //TODO()
-                    onSettings = onSettings
+                    onSettings = onSettings,
+                    onOpenDateTimePickerModalRequest = onOpenDateTimePickerModalRequest,
+                    onIncrementData = onIncrementData,
+                    onDecrementData = onDecrementData,
+                    selectDate = selectDate,
                 )
                 SlotList(slotComponent)
                 Button(onUpdate) {}
             }
             Box(modifier = Modifier.fillMaxSize()) {
-                Column(
-                    modifier = Modifier.fillMaxHeight(),
-                    verticalArrangement = Arrangement.SpaceBetween
-                ) {
-                    FastBookingButtons(onBooking = onFastBooking)
-                    Column {
+                Row {
+                    Spacer(Modifier.fillMaxWidth(0.25f))
+                    Column(
+                        modifier = Modifier.fillMaxHeight().padding(vertical = 40.dp),
+                        verticalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        FastBookingButtons(onBooking = onFastBooking)
                         RoomList(
                             list = roomList,
                             indexSelectRoom = indexSelectRoom,
                             onClick = onRoomButtonClick
                         )
-                        Spacer(Modifier.height(80.dp))
                     }
                 }
                 Box() {
@@ -103,7 +111,7 @@ fun FastBookingButtons(onBooking: (Int) -> Unit) {
         Text(
             text = "Занять любую переговорку на:", //TODO
             color = MaterialTheme.colors.onPrimary,
-            style = MaterialTheme.typography.h3
+            style = MaterialTheme.typography.h5
         )
         Spacer(Modifier.height(10.dp))
         Row {
@@ -114,7 +122,7 @@ fun FastBookingButtons(onBooking: (Int) -> Unit) {
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.White) //TODO
             ) {
                 Text(
-                    text = "15",
+                    text = "15 мин", //TODO
                     color = Color.Black,
                 )
             }
@@ -125,7 +133,7 @@ fun FastBookingButtons(onBooking: (Int) -> Unit) {
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
             ) {
                 Text(
-                    text = "30",
+                    text = "30 мин", //TODO
                     color = Color.Black
                 )
             }
@@ -136,7 +144,7 @@ fun FastBookingButtons(onBooking: (Int) -> Unit) {
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
             ) {
                 Text(
-                    text = "60",
+                    text = "60 мин", //TODO
                     color = Color.Black
                 )
             }
@@ -162,6 +170,7 @@ fun RoomList(list: List<RoomInfo>, indexSelectRoom: Int, onClick: (Int) -> Unit)
             )
             Spacer(Modifier.height(5.dp))
         }
+
     }
 }
 
@@ -186,7 +195,7 @@ fun RoomButton(modifier: Modifier, room: RoomInfo) {
             Text(
                 text = room.name,
                 color = MaterialTheme.colors.onPrimary,
-                style = MaterialTheme.typography.h3
+                style = MaterialTheme.typography.h5
             )
         }
         RoomPropertyComponent(

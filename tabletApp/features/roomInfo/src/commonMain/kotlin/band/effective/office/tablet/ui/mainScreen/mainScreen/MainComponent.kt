@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
+import band.effective.office.tablet.ui.bookingComponents.pickerDateTime.DateTimePickerComponent
 import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomComponent
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainFactory
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
@@ -24,6 +25,7 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import java.util.Calendar
 
 @RequiresApi(Build.VERSION_CODES.N)
 class MainComponent(
@@ -83,6 +85,18 @@ class MainComponent(
                 room = modalWindows.room,
                 onCloseRequest = { closeModalWindow() }
             )
+
+            is ModalWindowsConfig.SelectDate -> {
+                DateTimePickerComponent(
+                    componentContext = componentContext,
+                    storeFactory = storeFactory,
+                    onOpenDateTimePickerModal = {},
+                    onCloseRequest = { closeModalWindow() },
+                    setNewDate = { changedDay, changedMonth, changedYear, changedHour, changedMinute ->
+
+                    }
+                )
+            }
         }
     }
 
@@ -91,7 +105,8 @@ class MainComponent(
         MainFactory(
             storeFactory = storeFactory,
             navigate = ::openModalWindow,
-            updateRoomInfo = { updateComponents(it) }
+            updateRoomInfo = { updateComponents(it) },
+            updateDate = ::updateDate
         ).create()
     }
 
@@ -101,6 +116,12 @@ class MainComponent(
                 room = roomInfo.name,
                 refresh = false
             )
+        )
+    }
+
+    private fun updateDate(date: Calendar) {
+        slotComponent.sendIntent(
+            SlotStore.Intent.UpdateDate(date)
         )
     }
 
@@ -121,5 +142,8 @@ class MainComponent(
 
         @Parcelize
         data class FreeRoom(val event: EventInfo) : ModalWindowsConfig
+
+        @Parcelize
+        object SelectDate : ModalWindowsConfig
     }
 }

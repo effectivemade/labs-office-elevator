@@ -3,6 +3,7 @@ package band.effective.office.tablet.ui.mainScreen.slotComponent.store
 import android.os.Build
 import androidx.annotation.RequiresApi
 import band.effective.office.network.model.Either
+import band.effective.office.tablet.domain.OfficeTime
 import band.effective.office.tablet.domain.model.ErrorWithData
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.Organizer
@@ -76,19 +77,34 @@ class SlotStoreFactory(
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    private fun getSlots(either: Either<ErrorWithData<RoomInfo>, RoomInfo>): List<Slot> {
+    private fun getSlots(
+        either: Either<ErrorWithData<RoomInfo>, RoomInfo>,
+        start: Calendar = GregorianCalendar(),
+        finish: Calendar = OfficeTime.finishWorkTime(start.clone() as Calendar)
+    ): List<Slot> {
         return when (either) {
-            is Either.Error -> listOf()
+            is Either.Error -> slotUseCase.getSlots(
+                currentEvent = null,
+                events = listOf(),
+                start = start.apply {
+                    val round = get(Calendar.MINUTE) % 15
+                    val adding = if (round != 0) (15 - round) else 0
+                    add(Calendar.MINUTE, adding)
+                },
+                finish = finish
+            )
+
             is Either.Success -> {
                 val roomInfo = either.data
                 slotUseCase.getSlots(
                     currentEvent = roomInfo.currentEvent,
                     events = roomInfo.eventList,
-                    start = GregorianCalendar().apply {
+                    start = start.apply {
                         val round = get(Calendar.MINUTE) % 15
                         val adding = if (round != 0) (15 - round) else 0
                         add(Calendar.MINUTE, adding)
-                    }
+                    },
+                    finish = finish
                 )
             }
         }
@@ -105,8 +121,18 @@ class SlotStoreFactory(
         @RequiresApi(Build.VERSION_CODES.N)
         override fun executeIntent(intent: SlotStore.Intent, getState: () -> SlotStore.State) {
             when (intent) {
-                is SlotStore.Intent.ClickOnSlot -> intent.slot.execute()
+                is SlotStore.Intent.ClickOnSlot -> intent.slot.execute(getState())
                 is SlotStore.Intent.UpdateRequest -> updateSlot(intent.room, intent.refresh)
+                is SlotStore.Intent.UpdateDate -> scope.launch {
+                    dispatch(
+                        message = Message.UpdateSlots(
+                            slots = getSlots(
+                                either = roomInfoUseCase.getRoom(room = roomName()),
+                                start = intent.newDate
+                            ),
+                        )
+                    )
+                }
             }
         }
 
@@ -128,9 +154,10 @@ class SlotStoreFactory(
             }
         }
 
-        private fun Slot.execute() = when (this) {
+        private fun Slot.execute(state: SlotStore.State) = when (this) {
             is Slot.EmptySlot -> executeFreeSlot(this)
             is Slot.EventSlot -> executeEventSlot(this)
+            is Slot.MultiEventSlot -> executeEventSlot(this, state)
         }
 
         private fun executeFreeSlot(slot: Slot.EmptySlot) {
@@ -139,6 +166,20 @@ class SlotStoreFactory(
 
         private fun executeEventSlot(slot: Slot.EventSlot) {
             openBookingDialog(slot.eventInfo, roomName())
+        }
+
+        private fun executeEventSlot(slot: Slot.MultiEventSlot, state: SlotStore.State) {
+            val slots = state.slots
+            val currentSlots = slot.events
+            val newSlots: List<Slot> = if (slots.contains(currentSlots.first())) {
+                dispatch(Message.ChangeOpenSlots(state.openMultiSlots - slot))
+                slots - currentSlots
+            } else {
+                dispatch(Message.ChangeOpenSlots(state.openMultiSlots + slot))
+                val index = slots.indexOf(slot) + 1
+                slots.toMutableList().apply { addAll(index, currentSlots) }
+            }
+            dispatch(Message.UpdateSlots(newSlots))
         }
 
         private fun Slot.EmptySlot.Event(): EventInfo =
@@ -161,6 +202,7 @@ class SlotStoreFactory(
         override fun SlotStore.State.reduce(msg: Message): SlotStore.State =
             when (msg) {
                 is Message.UpdateSlots -> copy(slots = msg.slots)
+                is Message.ChangeOpenSlots -> copy(openMultiSlots = msg.openSlots)
             }
     }
 
@@ -170,6 +212,7 @@ class SlotStoreFactory(
 
     private sealed interface Message {
         data class UpdateSlots(val slots: List<Slot>) : Message
+        data class ChangeOpenSlots(val openSlots: List<Slot>) : Message
     }
 }
 
