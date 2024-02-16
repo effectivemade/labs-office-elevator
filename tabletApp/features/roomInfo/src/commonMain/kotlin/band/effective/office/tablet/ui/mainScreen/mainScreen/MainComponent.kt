@@ -54,6 +54,7 @@ class MainComponent(
     )
 
     private val navigation = SlotNavigation<ModalWindowsConfig>()
+    @RequiresApi(Build.VERSION_CODES.O)
     val modalWindowSlot = childSlot(
         source = navigation,
         childFactory = ::childFactory
@@ -67,6 +68,7 @@ class MainComponent(
         navigation.dismiss()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun childFactory(
         modalWindows: ModalWindowsConfig,
         componentContext: ComponentContext
@@ -90,12 +92,8 @@ class MainComponent(
                 DateTimePickerComponent(
                     componentContext = componentContext,
                     storeFactory = storeFactory,
-                    onOpenDateTimePickerModal = {},
-                    onCloseRequest = { closeModalWindow() },
-                    setNewDate = { changedDay, changedMonth, changedYear, changedHour, changedMinute ->
-
-                    }
-                )
+                    onSelectDate = {}
+                ) { closeModalWindow() }
             }
         }
     }

@@ -42,8 +42,7 @@ fun UpdateEventView(
 
     if (state.showSelectDate) {
         DateTimePickerModalView(
-            dateTimePickerComponent = component.dateTimePickerComponent,
-            currentDate = state.date
+            dateTimePickerComponent = component.dateTimePickerComponent
         )
     } else {
         UpdateEventView(

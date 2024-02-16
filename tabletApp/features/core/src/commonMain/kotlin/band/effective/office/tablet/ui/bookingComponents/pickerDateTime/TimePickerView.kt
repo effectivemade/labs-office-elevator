@@ -24,7 +24,7 @@ import kotlinx.datetime.LocalTime
 import java.util.Calendar
 
 @Composable
-fun TimePickerView(currentDate: Calendar, selectedTime: Calendar) {
+fun TimePickerView(currentDate: Calendar, selectedTime: Calendar, onSnap: (LocalTime) -> Unit) {
     Box(
         modifier = Modifier.fillMaxWidth(0.6f)
     ) {
@@ -58,10 +58,7 @@ fun TimePickerView(currentDate: Calendar, selectedTime: Calendar) {
                     currentDate[Calendar.HOUR_OF_DAY],
                     currentDate[Calendar.MINUTE]
                 ),
-                onSnappedTime = { time ->
-                    selectedTime.set(Calendar.HOUR_OF_DAY, time.hour)
-                    selectedTime.set(Calendar.MINUTE, time.minute)
-                }
+                onSnappedTime = onSnap
             )
         }
     }

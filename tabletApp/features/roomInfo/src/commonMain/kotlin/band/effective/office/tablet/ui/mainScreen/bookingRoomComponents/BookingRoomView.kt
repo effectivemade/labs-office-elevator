@@ -27,7 +27,6 @@ import band.effective.office.tablet.ui.bookingComponents.DateTimeView
 import band.effective.office.tablet.ui.bookingComponents.EventDurationView
 import band.effective.office.tablet.ui.bookingComponents.EventOrganizerView
 import band.effective.office.tablet.ui.bookingComponents.pickerDateTime.DateTimePickerComponent
-import band.effective.office.tablet.ui.bookingComponents.pickerDateTime.DateTimePickerStore
 import band.effective.office.tablet.ui.buttons.alert.AlertButton
 import band.effective.office.tablet.ui.buttons.success.SuccessButton
 import band.effective.office.tablet.ui.mainScreen.bookingRoomComponents.store.BookingStore
@@ -66,7 +65,7 @@ fun BookingRoomView(
         isOrganizerError = state.isOrganizerError,
         onRequestBookingCurrentRoom = { bookingRoomComponent.sendIntent(BookingStore.Intent.OnBookingCurrentRoom) },
         onRequestBookingOtherRoom = { bookingRoomComponent.sendIntent(BookingStore.Intent.OnBookingOtherRoom) },
-        onOpenDateTimePickerModal = { dateTimePickerComponent.sendIntent(DateTimePickerStore.Intent.OnDateTimePickerModal) },
+        onOpenDateTimePickerModal = {  },
         roomName = state.roomName,
         inputText = state.inputText,
         onInput = { bookingRoomComponent.sendIntent(BookingStore.Intent.OnInput(it)) },

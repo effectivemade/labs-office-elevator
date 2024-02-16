@@ -12,11 +12,7 @@ interface UpdateEventStore :
         data class OnUpdateLength(val update: Int) : Intent
         data class OnUpdateDate(val updateInDays: Int) : Intent
         data class OnSetDate(
-            val year: Int,
-            val month: Int,
-            val day: Int,
-            val hour: Int,
-            val minute: Int
+            val calendar: Calendar
         ) : Intent
 
         object OnExpandedChange : Intent

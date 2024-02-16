@@ -128,11 +128,7 @@ class UpdateEventStoreFactory(
 
                 is UpdateEventStore.Intent.OnSetDate -> setDay(
                     state = state,
-                    year = intent.year,
-                    month = intent.month,
-                    day = intent.day,
-                    hour = intent.hour,
-                    minute = intent.minute
+                    newDate = intent.calendar
                 )
 
                 UpdateEventStore.Intent.OnClose -> onCloseRequest()
@@ -173,19 +169,8 @@ class UpdateEventStoreFactory(
 
         fun setDay(
             state: UpdateEventStore.State,
-            year: Int,
-            month: Int,
-            day: Int,
-            hour: Int,
-            minute: Int
+            newDate: Calendar
         ) = scope.launch {
-            val newDate = (state.date.clone() as Calendar).apply {
-                set(Calendar.YEAR, year)
-                set(Calendar.MONTH, month)
-                set(Calendar.DAY_OF_MONTH, day)
-                set(Calendar.HOUR, hour)
-                set(Calendar.MINUTE, minute)
-            }
             val busyEvent: List<EventInfo> = checkBookingUseCase.busyEvents(
                 event = state.copy(
                     date = newDate
