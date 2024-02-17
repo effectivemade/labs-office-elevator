@@ -3,6 +3,7 @@ package office.effective.common.di
 import io.micrometer.prometheus.PrometheusConfig
 import io.micrometer.prometheus.PrometheusMeterRegistry
 import office.effective.common.utils.DatabaseTransactionManager
+import office.effective.common.utils.impl.DatabaseTransactionManagerImpl
 import office.effective.common.utils.UuidValidator
 import org.koin.dsl.module
 import org.ktorm.database.Database
@@ -24,7 +25,7 @@ val commonDiModule = module(createdAtStart = true) {
             password = password
         )
     }
-    single { DatabaseTransactionManager(get()) }
+    single<DatabaseTransactionManager> { DatabaseTransactionManagerImpl(get()) }
     single { UuidValidator() }
     single { PrometheusMeterRegistry(PrometheusConfig.DEFAULT) }
 }
