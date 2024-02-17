@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -123,18 +122,20 @@ fun DateTimePickerModalView(
                     modifier = Modifier.fillMaxWidth(1f)
                 )
                 Row(
-                    modifier = Modifier.padding(10.dp),
+                    modifier = Modifier.padding(10.dp).fillMaxHeight(0.8f),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    DatePickerView(epicDatePickerState = epicDatePickerState)
-                    Spacer(modifier = Modifier.width(40.dp))
                     TimePickerView(
+                        modifier = Modifier.fillMaxWidth(0.3f).fillMaxHeight(),
                         currentDate = currentDate,
-                        selectedTime = selectedDateTime,
                         onSnap = onChangeTime
                     )
+                    Spacer(Modifier.width(40.dp))
+                    DatePickerView(
+                        modifier = Modifier.fillMaxWidth(0.6f).fillMaxHeight(),
+                        epicDatePickerState = epicDatePickerState
+                    )
                 }
-                Spacer(modifier = Modifier.height(10.dp))
                 Box(modifier = Modifier.fillMaxSize()) {
                     Button(
                         modifier = Modifier.align(Alignment.Center)

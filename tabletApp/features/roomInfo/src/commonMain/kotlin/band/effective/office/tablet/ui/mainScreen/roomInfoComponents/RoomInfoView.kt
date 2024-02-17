@@ -25,12 +25,13 @@ fun RoomInfoComponent(
     room: RoomInfo,
     onOpenFreeRoomModalRequest: () -> Unit,
     onOpenDateTimePickerModalRequest: () -> Unit,
-    onIncrementData: () -> Unit,
-    onDecrementData: () -> Unit,
+    onIncrementDate: () -> Unit,
+    onDecrementDate: () -> Unit,
     selectDate: Calendar,
     timeToNextEvent: Int,
     isError: Boolean,
-    onSettings: () -> Unit
+    onSettings: () -> Unit,
+    onResetDate: () -> Unit
 ) {
     val paddings = 30.dp
     Column(modifier = modifier) {
@@ -42,9 +43,11 @@ fun RoomInfoComponent(
                 bottom = 0.dp
             ).height(70.dp),
             selectDate = selectDate,
-            increment = onIncrementData,
-            decrement = onDecrementData,
-            onOpenDateTimePickerModal = onOpenDateTimePickerModalRequest
+            increment = onIncrementDate,
+            decrement = onDecrementDate,
+            onOpenDateTimePickerModal = onOpenDateTimePickerModalRequest,
+            currentDate = GregorianCalendar(),
+            back = onResetDate,
         )
         when {
             room.isFree() -> {

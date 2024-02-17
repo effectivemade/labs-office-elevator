@@ -3,6 +3,7 @@ package band.effective.office.tablet.ui.updateEvent
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -72,7 +73,8 @@ fun UpdateEventView(
             isNewEvent = !state.isCreatedEvent(),
             onCreateEvent = { component.sendIntent(UpdateEventStore.Intent.OnBooking) },
             start = state.event.startTime.format("HH:mm"),
-            finish = state.event.finishTime.format("HH:mm")
+            finish = state.event.finishTime.format("HH:mm"),
+            room = component.room
         )
     }
 }
@@ -110,121 +112,125 @@ fun UpdateEventView(
     enableUpdateButton: Boolean,
     isNewEvent: Boolean,
     start: String,
-    finish: String
+    finish: String,
+    room: String
 ) {
     Dialog(
         onDismissRequest = onDismissRequest
     ) {
-        Column(
-            modifier = Modifier
-                .clip(RoundedCornerShape(3))
-                .background(MaterialTheme.colors.background)
-                .padding(35.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            CrossButtonView(
-                Modifier
-                    .fillMaxWidth(),
-                onDismissRequest = onDismissRequest
-            )
-            Text(
-                text = MainRes.string.booking_view_title,
-                style = MaterialTheme.typography.h3
-            )
-            Spacer(modifier = Modifier.height(15.dp))
-            DateTimeView(
-                modifier = Modifier.fillMaxWidth().height(100.dp),
-                selectDate = selectData,
-                increment = incrementData,
-                decrement = decrementData,
-                onOpenDateTimePickerModal = onOpenDateTimePickerModal
-            )
-            Spacer(modifier = Modifier.height(15.dp))
-            EventDurationView(
-                modifier = Modifier.fillMaxWidth().height(100.dp),
-                currentDuration = selectDuration,
-                increment = incrementDuration,
-                decrement = decrementDuration
-            )
-            Spacer(modifier = Modifier.height(15.dp))
-            EventOrganizerView(
-                modifier = Modifier.fillMaxWidth().height(100.dp),
-                selectOrganizers = organizers,
-                expanded = expended,
-                selectedItem = selectOrganizer,
-                onExpandedChange = onExpandedChange,
-                onSelectItem = onSelectOrganizer,
-                onInput = onInput,
-                onDoneInput = onDoneInput,
-                inputText = inputText
-            )
-            Spacer(modifier = Modifier.height(25.dp))
-            if (isNewEvent) {
-                SuccessButton(
-                    modifier = Modifier.fillMaxWidth().height(60.dp),
-                    onClick = onCreateEvent,
-                    enable = enableUpdateButton
-                ) {
-                    when {
-                        isUpdateLoad -> Loader()
-                        isUpdateError -> Text(
-                            text = MainRes.string.try_again,
-                            style = MaterialTheme.typography.h6
-                        )
-
-                        else -> {
-                            Text(
-                                text = MainRes.string.booking_time_button.format(
-                                    startTime = start,
-                                    finishTime = finish
-                                ),
+        Box {
+            Column(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(3))
+                    .background(MaterialTheme.colors.background)
+                    .padding(35.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = if (isNewEvent) MainRes.string.create_view_title.format(room) else MainRes.string.booking_view_title,
+                    style = MaterialTheme.typography.h3
+                )
+                Spacer(modifier = Modifier.height(15.dp))
+                DateTimeView(
+                    modifier = Modifier.fillMaxWidth().height(100.dp),
+                    selectDate = selectData,
+                    increment = incrementData,
+                    decrement = decrementData,
+                    onOpenDateTimePickerModal = onOpenDateTimePickerModal,
+                    showTitle = true
+                )
+                Spacer(modifier = Modifier.height(15.dp))
+                EventDurationView(
+                    modifier = Modifier.fillMaxWidth().height(100.dp),
+                    currentDuration = selectDuration,
+                    increment = incrementDuration,
+                    decrement = decrementDuration
+                )
+                Spacer(modifier = Modifier.height(15.dp))
+                EventOrganizerView(
+                    modifier = Modifier.fillMaxWidth().height(100.dp),
+                    selectOrganizers = organizers,
+                    expanded = expended,
+                    selectedItem = selectOrganizer,
+                    onExpandedChange = onExpandedChange,
+                    onSelectItem = onSelectOrganizer,
+                    onInput = onInput,
+                    onDoneInput = onDoneInput,
+                    inputText = inputText
+                )
+                Spacer(modifier = Modifier.height(25.dp))
+                if (isNewEvent) {
+                    SuccessButton(
+                        modifier = Modifier.fillMaxWidth().height(60.dp),
+                        onClick = onCreateEvent,
+                        enable = enableUpdateButton
+                    ) {
+                        when {
+                            isUpdateLoad -> Loader()
+                            isUpdateError -> Text(
+                                text = MainRes.string.try_again,
                                 style = MaterialTheme.typography.h6
                             )
+
+                            else -> {
+                                Text(
+                                    text = MainRes.string.booking_time_button.format(
+                                        startTime = start,
+                                        finishTime = finish
+                                    ),
+                                    style = MaterialTheme.typography.h6
+                                )
+                            }
                         }
                     }
-                }
-            } else {
-                SuccessButton(
-                    modifier = Modifier.fillMaxWidth().height(60.dp),
-                    onClick = onUpdateEvent,
-                    enable = enableUpdateButton
-                ) {
-                    when {
-                        isUpdateLoad -> Loader()
-                        isUpdateError -> Text(
-                            text = MainRes.string.try_again,
-                            style = MaterialTheme.typography.h6
-                        )
+                } else {
+                    SuccessButton(
+                        modifier = Modifier.fillMaxWidth().height(60.dp),
+                        onClick = onUpdateEvent,
+                        enable = enableUpdateButton
+                    ) {
+                        when {
+                            isUpdateLoad -> Loader()
+                            isUpdateError -> Text(
+                                text = MainRes.string.try_again,
+                                style = MaterialTheme.typography.h6
+                            )
 
-                        else -> {
-                            Text(
+                            else -> {
+                                Text(
+                                    text = MainRes.string.update_button,
+                                    style = MaterialTheme.typography.h6
+                                )
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(10.dp))
+                    AlertButton(
+                        modifier = Modifier.fillMaxWidth().height(60.dp),
+                        onClick = onDeleteEvent
+                    ) {
+                        when {
+                            isDeleteLoad -> Loader()
+                            isDeleteError -> Text(
                                 text = MainRes.string.update_button,
                                 style = MaterialTheme.typography.h6
                             )
-                        }
-                    }
-                }
-                Spacer(modifier = Modifier.height(10.dp))
-                AlertButton(
-                    modifier = Modifier.fillMaxWidth().height(60.dp),
-                    onClick = onDeleteEvent
-                ) {
-                    when {
-                        isDeleteLoad -> Loader()
-                        isDeleteError -> Text(
-                            text = MainRes.string.update_button,
-                            style = MaterialTheme.typography.h6
-                        )
 
-                        else -> {
-                            Text(
-                                text = MainRes.string.delete_button,
-                                style = MaterialTheme.typography.h6
-                            )
+                            else -> {
+                                Text(
+                                    text = MainRes.string.delete_button,
+                                    style = MaterialTheme.typography.h6
+                                )
+                            }
                         }
                     }
                 }
             }
+            CrossButtonView(
+                Modifier
+                    .fillMaxWidth().padding(35.dp),
+                onDismissRequest = onDismissRequest
+            )
         }
     }
 }

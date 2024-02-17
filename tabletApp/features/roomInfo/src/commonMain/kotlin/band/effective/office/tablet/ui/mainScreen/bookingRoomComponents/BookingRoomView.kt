@@ -65,7 +65,7 @@ fun BookingRoomView(
         isOrganizerError = state.isOrganizerError,
         onRequestBookingCurrentRoom = { bookingRoomComponent.sendIntent(BookingStore.Intent.OnBookingCurrentRoom) },
         onRequestBookingOtherRoom = { bookingRoomComponent.sendIntent(BookingStore.Intent.OnBookingOtherRoom) },
-        onOpenDateTimePickerModal = {  },
+        onOpenDateTimePickerModal = { },
         roomName = state.roomName,
         inputText = state.inputText,
         onInput = { bookingRoomComponent.sendIntent(BookingStore.Intent.OnInput(it)) },
@@ -113,7 +113,8 @@ fun BookingRoomView(
                 selectDate = if (isSelectCurrentTime) currentDate else selectDate,
                 increment = { incrementDay() },
                 decrement = { decrementDay() },
-                onOpenDateTimePickerModal = { onOpenDateTimePickerModal() }
+                onOpenDateTimePickerModal = { onOpenDateTimePickerModal() },
+
             )
             Spacer(modifier = Modifier.height(25.dp))
             EventDurationView(

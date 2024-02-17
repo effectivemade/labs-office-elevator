@@ -76,7 +76,8 @@ fun MainScreen(component: MainComponent) {
                     component.sendIntent(MainStore.Intent.OnUpdateSelectDate(updateInDays = -1))
                 },
                 selectDate = state.selectDate,
-                onUpdate = { component.sendIntent(MainStore.Intent.OnUpdate) }
+                onUpdate = { component.sendIntent(MainStore.Intent.OnUpdate) },
+                onResetDate = { component.sendIntent(MainStore.Intent.OnResetSelectDate) }
             )
         }
 

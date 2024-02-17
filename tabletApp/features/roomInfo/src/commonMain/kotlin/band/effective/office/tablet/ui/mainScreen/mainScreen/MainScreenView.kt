@@ -58,6 +58,7 @@ fun MainScreenView(
     onIncrementData: () -> Unit,
     onDecrementData: () -> Unit,
     selectDate: Calendar,
+    onResetDate: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colors.background)) {
         /*NOTE(Maksim Mishenko):
@@ -75,18 +76,24 @@ fun MainScreenView(
                     isError = false, //TODO()
                     onSettings = onSettings,
                     onOpenDateTimePickerModalRequest = onOpenDateTimePickerModalRequest,
-                    onIncrementData = onIncrementData,
-                    onDecrementData = onDecrementData,
+                    onIncrementDate = onIncrementData,
+                    onDecrementDate = onDecrementData,
                     selectDate = selectDate,
+                    onResetDate = onResetDate
                 )
                 SlotList(slotComponent)
                 Button(onUpdate) {}
             }
             Box(modifier = Modifier.fillMaxSize()) {
                 Row {
-                    Spacer(Modifier.fillMaxWidth(0.25f))
+                    Spacer(Modifier.fillMaxWidth(0.15f))
                     Column(
-                        modifier = Modifier.fillMaxHeight().padding(vertical = 40.dp),
+                        modifier = Modifier.fillMaxHeight().padding(
+                            start = 0.dp,
+                            top = 40.dp,
+                            end = 40.dp,
+                            bottom = 40.dp
+                        ),
                         verticalArrangement = Arrangement.SpaceBetween
                     ) {
                         FastBookingButtons(onBooking = onFastBooking)
