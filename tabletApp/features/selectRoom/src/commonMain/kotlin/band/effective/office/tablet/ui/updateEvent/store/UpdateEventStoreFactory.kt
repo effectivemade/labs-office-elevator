@@ -7,6 +7,7 @@ import band.effective.office.tablet.domain.useCase.BookingUseCase
 import band.effective.office.tablet.domain.useCase.CancelUseCase
 import band.effective.office.tablet.domain.useCase.CheckBookingUseCase
 import band.effective.office.tablet.domain.useCase.OrganizersInfoUseCase
+import band.effective.office.tablet.ui.updateEvent.UpdateEventComponent
 import band.effective.office.tablet.utils.unbox
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
@@ -23,6 +24,8 @@ import java.util.GregorianCalendar
 class UpdateEventStoreFactory(
     private val storeFactory: StoreFactory,
     private val onCloseRequest: () -> Unit,
+    private val navigate: (UpdateEventComponent.ModalConfig) -> Unit,
+    private val navigateBack: () -> Unit,
     private val room: String
 ) : KoinComponent {
 
@@ -115,9 +118,7 @@ class UpdateEventStoreFactory(
                 is UpdateEventStore.Intent.OnDoneInput -> onDone(state)
                 is UpdateEventStore.Intent.OnInput -> onInput(intent.input, state)
                 is UpdateEventStore.Intent.OnCloseSelectDateDialog -> dispatch(
-                    Message.ChangeShowSelectDateModal(
-                        false
-                    )
+                    Message.ChangeShowSelectDateModal(false)
                 )
 
                 is UpdateEventStore.Intent.OnOpenSelectDateDialog -> dispatch(
@@ -150,7 +151,7 @@ class UpdateEventStoreFactory(
                     id = ""
                 )
                 if ((checkBookingUseCase.busyEvents(
-                        event,
+                        event = event,
                         room = room
                     ) as? Either.Success)?.data?.isEmpty() == true
                 ) {
@@ -159,8 +160,15 @@ class UpdateEventStoreFactory(
                         eventInfo = event,
                         room = room
                     )) {
-                        is Either.Error -> dispatch(Message.FailUpdate)
-                        is Either.Success -> onCloseRequest()
+                        is Either.Error -> {
+                            dispatch(Message.FailUpdate)
+                            navigate(UpdateEventComponent.ModalConfig.FailureModal)
+                        }
+
+                        is Either.Success -> {
+                            dispatch(Message.FailUpdate)
+                            navigate(UpdateEventComponent.ModalConfig.SuccessModal)
+                        }
                     }
                 }
 
@@ -311,7 +319,8 @@ class UpdateEventStoreFactory(
                     date = msg.newDate,
                     duration = msg.newDuration,
                     selectOrganizer = msg.newOrganizer,
-                    enableUpdateButton = msg.enableButton
+                    enableUpdateButton = msg.enableButton,
+                    event = msg.event(event.id)
                 )
 
                 is Message.FailUpdate -> copy(isErrorUpdate = true, isLoadUpdate = false)
@@ -326,6 +335,14 @@ class UpdateEventStoreFactory(
                 is Message.LoadDelete -> copy(isErrorDelete = false, isLoadDelete = true)
                 is Message.ChangeShowSelectDateModal -> copy(showSelectDate = msg.newValue)
             }
+        private fun Message.UpdateInformation.event(id: String): EventInfo {
+            return EventInfo(
+                startTime = newDate.clone() as Calendar,
+                finishTime = (newDate.clone() as Calendar).apply { add(Calendar.MINUTE, newDuration) },
+                organizer = newOrganizer,
+                id = id
+            )
+        }
     }
 }
 

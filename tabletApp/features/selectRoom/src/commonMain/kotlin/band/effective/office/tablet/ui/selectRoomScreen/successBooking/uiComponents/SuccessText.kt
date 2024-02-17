@@ -19,8 +19,8 @@ fun SuccessText(modifier: Modifier, nameRoom: String) {
             text = MainRes.string.success_text.format(
                 nameRoom = nameRoom
             ),
-            style = MaterialTheme.typography.h4,
-            color = LocalCustomColorsPalette.current.onSuccess
+            style = MaterialTheme.typography.h2,
+            color = LocalCustomColorsPalette.current.primaryTextAndIcon
         )
     }
 }

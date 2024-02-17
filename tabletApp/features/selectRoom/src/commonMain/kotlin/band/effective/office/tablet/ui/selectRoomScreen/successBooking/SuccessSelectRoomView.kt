@@ -3,7 +3,6 @@ package band.effective.office.tablet.ui.selectRoomScreen.successBooking
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -13,7 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import band.effective.office.tablet.domain.model.Booking
+import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.features.selectRoom.MainRes
 import band.effective.office.tablet.ui.common.CrossButtonView
 import band.effective.office.tablet.ui.selectRoomScreen.successBooking.uiComponents.DateTimeView
@@ -25,13 +24,13 @@ import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 
 @Composable
 fun SuccessSelectRoomView(
-    booking: Booking,
+    roomName: String,
+    organizerName: String,
+    eventInfo: EventInfo,
     close: () -> Unit
 ) {
     Column(
         modifier = Modifier
-            .fillMaxWidth(0.47f)
-            .fillMaxHeight(0.67f)
             .clip(RoundedCornerShape(3))
             .background(LocalCustomColorsPalette.current.elevationBackground)
             .padding(top = 35.dp),
@@ -48,15 +47,15 @@ fun SuccessSelectRoomView(
         Spacer(modifier = Modifier.height(24.dp))
         SuccessText(
             modifier = Modifier.fillMaxWidth(),
-            nameRoom = booking.nameRoom
+            nameRoom = roomName
         )
         Spacer(modifier = Modifier.height(50.dp))
         DateTimeView(
             modifier = Modifier.fillMaxWidth(),
-            booking = booking
+            eventInfo = eventInfo
         )
         Spacer(modifier = Modifier.height(12.dp))
-        OrganizerEventView(booking = booking)
+        OrganizerEventView(organizer = organizerName)
         Spacer(modifier = Modifier.height(30.dp))
         BookingButtonView(
             modifier = Modifier
@@ -69,5 +68,6 @@ fun SuccessSelectRoomView(
             },
             isLoading = false
         )
+        Spacer(Modifier.height(30.dp))
     }
 }

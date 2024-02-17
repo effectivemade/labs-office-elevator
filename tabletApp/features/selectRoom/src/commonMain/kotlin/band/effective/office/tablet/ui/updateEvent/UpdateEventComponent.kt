@@ -8,6 +8,12 @@ import band.effective.office.tablet.ui.modal.ModalWindow
 import band.effective.office.tablet.ui.updateEvent.store.UpdateEventStore
 import band.effective.office.tablet.ui.updateEvent.store.UpdateEventStoreFactory
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.router.stack.push
+import com.arkivanov.essenty.parcelable.Parcelable
+import com.arkivanov.essenty.parcelable.Parcelize
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
@@ -21,10 +27,21 @@ class UpdateEventComponent(
     val room: String,
     onCloseRequest: () -> Unit
 ) : ComponentContext by componentContext, ModalWindow {
+
+    private val navigation = StackNavigation<ModalConfig>()
+
+    val childStack = childStack(
+        source = navigation,
+        initialConfiguration = ModalConfig.UpdateModal,
+        childFactory = { config, _ -> config },
+    )
+
     private val store = instanceKeeper.getStore {
         UpdateEventStoreFactory(
             storeFactory = storeFactory,
             onCloseRequest = onCloseRequest,
+            navigate = { navigation.push(it) },
+            navigateBack = { navigation.pop() },
             room = room
         ).create(defaultValue = event.toState())
     }
@@ -54,4 +71,15 @@ class UpdateEventComponent(
             inputText = organizer.fullName,
             event = this
         )
+
+    sealed interface ModalConfig : Parcelable {
+        @Parcelize
+        object UpdateModal : ModalConfig
+
+        @Parcelize
+        object SuccessModal : ModalConfig
+
+        @Parcelize
+        object FailureModal : ModalConfig
+    }
 }

@@ -8,7 +8,6 @@ import androidx.compose.ui.window.DialogProperties
 import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.ui.selectRoomScreen.failureBooking.FailureSelectRoomView
 import band.effective.office.tablet.ui.selectRoomScreen.store.SelectRoomStore
-import band.effective.office.tablet.ui.selectRoomScreen.successBooking.SuccessSelectRoomView
 
 @Composable
 fun SelectRoomScreen(component: SelectRoomComponent) {
@@ -21,9 +20,7 @@ fun SelectRoomScreen(component: SelectRoomComponent) {
         component.onIntent(SelectRoomStore.Intent.SetBooking(Booking.default))
         when {
             state.error != null -> {
-                FailureSelectRoomView(
-                    onDismissRequest = { component.onIntent(SelectRoomStore.Intent.CloseModal) },
-                    onClick = { component.onIntent(SelectRoomStore.Intent.BookingOtherRoom) })
+                FailureSelectRoomView { component.onIntent(SelectRoomStore.Intent.CloseModal) }
             }
 
             state.isData -> {
@@ -36,10 +33,10 @@ fun SelectRoomScreen(component: SelectRoomComponent) {
             }
 
             state.isSuccess -> {
-                SuccessSelectRoomView(
-                    booking = state.booking,
-                    close = { component.onIntent(SelectRoomStore.Intent.CloseModal) }
-                )
+//                SuccessSelectRoomView(
+//                    booking = state.booking,
+//                    close = { component.onIntent(SelectRoomStore.Intent.CloseModal) }
+//                )
             }
         }
     }
