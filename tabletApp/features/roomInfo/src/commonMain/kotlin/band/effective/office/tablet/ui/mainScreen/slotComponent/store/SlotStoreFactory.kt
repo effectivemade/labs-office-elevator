@@ -68,12 +68,6 @@ class SlotStoreFactory(
                     .let { withContext(Dispatchers.Main) { dispatch(Action.UpdateSlots(getSlots(it))) } }
             }
         }
-
-//        updateUseCase(
-//            room = roomName(),
-//            scope = this,
-//            roomUpdateHandler = { dispatch(Action.UpdateSlots(getSlots(it))) },
-//            organizerUpdateHandler = {})
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -128,7 +122,10 @@ class SlotStoreFactory(
                         message = Message.UpdateSlots(
                             slots = getSlots(
                                 either = roomInfoUseCase.getRoom(room = roomName()),
-                                start = intent.newDate
+                                start = maxOf(
+                                    OfficeTime.startWorkTime(intent.newDate),
+                                    GregorianCalendar()
+                                )
                             ),
                         )
                     )

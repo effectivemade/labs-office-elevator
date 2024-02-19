@@ -168,7 +168,10 @@ class MainFactory(
                     updateDate(newDate)
                 }
 
-                MainStore.Intent.OnResetSelectDate -> dispatch(Message.UpdateDate(GregorianCalendar()))
+                MainStore.Intent.OnResetSelectDate -> {
+                    updateDate(GregorianCalendar())
+                    dispatch(Message.UpdateDate(GregorianCalendar()))
+                }
             }
         }
 

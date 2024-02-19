@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.features.core.MainRes
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
@@ -95,7 +96,8 @@ fun DateTimeView(
                 ) {
                     Text(
                         text = SimpleDateFormat("dd MMMM").format(currentDate!!.time),
-                        style = MaterialTheme.typography.h6
+                        style = MaterialTheme.typography.h6,
+                        textAlign = TextAlign.Center
                     )
                 }
                 Spacer(modifier = Modifier.width(10.dp))

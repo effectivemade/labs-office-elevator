@@ -16,7 +16,7 @@ class SlotUseCase {
         events: List<EventInfo>,
         currentEvent: EventInfo?
     ): List<Slot> {
-        return events
+        return events.filter { it.startTime > start && it.startTime < finish }
             .fold(
                 getEmptyMinSlots(
                     start = start,
