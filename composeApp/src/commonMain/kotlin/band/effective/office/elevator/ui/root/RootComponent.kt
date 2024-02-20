@@ -1,14 +1,11 @@
 package band.effective.office.elevator.ui.root
 
-import band.effective.office.elevator.data.database.DBSource
 import band.effective.office.elevator.ui.authorization.AuthorizationComponent
 import band.effective.office.elevator.ui.content.ContentComponent
 import band.effective.office.elevator.ui.root.store.RootStore
 import band.effective.office.elevator.ui.root.store.RootStoreImplFactory
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.slot.SlotNavigation
 import com.arkivanov.decompose.router.slot.activate
-import com.arkivanov.decompose.router.slot.childSlot
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
@@ -22,7 +19,6 @@ import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.Flow
-import org.koin.core.component.inject
 
 class RootComponent internal constructor(
     componentContext: ComponentContext,
@@ -35,14 +31,15 @@ class RootComponent internal constructor(
         Napier.base(DebugAntilog())
     }
 
-    private val navigation = SlotNavigation<Config>()
+    private val navigation = StackNavigation<Config>()
 
-    val slot = childSlot(
+    private val stack = childStack(
         source = navigation,
-        handleBackButton = true,
         childFactory = ::child,
-        initialConfiguration = { Config.Undefined }
+        initialConfiguration = Config.Undefined
     )
+
+    val childStack: Value<ChildStack<*, Child>> = stack
 
     private val rootStore =
         instanceKeeper.getStore {
@@ -75,11 +72,11 @@ class RootComponent internal constructor(
     private fun child(config: Config, componentContext: ComponentContext): Child =
         when (config) {
             is Config.Authorization -> Child.AuthorizationChild(authorization(componentContext){
-                navigation.activate(Config.Content)
+                navigation.replaceAll(Config.Content)
             })
 
             is Config.Content -> Child.ContentChild(content(componentContext) {
-                navigation.activate(Config.Authorization)
+                navigation.replaceAll(Config.Authorization)
             })
 
             Config.Undefined -> Child.Undefined
@@ -88,8 +85,8 @@ class RootComponent internal constructor(
     fun onOutput(output: Output) {
         println("Output")
         when (output) {
-            Output.OpenContent -> navigation.activate(Config.Content, onComplete = { println("navigation compli") })
-            Output.OpenAuthorizationFlow -> navigation.activate(Config.Authorization)
+            Output.OpenContent -> navigation.replaceAll(Config.Content, onComplete = { println("navigation compli") })
+            Output.OpenAuthorizationFlow -> navigation.replaceAll(Config.Authorization)
         }
     }
 
