@@ -11,13 +11,14 @@ import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.network.repository.RoomRepository
 import band.effective.office.tablet.utils.Buffer
 import band.effective.office.tablet.utils.Converter.toOrganizer
+import band.effective.office.tablet.utils.asyncMap
 import band.effective.office.tablet.utils.map
 import band.effective.office.tablet.utils.unbox
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.util.Date
@@ -64,10 +65,10 @@ class BufferedRoomRepository(private val api: Api) : RoomRepository {
         return try {
             when (roomResponse) {
                 is Either.Error -> Either.Error(ErrorWithData(roomResponse.error, save))
-                is Either.Success -> roomResponse.map(
+                is Either.Success -> roomResponse.asyncMap(
                     errorMapper = { it },
                     successMapper = { list ->
-                        runBlocking { list.map { it.toRoom().addEvents() } }
+                        CoroutineScope(Dispatchers.IO).async { list.map { it.toRoom().addEvents() } }.await()
                     }
                 )
             }

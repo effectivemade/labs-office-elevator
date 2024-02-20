@@ -12,6 +12,7 @@ import band.effective.office.tablet.domain.useCase.SelectRoomUseCase
 import band.effective.office.tablet.domain.useCase.TimerUseCase
 import band.effective.office.tablet.domain.useCase.UpdateUseCase
 import band.effective.office.tablet.ui.mainScreen.mainScreen.MainComponent
+import band.effective.office.tablet.utils.BootstrapperTimer
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -26,6 +27,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.Calendar
 import java.util.GregorianCalendar
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 class MainFactory(
@@ -40,6 +42,9 @@ class MainFactory(
     private val updateUseCase: UpdateUseCase by inject()
     private val timerUseCase: TimerUseCase by inject()
     private val selectRoomUseCase: SelectRoomUseCase by inject()
+    private val currentTimeTimer = BootstrapperTimer<Action>(timerUseCase)
+    private val currentRoomTimer = BootstrapperTimer<Action>(timerUseCase)
+    private val errorTimer = BootstrapperTimer<Action>(timerUseCase)
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): MainStore =
@@ -59,7 +64,7 @@ class MainFactory(
                         updateUseCase.updateFlow().collect {
                             delay(1.seconds)
                             withContext(Dispatchers.Main) {
-                                // dispatch(Action.OnLoad(RoomInfoEither = roomInfoUseCase())) //TODO()
+                                dispatch(Action.OnLoad(RoomInfoEither = roomInfoUseCase()))
                             }
                         }
                     }
@@ -72,7 +77,22 @@ class MainFactory(
                         roomInfoUseCase.subscribe(this).collect {
                             dispatch(Action.OnUpdateRoomInfo)
                         }
-
+                    }
+                    currentRoomTimer.start(bootstrapperScope = this, delay = 1.minutes) {
+                        withContext(Dispatchers.Main) {
+                            dispatch(Action.OnLoad(RoomInfoEither = roomInfoUseCase()))
+                        }
+                    }
+                    errorTimer.init(this,15.minutes){
+                        roomInfoUseCase.updateCaсhe()
+                        withContext(Dispatchers.Main) {
+                            dispatch(Action.OnLoad(RoomInfoEither = roomInfoUseCase()))
+                        }
+                    }
+                    currentTimeTimer.start(this, 1.minutes){
+                        withContext(Dispatchers.Main) {
+                            dispatch(Action.RefreshDate)
+                        }
                     }
                 },
                 executorFactory = ::ExecutorImpl,
@@ -124,6 +144,7 @@ class MainFactory(
                 )
 
                 is MainStore.Intent.OnSelectRoom -> dispatch(Message.SelectRoom(intent.index.apply {
+                    currentRoomTimer.restart()
                     updateRoomInfo(getState().roomList[this])
                 }))
 
@@ -157,6 +178,8 @@ class MainFactory(
                 }
 
                 is MainStore.Intent.OnUpdateSelectDate -> {
+                    currentTimeTimer.restart()
+                    currentRoomTimer.restart()
                     val newDate = (getState().selectDate.clone() as Calendar).apply {
                         add(
                             Calendar.DAY_OF_YEAR,
