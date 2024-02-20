@@ -30,10 +30,12 @@ class ContentComponent(
 
     private val navigation = StackNavigation<Config>()
     private val stack = childStack(
-        source = navigation,
         initialStack = { listOf(Config.MainScreen) },
+        handleBackButton = true,
+        source = navigation,
         childFactory = ::child,
     )
+
     val bookingInteract by inject<BookingInteract>()
     val childStack: Value<ChildStack<*, Child>> = stack
 
@@ -95,6 +97,10 @@ class ContentComponent(
             Output.OpenBookingTab -> navigation.bringToFront(Config.Booking)
             Output.OpenEmployeeTab -> navigation.bringToFront(Config.Employee)
         }
+        println("StackStack items:")
+        stack.value.items.forEach {
+            println(it.configuration)
+        }
     }
 
 
@@ -107,6 +113,7 @@ class ContentComponent(
 
         class Employee(val component: FullEmployeeComponent) : Child()
     }
+
 
     private sealed interface Config : Parcelable {
         @Parcelize
