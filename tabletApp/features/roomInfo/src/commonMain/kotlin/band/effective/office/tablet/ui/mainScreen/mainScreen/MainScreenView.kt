@@ -27,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.features.roomInfo.MainRes
 import band.effective.office.tablet.ui.mainScreen.mainScreen.uiComponents.Disconnect
@@ -49,7 +48,6 @@ fun MainScreenView(
     indexSelectRoom: Int,
     timeToNextEvent: Int,
     onRoomButtonClick: (Int) -> Unit,
-    onEventUpdateRequest: (EventInfo) -> Unit,
     onSettings: () -> Unit,
     onCancelEventRequest: () -> Unit,
     onFastBooking: (Int) -> Unit,
@@ -67,45 +65,44 @@ fun MainScreenView(
         * where infoViewFrame, mainScreenFrame is frames from figma and all width I get from figma*/
         val infoViewWidth = 627f / 1133f
         Row(modifier = Modifier.fillMaxSize()) {
-            Column(modifier = Modifier.fillMaxHeight().fillMaxWidth(infoViewWidth)) {
-                RoomInfoComponent(
-                    modifier = Modifier,
-                    room = roomList[indexSelectRoom],
-                    onOpenFreeRoomModalRequest = { onCancelEventRequest() },
-                    timeToNextEvent = timeToNextEvent,
-                    isError = false, //TODO()
-                    onSettings = onSettings,
-                    onOpenDateTimePickerModalRequest = onOpenDateTimePickerModalRequest,
-                    onIncrementDate = onIncrementData,
-                    onDecrementDate = onDecrementData,
-                    selectDate = selectDate,
-                    onResetDate = onResetDate
-                )
-                SlotList(slotComponent)
-                Button(onUpdate) {}
-            }
-            Box(modifier = Modifier.fillMaxSize()) {
-                Row {
-                    Spacer(Modifier.fillMaxWidth(0.15f))
-                    Column(
-                        modifier = Modifier.fillMaxHeight().padding(
-                            start = 0.dp,
-                            top = 40.dp,
-                            end = 40.dp,
-                            bottom = 40.dp
-                        ),
-                        verticalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        FastBookingButtons(onBooking = onFastBooking)
-                        RoomList(
-                            list = roomList,
-                            indexSelectRoom = indexSelectRoom,
-                            onClick = onRoomButtonClick
-                        )
-                    }
+            Box(modifier = Modifier.fillMaxHeight().fillMaxWidth(infoViewWidth)) {
+                Column(modifier = Modifier.fillMaxHeight().fillMaxWidth()) {
+                    RoomInfoComponent(
+                        modifier = Modifier,
+                        room = roomList[indexSelectRoom],
+                        onOpenFreeRoomModalRequest = { onCancelEventRequest() },
+                        onOpenDateTimePickerModalRequest = onOpenDateTimePickerModalRequest,
+                        onIncrementDate = onIncrementData,
+                        onDecrementDate = onDecrementData,
+                        selectDate = selectDate,
+                        timeToNextEvent = timeToNextEvent,
+                        isError = isDisconnect,
+                        onResetDate = onResetDate
+                    )
+                    SlotList(slotComponent)
+                    Button(onUpdate) {}
                 }
-                Box() {
+                Box(modifier = Modifier.padding(horizontal = 30.dp)) {
                     Disconnect(visible = isDisconnect)
+                }
+            }
+            Row {
+                Spacer(Modifier.fillMaxWidth(0.15f))
+                Column(
+                    modifier = Modifier.fillMaxHeight().padding(
+                        start = 0.dp,
+                        top = 40.dp,
+                        end = 40.dp,
+                        bottom = 40.dp
+                    ),
+                    verticalArrangement = Arrangement.SpaceBetween
+                ) {
+                    FastBookingButtons(onBooking = onFastBooking)
+                    RoomList(
+                        list = roomList,
+                        indexSelectRoom = indexSelectRoom,
+                        onClick = onRoomButtonClick
+                    )
                 }
             }
         }

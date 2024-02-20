@@ -49,7 +49,7 @@ fun SlotList(component: SlotComponent) {
 
 @Composable
 private fun SlotList(slots: List<Slot>, openSlots: List<Slot>, onClick: Slot.() -> Unit) {
-    LazyColumn(Modifier.padding(30.dp)) {
+    LazyColumn(Modifier.padding(start = 30.dp, top = 0.dp, end = 30.dp, bottom = 30.dp)) {
         items(items = slots) {
             val isOpen =
                 when {

@@ -58,16 +58,10 @@ fun MainScreen(component: MainComponent) {
                 indexSelectRoom = state.indexSelectRoom,
                 timeToNextEvent = state.timeToNextEvent,
                 onRoomButtonClick = { component.sendIntent(MainStore.Intent.OnSelectRoom(it)) },
-                onEventUpdateRequest = {
-                    component.sendIntent(
-                        MainStore.Intent.OnChangeEventRequest(
-                            eventInfo = it
-                        )
-                    )
-                },
                 onSettings = { component.onSettings() },
                 onCancelEventRequest = { component.sendIntent(MainStore.Intent.OnOpenFreeRoomModal) },
                 onFastBooking = { component.sendIntent(MainStore.Intent.OnFastBooking(it)) },
+                onUpdate = { component.sendIntent(MainStore.Intent.OnUpdate) },
                 onOpenDateTimePickerModalRequest = {},
                 onIncrementData = {
                     component.sendIntent(MainStore.Intent.OnUpdateSelectDate(updateInDays = 1))
@@ -75,10 +69,8 @@ fun MainScreen(component: MainComponent) {
                 onDecrementData = {
                     component.sendIntent(MainStore.Intent.OnUpdateSelectDate(updateInDays = -1))
                 },
-                selectDate = state.selectDate,
-                onUpdate = { component.sendIntent(MainStore.Intent.OnUpdate) },
-                onResetDate = { component.sendIntent(MainStore.Intent.OnResetSelectDate) }
-            )
+                selectDate = state.selectDate
+            ) { component.sendIntent(MainStore.Intent.OnResetSelectDate) }
         }
 
         state.isSettings -> {

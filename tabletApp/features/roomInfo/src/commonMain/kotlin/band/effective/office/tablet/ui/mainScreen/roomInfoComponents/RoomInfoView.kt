@@ -30,7 +30,6 @@ fun RoomInfoComponent(
     selectDate: Calendar,
     timeToNextEvent: Int,
     isError: Boolean,
-    onSettings: () -> Unit,
     onResetDate: () -> Unit
 ) {
     val paddings = 30.dp
@@ -38,8 +37,8 @@ fun RoomInfoComponent(
         DateTimeView(
             modifier = Modifier.padding(
                 start = paddings,
-                top = paddings,
-                end = paddings,
+                top = 50.dp,
+                end = 20.dp,
                 bottom = 0.dp
             ).height(70.dp),
             selectDate = selectDate,

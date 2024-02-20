@@ -12,7 +12,6 @@ import band.effective.office.tablet.domain.useCase.SelectRoomUseCase
 import band.effective.office.tablet.domain.useCase.TimerUseCase
 import band.effective.office.tablet.domain.useCase.UpdateUseCase
 import band.effective.office.tablet.ui.mainScreen.mainScreen.MainComponent
-import band.effective.office.tablet.utils.unbox
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -53,14 +52,14 @@ class MainFactory(
                         if (checkSettingsUseCase().isEmpty()) {
                             dispatch(Action.OnSettings)
                         } else {
-                            dispatch(Action.OnLoad(isSuccess = roomInfoUseCase()))
+                            dispatch(Action.OnLoad(RoomInfoEither = roomInfoUseCase()))
                         }
                     }
                     launch(Dispatchers.IO) {
                         updateUseCase.updateFlow().collect {
                             delay(1.seconds)
                             withContext(Dispatchers.Main) {
-                                dispatch(Action.OnLoad(isSuccess = roomInfoUseCase()))
+                                // dispatch(Action.OnLoad(RoomInfoEither = roomInfoUseCase())) //TODO()
                             }
                         }
                     }
@@ -97,7 +96,7 @@ class MainFactory(
     }
 
     private sealed interface Action {
-        data class OnLoad(val isSuccess: Either<ErrorWithData<List<RoomInfo>>, List<RoomInfo>>) :
+        data class OnLoad(val RoomInfoEither: Either<ErrorWithData<List<RoomInfo>>, List<RoomInfo>>) :
             Action
 
         object OnSettings : Action
@@ -116,7 +115,7 @@ class MainFactory(
                     navigate(MainComponent.ModalWindowsConfig.FreeRoom(getState().run { roomList[indexSelectRoom].currentEvent!! }))
 
                 is MainStore.Intent.OnDisconnectChange -> dispatch(Message.UpdateDisconnect(intent.newValue))
-                is MainStore.Intent.RebootRequest -> reboot(getState())
+                is MainStore.Intent.RebootRequest -> reboot(getState(), true)
                 is MainStore.Intent.OnChangeEventRequest -> navigate(
                     MainComponent.ModalWindowsConfig.UpdateEvent(
                         event = intent.eventInfo,
@@ -176,47 +175,83 @@ class MainFactory(
         }
 
         fun reboot(state: MainStore.State, refresh: Boolean = false) = scope.launch {
-            if (!refresh) dispatch(Message.Reboot)
+            //if (!refresh) dispatch(Message.Reboot)
             if (refresh) {
+                if (!state.isData) {
+                    dispatch(Message.Reboot)
+                }
                 withContext(Dispatchers.IO) {
                     roomInfoUseCase.updateCaсhe()
                 }
-                publish(MainStore.Label.ShowToast("Update cache"))
             }
-            roomInfoUseCase().unbox({ it.saveData ?: listOf(RoomInfo.defaultValue) }) //TODO
-                .apply {
+            when (val either = roomInfoUseCase()) {
+                is Either.Error -> {
+                    val save = either.error.saveData
+                    if (!state.isData) {
+                        dispatch(
+                            Message.Load(
+                                isSuccess = false,
+                                roomList = save ?: listOf(RoomInfo.defaultValue),
+                                indexSelectRoom = 0
+                            )
+                        )
+                    } else {
+                        dispatch(Message.UpdateDisconnect(true))
+                    }
+                }
+
+                is Either.Success -> {
+                    dispatch(Message.UpdateDisconnect(false))
                     dispatch(
                         Message.Load(
-                            isSuccess = isNotEmpty(),
-                            roomList = this,
+                            isSuccess = true,
+                            roomList = either.data,
                             indexSelectRoom = state.indexRoom()
                         )
                     )
-                    updateRoomInfo(this[state.indexRoom()])
+                    updateRoomInfo(either.data[state.indexRoom()])
                 }
-            publish(MainStore.Label.ShowToast("Update"))
+            }
         }
 
         override fun executeAction(action: Action, getState: () -> MainStore.State) {
             when (action) {
-                is Action.OnLoad -> action.isSuccess.unbox({
-                    it.saveData ?: listOf(RoomInfo.defaultValue)
-                })
-                    .apply {
-                        dispatch(
-                            Message.Load(
-                                isSuccess = isNotEmpty(),
-                                roomList = this,
-                                indexSelectRoom = getState().indexRoom()
+                is Action.OnLoad -> {
+                    when (val either = action.RoomInfoEither) {
+                        is Either.Error -> {
+                            val save = either.error.saveData
+                            dispatch(
+                                Message.Load(
+                                    isSuccess = false,
+                                    roomList = save ?: listOf(RoomInfo.defaultValue),
+                                    indexSelectRoom = 0
+                                )
                             )
-                        )
-                        reboot(getState())
+                        }
+
+                        is Either.Success -> {
+                            either.data.apply {
+                                dispatch(
+                                    Message.Load(
+                                        isSuccess = true,
+                                        roomList = this,
+                                        indexSelectRoom = getState().indexRoom()
+                                    )
+                                )
+                                reboot(getState())
+                            }
+                        }
                     }
+                }
 
                 is Action.OnSettings -> dispatch(Message.OnSettings)
                 Action.OnUpdateTimer -> dispatch(Message.UpdateTimer)
                 Action.OnUpdateRoomInfo -> reboot(getState())
-                Action.RefreshDate -> dispatch(Message.UpdateDate(GregorianCalendar())).apply { updateDate(GregorianCalendar()) }
+                Action.RefreshDate -> dispatch(Message.UpdateDate(GregorianCalendar())).apply {
+                    updateDate(
+                        GregorianCalendar()
+                    )
+                }
             }
         }
 

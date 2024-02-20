@@ -27,7 +27,7 @@ fun FreeRoomInfoComponent(
         isError = isError
     ) {
         Text(
-            text = MainRes.string.free_now,
+            text = if (isError) MainRes.string.data_not_upd else MainRes.string.free_now,
             style = MaterialTheme.typography.h5,
             color = roomInfoColor
         )
