@@ -97,10 +97,6 @@ class ContentComponent(
             Output.OpenBookingTab -> navigation.bringToFront(Config.Booking)
             Output.OpenEmployeeTab -> navigation.bringToFront(Config.Employee)
         }
-        println("StackStack items:")
-        stack.value.items.forEach {
-            println(it.configuration)
-        }
     }
 
 
