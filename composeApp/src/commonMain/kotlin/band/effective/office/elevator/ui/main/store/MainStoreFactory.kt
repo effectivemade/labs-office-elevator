@@ -26,9 +26,12 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.DatePeriod
+import kotlinx.datetime.DateTimePeriod
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
+import kotlinx.datetime.plus
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -98,6 +101,7 @@ internal class MainStoreFactory(
                 MainStore.Intent.OnClickCallElevator -> {
                     //doElevatorCall() TODO(Maksim Mishenko) uncomment call elevator
                     // NOTE(Maksim Mishenko) if call success do this:
+
                     scope.launch {
                         dispatch(Msg.UpdateCallElevator(false))
                         delay(10000L)
@@ -188,10 +192,19 @@ internal class MainStoreFactory(
 
         override fun executeAction(action: Action, getState: () -> MainStore.State) {
             when (action) {
-                is Action.LoadBookings -> getBookingsForUserByDate(
-                    dates = listOf(action.date),
-                    bookingsFilter = filtration
-                )
+                is Action.LoadBookings -> {
+
+                    val startCurrentWeek = action.date
+                    val fridayWeekNumber = 5
+                    val countDaysToFriday = fridayWeekNumber - startCurrentWeek.dayOfWeek.ordinal - 1
+                    val datePeriodForFriday = DatePeriod(days = countDaysToFriday)
+                    val endCurrentWeek = startCurrentWeek.plus(datePeriodForFriday)
+
+                    changeBookingsByDate(
+                        dates = listOf(startCurrentWeek, endCurrentWeek),
+                        bookingsFilter = filtration
+                    )
+                }
             }
         }
 
@@ -302,7 +315,6 @@ internal class MainStoreFactory(
 
                                 is Either.Success -> {
                                     dispatch(Msg.UpdateSeatsReservation(reservedSeats = bookings.data))
-                                    dispatch(Msg.UpdateRefreshing(false))
                                 }
                             }
                         }
