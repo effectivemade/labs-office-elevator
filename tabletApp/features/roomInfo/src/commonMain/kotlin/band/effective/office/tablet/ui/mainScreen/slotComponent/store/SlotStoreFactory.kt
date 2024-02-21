@@ -11,6 +11,7 @@ import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.domain.model.Slot
 import band.effective.office.tablet.domain.useCase.RoomInfoUseCase
 import band.effective.office.tablet.domain.useCase.SlotUseCase
+import band.effective.office.tablet.ui.mainScreen.slotComponent.model.SlotUi
 import band.effective.office.tablet.utils.map
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
@@ -50,7 +51,7 @@ class SlotStoreFactory(
     @OptIn(ExperimentalMviKotlinApi::class)
     private fun bootstrapper() = coroutineBootstrapper<Action> {
         launch {
-            dispatch(Action.UpdateSlots(getSlots(roomInfoUseCase.getRoom(roomName()))))
+            dispatch(Action.UpdateSlots(getUiSlots(roomInfoUseCase.getRoom(roomName()))))
         }
         launch(Dispatchers.IO) {
             roomInfoUseCase.subscribe(this).collect {
@@ -65,8 +66,25 @@ class SlotStoreFactory(
                         it.firstOrNull() { it.name == roomName() } ?: RoomInfo.defaultValue
                     }
                 )
-                    .let { withContext(Dispatchers.Main) { dispatch(Action.UpdateSlots(getSlots(it))) } }
+                    .let { withContext(Dispatchers.Main) { dispatch(Action.UpdateSlots(getUiSlots(it))) } }
             }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun getUiSlots(
+        either: Either<ErrorWithData<RoomInfo>, RoomInfo>,
+        start: Calendar = GregorianCalendar(),
+        finish: Calendar = OfficeTime.finishWorkTime(start.clone() as Calendar)
+    ) = getSlots(either, start, finish).map {
+        when (it) {
+            is Slot.EmptySlot -> SlotUi.SimpleSlot(it)
+            is Slot.EventSlot -> SlotUi.SimpleSlot(it)
+            is Slot.MultiEventSlot -> SlotUi.MultiSlot(
+                slot = it,
+                subSlots = it.events.map { slot -> SlotUi.SimpleSlot(slot) },
+                isOpen = false
+            )
         }
     }
 
@@ -120,7 +138,7 @@ class SlotStoreFactory(
                 is SlotStore.Intent.UpdateDate -> scope.launch {
                     dispatch(
                         message = Message.UpdateSlots(
-                            slots = getSlots(
+                            slots = getUiSlots(
                                 either = roomInfoUseCase.getRoom(room = roomName()),
                                 start = maxOf(
                                     OfficeTime.startWorkTime(intent.newDate),
@@ -143,7 +161,7 @@ class SlotStoreFactory(
                 }
                 dispatch(
                     Message.UpdateSlots(
-                        getSlots(
+                        getUiSlots(
                             roomInfoUseCase.getRoom(roomName)
                         )
                     )
@@ -151,10 +169,23 @@ class SlotStoreFactory(
             }
         }
 
+        private fun SlotUi.execute(state: SlotStore.State) = when (this) {
+            is SlotUi.DeleteSlot -> TODO()
+            is SlotUi.MultiSlot -> openMultislot(this, state)
+            is SlotUi.SimpleSlot -> slot.execute(state)
+        }
+
+        private fun openMultislot(multislot: SlotUi.MultiSlot, state: SlotStore.State) {
+            val slots = state.slots.toMutableList()
+            val index = slots.indexOf(multislot)
+            slots[index] = multislot.copy(isOpen = !multislot.isOpen)
+            dispatch(Message.UpdateSlots(slots))
+        }
+
         private fun Slot.execute(state: SlotStore.State) = when (this) {
             is Slot.EmptySlot -> executeFreeSlot(this)
             is Slot.EventSlot -> executeEventSlot(this)
-            is Slot.MultiEventSlot -> executeEventSlot(this, state)
+            is Slot.MultiEventSlot -> {}
         }
 
         private fun executeFreeSlot(slot: Slot.EmptySlot) {
@@ -163,20 +194,6 @@ class SlotStoreFactory(
 
         private fun executeEventSlot(slot: Slot.EventSlot) {
             openBookingDialog(slot.eventInfo, roomName())
-        }
-
-        private fun executeEventSlot(slot: Slot.MultiEventSlot, state: SlotStore.State) {
-            val slots = state.slots
-            val currentSlots = slot.events
-            val newSlots: List<Slot> = if (slots.contains(currentSlots.first())) {
-                dispatch(Message.ChangeOpenSlots(state.openMultiSlots - slot))
-                slots - currentSlots
-            } else {
-                dispatch(Message.ChangeOpenSlots(state.openMultiSlots + slot))
-                val index = slots.indexOf(slot) + 1
-                slots.toMutableList().apply { addAll(index, currentSlots) }
-            }
-            dispatch(Message.UpdateSlots(newSlots))
         }
 
         private fun Slot.EmptySlot.Event(): EventInfo =
@@ -199,17 +216,15 @@ class SlotStoreFactory(
         override fun SlotStore.State.reduce(msg: Message): SlotStore.State =
             when (msg) {
                 is Message.UpdateSlots -> copy(slots = msg.slots)
-                is Message.ChangeOpenSlots -> copy(openMultiSlots = msg.openSlots)
             }
     }
 
     private sealed interface Action {
-        data class UpdateSlots(val slots: List<Slot>) : Action
+        data class UpdateSlots(val slots: List<SlotUi>) : Action
     }
 
     private sealed interface Message {
-        data class UpdateSlots(val slots: List<Slot>) : Message
-        data class ChangeOpenSlots(val openSlots: List<Slot>) : Message
+        data class UpdateSlots(val slots: List<SlotUi>) : Message
     }
 }
 

@@ -2,6 +2,7 @@ package band.effective.office.tablet.ui.mainScreen.slotComponent
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -31,6 +32,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.domain.model.Slot
 import band.effective.office.tablet.features.roomInfo.MainRes
+import band.effective.office.tablet.ui.mainScreen.slotComponent.model.SlotUi
 import band.effective.office.tablet.ui.mainScreen.slotComponent.store.SlotStore
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.h7
@@ -42,37 +44,77 @@ import java.util.Calendar
 fun SlotList(component: SlotComponent) {
     val state by component.state.collectAsState()
     SlotList(
-        slots = state.slots,
-        openSlots = state.openMultiSlots
+        slots = state.slots
     ) { component.sendIntent(SlotStore.Intent.ClickOnSlot(this)) }
 }
 
 @Composable
-private fun SlotList(slots: List<Slot>, openSlots: List<Slot>, onClick: Slot.() -> Unit) {
+private fun SlotList(slots: List<SlotUi>, onClick: SlotUi.() -> Unit) {
+    val borderShape = CircleShape
+
     LazyColumn(Modifier.padding(start = 30.dp, top = 0.dp, end = 30.dp, bottom = 30.dp)) {
         items(items = slots) {
-            val isOpen =
-                when {
-                    it !is Slot.MultiEventSlot -> null
-                    openSlots.contains(it) -> true
-                    else -> false
-                }
-            SlotView(slot = it, isOpen = isOpen, onClick = onClick)
+            val itemModifier = Modifier
+                .fillMaxWidth()
+                .clip(borderShape)
+                .background(MaterialTheme.colors.surface)
+                .clickable { it.onClick() }
+            when (it) {
+                is SlotUi.DeleteSlot -> TODO()
+                is SlotUi.MultiSlot -> MultiSlotView(
+                    mainItemModifier = itemModifier.border(
+                        width = 5.dp,
+                        color = it.slot.borderColor(),
+                        shape = borderShape
+                    )
+                        .padding(vertical = 15.dp, horizontal = 30.dp),
+                    itemModifier = itemModifier.border(
+                        width = 5.dp,
+                        color = Color.Yellow,
+                        shape = borderShape
+                    ).padding(vertical = 15.dp, horizontal = 30.dp), //TODO() collor
+                    slotUi = it,
+                    onItemClick = { it.onClick() }
+                )
+
+                is SlotUi.SimpleSlot -> SlotView(
+                    modifier = itemModifier.border(
+                        width = 5.dp,
+                        color = it.slot.borderColor(),
+                        shape = borderShape
+                    )
+                        .padding(vertical = 15.dp, horizontal = 30.dp),
+                    slotUi = it
+                )
+            }
             Spacer(Modifier.height(20.dp))
         }
     }
 }
 
 @Composable
-private fun SlotView(slot: Slot, isOpen: Boolean?, onClick: Slot.() -> Unit) {
-    val borderShape = CircleShape
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .clip(borderShape)
-        .border(width = 5.dp, color = slot.borderColor(), shape = borderShape)
-        .background(MaterialTheme.colors.surface)
-        .padding(vertical = 15.dp, horizontal = 30.dp)
-        .clickable { slot.onClick() },
+private fun MultiSlotView(
+    mainItemModifier: Modifier = Modifier,
+    itemModifier: Modifier = Modifier,
+    slotUi: SlotUi.MultiSlot,
+    onItemClick: (SlotUi) -> Unit
+) {
+    Column(Modifier.animateContentSize()) {
+        SlotView(mainItemModifier, slotUi, slotUi.isOpen)
+        if (slotUi.isOpen) {
+            slotUi.subSlots.forEach {
+                Spacer(Modifier.height(20.dp))
+                SlotView(itemModifier.clickable { onItemClick(it) }, it)
+            }
+        }
+    }
+}
+
+@Composable
+private fun SlotView(modifier: Modifier = Modifier, slotUi: SlotUi, isOpen: Boolean? = null) {
+    val slot = slotUi.slot
+    Row(
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
