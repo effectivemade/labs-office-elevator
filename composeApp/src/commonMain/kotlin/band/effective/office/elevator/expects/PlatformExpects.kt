@@ -16,3 +16,5 @@ expect fun pickSBP(phoneNumber: String)
 internal expect fun ComponentRegistryBuilder.setupDefaultComponents()
 
 internal expect fun getImageCacheDirectoryPath(): Path
+
+expect fun setClipboardText(text: String, toastMessage: String)

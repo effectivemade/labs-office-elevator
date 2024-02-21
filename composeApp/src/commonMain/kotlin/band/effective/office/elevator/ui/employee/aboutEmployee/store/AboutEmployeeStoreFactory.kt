@@ -6,6 +6,7 @@ import band.effective.office.elevator.domain.useCase.AboutEmployeeInteractor
 import band.effective.office.elevator.expects.makeCall
 import band.effective.office.elevator.expects.pickSBP
 import band.effective.office.elevator.expects.pickTelegram
+import band.effective.office.elevator.expects.setClipboardText
 import band.effective.office.elevator.ui.employee.aboutEmployee.models.BookingsFilter
 import band.effective.office.elevator.ui.employee.aboutEmployee.models.toUIAbout
 import band.effective.office.elevator.ui.employee.aboutEmployee.store.AboutEmployeeStore.*
@@ -182,6 +183,13 @@ class AboutEmployeeStoreFactory(
                         dispatch(Msg.UpdateLoadingBookingState(false))
                     }
                 }
+                //TODO: Change toast message on string resource
+                Intent.OnClickCopyPhone ->
+                    setClipboardText(text = getState().user.phoneNumber, toastMessage = "Phone")
+                Intent.OnClickCopyTelegram ->
+                    setClipboardText(text = "https://t.me/${getState().user.telegram}", toastMessage = "Telegram")
+                Intent.OnClickCopyEmail ->
+                    setClipboardText(text = getState().user.email, toastMessage = "Email")
             }
         }
 
