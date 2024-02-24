@@ -201,7 +201,7 @@ fun RoomButton(modifier: Modifier, room: RoomInfo) {
             )
         }
         RoomProperty(
-            spaceBetweenProperty = 10.dp,
+            spaceBetweenProperty = 20.dp,
             capacity = room.capacity,
             isHaveTv = room.isHaveTv,
             electricSocketCount = room.socketCount

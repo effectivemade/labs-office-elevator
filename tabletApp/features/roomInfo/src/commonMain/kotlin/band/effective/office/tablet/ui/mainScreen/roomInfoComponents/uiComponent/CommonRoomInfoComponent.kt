@@ -78,26 +78,28 @@ fun RoomProperty(
     isHaveTv: Boolean,
     electricSocketCount: Int
 ) {
-    RoomPropertyComponent(
-        image = MainRes.image.quantity,
-        text = "$capacity",
-        color = roomInfoColor
-    )
-    if (isHaveTv) {
-        Spacer(modifier = Modifier.width(spaceBetweenProperty))
+    Row {
         RoomPropertyComponent(
-            image = MainRes.image.tv,
-            text = MainRes.string.tv_property,
+            image = MainRes.image.quantity,
+            text = "$capacity",
             color = roomInfoColor
         )
-    }
-    if (electricSocketCount > 0) {
-        Spacer(modifier = Modifier.width(spaceBetweenProperty))
-        RoomPropertyComponent(
-            image = MainRes.image.ethernet,
-            text = "$electricSocketCount",
-            color = roomInfoColor
-        )
+        if (isHaveTv) {
+            Spacer(modifier = Modifier.width(spaceBetweenProperty))
+            RoomPropertyComponent(
+                image = MainRes.image.tv,
+                text = MainRes.string.tv_property,
+                color = roomInfoColor
+            )
+        }
+        if (electricSocketCount > 0) {
+            Spacer(modifier = Modifier.width(spaceBetweenProperty))
+            RoomPropertyComponent(
+                image = MainRes.image.ethernet,
+                text = "$electricSocketCount",
+                color = roomInfoColor
+            )
+        }
     }
 }
 

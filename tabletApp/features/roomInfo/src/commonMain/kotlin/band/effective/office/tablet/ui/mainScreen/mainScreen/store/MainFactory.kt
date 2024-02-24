@@ -180,7 +180,11 @@ class MainFactory(
                             )
                         )
                     }
-                    publish(MainStore.Label.ShowToast(selectRoom?.name ?: "Нет свободной комнаты")) //todo
+                    publish(
+                        MainStore.Label.ShowToast(
+                            selectRoom?.name ?: "Нет свободной комнаты"
+                        )
+                    ) //todo
                 }
 
                 is MainStore.Intent.OnUpdateSelectDate -> {

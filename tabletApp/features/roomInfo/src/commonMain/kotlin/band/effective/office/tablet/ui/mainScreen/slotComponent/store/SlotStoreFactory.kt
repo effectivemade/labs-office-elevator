@@ -11,7 +11,9 @@ import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.domain.model.Slot
 import band.effective.office.tablet.domain.useCase.RoomInfoUseCase
 import band.effective.office.tablet.domain.useCase.SlotUseCase
+import band.effective.office.tablet.domain.useCase.TimerUseCase
 import band.effective.office.tablet.ui.mainScreen.slotComponent.model.SlotUi
+import band.effective.office.tablet.utils.BootstrapperTimer
 import band.effective.office.tablet.utils.map
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
@@ -26,6 +28,8 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.Calendar
 import java.util.GregorianCalendar
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.minutes
 
 class SlotStoreFactory(
     private val storeFactory: StoreFactory,
@@ -33,8 +37,11 @@ class SlotStoreFactory(
     private val openBookingDialog: (event: EventInfo, room: String) -> Unit
 ) :
     KoinComponent {
-    val slotUseCase: SlotUseCase by inject()
-    val roomInfoUseCase: RoomInfoUseCase by inject()
+    private val slotUseCase: SlotUseCase by inject()
+    private val roomInfoUseCase: RoomInfoUseCase by inject()
+    private val timerUseCase: TimerUseCase by inject()
+    private val updateTimer = BootstrapperTimer<Action>(timerUseCase)
+
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun create(): SlotStore = object : SlotStore,
@@ -50,6 +57,11 @@ class SlotStoreFactory(
     @RequiresApi(Build.VERSION_CODES.N)
     @OptIn(ExperimentalMviKotlinApi::class)
     private fun bootstrapper() = coroutineBootstrapper<Action> {
+        updateTimer.init(this, 15.minutes) {
+            withContext(Dispatchers.Main) {
+                dispatch(Action.UpdateSlots(getUiSlots(roomInfoUseCase.getRoom(roomName()))))
+            }
+        }
         launch {
             dispatch(Action.UpdateSlots(getUiSlots(roomInfoUseCase.getRoom(roomName()))))
         }
@@ -126,7 +138,10 @@ class SlotStoreFactory(
         CoroutineExecutor<SlotStore.Intent, Action, SlotStore.State, Message, Nothing>() {
         override fun executeAction(action: Action, getState: () -> SlotStore.State) {
             when (action) {
-                is Action.UpdateSlots -> dispatch(Message.UpdateSlots(action.slots))
+                is Action.UpdateSlots -> {
+                    updateTimer.restart((action.slots.first().slot.start.timeInMillis - GregorianCalendar().timeInMillis + 60000).milliseconds)
+                    dispatch(Message.UpdateSlots(action.slots))
+                }
             }
         }
 
