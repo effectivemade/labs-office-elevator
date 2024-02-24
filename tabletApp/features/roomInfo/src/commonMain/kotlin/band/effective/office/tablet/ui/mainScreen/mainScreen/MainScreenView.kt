@@ -28,14 +28,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.domain.model.RoomInfo
-import band.effective.office.tablet.features.roomInfo.MainRes
 import band.effective.office.tablet.ui.mainScreen.mainScreen.uiComponents.Disconnect
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.RoomInfoComponent
-import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.uiComponent.RoomPropertyComponent
+import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.uiComponent.RoomProperty
 import band.effective.office.tablet.ui.mainScreen.slotComponent.SlotComponent
 import band.effective.office.tablet.ui.mainScreen.slotComponent.SlotList
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
-import band.effective.office.tablet.ui.theme.roomInfoColor
 import java.util.Calendar
 
 @SuppressLint("NewApi", "StateFlowValueCalledInComposition")
@@ -202,10 +200,11 @@ fun RoomButton(modifier: Modifier, room: RoomInfo) {
                 style = MaterialTheme.typography.h5
             )
         }
-        RoomPropertyComponent(
-            image = MainRes.image.quantity,
-            text = "${room.capacity}",
-            color = roomInfoColor
+        RoomProperty(
+            spaceBetweenProperty = 10.dp,
+            capacity = room.capacity,
+            isHaveTv = room.isHaveTv,
+            electricSocketCount = room.socketCount
         )
     }
 }

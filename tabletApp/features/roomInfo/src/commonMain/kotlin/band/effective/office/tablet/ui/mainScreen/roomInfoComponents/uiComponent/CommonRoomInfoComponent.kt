@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.features.roomInfo.MainRes
 import band.effective.office.tablet.ui.theme.h8
@@ -58,31 +59,45 @@ fun CommonRoomInfoComponent(
                     color = roomInfoColor
                 )
                 Spacer(modifier = Modifier.width(spaceBetweenProperty))
-                RoomPropertyComponent(
-                    image = MainRes.image.quantity,
-                    text = "$capacity",
-                    color = roomInfoColor
+                RoomProperty(
+                    spaceBetweenProperty = spaceBetweenProperty,
+                    capacity = capacity,
+                    isHaveTv = isHaveTv,
+                    electricSocketCount = electricSocketCount
                 )
-                if (isHaveTv) {
-                    Spacer(modifier = Modifier.width(spaceBetweenProperty))
-                    RoomPropertyComponent(
-                        image = MainRes.image.tv,
-                        text = MainRes.string.tv_property,
-                        color = roomInfoColor
-                    )
-                }
-                if (electricSocketCount > 0) {
-                    Spacer(modifier = Modifier.width(spaceBetweenProperty))
-                    RoomPropertyComponent(
-                        image = MainRes.image.ethernet,
-                        text = "$electricSocketCount",
-                        color = roomInfoColor
-                    )
-                }
-
             }
             content()
         }
+    }
+}
+
+@Composable
+fun RoomProperty(
+    spaceBetweenProperty: Dp,
+    capacity: Int,
+    isHaveTv: Boolean,
+    electricSocketCount: Int
+) {
+    RoomPropertyComponent(
+        image = MainRes.image.quantity,
+        text = "$capacity",
+        color = roomInfoColor
+    )
+    if (isHaveTv) {
+        Spacer(modifier = Modifier.width(spaceBetweenProperty))
+        RoomPropertyComponent(
+            image = MainRes.image.tv,
+            text = MainRes.string.tv_property,
+            color = roomInfoColor
+        )
+    }
+    if (electricSocketCount > 0) {
+        Spacer(modifier = Modifier.width(spaceBetweenProperty))
+        RoomPropertyComponent(
+            image = MainRes.image.ethernet,
+            text = "$electricSocketCount",
+            color = roomInfoColor
+        )
     }
 }
 
