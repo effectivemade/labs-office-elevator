@@ -16,10 +16,11 @@ class DateTimePickerComponent(
     private val storeFactory: StoreFactory,
     private val onSelectDate: (Calendar) -> Unit,
     private val onCloseRequest: () -> Unit,
+    val initDate: () -> Calendar
 ) : ComponentContext by componentContext, ModalWindow {
 
     private val dateTimePickerStore = instanceKeeper.getStore {
-        DateTimePickerStoreFactory(storeFactory, onCloseRequest, onSelectDate).create()
+        DateTimePickerStoreFactory(storeFactory, onCloseRequest, onSelectDate,initDate()).create()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)

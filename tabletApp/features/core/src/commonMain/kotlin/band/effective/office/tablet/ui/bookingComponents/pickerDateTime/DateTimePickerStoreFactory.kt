@@ -15,14 +15,15 @@ import java.util.Calendar
 class DateTimePickerStoreFactory(
     private val storeFactory: StoreFactory,
     private val closeModal: () -> Unit,
-    private val accept: (Calendar) -> Unit
+    private val accept: (Calendar) -> Unit,
+    private val initDate: Calendar
 ) : KoinComponent {
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): DateTimePickerStore =
         object : DateTimePickerStore,
             Store<DateTimePickerStore.Intent, DateTimePickerStore.State, Nothing> by storeFactory.create(
                 name = "DateTimePickerStore",
-                initialState = DateTimePickerStore.State.default,
+                initialState = DateTimePickerStore.State.default.copy(currentDate = initDate),
                 bootstrapper = coroutineBootstrapper { },
                 executorFactory = ::ExecutorImpl,
                 reducer = ReducerImpl

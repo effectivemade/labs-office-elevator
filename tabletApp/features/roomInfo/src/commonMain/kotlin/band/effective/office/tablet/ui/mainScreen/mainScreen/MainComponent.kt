@@ -7,7 +7,6 @@ import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.domain.model.Slot
 import band.effective.office.tablet.domain.useCase.CancelUseCase
-import band.effective.office.tablet.ui.bookingComponents.pickerDateTime.DateTimePickerComponent
 import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomComponent
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainFactory
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
@@ -105,14 +104,6 @@ class MainComponent(
                 },
                 onCloseRequest = { closeModalWindow() }
             )
-
-            is ModalWindowsConfig.SelectDate -> {
-                DateTimePickerComponent(
-                    componentContext = componentContext,
-                    storeFactory = storeFactory,
-                    onSelectDate = {}
-                ) { closeModalWindow() }
-            }
         }
     }
 
@@ -158,8 +149,5 @@ class MainComponent(
 
         @Parcelize
         data class FreeRoom(val event: EventInfo) : ModalWindowsConfig
-
-        @Parcelize
-        object SelectDate : ModalWindowsConfig
     }
 }

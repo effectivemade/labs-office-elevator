@@ -49,14 +49,17 @@ class UpdateEventComponent(
         ).create(defaultValue = event.toState())
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    val dateTimePickerComponent: DateTimePickerComponent =
+    @delegate:RequiresApi(Build.VERSION_CODES.O)
+    val dateTimePickerComponent: DateTimePickerComponent by lazy {
         DateTimePickerComponent(
             componentContext = componentContext,
             storeFactory = storeFactory,
             onSelectDate = { store.accept(UpdateEventStore.Intent.OnSetDate(it)) },
-            onCloseRequest = { store.accept(UpdateEventStore.Intent.OnCloseSelectDateDialog) }
+            onCloseRequest = { store.accept(UpdateEventStore.Intent.OnCloseSelectDateDialog) },
+            initDate = { state.value.date }
         )
+    }
+
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val state = store.stateFlow
