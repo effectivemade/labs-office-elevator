@@ -45,6 +45,7 @@ class MainFactory(
     private val currentTimeTimer = BootstrapperTimer<Action>(timerUseCase)
     private val currentRoomTimer = BootstrapperTimer<Action>(timerUseCase)
     private val errorTimer = BootstrapperTimer<Action>(timerUseCase)
+    private var skip = false // todo
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): MainStore =
@@ -63,6 +64,11 @@ class MainFactory(
                     launch(Dispatchers.IO) {
                         updateUseCase.updateFlow().collect {
                             delay(1.seconds)
+                            if (skip) {
+                                delay(1.minutes)
+                                skip = false
+                                return@collect
+                            }
                             withContext(Dispatchers.Main) {
                                 dispatch(Action.OnLoad(RoomInfoEither = roomInfoUseCase()))
                             }
@@ -83,13 +89,13 @@ class MainFactory(
                             dispatch(Action.OnLoad(RoomInfoEither = roomInfoUseCase()))
                         }
                     }
-                    errorTimer.init(this,15.minutes){
+                    errorTimer.init(this, 15.minutes) {
                         roomInfoUseCase.updateCaсhe()
                         withContext(Dispatchers.Main) {
                             dispatch(Action.OnLoad(RoomInfoEither = roomInfoUseCase()))
                         }
                     }
-                    currentTimeTimer.start(this, 1.minutes){
+                    currentTimeTimer.start(this, 1.minutes) {
                         withContext(Dispatchers.Main) {
                             dispatch(Action.RefreshDate)
                         }
@@ -174,7 +180,7 @@ class MainFactory(
                             )
                         )
                     }
-                    publish(MainStore.Label.ShowToast(selectRoom?.name ?: "Нет свободной комнаты"))
+                    publish(MainStore.Label.ShowToast(selectRoom?.name ?: "Нет свободной комнаты")) //todo
                 }
 
                 is MainStore.Intent.OnUpdateSelectDate -> {
@@ -194,11 +200,14 @@ class MainFactory(
                     updateDate(GregorianCalendar())
                     dispatch(Message.UpdateDate(GregorianCalendar()))
                 }
+
+                MainStore.Intent.OnCloseModal -> {
+                    skip = true
+                }
             }
         }
 
         fun reboot(state: MainStore.State, refresh: Boolean = false) = scope.launch {
-            //if (!refresh) dispatch(Message.Reboot)
             if (refresh) {
                 if (!state.isData) {
                     dispatch(Message.Reboot)

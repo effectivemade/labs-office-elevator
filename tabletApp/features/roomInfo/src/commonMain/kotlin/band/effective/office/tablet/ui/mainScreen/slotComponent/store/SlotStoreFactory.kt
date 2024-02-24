@@ -148,6 +148,76 @@ class SlotStoreFactory(
                         )
                     )
                 }
+
+                is SlotStore.Intent.Delete -> {
+                    val slots = getState().slots
+                    var mainSlot: SlotUi.MultiSlot? = null
+                    val uiSlot = slots.firstOrNull { it.slot == intent.slot }
+                        ?: slots.mapNotNull { (it as? SlotUi.MultiSlot)?.subSlots }.flatten()
+                            .firstOrNull { it.slot == intent.slot }
+                            ?.apply {
+                                mainSlot = slots.mapNotNull { it as? SlotUi.MultiSlot }
+                                    .first { it.subSlots.contains(this) }
+                            }
+                    when {
+                        uiSlot == null -> {}
+                        mainSlot != null -> {
+                            val indexInMultiSlot = mainSlot!!.subSlots.indexOf(uiSlot)
+                            val indexMultiSlot = slots.indexOf(mainSlot!!)
+                            val newMainSlot = mainSlot!!.copy(
+                                subSlots = mainSlot!!.subSlots.toMutableList().apply {
+                                    this[indexInMultiSlot] =
+                                        SlotUi.DeleteSlot(
+                                            slot = intent.slot,
+                                            onDelete = intent.onDelete,
+                                            original = uiSlot,
+                                            index = indexInMultiSlot,
+                                            mainSlotIndex = indexMultiSlot
+                                        )
+                                })
+                            dispatch(
+                                Message.UpdateSlots(
+                                    slots.toMutableList()
+                                        .apply { this[indexMultiSlot] = newMainSlot })
+                            )
+                        }
+
+                        else -> {
+                            val index = slots.indexOf(uiSlot)
+                            dispatch(
+                                Message.UpdateSlots(
+                                    slots.toMutableList().apply {
+                                        this[index] =
+                                            SlotUi.DeleteSlot(
+                                                slot = intent.slot,
+                                                onDelete = intent.onDelete,
+                                                original = uiSlot,
+                                                index = index,
+                                                mainSlotIndex = null
+                                            )
+                                    })
+                            )
+                        }
+                    }
+                }
+
+                is SlotStore.Intent.OnCancelDelete -> {
+                    val slots = getState().slots
+                    val original = intent.slot.original
+                    val newSlots = if (intent.slot.mainSlotIndex == null) {
+                        slots.toMutableList().apply { this[intent.slot.index] = original }
+                    } else {
+                        val mainSlot =
+                            (slots[intent.slot.mainSlotIndex] as SlotUi.MultiSlot).run {
+                                copy(
+                                    subSlots = subSlots.toMutableList()
+                                        .apply { this[intent.slot.index] = original }
+                                )
+                            }
+                        slots.toMutableList().apply { this[intent.slot.mainSlotIndex] = mainSlot }
+                    }
+                    dispatch(Message.UpdateSlots(newSlots))
+                }
             }
         }
 
@@ -170,7 +240,7 @@ class SlotStoreFactory(
         }
 
         private fun SlotUi.execute(state: SlotStore.State) = when (this) {
-            is SlotUi.DeleteSlot -> TODO()
+            is SlotUi.DeleteSlot -> {}
             is SlotUi.MultiSlot -> openMultislot(this, state)
             is SlotUi.SimpleSlot -> slot.execute(state)
         }

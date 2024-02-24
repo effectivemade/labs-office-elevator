@@ -3,6 +3,7 @@ package band.effective.office.tablet.ui.updateEvent
 import android.os.Build
 import androidx.annotation.RequiresApi
 import band.effective.office.tablet.domain.model.EventInfo
+import band.effective.office.tablet.domain.model.Slot
 import band.effective.office.tablet.ui.bookingComponents.pickerDateTime.DateTimePickerComponent
 import band.effective.office.tablet.ui.modal.ModalWindow
 import band.effective.office.tablet.ui.updateEvent.store.UpdateEventStore
@@ -25,6 +26,7 @@ class UpdateEventComponent(
     storeFactory: StoreFactory,
     event: EventInfo,
     val room: String,
+    onDelete: (Slot) -> Unit,
     onCloseRequest: () -> Unit
 ) : ComponentContext by componentContext, ModalWindow {
 
@@ -42,7 +44,8 @@ class UpdateEventComponent(
             onCloseRequest = onCloseRequest,
             navigate = { navigation.push(it) },
             navigateBack = { navigation.pop() },
-            room = room
+            room = room,
+            onDelete = onDelete
         ).create(defaultValue = event.toState())
     }
 

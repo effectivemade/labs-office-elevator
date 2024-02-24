@@ -18,6 +18,7 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, MainStore.Label> 
         data class OnFastBooking(val minDuration: Int) : Intent
         data class OnUpdateSelectDate(val updateInDays: Int) : Intent
         object OnResetSelectDate : Intent
+        object OnCloseModal : Intent
     }
 
     sealed interface Label {

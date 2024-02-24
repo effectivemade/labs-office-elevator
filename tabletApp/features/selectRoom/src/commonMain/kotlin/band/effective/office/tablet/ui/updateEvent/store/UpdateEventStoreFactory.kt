@@ -3,6 +3,7 @@ package band.effective.office.tablet.ui.updateEvent.store
 import band.effective.office.network.model.Either
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.Organizer
+import band.effective.office.tablet.domain.model.Slot
 import band.effective.office.tablet.domain.useCase.BookingUseCase
 import band.effective.office.tablet.domain.useCase.CancelUseCase
 import band.effective.office.tablet.domain.useCase.CheckBookingUseCase
@@ -26,7 +27,8 @@ class UpdateEventStoreFactory(
     private val onCloseRequest: () -> Unit,
     private val navigate: (UpdateEventComponent.ModalConfig) -> Unit,
     private val navigateBack: () -> Unit,
-    private val room: String
+    private val room: String,
+    private val onDelete: (Slot) -> Unit,
 ) : KoinComponent {
 
     val bookingUseCase: BookingUseCase by inject()
@@ -195,13 +197,13 @@ class UpdateEventStoreFactory(
             )
         }
 
-        fun cancel(state: UpdateEventStore.State) = scope.launch {
-            dispatch(Message.LoadDelete)
-            if (cancelUseCase(state.event) is Either.Success) {
-                onCloseRequest()
-            } else {
-                dispatch(Message.FailDelete)
-            }
+        fun cancel(state: UpdateEventStore.State) {
+            onDelete(state.event.toSlot())
+            onCloseRequest()
+        }
+
+        private fun EventInfo.toSlot(): Slot {
+            return Slot.EventSlot(start = startTime, finish = finishTime, eventInfo = this)
         }
 
         fun onDone(state: UpdateEventStore.State) {
@@ -335,10 +337,16 @@ class UpdateEventStoreFactory(
                 is Message.LoadDelete -> copy(isErrorDelete = false, isLoadDelete = true)
                 is Message.ChangeShowSelectDateModal -> copy(showSelectDate = msg.newValue)
             }
+
         private fun Message.UpdateInformation.event(id: String): EventInfo {
             return EventInfo(
                 startTime = newDate.clone() as Calendar,
-                finishTime = (newDate.clone() as Calendar).apply { add(Calendar.MINUTE, newDuration) },
+                finishTime = (newDate.clone() as Calendar).apply {
+                    add(
+                        Calendar.MINUTE,
+                        newDuration
+                    )
+                },
                 organizer = newOrganizer,
                 id = id
             )

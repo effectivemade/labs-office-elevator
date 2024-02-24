@@ -5,6 +5,8 @@ import androidx.annotation.RequiresApi
 import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
+import band.effective.office.tablet.domain.model.Slot
+import band.effective.office.tablet.domain.useCase.CancelUseCase
 import band.effective.office.tablet.ui.bookingComponents.pickerDateTime.DateTimePickerComponent
 import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomComponent
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainFactory
@@ -24,7 +26,12 @@ import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.util.Calendar
 
 @RequiresApi(Build.VERSION_CODES.N)
@@ -33,7 +40,9 @@ class MainComponent(
     private val storeFactory: StoreFactory,
     private val OnSelectOtherRoomRequest: (() -> Booking) -> Unit,
     val onSettings: () -> Unit
-) : ComponentContext by componentContext {
+) : ComponentContext by componentContext, KoinComponent {
+
+    val cancelUseCase by inject<CancelUseCase>()
 
 
     val slotComponent = SlotComponent(
@@ -54,6 +63,7 @@ class MainComponent(
     )
 
     private val navigation = SlotNavigation<ModalWindowsConfig>()
+
     @RequiresApi(Build.VERSION_CODES.O)
     val modalWindowSlot = childSlot(
         source = navigation,
@@ -85,6 +95,14 @@ class MainComponent(
                 storeFactory = storeFactory,
                 event = modalWindows.event,
                 room = modalWindows.room,
+                onDelete = { slot ->
+                    slotComponent.sendIntent(SlotStore.Intent.Delete(slot, {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            (slot as? Slot.EventSlot)?.eventInfo?.apply { cancelUseCase(this) }
+                        }
+                    }))
+
+                },
                 onCloseRequest = { closeModalWindow() }
             )
 
