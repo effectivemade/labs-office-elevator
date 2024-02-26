@@ -149,7 +149,12 @@ class SlotStoreFactory(
         override fun executeIntent(intent: SlotStore.Intent, getState: () -> SlotStore.State) {
             when (intent) {
                 is SlotStore.Intent.ClickOnSlot -> intent.slot.execute(getState())
-                is SlotStore.Intent.UpdateRequest -> updateSlot(intent.room, intent.refresh)
+                is SlotStore.Intent.UpdateRequest -> {
+                    if (!getState().slots.any { it is SlotUi.DeleteSlot } || intent.refresh){
+                        updateSlot(intent.room, intent.refresh)
+                    }
+                }
+
                 is SlotStore.Intent.UpdateDate -> scope.launch {
                     dispatch(
                         message = Message.UpdateSlots(

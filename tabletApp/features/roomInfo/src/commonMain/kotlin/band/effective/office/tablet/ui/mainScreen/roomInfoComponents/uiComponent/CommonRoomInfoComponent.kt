@@ -52,7 +52,7 @@ fun CommonRoomInfoComponent(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ) {
-                val spaceBetweenProperty = 40.dp
+                val spaceBetweenProperty = 20.dp
                 Text(
                     text = name,
                     style = MaterialTheme.typography.h1,

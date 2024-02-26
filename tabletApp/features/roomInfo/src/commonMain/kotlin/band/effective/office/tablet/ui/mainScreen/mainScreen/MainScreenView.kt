@@ -48,7 +48,6 @@ fun MainScreenView(
     indexSelectRoom: Int,
     timeToNextEvent: Int,
     onRoomButtonClick: (Int) -> Unit,
-    onSettings: () -> Unit,
     onCancelEventRequest: () -> Unit,
     onFastBooking: (Int) -> Unit,
     onUpdate: () -> Unit,
@@ -80,7 +79,6 @@ fun MainScreenView(
                         onResetDate = onResetDate
                     )
                     SlotList(slotComponent)
-                    Button(onUpdate) {}
                 }
                 Box(modifier = Modifier.padding(horizontal = 30.dp)) {
                     Disconnect(visible = isDisconnect)

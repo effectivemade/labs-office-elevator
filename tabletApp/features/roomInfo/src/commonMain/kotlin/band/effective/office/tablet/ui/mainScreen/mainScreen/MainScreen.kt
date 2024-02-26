@@ -58,7 +58,6 @@ fun MainScreen(component: MainComponent) {
                 indexSelectRoom = state.indexSelectRoom,
                 timeToNextEvent = state.timeToNextEvent,
                 onRoomButtonClick = { component.sendIntent(MainStore.Intent.OnSelectRoom(it)) },
-                onSettings = { component.onSettings() },
                 onCancelEventRequest = { component.sendIntent(MainStore.Intent.OnOpenFreeRoomModal) },
                 onFastBooking = { component.sendIntent(MainStore.Intent.OnFastBooking(it)) },
                 onUpdate = { component.sendIntent(MainStore.Intent.OnUpdate) },
