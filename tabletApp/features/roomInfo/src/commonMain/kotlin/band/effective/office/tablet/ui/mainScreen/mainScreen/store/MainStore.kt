@@ -9,8 +9,6 @@ import java.util.GregorianCalendar
 interface MainStore : Store<MainStore.Intent, MainStore.State, MainStore.Label> {
     sealed interface Intent {
         object OnOpenFreeRoomModal : Intent
-        object OnBookingOtherRoomRequest : Intent
-        data class OnDisconnectChange(val newValue: Boolean) : Intent
         object RebootRequest : Intent
         data class OnChangeEventRequest(val eventInfo: EventInfo) : Intent
         data class OnSelectRoom(val index: Int) : Intent
@@ -18,7 +16,6 @@ interface MainStore : Store<MainStore.Intent, MainStore.State, MainStore.Label> 
         data class OnFastBooking(val minDuration: Int) : Intent
         data class OnUpdateSelectDate(val updateInDays: Int) : Intent
         object OnResetSelectDate : Intent
-        object OnCloseModal : Intent
     }
 
     sealed interface Label {

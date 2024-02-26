@@ -1,6 +1,5 @@
 package band.effective.office.tablet.ui.mainScreen.settingsComponents.store
 
-import band.effective.office.tablet.domain.model.RoomsEnum
 import band.effective.office.tablet.domain.useCase.CheckSettingsUseCase
 import band.effective.office.tablet.domain.useCase.RoomInfoUseCase
 import band.effective.office.tablet.domain.useCase.SetRoomUseCase
@@ -30,8 +29,7 @@ class SettingsStoreFactory(private val storeFactory: StoreFactory) : KoinCompone
                     dispatch(Action.UpdateCurrentNameRoom(checkSettingsUseCase()))
 
                     launch {
-                        val rooms =
-                            roomUseCase.getRoomsNames() ?: RoomsEnum.entries.map { it.nameRoom }
+                        val rooms = roomUseCase.getRoomsNames()
                         dispatch(Action.Loaded(rooms))
                     }
                 },

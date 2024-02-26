@@ -38,7 +38,7 @@ class BufferedRoomRepository(private val api: Api) : RoomRepository {
     override suspend fun getRoomsInfo(): Either<ErrorWithData<List<RoomInfo>>, List<RoomInfo>> {
         return mutex.withLock {
             roomsBuffer.bufferedValue().map(
-                errorMapper = { it }, //TODO
+                errorMapper = { save -> save.map { it.map { roomInfo -> roomInfo.updateCurrentEvent() } } },
                 successMapper = { it.map { roomInfo -> roomInfo.updateCurrentEvent() } }
             )
         }
@@ -68,7 +68,11 @@ class BufferedRoomRepository(private val api: Api) : RoomRepository {
                 is Either.Success -> roomResponse.asyncMap(
                     errorMapper = { it },
                     successMapper = { list ->
-                        CoroutineScope(Dispatchers.IO).async { list.map { it.toRoom().addEvents() } }.await()
+                        CoroutineScope(Dispatchers.IO).async {
+                            list.map {
+                                it.toRoom().addEvents()
+                            }
+                        }.await()
                     }
                 )
             }

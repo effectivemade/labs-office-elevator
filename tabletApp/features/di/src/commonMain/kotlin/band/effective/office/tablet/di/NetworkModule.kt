@@ -6,6 +6,6 @@ import org.koin.dsl.module
 
 val networkModule = module {
     val api = ApiImpl()
-    single<Api> { api/*ApiMock(realApi = api, mockFactory = MockFactory())*/ }
+    single<Api> { api }
     single/*<Collector>*/ { api.collector }
 }

@@ -6,7 +6,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlin.time.Duration
-
+/**Custom timers*/
 class TimerUseCase {
     fun timerFlow(delay: Duration) = flow {
         var i = 0L

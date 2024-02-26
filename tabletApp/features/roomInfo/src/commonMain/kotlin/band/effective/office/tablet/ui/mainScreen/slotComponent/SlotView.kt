@@ -57,6 +57,7 @@ import band.effective.office.tablet.ui.mainScreen.slotComponent.model.SlotUi
 import band.effective.office.tablet.ui.mainScreen.slotComponent.store.SlotStore
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
 import band.effective.office.tablet.ui.theme.h7
+import band.effective.office.tablet.ui.theme.subslotColor
 import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -104,9 +105,9 @@ private fun SlotList(
                         .padding(vertical = 15.dp, horizontal = 30.dp),
                     itemModifier = itemModifier.border(
                         width = 5.dp,
-                        color = Color.Yellow,
+                        color = subslotColor,
                         shape = borderShape
-                    ).padding(vertical = 15.dp, horizontal = 30.dp), //TODO() collor
+                    ).padding(vertical = 15.dp, horizontal = 30.dp),
                     slotUi = it,
                     onItemClick = { it.onClick() }
                 )
@@ -139,7 +140,7 @@ private fun DeletedSlotView(
             if (isCancelability) {
                 Text(
                     modifier = Modifier.clickable { onCancel(slotUi) },
-                    text = "Отмена",//TODO
+                    text = MainRes.string.cancel,
                     style = MaterialTheme.typography.h7,
                     color = Color.White
                 )
@@ -273,14 +274,22 @@ private fun SlotView(
 @Composable
 private fun Slot.borderColor() = when (this) {
     is Slot.EmptySlot -> LocalCustomColorsPalette.current.freeStatus
-    is Slot.EventSlot -> LocalCustomColorsPalette.current.busyStatus //TODO()
+    is Slot.EventSlot -> LocalCustomColorsPalette.current.busyStatus
     is Slot.MultiEventSlot -> LocalCustomColorsPalette.current.busyStatus
 }
 
 private fun Slot.subtitle() = when (this) {
-    is Slot.EmptySlot -> "Свободно" //TODO: get text from figma
-    is Slot.EventSlot -> "Занято ${eventInfo.organizer.fullName}"
-    is Slot.MultiEventSlot -> "${events.size} брони" //TODO склонеия
+    is Slot.EmptySlot -> MainRes.string.empty_slot.format(freeTime(this).toString())
+    is Slot.EventSlot -> MainRes.string.event_slot.format(eventInfo.organizer.fullName)
+    is Slot.MultiEventSlot -> MainRes.string.multislot.format(events.size.toString())
+}
+
+fun freeTime(slot: Slot): Int {
+    val timeInMillis = slot.finish.timeInMillis - slot.start.timeInMillis
+    return when {
+        timeInMillis > 0 -> (timeInMillis / 60000).toInt()
+        else -> 0
+    }
 }
 
 private fun Calendar.toFormattedString(pattern: String) = SimpleDateFormat(pattern).format(time)

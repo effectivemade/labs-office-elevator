@@ -5,7 +5,6 @@ import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.Organizer
 import band.effective.office.tablet.domain.model.Slot
 import band.effective.office.tablet.domain.useCase.BookingUseCase
-import band.effective.office.tablet.domain.useCase.CancelUseCase
 import band.effective.office.tablet.domain.useCase.CheckBookingUseCase
 import band.effective.office.tablet.domain.useCase.OrganizersInfoUseCase
 import band.effective.office.tablet.ui.updateEvent.UpdateEventComponent
@@ -26,14 +25,12 @@ class UpdateEventStoreFactory(
     private val storeFactory: StoreFactory,
     private val onCloseRequest: () -> Unit,
     private val navigate: (UpdateEventComponent.ModalConfig) -> Unit,
-    private val navigateBack: () -> Unit,
     private val room: String,
     private val onDelete: (Slot) -> Unit,
 ) : KoinComponent {
 
     val bookingUseCase: BookingUseCase by inject()
     val organizersInfoUseCase: OrganizersInfoUseCase by inject()
-    val cancelUseCase: CancelUseCase by inject()
     val checkBookingUseCase: CheckBookingUseCase by inject()
 
     @OptIn(ExperimentalMviKotlinApi::class)
@@ -60,28 +57,17 @@ class UpdateEventStoreFactory(
 
     private sealed interface Message {
         data class LoadOrganizers(val orgList: List<Organizer>) : Message
-        data class Init(
-            val date: Calendar,
-            val duration: Int,
-            val organizer: Organizer,
-            val event: EventInfo
-        ) : Message
-
         data class ExpandedChange(val newValue: Boolean) : Message
-
         data class UpdateInformation(
             val newDate: Calendar,
             val newDuration: Int,
             val newOrganizer: Organizer,
             val enableButton: Boolean
         ) : Message
-
         object LoadUpdate : Message
         object FailUpdate : Message
         data class Input(val newInput: String, val newList: List<Organizer>) : Message
         data class UpdateOrganizer(val newValue: Organizer) : Message
-        object LoadDelete : Message
-        object FailDelete : Message
         data class ChangeShowSelectDateModal(val newValue: Boolean) : Message
     }
 
@@ -116,7 +102,6 @@ class UpdateEventStoreFactory(
                     changeDuration = intent.update
                 )
 
-                is UpdateEventStore.Intent.OnInit -> init(intent.event)
                 is UpdateEventStore.Intent.OnDoneInput -> onDone(state)
                 is UpdateEventStore.Intent.OnInput -> onInput(intent.input, state)
                 is UpdateEventStore.Intent.OnCloseSelectDateDialog -> dispatch(
@@ -230,21 +215,6 @@ class UpdateEventStoreFactory(
             }
         }
 
-        fun init(event: EventInfo) {
-            val date = event.startTime
-            val duration =
-                ((event.finishTime.time.time - event.startTime.time.time) / 60000).toInt()
-            val organizer = event.organizer
-            dispatch(
-                Message.Init(
-                    date = date,
-                    duration = duration,
-                    organizer = organizer,
-                    event = event
-                )
-            )
-        }
-
         fun updateInfo(
             state: UpdateEventStore.State,
             changeData: Int = 0,
@@ -306,16 +276,6 @@ class UpdateEventStoreFactory(
                     organizers = msg.orgList,
                     selectOrganizers = msg.orgList
                 )
-
-                is Message.Init -> UpdateEventStore.State.defaultValue.copy(
-                    date = msg.date,
-                    duration = msg.duration,
-                    selectOrganizer = msg.organizer,
-                    inputText = msg.organizer.fullName,
-                    event = msg.event,
-                    organizers = organizers
-                )
-
                 is Message.ExpandedChange -> copy(expanded = msg.newValue)
                 is Message.UpdateInformation -> copy(
                     date = msg.newDate,
@@ -324,7 +284,6 @@ class UpdateEventStoreFactory(
                     enableUpdateButton = msg.enableButton,
                     event = msg.event(event.id)
                 )
-
                 is Message.FailUpdate -> copy(isErrorUpdate = true, isLoadUpdate = false)
                 is Message.LoadUpdate -> copy(isErrorUpdate = false, isLoadUpdate = true)
                 is Message.Input -> copy(inputText = msg.newInput, selectOrganizers = msg.newList)
@@ -332,9 +291,6 @@ class UpdateEventStoreFactory(
                     selectOrganizer = msg.newValue,
                     inputText = msg.newValue.fullName,
                 )
-
-                is Message.FailDelete -> copy(isErrorDelete = true, isLoadDelete = false)
-                is Message.LoadDelete -> copy(isErrorDelete = false, isLoadDelete = true)
                 is Message.ChangeShowSelectDateModal -> copy(showSelectDate = msg.newValue)
             }
 

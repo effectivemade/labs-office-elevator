@@ -6,8 +6,14 @@ import band.effective.office.tablet.domain.OfficeTime
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.Slot
 import java.util.Calendar
-
+/**use case for generate slots*/
 class SlotUseCase {
+    /**generate slots
+     * @param start start time
+     * @param finish finish time
+     * @param minSlotDur minimal slot duration
+     * @param events list of events in room
+     * @param currentEvent current event in room*/
     @RequiresApi(Build.VERSION_CODES.N)
     fun getSlots(
         start: Calendar = OfficeTime.startWorkTime(),

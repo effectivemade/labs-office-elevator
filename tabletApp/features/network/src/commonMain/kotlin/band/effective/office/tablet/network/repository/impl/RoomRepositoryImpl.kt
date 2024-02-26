@@ -25,6 +25,7 @@ import java.util.Calendar
 import java.util.Date
 import java.util.GregorianCalendar
 
+//NOTE(Maksim Mishenko) old implementation
 class RoomRepositoryImpl(
     private val api: Api,
     private val organizerRepository: OrganizerRepository

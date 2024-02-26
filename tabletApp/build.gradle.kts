@@ -85,7 +85,6 @@ kotlin {
 
                 implementation(project(":tabletApp:features:selectRoom"))
                 implementation(project(":tabletApp:features:roomInfo"))
-                implementation(project(":tabletApp:features:freeNegotiationsScreen"))
                 implementation(project(":tabletApp:features:core"))
                 implementation(project(":tabletApp:features:di"))
 

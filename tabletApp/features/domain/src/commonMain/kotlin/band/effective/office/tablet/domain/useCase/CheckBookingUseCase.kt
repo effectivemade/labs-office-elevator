@@ -11,48 +11,38 @@ import java.util.Calendar
 
 /**Use case for checking booking room opportunity*/
 class CheckBookingUseCase(
-    private val roomInfoUseCase: RoomInfoUseCase,
-    private val checkSettingsUseCase: CheckSettingsUseCase
+    private val roomInfoUseCase: RoomInfoUseCase
 ) {
-    /**
+    /** get event blocking room for booking
+     * @param eventInfo info about event
+     * @param room room name
      * @return Event busy with room booking, if room free, return null*/
     suspend operator fun invoke(event: EventInfo, room: String) =
         busyEvents(event, room).map(errorMapper = {
-            val save = it.saveData
-            if (save == null) {
-                ErrorWithData(saveData = null, error = it.error)
-            } else {
-                ErrorWithData(saveData = save.firstOrNull(), error = it.error)
-            }
+            it.map { it.firstOrNull() }
         }, successMapper = {
             it.firstOrNull()
         })
 
+    /** get events blocking room for booking
+     * @param eventInfo info about event
+     * @param room room name
+     * @return List events busy with room booking, if room free, return null*/
     suspend fun busyEvents(event: EventInfo, room: String) =
         when (val eventList = eventList(room)) {
             is Either.Error -> Either.Error(
-                ErrorWithData(
-                    error = eventList.error.error,
-                    saveData = eventList.error.saveData?.getBusy(event)
-                )
+                eventList.error.map { it.getBusy(event) }
             )
 
             is Either.Success -> {
                 Either.Success(eventList.data.getBusy(event))
             }
         }
-
-
-    /**
-     * @return All events in current room*/
     private suspend fun eventList(room: String): Either<ErrorWithData<List<EventInfo>>, List<EventInfo>> =
         try {
             when (val response = roomInfoUseCase()) {
                 is Either.Error -> Either.Error(
-                    ErrorWithData(
-                        response.error.error,
-                        response.error.saveData?.first { it.name == room }?.getAllEvents()
-                    )
+                    response.error.map { it.first { it.name == room }.getAllEvents() }
                 )
 
                 is Either.Success -> {

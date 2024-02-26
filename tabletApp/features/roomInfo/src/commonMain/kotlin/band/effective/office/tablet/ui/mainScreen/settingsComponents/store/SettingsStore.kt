@@ -18,7 +18,7 @@ interface SettingsStore : Store<SettingsStore.Intent, SettingsStore.State, Nothi
         companion object {
             val defaultState =
                 State(
-                    rooms = RoomsEnum.values().map { room -> room.nameRoom }.toList(),
+                    rooms = RoomsEnum.entries.map { room -> room.nameRoom }.toList(),
                     currentName = "",
                     loading = true
                 )

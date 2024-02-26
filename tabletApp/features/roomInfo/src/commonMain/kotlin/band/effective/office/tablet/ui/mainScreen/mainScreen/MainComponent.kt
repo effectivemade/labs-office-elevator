@@ -2,7 +2,6 @@ package band.effective.office.tablet.ui.mainScreen.mainScreen
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import band.effective.office.tablet.domain.model.Booking
 import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.domain.model.Slot
@@ -37,7 +36,6 @@ import java.util.Calendar
 class MainComponent(
     private val componentContext: ComponentContext,
     private val storeFactory: StoreFactory,
-    private val OnSelectOtherRoomRequest: (() -> Booking) -> Unit,
     val onSettings: () -> Unit
 ) : ComponentContext by componentContext, KoinComponent {
 

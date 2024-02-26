@@ -13,7 +13,6 @@ import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.ui.bookingComponents.DateTimeView
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.uiComponent.BusyRoomInfoComponent
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.uiComponent.FreeRoomInfoComponent
-import band.effective.office.tablet.utils.oneDay
 import java.util.Calendar
 import java.util.GregorianCalendar
 
@@ -79,4 +78,3 @@ fun RoomInfoComponent(
 
 private fun RoomInfo.isFree() = currentEvent == null
 private fun RoomInfo.isBusy() = currentEvent != null
-private fun Calendar.isToday(): Boolean = oneDay(GregorianCalendar())

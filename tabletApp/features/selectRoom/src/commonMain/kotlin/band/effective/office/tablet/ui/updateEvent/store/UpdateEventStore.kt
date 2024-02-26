@@ -19,7 +19,6 @@ interface UpdateEventStore :
         data class OnSelectOrganizer(val newOrganizer: Organizer) : Intent
         data class OnUpdateEvent(val room: String) : Intent
         object OnDeleteEvent : Intent
-        data class OnInit(val event: EventInfo) : Intent
         data class OnInput(val input: String) : Intent
         object OnDoneInput : Intent
         object OnOpenSelectDateDialog : Intent

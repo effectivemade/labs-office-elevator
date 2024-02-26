@@ -11,19 +11,24 @@ import java.util.GregorianCalendar
 
 /**Use case for get info about room*/
 class RoomInfoUseCase(private val repository: RoomRepository) {
-    suspend fun getRoomsNames(): List<String>? {
+    /**Get all rooms names*/
+    suspend fun getRoomsNames(): List<String> {
         return when (val rooms = repository.getRoomsInfo()) {
-            is Either.Error -> null
+            is Either.Error -> rooms.error.saveData?.map { it.name } ?: listOf()
             is Either.Success -> rooms.data.map { it.name }
         }
     }
-
-    suspend fun updateCaсhe() = repository.updateCashe()
-
+    /**Update repository cache*/
+    suspend fun updateCache() = repository.updateCashe()
+    /**get info about all rooms*/
     suspend operator fun invoke() = repository.getRoomsInfo().mapRoomsInfo()
+    /**get update room flow
+     * @param scope scope for collect updates from server*/
     fun subscribe(scope: CoroutineScope) =
         repository.subscribeOnUpdates(scope).map { it.mapRoomsInfo() }
 
+    /**Get info about room
+     * @param room room name*/
     suspend fun getRoom(room: String) = invoke().map(
         errorMapper = {
             val save = it.saveData

@@ -241,7 +241,7 @@ class SlotStoreFactory(
             scope.launch {
                 if (refresh) {
                     withContext(Dispatchers.IO) {
-                        roomInfoUseCase.updateCaсhe()
+                        roomInfoUseCase.updateCache()
                     }
                 }
                 dispatch(

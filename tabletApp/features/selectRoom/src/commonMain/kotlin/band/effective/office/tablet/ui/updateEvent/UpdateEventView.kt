@@ -31,8 +31,8 @@ import band.effective.office.tablet.ui.buttons.alert.AlertButton
 import band.effective.office.tablet.ui.buttons.success.SuccessButton
 import band.effective.office.tablet.ui.common.CrossButtonView
 import band.effective.office.tablet.ui.loader.Loader
-import band.effective.office.tablet.ui.selectRoomScreen.failureBooking.FailureSelectRoomView
-import band.effective.office.tablet.ui.selectRoomScreen.successBooking.SuccessSelectRoomView
+import band.effective.office.tablet.ui.uiComponents.failureBooking.FailureSelectRoomView
+import band.effective.office.tablet.ui.uiComponents.successBooking.SuccessSelectRoomView
 import band.effective.office.tablet.ui.updateEvent.store.UpdateEventStore
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import java.text.SimpleDateFormat

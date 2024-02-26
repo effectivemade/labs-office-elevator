@@ -7,12 +7,12 @@ import java.util.GregorianCalendar
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
-
+/**timer for update when start/finish event in room*/
 class UpdateUseCase(
     private val timerUseCase: TimerUseCase,
     private val roomInfoUseCase: RoomInfoUseCase
 ) {
-
+    /**flow for update when start/finish event in room*/
     fun updateFlow() = flow {
         while (true) {
             val roomInfo = roomInfoUseCase.invoke().unbox(errorHandler = { null })

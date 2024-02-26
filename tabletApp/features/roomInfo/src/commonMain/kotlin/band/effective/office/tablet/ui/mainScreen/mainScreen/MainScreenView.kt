@@ -28,12 +28,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.domain.model.RoomInfo
+import band.effective.office.tablet.features.roomInfo.MainRes
 import band.effective.office.tablet.ui.mainScreen.mainScreen.uiComponents.Disconnect
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.RoomInfoComponent
 import band.effective.office.tablet.ui.mainScreen.roomInfoComponents.uiComponent.RoomProperty
 import band.effective.office.tablet.ui.mainScreen.slotComponent.SlotComponent
 import band.effective.office.tablet.ui.mainScreen.slotComponent.SlotList
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
+import band.effective.office.tablet.ui.theme.textButton
 import java.util.Calendar
 
 @SuppressLint("NewApi", "StateFlowValueCalledInComposition")
@@ -111,44 +113,27 @@ fun MainScreenView(
 fun FastBookingButtons(onBooking: (Int) -> Unit) {
     Column {
         Text(
-            text = "Занять любую переговорку на:", //TODO
+            text = MainRes.string.fastbooking_title,
             color = MaterialTheme.colors.onPrimary,
             style = MaterialTheme.typography.h5
         )
         Spacer(Modifier.height(10.dp))
         Row {
             val buttonModifier = Modifier.fillMaxWidth().weight(1f)
-            Button(
-                modifier = buttonModifier,
-                onClick = { onBooking(15) },
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.White) //TODO
-            ) {
-                Text(
-                    text = "15 мин", //TODO
-                    color = Color.Black,
-                )
-            }
-            Spacer(Modifier.width(10.dp))
-            Button(
-                modifier = buttonModifier,
-                onClick = { onBooking(30) },
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
-            ) {
-                Text(
-                    text = "30 мин", //TODO
-                    color = Color.Black
-                )
-            }
-            Spacer(Modifier.width(10.dp))
-            Button(
-                modifier = buttonModifier,
-                onClick = { onBooking(60) },
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
-            ) {
-                Text(
-                    text = "60 мин", //TODO
-                    color = Color.Black
-                )
+            listOf(15, 30, 60).forEachIndexed { index, time ->
+                if (index != 0) {
+                    Spacer(Modifier.width(10.dp))
+                }
+                Button(
+                    modifier = buttonModifier,
+                    onClick = { onBooking(time) },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = textButton)
+                ) {
+                    Text(
+                        text = MainRes.string.fastbooking_button.format(time.toString()),
+                        color = Color.Black,
+                    )
+                }
             }
         }
     }

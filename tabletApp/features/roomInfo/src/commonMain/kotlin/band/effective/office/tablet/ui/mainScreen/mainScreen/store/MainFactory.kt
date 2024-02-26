@@ -45,7 +45,6 @@ class MainFactory(
     private val currentTimeTimer = BootstrapperTimer<Action>(timerUseCase)
     private val currentRoomTimer = BootstrapperTimer<Action>(timerUseCase)
     private val errorTimer = BootstrapperTimer<Action>(timerUseCase)
-    private var skip = false // todo
 
     @OptIn(ExperimentalMviKotlinApi::class)
     fun create(): MainStore =
@@ -54,6 +53,7 @@ class MainFactory(
                 name = "MainStore",
                 initialState = MainStore.State.defaultState,
                 bootstrapper = coroutineBootstrapper {
+                    // get current room name from memory
                     launch {
                         if (checkSettingsUseCase().isEmpty()) {
                             dispatch(Action.OnSettings)
@@ -61,40 +61,41 @@ class MainFactory(
                             dispatch(Action.OnLoad(RoomInfoEither = roomInfoUseCase()))
                         }
                     }
+                    // update events when start/finish event in room
                     launch(Dispatchers.IO) {
                         updateUseCase.updateFlow().collect {
                             delay(1.seconds)
-                            if (skip) {
-                                delay(1.minutes)
-                                skip = false
-                                return@collect
-                            }
                             withContext(Dispatchers.Main) {
                                 dispatch(Action.OnLoad(RoomInfoEither = roomInfoUseCase()))
                             }
                         }
                     }
+                    // update time to start next event or finish current event
                     timerUseCase.timer(this, 1.seconds) { _ ->
                         withContext(Dispatchers.Main) {
                             dispatch(Action.OnUpdateTimer)
                         }
                     }
+                    // update events list
                     launch(Dispatchers.Main) {
                         roomInfoUseCase.subscribe(this).collect {
                             dispatch(Action.OnUpdateRoomInfo)
                         }
                     }
+                    // reset selected room
                     currentRoomTimer.start(bootstrapperScope = this, delay = 1.minutes) {
                         withContext(Dispatchers.Main) {
                             dispatch(Action.OnLoad(RoomInfoEither = roomInfoUseCase()))
                         }
                     }
+                    // update cache when get error
                     errorTimer.init(this, 15.minutes) {
-                        roomInfoUseCase.updateCaсhe()
+                        roomInfoUseCase.updateCache()
                         withContext(Dispatchers.Main) {
                             dispatch(Action.OnLoad(RoomInfoEither = roomInfoUseCase()))
                         }
                     }
+                    // reset select date
                     currentTimeTimer.start(this, 1.minutes) {
                         withContext(Dispatchers.Main) {
                             dispatch(Action.RefreshDate)
@@ -106,7 +107,6 @@ class MainFactory(
             ) {}
 
     private sealed interface Message {
-        object BookingOtherRoom : Message
         data class Load(
             val isSuccess: Boolean,
             val roomList: List<RoomInfo>,
@@ -136,11 +136,9 @@ class MainFactory(
         @RequiresApi(Build.VERSION_CODES.N)
         override fun executeIntent(intent: MainStore.Intent, getState: () -> MainStore.State) {
             when (intent) {
-                is MainStore.Intent.OnBookingOtherRoomRequest -> dispatch(Message.BookingOtherRoom)
                 is MainStore.Intent.OnOpenFreeRoomModal ->
                     navigate(MainComponent.ModalWindowsConfig.FreeRoom(getState().run { roomList[indexSelectRoom].currentEvent!! }))
 
-                is MainStore.Intent.OnDisconnectChange -> dispatch(Message.UpdateDisconnect(intent.newValue))
                 is MainStore.Intent.RebootRequest -> reboot(getState(), true)
                 is MainStore.Intent.OnChangeEventRequest -> navigate(
                     MainComponent.ModalWindowsConfig.UpdateEvent(
@@ -180,11 +178,6 @@ class MainFactory(
                             )
                         )
                     }
-                    publish(
-                        MainStore.Label.ShowToast(
-                            selectRoom?.name ?: "Нет свободной комнаты"
-                        )
-                    ) //todo
                 }
 
                 is MainStore.Intent.OnUpdateSelectDate -> {
@@ -204,10 +197,6 @@ class MainFactory(
                     updateDate(GregorianCalendar())
                     dispatch(Message.UpdateDate(GregorianCalendar()))
                 }
-
-                MainStore.Intent.OnCloseModal -> {
-                    skip = true
-                }
             }
         }
 
@@ -217,7 +206,7 @@ class MainFactory(
                     dispatch(Message.Reboot)
                 }
                 withContext(Dispatchers.IO) {
-                    roomInfoUseCase.updateCaсhe()
+                    roomInfoUseCase.updateCache()
                 }
             }
             when (val either = roomInfoUseCase()) {
@@ -300,8 +289,6 @@ class MainFactory(
     private object ReducerImpl : Reducer<MainStore.State, Message> {
         override fun MainStore.State.reduce(message: Message): MainStore.State =
             when (message) {
-                is Message.BookingOtherRoom -> copy()
-
                 is Message.Load -> copy(
                     isLoad = false,
                     isData = message.isSuccess,

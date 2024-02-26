@@ -11,13 +11,11 @@ import band.effective.office.tablet.ui.updateEvent.store.UpdateEventStoreFactory
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
-import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -43,7 +41,6 @@ class UpdateEventComponent(
             storeFactory = storeFactory,
             onCloseRequest = onCloseRequest,
             navigate = { navigation.push(it) },
-            navigateBack = { navigation.pop() },
             room = room,
             onDelete = onDelete
         ).create(defaultValue = event.toState())
@@ -63,7 +60,6 @@ class UpdateEventComponent(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val state = store.stateFlow
-    val labels = store.labels
 
     fun sendIntent(intent: UpdateEventStore.Intent) {
         store.accept(intent)

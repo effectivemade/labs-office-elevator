@@ -12,8 +12,7 @@ val uiModule = module {
     single<CheckSettingsUseCase> { CheckSettingsUseCase() }
     single<CheckBookingUseCase> {
         CheckBookingUseCase(
-            roomInfoUseCase = get(),
-            checkSettingsUseCase = get()
+            roomInfoUseCase = get()
         )
     }
     single<CancelUseCase> { CancelUseCase(cancelRepository = get()) }
