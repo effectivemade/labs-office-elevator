@@ -56,6 +56,7 @@ import band.effective.office.tablet.features.roomInfo.MainRes
 import band.effective.office.tablet.ui.mainScreen.slotComponent.model.SlotUi
 import band.effective.office.tablet.ui.mainScreen.slotComponent.store.SlotStore
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
+import band.effective.office.tablet.ui.theme.deleteProgressColor
 import band.effective.office.tablet.ui.theme.h7
 import band.effective.office.tablet.ui.theme.subslotColor
 import kotlinx.coroutines.delay
@@ -207,7 +208,7 @@ private fun BorderIndicator(
             drawPath(
                 path = pathWithProgress,
                 style = Stroke(stokeWidth.toPx()),
-                color = Color.Blue
+                color = deleteProgressColor
             )
         }
     }
