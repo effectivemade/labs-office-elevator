@@ -96,7 +96,7 @@ fun OptionMenu(
                                 translationX = offsetX,
                                 translationY = offsetY
                             ),
-                        painter = painterResource(MainRes.images.super_map),
+                        painter = painterResource(MainRes.images.map_zykova),
                         contentDescription = "office map"
                     )
                 }
