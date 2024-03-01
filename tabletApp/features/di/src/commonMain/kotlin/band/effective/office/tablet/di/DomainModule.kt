@@ -19,7 +19,8 @@ val domainModule = module {
     single<OrganizerRepository> { OrganizerRepositoryImpl(api = get()) }
     single<CancelRepository> { CancelRepositoryImpl(api = get()) }
     single<BookingRepository> { BookingRepositoryImpl(api = get()) }
-    single<RoomRepository> { BufferedRoomRepository(api = get()) }
+    single<BufferedRoomRepository> { BufferedRoomRepository(api = get()) }
+    single<RoomRepository> { get<BufferedRoomRepository>() }
 
     single<RoomInfoUseCase> { RoomInfoUseCase(repository = get()) }
     single<OrganizersInfoUseCase> { OrganizersInfoUseCase(repository = get()) }

@@ -57,6 +57,20 @@ class BufferedRoomRepository(private val api: Api) : RoomRepository {
         roomsBuffer.refresh()
     }
 
+    suspend fun deleteEventFromCash(roomName: String, eventInfo: EventInfo) {
+        fun MutableList<RoomInfo>.updList() {
+            firstOrNull { it.name == roomName }?.let {
+                val index = indexOf(it)
+                this[index] = this[index].copy(eventList = it.eventList.minus(eventInfo))
+            }
+        }
+        val newBufferValue = roomsBuffer.bufferedValue().map(
+            errorMapper = { it.map { it.toMutableList().apply { updList() } } },
+            successMapper = { it.toMutableList().apply { updList() } }
+        )
+        roomsBuffer.update(newBufferValue)
+    }
+
     suspend fun getFreshRoomInfo(): Either<ErrorWithData<List<RoomInfo>>, List<RoomInfo>> {
         val roomResponse = api.getWorkspaces("meeting")
         val save = roomsBuffer.bufferFlow.replayCache.firstOrNull()?.unbox(

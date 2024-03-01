@@ -139,8 +139,10 @@ class SlotStoreFactory(
         override fun executeAction(action: Action, getState: () -> SlotStore.State) {
             when (action) {
                 is Action.UpdateSlots -> {
-                    updateTimer.restart((action.slots.first().slot.start.timeInMillis - GregorianCalendar().timeInMillis + 60000).milliseconds)
-                    dispatch(Message.UpdateSlots(action.slots))
+                    if (action.slots.isNotEmpty()) {
+                        updateTimer.restart((action.slots.first().slot.start.timeInMillis - GregorianCalendar().timeInMillis + 60000).milliseconds)
+                        dispatch(Message.UpdateSlots(action.slots))
+                    }
                 }
             }
         }

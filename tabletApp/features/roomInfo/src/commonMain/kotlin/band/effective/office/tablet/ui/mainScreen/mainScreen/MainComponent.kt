@@ -6,6 +6,7 @@ import band.effective.office.tablet.domain.model.EventInfo
 import band.effective.office.tablet.domain.model.RoomInfo
 import band.effective.office.tablet.domain.model.Slot
 import band.effective.office.tablet.domain.useCase.CancelUseCase
+import band.effective.office.tablet.domain.useCase.DeleteCachedEventUseCase
 import band.effective.office.tablet.ui.freeSelectRoom.FreeSelectRoomComponent
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainFactory
 import band.effective.office.tablet.ui.mainScreen.mainScreen.store.MainStore
@@ -40,6 +41,7 @@ class MainComponent(
 ) : ComponentContext by componentContext, KoinComponent {
 
     val cancelUseCase by inject<CancelUseCase>()
+    val deleteCachedEventUseCase: DeleteCachedEventUseCase by inject()
 
 
     val slotComponent = SlotComponent(
@@ -95,7 +97,13 @@ class MainComponent(
                 onDelete = { slot ->
                     slotComponent.sendIntent(SlotStore.Intent.Delete(slot, {
                         CoroutineScope(Dispatchers.IO).launch {
-                            (slot as? Slot.EventSlot)?.eventInfo?.apply { cancelUseCase(this) }
+                            (slot as? Slot.EventSlot)?.eventInfo?.apply {
+                                deleteCachedEventUseCase(
+                                    roomName = state.value.run { roomList[indexSelectRoom].name },
+                                    eventInfo = this
+                                )
+                                cancelUseCase(this)
+                            }
                         }
                     }))
 
@@ -110,17 +118,23 @@ class MainComponent(
         MainFactory(
             storeFactory = storeFactory,
             navigate = ::openModalWindow,
-            updateRoomInfo = { updateComponents(it) },
+            updateRoomInfo = {
+                roomInfo, date->
+                updateComponents(roomInfo, date)
+            },
             updateDate = ::updateDate
         ).create()
     }
 
-    private fun updateComponents(roomInfo: RoomInfo) {
+    private fun updateComponents(roomInfo: RoomInfo, date: Calendar) {
         slotComponent.sendIntent(
             SlotStore.Intent.UpdateRequest(
                 room = roomInfo.name,
                 refresh = false
             )
+        )
+        slotComponent.sendIntent(
+            SlotStore.Intent.UpdateDate(date)
         )
     }
 

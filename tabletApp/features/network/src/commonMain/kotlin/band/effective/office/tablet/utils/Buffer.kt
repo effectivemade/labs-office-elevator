@@ -2,6 +2,7 @@ package band.effective.office.tablet.utils
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class Buffer<T>(private val defaultValue: T, private val getValue: suspend () -> T) {
     private val buffer: MutableStateFlow<T> = MutableStateFlow(defaultValue)
@@ -19,5 +20,9 @@ class Buffer<T>(private val defaultValue: T, private val getValue: suspend () ->
 
     suspend fun refresh() {
         buffer.emit(getValue())
+    }
+
+    fun update(value: T) {
+        buffer.update { value }
     }
 }

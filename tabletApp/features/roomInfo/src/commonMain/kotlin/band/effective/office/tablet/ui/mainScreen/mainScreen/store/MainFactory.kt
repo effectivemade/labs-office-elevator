@@ -33,7 +33,7 @@ import kotlin.time.Duration.Companion.seconds
 class MainFactory(
     private val storeFactory: StoreFactory,
     private val navigate: (MainComponent.ModalWindowsConfig) -> Unit,
-    private val updateRoomInfo: (RoomInfo) -> Unit,
+    private val updateRoomInfo: (RoomInfo, Calendar) -> Unit,
     private val updateDate: (Calendar) -> Unit
 ) : KoinComponent {
 
@@ -139,7 +139,7 @@ class MainFactory(
                 is MainStore.Intent.OnOpenFreeRoomModal ->
                     navigate(MainComponent.ModalWindowsConfig.FreeRoom(getState().run { roomList[indexSelectRoom].currentEvent!! }))
 
-                is MainStore.Intent.RebootRequest -> reboot(getState(), true)
+                is MainStore.Intent.RebootRequest -> reboot(getState())
                 is MainStore.Intent.OnChangeEventRequest -> navigate(
                     MainComponent.ModalWindowsConfig.UpdateEvent(
                         event = intent.eventInfo,
@@ -149,10 +149,10 @@ class MainFactory(
 
                 is MainStore.Intent.OnSelectRoom -> dispatch(Message.SelectRoom(intent.index.apply {
                     currentRoomTimer.restart()
-                    updateRoomInfo(getState().roomList[this])
+                    getState().let { updateRoomInfo(it.roomList[this], it.selectDate) }
                 }))
 
-                MainStore.Intent.OnUpdate -> reboot(getState(), true)
+                MainStore.Intent.OnUpdate -> reboot(getState())
                 is MainStore.Intent.OnFastBooking -> {
                     val state = getState()
                     val currentRoom = state.run { roomList[indexSelectRoom] }
@@ -234,7 +234,7 @@ class MainFactory(
                             indexSelectRoom = state.indexRoom()
                         )
                     )
-                    updateRoomInfo(either.data[state.indexRoom()])
+                    updateRoomInfo(either.data[state.indexRoom()],state.selectDate)
                 }
             }
         }

@@ -40,6 +40,7 @@ class SlotUseCase {
         finish: Calendar,
         minSlotDur: Int,
     ): List<Slot> {
+        if (start >= finish) return listOf()
         val count = (finish.timeInMillis - start.timeInMillis) / (minSlotDur * 60000)
         return List<Slot>(count.toInt()) { number ->
             val slotStart = (start.clone() as Calendar).apply { add(Calendar.MINUTE, 15 * number) }
