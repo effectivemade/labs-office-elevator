@@ -94,7 +94,7 @@ class SlotStoreFactory(
             is Slot.EventSlot -> SlotUi.SimpleSlot(it)
             is Slot.MultiEventSlot -> SlotUi.MultiSlot(
                 slot = it,
-                subSlots = it.events.map { slot -> SlotUi.SimpleSlot(slot) },
+                subSlots = it.events.map { slot -> SlotUi.NestedSlot(slot) },
                 isOpen = false
             )
         }
@@ -265,6 +265,7 @@ class SlotStoreFactory(
             is SlotUi.DeleteSlot -> {}
             is SlotUi.MultiSlot -> openMultislot(this, state)
             is SlotUi.SimpleSlot -> slot.execute(state)
+            is SlotUi.NestedSlot -> slot.execute(state)
         }
 
         private fun openMultislot(multislot: SlotUi.MultiSlot, state: SlotStore.State) {

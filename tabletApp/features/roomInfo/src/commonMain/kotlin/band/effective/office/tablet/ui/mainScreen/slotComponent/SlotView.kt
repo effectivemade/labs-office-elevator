@@ -3,10 +3,6 @@ package band.effective.office.tablet.ui.mainScreen.slotComponent
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -19,7 +15,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -30,7 +25,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,26 +34,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.PathMeasure
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.domain.model.Slot
 import band.effective.office.tablet.features.roomInfo.MainRes
+import band.effective.office.tablet.ui.mainScreen.slotComponent.component.BorderIndicator
 import band.effective.office.tablet.ui.mainScreen.slotComponent.model.SlotUi
 import band.effective.office.tablet.ui.mainScreen.slotComponent.store.SlotStore
 import band.effective.office.tablet.ui.theme.LocalCustomColorsPalette
-import band.effective.office.tablet.ui.theme.deleteProgressColor
 import band.effective.office.tablet.ui.theme.h7
 import band.effective.office.tablet.ui.theme.subslotColor
-import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
@@ -80,51 +65,60 @@ private fun SlotList(
     onClick: SlotUi.() -> Unit,
     onCancel: (SlotUi.DeleteSlot) -> Unit
 ) {
-    val borderShape = CircleShape
-
-    LazyColumn(Modifier.padding(start = 30.dp, top = 0.dp, end = 30.dp, bottom = 30.dp)) {
+    LazyColumn(
+        Modifier.padding(start = 30.dp, top = 0.dp, end = 30.dp, bottom = 30.dp)
+    ) {
         items(items = slots) {
-            val itemModifier = Modifier
-                .fillMaxWidth()
-                .clip(borderShape)
-                .background(MaterialTheme.colors.surface)
-                .clickable { it.onClick() }
-            when (it) {
-                is SlotUi.DeleteSlot -> DeletedSlotView(
-                    modifier = itemModifier,
-                    slotUi = it,
-                    onCancel = onCancel,
-                    paddingValues = PaddingValues(vertical = 15.dp, horizontal = 30.dp)
-                )
-
-                is SlotUi.MultiSlot -> MultiSlotView(
-                    mainItemModifier = itemModifier.border(
-                        width = 5.dp,
-                        color = it.slot.borderColor(),
-                        shape = borderShape
-                    )
-                        .padding(vertical = 15.dp, horizontal = 30.dp),
-                    itemModifier = itemModifier.border(
-                        width = 5.dp,
-                        color = subslotColor,
-                        shape = borderShape
-                    ).padding(vertical = 15.dp, horizontal = 30.dp),
-                    slotUi = it,
-                    onItemClick = { it.onClick() }
-                )
-
-                is SlotUi.SimpleSlot -> SlotView(
-                    modifier = itemModifier.border(
-                        width = 5.dp,
-                        color = it.slot.borderColor(),
-                        shape = borderShape
-                    )
-                        .padding(vertical = 15.dp, horizontal = 30.dp),
-                    slotUi = it
-                )
-            }
+            SlotView(slotUi = it, onClick = onClick, onCancel = onCancel)
             Spacer(Modifier.height(20.dp))
         }
+    }
+}
+
+@Composable
+private fun SlotView(
+    slotUi: SlotUi,
+    onClick: SlotUi.() -> Unit,
+    onCancel: (SlotUi.DeleteSlot) -> Unit
+) {
+    val borderShape = CircleShape
+    val itemModifier = Modifier
+        .fillMaxWidth()
+        .clip(borderShape)
+        .background(MaterialTheme.colors.surface)
+        .clickable { slotUi.onClick() }
+        .run {
+            if (slotUi !is SlotUi.DeleteSlot) border(
+                width = 5.dp,
+                color = slotUi.borderColor(),
+                shape = borderShape
+            ).padding(vertical = 15.dp, horizontal = 30.dp) else this
+        }
+
+    when (slotUi) {
+        is SlotUi.DeleteSlot -> DeletedSlotView(
+            modifier = itemModifier,
+            slotUi = slotUi,
+            onCancel = onCancel,
+            paddingValues = PaddingValues(vertical = 15.dp, horizontal = 30.dp)
+        )
+
+        is SlotUi.MultiSlot -> MultiSlotView(
+            modifier = itemModifier,
+            slotUi = slotUi,
+            onItemClick = { item -> item.onClick() },
+            onCancel = onCancel
+        )
+
+        is SlotUi.SimpleSlot -> CommonSlotView(
+            modifier = itemModifier,
+            slotUi = slotUi
+        )
+
+        is SlotUi.NestedSlot -> CommonSlotView(
+            modifier = itemModifier,
+            slotUi = slotUi
+        )
     }
 }
 
@@ -137,7 +131,7 @@ private fun DeletedSlotView(
 ) {
     Box(modifier = modifier.height(IntrinsicSize.Min).width(IntrinsicSize.Min)) {
         var isCancelability by remember { mutableStateOf(true) }
-        SlotView(modifier = modifier.padding(paddingValues), slotUi = slotUi) {
+        CommonSlotView(modifier = Modifier.padding(paddingValues), slotUi = slotUi) {
             if (isCancelability) {
                 Text(
                     modifier = Modifier.clickable { onCancel(slotUi) },
@@ -154,80 +148,15 @@ private fun DeletedSlotView(
     }
 }
 
-//https://stackoverflow.com/questions/75745905/rectangle-border-progress-bar
-@Composable
-private fun BorderIndicator(
-    modifier: Modifier = Modifier.fillMaxSize(),
-    startDurationInSeconds: Int = 10,
-    stokeWidth: Dp,
-    onDispose: () -> Unit
-) {
-
-
-    var targetValue by remember {
-        mutableStateOf(100f)
-    }
-    // This is the progress path which wis changed using path measure
-    val pathWithProgress by remember { mutableStateOf(Path()) }
-
-    // using path
-    val pathMeasure by remember { mutableStateOf(PathMeasure()) }
-
-    val path = remember { Path() }
-
-    val progress by animateFloatAsState(
-        targetValue = targetValue,
-        animationSpec = tween(startDurationInSeconds * 1000, easing = LinearEasing), label = ""
-    )
-
-    Box(contentAlignment = Alignment.Center) {
-        Canvas(modifier = modifier) {
-            if (path.isEmpty) {
-                path.addRoundRect(
-                    RoundRect(
-                        Rect(offset = Offset.Zero, size),
-                        cornerRadius = CornerRadius(100.dp.toPx(), 100.dp.toPx())
-                    )
-                )
-            }
-            pathWithProgress.reset()
-            pathMeasure.setPath(path, forceClosed = false)
-            pathMeasure.getSegment(
-                startDistance = 0f,
-                stopDistance = pathMeasure.length * progress / 100f,
-                destination = pathWithProgress,
-                startWithMoveTo = true
-            )
-
-            drawPath(
-                path = path,
-                style = Stroke(stokeWidth.toPx()),
-                color = Color.Gray
-            )
-
-            drawPath(
-                path = pathWithProgress,
-                style = Stroke(stokeWidth.toPx()),
-                color = deleteProgressColor
-            )
-        }
-    }
-    LaunchedEffect(Unit) {
-        targetValue = 0f
-        delay(startDurationInSeconds * 1000L)
-        onDispose()
-    }
-}
-
 @Composable
 private fun MultiSlotView(
-    mainItemModifier: Modifier = Modifier,
-    itemModifier: Modifier = Modifier,
+    modifier: Modifier = Modifier,
     slotUi: SlotUi.MultiSlot,
-    onItemClick: (SlotUi) -> Unit
+    onItemClick: (SlotUi) -> Unit,
+    onCancel: (SlotUi.DeleteSlot) -> Unit
 ) {
     Column(Modifier.animateContentSize()) {
-        SlotView(mainItemModifier, slotUi) {
+        CommonSlotView(modifier, slotUi) {
             val rotateDegrees = if (slotUi.isOpen) 180f else 0f
             Image(
                 modifier = Modifier.fillMaxHeight().rotate(rotateDegrees),
@@ -238,14 +167,18 @@ private fun MultiSlotView(
         if (slotUi.isOpen) {
             slotUi.subSlots.forEach {
                 Spacer(Modifier.height(20.dp))
-                SlotView(itemModifier.clickable { onItemClick(it) }, it)
+                SlotView(
+                    slotUi = it,
+                    onClick = onItemClick,
+                    onCancel = onCancel
+                )
             }
         }
     }
 }
 
 @Composable
-private fun SlotView(
+private fun CommonSlotView(
     modifier: Modifier = Modifier,
     slotUi: SlotUi,
     content: @Composable () -> Unit = {}
@@ -273,10 +206,15 @@ private fun SlotView(
 }
 
 @Composable
-private fun Slot.borderColor() = when (this) {
-    is Slot.EmptySlot -> LocalCustomColorsPalette.current.freeStatus
-    is Slot.EventSlot -> LocalCustomColorsPalette.current.busyStatus
-    is Slot.MultiEventSlot -> LocalCustomColorsPalette.current.busyStatus
+private fun SlotUi.borderColor() = when (this) {
+    is SlotUi.DeleteSlot -> Color.Gray
+    is SlotUi.MultiSlot -> LocalCustomColorsPalette.current.busyStatus
+    is SlotUi.NestedSlot -> subslotColor
+    is SlotUi.SimpleSlot -> when (slot) {
+        is Slot.EmptySlot -> LocalCustomColorsPalette.current.freeStatus
+        is Slot.EventSlot -> LocalCustomColorsPalette.current.busyStatus
+        is Slot.MultiEventSlot -> LocalCustomColorsPalette.current.busyStatus
+    }
 }
 
 private fun Slot.subtitle() = when (this) {

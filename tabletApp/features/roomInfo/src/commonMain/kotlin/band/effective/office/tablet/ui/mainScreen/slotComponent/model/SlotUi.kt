@@ -16,6 +16,8 @@ sealed interface SlotUi {
         val index: Int,
         val mainSlotIndex: Int?
     ) : SlotUi
+
+    data class NestedSlot(override val slot: Slot) : SlotUi
 }
 
 
