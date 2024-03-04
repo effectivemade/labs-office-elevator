@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import band.effective.office.tablet.features.selectRoom.MainRes
@@ -39,6 +40,8 @@ fun FailureSelectRoomView(onDismissRequest: () -> Unit) {
         Image(
             painter = painterResource(MainRes.image.failure),
             contentDescription = null,
+            colorFilter = ColorFilter.tint(LocalCustomColorsPalette.current.busyStatus)
+
         )
         Spacer(modifier = Modifier.height(24.dp))
         Text(
