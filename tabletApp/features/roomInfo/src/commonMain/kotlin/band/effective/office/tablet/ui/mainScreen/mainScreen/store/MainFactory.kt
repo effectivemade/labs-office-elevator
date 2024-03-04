@@ -200,7 +200,12 @@ class MainFactory(
             }
         }
 
-        fun reboot(state: MainStore.State, refresh: Boolean = false) = scope.launch {
+        fun reboot(
+            state: MainStore.State,
+            refresh: Boolean = false,
+            resetSelectRoom: Boolean = true
+        ) = scope.launch {
+            val roomIndex = if (resetSelectRoom) state.indexRoom() else state.indexSelectRoom
             if (refresh) {
                 if (!state.isData) {
                     dispatch(Message.Reboot)
@@ -231,10 +236,10 @@ class MainFactory(
                         Message.Load(
                             isSuccess = true,
                             roomList = either.data,
-                            indexSelectRoom = state.indexRoom()
+                            indexSelectRoom = roomIndex
                         )
                     )
-                    updateRoomInfo(either.data[state.indexRoom()],state.selectDate)
+                    updateRoomInfo(either.data[roomIndex], state.selectDate)
                 }
             }
         }
@@ -271,7 +276,7 @@ class MainFactory(
 
                 is Action.OnSettings -> dispatch(Message.OnSettings)
                 Action.OnUpdateTimer -> dispatch(Message.UpdateTimer)
-                Action.OnUpdateRoomInfo -> reboot(getState())
+                Action.OnUpdateRoomInfo -> reboot(state = getState(), resetSelectRoom = false)
                 Action.RefreshDate -> dispatch(Message.UpdateDate(GregorianCalendar())).apply {
                     updateDate(
                         GregorianCalendar()
