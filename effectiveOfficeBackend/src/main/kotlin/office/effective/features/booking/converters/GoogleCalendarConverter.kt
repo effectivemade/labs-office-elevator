@@ -62,7 +62,7 @@ class GoogleCalendarConverter(
         val recurrence = event.recurrence?.toString()?.getRecurrence()?.toDto()
         val dto = BookingDTO(
             owner = getUser(email),
-            participants = event.attendees?.filter { !(it?.resource ?: true) }?.map { getUser(it.email) } ?: listOf(),
+            participants = event.attendees?.filter { !(it?.resource ?: false) }?.map { getUser(it.email) } ?: listOf(),
             workspace = getWorkspace(
                 event.attendees?.firstOrNull { it?.resource ?: false }?.email
                     ?: run {
