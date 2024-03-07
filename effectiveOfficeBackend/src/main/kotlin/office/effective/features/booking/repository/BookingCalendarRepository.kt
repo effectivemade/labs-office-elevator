@@ -148,7 +148,8 @@ class BookingCalendarRepository(
             eventRangeTo?.let { Instant.ofEpochMilli(it) } ?: "infinity"
         )
         val workspaceCalendarId = getCalendarIdByWorkspace(workspaceId)
-        val eventsWithWorkspace = basicQuery(eventRangeFrom, eventRangeTo, true, workspaceCalendarId)
+        val getSingleEvents = true
+        val eventsWithWorkspace = basicQuery(eventRangeFrom, eventRangeTo, getSingleEvents, workspaceCalendarId)
             .execute().items
 
         return eventsWithWorkspace.toList().map { googleCalendarConverter.toBookingModel(it) }
@@ -185,20 +186,6 @@ class BookingCalendarRepository(
         )
     }
 
-    private fun getAllEvents2(
-        calendarIds: List<String>,
-        eventRangeFrom: Long,
-        eventRangeTo: Long?
-    ): List<Event> = runBlocking {
-            val res = calendarIds.map { calendarId ->
-                async {
-                    basicQuery(eventRangeFrom, eventRangeTo, true, calendarId)
-                        .execute().items
-                }
-            }
-            res.awaitAll().flatten()
-    }
-
     private fun getEventsWithQParam(
         calendarIds: List<String>,
         q: String,
@@ -208,8 +195,12 @@ class BookingCalendarRepository(
         val executor = Executors.newFixedThreadPool(calendarIds.size)
         val futures = calendarIds.map { calendarId ->
             CompletableFuture.supplyAsync {
-                basicQuery(eventRangeFrom, eventRangeTo, true, calendarId)
-                    .setQ(q)
+                basicQuery(
+                    timeMin = eventRangeFrom,
+                    timeMax = eventRangeTo,
+                    singleEvents = true,
+                    calendarId = calendarId
+                ).setQ(q)
                     .execute().items
             }
         }
@@ -231,8 +222,12 @@ class BookingCalendarRepository(
         val executor = Executors.newFixedThreadPool(calendarIds.size)
         val futures = calendarIds.map { calendarId ->
             CompletableFuture.supplyAsync {
-                basicQuery(eventRangeFrom, eventRangeTo, true, calendarId)
-                    .execute().items
+                basicQuery(
+                    timeMin = eventRangeFrom,
+                    timeMax = eventRangeTo,
+                    singleEvents = true,
+                    calendarId = calendarId
+                ).execute().items
             }
         }
         val allEvents = CompletableFuture.allOf(*futures.toTypedArray())
