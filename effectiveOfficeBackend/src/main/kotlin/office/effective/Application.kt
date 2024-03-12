@@ -30,6 +30,5 @@ fun Application.module() {
     configureValidation()
     configureExceptionHandling()
     configureSwagger()
-    configureMicrometer()
     install(CustomAuthorizationPlugin)
 }

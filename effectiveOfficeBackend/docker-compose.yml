@@ -39,15 +39,6 @@ services:
        timeout: 5s
        retries: 10
 
-  prometheus:
-    container_name: prometheusForKtor
-    image: prom/prometheus:latest
-    volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-    ports:
-      - "9090:9090"
-    network_mode: host
-
 
 volumes:
   pgdata: {}

@@ -4,7 +4,6 @@ import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.micrometer.prometheus.PrometheusMeterRegistry
 import office.effective.features.metrics.service.MetricsService
 import org.koin.core.context.GlobalContext
 import java.time.Instant
@@ -12,11 +11,6 @@ import java.time.Instant
 fun Route.metrics() {
     route("metrics") {
         val metricsService: MetricsService = GlobalContext.get().get()
-        get("/micrometer") {
-            val appMicrometerRegistry: PrometheusMeterRegistry = GlobalContext.get().get()
-            call.respond(appMicrometerRegistry.scrape())
-        }   
-
         get("/percentOfFreeWorkspaces") {
             val startTime: Instant = Instant.ofEpochMilli(call.request.queryParameters["range_from"].let {
                 it?.toLongOrNull() ?: throw BadRequestException("range_to can't be parsed to Long")
