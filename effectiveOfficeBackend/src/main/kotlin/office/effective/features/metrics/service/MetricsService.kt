@@ -1,12 +1,12 @@
 package office.effective.features.metrics.service
 
 import office.effective.common.constants.BookingConstants
-import office.effective.config
 import office.effective.features.booking.service.BookingService
 import office.effective.features.workspace.repository.WorkspaceRepository
 import office.effective.features.workspace.service.WorkspaceService
 import java.time.Instant
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
 
@@ -56,40 +56,44 @@ class MetricsService(
         val numberOfTheDays = calcNumberOfTheDays(startTime, endTime)
         val meetingWorkspaces = workspaceRepository.findAllByTag("meeting")
         var dtStart: LocalDateTime =
-            LocalDateTime.ofEpochSecond(startTime.toEpochMilli(), 0, ZoneOffset.of(defaultTimeZone)).toLocalDate()
+            LocalDateTime.ofEpochSecond(
+                startTime.toEpochMilli(),
+                0,
+                ZoneId.of(defaultTimeZone).rules.getOffset(startTime)
+            ).toLocalDate()
                 .atStartOfDay()
 
-        meetingWorkspaces.forEach { workspace ->
-            run {
-                var globalWorkspaceOccupationTime= 0L;
-                var globalWorkspaceFreeTime = 0L
-                for (i in 0..numberOfTheDays) {
-                    val dailyGapStart = dtStart.plusDays(i.toLong()).plusHours(endDay.toLong())
-                        .toInstant(ZoneOffset.of(defaultTimeZone))
-                    val dailyGapEnd = dtStart.plusDays(i.toLong()).plusHours(endDay.toLong())
-                        .toInstant(ZoneOffset.of(defaultTimeZone))
+        for (workspace in meetingWorkspaces) {
+            var globalWorkspaceOccupationTime = 0L;
+            var globalWorkspaceFreeTime = 0L
+            for (i in 0..numberOfTheDays) {
+                val dailyGapStart = dtStart.plusDays(i.toLong()).plusHours(endDay.toLong())
+                    .toInstant(ZoneId.of(defaultTimeZone).rules.getOffset(startTime))
+                val dailyGapEnd = dtStart.plusDays(i.toLong()).plusHours(endDay.toLong())
+                    .toInstant(ZoneId.of(defaultTimeZone).rules.getOffset(endTime))
 
-                    var occupationTime = 0L;
-                    val freeTime = dailyGapEnd.toEpochMilli() - dailyGapStart.toEpochMilli(); // Кол-во свободного времени в дне
+                var occupationTime = 0L;
+                val freeTime =
+                    dailyGapEnd.toEpochMilli() - dailyGapStart.toEpochMilli(); // Кол-во свободного времени в дне
 
-                    globalWorkspaceFreeTime += freeTime;
-                    bookingService.findAll(
-                        bookingRangeFrom = dailyGapStart.toEpochMilli(),
-                        bookingRangeTo = dailyGapEnd.toEpochMilli(),
-                        workspaceId = workspace.id
-                    ).map { booking ->
-                        occupationTime += getSingleBookingOccupancy(
-                            startBooking = booking.beginBooking,
-                            endBooking = booking.endBooking,
-                            gapStart = dailyGapStart,
-                            gapEnd = dailyGapEnd
-                        )
-                    }
-                    occupationTime = if (occupationTime > freeTime) freeTime else occupationTime
-                    globalWorkspaceOccupationTime += occupationTime;
+                globalWorkspaceFreeTime += freeTime;
+                bookingService.findAll(
+                    bookingRangeFrom = dailyGapStart.toEpochMilli(),
+                    bookingRangeTo = dailyGapEnd.toEpochMilli(),
+                    workspaceId = workspace.id
+                ).map { booking ->
+                    occupationTime += getSingleBookingOccupancy(
+                        startBooking = booking.beginBooking,
+                        endBooking = booking.endBooking,
+                        gapStart = dailyGapStart,
+                        gapEnd = dailyGapEnd
+                    )
                 }
-                res[workspace.name] = (globalWorkspaceOccupationTime.toDouble())/(globalWorkspaceFreeTime.toDouble())
+                occupationTime = if (occupationTime > freeTime) freeTime else occupationTime
+                globalWorkspaceOccupationTime += occupationTime;
             }
+            res[workspace.name] = (globalWorkspaceOccupationTime.toDouble()) / (globalWorkspaceFreeTime.toDouble())
+
         }
 
     }
@@ -108,22 +112,29 @@ class MetricsService(
         if (startBooking.isBefore(gapStart)) {
             start = gapStart
         }
-        if(endBooking.isAfter(gapEnd)){
+        if (endBooking.isAfter(gapEnd)) {
             end = gapEnd
         }
         return end.toEpochMilli() - start.toEpochMilli()
     }
 
     fun calcNumberOfTheDays(startTime: Instant, endTime: Instant): Int {
+
         val startdate =
-            LocalDateTime.ofEpochSecond(startTime.toEpochMilli(), 0, ZoneOffset.of(defaultTimeZone)).toLocalDate()
+            LocalDateTime.ofEpochSecond(
+                startTime.toEpochMilli(),
+                0,
+                ZoneId.of(defaultTimeZone).rules.getOffset(startTime)
+            ).toLocalDate()
         val endDate =
-            LocalDateTime.ofEpochSecond(endTime.toEpochMilli(), 0, ZoneOffset.of(defaultTimeZone)).toLocalDate()
+            LocalDateTime.ofEpochSecond(endTime.toEpochMilli(), 0, ZoneId.of(defaultTimeZone).rules.getOffset(endTime))
+                .toLocalDate()
         return ChronoUnit.DAYS.between(startdate, endDate).toInt()
     }
 
     fun startOfTheDay(dt: Instant): Instant {
-        var date: LocalDateTime = LocalDateTime.ofEpochSecond(dt.epochSecond, 0, ZoneOffset.of(defaultTimeZone))
+        var date: LocalDateTime =
+            LocalDateTime.ofEpochSecond(dt.epochSecond, 0, ZoneId.of(defaultTimeZone).rules.getOffset(dt))
         return date
             .toLocalDate()
             .atStartOfDay()
