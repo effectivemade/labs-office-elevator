@@ -13,7 +13,7 @@ fun Route.metrics() {
         val metricsService: MetricsService = GlobalContext.get().get()
         get("/percentOfFreeWorkspaces") {
             val startTime: Instant = Instant.ofEpochMilli(call.request.queryParameters["range_from"].let {
-                it?.toLongOrNull() ?: throw BadRequestException("range_to can't be parsed to Long")
+                it?.toLongOrNull() ?: throw BadRequestException("range_from can't be parsed to Long")
             })
             val endTime: Instant = Instant.ofEpochMilli(call.request.queryParameters["range_to"].let {
                 it?.toLongOrNull() ?: throw BadRequestException("range_to can't be parsed to Long")
