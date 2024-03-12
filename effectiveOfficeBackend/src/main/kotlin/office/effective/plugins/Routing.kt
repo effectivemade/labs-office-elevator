@@ -5,7 +5,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import office.effective.features.user.routes.userRouting
 import office.effective.features.booking.routes.bookingRouting
-import office.effective.features.metrics.service.metrics
+import office.effective.features.metrics.routes.metrics
 import office.effective.features.notifications.routes.calendarNotificationsRouting
 import office.effective.features.workspace.routes.workspaceRouting
 

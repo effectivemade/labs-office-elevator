@@ -1,10 +1,11 @@
-package office.effective.features.metrics.service
+package office.effective.features.metrics.routes
 
 import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.micrometer.prometheus.PrometheusMeterRegistry
+import office.effective.features.metrics.service.MetricsService
 import org.koin.core.context.GlobalContext
 import java.time.Instant
 
