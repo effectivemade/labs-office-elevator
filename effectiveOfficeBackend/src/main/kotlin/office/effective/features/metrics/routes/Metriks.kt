@@ -1,9 +1,13 @@
 package office.effective.features.metrics.routes
 
+import io.github.smiley4.ktorswaggerui.dsl.get
 import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import office.effective.common.swagger.SwaggerDocument
+import office.effective.features.metrics.routes.swagger.pecentOfFreeTime
+import office.effective.features.metrics.routes.swagger.percentOfFreeWorkspaces
 import office.effective.features.metrics.service.MetricsService
 import org.koin.core.context.GlobalContext
 import java.time.Instant
@@ -11,7 +15,7 @@ import java.time.Instant
 fun Route.metrics() {
     route("metrics") {
         val metricsService: MetricsService = GlobalContext.get().get()
-        get("/percentOfFreeWorkspaces") {
+        get("/percentOfFreeWorkspaces", SwaggerDocument.percentOfFreeWorkspaces()) {
             val startTime: Instant = Instant.ofEpochMilli(call.request.queryParameters["range_from"].let {
                 it?.toLongOrNull() ?: throw BadRequestException("range_from can't be parsed to Long")
             })
@@ -22,7 +26,7 @@ fun Route.metrics() {
             return@get
         }
 
-        get("/pecentOfFreeTime") {
+        get("/pecentOfFreeTime", SwaggerDocument.pecentOfFreeTime()) {
             val dayStarts: Int = call.request.queryParameters["day_starts"].let {
                 it?.toInt() ?: throw BadRequestException("day_starts can't be parsed to Int")
             }
