@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import java.util.Calendar
 import java.util.Date
 import java.util.GregorianCalendar
 
@@ -64,6 +65,7 @@ class BufferedRoomRepository(private val api: Api) : RoomRepository {
                 this[index] = this[index].copy(eventList = it.eventList.minus(eventInfo))
             }
         }
+
         val newBufferValue = roomsBuffer.bufferedValue().map(
             errorMapper = { it.map { it.toMutableList().apply { updList() } } },
             successMapper = { it.toMutableList().apply { updList() } }
@@ -96,7 +98,9 @@ class BufferedRoomRepository(private val api: Api) : RoomRepository {
     }
 
     private suspend fun RoomInfo.addEvents(): RoomInfo {
-        val eventResponse = api.getBookingsByWorkspaces(id)
+        val start = GregorianCalendar()
+        val finish = GregorianCalendar().apply { add(Calendar.MONTH, 1) }
+        val eventResponse = api.getBookingsByWorkspaces(id, start.timeInMillis, finish.timeInMillis)
         val events = when (eventResponse) {
             is Either.Error -> throw DownloadException(eventResponse.error)
             is Either.Success -> eventResponse.data.map { it.toEvent() }

@@ -29,7 +29,9 @@ class SettingsStoreFactory(private val storeFactory: StoreFactory) : KoinCompone
                     dispatch(Action.UpdateCurrentNameRoom(checkSettingsUseCase()))
 
                     launch {
+                        roomUseCase.updateCache()
                         val rooms = roomUseCase.getRoomsNames()
+                        println("rooms = ${rooms}")
                         dispatch(Action.Loaded(rooms))
                     }
                 },

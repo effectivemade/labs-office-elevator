@@ -139,7 +139,7 @@ class MainFactory(
                 is MainStore.Intent.OnOpenFreeRoomModal ->
                     navigate(MainComponent.ModalWindowsConfig.FreeRoom(getState().run { roomList[indexSelectRoom].currentEvent!! }))
 
-                is MainStore.Intent.RebootRequest -> reboot(getState())
+                is MainStore.Intent.RebootRequest -> reboot(state = getState(), refresh = true)
                 is MainStore.Intent.OnChangeEventRequest -> navigate(
                     MainComponent.ModalWindowsConfig.UpdateEvent(
                         event = intent.eventInfo,
