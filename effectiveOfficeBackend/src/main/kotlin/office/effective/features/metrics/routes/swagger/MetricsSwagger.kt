@@ -47,14 +47,14 @@ fun SwaggerDocument.pecentOfFreeTime(): OpenApiRoute.() -> Unit = {
         queryParameter<Long>("range_from") {
             description = "Lower bound. Should be lover than range_to. "
 
-            example = 1692927200000
+            example = 1704049261000
             required = true
             allowEmptyValue = false
 
         }
         queryParameter<Long>("range_to") {
             description = "Upper bound. Should be greater than range_from."
-            example = 1697028200000
+            example = 1704049261000
             required = true
             allowEmptyValue = false
         }
