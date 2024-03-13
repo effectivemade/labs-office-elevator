@@ -51,7 +51,7 @@ class MetricsService(
      * Вычислить: Для каждой переговорки: получить за этот промежуток времени, для каждого из дней, для промежутка рабочего времени: получить суммарное время списка броней, получить время простоя
      * Вычислить: добавить к суммарному времени простоя за промежуток времени
      * */
-    fun calcPlaceHours(startDay: Int, endDay: Int, startTime: Instant, endTime: Instant) {
+    fun calcPlaceHours(startDay: Int, endDay: Int, startTime: Instant, endTime: Instant) :MutableMap<String, Double>{
         var res: MutableMap<String, Double> = mutableMapOf();
         val numberOfTheDays = calcNumberOfTheDays(startTime, endTime)
         val meetingWorkspaces = workspaceRepository.findAllByTag("meeting")
@@ -95,7 +95,7 @@ class MetricsService(
             res[workspace.name] = (globalWorkspaceOccupationTime.toDouble()) / (globalWorkspaceFreeTime.toDouble())
 
         }
-
+        return res
     }
 
     /**
@@ -129,7 +129,7 @@ class MetricsService(
         val endDate =
             LocalDateTime.ofEpochSecond(endTime.toEpochMilli(), 0, ZoneId.of(defaultTimeZone).rules.getOffset(endTime))
                 .toLocalDate()
-        return ChronoUnit.DAYS.between(startdate, endDate).toInt()
+        return (ChronoUnit.DAYS.between(startdate, endDate)/1000).toInt()
     }
 
     fun startOfTheDay(dt: Instant): Instant {
