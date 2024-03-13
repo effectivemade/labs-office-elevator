@@ -6,15 +6,42 @@ import band.effective.office.elevator.domain.models.WorkspaceZone
 import band.effective.office.elevator.domain.models.toUIModel
 import band.effective.office.elevator.domain.models.toUIModelZones
 import band.effective.office.elevator.domain.repository.WorkspaceRepository
+import band.effective.office.elevator.ui.booking.models.WorkSpaceType
+import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
+import band.effective.office.elevator.ui.booking.models.WorkspaceZoneUI
+import band.effective.office.elevator.ui.booking.models.WorkspacesList
 import band.effective.office.network.model.Either
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.zip
 import kotlinx.datetime.LocalDateTime
 
 class WorkspacesUseCase (
     private val repository: WorkspaceRepository
 ) {
-    suspend fun getZones() = repository.getZones().mapZones()
+    suspend fun getAllWorkspaces() =
+        repository.getZones().mapZones().zip(
+            getWorkSpaces(tag = WorkSpaceType.MEETING_ROOM.type)
+        ) { zones, workspaces ->
+            val mutableMap: MutableMap<WorkSpaceType, List<WorkspaceZoneUI>> = mutableMapOf()
+            when (zones) {
+                is Either.Error -> {}
+                is Either.Success ->
+                    mutableMap[WorkSpaceType.WORK_PLACE] = zones.data
+            }
+            when (workspaces) {
+                is Either.Error -> {}
+                is Either.Success ->
+                    mutableMap[WorkSpaceType.MEETING_ROOM] = workspaces.data.mapWorkspaceToZone()
+            }
+
+            if (mutableMap.isEmpty()) {
+                Either.Error(Exception("can not get zones"))
+            } else {
+                Either.Success(WorkspacesList (workspaces = mutableMap))
+            }
+        }
+
 
     suspend fun getWorkSpaces(
         tag: String,
@@ -50,5 +77,13 @@ class WorkspacesUseCase (
                 )
                 is Either.Success -> Either.Success(response.data.toUIModelZones())
             }
+        }
+
+    private fun List<WorkSpaceUI>.mapWorkspaceToZone()  =
+        map {
+            WorkspaceZoneUI (
+                name = it.zoneName,
+                isSelected = false
+            )
         }
 }

@@ -2,10 +2,10 @@ package band.effective.office.elevator.ui.booking.store
 
 import band.effective.office.elevator.MainRes
 import band.effective.office.elevator.domain.entity.BookingInteract
-import band.effective.office.elevator.ui.booking.models.MockDataSpaces
 import band.effective.office.elevator.ui.booking.models.WorkSpaceType
 import band.effective.office.elevator.ui.booking.models.WorkSpaceUI
 import band.effective.office.elevator.ui.booking.models.WorkspaceZoneUI
+import band.effective.office.elevator.ui.booking.models.WorkspacesList
 import band.effective.office.elevator.ui.booking.models.sheetData.SelectedBookingPeriodState
 import band.effective.office.elevator.ui.bottomSheets.bookingSheet.bookPeriod.store.BookPeriodStore
 import band.effective.office.elevator.ui.models.TypesList
@@ -48,7 +48,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
     private sealed interface Msg {
 
-        data class UpdateAllZones(val zones: List<WorkspaceZoneUI>) : Msg
+        data class UpdateAllZones(val zones: WorkspacesList) : Msg
 
         data class SelectedTypeList(val type: TypesList) : Msg
 
@@ -131,10 +131,8 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
 
                 is BookingStore.Intent.ChangeSelectedType -> {
 
-                    val zones = when (intent.selectedType.type) {
-                        WorkSpaceType.WORK_PLACE -> getState().allZonesList
-                        WorkSpaceType.MEETING_ROOM -> MockDataSpaces.allMeetingRooms
-                    }
+                    val zones = getState().allZonesList.workspaces[intent.selectedType.type]?: listOf()
+
                     scope.launch {
                         val state = getState()
                         getSpacesUI(
@@ -216,12 +214,12 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                     withContext(Dispatchers.Main) {
                         when (zonesResponse) {
                             is Either.Success -> {
-                                val zones: List<WorkspaceZoneUI> = zonesResponse.data
+                                val zones: WorkspacesList = zonesResponse.data
                                 dispatch(Msg.UpdateAllZones(zones = zones))
                             }
 
                             is Either.Error -> {
-                                //TODO(Artem Gruzdev) schedule error
+                                Napier.e { zonesResponse.error.message.toString() }
                             }
                         }
                     }
@@ -303,7 +301,7 @@ class BookingStoreFactory(private val storeFactory: StoreFactory) : KoinComponen
                 is Msg.ChangeLoadingWorkspace -> copy(isLoadingListWorkspaces = msg.isLoading)
 
                 is Msg.UpdateAllZones -> copy(
-                    currentWorkspaceZones = msg.zones,
+                    currentWorkspaceZones = msg.zones.workspaces[workSpacesType]?: listOf(),
                     allZonesList = msg.zones
                 )
 
