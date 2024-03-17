@@ -154,7 +154,7 @@ class UserRepository(
                 )
             )
         }
-        return modelsSet;
+        return modelsSet
     }
 
     /**
@@ -275,5 +275,24 @@ class UserRepository(
         if (!existsById(userId)) return null
         val ent = findById(userId)
         return ent?.tag
+    }
+
+    fun existsByEmail(email: String): Boolean {
+
+        val entity: UserEntity? = db.users.find { it.email eq email }
+        return (entity != null)
+    }
+
+    fun updateAvatar(email: String, newAvatar: String?) {
+
+        logger.debug("[updateAvatar] retrieving a user with email {}", email)
+        val entity: UserEntity? = db.users.find { it.email eq email }
+        entity ?: throw InstanceNotFoundException(UserEntity::class, "User with email $email not wound")
+
+        if (entity.avatarURL == newAvatar){
+            logger.debug("[updateAvatar] updating user avatar with id {}", entity.id)
+            entity.avatarURL = newAvatar
+            entity.flushChanges()
+        }
     }
 }

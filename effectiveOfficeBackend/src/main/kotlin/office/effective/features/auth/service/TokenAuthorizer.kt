@@ -5,14 +5,18 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
 import io.ktor.server.application.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import office.effective.config
+import office.effective.features.user.repository.UserRepository
+import office.effective.model.UserModel
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 /**
  * Implementation of [Authorizer]. Checks GoogleIdTokens
  * */
-class TokenAuthorizer(private val extractor: TokenExtractor = TokenExtractor()) : Authorizer {
+class TokenAuthorizer(private val extractor: TokenExtractor = TokenExtractor(), private val repo: UserRepository) : Authorizer {
 
     private val verifier: GoogleIdTokenVerifier =
         GoogleIdTokenVerifier.Builder(NetHttpTransport(), GsonFactory()).build()
@@ -48,6 +52,7 @@ class TokenAuthorizer(private val extractor: TokenExtractor = TokenExtractor()) 
 
         val emailVerified: Boolean = payload.emailVerified
         val hostedDomain = payload.hostedDomain ?: extractDomain(payload.email)
+        val currentAvatarUrl: String? = payload["picture"] as String?;
         if ((acceptableMailDomain == hostedDomain) && emailVerified) {
             userMail = payload.email
         }
@@ -57,6 +62,7 @@ class TokenAuthorizer(private val extractor: TokenExtractor = TokenExtractor()) 
             logger.trace("Token auth with token: {}", tokenString)
             return false
         } else {
+            checkUserAndUpdateAvatar(email = userMail, newAvatar = currentAvatarUrl, )
             logger.info("Token auth succeed")
             return true
         }
@@ -79,5 +85,17 @@ class TokenAuthorizer(private val extractor: TokenExtractor = TokenExtractor()) 
         logger.info("Token auth failed")
         logger.trace("Token auth failed with token: {}", tokenString)
         return false
+    }
+
+    private fun checkUserAndUpdateAvatar(email: String, newAvatar: String?): Boolean {
+        val result = repo.existsByEmail(email)
+        runBlocking {
+            if(result) {
+                launch {
+                    repo.updateAvatar(email, newAvatar)
+                }
+            }
+        }
+        return result;
     }
 }
