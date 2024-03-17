@@ -6,6 +6,7 @@ import office.effective.common.di.commonDiModule
 import office.effective.features.booking.di.bookingDiModule
 import office.effective.common.di.calendarDiModule
 import office.effective.features.auth.di.authDiModule
+import office.effective.features.metrics.di.metricsDiModule
 import office.effective.features.user.di.userDIModule
 import office.effective.features.workspace.DI.workspaceDiModule
 import org.koin.ktor.plugin.Koin
@@ -22,7 +23,8 @@ fun Application.configureDI() {
             bookingDiModule,
             authDiModule,
             calendarDiModule,
-            firebaseDiModule
+            firebaseDiModule,
+            metricsDiModule
         )
     }
 }
