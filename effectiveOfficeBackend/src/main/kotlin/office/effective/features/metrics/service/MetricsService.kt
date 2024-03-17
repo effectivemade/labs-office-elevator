@@ -57,7 +57,7 @@ class MetricsService(
         val meetingWorkspaces = workspaceRepository.findAllByTag("meeting")
         var dtStart: LocalDateTime =
             LocalDateTime.ofEpochSecond(
-                startTime.toEpochMilli(),
+                startTime.toEpochMilli()/1000,
                 0,
                 ZoneId.of(defaultTimeZone).rules.getOffset(startTime)
             ).toLocalDate()
@@ -67,7 +67,7 @@ class MetricsService(
             var globalWorkspaceOccupationTime = 0L;
             var globalWorkspaceFreeTime = 0L
             for (i in 0..numberOfTheDays) {
-                val dailyGapStart = dtStart.plusDays(i.toLong()).plusHours(endDay.toLong())
+                val dailyGapStart = dtStart.plusDays(i.toLong()).plusHours(startDay.toLong())
                     .toInstant(ZoneId.of(defaultTimeZone).rules.getOffset(startTime))
                 val dailyGapEnd = dtStart.plusDays(i.toLong()).plusHours(endDay.toLong())
                     .toInstant(ZoneId.of(defaultTimeZone).rules.getOffset(endTime))
@@ -92,7 +92,7 @@ class MetricsService(
                 occupationTime = if (occupationTime > freeTime) freeTime else occupationTime
                 globalWorkspaceOccupationTime += occupationTime;
             }
-            res[workspace.name] = (globalWorkspaceOccupationTime.toDouble()) / (globalWorkspaceFreeTime.toDouble())
+            res[workspace.name] = (1.0-((globalWorkspaceOccupationTime.toDouble()) / (globalWorkspaceFreeTime.toDouble())))*100
 
         }
         return res
