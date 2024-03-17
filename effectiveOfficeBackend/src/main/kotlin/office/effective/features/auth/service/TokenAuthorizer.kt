@@ -8,6 +8,7 @@ import io.ktor.server.application.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import office.effective.config
+import office.effective.features.user.facade.UserFacade
 import office.effective.features.user.repository.UserRepository
 import office.effective.model.UserModel
 import org.slf4j.Logger
@@ -16,7 +17,7 @@ import org.slf4j.LoggerFactory
 /**
  * Implementation of [Authorizer]. Checks GoogleIdTokens
  * */
-class TokenAuthorizer(private val extractor: TokenExtractor = TokenExtractor(), private val repo: UserRepository) : Authorizer {
+class TokenAuthorizer(private val extractor: TokenExtractor = TokenExtractor(), private val userFacade: UserFacade) : Authorizer {
 
     private val verifier: GoogleIdTokenVerifier =
         GoogleIdTokenVerifier.Builder(NetHttpTransport(), GsonFactory()).build()
@@ -88,11 +89,11 @@ class TokenAuthorizer(private val extractor: TokenExtractor = TokenExtractor(), 
     }
 
     private fun checkUserAndUpdateAvatar(email: String, newAvatar: String?): Boolean {
-        val result = repo.existsByEmail(email)
+        val result = userFacade.existsByEmail(email)
         runBlocking {
             if(result) {
                 launch {
-                    repo.updateAvatar(email, newAvatar)
+                    userFacade.updateAvatar(email, newAvatar)
                 }
             }
         }

@@ -49,4 +49,12 @@ class UserService(private val repository: UserRepository) : IUserService {
     override fun getUserByEmail(emailStr: String): UserModel? {
         return repository.findByEmail(emailStr)
     }
+
+    override fun existsByEmail(email: String): Boolean {
+        return repository.existsByEmail(email)
+    }
+
+    override fun updateAvatar(email: String, newAvatar: String?) {
+        repository.updateAvatar(email, newAvatar)
+    }
 }

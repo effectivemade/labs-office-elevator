@@ -1,5 +1,6 @@
 package office.effective.features.user.facade
 
+import com.sun.source.tree.NewArrayTree
 import office.effective.common.exception.InstanceNotFoundException
 import office.effective.common.utils.DatabaseTransactionManager
 import office.effective.features.user.converters.UserDTOModelConverter
@@ -101,4 +102,32 @@ class UserFacade(
             )
         })
     }
+
+    /**
+     * Checks if a user with the specified email exists in the database.
+     *
+     * @param email The email of the user to check.
+     * @return true if a user with the specified email exists, false otherwise.
+     * @author Kiselev Danil
+     * */
+    fun existsByEmail(email: String): Boolean {
+        return transactionManager.useTransaction({
+            service.existsByEmail(email)
+        })
+    }
+
+    /**
+     *Updates the avatar URL for a user with the specified email.
+     *
+     *  @param email The email of the user to update.
+     *  @param newAvatar The new avatar URL to set.
+     *  @throws InstanceNotFoundException if user with the specified email is not found.
+     * @author Kiselev Danil
+     * */
+    fun updateAvatar(email: String, newAvatar: String?) {
+        transactionManager.useTransaction({
+            service.updateAvatar(email, newAvatar)
+        })
+    }
+
 }

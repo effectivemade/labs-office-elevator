@@ -1,6 +1,11 @@
 package office.effective.serviceapi
 
+import office.effective.common.exception.InstanceNotFoundException
+import office.effective.features.user.repository.UserEntity
+import office.effective.features.user.repository.users
 import office.effective.model.UserModel
+import org.ktorm.dsl.eq
+import org.ktorm.entity.find
 
 /**
  * Interface that provides methods to manipulate [UserModel] objects
@@ -50,4 +55,23 @@ interface IUserService {
      * @author Kiselev Danil
      * */
     fun getUserByEmail(emailStr: String): UserModel?;
+
+    /**
+     * Checks if a user with the specified email exists in the database.
+     *
+     * @param email The email of the user to check.
+     * @return true if a user with the specified email exists, false otherwise.
+     * @author Kiselev Danil
+     * */
+    fun existsByEmail(email: String): Boolean
+
+    /**
+     *Updates the avatar URL for a user with the specified email.
+     *
+     *  @param email The email of the user to update.
+     *  @param newAvatar The new avatar URL to set.
+     *  @throws InstanceNotFoundException if user with the specified email is not found.
+     * @author Kiselev Danil
+     * */
+    fun updateAvatar(email: String, newAvatar: String?)
 }

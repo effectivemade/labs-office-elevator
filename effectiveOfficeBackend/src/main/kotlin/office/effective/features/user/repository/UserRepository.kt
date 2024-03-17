@@ -1,6 +1,7 @@
 package office.effective.features.user.repository
 
 import office.effective.common.exception.*
+import office.effective.common.utils.DatabaseTransactionManager
 import office.effective.features.user.converters.IntegrationModelEntityConverter
 import office.effective.features.user.converters.UserModelEntityConverter
 import office.effective.model.IntegrationModel
@@ -18,7 +19,8 @@ import java.util.*
 class UserRepository(
     private val db: Database,
     private val converter: UserModelEntityConverter,
-    private val integrationConverter: IntegrationModelEntityConverter
+    private val integrationConverter: IntegrationModelEntityConverter,
+    private val transactionManager: DatabaseTransactionManager
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
@@ -277,22 +279,38 @@ class UserRepository(
         return ent?.tag
     }
 
+    /**
+     * Checks if a user with the specified email exists in the database.
+     *
+     * @param email The email of the user to check.
+     * @return true if a user with the specified email exists, false otherwise.
+     * @author Kiselev Danil
+     * */
     fun existsByEmail(email: String): Boolean {
 
         val entity: UserEntity? = db.users.find { it.email eq email }
         return (entity != null)
     }
 
+    /**
+     * Updates the avatar URL for a user with the specified email.
+     *
+     *  @param email The email of the user to update.
+     *  @param newAvatar The new avatar URL to set.
+     *  @throws InstanceNotFoundException if user with the specified email is not found.
+     * @author Kiselev Danil
+     * */
     fun updateAvatar(email: String, newAvatar: String?) {
+        transactionManager.useTransaction({
+            logger.debug("[updateAvatar] retrieving a user with email {}", email)
+            val entity: UserEntity? = db.users.find { it.email eq email }
+            entity ?: throw InstanceNotFoundException(UserEntity::class, "User with email $email not wound")
 
-        logger.debug("[updateAvatar] retrieving a user with email {}", email)
-        val entity: UserEntity? = db.users.find { it.email eq email }
-        entity ?: throw InstanceNotFoundException(UserEntity::class, "User with email $email not wound")
-
-        if (entity.avatarURL == newAvatar){
-            logger.debug("[updateAvatar] updating user avatar with id {}", entity.id)
-            entity.avatarURL = newAvatar
-            entity.flushChanges()
-        }
+            if (entity.avatarURL == newAvatar){
+                logger.debug("[updateAvatar] updating user avatar with id {}", entity.id)
+                entity.avatarURL = newAvatar
+                entity.flushChanges()
+            }
+        })
     }
 }
