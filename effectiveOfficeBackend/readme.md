@@ -125,6 +125,7 @@ postgres container from docker. In that case you may run named container by comm
 **LOG_LEVEL** - logging level in application. Used in logback.xml. Default value: debug<br>
 **DEFAULT_CALENDAR** - default Google calendar, used for booking meeting rooms. If not defined value from the config file will be used instead.
 **WORKSPACE_CALENDAR** - Google calendar for booking working places. If not defined value from the config file will be used instead.
+**USE_DEBUG_CONFIGURATION** - Indicates whether to use a debug configuration. Use it for all settings that can be specified in the configuration files. Any value instead of "true" will be recognised as "false"
 
 You may use file .env.example as an example.
 
