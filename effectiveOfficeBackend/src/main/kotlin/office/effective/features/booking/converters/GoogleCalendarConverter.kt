@@ -24,6 +24,8 @@ import office.effective.features.workspace.repository.WorkspaceRepository
 import org.slf4j.LoggerFactory
 import java.time.Instant
 import java.util.*
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Executors
 
 /**
  * Converts between Google Calendar [Event] and [BookingDTO] objects.
@@ -62,21 +64,36 @@ class GoogleCalendarConverter(
         val recurrence = event.recurrence?.toString()?.getRecurrence()?.toDto()
         val dto = BookingDTO(
             owner = getUser(email),
-            participants = event.attendees?.filter { !(it?.resource ?: false) }?.map { getUser(it.email) } ?: listOf(),
-            workspace = getWorkspace(
-                event.attendees?.firstOrNull { it?.resource ?: false }?.email
-                    ?: run {
-                        logger.warn("[toBookingDTO] can't get workspace calendar from event.attendees")
-                        "c_1882249i0l5ieh0cih42dli6fodbi@resource.calendar.google.com"
-                    }  //TODO: Think about a different behavior in case of null
-            ),
+            participants = getParticipants(event),
+            workspace = getWorkspace(getCalendarId(event)),
             id = event.id ?: null,
-            beginBooking = event.start?.dateTime?.value ?: 0,//TODO FIX date placeholder
+            beginBooking = event.start?.dateTime?.value ?: 0,
             endBooking = event.end?.dateTime?.value ?: ((event.start?.dateTime?.value ?: 0) + 86400000),
             recurrence = recurrence
         )
         logger.trace("[toBookingDTO] {}", dto.toString())
         return dto
+    }
+
+    private fun getParticipants(event: Event): List<UserDTO> {
+        val attendees = event.attendees
+            .filter { attendee -> !attendee.isResource }
+            .map { attendee -> attendee.email }
+        return getAllUsers(attendees)
+    }
+
+    private fun getAllUsers(emails: List<String>): List<UserDTO> {
+        return userRepository
+            .findAllByEmail(emails)
+            .map { userModel -> userConverter.modelToDTO(userModel) }
+    }
+
+    private fun getCalendarId(event: Event): String {
+        return event.attendees?.firstOrNull { it?.resource ?: false }?.email
+            ?: run {
+                logger.warn("[toBookingDTO] can't get workspace calendar from event.attendees")
+                "c_1882249i0l5ieh0cih42dli6fodbi@resource.calendar.google.com"
+            }  //TODO: Think about a different behavior in case of null
     }
 
     /**
@@ -172,6 +189,31 @@ class GoogleCalendarConverter(
             }
         return userConverter.modelToDTO(userModel)
     }
+
+    /**
+     * Find [UserDTO] by email. May return placeholder if user with the given email doesn't exist in database
+     *
+     * @param email
+     * @return [UserDTO] with data from database or [UserDTO] placeholder with the given [email]
+     * @author Danil Kiselev, Max Mishenko, Daniil Zavyalov
+     */
+//    private fun getAllUser(emails: List<String>): UserDTO {
+//        val userModel: UserModel = userRepository.findByEmail(email)
+//            ?: run {
+//                logger.warn("[getUser] can't find a user with email ${email}. Creating placeholder.")
+//                UserModel(
+//                    id = null,
+//                    fullName = "Unregistered user",
+//                    tag = null,
+//                    active = false,
+//                    role = null,
+//                    avatarURL = null,
+//                    integrations = emptySet(),
+//                    email = email
+//                )
+//            }
+//        return userConverter.modelToDTO(userModel)
+//    }
 
     /**
      * Converts [BookingDTO] to [Event]. [Event.description] is used to indicate the booking author,
