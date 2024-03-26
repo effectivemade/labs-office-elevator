@@ -75,6 +75,12 @@ class GoogleCalendarConverter(
         return dto
     }
 
+    /**
+     * Gets the list of event participants, excluding resources, and returns a list of user DTOs.
+     *
+     * @param event The event for which participants need to be retrieved.
+     * @return List of user DTOs.
+     */
     private fun getParticipants(event: Event): List<UserDTO> {
         val attendees = event.attendees
             .filter { attendee -> !attendee.isResource }
@@ -82,12 +88,25 @@ class GoogleCalendarConverter(
         return getAllUsers(attendees)
     }
 
+    /**
+     * Retrieves a list of users by email addresses and converts them to a list of user DTOs.
+     *
+     * @param emails List of user email addresses.
+     * @return List of user DTOs.
+     */
     private fun getAllUsers(emails: List<String>): List<UserDTO> {
         return userRepository
             .findAllByEmail(emails)
             .map { userModel -> userConverter.modelToDTO(userModel) }
     }
 
+    /**
+     * Retrieves the calendar ID of the workspace from the event.
+     * If the ID is not found, returns a default value with a warning log.
+     *
+     * @param event The event from which to retrieve the calendar ID.
+     * @return Calendar ID of the workspace or default value.
+     */
     private fun getCalendarId(event: Event): String {
         return event.attendees?.firstOrNull { it?.resource ?: false }?.email
             ?: run {
